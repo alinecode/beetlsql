@@ -261,25 +261,7 @@ public class SQLManager {
 	}
 	
 	
-	/**
-	 * btsql自动生成查询语句，查询clazz代表的表的所有数据。
-	 * @param tempId
-	 * @param clazz
-	 * @param paras
-	 * @return
-	 */
-	public <T> List<T> selectAll(Class<T> clazz) {
-
-		SQLScript script = getScript(clazz, SELECT_ALL);
-		return script.select(clazz, null);
-	}
 	
-	
-	public <T> List<T> selectAll(Class<T> clazz,RowMapper mapper) {
-
-		SQLScript script = getScript(clazz, SELECT_ALL);
-		return script.select(clazz, null,mapper);
-	}
 	
 	/**
 	 * 根据主键查询
@@ -288,20 +270,43 @@ public class SQLManager {
 	 * @param pkValues 主键 
 	 * @return
 	 */
-	public <T> T selectById(Class<T> clazz,Object ...pkValues) {
+	public <T> T unique(Class<T> clazz,Object pk) {
 		
 		SQLScript script = getScript(clazz, SELECT_BY_ID);
-		return script.unique(clazz, null,pkValues);
+		return script.unique(clazz, null,pk);
 	}
 	
 
-	public <T> T selectById(Class<T> clazz, RowMapper mapper,Object ...pkValues) {
+	public <T> T unique(Class<T> clazz, RowMapper mapper,Object pk) {
 		
 		SQLScript script = getScript(clazz, SELECT_BY_ID);
-		return script.unique(clazz, mapper,pkValues);
+		return script.unique(clazz, mapper,pk);
 	}
 	
 	/*=========模版查询===============*/
+	
+	
+	
+	/**
+	 * btsql自动生成查询语句，查询clazz代表的表的所有数据。
+	 * @param tempId
+	 * @param clazz
+	 * @param paras
+	 * @return
+	 */
+	public <T> List<T> all(Class<T> clazz) {
+
+		SQLScript script = getScript(clazz, SELECT_ALL);
+		return script.select(clazz, null);
+	}
+	
+	
+	public <T> List<T> all(Class<T> clazz,RowMapper mapper) {
+
+		SQLScript script = getScript(clazz, SELECT_ALL);
+		return script.select(clazz, null,mapper);
+	}
+	
 	/**
 	 * 
 	 * select * from user where 1=1 
@@ -321,7 +326,7 @@ public class SQLManager {
 	 * @param user
 	 * @return
 	 */
-	public <T> List<T> selectByTemplate(T t) {
+	public <T> List<T> template(T t) {
 		
 		SQLScript script = getScript(t.getClass(), SELECT_BY_TEMPLATE);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -329,7 +334,7 @@ public class SQLManager {
 		return (List<T>) script.select(t.getClass(), param,null);
 	}
 	
-	public <T> List<T> selectByTemplate(T t,RowMapper mapper) {
+	public <T> List<T> template(T t,RowMapper mapper) {
 		
 		SQLScript script = getScript(t.getClass(), SELECT_BY_TEMPLATE);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -337,12 +342,12 @@ public class SQLManager {
 		return (List<T>) script.select(t.getClass(), param,mapper);
 	}
 	
-	public <T> List<T> selectByTemplate(T t,int start,int size) {
+	public <T> List<T> template(T t,int start,int size) {
 		
-		return this.selectByTemplate(t, null, start, size);
+		return this.template(t, null, start, size);
 	}
 	
-	public <T> List<T> selectByTemplate(T t,RowMapper mapper,int start,int size) {		
+	public <T> List<T> template(T t,RowMapper mapper,int start,int size) {		
 		
 		SQLScript script = getScript(t.getClass(), SELECT_BY_TEMPLATE);
 		SQLScript pageScript = this.getPageSqlScript(script.id);
@@ -362,7 +367,7 @@ public class SQLManager {
 	 * @return long  
 	 * @throws
 	 */
-	public <T> long count(T t) {
+	public <T> long templateCount(T t) {
 		
 		SQLScript script = getScript(t.getClass(), SELECT_COUNT_BY_TEMPLATE);
 		Long l = script.singleSelect(t, Long.class);
@@ -370,27 +375,30 @@ public class SQLManager {
 	}
 	
 	
-	public Long  selectLong(String id,Map paras) {
+	
+	//========== 取出单个值  ============== //
+	
+	public Long  longValue(String id,Map paras) {
 		return this.selectSingle(id, paras, Long.class);
 	}
 	
-	public Long  selectLong(String id,Object paras) {
+	public Long  longValue(String id,Object paras) {
 		return this.selectSingle(id, paras, Long.class);
 	}
 	
-	public Integer  selectInt(String id,Object paras) {
+	public Integer  intValue(String id,Object paras) {
 		return this.selectSingle(id, paras, Integer.class);
 	}
 	
-	public Integer  selectInt(String id,Map paras) {
+	public Integer  intValue(String id,Map paras) {
 		return this.selectSingle(id, paras, Integer.class);
 	}
 	
-	public BigDecimal  selectBigDecimal(String id,Object paras) {
+	public BigDecimal  bigDecimalValue(String id,Object paras) {
 		return this.selectSingle(id, paras, BigDecimal.class);
 	}
 	
-	public BigDecimal  selectBigDecimal(String id,Map paras) {
+	public BigDecimal  bigDecimalValue(String id,Map paras) {
 		return this.selectSingle(id, paras, BigDecimal.class);
 	}
 	

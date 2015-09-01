@@ -36,9 +36,9 @@ public class PageSelectTest {
 	public void selectPageByTemplate(){
 		User user = new User();
 		user.setAge(11);
-		long total = manager.count(user);
+		long total = manager.templateCount(user);
 		System.out.println(total);
-		List<User> userList  = manager.selectByTemplate(user,1,2);
+		List<User> userList  = manager.template(user,1,2);
 		
 //		List<User> userList = manager.selectAll(User.class);
 		for(User t : userList){
@@ -74,7 +74,7 @@ public class PageSelectTest {
 			public User mapRow(Object o,ResultSet rs, int rowNum) throws SQLException {
 				User u =(User)o;			
 				u.setName(rs.getString(4));
-				Role r = manager.selectById(Role.class, rs.getInt("roleId"));
+				Role r = manager.unique(Role.class, rs.getInt("roleId"));
 				u.setRole(r);
 				return u;
 			}

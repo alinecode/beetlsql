@@ -35,7 +35,7 @@ public class SelectAllTest {
 	@Test
 	public void selectAll(){
 		
-		List<User> userList = manager.selectAll(User.class);
+		List<User> userList = manager.all(User.class);
 		for(User user : userList){
 			System.out.println(user);
 		}
@@ -45,12 +45,12 @@ public class SelectAllTest {
 	@Test
 	public void selectAll_RowMapper(){
 		
-		List<User> userList = manager.selectAll(User.class, new RowMapper<User>() {
+		List<User> userList = manager.all(User.class, new RowMapper<User>() {
 
 			@Override
 			public User mapRow(Object o,ResultSet rs, int rowNum) throws SQLException {
 				User u = (User)o;			
-				Role r = manager.selectById(Role.class, rs.getInt("roleId"));
+				Role r = manager.unique(Role.class, rs.getInt("roleId"));
 				u.setRole(r);
 				return u;
 			}

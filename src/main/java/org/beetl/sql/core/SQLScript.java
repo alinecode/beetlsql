@@ -19,7 +19,6 @@ import org.beetl.core.Template;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
-import org.beetl.sql.core.kit.MapKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.QueryMapping;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
@@ -157,6 +156,8 @@ public class SQLScript {
 		map.put("_root", paras);
 		return this.singleSelect(map, target);
 	}
+	
+	
 	
 	
 	public <T> T singleSelect(Map map, Class<T> target) {
@@ -416,18 +417,19 @@ public class SQLScript {
 	}
 
 	/**
-	 * 查询单条记录
+	 * 通过主键查询单条记录
 	 * @param obj
 	 * @return
 	 */
-	public <T> T unique(Class<T> clazz,RowMapper mapper, Object ...value) {
+	public <T> T unique(Class<T> clazz,RowMapper mapper, Object objId) {
 		
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
 		List<String> pkNames = mm.getIds(this.sm.getNc().getTableName(clazz));
-		
-		Map<String, Object> paras = MapKit.pksSetValue(pkNames, value);
-		paras.put("_root", clazz);
-		
+		if(pkNames.size()!=1){
+			throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+		}
+		Map<String, Object> paras =new HashMap<String,Object>();
+		paras.put(pkNames.get(0),objId);
 		SQLResult result = run(paras);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
@@ -457,13 +459,16 @@ public class SQLScript {
 	 * @param j 
 	 * @param user
 	 */
-	public int deleteById(Class<?> clazz, Object ...value) {
+	public int deleteById(Class<?> clazz, Object objId ) {
 		
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
 		List<String> pkNames = mm.getIds(this.sm.getNc().getTableName(clazz));
 		
-		Map<String, Object> paras = MapKit.pksSetValue(pkNames, value);
-		paras.put("_root", clazz);
+		if(pkNames.size()!=1){
+			throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+		}
+		Map<String, Object> paras =new HashMap<String,Object>();
+		paras.put(pkNames.get(0),objId);
 		
 		SQLResult result = run(paras);
 		String sql = result.jdbcSql;

@@ -7,7 +7,13 @@ public class BeetlSQLException extends RuntimeException {
 	public static final int 	CANNOT_GET_SQL  = 2;
 	public static final int 	MAPPING_ERROR  = 3;
 	//UNQUE 方法需要传入主键的个数与数据库期望的主键个数不一致
-	public static final int 	ID_NUM_ERROR  = 4;
+	public static final int 	ID_EXPECTED_ONE_ERROR  = 4;
+	
+	//UNQUE 方法需要传入主键的个数与数据库期望的主键个数不一致
+	public static final int 	NOT_UNIQUE_ERROR  = 5;
+	
+	//SQL 脚本运行出错
+	public static final int 	SQL_SCRIPT_ERROR  = 6;
 	
 		
 	int code ;

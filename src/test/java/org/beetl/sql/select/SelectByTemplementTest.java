@@ -42,7 +42,7 @@ public class SelectByTemplementTest {
 		
 		User user = new User();
 		user.setAge(5);
-		List<User> userList = manager.selectByTemplate(user);
+		List<User> userList = manager.template(user);
 		System.out.println(userList.size());
 		
 		for(User u : userList){
@@ -54,11 +54,11 @@ public class SelectByTemplementTest {
 		
 		User user = new User();
 		user.setAge(11);
-		List<User> userList = manager.selectByTemplate(user, new RowMapper<User>() {
+		List<User> userList = manager.template(user, new RowMapper<User>() {
 			@Override
 			public User mapRow(Object o,ResultSet rs, int rowNum) throws SQLException {
 				User u = (User)o;
-				Role r = manager.selectById(Role.class, rs.getInt("roleId"));
+				Role r = manager.unique(Role.class, rs.getInt("roleId"));
 				u.setRole(r);
 				return u;
 			}
