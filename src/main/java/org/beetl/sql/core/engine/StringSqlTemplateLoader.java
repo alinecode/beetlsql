@@ -14,7 +14,7 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 	@Override
 	public Resource getResource(String key) {
 		SQLSource source = sqlLoader.getSQL(key);
-		return new SqlTemplateResource(key,source.getTemplate(),this);
+		return new SqlTemplateResource(key,source,this);
 	}
 
 	@Override

@@ -36,3 +36,9 @@ selectByExample
 example
 ===  
    where 1=1 and name = #name#
+   
+   
+selectCountUser3
+===
+    select  count(*) from user where 1=1
+    and age = #age123#

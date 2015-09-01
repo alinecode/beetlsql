@@ -6,7 +6,7 @@ public class SQLSource {
 	private String template;
 	private String seqName;
 	private int idType;
-
+	private int line = 0;
 	public SQLSource() {
 	}
 
@@ -50,6 +50,14 @@ public class SQLSource {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public int getLine() {
+		return line;
+	}
+
+	public void setLine(int line) {
+		this.line = line;
 	}
 
 }

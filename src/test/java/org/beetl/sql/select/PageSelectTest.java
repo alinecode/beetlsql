@@ -32,7 +32,7 @@ public class PageSelectTest {
 		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
 	}
 
-	@Test
+//	@Test
 	public void selectPageByTemplate(){
 		User user = new User();
 		user.setAge(11);
@@ -51,7 +51,7 @@ public class PageSelectTest {
 	public void selectAll(){
 		User user = new User();
 		user.setAge(12);
-		Integer total = manager.selectSingle("user.selectCountUser2", user, Integer.class);
+		Integer total = manager.selectSingle("user.selectCountUser3", user, Integer.class);
 		System.out.println(total);
 		List<User> userList  = manager.select("user.selectUser2", User.class, user, 1,2);
 		
@@ -62,7 +62,7 @@ public class PageSelectTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void selectAllOfRowMapper(){
 		User user = new User();
 		user.setAge(12);

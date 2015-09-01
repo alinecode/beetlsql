@@ -37,7 +37,7 @@ public class Beetl {
 	 */
 	public Properties loadDefaultConfig () {
 		Properties ps  = new Properties();
-		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+		InputStream ins = this.getClass().getResourceAsStream(
 				"/btsql.properties");
 		if(ins==null) return ps;
 		try {

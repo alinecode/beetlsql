@@ -132,8 +132,12 @@ public class ClasspathLoader implements SQLLoader {
 			String temp = null;
 			StringBuilder sql = null;
 			String key = null;
+			int lineNum = 0;
+			int findLineNum = 0;
 			while ((temp = bf.readLine()) != null) {
+				lineNum++;
 				if (temp.startsWith("===")) {// 读取到===号，说明上一行是key，下面是SQL语句
+					
 					if (!list.isEmpty() && list.size() > 1) {// 如果链表里面有多个，说明是上一句的sql+下一句的key
 						String tempKey = list.pollLast();// 取出下一句sql的key先存着
 						sql = new StringBuilder();
@@ -141,9 +145,11 @@ public class ClasspathLoader implements SQLLoader {
 						while (!list.isEmpty()) {// 拼装成一句sql
 							sql.append(list.pollFirst() + lineSeparator);
 						}
-						sqlSourceMap.put(modelName + key, new SQLSource(modelName + key,
-								sql.toString()));// 放入map
+						SQLSource source = new SQLSource(modelName + key,sql.toString());
+						source.setLine(findLineNum);						
+						sqlSourceMap.put(modelName + key, source);// 放入map
 						list.addLast(tempKey);// 把下一句的key又放进来
+						findLineNum = lineNum;
 					}
 				} else {
 					list.addLast(temp);
@@ -153,10 +159,12 @@ public class ClasspathLoader implements SQLLoader {
 			sql = new StringBuilder();
 			key = list.pollFirst();
 			while (!list.isEmpty()) {
-				sql.append(list.pollFirst());
+				sql.append(list.pollFirst()+lineSeparator);
 			}
-			sqlSourceMap.put(modelName + key,
-					new SQLSource(modelName + key,sql.toString()));
+			SQLSource source = new SQLSource(modelName + key,sql.toString());
+			source.setLine(findLineNum);	
+			sqlSourceMap.put(modelName + key,source
+					);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

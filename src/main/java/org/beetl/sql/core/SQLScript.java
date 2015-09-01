@@ -498,8 +498,8 @@ public class SQLScript {
 	
 	private void clean(PreparedStatement ps,ResultSet rs){
 		try {
-			rs.close();
-			ps.close();
+			if(rs!=null)rs.close();
+			if(ps!=null)ps.close();
 			
 		} catch (SQLException e) {
 		
