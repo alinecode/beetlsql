@@ -284,6 +284,7 @@ public class SQLScript {
 	public <T> List<T> select(Map<String, Object> paras,
 			Class<T> mapping,RowMapper mapper, long start, long size) {
 		SQLScript pageScript = this.sm.getPageSqlScript(this.id);
+		if(paras==null) paras = new HashMap();
 		this.sm.getDbStyle().initPagePara(paras, start, size);
 		return pageScript.select(mapping, paras,mapper);
 //		return pageScript.se

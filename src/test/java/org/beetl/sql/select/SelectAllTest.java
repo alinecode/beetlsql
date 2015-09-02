@@ -32,7 +32,7 @@ public class SelectAllTest {
 		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
 	}
 
-	@Test
+//	@Test
 	public void selectAll(){
 		
 		List<User> userList = manager.all(User.class);
@@ -42,7 +42,18 @@ public class SelectAllTest {
 		
 	}
 	
+	
 	@Test
+	public void selectAllPage(){
+		
+		List<User> userList = manager.all(User.class,1,2);
+		for(User user : userList){
+			System.out.println(user);
+		}
+		
+	}
+	
+//	@Test
 	public void selectAll_RowMapper(){
 		
 		List<User> userList = manager.all(User.class, new RowMapper<User>() {

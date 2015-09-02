@@ -24,7 +24,7 @@ public class MySqlStyle extends AbstractDBStyle {
 
 	@Override
 	public void initPagePara(Map param,long start,long size) {
-		// TODO Auto-generated method stub
+	
 		param.put(DBStyle.OFFSET,start-1);
 		param.put(DBStyle.PAGE_SIZE,size);
 		return ;

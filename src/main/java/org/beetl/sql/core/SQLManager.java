@@ -155,12 +155,16 @@ public class SQLManager {
 	 * @return
 	 */
 	public SQLScript getPageSqlScript(String selectId) {
-		String pageId = selectId+"-page";
-		SQLSource source  = sqlLoader.getSQL(pageId);
+		String pageId = selectId+"_page";
+		SQLSource source  = sqlLoader.getGenSQL(pageId);
 		if(source!=null){
 			return  new SQLScript(source, this);
 		}
-		SQLSource script = sqlLoader.getSQL(selectId);
+		SQLSource script = sqlLoader.getGenSQL(selectId);
+		if(script==null){
+			script = sqlLoader.getSQL(selectId);
+		}
+
 		String template = script.getTemplate();
 		String pageTemplate = dbStyle.getPageSQL(template);
 		source = new SQLSource(pageId,pageTemplate);
@@ -298,6 +302,33 @@ public class SQLManager {
 
 		SQLScript script = getScript(clazz, SELECT_ALL);
 		return script.select(clazz, null);
+	}
+	
+	
+	/**
+	 * btsql自动生成查询语句，查询clazz代表的表的所有数据。
+	 * @param tempId
+	 * @param clazz
+	 * @param paras
+	 * @return
+	 */
+	public <T> List<T> all(Class<T> clazz,int start,int size) {
+
+		SQLScript script = getScript(clazz, SELECT_ALL);
+		return script.select(null, clazz, null, start, size);
+	}
+	
+	
+	public  int  allCount(Class clazz) {
+
+		SQLScript script = getScript(clazz, SELECT_COUNT_BY_TEMPLATE);
+		return script.singleSelect(null, Integer.class);
+	}
+	
+	public <T> List<T> all(Class<T> clazz,RowMapper mapper,int start,int end) {
+
+		SQLScript script = getScript(clazz, SELECT_ALL);
+		return script.select(null, clazz, mapper, start, end);
 	}
 	
 	

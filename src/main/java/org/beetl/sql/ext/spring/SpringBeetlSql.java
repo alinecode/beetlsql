@@ -1,4 +1,4 @@
-package org.beetl.sql.ext;
+package org.beetl.sql.ext.spring;
 
 import java.util.Collections;
 import java.util.List;

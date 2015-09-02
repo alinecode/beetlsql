@@ -1,6 +1,7 @@
 package org.beetl.sql.core.db;
 
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,17 +13,11 @@ import org.beetl.sql.core.ConnectionSource;
 public class MetadataManager {
 
 	private ConnectionSource ds = null;
-	private DatabaseMetaData dbmd = null;
-
+	
 	public MetadataManager(ConnectionSource ds) {
 		super();
 		this.ds = ds;
-		try {
-
-			this.dbmd = ds.getMaster().getMetaData();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	
 	}
 
 	public ConnectionSource getDs() {
@@ -40,7 +35,11 @@ public class MetadataManager {
 	 * @return
 	 */
 	public boolean existtable(String tableName) {
+		Connection conn=null;
 		try {
+			conn =  ds.getMaster();
+			DatabaseMetaData dbmd =  conn.getMetaData();
+		
 			ResultSet rs = dbmd.getTables(null, "%", tableName,
 					new String[] { "TABLE" });
 			if (rs.next()) {
@@ -48,7 +47,10 @@ public class MetadataManager {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			close(conn);
 		}
+		
 		return false;
 	}
 
@@ -60,13 +62,18 @@ public class MetadataManager {
 	 * @return
 	 */
 	public boolean existColName(String tableName, String colName) {
+		Connection conn=null;
 		try {
+			conn =  ds.getMaster();
+			DatabaseMetaData dbmd =  conn.getMetaData();
 			ResultSet rs = dbmd.getColumns(null, "%", tableName, colName);
 			if (rs.next()) {
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			close(conn);
 		}
 		return false;
 	}
@@ -95,17 +102,31 @@ public class MetadataManager {
 	 */
 	public List<String> getIds(String tableName) {
 		List<String> idList = new ArrayList<String>();
+		Connection conn=null;
 		try {
+			conn =  ds.getMaster();
+			DatabaseMetaData dbmd =  conn.getMetaData();
 			ResultSet rs = dbmd.getPrimaryKeys(null, "%", tableName);
 			while (rs.next()) {
 				idList.add(rs.getString("COLUMN_NAME"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			close(conn);
 		}
 		if (idList.size() < 1) {
 			return null;
 		}
 		return idList;
+	}
+	
+	private void close(Connection conn){
+		try{
+			conn.close();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
 	}
 }
