@@ -89,6 +89,11 @@ public class DefaultConnectionSource implements ConnectionSource{
 		local.set(false);
 		
 	}
+	@Override
+	public boolean isTransaction() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 	

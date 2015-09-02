@@ -4,8 +4,8 @@
 
 * SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试
 * 数据模型支持Pojo，也支持Map/List这种无模型的模型
+无需注解，自动生成大量内置SQL，轻易完成增删改查功能
 * SQL 模板基于Beetl实现，更容易写和调试，以及扩展
-* 无需注解，自动生成大量内置SQL，轻易完成增删改查功能
 * 简单支持关系映射而不引入复杂的OR Mapping概念和技术。
 * 支持跨数据库平台，开发者所需工作减少到最小
 * 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
@@ -16,9 +16,9 @@
 代码例子
 ===
 	 // 执行/user.md 里的select sql
-	List<User>  list = SqlManager.select(“user.select”,paras,User.class);
+	List<User>  list = sqlManager.select(“user.select”,paras,User.class);
 	// 使用内置的生成的sql执行
-	User user = SqlManage.selectById.unque(User.class,id);
+	User user = sqlManager.unque(User.class,id);
 
 SQL例子
 ===
@@ -109,19 +109,18 @@ SQL语句可以动态生成，基于Beetl语言，这是因为
 
 BeetlSql虽然不是一个O/R Mapping 工具，但能根据默认约定，生成大量常用SQl而几乎不需要注解（对于oralce，需要注解SeqId(name="seqName"))，BeetlSql 根据输入的class，自动能生成如下sql
 
-* select_by_id : 根据主键查询
+* 根据主键查询:sqlManager.unique(User.class,1)
 
-* select_by_template: 将实例变量作为模板查询，如果其变量的属性为空，则不计入查询条件
+* 按照模板查询: 将实例变量作为模板查询，如果其变量的属性为空，则不计入查询条件，date类型不会计入条件:List<User> list = sqlManager.template(User.class,user);
 
-* update_by_id: 根据主键更新
+* 根据主键更新 sqlManager.updateById(user);
 
-* update_by_template:根据模板更新
+* 根据模板更新  sqlManager.updateAll(User.class,user);
 
-* delete_by_id: 根据主键查询
+* 根据主键删除 sqlManager.deleteById(User.class,1);
 
-* delete_by_template:根据模板查询
 
-* insert： 自动插入，如果没有主键Annotaion，则会寻找数据库找到主键，并认为是自增主键。总共有如下三种主键Annotation
+* insert：sqlManager.insert(User.class,user).自动插入，如果没有主键Annotaion，则会寻找数据库找到主键，并认为是自增主键。总共有如下三种主键Annotation
 
 			SeqId 用于oralce			
 			AutoId,用于自增。这是主键默认设置
@@ -150,8 +149,8 @@ BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会�
 
 BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操作此数据源，如果提供多个，则默认第一个为写库，其他为读库。用户在开发代码的时候，无需关心操作的是哪个数据库，因为调用sqlScrip 的 select相关api的时候，总是去读取从库，add/update/delete 的时候，总是读取主库。 
 
-		sqlScript.insert(user) // 操作主库，如果只配置了一个数据源，则无所谓主从
-		sqlScript.selectById(id,User.class) //读取从库
+		sqlManager.insert(User.class,user) // 操作主库，如果只配置了一个数据源，则无所谓主从
+		sqlManager.unique(id,User.class) //读取从库
 
 当然，也可以根据自己具体逻辑来确定如果选择主从库，只需要扩展BeetlSql，这一切对开发者是透明的
 
@@ -219,7 +218,8 @@ Spring集成
 
 * interceptors:DebugInterceptor 用来打印sql语句，参数和执行时间
 
-
+注意：
+任何使用了Transactional 注解的，将统一使用Master数据源，例外的是@Transactional(readOnly=true),这将让Beetsql选择从数据库。
 
 JFinal集成
 ===
@@ -231,15 +231,30 @@ JFinal集成
 	
 	JFinalBeetlSql.init(master,slaves);
 	
-由于使用了Beetlsql，因此你无需再配置 数据库连接池插件，和ActiveRecordPlugin，如下代码可以注释掉
-
-	//		C3p0Plugin c3p0Plugin = new C3p0Plugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
-	//		me.add(c3p0Plugin);
-	//		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
-	//		me.add(arp);
-	//		arp.addMapping("blog", Blog.class);	// 映射blog 表到 Blog模型
+由于使用了Beetlsql，因此你无需再配置 **数据库连接池插件，和ActiveRecordPlugin**,可以删除相关配置。
 
 在controller里，可以通过JFinalBeetlSql.dao 方法获取到SQLManager
 
-	SQLManager dao = JFinalBeetlSql.dao();
-	long count = dao.selectLong("blog.count", Collections.EMPTY_MAP);
+		SQLManager dao = JFinalBeetlSql.dao();
+		BigBlog blog = getModel(BigBlog.class);		
+		dao.insert(BigBlog.class, blog);
+
+如果想控制事物，还需要注册Trans
+
+		public void configInterceptor(Interceptors me) {
+			me.addGlobalActionInterceptor(new Trans());
+		}
+
+然后业务方法使用
+
+		@Before(Trans.class)
+		public void doXXX(){....+
+		
+这样，方法执行完毕才会提交事物，任何RuntimeException将回滚，如果想手工控制回滚.也可以通过
+
+	Trans.commit()
+	Trans.rollback()
+	
+如果习惯了JFinal Record模式，建议用户创建一个BaseBean，封装SQLManager CRUD 方法即可。然后其他模型继承此BaseBean
+
+	

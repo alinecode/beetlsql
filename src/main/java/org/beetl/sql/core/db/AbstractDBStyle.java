@@ -184,13 +184,13 @@ public abstract class AbstractDBStyle implements DBStyle {
 		for (Method method : methods) {
 			if(isLegalOtherMethod(method)){
 				fieldName = StringKit.toLowerCaseFirstOne(method.getName().substring(3));
-				List<String> ids = this.metadataManager.getIds(tableName);
-				if(ids.contains(fieldName)){
+				String id = this.metadataManager.getIds(tableName);
+				if(id.equals(fieldName)){
 					idType = this.getIdType(method);
 					if(idType==DBStyle.ID_AUTO){
 						continue ; //忽略这个字段
 					}else if(idType==DBStyle.ID_SEQ){
-						if(ids.size()!=1) throw new RuntimeException("序列期望一个，但有"+ids);
+					
 						colSql.append(appendInsertColumn(cls,tableName, fieldName));
 						valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
 						continue;
@@ -309,17 +309,15 @@ public abstract class AbstractDBStyle implements DBStyle {
 	private String appendIdCondition(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);
 		String condition = null;
-		List<String> ids = metadataManager.getIds(tableName);
-		if (ids.size() > 0) {
+		String id = metadataManager.getIds(tableName);
+		if(id!=null){
 			String attrName = null;
 			condition = " where 1=1";
-			for (int i = 0; i < ids.size(); i++) {
-				attrName = nameConversion.getPropertyName(cls,ids.get(i));
-				if (metadataManager.existPropertyName(cls, attrName)) {
-					condition = condition + " and " + ids.get(i) + "= "+HOLDER_START
-							+ attrName
-							+ HOLDER_END;
-				}
+			attrName = nameConversion.getPropertyName(cls,id);
+			if (metadataManager.existPropertyName(cls, attrName)) {
+				condition = condition + " and " + id+ "= "+HOLDER_START
+						+ attrName
+						+ HOLDER_END;
 			}
 		}
 		return condition;

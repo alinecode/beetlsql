@@ -7,12 +7,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.ConnectionSource;
 
 public class MetadataManager {
 
 	private ConnectionSource ds = null;
+	Map<String,Table> map = new ConcurrentHashMap<String,Table>();
+	Table NOT_EXIST = new Table();
 	
 	public MetadataManager(ConnectionSource ds) {
 		super();
@@ -35,23 +40,8 @@ public class MetadataManager {
 	 * @return
 	 */
 	public boolean existtable(String tableName) {
-		Connection conn=null;
-		try {
-			conn =  ds.getMaster();
-			DatabaseMetaData dbmd =  conn.getMetaData();
-		
-			ResultSet rs = dbmd.getTables(null, "%", tableName,
-					new String[] { "TABLE" });
-			if (rs.next()) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			close(conn);
-		}
-		
-		return false;
+		Table t = getTable(tableName);
+		return t!=null;
 	}
 
 	/****
@@ -62,20 +52,9 @@ public class MetadataManager {
 	 * @return
 	 */
 	public boolean existColName(String tableName, String colName) {
-		Connection conn=null;
-		try {
-			conn =  ds.getMaster();
-			DatabaseMetaData dbmd =  conn.getMetaData();
-			ResultSet rs = dbmd.getColumns(null, "%", tableName, colName);
-			if (rs.next()) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			close(conn);
-		}
-		return false;
+		Table t = getTable(tableName);
+		if(t==null) return false ;
+		return t.cols.contains(colName);
 	}
 
 	/***
@@ -100,25 +79,62 @@ public class MetadataManager {
 	 * @param tableName
 	 * @return
 	 */
-	public List<String> getIds(String tableName) {
-		List<String> idList = new ArrayList<String>();
+	public String getIds(String tableName) {
+		Table t = getTable(tableName);
+		if(t==null) return null ;
+		return t.idName;
+	}
+	
+	private Table getTable(String name){
+		Table table = map.get(name);
+		if(table==null){
+			return initTable(name);
+		}else if(table==NOT_EXIST){
+			return null;
+		}
+		return table;
+	}
+	
+	private Table initTable(String tableName){
+		Table table = new Table();
+		table.name = tableName;
+		
 		Connection conn=null;
 		try {
 			conn =  ds.getMaster();
 			DatabaseMetaData dbmd =  conn.getMetaData();
-			ResultSet rs = dbmd.getPrimaryKeys(null, "%", tableName);
-			while (rs.next()) {
-				idList.add(rs.getString("COLUMN_NAME"));
+		
+			ResultSet rs = dbmd.getTables(null, "%", tableName,
+					new String[] { "TABLE" });
+			if (!rs.next()) {
+				map.put(tableName, NOT_EXIST);
+				return NOT_EXIST;
 			}
+			
+			rs = dbmd.getPrimaryKeys(null, "%", tableName);
+			int count = 0;
+			while (rs.next()) {
+				count++;
+				table.idName=rs.getString("COLUMN_NAME");
+			}
+			//多个主键 下个版本再做
+			if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+			
+			
+			rs = dbmd.getColumns(null, "%", tableName, "%");
+			while(rs.next()){
+				String colName = rs.getString(4);
+				table.cols.add(colName);
+			}
+			rs.close();
+			map.put(table.name, table);
+			return table;
+			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		}finally{
 			close(conn);
 		}
-		if (idList.size() < 1) {
-			return null;
-		}
-		return idList;
 	}
 	
 	private void close(Connection conn){
@@ -127,6 +143,16 @@ public class MetadataManager {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+		
+	}
+	
+	static class Table{
+		public String name;
+		public String idName;
+		public List<String> cols = new ArrayList<String>();
+	}
+	
+	public static void main(String[] args){
 		
 	}
 }

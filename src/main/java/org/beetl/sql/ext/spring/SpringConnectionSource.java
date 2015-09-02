@@ -36,6 +36,11 @@ public class SpringConnectionSource extends  DefaultConnectionSource{
 	}
 	
 	
+	@Override
+	public boolean isTransaction() {
+		return TransactionSynchronizationManager.isActualTransactionActive();
+	}
+	
 	protected Connection doGetConnectoin(DataSource ds) {
 		try{
 			return DataSourceUtils.getConnection(ds);

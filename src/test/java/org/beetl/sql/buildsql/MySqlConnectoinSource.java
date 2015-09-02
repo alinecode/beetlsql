@@ -59,6 +59,12 @@ public class MySqlConnectoinSource implements ConnectionSource {
 		
 	}
 
+	@Override
+	public boolean isTransaction() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 
 }

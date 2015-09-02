@@ -30,4 +30,8 @@ public interface ConnectionSource {
 	public void onlyMasterEnd();
 	
 	
+	
+	public boolean isTransaction();
+	
+	
 }
