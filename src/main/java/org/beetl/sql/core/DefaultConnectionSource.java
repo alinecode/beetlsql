@@ -10,7 +10,15 @@ import javax.sql.DataSource;
 public class DefaultConnectionSource implements ConnectionSource{
 	protected DataSource master = null;
 	protected DataSource[] slaves = null;
-	protected ThreadLocal<Boolean> local = new ThreadLocal<Boolean>(){
+	protected ThreadLocal<Boolean> localMaster = new ThreadLocal<Boolean>(){
+		protected Boolean initialValue() {
+	        return false;
+	    }
+
+	};
+	
+	
+	protected ThreadLocal<Boolean> localSlave = new ThreadLocal<Boolean>(){
 		protected Boolean initialValue() {
 	        return false;
 	    }
@@ -30,7 +38,7 @@ public class DefaultConnectionSource implements ConnectionSource{
 	public Connection getConn(String sqlId,boolean isUpdate,String sql,List paras){
 		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(sqlId,sql,paras);		
 		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
-		boolean onlyMaster = local.get();
+		boolean onlyMaster = localMaster.get();
 		if(onlyMaster) return this.getMaster();	
 		return this.getReadConn(sqlId, sql, paras);
 	}
@@ -81,12 +89,12 @@ public class DefaultConnectionSource implements ConnectionSource{
 	}
 	@Override
 	public void onlyMasterBegin() {
-		local.set(true);
+		localMaster.set(true);
 		
 	}
 	@Override
 	public void onlyMasterEnd() {
-		local.set(false);
+		localMaster.set(false);
 		
 	}
 	@Override
@@ -94,6 +102,15 @@ public class DefaultConnectionSource implements ConnectionSource{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public Connection getSlave() {
+		if(this.slaves!=null&&this.slaves.length!=0){
+			return nextSlaveConn();
+		}else{
+			return this.getMaster();
+		}
+	}
+
 	
 	
 	

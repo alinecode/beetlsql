@@ -584,6 +584,19 @@ public class SQLManager {
 	}
 	
 	
+	/** 只使用master执行:
+	 * <pre>
+	 *    sqlManager.useMaster(new MasterRunner(){
+	 *    		public void run(SQLManager sqlManager){
+	 *          	sqlManager.select .....  
+	 *          }
+	 *    )
+	 * </pre>
+	 * @param f
+	 */
+	public void useMaster(MasterRunner f){
+		f.start(this);
+	}
 	
 	//OK - SELECT_BY_ID
 	//OK - SELECT_ALL

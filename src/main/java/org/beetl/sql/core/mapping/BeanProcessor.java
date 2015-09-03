@@ -16,7 +16,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -32,6 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.beetl.sql.core.Bean2;
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
 
@@ -248,6 +249,13 @@ public class BeanProcessor {
 		for (int i = 1; i < columnToProperty.length; i++) {
 			//Array.fill数组为-1 ，-1则无对应name
 			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
+				if(bean instanceof Bean2){
+					Bean2  bean2 = (Bean2)bean;
+					Object value = rs.getObject(i);
+					String key = rs.getMetaData().getColumnLabel(i);
+					key = this.nc.getPropertyName(type, key);
+					bean2.set(key, value);
+				}
 				continue;
 			}
 
@@ -366,10 +374,10 @@ public class BeanProcessor {
 			return c.newInstance();
 
 		} catch (InstantiationException e) {
-			throw new SQLException("Cannot create " + c.getName() + ": " + e.getMessage());
+			throw new BeetlSQLException(BeetlSQLException.OBJECT_INSTANCE_ERROR,e);
 
 		} catch (IllegalAccessException e) {
-			throw new SQLException("Cannot create " + c.getName() + ": " + e.getMessage());
+			throw new BeetlSQLException(BeetlSQLException.OBJECT_INSTANCE_ERROR,e);
 		}
 		
 	}

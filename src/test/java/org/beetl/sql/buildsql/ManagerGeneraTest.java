@@ -12,15 +12,27 @@
  */ 
 package org.beetl.sql.buildsql;
 
+import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.INSERT;
+import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
+import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
+import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
+import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
+
+import java.util.Date;
+
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLScript;
+import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.Table;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.pojo.User;
 import org.junit.Before;
 import org.junit.Test;
-import static org.beetl.sql.core.kit.Constants.*;
 
 /**  
  * @ClassName: ManagerGeneraTest   
@@ -39,7 +51,7 @@ public class ManagerGeneraTest {
 		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
 	}
 
-	@Test
+//	@Test
 	public void test() {
 		
 		SQLScript script = manager.getScript(User.class,SELECT_BY_ID);
@@ -66,6 +78,44 @@ public class ManagerGeneraTest {
     	script = manager.getScript(User.class,INSERT);
     	System.out.println("===INSERT===\n"+script.getSql());
     	
+	}
+	
+	@Test
+	public void annotation() {
+		
+		SQLScript script = manager.getScript(Cup.class,INSERT);
+    	System.out.println("===INSERT===\n"+script.getSql());
+    	
+    	script = manager.getScript(Cup.class,SELECT_BY_TEMPLATE);
+    	System.out.println("===SELECT===\n"+script.getSql());
+	}
+	
+	@Table(name="user")
+	class Cup{
+		int id;
+		String name;
+		Date date ;
+		@AssignID
+		public int getId() {
+			return id;
+		}
+		public void setId(int id) {
+			this.id = id;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public Date getDate() {
+			return date;
+		}
+		public void setDate(Date date) {
+			this.date = date;
+		}
+		
+		
 	}
 	
 }

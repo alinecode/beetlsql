@@ -9,6 +9,9 @@ public interface ConnectionSource {
 	 * @return
 	 */
 	public Connection getMaster();
+	
+	
+	public Connection getSlave();
 	/**
 	 * 根据条件得到链接
 	 * @param sqlId 
@@ -30,6 +33,8 @@ public interface ConnectionSource {
 	public void onlyMasterEnd();
 	
 	
+	
+
 	
 	public boolean isTransaction();
 	
