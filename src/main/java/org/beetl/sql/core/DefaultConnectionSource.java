@@ -35,7 +35,7 @@ public class DefaultConnectionSource implements ConnectionSource{
 	}
 	
 	@Override
-	public Connection getConn(String sqlId,boolean isUpdate,String sql,List paras){
+	public Connection getConn(String sqlId,boolean isUpdate,String sql,List<?> paras){
 		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(sqlId,sql,paras);		
 		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
 		boolean onlyMaster = localMaster.get();
@@ -48,7 +48,7 @@ public class DefaultConnectionSource implements ConnectionSource{
 		return this.doGetConnectoin(master);		
 	}
 	
-	protected  Connection getReadConn(String sqlId,String sql,List paras) {
+	protected  Connection getReadConn(String sqlId,String sql,List<?> paras) {
 		if(slaves==null||slaves.length==0) return getWriteConn(sqlId,sql,paras);
 		else{
 		
@@ -56,7 +56,7 @@ public class DefaultConnectionSource implements ConnectionSource{
 		}
 	}
 	
-	protected Connection getWriteConn(String sqlId,String sql,List paras) {
+	protected Connection getWriteConn(String sqlId,String sql,List<?> paras) {
 		
 			return doGetConnectoin(master);
 	

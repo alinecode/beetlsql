@@ -1,6 +1,5 @@
 package org.beetl.sql.core;
 
-import java.util.List;
 import java.util.Stack;
 
 import org.beetl.core.Event;

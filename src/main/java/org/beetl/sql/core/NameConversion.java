@@ -10,21 +10,21 @@ public abstract class NameConversion {
 	 * @param cls
 	 * @return
 	 */
-	public abstract String getTableName(Class c);
+	public abstract String getTableName(Class<?> c);
 	/****
 	 * 根据class和属性名，获取字段名，此字段必须存在表中，否则返回空
 	 * @param cls
 	 * @param attrName
 	 * @return
 	 */
-	public abstract String getColName(Class c,String attrName);
+	public abstract String getColName(Class<?> c,String attrName);
 		/****
 	 * 根据class和colName获取属性名
 	 * @param cls
 	 * @param attrName
 	 * @return
 	 */
-	public abstract String getPropertyName(Class c,String colName);
+	public abstract String getPropertyName(Class<?> c,String colName);
 	/***
 	 *  根据class获取表中所有的id
 	 * @param cls

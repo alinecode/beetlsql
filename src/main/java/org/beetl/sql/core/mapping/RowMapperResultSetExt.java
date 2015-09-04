@@ -28,7 +28,7 @@ public class RowMapperResultSetExt<T> implements ResultSetExt<List<T>>{
 	}
 
 	@Override
-	public List<T> handleResultSet(ResultSet rs,Class z) throws SQLException {
+	public List<T> handleResultSet(ResultSet rs,Class<?> z) throws SQLException {
 		int rowNum = 0;
 		List<T> resultList = new ArrayList<T>();
 		while(rs.next()){

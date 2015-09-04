@@ -13,7 +13,6 @@
 package org.beetl.sql.core.mapping.handler;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.ResultSet;

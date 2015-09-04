@@ -21,6 +21,6 @@ public interface ResultSetExt<T> {
 	 * @return
 	 * @throws SQLException 
 	 */
-	T handleResultSet(ResultSet rs,Class z) throws SQLException;
+	T handleResultSet(ResultSet rs,Class<?> z) throws SQLException;
 	
 }
