@@ -1,7 +1,16 @@
 /bin/
-.project
-.classpath
 /lib
-/.settings
 /target/
 /build/
+
+# eclipse #
+.settings
+.project
+.classpath
+.log
+
+# windows #
+Thumbs.db
+
+# Mac #
+.DS_Store
