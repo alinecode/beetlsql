@@ -15,19 +15,15 @@ import org.beetl.sql.core.annotatoin.SeqID;
  */
 public class MySqlStyle extends AbstractDBStyle {
 	
-
-
 	@Override
 	public String getPageSQL(String sql) {
 		return sql+" limit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
 	}
 
 	@Override
-	public void initPagePara(Map param,long start,long size) {
-	
+	public void initPagePara(Map<String, Object> param,long start,long size) {
 		param.put(DBStyle.OFFSET,start-1);
 		param.put(DBStyle.PAGE_SIZE,size);
-		return ;
 	}
 
 	public MySqlStyle() {

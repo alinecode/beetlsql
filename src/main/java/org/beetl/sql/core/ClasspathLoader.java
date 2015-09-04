@@ -39,11 +39,10 @@ public class ClasspathLoader implements SQLLoader {
 	private boolean autoCheck = true;
 
 	public  ClasspathLoader() {
-		this.sqlRoot = "/sql";
+		this("/sql");
 	}
 	public  ClasspathLoader(String root) {
-		this.sqlRoot = root;
-		dbs = new MySqlStyle();
+		this(root ,new MySqlStyle());
 	}
 	public  ClasspathLoader(String root,DBStyle dbs) {
 		this.sqlRoot = root;
@@ -75,15 +74,25 @@ public class ClasspathLoader implements SQLLoader {
 			}
 		}
 		File file = this.getFile(id);
-		if(file==null) return true;
-		long lastModify = file.lastModified();
-		Long oldVersion = sqlSourceVersion.get(id);
-		if(oldVersion==null) return true;
-		if(oldVersion!=lastModify){
-			return true;
-		}else{
-			return false;
+		
+//		if(file==null) return true;
+//		long lastModify = file.lastModified();
+//		Long oldVersion = sqlSourceVersion.get(id);
+//		if(oldVersion==null) return true;
+//		if(oldVersion!=lastModify){
+//			return true;
+//		}else{
+//			return false;
+//		}
+		if(file != null){
+			Long lastModify = file.lastModified();
+			Long oldVersion = sqlSourceVersion.get(id);
+			if(oldVersion != null && oldVersion==lastModify){
+				return false;
+			}
 		}
+		
+		return true;
 	}
 	
 	public boolean exist(String id){
@@ -118,7 +127,7 @@ public class ClasspathLoader implements SQLLoader {
 		try{
 			ins = new FileInputStream(file);
 		}catch(IOException ioe){
-			throw new RuntimeException("id not found "+id,ioe);
+			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "未找到[id="+id+"]相关SQL"+id,ioe);
 		}
 		
 		long lastModified = file.lastModified();
@@ -137,7 +146,6 @@ public class ClasspathLoader implements SQLLoader {
 			while ((temp = bf.readLine()) != null) {
 				lineNum++;
 				if (temp.startsWith("===")) {// 读取到===号，说明上一行是key，下面是SQL语句
-					
 					if (!list.isEmpty() && list.size() > 1) {// 如果链表里面有多个，说明是上一句的sql+下一句的key
 						String tempKey = list.pollLast();// 取出下一句sql的key先存着
 						sql = new StringBuilder();
@@ -146,7 +154,7 @@ public class ClasspathLoader implements SQLLoader {
 							sql.append(list.pollFirst() + lineSeparator);
 						}
 						SQLSource source = new SQLSource(modelName + key,sql.toString());
-						source.setLine(findLineNum);						
+						source.setLine(findLineNum);
 						sqlSourceMap.put(modelName + key, source);// 放入map
 						list.addLast(tempKey);// 把下一句的key又放进来
 						findLineNum = lineNum;
@@ -162,9 +170,8 @@ public class ClasspathLoader implements SQLLoader {
 				sql.append(list.pollFirst()+lineSeparator);
 			}
 			SQLSource source = new SQLSource(modelName + key,sql.toString());
-			source.setLine(findLineNum);	
-			sqlSourceMap.put(modelName + key,source
-					);
+			source.setLine(findLineNum);
+			sqlSourceMap.put(modelName + key,source);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -191,40 +198,58 @@ public class ClasspathLoader implements SQLLoader {
 	public void setSqlRoot(String sqlRoot) {
 		this.sqlRoot = sqlRoot;
 	}
+	
 	/***
 	 * 获取.md文件
+	 * md文件需放在classpath下
 	 * @param id
 	 * @return
 	 * @throws UnexpectedException 
 	 */
 	private File getFile(String id){
 		String modelName = id.substring(0, id.lastIndexOf(".") + 1);
-		String filePath = sqlRoot + "/" + dbs.getName() + "/" + modelName + "md";
-		URL url = this.getClass().getResource(filePath);
+		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + modelName + "md";
+		String filePath2 = sqlRoot + "/" + modelName + "md";
+		
+//		URL url = this.getClass().getResource(filePath);
+//		File file = null;
+//		
+//		if(url == null){
+//			url = this.getClass().getResource(sqlRoot + "/" + modelName + "md");
+//			if(url == null) {
+//				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在"+sqlRoot+"和"+sqlRoot + "/" +dbs.getName()+"未找到[id="+id+"]相关的SQL");
+//			}
+//		}
+//		
+//		file = new File(url.getFile());
+//		if(!file.exists()){
+//			url = this.getClass().getResource(sqlRoot + "/" + modelName + "md");
+//			file = new File(url.getFile());
+//			if(!file.exists()){
+//				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在"+sqlRoot+"和"+sqlRoot + "/" +dbs.getName()+"未找到[id="+id+"]相关的SQL");
+//			}
+//		}
 		File file = null;
 		
-		if(url == null){
-			url = this.getClass().getResource(sqlRoot + "/" + modelName + "md");
-		}
-		
-		try {
-			if(url==null) {
-				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在"+sqlRoot+"和"+sqlRoot + "/" +dbs.getName()+"未找到[id="+id+"]相关的SQL");
+		file = this.getFile(filePath1, id);
+		if(!file.exists()){
+			file = this.getFile(filePath2, id);
+			if(!file.exists()){
+				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "+filePath1+" 和 "+filePath2+" 未找到[id="+id+"]相关的SQL");
 			}
-			
-			file = new File(url.getFile());
-			if(file == null){
-				url = this.getClass().getResource(sqlRoot + "/" + modelName + "md");
-				file = new File(url.getFile());
-				if(file==null){
-					throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在"+sqlRoot+"和"+sqlRoot + "/" +dbs.getName()+"未找到[id="+id+"]相关的SQL");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return file;
+	}
+	
+	private File getFile(String filePath, String id){
+		URL url = this.getClass().getResource(filePath);
+		
+		if(url == null){
+			return new File("");
+		}
+		
+		return new File(url.getFile());
 	}
 	
 	@Override
@@ -237,9 +262,10 @@ public class ClasspathLoader implements SQLLoader {
 		this.autoCheck = check;
 		
 	}
+	
 	@Override
 	public SQLSource getGenSQL(String id) {
-		return this.sqlSourceMap.get(id);
+		return ClasspathLoader.sqlSourceMap.get(id);
 	}
 	
 }

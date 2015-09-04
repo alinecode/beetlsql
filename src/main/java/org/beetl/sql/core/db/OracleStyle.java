@@ -24,7 +24,6 @@ public class OracleStyle extends AbstractDBStyle {
 //		// TODO Auto-generated method stub
 		paras.put(DBStyle.OFFSET,start);
 		paras.put(DBStyle.PAGE_SIZE,size);
-		return ;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public interface DBStyle {
 	public String getName();
 	
 	public String getPageSQL(String sql);
-	public void initPagePara(Map paras,long start,long size);
+	public void initPagePara(Map<String, Object> paras,long start,long size);
 	
 	public int getIdType(Method idMethod);
 	
