@@ -31,11 +31,12 @@ public class UpdateLobTest {
 	@Test public void updateLob(){
 		LobBean lobBean = new LobBean();
 		
-		File file = new File("/repertory/beetlsql/src/test/resources/blobTest.png");
+		File file = new File("src/test/resources/blobTest.png");
 		try {
 			FileInputStream fis = new FileInputStream(file);
-			byte[] buffer = new byte[1024 * 1024];
-			int len = fis.read(buffer, 0, buffer.length);
+			int len = fis.available();
+			byte[] buffer = new byte[len];
+			fis.read(buffer, 0, len);
 			
 			lobBean.setPicture(buffer);
 			lobBean.setArticle("小和尚不说了.太长了");
