@@ -27,6 +27,8 @@ public class KeyTest {
 		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
 	}
 
+	
+//	public void addUser
 	@Test
 	public void addRole() {
 
@@ -39,7 +41,7 @@ public class KeyTest {
 		
 	}
 	
-	@Test
+
 	public void addRole1() {
 		
 		try{

@@ -88,9 +88,11 @@ public class MetadataManager {
 	private Table getTable(String name){
 		Table table = map.get(name);
 		if(table==null){
-			return initTable(name);
-		}else if(table==NOT_EXIST){
-			return null;
+			table= initTable(name);
+		}
+		
+		if(table==NOT_EXIST){
+			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
 		}
 		return table;
 	}

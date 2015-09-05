@@ -15,6 +15,10 @@ public class BeetlSQLException extends RuntimeException {
 	//SQL 脚本运行出错
 	public static final int 	SQL_SCRIPT_ERROR  = 6;
 	
+	//SQL 脚本运行出错
+	public static final int 	TABLE_NOT_EXIST  = 7;
+		
+	
 		
 	int code ;
 	
