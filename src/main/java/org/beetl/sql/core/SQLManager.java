@@ -476,10 +476,10 @@ public class SQLManager {
 	 * @param value
 	 * @return
 	 */
-	public int deleteById(Class<?> clazz, Object  value) {
+	public int deleteById(Class<?> clazz, Object pkValue) {
 		
 		SQLScript script = getScript(clazz, DELETE_BY_ID);
-		return script.deleteById(clazz, value);
+		return script.deleteById(clazz, pkValue);
 	}
 	
 	
