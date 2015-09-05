@@ -2,6 +2,8 @@ package org.beetl.sql.core;
 
 public class BeetlSQLException extends RuntimeException {
 	
+	private static final long serialVersionUID = -6315329503841905147L;
+	
 	public static final int 	CANNOT_GET_CONNECTION  = 0;
 	public static final int 	SQL_EXCEPTION  = 1;
 	public static final int 	CANNOT_GET_SQL  = 2;
@@ -15,10 +17,14 @@ public class BeetlSQLException extends RuntimeException {
 	//SQL 脚本运行出错
 	public static final int 	SQL_SCRIPT_ERROR  = 6;
 	
+
 	//SQL 脚本运行出错
 	public static final int 	TABLE_NOT_EXIST  = 7;
 		
-	
+
+	//根据指定类创建实例出错
+	public static final int 	OBJECT_INSTANCE_ERROR  = 8;
+		
 		
 	int code ;
 	

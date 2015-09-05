@@ -65,6 +65,11 @@ public class MySqlConnectoinSource implements ConnectionSource {
 		return false;
 	}
 
+	@Override
+	public Connection getSlave() {
+		return this.getMaster();
+	}
+
 	
 
 }

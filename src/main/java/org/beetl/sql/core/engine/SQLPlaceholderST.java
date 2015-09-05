@@ -19,7 +19,7 @@ public class SQLPlaceholderST extends Statement
 	public Expression expression;
 	public Type type = null;
 	FormatExpression format;
-	static List textFunList = new ArrayList<String>();
+	static List<String> textFunList = new ArrayList<String>();
 	static{
 		textFunList.add("text");
 	}

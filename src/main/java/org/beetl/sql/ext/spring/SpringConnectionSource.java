@@ -21,7 +21,7 @@ public class SpringConnectionSource extends  DefaultConnectionSource{
 		//如果是更新语句，也得走master
 		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
 		//如果api强制使用master
-		boolean onlyMaster = local.get();
+		boolean onlyMaster = localMaster.get();
 		if(onlyMaster) return this.getMaster();
 		//在事物里都用master，除了readonly事物
 		boolean inTrans = TransactionSynchronizationManager.isActualTransactionActive();

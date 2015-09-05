@@ -37,7 +37,7 @@ public class StrategyBeanProcessor extends BeanProcessor {
 	}
 
 	@Override
-	protected int[] mapColumnsToProperties(Class c,ResultSetMetaData rsmd,
+	protected int[] mapColumnsToProperties(Class<?> c,ResultSetMetaData rsmd,
 			PropertyDescriptor[] props) throws SQLException {
 
 		if(matcher == null) throw new IllegalStateException("Matcher must be setted!");

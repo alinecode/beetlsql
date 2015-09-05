@@ -174,7 +174,7 @@ public class SQLScript {
 	
 	
 	
-	public <T> T singleSelect(Map map, Class<T> target) {
+	public <T> T singleSelect(Map<String, Object> map, Class<T> target) {
 		
 		List<T> result = select(target, map);
 		
@@ -185,8 +185,7 @@ public class SQLScript {
 	}
 	
 	public <T> List<T> select(Class<T> clazz,Object paras) {
-		
-		Map map = new HashMap();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
 		return this.select(clazz, map);
 	}
@@ -298,9 +297,9 @@ public class SQLScript {
 	 * @return
 	 */
 	public <T> List<T> select(Map<String, Object> paras,
-			Class<T> mapping,RowMapper mapper, long start, long size) {
+			Class<T> mapping,RowMapper<T> mapper, long start, long size) {
 		SQLScript pageScript = this.sm.getPageSqlScript(this.id);
-		if(paras==null) paras = new HashMap();
+		if(paras==null) paras = new HashMap<String, Object>();
 		this.sm.getDbStyle().initPagePara(paras, start, size);
 		return pageScript.select(mapping, paras,mapper);
 //		return pageScript.se
@@ -315,8 +314,8 @@ public class SQLScript {
 	 * @return
 	 */
 	public <T> List<T> select(Object paras,
-			Class<T> mapping, RowMapper mapper,long start, long end) {
-		Map map = new HashMap();
+			Class<T> mapping, RowMapper<T> mapper,long start, long end) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
 		return this.select(map, mapping,mapper, start, end);
 	}
@@ -329,12 +328,12 @@ public class SQLScript {
 		return this.singleSelect(paras, Long.class);
 	}
 	
-	public long selectCount(Map paras){
+	public long selectCount(Map<String, Object> paras){
 		return this.singleSelect(paras, Long.class);
 	}
 	
 	
-	public int update(Map paras){
+	public int update(Map<String, Object> paras){
 		
 		SQLResult result = run(paras);
 		String sql = result.jdbcSql;
@@ -369,7 +368,7 @@ public class SQLScript {
 		return this.update(paras);
 	}
 	
-	public int[] updateBatch(Map[] maps) {
+	public int[] updateBatch(Map<String, Object>[] maps) {
 		int[] rs = null;
 		PreparedStatement ps = null;
 		// 执行jdbc
@@ -377,7 +376,7 @@ public class SQLScript {
 		try {
 			
 			for(int k = 0;k<maps.length;k++ ){
-				Map paras = maps[k];
+				Map<String, Object> paras = maps[k];
 				SQLResult result = run(paras);
 				List<Object> objs = result.jdbcPara;
 				InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
@@ -414,7 +413,7 @@ public class SQLScript {
 		try {
 		
 			for(int k = 0;k<list.size();k++ ){
-				Map paras = new HashMap();
+				Map<String, Object> paras = new HashMap<String, Object>();
 				paras.put("_root", list.get(k));
 				SQLResult result = run(paras);
 				List<Object> objs = result.jdbcPara;
@@ -445,7 +444,7 @@ public class SQLScript {
 	 * @param obj
 	 * @return
 	 */
-	public <T> T unique(Class<T> clazz,RowMapper mapper, Object objId) {
+	public <T> T unique(Class<T> clazz,RowMapper<T> mapper, Object objId) {
 		
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
 		String pk= mm.getIds(this.sm.getNc().getTableName(clazz));

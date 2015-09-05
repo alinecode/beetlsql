@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class SQLPart {
 	
-	public Map getUpdateValue(String colName,Object value){
+	public Map<String,Object> getUpdateValue(String colName,Object value){
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put(colName, value);
 		return map;

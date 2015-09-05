@@ -1,11 +1,9 @@
 package org.beetl.sql.core.db;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.beetl.core.Configuration;
 import org.beetl.sql.core.NameConversion;
-import org.beetl.sql.core.SQLPart;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.kit.StringKit;
@@ -34,7 +32,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Configuration cf =beetl.getGroupTemplate().getConf();
 		STATEMENT_START = cf.getStatementStart();
 		STATEMENT_END = cf.getStatementEnd();
-		if(STATEMENT_END==null||STATEMENT_END.length()==0){
+		if(STATEMENT_END==null || STATEMENT_END.length()==0){
 			STATEMENT_END = lineSeparator;
 		}
 		HOLDER_START = cf.getPlaceholderStart();

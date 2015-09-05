@@ -36,7 +36,6 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 		//潜在问题，此时可能得到是一个新的模板，不过可能性很小，忽略！
 
 		String content = null;
-		;
 		try
 		{
 			Resource res = resLoader.getResource(ex.resourceId);
