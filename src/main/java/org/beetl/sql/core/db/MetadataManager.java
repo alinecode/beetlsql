@@ -150,7 +150,8 @@ public class MetadataManager {
 	
 	static class Table{
 		public String name;
-		public String idName;
+		// 默认为id
+		public String idName="id";
 		public List<String> cols = new ArrayList<String>();
 	}
 	
