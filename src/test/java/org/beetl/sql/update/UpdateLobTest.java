@@ -7,7 +7,6 @@ import org.beetl.sql.buildsql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.pojo.LobBean;
 import org.junit.Before;
@@ -27,7 +26,7 @@ public class UpdateLobTest {
 		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
 	}
 	
-	@SuppressWarnings({ "resource", "unused" })
+	@SuppressWarnings({ "resource"})
 	@Test public void updateLob(){
 		LobBean lobBean = new LobBean();
 		

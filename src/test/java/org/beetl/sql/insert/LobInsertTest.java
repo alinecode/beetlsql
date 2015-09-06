@@ -47,16 +47,18 @@ public class LobInsertTest {
 		System.out.println(holder.getKey());
 	}
 	
-	@SuppressWarnings({ "resource", "unused" })
+	@SuppressWarnings({ "resource"})
 	@Test
 	public void insertBlob(){
 		LobBean lobBean = new LobBean();
 		
-		File file = new File("/repertory/beetlsql/src/test/resources/blobTest.png");
+		File file = new File("src/test/resources/blobTest.png");
 		try {
 			FileInputStream fis = new FileInputStream(file);
-			byte[] buffer = new byte[1024 * 1024];
-			int len = fis.read(buffer, 0, buffer.length);
+			int len = fis.available();
+			byte[] buffer = new byte[len];
+			fis.read(buffer, 0, len);
+			
 			lobBean.setPicture(buffer);
 			
 			KeyHolder holder = new KeyHolder();
@@ -68,7 +70,7 @@ public class LobInsertTest {
 		}  
 	}
 	
-	@SuppressWarnings({ "resource", "unused" })
+	@SuppressWarnings({ "resource"})
 	@Test
 	public void insertLob(){
 		LobBean lobBean = new LobBean();
@@ -83,11 +85,12 @@ public class LobInsertTest {
 				+ "	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说：	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说：	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说：	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说："
 				+ "	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说：	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说：	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说：	从前有座山，山里 有座庙，庙里有个小和尚，小和尚对老和尚说：";
 
-		File file = new File("/repertory/beetlsql/src/test/resources/blobTest.png");
+		File file = new File("src/test/resources/blobTest.png");
 		try {
 			FileInputStream fis = new FileInputStream(file);
-			byte[] buffer = new byte[1024 * 1024];
-			int len = fis.read(buffer, 0, buffer.length);
+			int len = fis.available();
+			byte[] buffer = new byte[len];
+			fis.read(buffer, 0, len);
 			
 			lobBean.setPicture(buffer);
 			lobBean.setArticle(text);
