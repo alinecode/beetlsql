@@ -32,14 +32,12 @@ public class SQLManager {
 	
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds) {
 		this(dbStyle, sqlLoader, ds, new HumpNameConversion(), new Interceptor[]{});
-//		beetl = new Beetl(sqlLoader);
-//		this.dbStyle = dbStyle;
-//		this.sqlLoader = sqlLoader;
-//		this.ds = ds;
-//		this.nc = new HumpNameConversion();
-//		this.dbStyle.setNameConversion(this.nc);
-//		this.dbStyle.setMetadataManager(getMetadataManager());
-//		this.dbStyle.init(beetl);
+
+	}
+	
+	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds,NameConversion nc) {
+		this(dbStyle, sqlLoader, ds, nc, new Interceptor[]{});
+
 	}
 	
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,

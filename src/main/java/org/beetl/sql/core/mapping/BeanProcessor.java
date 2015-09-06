@@ -31,10 +31,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.beetl.sql.core.Bean2;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.QueryResult;
+import org.beetl.sql.core.QueryResultBean;
 
 /**
  * @ClassName: BeanProcessor
@@ -249,8 +250,8 @@ public class BeanProcessor {
 		for (int i = 1; i < columnToProperty.length; i++) {
 			//Array.fill数组为-1 ，-1则无对应name
 			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
-				if(bean instanceof Bean2){
-					Bean2  bean2 = (Bean2)bean;
+				if(bean instanceof QueryResult){
+					QueryResult  bean2 = (QueryResult)bean;
 					Object value = rs.getObject(i);
 					String key = rs.getMetaData().getColumnLabel(i);
 					key = this.nc.getPropertyName(type, key);
