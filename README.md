@@ -1,47 +1,119 @@
-#beetlsql 入门
+#Beetlsql
 
-同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。
+作者: 闲大赋,Gavin.Kin,Sue
+开发时间:2015-07
 
-* SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试
-* 数据模型支持Pojo，也支持Map/List这种无模型的模型
-无需注解，自动生成大量内置SQL，轻易完成增删改查功能
+#beetlsql 特点
+
+BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。
+
+* 无需注解，自动生成大量内置SQL，轻易完成增删改查功能
+* 数据模型支持Pojo，也支持Map/List这种快速模型，也支持混合模型
+* SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试。
 * SQL 模板基于Beetl实现，更容易写和调试，以及扩展
 * 简单支持关系映射而不引入复杂的OR Mapping概念和技术。
-* 支持跨数据库平台，开发者所需工作减少到最小
 * 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 * 内置支持主从数据库，通过扩展，可以支持更复杂的分库分表逻辑
+* 支持跨数据库平台，开发者所需工作减少到最小
 
+# 5 分钟例子
 
+##准备工作
 
-代码例子
-===
-	 // 执行/user.md 里的select sql
-	List<User>  list = sqlManager.select(“user.select”,paras,User.class);
-	// 使用内置的生成的sql执行
-	User user = sqlManager.unque(User.class,id);
+为了快速尝试BeetlSQL，需要准备一个Mysql数据库，然后执行如下sql脚本
 
-SQL例子
-===
+	DROP TABLE IF EXISTS `user`;
+	CREATE TABLE `user` (
+	  `id` int(11) NOT NULL,
+	  `name` varchar(64) DEFAULT NULL,
+	  `age` int(4) DEFAULT NULL,
+	  `userName` varchar(64) DEFAULT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-	selectUser
+编写一个Pojo类，与数据库表对应
+
+	public class User {
+		Integer id;
+		String name;
+		Integer age;
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+	
+		public Integer getId() {
+			return id;
+		}
+	
+		public void setId(Integer id) {
+			this.id = id;
+		}
+	
+		public Integer getAge() {
+			return age;
+		}
+	
+		public void setAge(Integer age) {
+			this.age = age;
+		}
+	
+	}
+
+##代码例子
+
+写一个java的Main方法，内容如下
+
+	// 创建一个简单的ConnectionSource，只有一个master
+	ConnectionSource source = ConnectionSourceHelper.simple(driver,url,userName,password);
+	// 采用mysql 习俗
+	DBStyle mysql = new MysqlStyle();
+	// sql语句放在classpagth的/sql 目录下
+	SQLLoader loader = new ClasspathLoader("/sql");	
+	// 数据库命名跟java命名采用驼峰转化
+	NameConversion nc = new  HumpNameConversion();
+	// 最后，创建一个SQLManager
+	SqlManager sqlManager = new SqlManager(source,mysql,loader); 
+	
+	//使用内置的生成的sql
+	User user = new User();
+	user.setAge(19);
+	user.setName("xiandafu");
+	sqlManager.insert(user);
+	int id = 1;
+	user = sqlManager.unque(User.class,id);
+	
+	//使用user.md 文件里的select语句，参考下一节
+	User query = new User();
+	query.setName("xiandafu");
+	List<User> list = sqlManager.select("user.select",User.class,query)
+ 
+  	
+
+##SQL例子
+
+为了能执行user.select,需要在classpath里建立一个user.md 文件，内容如下
+
+	select
 	===
 		    select * from user where 1=1
-		    @if(user.age==1){
-		    and age = #user.age#
+		    @if(!isEmpty(age)){
+		    and age = #age#
+		    @}		    
+		    @if(!isEmpty(name)){
+		    and name = #name#
 		    @}
-		    
-	selectAll
-	===
-		    select * from user  
-		    @use("selectWhere");
-		    
-	selectWhere
-	===
-		    where  age = #age#
 	
+isEmpty是beetl的一个函数，用来判断变量是否为空或者是否不存在	    
+	
+#BeetlSQL 特点
 
-Markdown方式管理
-===
+
+##Markdown方式管理
+---
 BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是
 
 * XML格式过于复杂，书写不方便
@@ -66,8 +138,8 @@ BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件�
 SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，确认是否有update语句，如果没有，则会寻找sql/user.md 
 
 
-丰富的数据模型支持
-===
+##丰富的数据模型支持
+
 BeetlSql 适合各种类型的引用，对于大中小型应用，模型通常是Pojo，这样易于维护和与三方系统交互，对于特小型项目，往往不需要严格的模型，表示业务实体通常是Map/List 组合。SQL语句的输入可以是Pojo或者Map，SQL语句执行结果也可以映射到Pojo和Map。
 
 			int result = sqlManager.update("user.update",user);
@@ -79,8 +151,7 @@ BeetlSql 适合各种类型的引用，对于大中小型应用，模型通常�
 			//or 
 			Map user = sqlManager.single("user.select",paras,Map.class);
 		
-SQL 模板基于Beetl实现，更容易写和调试，以及扩展	
-===		
+##SQL 模板基于Beetl实现，更容易写和调试，以及扩展	
 		
 SQL语句可以动态生成，基于Beetl语言，这是因为
 
@@ -104,8 +175,8 @@ SQL语句可以动态生成，基于Beetl语言，这是因为
 * beetl语句易于扩展，提供各种函数，比如分表逻辑函数，跨数据库的公共函数等
 
 
-无需注解，自动生成大量内置SQL，轻易完成增删改查功能
-===		
+##无需注解，自动生成大量内置SQL，轻易完成增删改查功能
+		
 
 BeetlSql虽然不是一个O/R Mapping 工具，但能根据默认约定，生成大量常用SQl而几乎不需要注解（对于oralce，需要注解SeqId(name="seqName"))，BeetlSql 根据输入的class，自动能生成如下sql
 
@@ -127,15 +198,14 @@ BeetlSql虽然不是一个O/R Mapping 工具，但能根据默认约定，生成
 			AssignId，代码指定主键
 		
 
-支持跨数据库平台，开发者所需工作减少到最小
-===
+##支持跨数据库平台，开发者所需工作减少到最小
+
 如前所述，BeetlSql 可以通过sql文件的管理和搜索来支持跨数据库开发，如前所述，先搜索特定数据库，然后再查找common。另外BeetlSql也提供了一些夸数据库解决方案
 * DbStyle 描述了数据库特性，注入insert语句，翻页语句都通过其子类完成，用户无需操心
 * 提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等
 
 
-具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能	
-===
+##具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能	
 
 BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会执行各种扩展和监控，这比已知的通过数据库连接池做Interceptor更加容易。如下Interceptor都是有可能的
 
@@ -144,8 +214,7 @@ BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会�
 *  对sql预计解析，汇总sql执行情况（未完成，需要集成第三方sql分析工具）
 *  数据库分表分库逻辑
 
-内置支持主从数据库，通过扩展，可以支持更复杂的分库分表逻辑
-===
+##内置支持主从数据库，通过扩展，可以支持更复杂的分库分表逻辑
 
 BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操作此数据源，如果提供多个，则默认第一个为写库，其他为读库。用户在开发代码的时候，无需关心操作的是哪个数据库，因为调用sqlScrip 的 select相关api的时候，总是去读取从库，add/update/delete 的时候，总是读取主库。 
 
@@ -179,9 +248,9 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 		@}		
 		where name = #name#
 
+#集成
 
-Spring集成
-===
+##Spring集成
 
 	<bean id="sqlManager" class="org.beetl.sql.ext.SpringBeetlSql">
 		<property name="cs" >
@@ -221,8 +290,8 @@ Spring集成
 注意：
 任何使用了Transactional 注解的，将统一使用Master数据源，例外的是@Transactional(readOnly=true),这将让Beetsql选择从数据库。
 
-JFinal集成
-===
+##JFinal集成
+
 
 在configPlugin 里配置BeetlSql
 
