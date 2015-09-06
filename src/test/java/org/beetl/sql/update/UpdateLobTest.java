@@ -2,6 +2,8 @@ package org.beetl.sql.update;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.beetl.sql.buildsql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
@@ -27,7 +29,7 @@ public class UpdateLobTest {
 	}
 	
 	@SuppressWarnings({ "resource"})
-	@Test public void updateLob(){
+	@Test public void updateLobALL(){
 		LobBean lobBean = new LobBean();
 		
 		File file = new File("src/test/resources/blobTest.png");
@@ -43,7 +45,79 @@ public class UpdateLobTest {
 			int i = manager.updateAll(LobBean.class, lobBean);
 			System.out.println(i);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+	}
+	
+	//======================晚上回家测试============================
+	@SuppressWarnings("resource")
+	@Test public void updateLob(){
+		LobBean lobBean = new LobBean();
+		
+		File file = new File("src/test/resources/blobTest.png");
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			int len = fis.available();
+			byte[] buffer = new byte[len];
+			fis.read(buffer, 0, len);
+			
+			lobBean.setPicture(buffer);
+			lobBean.setArticle("no say . too long");
+			lobBean.setId(10);
+			
+			int i = manager.update("lob.updatePictureById", lobBean);
+			System.out.println(i);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+	}
+	
+	@SuppressWarnings("resource")
+	@Test public void updateLobById(){
+		LobBean lobBean = new LobBean();
+		
+		File file = new File("src/test/resources/blobTest.png");
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			int len = fis.available();
+			byte[] buffer = new byte[len];
+			fis.read(buffer, 0, len);
+			
+			lobBean.setPicture(buffer);
+			lobBean.setArticle("no say . too long ......");
+			lobBean.setId(10);
+			
+			int i = manager.updateById(lobBean);
+			System.out.println(i);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+	}
+	
+	@SuppressWarnings("resource")
+	@Test public void updateLobBatch(){
+		try {
+			List<LobBean> lobBeanList = new ArrayList<LobBean>();
+			for(int i=0 ;i<2 ;i++){
+				LobBean lobBean = new LobBean();
+				File file = new File("src/test/resources/blobTest.png");
+				FileInputStream fis = new FileInputStream(file);
+				int len = fis.available();
+				byte[] buffer = new byte[len];
+				fis.read(buffer, 0, len);
+				
+				lobBean.setPicture(buffer);
+				lobBean.setArticle("no say . too long - "+i);
+				lobBean.setId(9+i);
+				
+				lobBeanList.add(lobBean);
+			}
+			
+			int[] result = manager.updateBatch("lob.updatePictureById", lobBeanList);
+			for(int i : result){
+				System.out.println(i);
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}  
 	}
