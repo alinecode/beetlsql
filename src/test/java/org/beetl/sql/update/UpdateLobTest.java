@@ -65,7 +65,7 @@ public class UpdateLobTest {
 			lobBean.setArticle("no say . too long");
 			lobBean.setId(10);
 			
-			int i = manager.update("lob.updatePictureById", lobBean);
+			int i = manager.update("lobBean.updatePictureById", lobBean);
 			System.out.println(i);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -113,7 +113,7 @@ public class UpdateLobTest {
 				lobBeanList.add(lobBean);
 			}
 			
-			int[] result = manager.updateBatch("lob.updatePictureById", lobBeanList);
+			int[] result = manager.updateBatch("lobBean.updatePictureById", lobBeanList);
 			for(int i : result){
 				System.out.println(i);
 			}
