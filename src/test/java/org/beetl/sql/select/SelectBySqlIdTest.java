@@ -73,6 +73,7 @@ public class SelectBySqlIdTest {
 		System.out.println(result);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void selectBySqlId3() {
 		

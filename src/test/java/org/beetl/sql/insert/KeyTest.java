@@ -1,6 +1,5 @@
 package org.beetl.sql.insert;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
@@ -10,13 +9,12 @@ import org.beetl.sql.buildsql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLScript;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.pojo.Role;
 import org.junit.Before;
 import org.junit.Test;
-import static org.beetl.sql.core.kit.Constants.*;
+
 public class KeyTest {
 	private SQLLoader loader;
 	private SQLManager manager;
@@ -50,7 +48,7 @@ public class KeyTest {
 			Role role = new Role();
 			role.setId(1);
 			role.setName("ac");
-			List list = new ArrayList();
+			List<Object> list = new ArrayList<Object>();
 			list.add(role);
 			list.add(role);
 			for(int i=0;i<list.size();i++){
@@ -60,6 +58,9 @@ public class KeyTest {
 				ps.addBatch();
 			}
 			int[] result = ps.executeBatch();
+			for(int i : result){
+				System.out.println(i);
+			}
 			
 		}catch(Exception ex){
 			

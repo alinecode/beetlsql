@@ -32,9 +32,8 @@ public class RowMapperResultSetExt<T> implements ResultSetExt<List<T>>{
 		int rowNum = 0;
 		List<T> resultList = new ArrayList<T>();
 		while(rs.next()){
-			
-			Object o = beanProcessor.toBean(rs, z);
-			resultList.add(this.rowMapper.mapRow(o,rs, rowNum++));
+			Object obj = beanProcessor.toBean(rs, z);
+			resultList.add(this.rowMapper.mapRow(obj, rs, rowNum++));
 		}
 		return resultList;
 	}

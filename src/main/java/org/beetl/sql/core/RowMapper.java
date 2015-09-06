@@ -9,9 +9,16 @@ import java.sql.SQLException;
  */
 public interface RowMapper<T> {
 	
-//	 穿Object不行，如果object为处理后的值，那么在用户实现的RowMapper中
-//	 还是要再次处理，如果是List，还是要在循环。
-//	 T mapRow(T obj,ResultSet rs) throws SQLException;
-	 
-	 T mapRow(Object o,ResultSet rs, int rowNum) throws SQLException;
+	/**
+	 * 
+	 * @MethodName: mapRow   
+	 * @Description: 扩展处理  
+	 * @param  obj 正常处理后的对象
+	 * @param  rs 结果集
+	 * @param  rowNum 处理的记录位置(第几条记录)：可以只针对某一条记录做特殊处理
+	 * @param 
+	 * @throws SQLException  
+	 * @return T  
+	 */
+	 T mapRow(Object obj,ResultSet rs, int rowNum) throws SQLException;
 }
