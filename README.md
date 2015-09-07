@@ -461,11 +461,16 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 * 提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等
 
 
-## 联系方式
+## 帅照
 
+###闲大赋
 ![xiandfu](http://ibeetl.com/guide/xiandafu.jpg)
+
+###Gavin·King 
 ![Gavin](http://ibeetl.com/guide/GV2.png)
-![Sue](http://ibeetl.com/guide/SUE.png)
+
+### Sue
+![Sue](http://ibeetl.com/guide/SUE.jpg)
 
 
 
