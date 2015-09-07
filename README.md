@@ -287,7 +287,8 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 * Pojo, 也就是面向对象Bean。R
 * Map/List, 对于一些敏捷开发，可以直接使用Map/List 作为输入输出参数
-* 混合模型，Pojo可以实现QueryResult，或者继承QueryResultBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如一个混合模型
+* 混合模型，Pojo可以实现QueryResult，或者继承QueryResultBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如一个混合模型:
+
 
 	public User extends QueryResultBean{
 		private int id ;
