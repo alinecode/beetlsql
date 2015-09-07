@@ -187,6 +187,35 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 注意：
 任何使用了Transactional 注解的，将统一使用Master数据源，例外的是@Transactional(readOnly=true),这将让Beetsql选择从数据库。
 
+
+
+	public class MyServiceImpl implements MyService {
+
+		@Autowired
+		SpringBeetlSql beetlsql ;
+
+		@Override
+		@Transactional()
+		public int total(User user) {
+			
+			SQLManager dao = beetlsql.getSQLMananger();
+			List<User> list = dao.all(User.class);
+			int total = list .size();
+			dao.deleteById(User.class, 3);
+			User u =new User();
+			u.id = 3;
+			u.name="hello";
+			u.age = 12;
+			dao.insert(User.class, u);
+
+			return total;
+
+		}
+
+	}
+
+可以参考demo https://git.oschina.net/xiandafu/springbeetlsql
+
 ###JFinal集成
 
 
@@ -223,6 +252,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 	
 如果习惯了JFinal Record模式，建议用户创建一个BaseBean，封装SQLManager CRUD 方法即可。然后其他模型继承此BaseBean
 
+可以参考demo https://git.oschina.net/xiandafu/jfinal_beet_beetsql_btjson
 
 ## SQLManager API
 
@@ -270,7 +300,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 对于自动生成的sql，默认不需要任何annotaton，类名对应于表名（通过NameConverstion类），getter方法的属性名对应于列明（也是通过NameConverstion类），但有些情况还是需要anntation。
 
-* @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
+*   @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
 	
 	@Table(name="user")
 	public class QueryUser ..
@@ -285,16 +315,19 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 ## BeetlSQL 模型
 
 BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
-* Pojo, 也就是面向对象Bean。R
+
+* Pojo, 也就是面向对象Java Object
+
 * Map/List, 对于一些敏捷开发，可以直接使用Map/List 作为输入输出参数
-* 混合模型，Pojo可以实现QueryResult，或者继承QueryResultBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如一个混合模型:
 
+* 混合模型，推荐使用混合模型。兼具灵活性和更好的维护性。Pojo可以实现QueryResult，或者继承QueryResultBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如下一个混合模型:
 
+	/*混合模型*/
 	public User extends QueryResultBean{
 		private int id ;
 		pirvate String name;
 		private int roleId;
-		// 以下是getter和setter 方法
+		/*以下是getter和setter 方法*/
 	}
 
 对于sql语句:
@@ -313,7 +346,7 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 	}
 
 
-程序可以通过get方法获取到未被映射到pojo的值
+程序可以通过get方法获取到未被映射到pojo的值，也可以在模板里直接 ${user.rName}  显示（对于大多数模板引擎都支持）
 
 
 
@@ -387,12 +420,14 @@ BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会�
 
 你也可以自行扩展Interceptor类，来完成特定需求。
 如下，在执行数据库操作前会执行befor，通过ctx可以获取执行的上下文参数，数据库成功执行后，会执行after方法
+
 	public interface Interceptor {
 		public void before(InterceptorContext ctx);
 		public void after(InterceptorContext ctx);
 	}
 
 InterceptorContext 如下，包含了sqlId，实际得sql，和实际得参数
+
 	public class InterceptorContext {
 		private String sqlId;
 		private String sql;
@@ -428,6 +463,29 @@ BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操
 对于于不同的ConnectionSource 完成逻辑不一样，对于spring，jfinal这样的框架，如果sqlManager在事务环境里，总是操作主数据库，如果是只读事务环境
 则操作从数据库。如果没有事务环境，则根据sql是查询还是更新来决定。
 
+
+如下是SpringConnectionSource 提供的主从逻辑
+
+	@Override
+	public Connection getConn(String sqlId,boolean isUpdate,String sql,List paras){
+		//只有一个数据源
+		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(sqlId,sql,paras);
+		//如果是更新语句，也得走master
+		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
+		//如果api强制使用master
+		boolean onlyMaster = localMaster.get();
+		if(onlyMaster) return this.getMaster();
+		//在事物里都用master，除了readonly事物
+		boolean inTrans = TransactionSynchronizationManager.isActualTransactionActive();
+		if(inTrans){
+			boolean  isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
+			if(!isReadOnly){
+				return this.getMaster();
+			}
+		}
+		
+		 return this.getReadConn(sqlId, sql, paras);
+	}
 
 
 
@@ -467,7 +525,22 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 * 提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等
 
 
-## 帅照
+##添加自定义方法
+
+使用方式同Beetl，可以在btsql-ext.properties里添加自定义的函数. 需要注意的是，beetlsql在**站位符里**总是输出 ?,除非你的函数名是以db开头，如db.ifNull,dbLog等。 或者使用内置的text 函数。对于如下sql语句
+
+	select * from ${dbLog()} where id = ${id} and status = "${text(@Constants.RUNNING)}"
+
+会生成如下语句
+
+	select * from xxxLog where id = ? and status = "on".
+
+问号对应的的值是变量id
+
+
+
+
+## 开发人员帅照
 
 ###闲大赋
 ![xiandfu](http://ibeetl.com/guide/xiandafu.jpg)
