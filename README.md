@@ -3,6 +3,7 @@
 * 作者: 闲大赋,Gavin.Kin,Sue
 * 开发时间:2015-07
 * 当前版本 1.0
+* 论坛 http://ibeetl.com
 
 #beetlsql 特点
 
@@ -114,7 +115,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 * @ 和回车符号是定界符号，可以在里面写beetl语句。
 
-* ## 是站位符号，生成sql语句得时候，将输出？，如果你想输出表达式值，需要用text函数，或者任何以db开头的函数，引擎则认为是直接输出文本。
+* "#" 是站位符号，生成sql语句得时候，将输出？，如果你想输出表达式值，需要用text函数，或者任何以db开头的函数，引擎则认为是直接输出文本。
 
 * isEmpty是beetl的一个函数，用来判断变量是否为空或者是否不存在.	
 
@@ -458,6 +459,13 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 
 * DbStyle 描述了数据库特性，注入insert语句，翻页语句都通过其子类完成，用户无需操心
 * 提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等
+
+
+## 联系方式
+
+![xiandfu](http://ibeetl.com/guide/xiandafu.jpg)
+![Gavin](http://ibeetl.com/guide/GV2.png)
+![Sue](http://ibeetl.com/guide/SUE.png)
 
 
 
