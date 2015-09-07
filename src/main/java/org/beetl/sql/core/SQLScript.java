@@ -538,7 +538,7 @@ public class SQLScript {
 		
 		InterceptorContext ctx = new InterceptorContext(sqlId,sql,paras);
 		for(Interceptor in:sm.inters){
-			in.befor(ctx);
+			in.before(ctx);
 		}
 		return ctx;
 	}

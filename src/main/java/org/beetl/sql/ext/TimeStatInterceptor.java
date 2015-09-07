@@ -21,7 +21,7 @@ public class TimeStatInterceptor implements Interceptor {
 		this.excludes = excludes;
 	}
 	@Override
-	public void befor(InterceptorContext ctx) {
+	public void before(InterceptorContext ctx) {
 		if(excludes.contains(ctx.getSqlId())) return ;
 		ctx.put("stat.time", System.currentTimeMillis());
 

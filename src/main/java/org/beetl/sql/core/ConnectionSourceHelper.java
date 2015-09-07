@@ -16,7 +16,7 @@ public class ConnectionSourceHelper {
 	public  static ConnectionSource getMasterSlave(DataSource ds,DataSource[] slaves){
 		return new DefaultConnectionSource(ds,slaves);
 	}
-	public static ConnectionSource getSingle(String driver,String url,String dbName,String userName,String password){
+	public static ConnectionSource getSimple(String driver,String url,String dbName,String userName,String password){
 		return new SimpleConnectoinSource(driver,url,userName,password);
 	}
 	

@@ -19,7 +19,7 @@ public class DebugInterceptor implements Interceptor {
 		this.includes = includes;
 	}
 	@Override
-	public void befor(InterceptorContext ctx) {
+	public void before(InterceptorContext ctx) {
 		String sqlId = ctx.getSqlId();
 		if(this.isDebugEanble(sqlId)){
 			ctx.put("debug.time", System.currentTimeMillis());
