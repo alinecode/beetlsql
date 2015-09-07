@@ -422,8 +422,13 @@ BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操
 	}
 
 
-localMaster 可以强制SQLManager 决定使用主数据库。对于不同的ConnectionSource 完成逻辑不一样，对于spring，jfinal这样的框架，如果sqlManager在事务环境里，总是操作主数据库，如果是只读事务环境
+* localMaster 可以强制SQLManager 使用主数据库。参考api SQLManager. useMaster(MasterRunner f)  
+
+
+对于于不同的ConnectionSource 完成逻辑不一样，对于spring，jfinal这样的框架，如果sqlManager在事务环境里，总是操作主数据库，如果是只读事务环境
 则操作从数据库。如果没有事务环境，则根据sql是查询还是更新来决定。
+
+
 
 
 ## 可以支持更复杂的分库分表逻辑
