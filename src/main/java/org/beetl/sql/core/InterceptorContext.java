@@ -9,10 +9,13 @@ public class InterceptorContext {
 	private String sql;
 	private  List<Object> paras;
 	private Map<String,Object> env  = null;
-	public InterceptorContext(String sqlId,String sql,List<Object> paras){
+	private boolean isUpdate = false ;
+	private Object result ;
+	public InterceptorContext(String sqlId,String sql,List<Object> paras, boolean isUpdate){
 		this.sql = sql ;
 		this.paras = paras;
 		this.sqlId = sqlId;
+		this.isUpdate = isUpdate;
 	}
 	public void put(String key,Object value){
 		if(env==null){
@@ -38,6 +41,18 @@ public class InterceptorContext {
 	}
 	public String getSqlId() {
 		return sqlId;
+	}
+	public boolean isUpdate() {
+		return isUpdate;
+	}
+	public void setUpdate(boolean isUpdate) {
+		this.isUpdate = isUpdate;
+	}
+	public Object getResult() {
+		return result;
+	}
+	public void setResult(Object result) {
+		this.result = result;
 	}
 	
 	

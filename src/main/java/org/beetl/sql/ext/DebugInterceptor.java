@@ -1,5 +1,6 @@
 package org.beetl.sql.ext;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.beetl.sql.core.Interceptor;
@@ -38,8 +39,20 @@ public class DebugInterceptor implements Interceptor {
 		StringBuilder sb = new StringBuilder();
 		sb.append("======DebugInterceptor After======\n")
 			.append("sqlId : " + ctx.getSqlId()).append("\n")
-			.append("execution time : "+(time-start)+"ms").append("\n")
-			.append("result : success");
+			.append("execution time : "+(time-start)+"ms").append("\n");
+		
+		if(ctx.isUpdate()){
+			sb.append("成功更新[");
+			if(ctx.getResult().getClass().isArray()){
+				sb.append(Arrays.asList((int[])ctx.getResult()));
+			}else{
+				sb.append(ctx.getResult());
+			}
+			sb.append("]");
+		}else{
+			sb.append("成功返回[").append(ctx.getResult()).append("]");
+		}
+		sb.append("\n");
 		System.out.println(sb.toString());
 
 	}

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -68,13 +69,13 @@ public class SQLScript {
 		return result;
 	}
 	
-	public void insert(Object paras){
+	public int insert(Object paras){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
 		SQLResult result = this.run(map);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, true,objs);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		PreparedStatement ps = null;
@@ -84,8 +85,9 @@ public class SQLScript {
 			ps = conn.prepareStatement(sql);
 			for (int i = 0; i < objs.size(); i++)
 				ps.setObject(i + 1, objs.get(i));
-			ps.executeUpdate();
-			this.callInterceptorAsAfter(ctx);
+			int ret = ps.executeUpdate();
+			this.callInterceptorAsAfter(ctx,ret);
+			return ret;
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
@@ -93,7 +95,7 @@ public class SQLScript {
 		}
 	}
 	
-	public void insert(Object paras,KeyHolder holder){
+	public int insert(Object paras,KeyHolder holder){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
 		PreparedStatement ps = null;
@@ -123,7 +125,7 @@ public class SQLScript {
 		SQLResult result = this.run(map);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, true,objs);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		
@@ -141,7 +143,7 @@ public class SQLScript {
 			
 			for (int i = 0; i < objs.size(); i++)
 				ps.setObject(i + 1, objs.get(i));
-			ps.executeUpdate();
+			int ret = ps.executeUpdate();
 			
 			if(this.sqlSource.getIdType()==DBStyle.ID_AUTO){
 				ResultSet seqRs = ps.getGeneratedKeys();
@@ -150,7 +152,8 @@ public class SQLScript {
 				holder.setKey(key);
 				seqRs.close();
 			}
-			this.callInterceptorAsAfter(ctx);
+			this.callInterceptorAsAfter(ctx,ret);
+			return ret;
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
@@ -197,7 +200,7 @@ public class SQLScript {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		List<T> resultList = null;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql,false, objs);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -210,18 +213,21 @@ public class SQLScript {
 			
 			if(mapper != null){
 				BeanProcessor beanProcessor = new BeanProcessor(this.sm.getNc());
-				return new RowMapperResultSetExt<T>(mapper,beanProcessor).handleResultSet(rs,clazz);
+				resultList = new RowMapperResultSetExt<T>(mapper,beanProcessor).handleResultSet(rs,clazz);
+				this.callInterceptorAsAfter(ctx,resultList);
+				
+			}else{
+				resultList = mappingSelect(rs, clazz);		
 			}
-			
-			resultList = mappingSelect(rs, clazz);
-			
-			this.callInterceptorAsAfter(ctx);
+				
+			this.callInterceptorAsAfter(ctx,resultList);
+			return resultList;
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
 			clean(conn,ps,rs);
 		}
-		return resultList;
+		
 	}
 	/**
 	 * 查询,返回一个pojo集合
@@ -339,7 +345,7 @@ public class SQLScript {
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
 		
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql,true, objs);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		int rs = 0;
@@ -352,7 +358,7 @@ public class SQLScript {
 			for (int i = 0; i < objs.size(); i++)
 				ps.setObject(i + 1, objs.get(i));
 			rs = ps.executeUpdate();
-			this.callInterceptorAsAfter(ctx);
+			this.callInterceptorAsAfter(ctx,rs);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
@@ -373,23 +379,26 @@ public class SQLScript {
 		PreparedStatement ps = null;
 		// 执行jdbc
 		Connection conn = null;
+		InterceptorContext ctx  = null;
 		try {
 			
 			for(int k = 0;k<maps.length;k++ ){
 				Map<String, Object> paras = maps[k];
 				SQLResult result = run(paras);
 				List<Object> objs = result.jdbcPara;
-				InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+				
 				if(ps==null){
 					conn = sm.getDs().getConn(id,true,sql,objs);
 					ps = conn.prepareStatement(result.jdbcSql);
+					ctx = this.callInterceptorAsBefore(this.id,sql, true,Collections.EMPTY_LIST);
 				}	
 				for (int i = 0; i < objs.size(); i++)
 					ps.setObject(i + 1, objs.get(i));
 				ps.addBatch();
-				this.callInterceptorAsAfter(ctx);
+			
 			}
 			rs = ps.executeBatch();
+			this.callInterceptorAsAfter(ctx,rs);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -410,6 +419,7 @@ public class SQLScript {
 		PreparedStatement ps = null;
 		Connection conn = null;
 		// 执行jdbc
+		InterceptorContext ctx = null;
 		try {
 		
 			for(int k = 0;k<list.size();k++ ){
@@ -417,18 +427,20 @@ public class SQLScript {
 				paras.put("_root", list.get(k));
 				SQLResult result = run(paras);
 				List<Object> objs = result.jdbcPara;
-				InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+				
 				if(ps==null){
 					conn = sm.getDs().getConn(id,true,sql,objs);
 					ps = conn.prepareStatement(result.jdbcSql);
+					ctx = this.callInterceptorAsBefore(this.id,sql, true,Collections.emptyList());
 				}				
 				
 				for (int i = 0; i < objs.size(); i++)
 					ps.setObject(i + 1, objs.get(i));
 				ps.addBatch();
-				this.callInterceptorAsAfter(ctx);
+				
 			}
 			rs = ps.executeBatch();
+			this.callInterceptorAsAfter(ctx,rs);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -457,7 +469,7 @@ public class SQLScript {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		T model = null;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, false,objs);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -468,7 +480,7 @@ public class SQLScript {
 				ps.setObject(i + 1, objs.get(i));
 			rs = ps.executeQuery();
 			model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc()));
-			this.callInterceptorAsAfter(ctx);
+			this.callInterceptorAsAfter(ctx,model);
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
@@ -495,7 +507,7 @@ public class SQLScript {
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
 		
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql,true, objs);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		int rs = 0;
@@ -507,7 +519,7 @@ public class SQLScript {
 			for (int i = 0; i < objs.size(); i++)
 				ps.setObject(i + 1, objs.get(i));
 			rs = ps.executeUpdate();
-			this.callInterceptorAsAfter(ctx);
+			this.callInterceptorAsAfter(ctx,rs);
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
@@ -534,18 +546,28 @@ public class SQLScript {
 	
 
 
-	private InterceptorContext callInterceptorAsBefore(String sqlId,String sql,List<Object> paras){
+	private InterceptorContext callInterceptorAsBefore(String sqlId,String sql,boolean isUpdate,List<Object> paras){
 		
-		InterceptorContext ctx = new InterceptorContext(sqlId,sql,paras);
+		InterceptorContext ctx = new InterceptorContext(sqlId,sql,paras,isUpdate);
 		for(Interceptor in:sm.inters){
 			in.before(ctx);
 		}
 		return ctx;
 	}
 	
-	private void callInterceptorAsAfter(InterceptorContext ctx ){
+	private void callInterceptorAsAfter(InterceptorContext ctx,Object result ){
 		if(sm.inters==null) return  ;
-		
+		if(!ctx.isUpdate()){
+			if(result instanceof List){
+				List list = (List)result;
+				ctx.setResult(list.size());
+			}else{
+				ctx.setResult(0);
+			}
+						
+		}else{
+			ctx.setResult(result);
+		}
 		for(Interceptor in:sm.inters){
 			in.after(ctx);
 		}

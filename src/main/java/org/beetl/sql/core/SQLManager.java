@@ -483,9 +483,9 @@ public class SQLManager {
 	
 	//============= 插入 ===================  //
 	
-	public void insert(Class<?> clazz,Object paras){
+	public int  insert(Class<?> clazz,Object paras){
 		SQLScript script = getScript(clazz,INSERT );
-		script.insert(paras);
+		return script.insert(paras);
 	}
 	
 	/** 插入，并获取主键
@@ -493,9 +493,9 @@ public class SQLManager {
 	 * @param paras
 	 * @param holder
 	 */
-	public void insert(Class<?> clazz,Object paras,KeyHolder holder){
+	public int  insert(Class<?> clazz,Object paras,KeyHolder holder){
 		SQLScript script = getScript(clazz,INSERT);
-		script.insert(paras,holder );
+		return script.insert(paras,holder );
 	}
 	
 	/**
