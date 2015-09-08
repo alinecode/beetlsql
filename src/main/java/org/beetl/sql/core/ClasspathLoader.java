@@ -213,24 +213,6 @@ public class ClasspathLoader implements SQLLoader {
 		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
 		String filePath2 = sqlRoot + "/" + path + ".md";
 		
-//		URL url = this.getClass().getResource(filePath);
-//		File file = null;
-//		
-//		if(url == null){
-//			url = this.getClass().getResource(sqlRoot + "/" + modelName + "md");
-//			if(url == null) {
-//				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在"+sqlRoot+"和"+sqlRoot + "/" +dbs.getName()+"未找到[id="+id+"]相关的SQL");
-//			}
-//		}
-//		
-//		file = new File(url.getFile());
-//		if(!file.exists()){
-//			url = this.getClass().getResource(sqlRoot + "/" + modelName + "md");
-//			file = new File(url.getFile());
-//			if(!file.exists()){
-//				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在"+sqlRoot+"和"+sqlRoot + "/" +dbs.getName()+"未找到[id="+id+"]相关的SQL");
-//			}
-//		}
 		File file = null;
 		
 		file = this.getFile(filePath1, id);

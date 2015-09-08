@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.beetl.sql.DBConfig;
-
 public class ConnectionSourceHelper {
 	public  static ConnectionSource getSingle(DataSource ds){
 		return new DefaultConnectionSource(ds,null);
@@ -19,9 +17,6 @@ public class ConnectionSourceHelper {
 	public static ConnectionSource getSimple(String driver,String url,String dbName,String userName,String password){
 		return new SimpleConnectoinSource(driver,url,userName,password);
 	}
-	
-	
-	
 	
 }
 
