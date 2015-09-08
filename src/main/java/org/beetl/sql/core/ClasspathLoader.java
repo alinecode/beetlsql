@@ -121,6 +121,7 @@ public class ClasspathLoader implements SQLLoader {
 	private boolean loadSql(String id) {
 		
 		String modelName = id.substring(0, id.lastIndexOf(".") + 1);
+		
 		File file = this.getFile(id);
 		if(file==null) return false ;
 		InputStream ins  = null;
@@ -207,9 +208,10 @@ public class ClasspathLoader implements SQLLoader {
 	 * @throws UnexpectedException 
 	 */
 	private File getFile(String id){
-		String modelName = id.substring(0, id.lastIndexOf(".") + 1);
-		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + modelName + "md";
-		String filePath2 = sqlRoot + "/" + modelName + "md";
+		String modelName = id.substring(0, id.lastIndexOf(".") );
+		String path  = modelName.replace('.', '/');
+		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
+		String filePath2 = sqlRoot + "/" + path + ".md";
 		
 //		URL url = this.getClass().getResource(filePath);
 //		File file = null;

@@ -30,8 +30,8 @@ public class Test {
 //    	testSimple();
 //		testIf();
 //    		testManager();
-    	testManagergenera();
-    	//testUse();
+//    	testManagergenera();
+    	testUse();
 //    	testNameConve();
 	}
    
@@ -86,7 +86,7 @@ public class Test {
 		SQLLoader loader = new ClasspathLoader("/sql/mysql");
 		SQLManager manager = new SQLManager(getStyle(),loader,ds);
 		SQLScript script = manager.getScript("user.selectByExample");
-		User user = (User)script.singleSelect(new User(), User.class);
+//		User user = (User)script.singleSelect(new User(), User.class);
 		// 
 		
 	}
