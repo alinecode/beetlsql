@@ -1,15 +1,3 @@
-/**  
- * 文件名:    BeanProcessor.java  
- * 描述:      
- * 作者:      suxj
- * 版本:      1.0  
- * 创建时间:  2015年8月2日 上午1:00:24  
- *  
- * 修改历史:  
- * 日期                          作者           版本         描述  
- * ------------------------------------------------------------------  
- * 2015年8月2日        suxj     1.0     1.0 Version  
- */
 package org.beetl.sql.core.mapping;
 
 import java.beans.BeanInfo;
@@ -38,10 +26,8 @@ import org.beetl.sql.core.QueryResult;
 import org.beetl.sql.core.QueryResultBean;
 
 /**
- * @ClassName: BeanProcessor
- * @Description: Pojo处理器，负责转换
+ * Pojo处理器，负责转换
  * @author: suxj
- * @date:2015年8月2日 上午1:00:24
  */
 public class BeanProcessor {
 
@@ -79,16 +65,13 @@ public class BeanProcessor {
 		this.columnToPropertyOverrides = columnToPropertyOverrides;
 	}
 
+	
 	/**
-	 * 
-	 * @MethodName: toBean   
-	 * @Description: 将ResultSet映射为一个POJO对象  
-	 * @param @param rs
-	 * @param @param type
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return T  
-	 * @throws
+	 * 将ResultSet映射为一个POJO对象 
+	 * @param rs
+	 * @param type
+	 * @return
+	 * @throws SQLException
 	 */
 	public <T> T toBean(ResultSet rs, Class<T> type) throws SQLException {
 
@@ -101,16 +84,14 @@ public class BeanProcessor {
 		
 	}
 
+
+	
 	/**
-	 * 
-	 * @MethodName: toBeanList   
-	 * @Description: 将ResultSet映射为一个List<POJO>集合  
-	 * @param @param rs
-	 * @param @param type
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return List<T>  
-	 * @throws
+	 * 将ResultSet映射为一个List<POJO>集合 
+	 * @param rs
+	 * @param type
+	 * @return
+	 * @throws SQLException
 	 */
 	public <T> List<T> toBeanList(ResultSet rs, Class<T> type) throws SQLException {
 		
@@ -132,15 +113,13 @@ public class BeanProcessor {
 		
 	}
 	
+	
 	/**
-	 * 
-	 * @MethodName: toMap   
-	 * @Description: 将rs转化为Map<String ,Object>  
-	 * @param @param rs
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return Map<String,Object>  
-	 * @throws
+	 * 将rs转化为Map<String ,Object>
+	 * @param c
+	 * @param rs
+	 * @return
+	 * @throws SQLException
 	 */
 	public Map<String, Object> toMap(Class<?> c,ResultSet rs) throws SQLException {
 
@@ -176,12 +155,11 @@ public class BeanProcessor {
 		return result;
 	}
 	
+
 	/**
-	 * 
-	 * @ClassName: CaseInsensitiveHashMap   
-	 * @Description: 忽略key大小写  
-	 * @author: suxj  
-	 * @date:2015年8月2日 下午2:01:23
+	 * 忽略key大小写  
+	 * @author Administrator
+	 *
 	 */
 	private static class CaseInsensitiveHashMap extends LinkedHashMap<String, Object> {
 
@@ -231,17 +209,13 @@ public class BeanProcessor {
     }
 
 	/**
-	 * 
-	 * @MethodName: createBean   
-	 * @Description: 创建 一个新的对象，并从ResultSet初始化  
-	 * @param @param rs
-	 * @param @param type
-	 * @param @param props
-	 * @param @param columnToProperty
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return T  
-	 * @throws
+	 * 创建 一个新的对象，并从ResultSet初始化
+	 * @param rs
+	 * @param type
+	 * @param props
+	 * @param columnToProperty
+	 * @return
+	 * @throws SQLException
 	 */
 	private <T> T createBean(ResultSet rs, Class<T> type, PropertyDescriptor[] props, int[] columnToProperty) throws SQLException {
 
@@ -280,16 +254,13 @@ public class BeanProcessor {
 		
 	}
 
+
 	/**
-	 * 
-	 * @MethodName: callSetter   
-	 * @Description: 根据setter方法设置值  
-	 * @param @param target
-	 * @param @param prop
-	 * @param @param value
-	 * @param @throws SQLException  
-	 * @return void  
-	 * @throws
+	 * 根据setter方法设置值
+	 * @param target
+	 * @param prop
+	 * @param value
+	 * @throws SQLException
 	 */
 	@SuppressWarnings("unchecked")
 	private void callSetter(Object target, PropertyDescriptor prop, Object value) throws SQLException {
@@ -333,15 +304,12 @@ public class BeanProcessor {
 		
 	}
 
+	
 	/**
-	 * 
-	 * @MethodName: isCompatibleType   
-	 * @Description: 判断类型是否兼容  
-	 * @param @param value
-	 * @param @param type
-	 * @param @return  
-	 * @return boolean  
-	 * @throws
+	 * 判断类型是否兼容
+	 * @param value
+	 * @param type
+	 * @return
 	 */
 	private boolean isCompatibleType(Object value, Class<?> type) {
 
@@ -359,15 +327,13 @@ public class BeanProcessor {
 
 	}
 
+
+	
 	/**
-	 * 
-	 * @MethodName: newInstance   
-	 * @Description: 反射对象  
-	 * @param @param c
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return T  
-	 * @throws
+	 * 反射对象 
+	 * @param c
+	 * @return
+	 * @throws SQLException
 	 */
 	protected <T> T newInstance(Class<T> c) throws SQLException {
 		
@@ -383,15 +349,11 @@ public class BeanProcessor {
 		
 	}
 
-	/**
+	/**根据class取得属性描述PropertyDescriptor  
 	 * 
-	 * @MethodName: propertyDescriptors   
-	 * @Description: 根据class取得属性描述PropertyDescriptor  
-	 * @param @param c
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return PropertyDescriptor[]  
-	 * @throws
+	 * @param c
+	 * @return
+	 * @throws SQLException
 	 */
 	private PropertyDescriptor[] propertyDescriptors(Class<?> c) throws SQLException {
 		
@@ -406,16 +368,14 @@ public class BeanProcessor {
 		
 	}
 
+
 	/**
-	 * 
-	 * @MethodName: mapColumnsToProperties   
-	 * @Description: 记录存在name在 PropertyDescriptor中的下标
-	 * @param @param rsmd
-	 * @param @param props
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return int[]  
-	 * @throws
+	 * 记录存在name在 PropertyDescriptor中的下标
+	 * @param c
+	 * @param rsmd
+	 * @param props
+	 * @return
+	 * @throws SQLException
 	 */
 	protected int[] mapColumnsToProperties(Class<?> c,ResultSetMetaData rsmd, PropertyDescriptor[] props) throws SQLException {
 
@@ -446,17 +406,14 @@ public class BeanProcessor {
 		
 	}
 
+	
 	/**
-	 * 
-	 * @MethodName: processColumn   
-	 * @Description: 获取字段值并转换为对应类型
-	 * @param @param rs
-	 * @param @param index 第几个元素
-	 * @param @param propType
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return Object  
-	 * @throws
+	 * 获取字段值并转换为对应类型
+	 * @param rs
+	 * @param index
+	 * @param propType
+	 * @return
+	 * @throws SQLException
 	 */
 	protected Object processColumn(ResultSet rs, int index, Class<?> propType) throws SQLException {
 

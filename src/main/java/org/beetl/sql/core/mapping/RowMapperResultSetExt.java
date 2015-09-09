@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.beetl.sql.core.mapping;
 
 import java.sql.ResultSet;

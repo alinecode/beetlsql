@@ -161,12 +161,7 @@ public class SQLScript {
 		}
 	}
 	
-	/**
-	 * 查询是传入Pojo实体，直接绑定到_root。可以在sql中使用#age#，而无需#user.age#
-	 * @param paras
-	 * @param target
-	 * @return
-	 */
+
 	public <T> T singleSelect(Object paras, Class<T> target) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -229,29 +224,13 @@ public class SQLScript {
 		}
 		
 	}
-	/**
-	 * 查询,返回一个pojo集合
-	 * 
-	 * @param conn
-	 * @param paras
-	 * @param mapping
-	 * @return
-	 */
+	
+
 	public <T> List<T> select(Class<T> clazz, Map<String, Object> paras) {
 		return this.select(clazz, paras,null);
 	}
 	
-	/**
-	 * 
-	 * @MethodName: mappingSelect   
-	 * @Description: 查询情景不同，调用的handler不同  
-	 * @param @param rs
-	 * @param @param clazz
-	 * @param @param paras
-	 * @param @return  
-	 * @return List<T>  
-	 * @throws
-	 */
+
 	public <T> List<T> mappingSelect(ResultSet rs, Class<T> clazz){
 		List<T> resultList = new ArrayList<T>();
 		
@@ -268,11 +247,7 @@ public class SQLScript {
 		
 	}
 	
-	/**  
-	  * 判断一个类是否为基本数据类型。  
-	  * @param clazz 要判断的类。  
-	  * @return true 表示为基本数据类型。  
-	  */ 
+
 	 private static boolean isBaseDataType(Class<?> clazz)
 	 {   
 	     return 
@@ -294,14 +269,7 @@ public class SQLScript {
 	 }
 	
 
-	/**
-	 *  翻页 
-	 * @param paras
-	 * @param mapping
-	 * @param start
-	 * @param end
-	 * @return
-	 */
+	
 	public <T> List<T> select(Map<String, Object> paras,
 			Class<T> mapping,RowMapper<T> mapper, long start, long size) {
 		SQLScript pageScript = this.sm.getPageSqlScript(this.id);
@@ -311,29 +279,19 @@ public class SQLScript {
 //		return pageScript.se
 	}
 	
-	/**
-	 * 翻页，通上
-	 * @param paras
-	 * @param mapping
-	 * @param start
-	 * @param end
-	 * @return
-	 */
+
 	public <T> List<T> select(Object paras,
 			Class<T> mapping, RowMapper<T> mapper,long start, long end) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
 		return this.select(map, mapping,mapper, start, end);
 	}
-	/**
-	 * 翻页总数
-	 * @param paras
-	 * @return
-	 */
+
 	public long selectCount(Object paras){
 		return this.singleSelect(paras, Long.class);
 	}
 	
+
 	public long selectCount(Map<String, Object> paras){
 		return this.singleSelect(paras, Long.class);
 	}
@@ -408,11 +366,7 @@ public class SQLScript {
 		}
 		return rs;
 	}
-	/****
-	 * 批量更新
-	 * @param obj
-	 * @return
-	 */
+
 	public int[] updateBatch(List<?> list) {
 
 		int[] rs = null;
@@ -451,11 +405,7 @@ public class SQLScript {
 		return rs;
 	}
 
-	/**
-	 * 通过主键查询单条记录
-	 * @param obj
-	 * @return
-	 */
+
 	public <T> T unique(Class<T> clazz,RowMapper<T> mapper, Object objId) {
 		
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
@@ -489,11 +439,7 @@ public class SQLScript {
 		return model;
 	}
 
-	/**
-	 * 根据Id删除
-	 * @param j 
-	 * @param user
-	 */
+
 	public int deleteById(Class<?> clazz, Object objId ) {
 		
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();

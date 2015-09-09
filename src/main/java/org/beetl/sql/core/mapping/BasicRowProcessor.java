@@ -20,10 +20,8 @@ import java.util.Map;
 import org.beetl.sql.core.NameConversion;
 
 /**  
- * @ClassName: BasicRowProcessor   
- * @Description: 基础rs处理器  
+ * 基础rs处理器  
  * @author: suxj  
- * @date:2015年8月2日 上午12:35:15     
  */
 public class BasicRowProcessor implements RowProcessor {
 	

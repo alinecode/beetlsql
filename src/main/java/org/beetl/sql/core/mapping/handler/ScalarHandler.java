@@ -1,15 +1,4 @@
-/**  
- * 文件名:    ScalarHandler.java  
- * 描述:      
- * 作者:      suxj
- * 版本:      1.0  
- * 创建时间:  2015年8月2日 下午13:43:10  
- *  
- * 修改历史:  
- * 日期                          作者           版本         描述  
- * ------------------------------------------------------------------  
- * 2015年8月2日        suxj     1.0     1.0 Version  
- */ 
+
 package org.beetl.sql.core.mapping.handler;
 
 import java.math.BigDecimal;
@@ -23,10 +12,8 @@ import org.beetl.sql.core.kit.NumberKit;
 import org.beetl.sql.core.mapping.ResultSetHandler;
 
 /**  
- * @ClassName: ScalarHandler   
- * @Description: 单值处理器：如select count(*) from user 返回类型为Long
+ * 单值处理器：如select count(*) from user 返回类型为Long
  * @author: suxj  
- * @date:2015年8月2日 下午13:43:10     
  */
 public class ScalarHandler<T> implements ResultSetHandler<T> {
 	
@@ -76,17 +63,14 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
     	
     }
 
+
 	/**
-	 * 
-	 * @MethodName: getColumnValue   
-	 * @Description: 获取字段值
-	 * @param @param rs
-	 * @param @param columnIndex
-	 * @param @param requiredType
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return Object  
-	 * @throws
+	 * 取字段值
+	 * @param rs
+	 * @param columnIndex
+	 * @param requiredType
+	 * @return
+	 * @throws SQLException
 	 */
 	private Object getColumnValue(ResultSet rs, int columnIndex, Class<?> requiredType) throws SQLException {
 		if(requiredType != null){
@@ -96,17 +80,14 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 		}
 	}
 
-	/**
-	 * 
-	 * @MethodName: getResultSetValue   
-	 * @Description: 通过rs.getObject(1)下标 + 期望类型的方式取值    
-	 * @param @param rs
-	 * @param @param columnIndex
-	 * @param @param requiredType
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return Object  
-	 * @throws
+
+	
+	/**通过rs.getObject(1)下标 + 期望类型的方式取值   
+	 * @param rs
+	 * @param columnIndex
+	 * @param requiredType
+	 * @return
+	 * @throws SQLException
 	 */
 	private Object getResultSetValue(ResultSet rs, int columnIndex, Class<?> requiredType) throws SQLException {
 		if(requiredType == null){
@@ -173,16 +154,12 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 		return (rs.wasNull() ? null : value);
 	}
 	
-	/**
-	 * 
-	 * @MethodName: getCloumnValue   
-	 * @Description: 通过下标的方式取值：取值类型为默认类型  
-	 * @param @param rs
-	 * @param @param columnIndex
-	 * @param @return
-	 * @param @throws SQLException  
-	 * @return Object  
-	 * @throws
+
+	/**通过下标的方式取值：取值类型为默认类型
+	 * @param rs
+	 * @param columnIndex
+	 * @return
+	 * @throws SQLException
 	 */
 	private Object getCloumnValue(ResultSet rs, int columnIndex) throws SQLException {
 		Object obj = rs.getObject(columnIndex);

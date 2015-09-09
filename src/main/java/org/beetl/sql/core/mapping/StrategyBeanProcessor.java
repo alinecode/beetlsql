@@ -18,10 +18,8 @@ import java.sql.SQLException;
 
 /**  
  * 扩展：废弃
- * @ClassName: StrategyBeanProcessor   
- * @Description: 策略模式的BeanProcessor，用来扩展Pojo字段和数据库字段的映射  
+ *  策略模式的BeanProcessor，用来扩展Pojo字段和数据库字段的映射  
  * @author: suxj  
- * @date:2015年8月2日 下午2:29:30     
  */
 public class StrategyBeanProcessor extends BeanProcessor {
 	

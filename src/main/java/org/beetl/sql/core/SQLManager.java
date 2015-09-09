@@ -20,6 +20,11 @@ import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.engine.Beetl;
 
+/**
+ *  Beetsql 操作入口
+ * @author xiandafu
+ *
+ */
 public class SQLManager {
 	
 	private DBStyle dbStyle;
@@ -30,16 +35,34 @@ public class SQLManager {
 	Interceptor[] inters = {};
 	Beetl beetl = null;
 	
+	/** 
+	 * @param dbStyle  数据个风格
+	 * @param sqlLoader sql加载
+	 * @param ds 数据库连接
+	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds) {
 		this(dbStyle, sqlLoader, ds, new HumpNameConversion(), new Interceptor[]{});
 
 	}
 	
+	/**
+	 * @param dbStyle  数据个风格
+	 * @param sqlLoader sql加载
+	 * @param ds 数据库连接
+	 * @param nc  数据库名称与java名称转化规则
+	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds,NameConversion nc) {
 		this(dbStyle, sqlLoader, ds, nc, new Interceptor[]{});
 
 	}
 	
+	/**
+	 * @param dbStyle
+	 * @param sqlLoader
+	 * @param ds
+	 * @param nc
+	 * @param inters  
+	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,
 			ConnectionSource ds, NameConversion nc, Interceptor[] inters) {
 		beetl = new Beetl(sqlLoader);
@@ -146,7 +169,7 @@ public class SQLManager {
 	
 	/****
 	 * 获取为分页语句
-	 * @param sql
+	 * @param selectId
 	 * @return
 	 */
 	public SQLScript getPageSqlScript(String selectId) {
@@ -214,8 +237,9 @@ public class SQLManager {
 	 * @param clazz 需要映射的Pojo类
 	 * @param paras Bean
 	 * @param mapper 自定义结果映射方式
-	 * @return List<Pojo>
+	 * @return
 	 */
+
 	public <T> List<T> select(String sqlId, Class<T> clazz, Object paras, RowMapper<T> mapper) { 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("_root",paras);
@@ -366,25 +390,7 @@ public class SQLManager {
 		return script.select(clazz, null,mapper);
 	}
 	
-	/**
-	 * 
-	 * select * from user where 1=1 
-		@if(!isEmpty(name)){
-		 and name=#name#
-		@}
-		@if(!isEmpty(id)){
-		 and id=#id#
-		@}
-		@if(!isEmpty(age)){
-		 and age=#age#
-		@}
-		@if(!isEmpty(userName)){
-		 and userName=#userName#
-		@}
-	 * 
-	 * @param user
-	 * @return
-	 */
+	
 	public <T> List<T> template(T t) {
 		SQLScript script = getScript(t.getClass(), SELECT_BY_TEMPLATE);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -413,14 +419,11 @@ public class SQLManager {
 		return (List<T>) pageScript.select(t.getClass(), param,mapper);
 	}
 	
+
 	/**
 	 * 查询总数
-	 * @MethodName: selectCountByTemplate   
-	 * @Description: TODO  
-	 * @param @param t
-	 * @param @return  
-	 * @return long  
-	 * @throws
+	 * @param t
+	 * @return
 	 */
 	public <T> long templateCount(T t) {
 		SQLScript script = getScript(t.getClass(), SELECT_COUNT_BY_TEMPLATE);
@@ -575,23 +578,10 @@ public class SQLManager {
 		return script.updateBatch(maps);
 	}
 	
-	/**
-	 * 
-	 * 需要处理","的问题，可能会出现update set user name=#name#, wehre 1=1 and ....的情况
-	 * 
-	 * update user set 
-		@if(!isEmpty(name)){
-			name=#name#,
-		@}
-		@if(!isEmpty(id)){
-			id=#id#,
-		@}
-		@if(!isEmpty(age)){
-			age=#age#,
-		@}
-		@if(!isEmpty(userName)){
-			userName=#userName#
-		@} 
+
+	/** 更新指定表
+	 * @param clazz
+	 * @param param 参数
 	 * @return
 	 */
 	public int updateAll(Class<?> clazz, Object param){
@@ -615,7 +605,13 @@ public class SQLManager {
 	}
 	
 	
-	//  直接执行sql语句	
+	
+	/** 直接执行语句
+	 * @param sql
+	 * @param clazz
+	 * @param paras
+	 * @return
+	 */
 	public <T> List<T> execute(String sql,Class<T> clazz, Object paras){
 		String key ="auto._gen_" +sql;
 		SQLSource source = sqlLoader.getGenSQL(key);
@@ -628,6 +624,12 @@ public class SQLManager {
 		return script.select(clazz, paras);
 	}
 	
+	/** 直接执行sql语句
+	 * @param sql
+	 * @param clazz
+	 * @param paras
+	 * @return
+	 */
 	public <T> List<T> execute(String sql,Class<T> clazz, Map paras){
 		String key ="auto._gen_" +sql;
 		SQLSource source = sqlLoader.getGenSQL(key);
@@ -641,6 +643,11 @@ public class SQLManager {
 	}
 	
 	
+	/** 直接执行sql更新
+	 * @param sql
+	 * @param paras
+	 * @return
+	 */
 	public int  executeUpdate(String sql,Object paras){
 		String key ="auto._gen_" +sql;
 		SQLSource source = sqlLoader.getGenSQL(key);
@@ -655,6 +662,11 @@ public class SQLManager {
 		return script.update(map);
 	}
 	
+	/** 直接更新sql
+	 * @param sql
+	 * @param paras
+	 * @return
+	 */
 	public int  executeUpdate(String sql,Map paras){
 		String key ="auto._gen_" +sql;
 		SQLSource source = sqlLoader.getGenSQL(key);
