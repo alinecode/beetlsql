@@ -62,7 +62,7 @@ public class DebugInterceptor implements Interceptor {
 		sb.append("======DebugInterceptor Before======\n")
 			.append("sqlId : "+sqlId).append("\n")
 			.append("sql ： " + sql)
-			.append("paras : " + paras);
+			.append("\nparas : " + paras);
 		System.out.println(sb.toString());
 	}
 	

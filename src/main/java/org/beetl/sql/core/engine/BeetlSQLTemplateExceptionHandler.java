@@ -93,4 +93,12 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 		return sdf.format(date);
 	}
+	
+	protected String getResourceName(String resourceId)
+	{
+		if(resourceId.length()>20){
+			return resourceId.substring(0,20);
+		}
+		return resourceId;
+	}
 }

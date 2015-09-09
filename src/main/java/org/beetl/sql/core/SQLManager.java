@@ -2,10 +2,10 @@ package org.beetl.sql.core;
 
 import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
 import static org.beetl.sql.core.kit.Constants.INSERT;
-import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
 import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
 import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
 import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
 import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
 import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
 import static org.beetl.sql.core.kit.Constants.classSQL;
@@ -612,6 +612,58 @@ public class SQLManager {
 	 */
 	public void useMaster(MasterRunner f){
 		f.start(this);
+	}
+	
+	
+	//  直接执行sql语句	
+	public <T> List<T> execute(String sql,Class<T> clazz, Object paras){
+		String key ="auto._gen_" +sql;
+		SQLSource source = sqlLoader.getGenSQL(key);
+		if(source==null){
+			source = new SQLSource(key,sql);
+			this.sqlLoader.addGenSQL(key, source);		
+		}
+	
+		SQLScript script = new SQLScript(source,this);
+		return script.select(clazz, paras);
+	}
+	
+	public <T> List<T> execute(String sql,Class<T> clazz, Map paras){
+		String key ="auto._gen_" +sql;
+		SQLSource source = sqlLoader.getGenSQL(key);
+		if(source==null){
+			source = new SQLSource(key,sql);
+			this.sqlLoader.addGenSQL(key, source);		
+		}
+	
+		SQLScript script = new SQLScript(source,this);
+		return script.select(clazz, paras);
+	}
+	
+	
+	public int  executeUpdate(String sql,Object paras){
+		String key ="auto._gen_" +sql;
+		SQLSource source = sqlLoader.getGenSQL(key);
+		if(source==null){
+			source = new SQLSource(key,sql);
+			this.sqlLoader.addGenSQL(key, source);		
+		}
+	
+		SQLScript script = new SQLScript(source,this);
+		Map map = new HashMap();
+		map.put("_root", paras);
+		return script.update(map);
+	}
+	
+	public int  executeUpdate(String sql,Map paras){
+		String key ="auto._gen_" +sql;
+		SQLSource source = sqlLoader.getGenSQL(key);
+		if(source==null){
+			source = new SQLSource(key,sql);
+			this.sqlLoader.addGenSQL(key, source);		
+		}
+		SQLScript script = new SQLScript(source,this);
+		return script.update(paras);
 	}
 	
 	
