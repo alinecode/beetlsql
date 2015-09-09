@@ -24,12 +24,14 @@ public class Trans implements Interceptor {
 		try{
 			inTrans.set(true);
 			inv.invoke();
+			commit();
 		}catch(RuntimeException ex){
-			ex.printStackTrace();
+			
 			rollback();
+			throw ex;
 		}finally{
 			inTrans.set(false);
-			commit();
+			
 		}
 		
 	
@@ -54,8 +56,7 @@ public class Trans implements Interceptor {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.err.println("commit error of connection "+conn);
 				}
 			}
 			

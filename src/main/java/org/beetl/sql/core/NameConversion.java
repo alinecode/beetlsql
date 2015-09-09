@@ -21,7 +21,7 @@ public abstract class NameConversion {
 		/****
 	 * 根据class和colName获取属性名
 	 * @param c
-	 * @param attrName
+	 * @param colName
 	 * @return
 	 */
 	public abstract String getPropertyName(Class<?> c,String colName);

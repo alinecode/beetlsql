@@ -3,7 +3,7 @@ package org.beetl.sql.core;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QueryResultBean implements QueryResult {
+public class TailBean implements Tail {
 	protected Map<String,Object> extMap = new HashMap<String,Object>();
 	
 	public Object get(String key){

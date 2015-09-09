@@ -310,7 +310,7 @@ public class SQLManager {
 	 * 根据主键查询
 	 * 获取唯一记录，如果纪录不存在，将会抛出异常
 	 * @param clazz
-	 * @param pkValues 主键 
+	 * @param pk 主键 
 	 * @return
 	 */
 	public <T> T unique(Class<T> clazz,Object pk) {
@@ -474,7 +474,7 @@ public class SQLManager {
 	 * 
 	 * 根据Id删除数据：支持联合主键
 	 * @param clazz
-	 * @param value
+	 * @param pkValue
 	 * @return
 	 */
 	public int deleteById(Class<?> clazz, Object pkValue) {
@@ -503,19 +503,8 @@ public class SQLManager {
 	
 	/**
 	 * 
-	 * 需要处理","的问题，可能会出现update set user name=#name#, wehre 1=1 and ....的情况
-	 * 
-		update user set 
-		@if(!isEmpty(name)){
-			name=#name#,
-		@}
-		@if(!isEmpty(age)){
-			age=#age#,
-		@}
-		@if(!isEmpty(userName)){
-			userName=#userName#
-		@} 
-		 where 1=1 and id= #id# and name= #name#
+	 * 需要处理","的问题，可能会出现
+		
 	 * 
 	 * @param obj
 	 * @return
@@ -560,7 +549,7 @@ public class SQLManager {
 	
 	/**  对pojo批量更新执行sql更新语句
 	 * @param sqlId 
-	 * @param paras 
+	 * @param list 
 	 * @return
 	 */
 	public int[] updateBatch(String sqlId,List<?> list){

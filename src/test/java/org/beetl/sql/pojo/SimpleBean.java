@@ -1,10 +1,10 @@
 package org.beetl.sql.pojo;
 
-import org.beetl.sql.core.QueryResultBean;
+import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.Table;
 
 @Table(name="user")
-public class SimpleBean extends QueryResultBean {
+public class SimpleBean extends TailBean {
 	public int id ;
 
 	public int getId() {

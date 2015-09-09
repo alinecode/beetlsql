@@ -10,7 +10,7 @@ import org.beetl.sql.core.mapping.ResultSetHandler;
 import org.beetl.sql.core.mapping.RowProcessor;
 
 /**  
- * 将rs处理为List<Map<String ,Object>>  
+ * 将rs处理为List&lt;Map&lt;String ,Object&gt;&gt;  
  * @author: suxj  
  */
 public class MapListHandler implements ResultSetHandler<java.util.List<java.util.Map<String, Object>>> {

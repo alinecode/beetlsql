@@ -22,8 +22,8 @@ import java.util.Map;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
-import org.beetl.sql.core.QueryResult;
-import org.beetl.sql.core.QueryResultBean;
+import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.TailBean;
 
 /**
  * Pojo处理器，负责转换
@@ -87,7 +87,7 @@ public class BeanProcessor {
 
 	
 	/**
-	 * 将ResultSet映射为一个List<POJO>集合 
+	 * 将ResultSet映射为一个List&lt;POJO&gt;集合 
 	 * @param rs
 	 * @param type
 	 * @return
@@ -115,7 +115,7 @@ public class BeanProcessor {
 	
 	
 	/**
-	 * 将rs转化为Map<String ,Object>
+	 * 将rs转化为Map&lt;String ,Object&gt;
 	 * @param c
 	 * @param rs
 	 * @return
@@ -224,8 +224,8 @@ public class BeanProcessor {
 		for (int i = 1; i < columnToProperty.length; i++) {
 			//Array.fill数组为-1 ，-1则无对应name
 			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
-				if(bean instanceof QueryResult){
-					QueryResult  bean2 = (QueryResult)bean;
+				if(bean instanceof Tail){
+					Tail  bean2 = (Tail)bean;
 					Object value = rs.getObject(i);
 					String key = rs.getMetaData().getColumnLabel(i);
 					key = this.nc.getPropertyName(type, key);

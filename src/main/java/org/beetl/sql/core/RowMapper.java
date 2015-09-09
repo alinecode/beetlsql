@@ -14,7 +14,6 @@ public interface RowMapper<T> {
 	 * @param  obj 正常处理后的对象
 	 * @param  rs 结果集
 	 * @param  rowNum 处理的记录位置(第几条记录)：可以只针对某一条记录做特殊处理
-	 * @param 
 	 * @throws SQLException  
 	 * @return T  
 	 */

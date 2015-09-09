@@ -294,6 +294,12 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public int[] updateBatch(String sqlId,List<?> list) 批量更新
 * public int[] updateBatch(String sqlId,Map<String, Object>[] maps) 批量更新，参数是个数组，元素类型是map
 
+直接执行sql语句
+
+* public <T> List<T> execute(String sql,Class<T> clazz, Object paras)
+* public <T> List<T> execute(String sql,Class<T> clazz, Map paras)
+* public int  executeUpdate(String sql,Object paras)  返回成功执行条数
+* public int  executeUpdate(String sql,Map paras) 返回成功执行条数
 
 
 ## BeetlSQL Annotation
@@ -309,10 +315,12 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * @AssignID，作用于getter方法，告诉beetlsql，这是主键，且由代码设定主键
 * @SeqID(name="xx_seq"，作用于getter方法，告诉beetlsql，这是序列主键。
 
+对于属性名为id的自增主键，不需要加annotation，beetlsql默认就是@AutoID
+
 （注，如果想要获取自增主键或者序列主键，需要在SQLManager.insert中传入一个KeyHolder)
 
 
-## BeetlSQL 模型
+## BeetlSQL 数据模型
 
 BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
@@ -320,10 +328,10 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
 * Map/List, 对于一些敏捷开发，可以直接使用Map/List 作为输入输出参数
 
-* 混合模型，推荐使用混合模型。兼具灵活性和更好的维护性。Pojo可以实现QueryResult，或者继承QueryResultBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如下一个混合模型:
+* 混合模型，推荐使用混合模型。兼具灵活性和更好的维护性。Pojo可以实现Tail（尾巴的意思)，或者继承TailBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如下一个混合模型:
 
 	/*混合模型*/
-	public User extends QueryResultBean{
+	public User extends TailBean{
 		private int id ;
 		pirvate String name;
 		private int roleId;

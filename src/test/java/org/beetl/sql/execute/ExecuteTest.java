@@ -34,7 +34,7 @@ public class ExecuteTest {
 		List<User> list = manager.execute("select * from user", User.class, new HashMap());
 		System.out.println(list.size());
 	
-		 list = manager.execute("select * from user where name = #name#", User.class, Params.start().add("name", "joel").end());
+		 list = manager.execute("select * from user where name = #name#", User.class, Params.ins().add("name", "joel").map());
 		System.out.println(list.size());
 		User query = new User();
 		query.setName("gk_0");;

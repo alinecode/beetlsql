@@ -1,37 +1,20 @@
-/**  
- * 文件名:    NumberKit.java  
- * 描述:      
- * 作者:      suxj
- * 版本:      1.0  
- * 创建时间:  2015年8月24日 上午9:29:34  
- *  
- * 修改历史:  
- * 日期                          作者           版本         描述  
- * ------------------------------------------------------------------  
- * 2015年8月24日        suxj     1.0     1.0 Version  
- */ 
 package org.beetl.sql.core.kit;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**  
- * @ClassName: NumberKit   
- * @Description: Number工具类
+ * Number工具类
  * @author: suxj  
- * @date:2015年8月24日 上午9:29:34     
  */
 public class NumberKit {
 
+
 	/**
-	 * 
-	 * @MethodName: convertNumberToTargetClass   
-	 * @Description: 将Number转化为期望类型  
-	 * @param @param number
-	 * @param @param targetClass
-	 * @param @return  
-	 * @return T  
-	 * @throws
+	 * 将Number转化为期望类型  
+	 * @param number
+	 * @param targetClass
+	 * @return
 	 */
 	public static <T extends Number> T convertNumberToTargetClass(Number number, Class<T> targetClass) {
 		if(number == null){
@@ -105,14 +88,12 @@ public class NumberKit {
 		}
 	}
 	
+	
 	/**
-	 * 
-	 * @MethodName: parseNumber   
-	 * @Description: 将String转化为期望类型  
-	 * @param @param text 转化文本
-	 * @param @param targetClass 期望类型
-	 * @return T  java.lang.Number
-	 * @throws
+	 * 将String转化为期望类型 
+	 * @param text
+	 * @param targetClass
+	 * @return
 	 */
 	public static <T extends Number> T parseNumber(String text, Class<T> targetClass) {
 		if(text == null){
@@ -154,31 +135,25 @@ public class NumberKit {
 		}
 	}
 	
+	
 	/**
-	 *      Signopt 0x HexDigits 
+	 * Signopt 0x HexDigits 
 		    Signopt 0X HexDigits 
 		    Signopt # HexDigits 
-		    
-	 * @MethodName: isHexNumber   
-	 * @Description: 是否为十六进制  
-	 * @param @param value
-	 * @param @return  
-	 * @return boolean  
-	 * @throws
+		是否为十六进制
+	 * @param value
+	 * @return
 	 */
 	private static boolean isHexNumber(String value) {
 		int index = (value.startsWith("-") ? 1 : 0);
 		return (value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith("#", index));
 	}
 	
+
 	/**
-	 * 
-	 * @MethodName: decodeBigInteger   
-	 * @Description: 解码BigInteger  
-	 * @param @param value
-	 * @param @return  
-	 * @return BigInteger  
-	 * @throws
+	 * 解码BigInteger
+	 * @param value
+	 * @return
 	 */
 	private static BigInteger decodeBigInteger(String value) {
 		int radix = 10; //进制

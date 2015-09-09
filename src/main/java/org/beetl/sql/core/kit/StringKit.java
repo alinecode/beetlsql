@@ -53,14 +53,11 @@ public class StringKit {
 		return sb.toString();
 	}
 	
+	
 	/**
-	 * 
-	 * @MethodName: trimAllWhitespace   
-	 * @Description: 去空格  
-	 * @param @param str
-	 * @param @return  
-	 * @return String  
-	 * @throws
+	 * 去空格 
+	 * @param str
+	 * @return
 	 */
 	public static String trimAllWhitespace(String str) {
 		if (!((CharSequence) str != null && ((CharSequence) str).length() > 0)) {

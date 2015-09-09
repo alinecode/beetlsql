@@ -60,7 +60,7 @@ public class MetadataManager {
 	/***
 	 * 字段是否存在
 	 * @param cls
-	 * @param colName
+	 * @param fieldName
 	 * @return
 	 */
 	public boolean existPropertyName(Class<?> cls, String fieldName) {

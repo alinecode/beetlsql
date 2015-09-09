@@ -32,7 +32,6 @@ public class Beetl {
 	/***
 	 * 加载cfg自定义配置
 	 * 
-	 * @param cfg
 	 * @return
 	 */
 	public Properties loadDefaultConfig () {

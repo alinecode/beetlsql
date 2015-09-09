@@ -11,7 +11,7 @@ import org.beetl.sql.core.mapping.RowProcessor;
 
 
 /**  
- * 将rs处理为Map<String ,Object>  
+ * 将rs处理为Map&lt;String ,Object&gt;  
  * @author: suxj  
  */
 public class MapHandler implements ResultSetHandler<java.util.Map<String ,Object>> {

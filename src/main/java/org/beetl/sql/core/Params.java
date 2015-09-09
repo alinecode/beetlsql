@@ -6,14 +6,15 @@ import java.util.Map;
 /**
  *  辅助生成Map
  *  <pre>
- *  Map paras = Params.start().add("name",name).end();
+ *  Map paras = Params.ins().add("name",name).map
+ *  ();
  *  </pre>
  * @author xandafu
  *
  */
 public class Params {
 	
-	public static Params start(){
+	public static Params ins(){
 		return new Params();
 	}
 	Map map = new HashMap();
@@ -22,7 +23,7 @@ public class Params {
 		map.put(name, value);
 		return this;
 	}
-	public Map end(){
+	public Map map(){
 		return map;
 	}
 }
