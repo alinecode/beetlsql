@@ -145,6 +145,7 @@ public class ClasspathLoader implements SQLLoader {
 			int lineNum = 0;
 			int findLineNum = 0;
 			while ((temp = bf.readLine()) != null) {
+				temp = temp.trim();
 				lineNum++;
 				if (temp.startsWith("===")) {// 读取到===号，说明上一行是key，下面是SQL语句
 					if (!list.isEmpty() && list.size() > 1) {// 如果链表里面有多个，说明是上一句的sql+下一句的key
