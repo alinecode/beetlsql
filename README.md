@@ -7,7 +7,7 @@
 
 #beetlsql 特点
 
-BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。
+BeetSql是一个**全功能DAO工具**， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。
 
 * 无需注解，自动生成大量内置SQL，轻易完成增删改查功能
 * 数据模型支持Pojo，也支持Map/List这种快速模型，也支持混合模型
@@ -413,9 +413,115 @@ SQL语句可以动态生成，基于Beetl语言，这是因为
 
 如果不了解beetl，可先自己尝试按照js语法来写sql模板，如果还有疑问，可以查阅官网 http://ibeetl.com
 
+## Beetl 入门
+Beetl 语法类似js，java，如下做简要说明，使用可以参考http://ibeetl.com或者在线体验http://ibeetl.com:8080/beetlonline/
+
+### 定界符号
+默认的定界符号是@ 和 回车。 里面可以放控制语句，表达式等语，，站位符号是##,站位符号默认是输出？，并在执行sql的传入对应的值。如果想在占位符号输出变量值，则需要使用text函数
+
+	@if(isEmpty(name)){
+		and name = #name#
+	}
+
+### 变量
+
+通过程序传入的变量叫全局变量，可以在sql模板里使用，也可以定义变量，如
+
+	@var count = 3;
+	@var status = {"a":1}  //json变量
+
+### 算数表达式
+
+同js，如a+1-b%30, i++ 等
+
+### 逻辑表达式
+
+有“&&” “||” ，还有 “！”，分别表示与，或，非， beetl也支持三元表达式
+
+	#user.gender=1?'女':'男'#
+
+### 控制语句
+
+* if else 这个同java，c，js。
+* for,循环语句，如for(id:ids){}
+* while 循环语句 ，如while(i<count)
+
+### 访问变量属性
+
+* 如果是对象，直接访问属性名，user.name
+* 如果是Map，用key访问 map["key"];
+* 如果是数组或者list，用索引访问，如list[1],list[i];
+* 可以直采用java方式访问变量的方法和属性，如静态类Constatns
+	
+	public class Constatns{
+		public static int 	RUNNING = 0;
+		public static User getUser(){}
+	}
+
+可以在模板里访问
+	
+	select * from user where status = #@Constatns.RUNNING# and id = #@Constatns.getUser().getId()#
+
+	注意，如果Constants 类 没有导入进beetl，则需要带包名，导入beetl方法是配置IMPORT_PACKAGE=包名.;包名.
+
+###判断对象非空
+
+可以采用isEmpty判断变量表达式是否为空(为null)，是否存在，如果是字符串，是否是空字符串，如
+
+	if(isEmpty(user)||isEmpty(role.name))
+
+也可以用传统方法判断，如
+	
+	if(user==null) or if(role.name!=null)
+
+变量有可能不存在，则需要使用安全输出符号，如
+
+	if(null==user.name!)
+
+变量表达式后面跟上"!" 表示如果变量不存在，则为！后面的值，如果！后面没有值，则为null
+
+	
+### 调用方法
+
+同js，唯一值得注意的是，在占位符里调用text方法，会直接输出变量而不是“？”，其他以db开头的方式也是这样。
+beetl提供了很多内置方法，如print，debug,isEmpty等，具体请参考文档
+
+### 自定义方法
+
+通过配置btsql-ext.properties, 可以注册自己定义的方法在beetlsql里使用，如注册一个返回当前年份的函数，可以在btsql-ext.properties加如下代码
+
+	FN.db.year= com.xxx.YearFunction
+
+这样在模板里,可以调用db.year() 获得当前年份。YearFunction 需要实现Function的 call方法，如下是个简单代码
+
+	public class YearFunction implements Function{
+		public String call(Object[] paras, Context ctx){
+			return "2015";
+		}
+	}
+
+关于如何完成自定义方法，请参考 ibeetl 官方文档
 
 
+## Debug功能
 
+Debug 期望能在控制台或者日志系统输出执行的sql语句，参数，执行结果以及执行时间，可以采用系统内置的DebugInterceptor 来完成，在构造SQLManager的时候，传入即可
+
+	SqlManager sqlManager = new SqlManager(source,mysql,loader,nc ,new Interceptor[]{new DebugInterceptor() });
+
+或者通过spring，jfianl这样框架配置完成。使用后，执行beetlsql，会有类似输出
+
+	======DebugInterceptor Before======
+	sqlId :user.updatexxx
+	sql ： insert into user (id,name,age) values (?,?,?)
+	paras : [4, old, null]
+	======DebugInterceptor After======
+	sqlId : user.updatexxx
+	execution time : 54ms
+	成功更新[1]
+	
+	
+beetlsql会分别输出 执行前的sql和参数，以及执行后的结果和耗费的时间。你可以参考DebugInterceptor 实现自己的调试输出
 
 ##Interceptor功能
 
@@ -434,13 +540,16 @@ BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会�
 		public void after(InterceptorContext ctx);
 	}
 
-InterceptorContext 如下，包含了sqlId，实际得sql，和实际得参数
+InterceptorContext 如下，包含了sqlId，实际得sql，和实际得参数, 也包括执行结果result。对于查询，执行结果是查询返回的结果集条数，对于更新，返回的是成功条数，如果是批量更新，则是一个数组。可以参考源码DebugInterceptor
 
 	public class InterceptorContext {
 		private String sqlId;
 		private String sql;
 		private  List<Object> paras;
+		private boolean isUpdate = false ;
+		private Object result ;
 		private Map<String,Object> env  = null;
+		
 	}
 
 
@@ -496,6 +605,7 @@ BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操
 	}
 
 
+注意，对于使用者来说，无需关心本节说的内容，仅仅供要定制主从逻辑的架构师。
 
 ## 可以支持更复杂的分库分表逻辑
 
@@ -532,18 +642,6 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 * DbStyle 描述了数据库特性，注入insert语句，翻页语句都通过其子类完成，用户无需操心
 * 提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等
 
-
-##添加自定义方法
-
-使用方式同Beetl，可以在btsql-ext.properties里添加自定义的函数. 需要注意的是，beetlsql在**站位符里**总是输出 ?,除非你的函数名是以db开头，如db.ifNull,dbLog等。 或者使用内置的text 函数。对于如下sql语句
-
-	select * from ${dbLog()} where id = ${id} and status = "${text(@Constants.RUNNING)}"
-
-会生成如下语句
-
-	select * from xxxLog where id = ? and status = "on".
-
-问号对应的的值是变量id
 
 
 
