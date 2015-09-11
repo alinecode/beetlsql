@@ -20,7 +20,7 @@ public class SQLPlaceholderST extends Statement
 	public Expression expression;
 	public Type type = null;
 	FormatExpression format;
-	public static Set<String> textFunList = new HashSet<String>();
+	public static final Set<String> textFunList = new HashSet<String>();
 	static{
 		textFunList.add("text");
 	}

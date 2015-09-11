@@ -13,14 +13,14 @@ public class Beetl {
 	GroupTemplate gt = null;  
 	public Beetl(SQLLoader loader) {
 		try {
-			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader);
+			
 			Properties ps = loadDefaultConfig();
 			Properties ext = loadExtConfig();
 			ps.putAll(ext);
-			Configuration cfg =new Configuration(ps);			
-			gt = new GroupTemplate(resourceLoader, cfg);
-			
 			boolean product = Boolean.parseBoolean(ps.getProperty("PRODUCT_MODE"));
+			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader,product);
+			Configuration cfg =new Configuration(ps);			
+			gt = new GroupTemplate(resourceLoader, cfg);		
 			loader.setAutoCheck(!product);
 			
 		} catch (Exception ex) {

@@ -8,7 +8,8 @@ import org.beetl.sql.core.SQLSource;
 
 public class StringSqlTemplateLoader implements ResourceLoader {
 	SQLLoader sqlLoader;
-	public StringSqlTemplateLoader (SQLLoader sqlLoader){
+	boolean autoCheck = true ;
+	public StringSqlTemplateLoader (SQLLoader sqlLoader,boolean autoCheck){
 		this.sqlLoader = sqlLoader;
 	}
 	@Override
@@ -19,7 +20,8 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 
 	@Override
 	public boolean isModified(Resource key) {
-		return false ;
+		if( autoCheck) return  key.isModified() ;
+		else return false ;
 
 	}
 

@@ -358,7 +358,6 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
 
 
-
 ##Markdown方式管理
 ---
 BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，如User对象放到user.md 里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是
@@ -386,6 +385,13 @@ BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件�
 SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，确认是否有select语句，如果没有，则会寻找sql/user.md 
 
 (注:默认的ClasspathLoader采用了这种方法，你可以实现SQLLoader来实现自己的格式和sql存储方式，如数据库存储)
+
+## 开发模式和产品模式
+
+beetlsql默认是开发模式，因此修改md的sql文件，不需要重启。但建议线上不要使用开发模式，因为此模式会每次sql调用都会检测md文件是否变化。可以通过修改/btsql-ext.properties ,修改如下属性改为产品模式
+
+	PRODUCT_MODE = true
+
 
 		
 ##SQL 模板基于Beetl实现，更容易写和调试，以及扩展	
@@ -422,6 +428,15 @@ Beetl 语法类似js，java，如下做简要说明，使用可以参考http://i
 	@if(isEmpty(name)){
 		and name = #name#
 	}
+
+如果想修改定界符，可以增加一个/btsql-ext.properties. 设置如下属性
+
+	DELIMITER_PLACEHOLDER_START=#
+	DELIMITER_PLACEHOLDER_END=#
+	DELIMITER_STATEMENT_START=@
+	DELIMITER_STATEMENT_END=
+
+beetlsql 的其他属性也可以在此文件里设置
 
 ### 变量
 
@@ -483,7 +498,8 @@ Beetl 语法类似js，java，如下做简要说明，使用可以参考http://i
 	
 ### 调用方法
 
-同js，唯一值得注意的是，在占位符里调用text方法，会直接输出变量而不是“？”，其他以db开头的方式也是这样。
+同js，唯一值得注意的是，在占位符里调用text方法，会直接输出变量而不是“？”，其他以db开头的方式也是这样。架构师可以设置SQLPlaceholderST.textFunList.add(xxxx) 来决定那些方法在占位符号里可以直接输出文本而不是符号"?"
+
 beetl提供了很多内置方法，如print，debug,isEmpty等，具体请参考文档
 
 ### 自定义方法

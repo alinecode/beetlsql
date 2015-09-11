@@ -33,6 +33,9 @@ public class Test {
 //    	testManagergenera();
     	testUse();
 //    	testNameConve();
+    	String a = "  \nabc  \ncc\n\n".trim();
+    	System.out.println(a);
+    	
 	}
    
     public static void testManagergenera(){

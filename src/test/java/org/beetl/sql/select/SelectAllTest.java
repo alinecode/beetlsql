@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.beetl.sql.buildsql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.Params;
 import org.beetl.sql.core.RowMapper;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
@@ -32,7 +33,7 @@ public class SelectAllTest {
 		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
 	}
 
-//	@Test
+	@Test
 	public void selectAll(){
 		
 		List<User> userList = manager.all(User.class);
@@ -53,7 +54,7 @@ public class SelectAllTest {
 		
 	}
 	
-//	@Test
+	@Test
 	public void selectAll_RowMapper(){
 		
 		List<User> userList = manager.all(User.class, new RowMapper<User>() {
@@ -69,6 +70,16 @@ public class SelectAllTest {
 		for(User user : userList){
 			System.out.println(user);
 		}
+		
+	}
+	
+	
+	@Test
+	public void selectLike(){
+		
+		List users = manager.execute("select * from user where name like #'%'+name+'%'#",
+				User.class,Params.ins().add("name", "_1").map());
+		System.out.println(users);
 		
 	}
 	
