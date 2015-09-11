@@ -1,8 +1,9 @@
 package org.beetl.sql.core.engine;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.beetl.core.Context;
 import org.beetl.core.InferContext;
@@ -19,7 +20,7 @@ public class SQLPlaceholderST extends Statement
 	public Expression expression;
 	public Type type = null;
 	FormatExpression format;
-	static List<String> textFunList = new ArrayList<String>();
+	public static Set<String> textFunList = new HashSet<String>();
 	static{
 		textFunList.add("text");
 	}
