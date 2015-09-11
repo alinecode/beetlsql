@@ -155,7 +155,7 @@ public class ClasspathLoader implements SQLLoader {
 						while (!list.isEmpty()) {// 拼装成一句sql
 							sql.append(list.pollFirst() + lineSeparator);
 						}
-						SQLSource source = new SQLSource(modelName + key,sql.toString());
+						SQLSource source = new SQLSource(modelName + key,sql.toString().trim());
 						source.setLine(findLineNum);
 						sqlSourceMap.put(modelName + key, source);// 放入map
 						list.addLast(tempKey);// 把下一句的key又放进来
@@ -171,7 +171,7 @@ public class ClasspathLoader implements SQLLoader {
 			while (!list.isEmpty()) {
 				sql.append(list.pollFirst()+lineSeparator);
 			}
-			SQLSource source = new SQLSource(modelName + key,sql.toString());
+			SQLSource source = new SQLSource(modelName + key,sql.toString().trim());
 			source.setLine(findLineNum);
 			sqlSourceMap.put(modelName + key,source);
 		} catch (IOException e) {
