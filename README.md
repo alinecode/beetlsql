@@ -449,6 +449,8 @@ beetlsql 的其他属性也可以在此文件里设置
 
 同js，如a+1-b%30, i++ 等
 
+	select * from user where name like #'%'+name+'%'#
+
 ### 逻辑表达式
 
 有“&&” “||” ，还有 “！”，分别表示与，或，非， beetl也支持三元表达式
@@ -459,6 +461,14 @@ beetlsql 的其他属性也可以在此文件里设置
 
 * if else 这个同java，c，js。
 * for,循环语句，如for(id:ids){}
+	
+	select * from user where status in (
+	@for(id in ids){
+	#id# #idLP.isLast?"":","#
+	@}
+注意：变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档
+
+	
 * while 循环语句 ，如while(i<count)
 
 ### 访问变量属性
@@ -473,7 +483,7 @@ beetlsql 的其他属性也可以在此文件里设置
 		public static User getUser(){}
 	}
 
-可以在模板里访问
+直接以java方式访问，需要再变量符号前加上@，可以在模板里访问
 	
 	select * from user where status = #@Constatns.RUNNING# and id = #@Constatns.getUser().getId()#
 

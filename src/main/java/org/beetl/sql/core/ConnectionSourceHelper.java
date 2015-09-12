@@ -79,4 +79,5 @@ class SimpleConnectoinSource implements ConnectionSource {
 	public Connection getSlave() {
 		return this.getMaster();
 	}
+	
 }

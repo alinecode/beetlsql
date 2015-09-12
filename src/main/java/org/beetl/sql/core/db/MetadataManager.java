@@ -141,7 +141,10 @@ public class MetadataManager {
 	
 	private void close(Connection conn){
 		try{
-			conn.close();
+			if(!ds.isTransaction()){
+				conn.close();
+			}
+			
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
