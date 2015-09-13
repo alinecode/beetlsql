@@ -83,4 +83,14 @@ public class SelectAllTest {
 		
 	}
 	
+	@Test
+	public void selectUse(){
+		User para = new User();
+		para.setName("name1");
+		List users = manager.select("user.selectByExample", User.class, para);
+		
+		System.out.println(users);
+		
+	}
+	
 }

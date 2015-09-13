@@ -17,7 +17,7 @@ public class UseFunction implements Function {
 		// 保留，免得被覆盖
 		List list = (List)ctx.getGlobal("_paras");
 		String file = this.getParentId(ctx);
-		SQLResult result = sm.getSQLResult(file+"."+id, ctx.globalVar);
+		SQLResult result = sm.getSQLResult(file+"."+id, ctx.globalVar,(String)ctx.getGlobal("_id"));
 		list.addAll(result.jdbcPara);
 		ctx.set("_paras", list);
 		try {

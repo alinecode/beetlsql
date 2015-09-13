@@ -27,7 +27,7 @@ public class SQLVarRef extends VarRef {
 				return super.evaluate(ctx);
 			} else {
 				try {
-					String text = this.attributes[0].token.text;
+					
 					Object realValue = ObjectAA.defaultObjectAA().value(o, attr);
 					ctx.vars[varIndex] = realValue;
 					

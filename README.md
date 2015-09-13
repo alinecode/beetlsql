@@ -424,7 +424,7 @@ SQL语句可以动态生成，基于Beetl语言，这是因为
 如果不了解beetl，可先自己尝试按照js语法来写sql模板，如果还有疑问，可以查阅官网 http://ibeetl.com
 
 ## Beetl 入门
-Beetl 语法类似js，java，如下做简要说明，使用可以参考http://ibeetl.com，或者在线体验http://ibeetl.com:8080/beetlonline/
+Beetl 语法类似js，java，如下做简要说明，使用可以参考   http://ibeetl.com，或者在线体验  http://ibeetl.com:8080/beetlonline/
 
 ### 定界符号
 默认的定界符号是@ 和 回车。 里面可以放控制语句，表达式等语，，站位符号是##,站位符号默认是输出？，并在执行sql的传入对应的值。如果想在占位符号输出变量值，则需要使用text函数

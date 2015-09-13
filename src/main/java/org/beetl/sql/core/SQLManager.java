@@ -103,6 +103,10 @@ public class SQLManager {
 		SQLScript script = getScript(id);
 		return script.run(paras);
 	}
+	public SQLResult getSQLResult(String id, Map<String, Object> paras,String parentId) {
+		SQLScript script = getScript(id);
+		return script.run(paras,parentId);
+	}
 
 	public SQLScript getScript(String id) {
 		SQLSource source  = sqlLoader.getSQL(id);

@@ -26,7 +26,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 				.append(":").append(error.getErrorTokenText()).append(" 位于").append(line+startLine).append("行").append(" 资源:")
 				.append(getResourceName(ex.resourceId));
 
-		System.err.println(sb.toString());
+		System.out.println(sb.toString());
 		if (ex.getMessage() != null)
 		{
 			println(writer, ex.getMessage());
@@ -69,8 +69,11 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 			println(writer, "  调用栈:");
 			for (int i = 0; i < error.getResourceCallStack().size(); i++)
 			{
-				println(writer, "  " + error.getResourceCallStack().get(i) + " 行："
-						+ error.getTokenCallStack().get(i).line);
+				String errorId = error.getResourceCallStack().get(i);
+				SqlTemplateResource errorResource = (SqlTemplateResource)ex.gt.getResourceLoader().getResource(errorId);
+				startLine = errorResource.getLine();
+				println(writer, "  " + errorId + " 行："
+						+ (error.getTokenCallStack().get(i).line+startLine));
 			}
 		}
 
@@ -96,8 +99,8 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 	
 	protected String getResourceName(String resourceId)
 	{
-		if(resourceId.length()>20){
-			return resourceId.substring(0,20);
+		if(resourceId.length()>30){
+			return resourceId.substring(0,30);
 		}
 		return resourceId;
 	}

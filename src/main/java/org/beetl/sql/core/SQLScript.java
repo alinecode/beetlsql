@@ -69,6 +69,28 @@ public class SQLScript {
 		return result;
 	}
 	
+	protected SQLResult run(Map<String, Object> paras,String parentId) {
+		GroupTemplate gt = sm.beetl.getGroupTemplate();
+		Template t = gt.getTemplate(sqlSource.getId(),parentId);
+		List<Object> jdbcPara = new LinkedList<Object>();
+		
+		if(paras != null){
+			for (Entry<String, Object> entry : paras.entrySet()) {
+				t.binding(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		t.binding("_paras", jdbcPara);
+		t.binding("_manager", this.sm);
+		t.binding("_id", id);
+
+		String jdbcSql = t.render();
+		SQLResult result = new SQLResult();
+		result.jdbcSql = jdbcSql;
+		result.jdbcPara = jdbcPara;
+		return result;
+	}
+	
 	public int insert(Object paras){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
