@@ -4,6 +4,8 @@
 * 开发时间:2015-07
 * 当前版本 1.0
 * 论坛 http://ibeetl.com
+* qq群 219324263
+* 当前版本 1.0.0 (100K), 另外还需要beetl 包
 
 #beetlsql 特点
 
@@ -532,6 +534,24 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 
 关于如何完成自定义方法，请参考 ibeetl 官方文档
 
+### 内置方法
+* print println 输出，同js，如print("table1");
+* debug  将变量输出到控制台，如 debug(user);
+* text 输出，但可用于占位符号里
+* join, 用逗号连接集合或者数组，并输出？，用于in，如 
+
+	select * from user where status in ( #join(ids# )
+	-- 输出成  select * from user where status in (?,?,?)
+* use  参数是同一个md文件的sqlid，类似mybatis的 sql功能，如
+
+	condtion
+	===
+	where 1=1 and name = #name#
+	
+	selectUser
+	===
+	select * from user #use("condition")#
+	
 
 ## Debug功能
 

@@ -23,6 +23,9 @@ public class SQLPlaceholderST extends Statement
 	public static final Set<String> textFunList = new HashSet<String>();
 	static{
 		textFunList.add("text");
+		textFunList.add("use");
+		textFunList.add("join");
+		
 	}
 
 	public SQLPlaceholderST(PlaceholderST st)

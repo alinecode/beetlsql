@@ -31,7 +31,7 @@ updateName
 selectByExample
 ===
     select * from user  
-    @use("example");
+    #use("example")#
   
 example
 ===  
