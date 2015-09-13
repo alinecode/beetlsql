@@ -1,13 +1,13 @@
 #Beetlsql
 
-* 作者: 闲大赋,Gavin.Kin,Sue
+* 作者: 闲大赋,Gavin.King,Sue
 * 开发时间:2015-07
 * 当前版本 1.0
 * 论坛 http://ibeetl.com
 
 #beetlsql 特点
 
-BeetSql是一个**全功能DAO工具**， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。
+BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。
 
 * 无需注解，自动生成大量内置SQL，轻易完成增删改查功能
 * 数据模型支持Pojo，也支持Map/List这种快速模型，也支持混合模型
@@ -265,7 +265,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public <T> List<T> template(T t,RowMapper mapper,int start,int size) 翻页，并增加额外的映射
 * public <T> long templateCount(T t) 获取符合条件的个数
 
-通过sqlid查询，sql语句在md文件里
+**通过sqlid查询，sql语句在md文件里**
 
 * public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras) 根据sqlid来查询，参数是个map
 * public <T> List<T> select(String sqlId, Class<T> clazz, Object paras) 根据sqlid来查询，参数是个pojo
@@ -287,26 +287,30 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public int updateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键
 * public int[] updateByIdBatch(List<?> list) 批量更新
 
-通过sqlid更新
+**通过sqlid更新**
 
 * public int update(String sqlId, Object obj) 根据sqlid更新
 * public int update(String sqlId, Map<String, Object> paras) 根据sqlid更新，输出参数是map
 * public int[] updateBatch(String sqlId,List<?> list) 批量更新
 * public int[] updateBatch(String sqlId,Map<String, Object>[] maps) 批量更新，参数是个数组，元素类型是map
 
-直接执行sql语句
+**直接执行sql语句**
 
 * public <T> List<T> execute(String sql,Class<T> clazz, Object paras)
 * public <T> List<T> execute(String sql,Class<T> clazz, Map paras)
 * public int  executeUpdate(String sql,Object paras)  返回成功执行条数
 * public int  executeUpdate(String sql,Map paras) 返回成功执行条数
 
+**强制使用主或者从**
+
+* public void useMaster(DBRunner f)  DBRunner里的beetlsql调用将使用主库
+* public void useSlave(DBRunner f) DBRunner里的beetlsql调用将使用从库
 
 ## BeetlSQL Annotation
 
 对于自动生成的sql，默认不需要任何annotaton，类名对应于表名（通过NameConverstion类），getter方法的属性名对应于列明（也是通过NameConverstion类），但有些情况还是需要anntation。
 
-*   @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
+*   标签@Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
 	
 	@Table(name="user")
 	public class QueryUser ..
@@ -420,7 +424,7 @@ SQL语句可以动态生成，基于Beetl语言，这是因为
 如果不了解beetl，可先自己尝试按照js语法来写sql模板，如果还有疑问，可以查阅官网 http://ibeetl.com
 
 ## Beetl 入门
-Beetl 语法类似js，java，如下做简要说明，使用可以参考http://ibeetl.com或者在线体验http://ibeetl.com:8080/beetlonline/
+Beetl 语法类似js，java，如下做简要说明，使用可以参考http://ibeetl.com，或者在线体验http://ibeetl.com:8080/beetlonline/
 
 ### 定界符号
 默认的定界符号是@ 和 回车。 里面可以放控制语句，表达式等语，，站位符号是##,站位符号默认是输出？，并在执行sql的传入对应的值。如果想在占位符号输出变量值，则需要使用text函数
@@ -510,7 +514,7 @@ beetlsql 的其他属性也可以在此文件里设置
 
 同js，唯一值得注意的是，在占位符里调用text方法，会直接输出变量而不是“？”，其他以db开头的方式也是这样。架构师可以设置SQLPlaceholderST.textFunList.add(xxxx) 来决定那些方法在占位符号里可以直接输出文本而不是符号"?"
 
-beetl提供了很多内置方法，如print，debug,isEmpty等，具体请参考文档
+beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请参考文档
 
 ### 自定义方法
 
