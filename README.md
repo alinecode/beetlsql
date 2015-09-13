@@ -594,13 +594,16 @@ BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操
 	public Connection getConn(String sqlId,boolean isUpdate,String sql,List<?> paras){
 		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(sqlId,sql,paras);		
 		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
-		boolean onlyMaster = localMaster.get();
-		if(onlyMaster) return this.getMaster();	
-		return this.getReadConn(sqlId, sql, paras);
+		int status  = forceStatus.get();
+		if(status ==0||status==1){
+			return this.getReadConn(sqlId, sql, paras);
+		}else{
+			return this.getWriteConn(sqlId,sql,paras);
+		}
 	}
 
 
-* localMaster 可以强制SQLManager 使用主数据库。参考api SQLManager. useMaster(MasterRunner f)  
+* forceStatus 可以强制SQLManager 使用主或者从数据库。参考api SQLManager.useMaster(DBRunner f)  ，SQLManager.useSlave(DBRunner f)  
 
 
 对于于不同的ConnectionSource 完成逻辑不一样，对于spring，jfinal这样的框架，如果sqlManager在事务环境里，总是操作主数据库，如果是只读事务环境
@@ -609,24 +612,26 @@ BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操
 
 如下是SpringConnectionSource 提供的主从逻辑
 
-	@Override
 	public Connection getConn(String sqlId,boolean isUpdate,String sql,List paras){
 		//只有一个数据源
 		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(sqlId,sql,paras);
 		//如果是更新语句，也得走master
 		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
-		//如果api强制使用master
-		boolean onlyMaster = localMaster.get();
-		if(onlyMaster) return this.getMaster();
+		//如果api强制使用
+		int status  = forceStatus.get();
+		if(status==1){
+			return this.getReadConn(sqlId, sql, paras);
+		}else if(status ==2){
+			return this.getWriteConn(sqlId,sql,paras);
+		}
 		//在事物里都用master，除了readonly事物
 		boolean inTrans = TransactionSynchronizationManager.isActualTransactionActive();
 		if(inTrans){
 			boolean  isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
 			if(!isReadOnly){
-				return this.getMaster();
+				return this.getWriteConn(sqlId,sql,paras);
 			}
 		}
-		
 		 return this.getReadConn(sqlId, sql, paras);
 	}
 

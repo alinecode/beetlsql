@@ -47,17 +47,7 @@ public class MySqlConnectoinSource implements ConnectionSource {
 		return _getConn();
 	}
 
-	@Override
-	public void onlyMasterBegin() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onlyMasterEnd() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public boolean isTransaction() {
@@ -68,6 +58,18 @@ public class MySqlConnectoinSource implements ConnectionSource {
 	@Override
 	public Connection getSlave() {
 		return this.getMaster();
+	}
+
+	@Override
+	public void forceBegin(boolean isMaster) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void forceEnd() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

@@ -10,20 +10,14 @@ import javax.sql.DataSource;
 public class DefaultConnectionSource implements ConnectionSource{
 	protected DataSource master = null;
 	protected DataSource[] slaves = null;
-	protected ThreadLocal<Boolean> localMaster = new ThreadLocal<Boolean>(){
-		protected Boolean initialValue() {
-	        return false;
+	protected ThreadLocal<Integer> forceStatus = new ThreadLocal<Integer>(){
+		protected Integer initialValue() {
+	        return 0;
 	    }
 
 	};
 	
 	
-	protected ThreadLocal<Boolean> localSlave = new ThreadLocal<Boolean>(){
-		protected Boolean initialValue() {
-	        return false;
-	    }
-
-	};
 	
 	public DefaultConnectionSource(){
 		
@@ -38,9 +32,14 @@ public class DefaultConnectionSource implements ConnectionSource{
 	public Connection getConn(String sqlId,boolean isUpdate,String sql,List<?> paras){
 		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(sqlId,sql,paras);		
 		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
-		boolean onlyMaster = localMaster.get();
-		if(onlyMaster) return this.getMaster();	
-		return this.getReadConn(sqlId, sql, paras);
+		int status  = forceStatus.get();
+		if(status ==0||status==1){
+			return this.getReadConn(sqlId, sql, paras);
+		}else{
+			return this.getWriteConn(sqlId,sql,paras);
+		}
+		
+		
 	}
 	
 	@Override
@@ -87,16 +86,7 @@ public class DefaultConnectionSource implements ConnectionSource{
 	public void setSlaves(DataSource[] slaves) {
 		this.slaves = slaves;
 	}
-	@Override
-	public void onlyMasterBegin() {
-		localMaster.set(true);
-		
-	}
-	@Override
-	public void onlyMasterEnd() {
-		localMaster.set(false);
-		
-	}
+	
 	@Override
 	public boolean isTransaction() {
 		// TODO Auto-generated method stub
@@ -109,6 +99,15 @@ public class DefaultConnectionSource implements ConnectionSource{
 		}else{
 			return this.getMaster();
 		}
+	}
+	@Override
+	public void forceBegin(boolean isMaster) {
+		forceStatus.set(isMaster?2:1);
+		
+	}
+	@Override
+	public void forceEnd() {
+		forceStatus.set(0);		
 	}
 
 	

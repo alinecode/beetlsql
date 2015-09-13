@@ -23,14 +23,14 @@ public interface ConnectionSource {
 	public Connection getConn(String sqlId,boolean isUpdate,String sql,List<?> paras);
 	
 	/**
-	 * 强迫使用master
+	 * 强迫选择主从
 	 */
-	public void onlyMasterBegin();
+	public void forceBegin(boolean isMaster);
 	
 	/**
-	 * 结束master选择，如果调用了onlyMasterBegin，则必须调用onlyMasterEnd
+	 * 强制选择主从结束，如果调用了forceBegin，则必须调用forceEnd
 	 */
-	public void onlyMasterEnd();
+	public void forceEnd();
 	
 	
 	

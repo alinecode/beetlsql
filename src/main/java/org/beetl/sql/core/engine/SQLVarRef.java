@@ -4,12 +4,16 @@ import java.lang.reflect.Method;
 
 import org.beetl.core.Context;
 import org.beetl.core.exception.BeetlException;
+import org.beetl.core.om.ObjectAA;
 import org.beetl.core.statement.VarRef;
 
 public class SQLVarRef extends VarRef {
+	String attr;
 	public SQLVarRef(VarRef ref) {
 		super(ref.attributes, ref.hasSafe, ref.safe, ref.token, ref.token);
 		this.varIndex = ref.varIndex;
+		attr = getAttrNameIfRoot(ref.token.text);
+		
 
 	}
 
@@ -23,20 +27,29 @@ public class SQLVarRef extends VarRef {
 				return super.evaluate(ctx);
 			} else {
 				try {
-					String attr = this.token.text;
-					String getter = "get" + attr.substring(0, 1).toUpperCase() + attr.substring(1);
-					Method method = o.getClass().getMethod(getter, new Class[] {});
-					Object realValue = method.invoke(o, new Object[] {});
+					String text = this.attributes[0].token.text;
+					Object realValue = ObjectAA.defaultObjectAA().value(o, attr);
 					ctx.vars[varIndex] = realValue;
-					return super.evaluate(ctx);
+					
 				} catch (Exception e) {
 					BeetlException ex = new BeetlException(BeetlException.VAR_NOT_DEFINED, e.getMessage());
 					ex.pushToken(this.token);
 					throw ex;
 				}
+				return super.evaluate(ctx);
 
 			}
 		}
 		return super.evaluate(ctx);
+	}
+	
+	private String getAttrNameIfRoot(String name){
+		//todo []
+		int index = name.indexOf('.');
+		if(index!=-1){
+			return name.substring(0, index);
+		}else{
+			return name;
+		}
 	}
 }

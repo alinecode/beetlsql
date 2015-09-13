@@ -123,3 +123,15 @@ CREATE TABLE `role` (
 
 INSERT INTO `role`  (id,name) VALUES (null,"mananger"); 
 
+
+-- ----------------------------
+--  测试lob类型
+-- ----------------------------
+DROP TABLE IF EXISTS `lobBean`;
+CREATE TABLE `lobBean` (
+  `picture` longblob,
+  `article` text,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+

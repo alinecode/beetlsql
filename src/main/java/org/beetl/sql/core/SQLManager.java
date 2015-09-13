@@ -581,7 +581,7 @@ public class SQLManager {
 	
 	/** 只使用master执行:
 	 * <pre>
-	 *    sqlManager.useMaster(new MasterRunner(){
+	 *    sqlManager.useMaster(new DBRunner(){
 	 *    		public void run(SQLManager sqlManager){
 	 *          	sqlManager.select .....  
 	 *          }
@@ -589,8 +589,22 @@ public class SQLManager {
 	 * </pre>
 	 * @param f
 	 */
-	public void useMaster(MasterRunner f){
-		f.start(this);
+	public void useMaster(DBRunner f){
+		f.start(this,true);
+	}
+	
+	/** 只使用Slave执行:
+	 * <pre>
+	 *    sqlManager.useSlave(new DBRunner(){
+	 *    		public void run(SQLManager sqlManager){
+	 *          	sqlManager.select .....  
+	 *          }
+	 *    )
+	 * </pre>
+	 * @param f
+	 */
+	public void useSlave(DBRunner f){
+		f.start(this,false);
 	}
 	
 	

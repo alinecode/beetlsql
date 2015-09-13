@@ -20,15 +20,20 @@ public class SpringConnectionSource extends  DefaultConnectionSource{
 		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(sqlId,sql,paras);
 		//如果是更新语句，也得走master
 		if(isUpdate) return this.getWriteConn(sqlId,sql,paras);
-		//如果api强制使用master
-		boolean onlyMaster = localMaster.get();
-		if(onlyMaster) return this.getMaster();
+		//如果api强制使用
+		int status  = forceStatus.get();
+		if(status==1){
+			return this.getReadConn(sqlId, sql, paras);
+		}else if(status ==2){
+			return this.getWriteConn(sqlId,sql,paras);
+		}
+		
 		//在事物里都用master，除了readonly事物
 		boolean inTrans = TransactionSynchronizationManager.isActualTransactionActive();
 		if(inTrans){
 			boolean  isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
 			if(!isReadOnly){
-				return this.getMaster();
+				return this.getWriteConn(sqlId,sql,paras);
 			}
 		}
 		
