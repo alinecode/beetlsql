@@ -1,6 +1,6 @@
 package org.beetl.sql;
 
-public class DBConfig {
+public class MysqlDBConfig {
 	public static String driver = "com.mysql.jdbc.Driver";
     public static String dbName = "test";
     public static String password = "";

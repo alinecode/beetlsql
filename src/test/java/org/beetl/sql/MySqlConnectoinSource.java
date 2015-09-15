@@ -1,14 +1,13 @@
 /**
  * 
  */
-package org.beetl.sql.buildsql;
+package org.beetl.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.beetl.sql.DBConfig;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.InterceptorContext;
 
@@ -19,11 +18,11 @@ import org.beetl.sql.core.InterceptorContext;
 public class MySqlConnectoinSource implements ConnectionSource {
 	
 	private Connection _getConn(){
-		String driver = DBConfig.driver;
-        String dbName = DBConfig.dbName;
-        String password = DBConfig.password;
-        String userName = DBConfig.userName;
-        String url = DBConfig.url;
+		String driver = MysqlDBConfig.driver;
+        String dbName = MysqlDBConfig.dbName;
+        String password = MysqlDBConfig.password;
+        String userName = MysqlDBConfig.userName;
+        String url = MysqlDBConfig.url;
         Connection conn = null;
         try {
 			Class.forName(driver);

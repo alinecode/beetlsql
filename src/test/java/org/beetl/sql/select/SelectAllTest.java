@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.beetl.sql.buildsql.MySqlConnectoinSource;
+import org.beetl.sql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.Params;
 import org.beetl.sql.core.RowMapper;

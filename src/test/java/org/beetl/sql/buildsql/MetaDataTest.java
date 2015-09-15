@@ -17,6 +17,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.beetl.sql.MySqlConnectoinSource;
 import org.junit.Before;
 import org.junit.Test;
 

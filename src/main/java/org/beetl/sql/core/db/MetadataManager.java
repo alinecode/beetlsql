@@ -5,23 +5,26 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.SQLManager;
 
 public class MetadataManager {
 
 	private ConnectionSource ds = null;
 	Map<String,Table> map = new ConcurrentHashMap<String,Table>();
 	Table NOT_EXIST = new Table();
+	SQLManager sm = null;
 	
-	public MetadataManager(ConnectionSource ds) {
+	public MetadataManager(ConnectionSource ds,SQLManager sm) {
 		super();
 		this.ds = ds;
+		this.sm = sm ;
 	
 	}
 
@@ -105,7 +108,10 @@ public class MetadataManager {
 		try {
 			conn =  ds.getMaster();
 			DatabaseMetaData dbmd =  conn.getMetaData();
-		
+			
+			if(sm.getDbStyle().getName().equals("oracle")){
+				tableName = tableName.toUpperCase();
+			}
 			ResultSet rs = dbmd.getTables(null, "%", tableName,
 					new String[] { "TABLE" });
 			if (!rs.next()) {
@@ -117,7 +123,7 @@ public class MetadataManager {
 			int count = 0;
 			while (rs.next()) {
 				count++;
-				table.idName=rs.getString("COLUMN_NAME");
+				table.idName=rs.getString("COLUMN_NAME").toLowerCase();
 			}
 			//多个主键 下个版本再做
 			if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
@@ -125,7 +131,7 @@ public class MetadataManager {
 			
 			rs = dbmd.getColumns(null, "%", tableName, "%");
 			while(rs.next()){
-				String colName = rs.getString(4);
+				String colName = rs.getString(4).toLowerCase();
 				table.cols.add(colName);
 			}
 			rs.close();
@@ -155,7 +161,7 @@ public class MetadataManager {
 		public String name;
 		// 默认为id
 		public String idName="id";
-		public List<String> cols = new ArrayList<String>();
+		public Set<String> cols = new HashSet<String>();
 	}
 	
 	public static void main(String[] args){

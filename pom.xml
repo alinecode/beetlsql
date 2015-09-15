@@ -149,6 +149,14 @@
 			<version>5.0.5</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>oralce</groupId>
+			<artifactId>oralce-express</artifactId>
+			<version>6</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
+		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba</groupId>

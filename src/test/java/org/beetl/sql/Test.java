@@ -11,7 +11,6 @@ import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.beetl.sql.buildsql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;

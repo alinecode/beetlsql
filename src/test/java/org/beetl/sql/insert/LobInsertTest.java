@@ -3,7 +3,7 @@ package org.beetl.sql.insert;
 import java.io.File;
 import java.io.FileInputStream;
 
-import org.beetl.sql.buildsql.MySqlConnectoinSource;
+import org.beetl.sql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;

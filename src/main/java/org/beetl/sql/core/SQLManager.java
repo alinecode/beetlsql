@@ -87,11 +87,11 @@ public class SQLManager {
 	private MetadataManager getMetadataManager(){
 		if(isProductMode(this.sqlLoader)){
 			if(metaDataManager == null){
-				return new MetadataManager(this.ds);
+				return new MetadataManager(this.ds,this);
 			}
 			return metaDataManager;
 		}
-		return new MetadataManager(this.ds);
+		return new MetadataManager(this.ds,this);
 	}
 	
 	//是否是生产模式:生产模式无需new MetadataManager

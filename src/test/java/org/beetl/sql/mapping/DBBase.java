@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.beetl.sql.DBConfig;
+import org.beetl.sql.MysqlDBConfig;
 
 public class DBBase {
 	
@@ -17,11 +17,11 @@ public class DBBase {
 	}
 	
 	public Connection getConn(){
-		String driver = DBConfig.driver;
-        String dbName = DBConfig.dbName;
-        String password = DBConfig.password;
-        String userName = DBConfig.userName;
-        String url = DBConfig.url;
+		String driver = MysqlDBConfig.driver;
+        String dbName = MysqlDBConfig.dbName;
+        String password = MysqlDBConfig.password;
+        String userName = MysqlDBConfig.userName;
+        String url = MysqlDBConfig.url;
         Connection conn = null;
         try {
 			Class.forName(driver);
