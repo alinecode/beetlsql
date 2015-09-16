@@ -16,6 +16,8 @@ public class BeetlSQLException extends RuntimeException {
 	
 	//SQL 脚本运行出错
 	public static final int 	SQL_SCRIPT_ERROR  = 6;
+	//期望有id，但未发现有id
+	public static final int 	ID_NOT_FOUND  = 7;
 	
 
 	//SQL 脚本运行出错

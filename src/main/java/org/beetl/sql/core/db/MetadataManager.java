@@ -55,6 +55,7 @@ public class MetadataManager {
 	 * @return
 	 */
 	public boolean existColName(String tableName, String colName) {
+		colName = colName.toLowerCase();
 		Table t = getTable(tableName);
 		if(t==null) return false ;
 		return t.cols.contains(colName);
@@ -89,7 +90,13 @@ public class MetadataManager {
 	}
 	
 	private Table getTable(String name){
-		Table table = map.get(name);
+		String indexName = name;
+		if(sm.getDbStyle().getName().equals("oracle")){
+			indexName = name.toUpperCase();
+		}
+		
+		Table table = map.get(indexName);
+		
 		if(table==null){
 			table= initTable(name);
 		}
@@ -101,17 +108,21 @@ public class MetadataManager {
 	}
 	
 	private Table initTable(String tableName){
+	
+		
 		Table table = new Table();
 		table.name = tableName;
+		
+		if(sm.getDbStyle().getName().equals("oracle")){
+			tableName = tableName.toUpperCase();
+		}
 		
 		Connection conn=null;
 		try {
 			conn =  ds.getMaster();
 			DatabaseMetaData dbmd =  conn.getMetaData();
 			
-			if(sm.getDbStyle().getName().equals("oracle")){
-				tableName = tableName.toUpperCase();
-			}
+			
 			ResultSet rs = dbmd.getTables(null, "%", tableName,
 					new String[] { "TABLE" });
 			if (!rs.next()) {
@@ -135,7 +146,8 @@ public class MetadataManager {
 				table.cols.add(colName);
 			}
 			rs.close();
-			map.put(table.name, table);
+			//map的key统一用大写
+			map.put(tableName, table);
 			return table;
 			
 		} catch (SQLException e) {
@@ -158,8 +170,9 @@ public class MetadataManager {
 	}
 	
 	static class Table{
+		//保持大小写
 		public String name;
-		// 默认为id
+		// 默认为id，列明采用小写
 		public String idName="id";
 		public Set<String> cols = new HashSet<String>();
 	}

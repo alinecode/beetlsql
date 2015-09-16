@@ -3,8 +3,10 @@ package org.beetl.sql.core.db;
 import java.lang.reflect.Method;
 
 import org.beetl.core.Configuration;
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.kit.StringKit;
 /**
@@ -109,6 +111,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public SQLSource genDeleteById(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);
 		String condition = appendIdCondition(cls);
+		
 		return new SQLSource(new StringBuilder("delete from ").append(tableName).append(condition).toString());
 	}
 
@@ -178,6 +181,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		StringBuilder valSql = new StringBuilder(" VALUES (");
 		String fieldName = null;
 		int idType = DBStyle.ID_ASSIGN ;
+		SQLSource source = new SQLSource();
 		Method[] methods = cls.getMethods();
 		for (Method method : methods) {
 			if(isLegalOtherMethod(method)){
@@ -188,9 +192,11 @@ public abstract class AbstractDBStyle implements DBStyle {
 					if(idType==DBStyle.ID_AUTO){
 						continue ; //忽略这个字段
 					}else if(idType==DBStyle.ID_SEQ){
-					
+						
 						colSql.append(appendInsertColumn(cls,tableName, fieldName));
 						valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
+						SeqID seqId = method.getAnnotation(SeqID.class);
+						source.setSeqName(seqId.name());
 						continue;
 					}else if(idType==DBStyle.ID_ASSIGN){
 						//normal
@@ -201,8 +207,10 @@ public abstract class AbstractDBStyle implements DBStyle {
 			}
 		}
 		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
-		SQLSource source = new SQLSource(sql.toString());
+		source.setTemplate(sql.toString());
 		source.setIdType(idType);
+		
+		 
 		return source;
 	}
 	
@@ -317,6 +325,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 						+ attrName
 						+ HOLDER_END;
 			}
+		}else{
+			throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND,"ID NOT FOUND");
 		}
 		return condition;
 	}
@@ -344,8 +354,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		
 		return method.getDeclaringClass() != Object.class 
 				&& method.getName().startsWith("get")
-				&& !java.util.Date.class.isAssignableFrom(method.getReturnType())
-				&& !java.sql.Date.class.isAssignableFrom(method.getReturnType())
+				&& !java.util.Date.class.isAssignableFrom(method.getReturnType())	
 				&& !java.util.Calendar.class.isAssignableFrom(method.getReturnType());
 	}
 	

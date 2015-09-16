@@ -19,6 +19,8 @@ public interface DBStyle {
 	
 	public static String OFFSET = "_pageOffset";
 	public static String PAGE_SIZE = "_pageSize";
+	public static String PAGE_END = "_pageEnd";
+	
 	
 
 	public void init(Beetl beetl);

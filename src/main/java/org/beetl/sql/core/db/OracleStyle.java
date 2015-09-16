@@ -14,15 +14,21 @@ public class OracleStyle extends AbstractDBStyle {
 
 	@Override
 	public String getPageSQL(String sql) {
-		// TODO Auto-generated method stub
-		return null;
+		String pageSql = "SELECT * FROM "
+		+" ( "
+		+" SELECT A.*, ROWNUM RN "
+		+" FROM (" +sql+" )  A " 
+		+" WHERE ROWNUM <"+HOLDER_START+DBStyle.PAGE_END+HOLDER_END
+		+")"
+		+"WHERE RN >= " +HOLDER_START+DBStyle.OFFSET+HOLDER_END ;
+		return pageSql;
 	}
 
 	@Override
 	public void initPagePara(Map<String, Object> paras,long start,long size) {
 //		// TODO Auto-generated method stub
 		paras.put(DBStyle.OFFSET,start);
-		paras.put(DBStyle.PAGE_SIZE,size);
+		paras.put(DBStyle.PAGE_END,start+size);
 	}
 
 	@Override

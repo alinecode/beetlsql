@@ -94,15 +94,38 @@ public class SQLScript {
 	public int insert(Object paras){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
+		PreparedStatement ps = null;
+		Connection conn  = null;
+		try {
+			if(this.sqlSource.getIdType()==DBStyle.ID_SEQ){
+				String seqName = sqlSource.getSeqName();
+				//序列。
+				conn = sm.getDs().getMaster();
+				PreparedStatement seqPs = conn.prepareStatement("select "+seqName+".NEXTVAL seq from dual");
+				ResultSet seqRs = seqPs.executeQuery();
+				
+				if(seqRs.next()){
+					Object key =seqRs.getObject("seq");				
+					map.put("_tempKey", key); //TODO 这里貌似有问题。上面已经this.run(map)了
+				}
+				seqRs.close();
+				seqPs.close();
+				
+			}
+		}catch(SQLException ex){
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,ex);
+		}
+			
+		
 		SQLResult result = this.run(map);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql, true,objs);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
-		PreparedStatement ps = null;
-		Connection conn  = null;
+	
 		try {
+		
 			conn = sm.getDs().getConn(this.id,true,sql,objs);
 			ps = conn.prepareStatement(sql);
 			for (int i = 0; i < objs.size(); i++)

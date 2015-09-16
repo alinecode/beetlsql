@@ -19,6 +19,9 @@ public class SQLSource {
 
 		this.template = template;
 	}
+	
+	
+
 
 	public String getTemplate() {
 		return template;
