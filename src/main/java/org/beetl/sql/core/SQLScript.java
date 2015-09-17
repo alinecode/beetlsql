@@ -129,7 +129,14 @@ public class SQLScript {
 			conn = sm.getDs().getConn(this.id,true,sql,objs);
 			ps = conn.prepareStatement(sql);
 			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			{
+				Object o = objs.get(i);
+				if(o!=null&&o.getClass() ==java.util.Date.class){
+					o =new  java.sql.Date(((java.util.Date)o).getTime());
+				}
+				ps.setObject(i + 1, o);
+			}
+				
 			int ret = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx,ret);
 			return ret;
@@ -185,9 +192,16 @@ public class SQLScript {
 		}else{
 			ps =conn.prepareStatement(sql);
 		}
-			
+				
 			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			{
+				Object o = objs.get(i);
+				//兼容性修改：oralce 驱动 不识别util.Date
+				if(o!=null&&o.getClass() ==java.util.Date.class){
+					o =new  java.sql.Date(((java.util.Date)o).getTime());
+				}
+				ps.setObject(i + 1, o);
+			}
 			int ret = ps.executeUpdate();
 			
 			if(this.sqlSource.getIdType()==DBStyle.ID_AUTO){
@@ -252,7 +266,7 @@ public class SQLScript {
 			rs = ps.executeQuery();
 			
 			if(mapper != null){
-				BeanProcessor beanProcessor = new BeanProcessor(this.sm.getNc());
+				BeanProcessor beanProcessor = new BeanProcessor(this.sm.getNc(),this.sm);
 				resultList = new RowMapperResultSetExt<T>(mapper,beanProcessor).handleResultSet(rs,clazz);
 				this.callInterceptorAsAfter(ctx,resultList);
 				
@@ -283,9 +297,9 @@ public class SQLScript {
 			T result = queryMapping.query(rs, new ScalarHandler<T>(clazz));
 			resultList.add(result);
 		} else if(clazz.isAssignableFrom(Map.class)){ //如果是Map的子类或者父类，返回List<Map<String,Object>>
-			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc()));
+			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(),this.sm));
 		} else{
-			resultList = queryMapping.query(rs, new BeanListHandler<T>(clazz, this.sm.getNc()));
+			resultList = queryMapping.query(rs, new BeanListHandler<T>(clazz, this.sm.getNc(),this.sm));
 		}
 		
 		return resultList;
@@ -474,7 +488,7 @@ public class SQLScript {
 			for (int i = 0; i < objs.size(); i++)
 				ps.setObject(i + 1, objs.get(i));
 			rs = ps.executeQuery();
-			model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc()));
+			model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(),this.sm));
 			this.callInterceptorAsAfter(ctx,model);
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);

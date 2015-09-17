@@ -91,6 +91,7 @@ public class MetadataManager {
 	
 	private Table getTable(String name){
 		String indexName = name;
+		//兼容性修改，oralce返回的总是大写表名和列明
 		if(sm.getDbStyle().getName().equals("oracle")){
 			indexName = name.toUpperCase();
 		}

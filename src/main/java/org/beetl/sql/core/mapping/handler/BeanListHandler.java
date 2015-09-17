@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.mapping.BasicRowProcessor;
 import org.beetl.sql.core.mapping.ResultSetHandler;
 import org.beetl.sql.core.mapping.RowProcessor;
@@ -18,15 +19,13 @@ public class BeanListHandler<T> implements ResultSetHandler<List<T>> {
     private final Class<T> type;
     private final RowProcessor convert;
 
-    public BeanListHandler(Class<T> type) {
-        this(type, BeanHandler.BASIC_ROW_PROCESSOR);
-    }
+
     
-    public BeanListHandler(Class<T> type ,NameConversion nc) {
-        this(type, new BasicRowProcessor(nc));
+    public BeanListHandler(Class<T> type ,NameConversion nc,SQLManager sm) {
+        this(type, new BasicRowProcessor(nc,sm));
     }
 
-    public BeanListHandler(Class<T> type, RowProcessor convert) {
+    protected  BeanListHandler(Class<T> type, RowProcessor convert) {
         this.type = type;
         this.convert = convert;
     }

@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -11,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,8 +24,9 @@ import java.util.Map;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
-import org.beetl.sql.core.TailBean;
+import org.beetl.sql.core.kit.LobKit;
 
 /**
  * Pojo处理器，负责转换
@@ -48,16 +51,20 @@ public class BeanProcessor {
 		primitiveDefaults.put(Character.TYPE, Character.valueOf((char) 0));
 	}
 
-	public BeanProcessor() {
+	SQLManager sm ;
+	String dbName;
+	protected BeanProcessor() {
 		this(new HashMap<String, String>());//为{} 非null
 	}
 	
-	public BeanProcessor(NameConversion nc) {
+	public BeanProcessor(NameConversion nc,SQLManager sm) {
 		this();
 		this.nc = nc;
+		this.sm = sm;
+		this.dbName = sm.getDbStyle().getName();
 	}
 
-	public BeanProcessor(Map<String, String> columnToPropertyOverrides) {
+	protected BeanProcessor(Map<String, String> columnToPropertyOverrides) {
 		super();
 		if (columnToPropertyOverrides == null) {
 			throw new IllegalArgumentException("columnToPropertyOverrides map cannot be null");
@@ -416,10 +423,34 @@ public class BeanProcessor {
 	 * @throws SQLException
 	 */
 	protected Object processColumn(ResultSet rs, int index, Class<?> propType) throws SQLException {
-
+		ResultSetMetaData meta = rs.getMetaData();
 		//propType.isPrimitive是否为8种基本类型之一
 		if (!propType.isPrimitive() && rs.getObject(index) == null) return null;
-		if (propType.equals(String.class)) return rs.getString(index);
+		if (propType==String.class){
+			if(dbName.equals("oracle")){
+				int type = meta.getColumnType(index);
+				String name = meta.getColumnName(index);
+				switch(type){
+				case   java.sql.Types.CLOB:{
+					Reader r =	rs.getClob(index).getCharacterStream();
+					return LobKit.getString(r);
+					}
+				case Types.NCLOB:{
+					Reader r =	rs.getNClob(index).getCharacterStream();
+					return LobKit.getString(r);
+				}
+				
+			
+				default:
+					//不支持Long 类型（longvarchar)
+					return rs.getString(index);
+				
+				}
+			}else{
+				return rs.getString(index);
+			}
+			
+		}
 		else if (propType.equals(Integer.TYPE) || propType.equals(Integer.class)) return Integer.valueOf(rs.getInt(index));
 		else if (propType.equals(Boolean.TYPE) || propType.equals(Boolean.class)) return Boolean.valueOf(rs.getBoolean(index));
 		else if (propType.equals(Long.TYPE) || propType.equals(Long.class)) return Long.valueOf(rs.getLong(index));
@@ -428,7 +459,27 @@ public class BeanProcessor {
 		else if (propType.equals(Short.TYPE) || propType.equals(Short.class)) return Short.valueOf(rs.getShort(index));
 		else if (propType.equals(Byte.TYPE) || propType.equals(Byte.class)) return Byte.valueOf(rs.getByte(index));
 		
-		else if(propType.equals(char[].class)) return rs.getString(index).toCharArray();
+		else if(propType.equals(char[].class)){
+			
+			if(dbName.equals("oracle")){
+				int type = meta.getColumnType(index);
+				switch(type){
+				case   java.sql.Types.CLOB:{
+					Reader r =	rs.getClob(index).getCharacterStream();
+					return LobKit.getString(r).toCharArray();
+					}
+				case Types.NCLOB:{
+				Reader r =	rs.getNClob(index).getCharacterStream();
+				return LobKit.getString(r).toCharArray();
+				}default:
+					return rs.getString(index).toCharArray();
+				
+				}
+			}else{
+				return rs.getString(index).toCharArray();
+			}
+			
+		}
 		else if(propType.equals(byte[].class)) return rs.getBytes(index);
 		
 		else if (propType.equals(Timestamp.class)) return rs.getTimestamp(index);

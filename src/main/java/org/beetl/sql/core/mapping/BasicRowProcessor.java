@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.SQLManager;
 
 /**  
  * 基础rs处理器  
@@ -25,15 +26,15 @@ import org.beetl.sql.core.NameConversion;
  */
 public class BasicRowProcessor implements RowProcessor {
 	
-	private static final BeanProcessor defaultConvert = new BeanProcessor();
+//	private static final BeanProcessor defaultConvert = new BeanProcessor();
 	private final BeanProcessor convert;
 	
-	public BasicRowProcessor(){
-		this(defaultConvert);
-	}
+//	public BasicRowProcessor(){
+//		this(defaultConvert);
+//	}
 	
-	public BasicRowProcessor(NameConversion nc){
-		this(new BeanProcessor(nc));
+	public BasicRowProcessor(NameConversion nc,SQLManager sm){
+		this(new BeanProcessor(nc,sm));
 	}
 	
 	public BasicRowProcessor(BeanProcessor convert){
