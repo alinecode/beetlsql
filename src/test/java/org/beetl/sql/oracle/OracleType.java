@@ -1,5 +1,6 @@
 package org.beetl.sql.oracle;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -27,7 +28,7 @@ public class OracleType {
 	String name;
 	String nvChar;
 	String nChar;
-	Double money;
+	BigDecimal money;
 
 	Date date1;
 	Timestamp st;
@@ -61,10 +62,10 @@ public class OracleType {
 	public void setNChar(String nChar) {
 		this.nChar = nChar;
 	}
-	public Double getMoney() {
+	public BigDecimal getMoney() {
 		return money;
 	}
-	public void setMoney(Double money) {
+	public void setMoney(BigDecimal money) {
 		this.money = money;
 	}
 

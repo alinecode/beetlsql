@@ -14,8 +14,8 @@
 			<url>http://opensource.org/licenses/BSD-3-Clause</url>
 		</license>
 	</licenses>
-	
-	
+
+
 
 	<developers>
 		<developer>
@@ -149,7 +149,7 @@
 			<version>5.0.5</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>oralce</groupId>
 			<artifactId>oralce-express</artifactId>
@@ -180,15 +180,22 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>com.jfinal</groupId>
-		    <artifactId>jfinal</artifactId>
-		    <version>2.0</version>
-		    <scope>provided</scope>
+			<groupId>com.jfinal</groupId>
+			<artifactId>jfinal</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
 			<version>0.9.1.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901-1.jdbc4</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -266,7 +273,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 

@@ -1,4 +1,4 @@
-package org.beetl.sql.oracle;
+package org.beetl.sql.postgres;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

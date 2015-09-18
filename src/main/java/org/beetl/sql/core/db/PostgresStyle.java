@@ -7,34 +7,31 @@ import java.util.Map;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.SeqID;
 
-public class OracleStyle extends AbstractDBStyle {
+public class PostgresStyle extends AbstractDBStyle {
 
-	public OracleStyle() {
+	public PostgresStyle() {
 	}
 
 	@Override
 	public String getPageSQL(String sql) {
-		String pageSql = "SELECT * FROM "
-		+" ( "
-		+" SELECT _A.*, ROWNUM RN "
-		+" FROM ( \n" +sql+"\n )  _A " 
-		+" WHERE ROWNUM <"+HOLDER_START+DBStyle.PAGE_END+HOLDER_END
-		+")"
-		+"WHERE RN >= " +HOLDER_START+DBStyle.OFFSET+HOLDER_END ;
+		String pageSql = "select _a.* from ( \n"
+		+sql
+		+" \n) _a "
+		+" limit "+ HOLDER_START+ this.PAGE_SIZE+HOLDER_END+" offset "+ HOLDER_START+ this.OFFSET+HOLDER_END;
 		return pageSql;
 	}
 
 	@Override
 	public void initPagePara(Map<String, Object> paras,long start,long size) {
 //		// TODO Auto-generated method stub
-		paras.put(DBStyle.OFFSET,start);
-		paras.put(DBStyle.PAGE_END,start+size);
+		paras.put(DBStyle.OFFSET,start-1);
+		paras.put(DBStyle.PAGE_SIZE,size);
 	}
 
 	@Override
 	public int getIdType(Method idMethod) {
 		Annotation[] ans = idMethod.getAnnotations();
-		int idType = DBStyle.ID_ASSIGN; // 默认是自增长
+		int idType = DBStyle.ID_AUTO; // 默认是自增长
 
 		for (Annotation an : ans) {
 			if (an instanceof SeqID) {
@@ -50,12 +47,12 @@ public class OracleStyle extends AbstractDBStyle {
 
 	@Override
 	public String getName() {
-		return "oracle";
+		return "postgres";
 	}
 	
 	@Override
 	public String getEscapeForKeyWord(){
-		return "";
+		return "\"";
 	}
 
 }
