@@ -42,6 +42,8 @@ public interface DBStyle {
 	
 	public int getIdType(Method idMethod);
 	
+	public String getEscapeForKeyWord();
+	
 	
 	public NameConversion getNameConversion();
 	public MetadataManager getMetadataManager();

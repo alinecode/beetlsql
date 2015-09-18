@@ -17,7 +17,7 @@ public class MySqlStyle extends AbstractDBStyle {
 	
 	@Override
 	public String getPageSQL(String sql) {
-		return sql+" limit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
+		return sql+" \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
 	}
 
 	@Override
@@ -52,5 +52,10 @@ public class MySqlStyle extends AbstractDBStyle {
 	@Override
 	public String getName() {
 		return "mysql";
+	}
+	
+	@Override
+	public String getEscapeForKeyWord(){
+		return "`";
 	}
 }

@@ -6,9 +6,12 @@ import java.sql.ResultSet;
 
 import org.beetl.sql.OracleConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.HumpNameConversion;
+import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.OracleStyle;
+import org.beetl.sql.ext.DebugInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +22,8 @@ public class InsertTest {
 	@Before
 	public void before() {
 		loader = new ClasspathLoader("/sql/");
-		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource());
+		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource(),new  HumpNameConversion(),
+				new Interceptor[]{new DebugInterceptor()});
 	}
 
 	

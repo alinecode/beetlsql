@@ -41,4 +41,4 @@ example
 selectCountUser3
 ===
     select  count(*) from user where 1=1
-    and age = #age123#
+    and age = #age#

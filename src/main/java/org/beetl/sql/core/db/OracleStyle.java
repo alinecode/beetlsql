@@ -17,7 +17,7 @@ public class OracleStyle extends AbstractDBStyle {
 		String pageSql = "SELECT * FROM "
 		+" ( "
 		+" SELECT A.*, ROWNUM RN "
-		+" FROM (" +sql+" )  A " 
+		+" FROM (" +sql+"\n )  A " 
 		+" WHERE ROWNUM <"+HOLDER_START+DBStyle.PAGE_END+HOLDER_END
 		+")"
 		+"WHERE RN >= " +HOLDER_START+DBStyle.OFFSET+HOLDER_END ;
@@ -51,6 +51,11 @@ public class OracleStyle extends AbstractDBStyle {
 	@Override
 	public String getName() {
 		return "oracle";
+	}
+	
+	@Override
+	public String getEscapeForKeyWord(){
+		return "";
 	}
 
 }

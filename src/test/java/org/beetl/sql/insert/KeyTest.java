@@ -39,7 +39,7 @@ public class KeyTest {
 		
 	}
 	
-
+	@Test
 	public void addRole1() {
 		
 		try{
