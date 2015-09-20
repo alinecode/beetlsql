@@ -52,7 +52,7 @@ public class PostgresStyle extends AbstractDBStyle {
 	
 	@Override
 	public String getEscapeForKeyWord(){
-		return "\"";
+		return "";
 	}
 
 }

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>README</title>
+      <style>.markdown-preview, .markdown-preview[data-use-github-style] { font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 1.6; word-wrap: break-word; overflow: scroll; box-sizing: border-box; padding: 20px; background-color: rgb(255, 255, 255); }
+.markdown-preview > :first-child, .markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview > :last-child, .markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview a:not([href]), .markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview .absent, .markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview .anchor, .markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview .anchor:focus, .markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview h1 .octicon-link, .markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview h2 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview h3 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview h4 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview h5 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview h6 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview h1:hover .anchor, .markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview h2:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview h3:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview h4:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview h5:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview h6:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview h6:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview h1 tt, .markdown-preview[data-use-github-style] h1 tt, .markdown-preview h2 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview h3 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview h4 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview h5 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview h6 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview h1 code, .markdown-preview[data-use-github-style] h1 code, .markdown-preview h2 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview h3 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview h4 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview h5 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview h6 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h1 .anchor, .markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview h2, .markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h2 .anchor, .markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview h3, .markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview h3 .anchor, .markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview h4, .markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview h4 .anchor, .markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview h5, .markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview h5 .anchor, .markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview h6, .markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview h6 .anchor, .markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview p, .markdown-preview[data-use-github-style] p, .markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote, .markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol, .markdown-preview dl, .markdown-preview[data-use-github-style] dl, .markdown-preview table, .markdown-preview[data-use-github-style] table, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview hr, .markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; border: 0px none; background-color: rgb(231, 231, 231); }
+.markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview ul.no-list, .markdown-preview[data-use-github-style] ul.no-list, .markdown-preview ol.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview ul ul, .markdown-preview[data-use-github-style] ul ul, .markdown-preview ul ol, .markdown-preview[data-use-github-style] ul ol, .markdown-preview ol ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview ol ul, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview li > p, .markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview dl, .markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview dl dt, .markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview dl dd, .markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left-width: 4px; border-left-style: solid; border-left-color: rgb(221, 221, 221); }
+.markdown-preview blockquote > :first-child, .markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview blockquote > :last-child, .markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview table, .markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: normal; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th, .markdown-preview table td, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview table tr, .markdown-preview[data-use-github-style] table tr { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(204, 204, 204); background-color: rgb(255, 255, 255); }
+.markdown-preview table tr:nth-child(2n), .markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview img, .markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview span.frame, .markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview span.frame > span, .markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview span.frame span img, .markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview span.frame span span, .markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview span.align-center, .markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-center > span, .markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview span.align-center span img, .markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview span.align-right, .markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-right > span, .markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview span.align-right span img, .markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview span.float-left, .markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview span.float-left span, .markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview span.float-right, .markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview span.float-right > span, .markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; border-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157); }
+.markdown-preview code::before, .markdown-preview[data-use-github-style] code::before, .markdown-preview tt::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview code::after, .markdown-preview[data-use-github-style] code::after, .markdown-preview tt::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: ' '; }
+.markdown-preview code br, .markdown-preview[data-use-github-style] code br, .markdown-preview tt br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview del code, .markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview pre > code, .markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; border: 0px; background: transparent; }
+.markdown-preview .highlight, .markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; border-radius: 3px; background-color: rgb(247, 247, 247); }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview pre, .markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview pre code, .markdown-preview[data-use-github-style] pre code, .markdown-preview pre tt, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; border: 0px; background-color: transparent; }
+.markdown-preview pre code::before, .markdown-preview[data-use-github-style] pre code::before, .markdown-preview pre tt::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview pre code::after, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview pre tt::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview kbd, .markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; border-style: solid; border-width: 1px; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; background-color: rgb(252, 252, 252); }
+.markdown-preview, .markdown-preview[data-use-github-style], .markdown-preview code, .markdown-preview[data-use-github-style] code { color: rgb(51, 51, 51); }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { -webkit-font-smoothing: antialiased; cursor: text; }
+.markdown-preview > h1:first-child, .markdown-preview[data-use-github-style] > h1:first-child, .markdown-preview > h1:first-child + h2, .markdown-preview[data-use-github-style] > h1:first-child + h2, .markdown-preview > h2:first-child, .markdown-preview[data-use-github-style] > h2:first-child, .markdown-preview > h3:first-child, .markdown-preview[data-use-github-style] > h3:first-child, .markdown-preview > h4:first-child, .markdown-preview[data-use-github-style] > h4:first-child, .markdown-preview > h5:first-child, .markdown-preview[data-use-github-style] > h5:first-child, .markdown-preview > h6:first-child, .markdown-preview[data-use-github-style] > h6:first-child { margin-top: 0px; padding-top: 0px; }
+.markdown-preview a, .markdown-preview[data-use-github-style] a, .markdown-preview a code, .markdown-preview[data-use-github-style] a code { color: rgb(65, 131, 196); }
+.markdown-preview a:first-child h1, .markdown-preview[data-use-github-style] a:first-child h1, .markdown-preview a:first-child h2, .markdown-preview[data-use-github-style] a:first-child h2, .markdown-preview a:first-child h3, .markdown-preview[data-use-github-style] a:first-child h3, .markdown-preview a:first-child h4, .markdown-preview[data-use-github-style] a:first-child h4, .markdown-preview a:first-child h5, .markdown-preview[data-use-github-style] a:first-child h5, .markdown-preview a:first-child h6, .markdown-preview[data-use-github-style] a:first-child h6 { margin-top: 0px; padding-top: 0px; }
+.markdown-preview h1 + p, .markdown-preview[data-use-github-style] h1 + p, .markdown-preview h2 + p, .markdown-preview[data-use-github-style] h2 + p, .markdown-preview h3 + p, .markdown-preview[data-use-github-style] h3 + p, .markdown-preview h4 + p, .markdown-preview[data-use-github-style] h4 + p, .markdown-preview h5 + p, .markdown-preview[data-use-github-style] h5 + p, .markdown-preview h6 + p, .markdown-preview[data-use-github-style] h6 + p { margin-top: 0px; }
+.markdown-preview li p.first, .markdown-preview[data-use-github-style] li p.first { display: inline-block; }
+.markdown-preview ul li > :first-child, .markdown-preview[data-use-github-style] ul li > :first-child, .markdown-preview ol li > :first-child, .markdown-preview[data-use-github-style] ol li > :first-child, .markdown-preview ul li ul:first-of-type, .markdown-preview[data-use-github-style] ul li ul:first-of-type, .markdown-preview ol li ul:first-of-type, .markdown-preview[data-use-github-style] ol li ul:first-of-type { margin-top: 0px; }
+.markdown-preview ol > li, .markdown-preview[data-use-github-style] ol > li { list-style-type: decimal; }
+.markdown-preview ul > li, .markdown-preview[data-use-github-style] ul > li { list-style-type: disc; }
+.markdown-preview dl dt:first-child, .markdown-preview[data-use-github-style] dl dt:first-child { padding: 0px; }
+.markdown-preview dl dt > :first-child, .markdown-preview[data-use-github-style] dl dt > :first-child { margin-top: 0px; }
+.markdown-preview dl dt > :last-child, .markdown-preview[data-use-github-style] dl dt > :last-child { margin-bottom: 0px; }
+.markdown-preview dl dd > :first-child, .markdown-preview[data-use-github-style] dl dd > :first-child { margin-top: 0px; }
+.markdown-preview dl dd > :last-child, .markdown-preview[data-use-github-style] dl dd > :last-child { margin-bottom: 0px; }
+.markdown-preview blockquote p, .markdown-preview[data-use-github-style] blockquote p { font-size: 16px; line-height: 1.5; }
+.markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { padding: 16px; overflow: auto; font-size: 84%; line-height: 1.45; border-radius: 3px; background-color: rgb(40, 44, 52); }
+.markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { margin-bottom: 16px; word-break: normal; }
+.markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt, .markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { font-family: Consolas, 'Liberation Mono', Courier, monospace; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { height: 20px; width: 20px; }
+.markdown-preview { font-size: 1.25em; color: rgb(200, 204, 213); background-color: rgb(47, 51, 61); }
+.markdown-preview h1, .markdown-preview h2 { color: inherit; border-color: rgb(24, 26, 31); }
+.markdown-preview a { color: rgb(100, 148, 237); }
+.markdown-preview hr { background-color: rgb(67, 73, 86); }
+.markdown-preview blockquote { color: rgb(157, 165, 180); border-left-color: rgba(157, 165, 180, 0.6); }
+.markdown-preview table th, .markdown-preview table td { border-color: rgb(24, 26, 31); }
+.markdown-preview table th { background-color: rgb(53, 59, 69); }
+.markdown-preview table tr { background-color: rgb(47, 51, 61); }
+.markdown-preview table tr:nth-child(2n) { background-color: rgb(40, 44, 52); }
+.markdown-preview code { color: rgb(243, 244, 246); border-color: rgb(24, 26, 31); background-color: rgb(62, 68, 81); background-clip: padding-box; }
+.markdown-preview pre.editor-colors::shadow .line.cursor-line { background-color: transparent; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 1px dashed rgba(250, 128, 114, 0.5);
+}
+
+pre.editor-colors,
+.host {
+  background-color: #282c34;
+  color: #abb2bf;
+}
+pre.editor-colors .line.cursor-line,
+.host .line.cursor-line {
+  background-color: rgba(153, 187, 255, 0.04);
+}
+pre.editor-colors .invisible,
+.host .invisible {
+  color: #abb2bf;
+}
+pre.editor-colors .cursor,
+.host .cursor {
+  border-left: 2px solid #528bff;
+}
+pre.editor-colors .selection .region,
+.host .selection .region {
+  background-color: #3e4451;
+}
+pre.editor-colors .bracket-matcher .region,
+.host .bracket-matcher .region {
+  border-bottom: 1px solid #528bff;
+  box-sizing: border-box;
+  background-color: #353b45;
+}
+pre.editor-colors .invisible-character,
+.host .invisible-character {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .indent-guide,
+.host .indent-guide {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .wrap-guide,
+.host .wrap-guide {
+  background-color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .gutter .line-number,
+.host .gutter .line-number {
+  color: #636d83;
+  -webkit-font-smoothing: antialiased;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:before,
+.host .gutter .line-number.git-line-removed:before {
+  bottom: -3px;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:after,
+.host .gutter .line-number.git-line-removed:after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 25px;
+  border-bottom: 1px dotted rgba(224, 82, 82, 0.5);
+  pointer-events: none;
+}
+pre.editor-colors .gutter .line-number.cursor-line,
+.host .gutter .line-number.cursor-line {
+  color: #abb2bf;
+  background-color: #2c313a;
+}
+pre.editor-colors .gutter .line-number.cursor-line-no-selection,
+.host .gutter .line-number.cursor-line-no-selection {
+  background-color: transparent;
+}
+pre.editor-colors .gutter .line-number .icon-right,
+.host .gutter .line-number .icon-right {
+  color: #abb2bf;
+}
+pre.editor-colors .gutter .line-number .icon-right,
+.host .gutter .line-number .icon-right {
+  color: #abb2bf;
+}
+pre.editor-colors .gutter .line-number.folded,
+.host .gutter .line-number.folded,
+pre.editor-colors .gutter .line-number:after,
+.host .gutter .line-number:after,
+pre.editor-colors .fold-marker:after,
+.host .fold-marker:after {
+  color: #abb2bf;
+}
+.comment {
+  color: #5c6370;
+  font-style: italic;
+}
+.entity.name.type {
+  color: #e5c07b;
+}
+.entity.other.inherited-class {
+  color: #98c379;
+}
+.keyword {
+  color: #c678dd;
+}
+.keyword.control {
+  color: #c678dd;
+}
+.keyword.operator {
+  color: #abb2bf;
+}
+.keyword.other.special-method {
+  color: #61afef;
+}
+.keyword.other.unit {
+  color: #d19a66;
+}
+.storage {
+  color: #c678dd;
+}
+.storage.type.annotation,
+.storage.type.primitive {
+  color: #c678dd;
+}
+.storage.modifier.package,
+.storage.modifier.import {
+  color: #abb2bf;
+}
+.constant {
+  color: #d19a66;
+}
+.constant.variable {
+  color: #d19a66;
+}
+.constant.character.escape {
+  color: #56b6c2;
+}
+.constant.numeric {
+  color: #d19a66;
+}
+.constant.other.color {
+  color: #56b6c2;
+}
+.constant.other.symbol {
+  color: #56b6c2;
+}
+.variable {
+  color: #e06c75;
+}
+.variable.interpolation {
+  color: #be5046;
+}
+.variable.parameter {
+  color: #abb2bf;
+}
+.invalid.illegal {
+  background-color: #e06c75;
+  color: #282c34;
+}
+.string {
+  color: #98c379;
+}
+.string.regexp {
+  color: #56b6c2;
+}
+.string.regexp .source.ruby.embedded {
+  color: #e5c07b;
+}
+.string.other.link {
+  color: #e06c75;
+}
+.punctuation.definition.comment {
+  color: #5c6370;
+}
+.punctuation.definition.method-parameters,
+.punctuation.definition.function-parameters,
+.punctuation.definition.parameters,
+.punctuation.definition.separator,
+.punctuation.definition.seperator,
+.punctuation.definition.array {
+  color: #abb2bf;
+}
+.punctuation.definition.heading,
+.punctuation.definition.identity {
+  color: #61afef;
+}
+.punctuation.definition.bold {
+  color: #e5c07b;
+  font-weight: bold;
+}
+.punctuation.definition.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.punctuation.section.embedded {
+  color: #be5046;
+}
+.punctuation.section.method,
+.punctuation.section.class,
+.punctuation.section.inner-class {
+  color: #abb2bf;
+}
+.support.class {
+  color: #e5c07b;
+}
+.support.type {
+  color: #56b6c2;
+}
+.support.function {
+  color: #56b6c2;
+}
+.support.function.any-method {
+  color: #61afef;
+}
+.entity.name.function {
+  color: #61afef;
+}
+.entity.name.class,
+.entity.name.type.class {
+  color: #e5c07b;
+}
+.entity.name.section {
+  color: #61afef;
+}
+.entity.name.tag {
+  color: #e06c75;
+}
+.entity.other.attribute-name {
+  color: #d19a66;
+}
+.entity.other.attribute-name.id {
+  color: #61afef;
+}
+.meta.class {
+  color: #e5c07b;
+}
+.meta.class.body {
+  color: #abb2bf;
+}
+.meta.method-call,
+.meta.method {
+  color: #abb2bf;
+}
+.meta.definition.variable {
+  color: #e06c75;
+}
+.meta.link {
+  color: #d19a66;
+}
+.meta.require {
+  color: #61afef;
+}
+.meta.selector {
+  color: #c678dd;
+}
+.meta.separator {
+  background-color: #373b41;
+  color: #abb2bf;
+}
+.meta.tag {
+  color: #abb2bf;
+}
+.none {
+  color: #abb2bf;
+}
+.markup.bold {
+  color: #d19a66;
+  font-weight: bold;
+}
+.markup.changed {
+  color: #c678dd;
+}
+.markup.deleted {
+  color: #e06c75;
+}
+.markup.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.markup.heading .punctuation.definition.heading {
+  color: #61afef;
+}
+.markup.inserted {
+  color: #98c379;
+}
+.markup.list {
+  color: #e06c75;
+}
+.markup.quote {
+  color: #d19a66;
+}
+.markup.raw.inline {
+  color: #98c379;
+}
+.source.cs .keyword.operator {
+  color: #c678dd;
+}
+.source.css .property-name,
+.source.css .property-value {
+  color: #828997;
+}
+.source.css .property-name.support,
+.source.css .property-value.support {
+  color: #abb2bf;
+}
+.source.gfm .markup {
+  -webkit-font-smoothing: auto;
+}
+.source.gfm .markup.heading {
+  color: #e06c75;
+}
+.source.gfm .markup.link {
+  color: #c678dd;
+}
+.source.gfm .link .entity {
+  color: #61afef;
+}
+.source.ini .keyword.other.definition.ini {
+  color: #e06c75;
+}
+.source.java .storage.modifier.import {
+  color: #e5c07b;
+}
+.source.java .storage.type {
+  color: #e5c07b;
+}
+.source.java-properties .meta.key-pair {
+  color: #e06c75;
+}
+.source.java-properties .meta.key-pair > .punctuation {
+  color: #abb2bf;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json > .punctuation.string {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json,
+.source.json .meta.structure.array.json > .value.json > .string.quoted.json,
+.source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json > .punctuation,
+.source.json .meta.structure.array.json > .value.json > .string.quoted.json > .punctuation {
+  color: #98c379;
+}
+.source.json .meta.structure.dictionary.json > .constant.language.json,
+.source.json .meta.structure.array.json > .constant.language.json {
+  color: #56b6c2;
+}
+.source.ruby .constant.other.symbol > .punctuation {
+  color: inherit;
+}
+.source.python .keyword.operator.logical.python {
+  color: #c678dd;
+}
+.source.python .variable.parameter {
+  color: #d19a66;
+}
+</style>
+  </head>
+  <body class='markdown-preview'><p>#Beetlsql</p>
+<ul>
+<li>作者: 闲大赋,Gavin.King,Sue</li>
+<li>开发时间:2015-07</li>
+<li>当前版本 1.0</li>
+<li>论坛 <a href="http://ibeetl.com">http://ibeetl.com</a></li>
+<li>qq群 219324263</li>
+<li>当前版本 1.0.0 (100K), 另外还需要beetl 包</li>
+</ul>
+<p>#beetlsql 特点</p>
+<p>BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 &amp; Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。</p>
+<ul>
+<li>无需注解，自动生成大量内置SQL，轻易完成增删改查功能</li>
+<li>数据模型支持Pojo，也支持Map/List这种快速模型，也支持混合模型</li>
+<li>SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试。</li>
+<li>SQL 模板基于Beetl实现，更容易写和调试，以及扩展</li>
+<li>简单支持关系映射而不引入复杂的OR Mapping概念和技术。</li>
+<li>具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能</li>
+<li>内置支持主从数据库，通过扩展，可以支持更复杂的分库分表逻辑</li>
+<li>支持跨数据库平台，开发者所需工作减少到最小</li>
+</ul>
+<h1 id="5-">5 分钟例子</h1>
+<p>##准备工作</p>
+<p>为了快速尝试BeetlSQL，需要准备一个Mysql数据库，然后执行如下sql脚本</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>DROP&nbsp;TABLE&nbsp;IF&nbsp;EXISTS&nbsp;`user`;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>CREATE&nbsp;TABLE&nbsp;`user`&nbsp;(</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>`id`&nbsp;int(11)&nbsp;NOT&nbsp;NULL,</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;`name`&nbsp;varchar(64)&nbsp;DEFAULT&nbsp;NULL,</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;`age`&nbsp;int(4)&nbsp;DEFAULT&nbsp;NULL,</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;`userName`&nbsp;varchar(64)&nbsp;DEFAULT&nbsp;NULL,</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;PRIMARY&nbsp;KEY&nbsp;(`id`)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>)&nbsp;ENGINE=InnoDB&nbsp;DEFAULT&nbsp;CHARSET=utf8;</span></span></span></div></pre><p>编写一个Pojo类，与数据库表对应</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>public&nbsp;class&nbsp;User&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>Integer&nbsp;id;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;String&nbsp;name;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;Integer&nbsp;age;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;String&nbsp;getName()&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;name;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;void&nbsp;setName(String&nbsp;name)&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>this.name&nbsp;=&nbsp;name;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;Integer&nbsp;getId()&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;id;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;void&nbsp;setId(Integer&nbsp;id)&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>this.id&nbsp;=&nbsp;id;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;Integer&nbsp;getAge()&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;age;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;void&nbsp;setAge(Integer&nbsp;age)&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>this.age&nbsp;=&nbsp;age;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>##代码例子</p>
+<p>写一个java的Main方法，内容如下</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;创建一个简单的ConnectionSource，只有一个master</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>ConnectionSource&nbsp;source&nbsp;=&nbsp;ConnectionSourceHelper.simple(driver,url,userName,password);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;采用mysql&nbsp;习俗</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>DBStyle&nbsp;mysql&nbsp;=&nbsp;new&nbsp;MysqlStyle();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;sql语句放在classpagth的/sql&nbsp;目录下</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>SQLLoader&nbsp;loader&nbsp;=&nbsp;new&nbsp;ClasspathLoader(&quot;/sql&quot;);&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;数据库命名跟java命名采用驼峰转化</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>NameConversion&nbsp;nc&nbsp;=&nbsp;new&nbsp;&nbsp;HumpNameConversion();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;最后，创建一个SQLManager</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>SqlManager&nbsp;sqlManager&nbsp;=&nbsp;new&nbsp;SqlManager(source,mysql,loader);&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//使用内置的生成的sql&nbsp;新增用户</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>User&nbsp;user&nbsp;=&nbsp;new&nbsp;User();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>user.setAge(19);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>user.setName(&quot;xiandafu&quot;);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>sqlManager.insert(user);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//使用内置sql查询用户</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>int&nbsp;id&nbsp;=&nbsp;1;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>user&nbsp;=&nbsp;sqlManager.unque(User.class,id);</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//使用user.md&nbsp;文件里的select语句，参考下一节</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>User&nbsp;query&nbsp;=&nbsp;new&nbsp;User();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>query.setName(&quot;xiandafu&quot;);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>List&lt;User&gt;&nbsp;list&nbsp;=&nbsp;sqlManager.select(&quot;user.select&quot;,User.class,query)</span></span></span></div></pre><p>##SQL例子</p>
+<p>为了能执行user.select,需要在classpath里建立一个user.md 文件，内容如下</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>select</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>===</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>select&nbsp;*&nbsp;from&nbsp;user&nbsp;where&nbsp;1=1</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@if(!isEmpty(age)){</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>and&nbsp;age&nbsp;=&nbsp;#age#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@if(!isEmpty(name)){</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>and&nbsp;name&nbsp;=&nbsp;#name#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@}</span></span></span></div></pre><p>关于如何写sql模板，会稍后章节说明，如下是一些简单说明。</p>
+<ul>
+<li><p>@ 和回车符号是定界符号，可以在里面写beetl语句。</p>
+</li>
+<li><p>&quot;#&quot; 是站位符号，生成sql语句得时候，将输出？，如果你想输出表达式值，需要用text函数，或者任何以db开头的函数，引擎则认为是直接输出文本。</p>
+</li>
+<li><p>isEmpty是beetl的一个函数，用来判断变量是否为空或者是否不存在.    </p>
+</li>
+</ul>
+<p>sql模板采用beetl原因是因为beetl 语法类似js，且对模板渲染做了特定优化，相比于mybatis，更加容易掌握和功能强大。    </p>
+<p>#BeetlSQL 说明</p>
+<h2 id="-sqlmanager">获得SQLManager</h2>
+<p>SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManager，可以直接构造SQLManager.并通过过单例获取如：</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>ConnectionSource&nbsp;source&nbsp;=&nbsp;ConnectionSourceHelper.simple(driver,url,userName,password);&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;采用mysql&nbsp;习俗</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>DBStyle&nbsp;mysql&nbsp;=&nbsp;new&nbsp;MysqlStyle();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;sql语句放在classpagth的/sql&nbsp;目录下</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>SQLLoader&nbsp;loader&nbsp;=&nbsp;new&nbsp;ClasspathLoader(&quot;/sql&quot;);&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;数据库命名跟java命名采用驼峰转化</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>NameConversion&nbsp;nc&nbsp;=&nbsp;new&nbsp;&nbsp;HumpNameConversion();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>//&nbsp;最后，创建一个SQLManager</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>SqlManager&nbsp;sqlManager&nbsp;=&nbsp;new&nbsp;SqlManager(source,mysql,loader);&nbsp;</span></span></span></div></pre><p>更常见的是，已经有了DataSource，创建ConnectionSource 可以采用如下代码</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>ConnectionSource&nbsp;source&nbsp;=&nbsp;ConnectionSourceHelper.single(datasource);</span></span></span></div></pre><p>如果是主从Datasource</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>ConnectionSource&nbsp;source&nbsp;=&nbsp;ConnectionSourceHelper.getMasterSlave(master,slaves)</span></span></span></div></pre><p>###Spring集成</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&lt;bean&nbsp;id=&quot;sqlManager&quot;&nbsp;class=&quot;org.beetl.sql.ext.SpringBeetlSql&quot;&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;property&nbsp;name=&quot;cs&quot;&nbsp;&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;bean&nbsp;&nbsp;class=&quot;org.beetl.sql.ext.SpringConnectionSource&quot;&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;property&nbsp;name=&quot;master&quot;&nbsp;ref=&quot;dataSource&quot;&gt;&lt;/property&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/bean&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/property&gt;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;property&nbsp;name=&quot;dbStyle&quot;&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;bean&nbsp;class=&quot;org.beetl.sql.core.db.MySqlStyle&quot;&gt;&nbsp;&lt;/bean&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/property&gt;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;property&nbsp;name=&quot;sqlLoader&quot;&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;bean&nbsp;class=&quot;org.beetl.sql.core.ClasspathLoader&quot;&gt;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;property&nbsp;name=&quot;sqlRoot&quot;&nbsp;value=&quot;/sql&quot;&gt;&lt;/property&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/bean&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/property&gt;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;property&nbsp;name=&quot;nc&quot;&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;bean&nbsp;class=&quot;org.beetl.sql.core.HumpNameConversion&quot;&gt;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/bean&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/property&gt;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;property&nbsp;name=&quot;interceptors&quot;&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;list&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;bean&nbsp;class=&quot;org.beetl.sql.ext.DebugInterceptor&quot;&gt;&lt;/bean&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/list&gt;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>&lt;/property&gt;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&lt;/bean&gt;</span></span></span></div></pre><ul>
+<li><p>cs: 指定ConnectionSource，可以用系统提供的DefaultConnectionSource，支持按照CRUD决定主从。例子里只有一个master库</p>
+</li>
+<li><p>dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle</p>
+</li>
+<li><p>sqlLoader: sql语句加载来源</p>
+</li>
+<li><p>nc:  命名转化，有驼峰的HumpNameConversion，有数据库下划线的UnderlinedNameConversion</p>
+</li>
+<li><p>interceptors:DebugInterceptor 用来打印sql语句，参数和执行时间</p>
+</li>
+</ul>
+<p>注意：
+任何使用了Transactional 注解的，将统一使用Master数据源，例外的是@Transactional(readOnly=true),这将让Beetsql选择从数据库。</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>public&nbsp;class&nbsp;MyServiceImpl&nbsp;implements&nbsp;MyService&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>@Autowired</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;SpringBeetlSql&nbsp;beetlsql&nbsp;;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>@Override</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;@Transactional()</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;int&nbsp;total(User&nbsp;user)&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>SQLManager&nbsp;dao&nbsp;=&nbsp;beetlsql.getSQLMananger();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List&lt;User&gt;&nbsp;list&nbsp;=&nbsp;dao.all(User.class);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;total&nbsp;=&nbsp;list&nbsp;.size();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dao.deleteById(User.class,&nbsp;3);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User&nbsp;u&nbsp;=new&nbsp;User();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u.id&nbsp;=&nbsp;3;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u.name=&quot;hello&quot;;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u.age&nbsp;=&nbsp;12;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dao.insert(User.class,&nbsp;u);</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;total;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>可以参考demo <a href="https://git.oschina.net/xiandafu/springbeetlsql">https://git.oschina.net/xiandafu/springbeetlsql</a></p>
+<p>###JFinal集成</p>
+<p>在configPlugin 里配置BeetlSql</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>JFinalBeetlSql.init();</span></span></span></div></pre><p>默认会采用c3p0 作为数据源，其配置来源于jfinal 配置，如果你自己提供数据源或者主从，可以如下</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>JFinalBeetlSql.init(master,slaves);</span></span></span></div></pre><p>由于使用了Beetlsql，因此你无需再配置 <strong>数据库连接池插件，和ActiveRecordPlugin</strong>,可以删除相关配置。</p>
+<p>在controller里，可以通过JFinalBeetlSql.dao 方法获取到SQLManager</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>SQLManager&nbsp;dao&nbsp;=&nbsp;JFinalBeetlSql.dao();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;BigBlog&nbsp;blog&nbsp;=&nbsp;getModel(BigBlog.class);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;dao.insert(BigBlog.class,&nbsp;blog);</span></span></span></div></pre><p>如果想控制事物，还需要注册Trans</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;void&nbsp;configInterceptor(Interceptors&nbsp;me)&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>me.addGlobalActionInterceptor(new&nbsp;Trans());</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>然后业务方法使用</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>@Before(Trans.class)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;void&nbsp;doXXX(){....+</span></span></span></div></pre><p>这样，方法执行完毕才会提交事物，任何RuntimeException将回滚，如果想手工控制回滚.也可以通过</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Trans.commit()</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Trans.rollback()</span></span></span></div></pre><p>如果习惯了JFinal Record模式，建议用户创建一个BaseBean，封装SQLManager CRUD 方法即可。然后其他模型继承此BaseBean</p>
+<p>可以参考demo <a href="https://git.oschina.net/xiandafu/jfinal_beet_beetsql_btjson">https://git.oschina.net/xiandafu/jfinal_beet_beetsql_btjson</a></p>
+<h2 id="sqlmanager-api">SQLManager API</h2>
+<h3 id="-api">查询API</h3>
+<p><strong>模板类查询（自动生成sql）</strong></p>
+<ul>
+<li>public <t> List<t> template(T t)  根据模板查询，返回所有符合这个模板的数据库</t></t></li>
+<li>public <t> List<t> template(T t,RowMapper mapper) 同上，mapper可以提供额外的映射，如处理一对多，一对一</t></t></li>
+<li>public <t> List<t> template(T t,int start,int size) 同上，可以翻页</t></t></li>
+<li>public <t> List<t> template(T t,RowMapper mapper,int start,int size) 翻页，并增加额外的映射</t></t></li>
+<li>public <t> long templateCount(T t) 获取符合条件的个数</t></li>
+</ul>
+<p><strong>通过sqlid查询，sql语句在md文件里</strong></p>
+<ul>
+<li>public <t> List<t> select(String sqlId, Class<t> clazz, Map<string, object=""> paras) 根据sqlid来查询，参数是个map</string,></t></t></t></li>
+<li>public <t> List<t> select(String sqlId, Class<t> clazz, Object paras) 根据sqlid来查询，参数是个pojo</t></t></t></li>
+<li>public <t> List<t> select(String sqlId, Class<t> clazz, Map<string, object=""> paras, int start, int size)， 增加翻页</string,></t></t></t></li>
+<li>public <t> List<t> select(String sqlId, Class<t> clazz, Object paras, int start, int size) ，增加翻页</t></t></t></li>
+<li><p>public <t> T selectSingle(String id,Object paras, Class<t> target) 根据sqlid查询，将对应的唯一值映射成指定的taget对象,RowMapper mapper 也随着这些api提供,不在此列出了</t></t></p>
+</li>
+<li><p>public <t> T selectSingle(String id,Map<string, object=""> paras, Class<t> target)  同上，参数是map</t></string,></t></p>
+</li>
+<li>public Integer  intValue(String id,Object paras) 查询结果映射成Integer，输入是objct</li>
+<li>public Integer  intValue(String id,Map paras) 查询结果映射成Integer，输入是map，
+其他还有 longValue，bigDecimalValue</li>
+</ul>
+<h3 id="-api">更新API</h3>
+<p><strong>自动生成sql</strong></p>
+<ul>
+<li>public void insert(Class&lt;?&gt; clazz,Object paras)  插入paras到paras关联的表</li>
+<li>public void insert(Class&lt;?&gt; clazz,Object paras,KeyHolder holder)，插入paras到paras关联的表，如果需要主键，可以通过holder的getKey来获取</li>
+<li>public int updateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键</li>
+<li>public int[] updateByIdBatch(List&lt;?&gt; list) 批量更新</li>
+</ul>
+<p><strong>通过sqlid更新</strong></p>
+<ul>
+<li>public int update(String sqlId, Object obj) 根据sqlid更新</li>
+<li>public int update(String sqlId, Map<string, object=""> paras) 根据sqlid更新，输出参数是map</string,></li>
+<li>public int[] updateBatch(String sqlId,List&lt;?&gt; list) 批量更新</li>
+<li>public int[] updateBatch(String sqlId,Map<string, object="">[] maps) 批量更新，参数是个数组，元素类型是map</string,></li>
+</ul>
+<p><strong>直接执行sql语句</strong></p>
+<ul>
+<li>public <t> List<t> execute(String sql,Class<t> clazz, Object paras)</t></t></t></li>
+<li>public <t> List<t> execute(String sql,Class<t> clazz, Map paras)</t></t></t></li>
+<li>public int  executeUpdate(String sql,Object paras)  返回成功执行条数</li>
+<li>public int  executeUpdate(String sql,Map paras) 返回成功执行条数</li>
+</ul>
+<p><strong>强制使用主或者从</strong></p>
+<ul>
+<li>public void useMaster(DBRunner f)  DBRunner里的beetlsql调用将使用主库</li>
+<li>public void useSlave(DBRunner f) DBRunner里的beetlsql调用将使用从库</li>
+</ul>
+<h2 id="beetlsql-annotation">BeetlSQL Annotation</h2>
+<p>对于自动生成的sql，默认不需要任何annotaton，类名对应于表名（通过NameConverstion类），getter方法的属性名对应于列明（也是通过NameConverstion类），但有些情况还是需要anntation。</p>
+<ul>
+<li><p>标签@Table(name=&quot;xxxx&quot;)  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表</p>
+<p>@Table(name=&quot;user&quot;)
+public class QueryUser ..</p>
+</li>
+<li><p>@AutoID,作用于getter方法，告诉beetlsql，这是自增主键</p>
+</li>
+<li>@AssignID，作用于getter方法，告诉beetlsql，这是主键，且由代码设定主键</li>
+<li>@SeqID(name=&quot;xx_seq&quot;，作用于getter方法，告诉beetlsql，这是序列主键。</li>
+</ul>
+<p>对于属性名为id的自增主键，不需要加annotation，beetlsql默认就是@AutoID</p>
+<p>（注，如果想要获取自增主键或者序列主键，需要在SQLManager.insert中传入一个KeyHolder)</p>
+<h2 id="beetlsql-">BeetlSQL 数据模型</h2>
+<p>BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括</p>
+<ul>
+<li><p>Pojo, 也就是面向对象Java Object</p>
+</li>
+<li><p>Map/List, 对于一些敏捷开发，可以直接使用Map/List 作为输入输出参数</p>
+</li>
+<li><p>混合模型，推荐使用混合模型。兼具灵活性和更好的维护性。Pojo可以实现Tail（尾巴的意思)，或者继承TailBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如下一个混合模型:</p>
+<p>  /<em>混合模型</em>/
+  public User extends TailBean{</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>private&nbsp;int&nbsp;id&nbsp;;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;pirvate&nbsp;String&nbsp;name;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;private&nbsp;int&nbsp;roleId;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;/*以下是getter和setter&nbsp;方法*/</span></span></span></div></pre><p>  }</p>
+</li>
+</ul>
+<p>对于sql语句:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>selectUser</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>===</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>select&nbsp;u.*,r.name&nbsp;r_name&nbsp;from&nbsp;user&nbsp;u&nbsp;left&nbsp;join&nbsp;role&nbsp;r&nbsp;on&nbsp;u.roleId=r.id&nbsp;.....</span></span></span></div></pre><p>执行查询的时候</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>List&lt;User&gt;&nbsp;list&nbsp;=&nbsp;sqlManager.select(&quot;user.selectUser&quot;,User.class,paras);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>for(User&nbsp;user:list){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>System.out.println(user.getId());</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(user.get(&quot;rName&quot;));</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>程序可以通过get方法获取到未被映射到pojo的值，也可以在模板里直接 ${user.rName}  显示（对于大多数模板引擎都支持）</p>
+<h2 id="-markdown-">##Markdown方式管理</h2>
+<p>BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，如User对象放到user.md 里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是</p>
+<ul>
+<li>XML格式过于复杂，书写不方便</li>
+<li>XML 格式有保留符号，写SQL的时候也不方便，如常用的&lt; 符号 必须转义</li>
+<li>MD 格式本身就是一个文档格式，也容易通过浏览器阅读和维护</li>
+</ul>
+<p>目前SQL文件格式非常简单，仅仅是sqlId 和sql语句本身，如下</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>文件一些说明，放在头部可有可无，如果有说明，可以是任意文字</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL标示</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;===</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL语句&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>SQL标示2</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;===</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL语句&nbsp;2</span></span></span></div></pre><p>所有SQL文件建议放到一个sql目录，sql目录有多个子目录，表示数据库类型，这是公共SQL语句放到sql目录下，特定数据库的sql语句放到各自自目录下
+当程序获取SQL语句得时候，先会根据数据库找特定数据库下的sql语句，如果未找到，会寻找sql下的。如下代码</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>List&lt;User&gt;&nbsp;list&nbsp;=&nbsp;sqlManager.select(&quot;user.select&quot;,User.class);&nbsp;</span></span></span></div></pre><p>SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，确认是否有select语句，如果没有，则会寻找sql/user.md </p>
+<p>(注:默认的ClasspathLoader采用了这种方法，你可以实现SQLLoader来实现自己的格式和sql存储方式，如数据库存储)</p>
+<h2 id="-">开发模式和产品模式</h2>
+<p>beetlsql默认是开发模式，因此修改md的sql文件，不需要重启。但建议线上不要使用开发模式，因为此模式会每次sql调用都会检测md文件是否变化。可以通过修改/btsql-ext.properties ,修改如下属性改为产品模式</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>PRODUCT_MODE&nbsp;=&nbsp;true</span></span></span></div></pre><p>##SQL 模板基于Beetl实现，更容易写和调试，以及扩展    </p>
+<p>SQL语句可以动态生成，基于Beetl语言，这是因为</p>
+<ul>
+<li><p>beetl执行效率高效 ，因此对于基于模板的动态sql语句，采用beetl非常合适</p>
+</li>
+<li><p>beetl 语法简单易用，可以通过半猜半式的方式实现，杜绝myBatis这样难懂难记得语法。BeetlSql学习曲线几乎没有</p>
+</li>
+<li><p>利用beetl可以定制定界符号，完全可以将sql模板定界符好定义为数据库sql注释符号，这样容易在数据库中测试，如下也是sql模板（定义定界符为&quot;--&quot; 和 &quot;null&quot;,null是回车意思);</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>selectByCond</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;===</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select&nbsp;*&nbsp;form&nbsp;user&nbsp;where&nbsp;1=1</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--if(age!=null)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;age=#age#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--}</span></span></span></div></pre></li>
+</ul>
+<ul>
+<li>beetl 错误提示非常友好，减少写SQL脚本编写维护时间</li>
+<li>beetl 能容易与本地类交互（直接访问Java类），能执行一些具体的业务逻辑 ，也可以直接在sql模板中写入模型常量，即使sql重构，也会提前解析报错</li>
+<li>beetl语句易于扩展，提供各种函数，比如分表逻辑函数，跨数据库的公共函数等</li>
+</ul>
+<p>如果不了解beetl，可先自己尝试按照js语法来写sql模板，如果还有疑问，可以查阅官网 <a href="http://ibeetl.com">http://ibeetl.com</a></p>
+<h2 id="beetl-">Beetl 入门</h2>
+<p>Beetl 语法类似js，java，如下做简要说明，使用可以参考   <a href="http://ibeetl.com&#xFF0C;&#x6216;&#x8005;&#x5728;&#x7EBF;&#x4F53;&#x9A8C;">http://ibeetl.com，或者在线体验</a>  <a href="http://ibeetl.com:8080/beetlonline/">http://ibeetl.com:8080/beetlonline/</a></p>
+<h3 id="-">定界符号</h3>
+<p>默认的定界符号是@ 和 回车。 里面可以放控制语句，表达式等语，，站位符号是##,站位符号默认是输出？，并在执行sql的传入对应的值。如果想在占位符号输出变量值，则需要使用text函数</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@if(isEmpty(name)){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>and&nbsp;name&nbsp;=&nbsp;#name#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>如果想修改定界符，可以增加一个/btsql-ext.properties. 设置如下属性</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>DELIMITER_PLACEHOLDER_START=#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>DELIMITER_PLACEHOLDER_END=#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>DELIMITER_STATEMENT_START=@</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>DELIMITER_STATEMENT_END=</span></span></span></div></pre><p>beetlsql 的其他属性也可以在此文件里设置</p>
+<h3 id="-">变量</h3>
+<p>通过程序传入的变量叫全局变量，可以在sql模板里使用，也可以定义变量，如</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@var&nbsp;count&nbsp;=&nbsp;3;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@var&nbsp;status&nbsp;=&nbsp;{&quot;a&quot;:1}&nbsp;&nbsp;//json变量</span></span></span></div></pre><h3 id="-">算数表达式</h3>
+<p>同js，如a+1-b%30, i++ 等</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>select&nbsp;*&nbsp;from&nbsp;user&nbsp;where&nbsp;name&nbsp;like&nbsp;#&#39;%&#39;+name+&#39;%&#39;#</span></span></span></div></pre><h3 id="-">逻辑表达式</h3>
+<p>有“&amp;&amp;” “||” ，还有 “！”，分别表示与，或，非， beetl也支持三元表达式</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>#user.gender=1?&#39;女&#39;:&#39;男&#39;#</span></span></span></div></pre><h3 id="-">控制语句</h3>
+<ul>
+<li>if else 这个同java，c，js。</li>
+<li><p>for,循环语句，如for(id:ids){}</p>
+<p>  select * from user where status in (
+  @for(id in ids){
+  #id# #idLP.isLast?&quot;&quot;:&quot;,&quot;#
+  @}
+注意：变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档</p>
+</li>
+</ul>
+<ul>
+<li>while 循环语句 ，如while(i&lt;count)</li>
+</ul>
+<h3 id="-">访问变量属性</h3>
+<ul>
+<li>如果是对象，直接访问属性名，user.name</li>
+<li>如果是Map，用key访问 map[&quot;key&quot;];</li>
+<li>如果是数组或者list，用索引访问，如list[1],list[i];</li>
+<li><p>可以直采用java方式访问变量的方法和属性，如静态类Constatns</p>
+<p>  public class Constatns{</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;static&nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RUNNING&nbsp;=&nbsp;0;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;public&nbsp;static&nbsp;User&nbsp;getUser(){}</span></span></span></div></pre><p>  }</p>
+</li>
+</ul>
+<p>直接以java方式访问，需要再变量符号前加上@，可以在模板里访问</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>select&nbsp;*&nbsp;from&nbsp;user&nbsp;where&nbsp;status&nbsp;=&nbsp;#@Constatns.RUNNING#&nbsp;and&nbsp;id&nbsp;=&nbsp;#@Constatns.getUser().getId()#</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>注意，如果Constants&nbsp;类&nbsp;没有导入进beetl，则需要带包名，导入beetl方法是配置IMPORT_PACKAGE=包名.;包名.</span></span></span></div></pre><p>###判断对象非空</p>
+<p>可以采用isEmpty判断变量表达式是否为空(为null)，是否存在，如果是字符串，是否是空字符串，如</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>if(isEmpty(user)||isEmpty(role.name))</span></span></span></div></pre><p>也可以用传统方法判断，如</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>if(user==null)&nbsp;or&nbsp;if(role.name!=null)</span></span></span></div></pre><p>变量有可能不存在，则需要使用安全输出符号，如</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>if(null==user.name!)</span></span></span></div></pre><p>变量表达式后面跟上&quot;!&quot; 表示如果变量不存在，则为！后面的值，如果！后面没有值，则为null</p>
+<h3 id="-">调用方法</h3>
+<p>同js，唯一值得注意的是，在占位符里调用text方法，会直接输出变量而不是“？”，其他以db开头的方式也是这样。架构师可以设置SQLPlaceholderST.textFunList.add(xxxx) 来决定那些方法在占位符号里可以直接输出文本而不是符号&quot;?&quot;</p>
+<p>beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请参考文档</p>
+<h3 id="-">自定义方法</h3>
+<p>通过配置btsql-ext.properties, 可以注册自己定义的方法在beetlsql里使用，如注册一个返回当前年份的函数，可以在btsql-ext.properties加如下代码</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>FN.db.year=&nbsp;com.xxx.YearFunction</span></span></span></div></pre><p>这样在模板里,可以调用db.year() 获得当前年份。YearFunction 需要实现Function的 call方法，如下是个简单代码</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>public&nbsp;class&nbsp;YearFunction&nbsp;implements&nbsp;Function{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;String&nbsp;call(Object[]&nbsp;paras,&nbsp;Context&nbsp;ctx){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;&quot;2015&quot;;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>关于如何完成自定义方法，请参考 ibeetl 官方文档</p>
+<h3 id="-">内置方法</h3>
+<ul>
+<li>print println 输出，同js，如print(&quot;table1&quot;);</li>
+<li>debug  将变量输出到控制台，如 debug(user);</li>
+<li>text 输出，但可用于占位符号里</li>
+<li><p>join, 用逗号连接集合或者数组，并输出？，用于in，如 </p>
+<p>  select <em> from user where status in ( #join(ids# )
+  -- 输出成  select </em> from user where status in (?,?,?)</p>
+</li>
+<li><p>use  参数是同一个md文件的sqlid，类似mybatis的 sql功能，如</p>
+<h1 id="-condtion">  condtion</h1>
+<p>  where 1=1 and name = #name#</p>
+<h1 id="-selectuser">  selectUser</h1>
+<p>  select * from user #use(&quot;condition&quot;)#</p>
+</li>
+</ul>
+<h2 id="debug-">Debug功能</h2>
+<p>Debug 期望能在控制台或者日志系统输出执行的sql语句，参数，执行结果以及执行时间，可以采用系统内置的DebugInterceptor 来完成，在构造SQLManager的时候，传入即可</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>SqlManager&nbsp;sqlManager&nbsp;=&nbsp;new&nbsp;SqlManager(source,mysql,loader,nc&nbsp;,new&nbsp;Interceptor[]{new&nbsp;DebugInterceptor()&nbsp;});</span></span></span></div></pre><p>或者通过spring，jfianl这样框架配置完成。使用后，执行beetlsql，会有类似输出</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>======DebugInterceptor&nbsp;Before======</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>sqlId&nbsp;:user.updatexxx</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>sql&nbsp;：&nbsp;insert&nbsp;into&nbsp;user&nbsp;(id,name,age)&nbsp;values&nbsp;(?,?,?)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>paras&nbsp;:&nbsp;[4,&nbsp;old,&nbsp;null]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>======DebugInterceptor&nbsp;After======</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>sqlId&nbsp;:&nbsp;user.updatexxx</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>execution&nbsp;time&nbsp;:&nbsp;54ms</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>成功更新[1]</span></span></span></div></pre><p>beetlsql会分别输出 执行前的sql和参数，以及执行后的结果和耗费的时间。你可以参考DebugInterceptor 实现自己的调试输出</p>
+<p>##Interceptor功能</p>
+<p>BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会执行各种扩展和监控，这比已知的通过数据库连接池做Interceptor更加容易。如下Interceptor都是有可能的</p>
+<ul>
+<li>监控sql执行较长时间语句，打印并收集。TimeStatInterceptor 类完成</li>
+<li>对每一条sql语句执行后输出其sql和参数，也可以根据条件只输出特定sql集合的sql。便于用户调试。DebugInterceptor完成</li>
+<li>对sql预计解析，汇总sql执行情况（未完成，需要集成第三方sql分析工具）</li>
+</ul>
+<p>你也可以自行扩展Interceptor类，来完成特定需求。
+如下，在执行数据库操作前会执行befor，通过ctx可以获取执行的上下文参数，数据库成功执行后，会执行after方法</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>public&nbsp;interface&nbsp;Interceptor&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>public&nbsp;void&nbsp;before(InterceptorContext&nbsp;ctx);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;void&nbsp;after(InterceptorContext&nbsp;ctx);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>InterceptorContext 如下，包含了sqlId，实际得sql，和实际得参数, 也包括执行结果result。对于查询，执行结果是查询返回的结果集条数，对于更新，返回的是成功条数，如果是批量更新，则是一个数组。可以参考源码DebugInterceptor</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>public&nbsp;class&nbsp;InterceptorContext&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>private&nbsp;String&nbsp;sqlId;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;String&nbsp;sql;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;&nbsp;List&lt;Object&gt;&nbsp;paras;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;boolean&nbsp;isUpdate&nbsp;=&nbsp;false&nbsp;;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;Object&nbsp;result&nbsp;;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;Map&lt;String,Object&gt;&nbsp;env&nbsp;&nbsp;=&nbsp;null;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>##内置支持主从数据库</p>
+<p>BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操作此数据源，如果提供多个，则默认第一个为写库，其他为读库。用户在开发代码的时候，无需关心操作的是哪个数据库，因为调用sqlScrip 的 select相关api的时候，总是去读取从库，add/update/delete 的时候，总是读取主库。 </p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>sqlManager.insert(User.class,user)&nbsp;//&nbsp;操作主库，如果只配置了一个数据源，则无所谓主从</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;sqlManager.unique(id,User.class)&nbsp;//读取从库</span></span></span></div></pre><p>主从库的逻辑是由ConnectionSource来决定的，如下DefaultConnectionSource 的逻辑</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>@Override</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>public&nbsp;Connection&nbsp;getConn(String&nbsp;sqlId,boolean&nbsp;isUpdate,String&nbsp;sql,List&lt;?&gt;&nbsp;paras){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>if(this.slaves==null||this.slaves.length==0)&nbsp;return&nbsp;this.getWriteConn(sqlId,sql,paras);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;if(isUpdate)&nbsp;return&nbsp;this.getWriteConn(sqlId,sql,paras);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;status&nbsp;&nbsp;=&nbsp;forceStatus.get();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;if(status&nbsp;==0||status==1){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;this.getReadConn(sqlId,&nbsp;sql,&nbsp;paras);</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}else{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;this.getWriteConn(sqlId,sql,paras);</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><ul>
+<li>forceStatus 可以强制SQLManager 使用主或者从数据库。参考api SQLManager.useMaster(DBRunner f)  ，SQLManager.useSlave(DBRunner f)  </li>
+</ul>
+<p>对于于不同的ConnectionSource 完成逻辑不一样，对于spring，jfinal这样的框架，如果sqlManager在事务环境里，总是操作主数据库，如果是只读事务环境
+则操作从数据库。如果没有事务环境，则根据sql是查询还是更新来决定。</p>
+<p>如下是SpringConnectionSource 提供的主从逻辑</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>public&nbsp;Connection&nbsp;getConn(String&nbsp;sqlId,boolean&nbsp;isUpdate,String&nbsp;sql,List&nbsp;paras){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>//只有一个数据源</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;if(this.slaves==null||this.slaves.length==0)&nbsp;return&nbsp;this.getWriteConn(sqlId,sql,paras);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;//如果是更新语句，也得走master</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;if(isUpdate)&nbsp;return&nbsp;this.getWriteConn(sqlId,sql,paras);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;//如果api强制使用</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;status&nbsp;&nbsp;=&nbsp;forceStatus.get();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;if(status==1){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;this.getReadConn(sqlId,&nbsp;sql,&nbsp;paras);</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}else&nbsp;if(status&nbsp;==2){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;this.getWriteConn(sqlId,sql,paras);</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;//在事物里都用master，除了readonly事物</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;boolean&nbsp;inTrans&nbsp;=&nbsp;TransactionSynchronizationManager.isActualTransactionActive();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;if(inTrans){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>boolean&nbsp;&nbsp;isReadOnly&nbsp;=&nbsp;TransactionSynchronizationManager.isCurrentTransactionReadOnly();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isReadOnly){</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;this.getWriteConn(sqlId,sql,paras);</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>}</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>return&nbsp;this.getReadConn(sqlId,&nbsp;sql,&nbsp;paras);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>}</span></span></span></div></pre><p>注意，对于使用者来说，无需关心本节说的内容，仅仅供要定制主从逻辑的架构师。</p>
+<h2 id="-">可以支持更复杂的分库分表逻辑</h2>
+<p>开发者也可以通过在Sql 模板里完成分表逻辑而对使用者透明，如下sql语句</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>insert&nbsp;into&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>#text(&quot;log_&quot;+&nbsp;getMonth(date())#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;values&nbsp;()&nbsp;...</span></span></span></div></pre><p>注：text函数直接输出表达式到sql语句，而不是输出？。</p>
+<p>log表示按照一定规则分表，table可以根据输入的时间去确定是哪个表</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>select&nbsp;*&nbsp;from&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;#text(&quot;log&quot;+log.date)#</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;</span></span></span></div></pre><p>注：text函数直接输出表达式到sql语句，而不是输出？。</p>
+<p>同样，根据输入条件决定去哪个表，或者查询所有表</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>@&nbsp;var&nbsp;tables&nbsp;=&nbsp;getLogTables();</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;for(table&nbsp;in&nbsp;tables){</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;select&nbsp;*&nbsp;from&nbsp;#text(table)#&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!tableLP.isLast)&nbsp;print(&quot;union&quot;);</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;@}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;name&nbsp;=&nbsp;#name#</span></span></span></div></pre><p>##跨数据库平台</p>
+<p>如前所述，BeetlSql 可以通过sql文件的管理和搜索来支持跨数据库开发，如前所述，先搜索特定数据库，然后再查找common。另外BeetlSql也提供了一些夸数据库解决方案</p>
+<ul>
+<li>DbStyle 描述了数据库特性，注入insert语句，翻页语句都通过其子类完成，用户无需操心</li>
+<li>提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等</li>
+</ul>
+<h2 id="-">开发人员帅照</h2>
+<p>###闲大赋
+<img src="http://ibeetl.com/guide/xiandafu.jpg" alt="xiandfu"></p>
+<p>###Gavin·King 
+<img src="http://ibeetl.com/guide/GV2.png" alt="Gavin"></p>
+<h3 id="sue">Sue</h3>
+<p><img src="http://ibeetl.com/guide/SUE.jpg" alt="Sue"></p></body>
+</html>

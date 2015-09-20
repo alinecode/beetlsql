@@ -92,8 +92,11 @@ public class MetadataManager {
 	private Table getTable(String name){
 		String indexName = name;
 		//兼容性修改，oralce返回的总是大写表名和列明
-		if(sm.getDbStyle().getName().equals("oracle")){
+		String dbName = sm.getDbStyle().getName();
+		if(dbName.equals("oracle")){
 			indexName = name.toUpperCase();
+		}else if(dbName.equals("postgres")){
+			indexName = name.toLowerCase();
 		}
 		
 		Table table = map.get(indexName);
@@ -113,10 +116,13 @@ public class MetadataManager {
 		
 		Table table = new Table();
 		table.name = tableName;
-		
-		if(sm.getDbStyle().getName().equals("oracle")){
+		String dbName = sm.getDbStyle().getName();
+		if(dbName.equals("oracle")){
 			tableName = tableName.toUpperCase();
+		}else if(dbName.equals("postgres")){
+			tableName = tableName.toLowerCase();
 		}
+		
 		
 		Connection conn=null;
 		try {

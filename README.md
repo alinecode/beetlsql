@@ -261,6 +261,10 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 ### 查询API
 
 **模板类查询（自动生成sql）**
+
+* public <T> List<T> all(Class<T> clazz)  查询出所有结果集
+* public <T> List<T> all(Class<T> clazz, int start, int size)  翻页
+* public int allCount(Class<?> clazz) 总数
 * public <T> List<T> template(T t)  根据模板查询，返回所有符合这个模板的数据库
 * public <T> List<T> template(T t,RowMapper mapper) 同上，mapper可以提供额外的映射，如处理一对多，一对一
 * public <T> List<T> template(T t,int start,int size) 同上，可以翻页

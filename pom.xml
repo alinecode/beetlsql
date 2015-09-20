@@ -150,13 +150,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		<!--  dependency>
 			<groupId>oralce</groupId>
 			<artifactId>oralce-express</artifactId>
 			<version>6</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
-		</dependency>
+		</dependency-->
 
 		<dependency>
 			<groupId>com.alibaba</groupId>

@@ -1,18 +1,21 @@
 package org.beetl.sql.postgres;
 
-import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import org.beetl.sql.OracleConnectoinSource;
+import org.beetl.sql.PostgresConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.db.OracleStyle;
+import org.beetl.sql.core.db.PostgresStyle;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.oracle.OracleType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,33 +26,44 @@ public class MappingTest {
 	@Before
 	public void before() {
 		loader = new ClasspathLoader("/sql/");
-		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource(),new  HumpNameConversion(),
+		manager = new SQLManager(new PostgresStyle(), loader, new PostgresConnectoinSource(),new  HumpNameConversion(),
 				new Interceptor[]{new DebugInterceptor()});
 	}
 
 	
 
-	@Test
+	//@Test
 	public void addMap() throws Exception {
-		OracleType type = new OracleType();
-		type.setId(1l);
-		type.setDate1(new Date(1));
-		type.setSt(new Timestamp(121212));
-		type.setImage(new byte[]{1,2,3,5});
-		type.setText2("ok12312322");
-		type.setMoney(new BigDecimal(2.333));
-//		type.setText("123");
-//		type.setText2("456");
-//		type.setDDouble(1.22323);
-//		type.setDFloat(new Float(1.2));
 		
-		manager.insert(OracleType.class, type);
+		Connection conn = manager.getDs().getMaster();
+		DatabaseMetaData dbmd =  conn.getMetaData();
+		
+		/*
+		ResultSet rs = dbmd.getTables(null, "%", "%",
+				new String[] { "TABLE" });
+		
+		while(rs.next()){
+			System.out.println(rs.getString(3));
+		}
+		*/
+		
+		
+		MappingBean type = new MappingBean();
+		type.setDate(new Date());
+		type.setMoney(3.22);
+		type.setPhoto(new byte[]{1,2,3});
+		type.setText("hello,long text");
+//		type.setTime(new Date());
+		type.setTimestamp(new Timestamp(122323l));
+		manager.insert(MappingBean.class, type);
+		
+		
 		
 	}
 	
 	@Test
 	public void selectMap() throws Exception {
-		List<OracleType> list = manager.all(OracleType.class);
+		List<MappingBean> list = manager.all(MappingBean.class);
 		System.out.println(list);
 	}
 }
