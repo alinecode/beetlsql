@@ -365,9 +365,9 @@ public class SQLManager {
 	 * @param clazz
 	 * @return
 	 */
-	public int allCount(Class<?> clazz) {
+	public long allCount(Class<?> clazz) {
 		SQLScript script = getScript(clazz, SELECT_COUNT_BY_TEMPLATE);
-		return script.singleSelect(null, Integer.class);
+		return script.singleSelect(null, Long.class);
 	}
 	
 	/**

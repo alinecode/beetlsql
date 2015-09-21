@@ -544,7 +544,7 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 * text 输出，但可用于占位符号里
 * join, 用逗号连接集合或者数组，并输出？，用于in，如 
 
-	select * from user where status in ( #join(ids# )
+	select * from user where status in ( #join(ids)＃)
 	-- 输出成  select * from user where status in (?,?,?)
 * use  参数是同一个md文件的sqlid，类似mybatis的 sql功能，如
 
@@ -701,6 +701,23 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 * DbStyle 描述了数据库特性，注入insert语句，翻页语句都通过其子类完成，用户无需操心
 * 提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等
 
+##直接使用SQLResult
+
+有时候，也许你只需要SQL及其参数列表，然后传给你自己的dao工具类，这时候你需要SQLResult，它包含了你需要的sql，和sql参数。
+SQLManager 有如下方法，你需要传入sqlid，和参数即可
+
+	public SQLResult getSQLResult(String id, Map<String, Object> paras) 
+
+paras 是一个map，如果你只有一个pojo作为参数，你可以使用“_root” 作为key，这样sql模版找不到名称对应的属性值的时候，会寻找_root 对象，如果存在，则取其同名属性。
+
+SQLResult 如下：
+
+	public class SQLResult {
+		public String jdbcSql;
+		public List<Object> jdbcPara;
+	}
+
+jdbcSql是渲染过后的sql，jdbcPara 是对应的参数值
 
 
 
