@@ -95,7 +95,7 @@ public class SQLManager {
 	}
 	
 	//是否是生产模式:生产模式无需new MetadataManager
-	private boolean isProductMode(SQLLoader sqlLoader){
+	public boolean isProductMode(SQLLoader sqlLoader){
 		return !sqlLoader.isAutoCheck();
 	}
 	

@@ -98,11 +98,10 @@ public class MetadataManager {
 		}else if(dbName.equals("postgres")){
 			indexName = name.toLowerCase();
 		}
-		
 		Table table = map.get(indexName);
-		
+
 		if(table==null){
-			table= initTable(name);
+			table = initTable(name);
 		}
 		
 		if(table==NOT_EXIST){
@@ -153,8 +152,11 @@ public class MetadataManager {
 				table.cols.add(colName);
 			}
 			rs.close();
-			//map的key统一用大写
-			map.put(tableName, table);
+			//开发模式无需缓存table信息
+			if(sm.isProductMode(sm.getSqlLoader())){
+				//map的key统一用大写
+				map.put(tableName, table);
+			}
 			return table;
 			
 		} catch (SQLException e) {

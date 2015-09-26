@@ -315,7 +315,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	/***
 	 * 生成主键条件子句（示例 whrer 1=1 and id=${id}）
-	 * @param tableName
+	 * @param cls
 	 * @return
 	 */
 	private String appendIdCondition(Class<?> cls) {
