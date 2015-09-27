@@ -72,7 +72,7 @@ public class SQLManager {
 		this.nc = nc;
 		this.inters = inters;
 		this.dbStyle.setNameConversion(this.nc);
-		this.dbStyle.setMetadataManager(getMetadataManager());
+		this.dbStyle.setMetadataManager(initMetadataManager());
 		this.dbStyle.init(beetl);
 	}
 	
@@ -84,18 +84,21 @@ public class SQLManager {
 	 * @return MetadataManager  
 	 * @throws
 	 */
-	private MetadataManager getMetadataManager(){
-		if(isProductMode(this.sqlLoader)){
-			if(metaDataManager == null){
-				return new MetadataManager(this.ds,this);
-			}
-			return metaDataManager;
+	private MetadataManager initMetadataManager(){
+		
+		if(metaDataManager == null){
+			return new MetadataManager(this.ds,this);
 		}
-		return new MetadataManager(this.ds,this);
+		return metaDataManager;
+		
 	}
 	
-	//是否是生产模式:生产模式无需new MetadataManager
-	public boolean isProductMode(SQLLoader sqlLoader){
+	
+	/**
+	 * 是否是生产模式:生产模式MetadataManager 不缓存table信息，不查看sql文件变化,默认是false
+	 * @return
+	 */
+	public boolean isProductMode(){
 		return !sqlLoader.isAutoCheck();
 	}
 	

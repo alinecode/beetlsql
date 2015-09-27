@@ -101,6 +101,8 @@ public class ClasspathLoader implements SQLLoader {
 	
 	@Override
 	public void addGenSQL(String id, SQLSource source) {
+		//开发模式下，每次都生成sql
+		if(this.autoCheck) return ;
 		sqlSourceVersion.put(id, 0l); //never change
 		sqlSourceMap.put(id, source);
 		

@@ -82,10 +82,11 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String condition = " where 1=1 " + lineSeparator;
 		Method[] methods = cls.getMethods();
 		String tableName = nameConversion.getTableName(cls);
+		TableDesc  table = this.metadataManager.getTable(tableName);
 		for (Method method : methods) {
 			if(isLegalSelectMethod(method)){
 				fieldName = StringKit.toLowerCaseFirstOne(method.getName().substring(3));
-				condition = condition + appendWhere(cls,tableName, fieldName);
+				condition = condition + appendWhere(cls,table, fieldName);
 			}
 		}
 		return new SQLSource(new StringBuilder("select * from ").append(this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord()).append(condition).toString());
@@ -97,10 +98,11 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String condition = " where 1=1 " + lineSeparator;
 		Method[] methods = cls.getMethods();
 		String tableName = nameConversion.getTableName(cls);
+		TableDesc  table = this.metadataManager.getTable(tableName);
 		for (Method method : methods) {
 				if(isLegalSelectMethod(method)){
 					fieldName = StringKit.toLowerCaseFirstOne(method.getName().substring(3));
-					condition = condition + appendWhere(cls,tableName, fieldName);
+					condition = condition + appendWhere(cls,table, fieldName);
 				}
 		}
 		return new SQLSource(new StringBuilder("select count(*) from ").append(this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord()).append(condition).toString());
@@ -125,6 +127,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	@Override
 	public SQLSource genUpdateById(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = this.metadataManager.getTable(tableName);
 		StringBuilder sql = new StringBuilder("update ").append(this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord()).append(" set ").append(lineSeparator);
 		String fieldName = null;
 		
@@ -132,7 +135,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		for (Method method : methods) {
 				if(isLegalOtherMethod(method) && !method.getName().endsWith("Id")){//TODO 暂时限定排除ID
 					fieldName = StringKit.toLowerCaseFirstOne(method.getName().substring(3));
-					sql.append(appendSetColumnAbsolute(cls,tableName, fieldName));
+					sql.append(appendSetColumnAbsolute(cls,table, fieldName));
 				}
 		}
 		String condition = appendIdCondition(cls);
@@ -144,6 +147,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public SQLSource genUpdateTemplate (Class<?> cls) {
 		//SQLPart s = new SQLPart();
 		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = this.metadataManager.getTable(tableName);
 		StringBuilder sql = new StringBuilder("update ").append(this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord()).append(" set ").append(lineSeparator);
 		String fieldName = null;
 		String condition = " where 1=1 " + lineSeparator;
@@ -151,8 +155,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 		for (Method method : methods) {
 				if(isLegalOtherMethod(method)){
 					fieldName = StringKit.toLowerCaseFirstOne(method.getName().substring(3));
-					sql.append(appendSetColumn(cls,tableName, fieldName,"para"));
-					condition = condition + appendWhere(cls,tableName, fieldName,"condition");
+					sql.append(appendSetColumn(cls,table, fieldName,"para"));
+					condition = condition + appendWhere(cls,table, fieldName,"condition");
 				}
 		}
 		sql = removeComma(sql, condition);
@@ -162,13 +166,14 @@ public abstract class AbstractDBStyle implements DBStyle {
 	@Override
 	public SQLSource genUpdateAll(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);
+		TableDesc  table = this.metadataManager.getTable(tableName);
 		StringBuilder sql = new StringBuilder("update ").append(this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord()).append(" set ").append(lineSeparator);
 		String fieldName = null;
 		Method[] methods = cls.getMethods();
 		for (Method method : methods) {
 			if(isLegalOtherMethod(method)){
 				fieldName = StringKit.toLowerCaseFirstOne(method.getName().substring(3));
-				sql.append(appendSetColumn(cls,tableName, fieldName));
+				sql.append(appendSetColumn(cls,table, fieldName));
 			}
 		}
 		sql = removeComma(sql, null);
@@ -178,6 +183,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	@Override
 	public SQLSource genInsert(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = this.metadataManager.getTable(tableName);
 		StringBuilder sql = new StringBuilder("insert into " + this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord() + lineSeparator);
 		StringBuilder colSql = new StringBuilder("(");
 		StringBuilder valSql = new StringBuilder(" VALUES (");
@@ -195,7 +201,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 						continue ; //忽略这个字段
 					}else if(idType==DBStyle.ID_SEQ){
 						
-						colSql.append(appendInsertColumn(cls,tableName, fieldName));
+						colSql.append(appendInsertColumn(cls,table, fieldName));
 						valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
 						SeqID seqId = method.getAnnotation(SeqID.class);
 						source.setSeqName(seqId.name());
@@ -204,8 +210,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 						//normal
 					}
 				}
-				colSql.append(appendInsertColumn(cls,tableName, fieldName));
-				valSql.append(appendInsertVlaue(cls,tableName, fieldName));
+				colSql.append(appendInsertColumn(cls,table, fieldName));
+				valSql.append(appendInsertVlaue(cls,table, fieldName));
 			}
 		}
 		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
@@ -236,9 +242,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendSetColumnAbsolute(Class<?> c,String tableName,String fieldName) {
+	private String appendSetColumnAbsolute(Class<?> c,TableDesc table,String fieldName) {
 		String colName = nameConversion.getColName(c,fieldName);
-		if (metadataManager.existColName(tableName, colName)) {
+		if (metadataManager.existColName(table, colName)) {
 			return this.getEscapeForKeyWord()+colName +this.getEscapeForKeyWord()+ "="+HOLDER_START + fieldName + HOLDER_END+",";
 		}
 		return "";
@@ -250,13 +256,13 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendSetColumn(Class<?> c,String tableName,String fieldName,String...prefixs) {
+	private String appendSetColumn(Class<?> c,TableDesc table,String fieldName,String...prefixs) {
 		String prefix = "";
 		if(prefixs.length > 0){
 			prefix = prefixs[0]+".";
 		}
 		String colName = nameConversion.getColName(c,fieldName);
-		if (metadataManager.existColName(tableName, colName)) {
+		if (metadataManager.existColName(table, colName)) {
 			return STATEMENT_START + "if(!isEmpty(" + prefix+fieldName + ")){"
 					+ STATEMENT_END + "\t" + this.getEscapeForKeyWord()+colName+this.getEscapeForKeyWord() + "="+HOLDER_START + prefix+fieldName + HOLDER_END+","
 					+ lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
@@ -270,14 +276,14 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendWhere(Class<?> c,String tableName,String fieldName,String...prefixs) {
+	private String appendWhere(Class<?> c,TableDesc table,String fieldName,String...prefixs) {
 		String prefix = "";
 		if(prefixs.length > 0){
 			prefix = prefixs[0]+".";
 		}
 		String colName = nameConversion.getColName(c,fieldName);
 		String connector = " and ";
-		if (metadataManager.existColName(tableName, colName)) {
+		if (metadataManager.existColName(table, colName)) {
 			return STATEMENT_START + "if(!isEmpty(" + prefix+fieldName + ")){"
 					+ STATEMENT_END + connector + this.getEscapeForKeyWord()+colName+this.getEscapeForKeyWord() + "="+HOLDER_START + prefix+fieldName
 					+ HOLDER_END+ lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
@@ -291,9 +297,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendInsertColumn(Class<?> c,String tableName,String fieldName) {
+	private String appendInsertColumn(Class<?> c,TableDesc table,String fieldName) {
 		String colName = nameConversion.getColName(c,fieldName);
-		if (metadataManager.existColName(tableName, colName)) {
+		if (metadataManager.existColName(table, colName)) {
 			return  this.getEscapeForKeyWord()+colName +this.getEscapeForKeyWord()+ ",";
 		}
 		return "";
@@ -305,9 +311,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendInsertVlaue(Class<?> c,String tableName,String fieldName) {
+	private String appendInsertVlaue(Class<?> c,TableDesc table,String fieldName) {
 		String colName = nameConversion.getColName(c,fieldName);
-		if (metadataManager.existColName(tableName, colName)) {
+		if (metadataManager.existColName(table, colName)) {
 			return  HOLDER_START+ fieldName + HOLDER_END+",";
 		}
 		return "";

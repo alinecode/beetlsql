@@ -5,9 +5,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.BeetlSQLException;
@@ -17,8 +15,8 @@ import org.beetl.sql.core.SQLManager;
 public class MetadataManager {
 
 	private ConnectionSource ds = null;
-	Map<String,Table> map = new ConcurrentHashMap<String,Table>();
-	Table NOT_EXIST = new Table();
+	Map<String,TableDesc> map = new ConcurrentHashMap<String,TableDesc>();
+	TableDesc NOT_EXIST = new TableDesc();
 	SQLManager sm = null;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
@@ -43,7 +41,7 @@ public class MetadataManager {
 	 * @return
 	 */
 	public boolean existtable(String tableName) {
-		Table t = getTable(tableName);
+		TableDesc t = getTable(tableName);
 		return t!=null;
 	}
 
@@ -54,11 +52,9 @@ public class MetadataManager {
 	 * @param colName
 	 * @return
 	 */
-	public boolean existColName(String tableName, String colName) {
+	public boolean existColName(TableDesc table, String colName) {
 		colName = colName.toLowerCase();
-		Table t = getTable(tableName);
-		if(t==null) return false ;
-		return t.cols.contains(colName);
+		return table.cols.contains(colName);
 	}
 
 	/***
@@ -84,21 +80,14 @@ public class MetadataManager {
 	 * @return
 	 */
 	public String getIds(String tableName) {
-		Table t = getTable(tableName);
+		TableDesc t = getTable(tableName);
 		if(t==null) return null ;
 		return t.idName;
 	}
 	
-	private Table getTable(String name){
-		String indexName = name;
-		//兼容性修改，oralce返回的总是大写表名和列明
-		String dbName = sm.getDbStyle().getName();
-		if(dbName.equals("oracle")){
-			indexName = name.toUpperCase();
-		}else if(dbName.equals("postgres")){
-			indexName = name.toLowerCase();
-		}
-		Table table = map.get(indexName);
+	public TableDesc getTable(String name){
+		String indexName = name.toUpperCase();
+		TableDesc table = map.get(indexName);
 
 		if(table==null){
 			table = initTable(name);
@@ -110,11 +99,11 @@ public class MetadataManager {
 		return table;
 	}
 	
-	private Table initTable(String tableName){
+	private TableDesc initTable(String tableName){
 	
 		
-		Table table = new Table();
-		table.name = tableName;
+		TableDesc table = new TableDesc();
+		table.name = tableName.toUpperCase();
 		String dbName = sm.getDbStyle().getName();
 		if(dbName.equals("oracle")){
 			tableName = tableName.toUpperCase();
@@ -132,7 +121,7 @@ public class MetadataManager {
 			ResultSet rs = dbmd.getTables(null, "%", tableName,
 					new String[] { "TABLE" });
 			if (!rs.next()) {
-				map.put(tableName, NOT_EXIST);
+				map.put(tableName.toUpperCase(), NOT_EXIST);
 				return NOT_EXIST;
 			}
 			
@@ -142,6 +131,7 @@ public class MetadataManager {
 				count++;
 				table.idName=rs.getString("COLUMN_NAME").toLowerCase();
 			}
+			
 			//多个主键 下个版本再做
 			if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
 			
@@ -153,9 +143,9 @@ public class MetadataManager {
 			}
 			rs.close();
 			//开发模式无需缓存table信息
-			if(sm.isProductMode(sm.getSqlLoader())){
+			if(sm.isProductMode()){
 				//map的key统一用大写
-				map.put(tableName, table);
+				map.put(tableName.toUpperCase(), table);
 			}
 			return table;
 			
@@ -176,14 +166,6 @@ public class MetadataManager {
 			ex.printStackTrace();
 		}
 		
-	}
-	
-	static class Table{
-		//保持大小写
-		public String name;
-		// 默认为id，列明采用小写
-		public String idName="id";
-		public Set<String> cols = new HashSet<String>();
 	}
 	
 	public static void main(String[] args){
