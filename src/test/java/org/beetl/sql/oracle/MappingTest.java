@@ -29,7 +29,7 @@ public class MappingTest {
 
 	
 
-	@Test
+//	@Test
 	public void addMap() throws Exception {
 		OracleType type = new OracleType();
 		type.setId(1l);

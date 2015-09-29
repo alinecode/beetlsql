@@ -14,13 +14,14 @@ public class OracleStyle extends AbstractDBStyle {
 
 	@Override
 	public String getPageSQL(String sql) {
+		//beetlT，beetl_rn 避免与sql重复
 		String pageSql = "SELECT * FROM "
 		+" ( "
-		+" SELECT _A.*, ROWNUM RN "
-		+" FROM ( \n" +sql+"\n )  _A " 
+		+" SELECT beeltT.*, ROWNUM beetl_rn "
+		+" FROM ( \n" +sql+"\n )  beeltT " 
 		+" WHERE ROWNUM <"+HOLDER_START+DBStyle.PAGE_END+HOLDER_END
-		+")"
-		+"WHERE RN >= " +HOLDER_START+DBStyle.OFFSET+HOLDER_END ;
+		+") "
+		+"WHERE beetl_rn >= " +HOLDER_START+DBStyle.OFFSET+HOLDER_END ;
 		return pageSql;
 	}
 

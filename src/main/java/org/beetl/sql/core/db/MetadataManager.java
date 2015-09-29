@@ -142,11 +142,11 @@ public class MetadataManager {
 				table.cols.add(colName);
 			}
 			rs.close();
-			//开发模式无需缓存table信息
-			if(sm.isProductMode()){
-				//map的key统一用大写
-				map.put(tableName.toUpperCase(), table);
-			}
+//			//开发模式无需缓存table信息 ，以后再搞
+//			if(sm.isProductMode()){
+//				//map的key统一用大写
+//				map.put(tableName.toUpperCase(), table);
+//			}
 			return table;
 			
 		} catch (SQLException e) {

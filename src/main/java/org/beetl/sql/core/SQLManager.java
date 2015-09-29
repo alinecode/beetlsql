@@ -498,6 +498,11 @@ public class SQLManager {
 		return script.insert(paras);
 	}
 	
+	public int  insert(Object paras){
+		SQLScript script = getScript(paras.getClass(),INSERT );
+		return script.insert(paras);
+	}
+	
 	/** 插入，并获取主键
 	 * @param clazz
 	 * @param paras
