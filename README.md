@@ -2,10 +2,9 @@
 
 * 作者: 闲大赋,Gavin.King,Sue
 * 开发时间:2015-07
-* 当前版本 1.0
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 1.0.0 (100K), 另外还需要beetl 包
+* 当前版本 1.1.0 (100K), 另外还需要beetl 包
 
 #beetlsql 特点
 
@@ -178,11 +177,11 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 	
 * cs: 指定ConnectionSource，可以用系统提供的DefaultConnectionSource，支持按照CRUD决定主从。例子里只有一个master库
 
-* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle
+* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle
 
 * sqlLoader: sql语句加载来源
 
-* nc:  命名转化，有驼峰的HumpNameConversion，有数据库下划线的UnderlinedNameConversion
+* nc:  命名转化，有驼峰的HumpNameConversion，有数据库下划线的UnderlinedNameConversion,还有DefaultNameConversion
 
 * interceptors:DebugInterceptor 用来打印sql语句，参数和执行时间
 
@@ -700,6 +699,10 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 
 * DbStyle 描述了数据库特性，注入insert语句，翻页语句都通过其子类完成，用户无需操心
 * 提供一些默认的函数扩展，代替各个数据库的函数，如时间和时间操作函数date等
+* MySqlStyle mysql 数据库支持
+* OracleStyle oralce支持
+* PostgresStyle postgres数据库支持
+
 
 ##直接使用SQLResult
 
