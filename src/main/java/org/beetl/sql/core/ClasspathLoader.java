@@ -148,7 +148,9 @@ public class ClasspathLoader implements SQLLoader {
 			while ((temp = bf.readLine()) != null) {
 				temp = temp.trim();
 				lineNum++;
-				if (temp.startsWith("===")) {// 读取到===号，说明上一行是key，下面是SQL语句
+				if (temp.startsWith("*")) {//读到注释行，不做任何处理
+					continue;
+				}else if (temp.startsWith("===")) {// 读取到===号，说明上一行是key，下面是SQL语句
 					if (!list.isEmpty() && list.size() > 1) {// 如果链表里面有多个，说明是上一句的sql+下一句的key
 						String tempKey = list.pollLast();// 取出下一句sql的key先存着
 						sql = new StringBuilder();
