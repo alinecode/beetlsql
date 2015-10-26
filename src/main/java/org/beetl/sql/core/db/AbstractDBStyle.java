@@ -130,11 +130,17 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = this.metadataManager.getTable(tableName);
 		StringBuilder sql = new StringBuilder("update ").append(this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord()).append(" set ").append(lineSeparator);
 		String fieldName = null;
+		String id = metadataManager.getIds(tableName);
+		String idAttrName = nameConversion.getPropertyName(cls,id);
 		
 		Method[] methods = cls.getMethods();
 		for (Method method : methods) {
-				if(isLegalOtherMethod(method) && !method.getName().endsWith("Id")){//TODO 暂时限定排除ID
+				if(isLegalOtherMethod(method) ){
 					fieldName = StringKit.toLowerCaseFirstOne(method.getName().substring(3));
+					if(fieldName.equals(idAttrName)){
+						//主键不需要更改
+						continue ;
+					}
 					sql.append(appendSetColumnAbsolute(cls,table, fieldName));
 				}
 		}

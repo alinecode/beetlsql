@@ -5,7 +5,8 @@ import org.beetl.sql.core.kit.StringKit;
 
 /***
  *  下划线命名转换
- * 
+ * 数据库 Sys_User,对应类SysUser,列user_Id,对应属性userId
+ * @author xiandafu
  * @author Gavin
  *
  */

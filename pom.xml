@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>

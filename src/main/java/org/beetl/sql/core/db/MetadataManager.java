@@ -64,6 +64,7 @@ public class MetadataManager {
 	 * @return
 	 */
 	public boolean existPropertyName(Class<?> cls, String fieldName) {
+		
 		Field[] fields = cls.getDeclaredFields();
 		for (Field field : fields) {
 			if (field.getName().equals(fieldName)) {
@@ -129,7 +130,7 @@ public class MetadataManager {
 			int count = 0;
 			while (rs.next()) {
 				count++;
-				table.idName=rs.getString("COLUMN_NAME").toLowerCase();
+				table.idName=rs.getString("COLUMN_NAME");
 			}
 			
 			//多个主键 下个版本再做
@@ -138,7 +139,7 @@ public class MetadataManager {
 			
 			rs = dbmd.getColumns(null, "%", tableName, "%");
 			while(rs.next()){
-				String colName = rs.getString(4).toLowerCase();
+				String colName = rs.getString(4);
 				table.cols.add(colName);
 			}
 			rs.close();

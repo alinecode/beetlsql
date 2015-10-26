@@ -9,6 +9,7 @@ import org.beetl.sql.core.kit.StringKit;
  * @author Gavin
  *
  */
+@Deprecated
 public class HumpNameConversion extends NameConversion {
 	@Override
 	public String getTableName(Class<?> c) {
