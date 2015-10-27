@@ -18,9 +18,11 @@ import java.util.Map.Entry;
 
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
+import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.QueryMapping;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
@@ -468,7 +470,9 @@ public class SQLScript {
 	public <T> T unique(Class<T> clazz,RowMapper<T> mapper, Object objId) {
 		
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
-		String pk= mm.getIds(this.sm.getNc().getTableName(clazz));
+		TableDesc table = mm.getTable(this.sm.getNc().getTableName(clazz));
+		ClassDesc classDesc = table.getClassDesc(clazz, this.sm.getNc());
+		String pk=  classDesc.getIdName();
 	
 		Map<String, Object> paras =new HashMap<String,Object>();
 		paras.put(pk,objId);
@@ -502,8 +506,9 @@ public class SQLScript {
 	public int deleteById(Class<?> clazz, Object objId ) {
 		
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
-		String pk = mm.getIds(this.sm.getNc().getTableName(clazz));
-		
+		TableDesc table = mm.getTable(this.sm.getNc().getTableName(clazz));
+		ClassDesc classDesc = table.getClassDesc(clazz, this.sm.getNc());
+		String pk=  classDesc.getIdName();
 	
 		Map<String, Object> paras =new HashMap<String,Object>();
 		paras.put(pk,objId);
@@ -567,7 +572,7 @@ public class SQLScript {
 				List list = (List)result;
 				ctx.setResult(list.size());
 			}else{
-				ctx.setResult(0);
+				ctx.setResult(1);
 			}
 						
 		}else{

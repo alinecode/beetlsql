@@ -135,3 +135,32 @@ CREATE TABLE `lobBean` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(100) DEFAULT NULL,
+  `SYS_FLAG` varchar(5) DEFAULT NULL COMMENT '系统角色不能删除',
+  `APP_ID` varchar(50) DEFAULT NULL,
+  `COMPANY_ID` int(11) DEFAULT NULL,
+  `MISC_DESC` longtext,
+  `STATUS` varchar(5) DEFAULT NULL COMMENT '状态：DICT_GLOBAL_STATUS 有效V、无效I、草稿D、待审核W',
+  `CREATE_TIME` datetime DEFAULT NULL,
+  `CREATE_OPER_ID` int(11) DEFAULT NULL,
+  `CREATE_OPER_NAME` varchar(50) DEFAULT NULL,
+  `LAST_MOD_TIME` datetime DEFAULT NULL,
+  `LAST_MOD_OPER_ID` int(11) DEFAULT NULL,
+  `LAST_MOD_OPER_NAME` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='系统角色：可以分为系统的角色还是公司的角色，通过限制角色范围来区分前端的角色还是后端管理的角色';
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
+INSERT INTO `sys_role` VALUES ('1', '超级管理员', 'Y', '', '1', '超级管理员', 'V', '2014-10-22 15:30:32', '1', 'admin', '2014-10-22 15:30:32', '1', 'admin');
+INSERT INTO `sys_role` VALUES ('2', 'console管理员', 'N', 'console', null, 'console管理员44', 'V', '2015-01-05 14:07:42', '1', 'admin', '2015-01-05 14:07:42', '1', 'admin');
+INSERT INTO `sys_role` VALUES ('3', 'portal管理员', 'N', 'portal', '1', 'portal管理员', 'V', null, null, null, null, null, null);
+INSERT INTO `sys_role` VALUES ('4', '游客1', 'Y', '', '1', '游客1', 'V', '2014-09-15 16:59:48', '1', 'admin', '2014-10-23 22:19:59', '1', 'admin');
+INSERT INTO `sys_role` VALUES ('7', '222', 'Y', 'console', '1', '222', 'V', null, null, null, null, null, null);
+INSERT INTO `sys_role` VALUES ('8', '444', 'Y', 'portal', '4', '4444', 'V', null, null, null, null, null, null);
+
