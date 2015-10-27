@@ -11,6 +11,11 @@ import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
 import static org.beetl.sql.core.kit.Constants.classSQL;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +24,8 @@ import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.engine.Beetl;
+import org.beetl.sql.core.mapping.BeanProcessor;
+import org.beetl.sql.core.mapping.RowMapperResultSetExt;
 
 /**
  *  Beetsql 操作入口
@@ -621,7 +628,7 @@ public class SQLManager {
 	
 	
 	
-	/** 直接执行语句
+	/** 直接执行语句,sql是模板
 	 * @param sql
 	 * @param clazz
 	 * @param paras
@@ -639,7 +646,7 @@ public class SQLManager {
 		return script.select(clazz, paras);
 	}
 	
-	/** 直接执行sql语句
+	/** 直接执行sql语句，sql是模板
 	 * @param sql
 	 * @param clazz
 	 * @param paras
@@ -658,7 +665,7 @@ public class SQLManager {
 	}
 	
 	
-	/** 直接执行sql更新
+	/** 直接执行sql更新，sql是模板
 	 * @param sql
 	 * @param paras
 	 * @return
@@ -677,7 +684,7 @@ public class SQLManager {
 		return script.update(map);
 	}
 	
-	/** 直接更新sql
+	/** 直接更新sql，sql是模板
 	 * @param sql
 	 * @param paras
 	 * @return
@@ -691,6 +698,29 @@ public class SQLManager {
 		}
 		SQLScript script = new SQLScript(source,this);
 		return script.update(paras);
+	}
+	/**
+	 * 直接执行sql语句，sql语句已经是准备好的，采用preparedstatment执行
+	 * @param sql
+	 * @param clazz
+	 * @param p
+	 * @return 返回查询结果
+	 */
+	public <T> List<T> execute(String sql,Class<T> clazz, SQLReady p){
+		SQLSource source = new SQLSource(sql,sql);
+		SQLScript script = new SQLScript(source,this);
+		return script.sqlReadySelect(clazz, p);
+	}
+	
+	/** 直接执行sql语句，sql语句已经是准备好的，采用preparedstatment执行
+	 * @param sql
+	 * @param p
+	 * @return 返回更新条数
+	 */
+	public int executeUpdate(String sql,  SQLReady p){
+		SQLSource source = new SQLSource(sql,sql);
+		SQLScript script = new SQLScript(source,this);
+		return script.sqlReadyExecuteUpdate( p);
 	}
 	
 	

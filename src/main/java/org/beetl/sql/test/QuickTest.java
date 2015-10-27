@@ -1,6 +1,7 @@
 package org.beetl.sql.test;
 
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
@@ -45,6 +46,12 @@ public class QuickTest {
 		
 		}
 		
+		
+		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+//		sql.unique(UserInfo.class, 1);
+		UserInfo info = new UserInfo();
+		info.setUserName("name");
+		sql.template(info);
 		
 
 	}

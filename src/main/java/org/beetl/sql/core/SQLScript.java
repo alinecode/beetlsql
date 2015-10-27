@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -292,7 +293,7 @@ public class SQLScript {
 	}
 	
 
-	public <T> List<T> mappingSelect(ResultSet rs, Class<T> clazz){
+	public <T> List<T>  mappingSelect(ResultSet rs, Class<T> clazz){
 		List<T> resultList = new ArrayList<T>();
 		
 		if(isBaseDataType(clazz)){ //基本数据类型，如果有需要可以继续在isBaseDataType()添加
@@ -531,6 +532,62 @@ public class SQLScript {
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx,rs);
 		} catch (SQLException e) {
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
+		} finally {
+			clean(conn,ps);
+		}
+		return rs;
+	}
+	
+	public <T> List<T> sqlReadySelect(Class<T> clazz, SQLReady p){
+		String sql = this.sql;
+		List<Object> objs = Arrays.asList(p.getArgs());
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		List<T> resultList = null;
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql,false, objs);
+		sql = ctx.getSql();
+		objs = ctx.getParas();
+		Connection conn = null;
+		try {
+			conn = sm.getDs().getConn(id,false,sql,objs);
+			ps = conn.prepareStatement(sql);
+			for (int i = 0; i < objs.size(); i++)
+				ps.setObject(i + 1, objs.get(i));
+			rs = ps.executeQuery();			
+			resultList = mappingSelect(rs, clazz);		
+				
+			this.callInterceptorAsAfter(ctx,resultList);
+			return resultList;
+		} catch (SQLException e) {
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
+		} finally {
+			clean(conn,ps,rs);
+		}
+	}
+	
+	
+	public int sqlReadyExecuteUpdate(SQLReady p){
+		
+	
+		String sql = this.sql ;
+		List<Object> objs = Arrays.asList(p.args);		
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id,sql,true, objs);
+		sql = ctx.getSql();
+		objs = ctx.getParas();
+		int rs = 0;
+		PreparedStatement ps = null;
+		// 执行jdbc
+		Connection conn = null;
+		try {
+			conn = sm.getDs().getConn(id,true,sql,objs);
+			ps = conn .prepareStatement(sql);
+			for (int i = 0; i < objs.size(); i++)
+				ps.setObject(i + 1, objs.get(i));
+			rs = ps.executeUpdate();
+			this.callInterceptorAsAfter(ctx,rs);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
 			clean(conn,ps);

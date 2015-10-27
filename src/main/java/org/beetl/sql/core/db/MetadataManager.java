@@ -22,7 +22,6 @@ public class MetadataManager {
 		super();
 		this.ds = ds;
 		this.sm = sm ;
-		initMetadata();
 	
 	}
 
@@ -63,7 +62,7 @@ public class MetadataManager {
 	private TableDesc getTableFromMap(String tableName){
 		String name = tableName.toUpperCase();
 		if(map==null){
-			synchronized(map){
+			synchronized(this){
 				if(map!=null) return map.get(name);
 				this.initMetadata();
 			}
@@ -128,6 +127,7 @@ public class MetadataManager {
 					new String[] { "TABLE" });
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
+//				System.out.println("tableName="+name);
 				TableDesc desc = new TableDesc(name);
 				map.put(desc.getName(),desc);
 			}

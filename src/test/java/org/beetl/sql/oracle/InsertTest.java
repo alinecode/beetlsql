@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 
 import org.beetl.sql.OracleConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
@@ -22,7 +23,7 @@ public class InsertTest {
 	@Before
 	public void before() {
 		loader = new ClasspathLoader("/sql/");
-		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource(),new  HumpNameConversion(),
+		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource(),new  DefaultNameConversion(),
 				new Interceptor[]{new DebugInterceptor()});
 	}
 
@@ -43,7 +44,15 @@ public class InsertTest {
 
 		Dept dept = new Dept();
 		dept.setName("ok");
-		manager.insert(Dept.class, dept);
+//		manager.insert(Dept.class, dept);
+		
+		UserInfo info = new UserInfo();
+		info.setId(1);
+		info.setUserName("cl");
+//		manager.insert(info);
+		
+		manager.template(info);
+		
 ////		List<Dept> list = manager.execute("select * from dept", Dept.class, new HashMap());
 //		System.out.println(list);
 		

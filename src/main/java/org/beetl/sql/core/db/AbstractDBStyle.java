@@ -194,7 +194,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);	
-		StringBuilder sql = new StringBuilder("insert into " + this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord() + lineSeparator);
+		StringBuilder sql = new StringBuilder("insert into " + this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord() + lineSeparator);
 		StringBuilder colSql = new StringBuilder("(");
 		StringBuilder valSql = new StringBuilder(" VALUES (");
 		int idType = DBStyle.ID_ASSIGN ;
