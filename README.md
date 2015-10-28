@@ -400,6 +400,7 @@ BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件�
 			文件一些说明，放在头部可有可无，如果有说明，可以是任意文字
 			SQL标示
 			===
+			以*开头的注释
 			SQL语句 
 				
 			SQL标示2
@@ -414,6 +415,8 @@ BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件�
 SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，确认是否有select语句，如果没有，则会寻找sql/user.md 
 
 (注:默认的ClasspathLoader采用了这种方法，你可以实现SQLLoader来实现自己的格式和sql存储方式，如数据库存储)
+
+注释是以* 开头，注释语句不作为sql语句
 
 ##SQL 注释
 
@@ -432,16 +435,17 @@ SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，
 	statu = 1 
 	@ */
 
-* 在sqlId后面使用“*”作为sql整个语句注释
+* 在sqlId 的=== 紧挨着的下一行 后面连续使用“*”作为sql整个语句注释
 
-	selectByUser
-	\==
-	\* 这个sql语句用来查询用户的
-	\* status =1 表示查找有效用户
+		selectByUser
+		==
+		* 这个sql语句用来查询用户的
+		* status =1 表示查找有效用户
+		
+		 select * from user where status = 1
+		
 	
-	 select * from user where status = 1
-	
-	 
+(gitosc 不能正确处理显示此格式）
   	
 ## 开发模式和产品模式
 
