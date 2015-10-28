@@ -625,16 +625,16 @@ public class SQLManager {
 	
 	
 	/** 直接执行语句,sql是模板
-	 * @param sql
+	 * @param sqlTemplate
 	 * @param clazz
 	 * @param paras
 	 * @return
 	 */
-	public <T> List<T> execute(String sql,Class<T> clazz, Object paras){
-		String key ="auto._gen_" +sql;
+	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Object paras){
+		String key ="auto._gen_" +sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if(source==null){
-			source = new SQLSource(key,sql);
+			source = new SQLSource(key,sqlTemplate);
 			this.sqlLoader.addGenSQL(key, source);		
 		}
 	
@@ -643,16 +643,16 @@ public class SQLManager {
 	}
 	
 	/** 直接执行sql语句，sql是模板
-	 * @param sql
+	 * @param sqlTemplate
 	 * @param clazz
 	 * @param paras
 	 * @return
 	 */
-	public <T> List<T> execute(String sql,Class<T> clazz, Map paras){
-		String key ="auto._gen_" +sql;
+	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Map paras){
+		String key ="auto._gen_" +sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if(source==null){
-			source = new SQLSource(key,sql);
+			source = new SQLSource(key,sqlTemplate);
 			this.sqlLoader.addGenSQL(key, source);		
 		}
 	
@@ -662,15 +662,15 @@ public class SQLManager {
 	
 	
 	/** 直接执行sql更新，sql是模板
-	 * @param sql
+	 * @param sqlTemplate
 	 * @param paras
 	 * @return
 	 */
-	public int  executeUpdate(String sql,Object paras){
-		String key ="auto._gen_" +sql;
+	public int  executeUpdate(String sqlTemplate,Object paras){
+		String key ="auto._gen_" +sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if(source==null){
-			source = new SQLSource(key,sql);
+			source = new SQLSource(key,sqlTemplate);
 			this.sqlLoader.addGenSQL(key, source);		
 		}
 	
@@ -681,15 +681,15 @@ public class SQLManager {
 	}
 	
 	/** 直接更新sql，sql是模板
-	 * @param sql
+	 * @param sqlTemplate
 	 * @param paras
 	 * @return
 	 */
-	public int  executeUpdate(String sql,Map paras){
-		String key ="auto._gen_" +sql;
+	public int  executeUpdate(String sqlTemplate,Map paras){
+		String key ="auto._gen_" +sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if(source==null){
-			source = new SQLSource(key,sql);
+			source = new SQLSource(key,sqlTemplate);
 			this.sqlLoader.addGenSQL(key, source);		
 		}
 		SQLScript script = new SQLScript(source,this);
@@ -697,7 +697,6 @@ public class SQLManager {
 	}
 	/**
 	 * 直接执行sql语句，sql语句已经是准备好的，采用preparedstatment执行
-	 * @param sql
 	 * @param clazz
 	 * @param p
 	 * @return 返回查询结果
@@ -709,8 +708,8 @@ public class SQLManager {
 	}
 	
 	/** 直接执行sql语句，sql语句已经是准备好的，采用preparedstatment执行
-	 * @param sql
 	 * @param p
+	 * 
 	 * @return 返回更新条数
 	 */
 	public int executeUpdate(SQLReady p){

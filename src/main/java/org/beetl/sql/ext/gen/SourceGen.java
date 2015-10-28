@@ -34,7 +34,7 @@ public class SourceGen {
 	}
 	/**
 	 * 生成代码
-	 * @return
+	 * 
 	 */
 	public void gen() throws Exception{
 		StringBuilder body = new StringBuilder();

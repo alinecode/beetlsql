@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 /**
  * 角色表对象
- * @email: lyg945@163.com
- * @author: Yonggang.Liu
- * @date: 2015-10-22 16:19:22
+ * 
  */
 public class SysRole implements Serializable {
        
