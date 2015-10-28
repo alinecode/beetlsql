@@ -169,7 +169,7 @@ public class ClasspathLoader implements SQLLoader {
 						if (tempNext.startsWith("*")) {//读到注释行，不做任何处理
 							continue;
 						}else{
-							list.addLast(temp);//===下面不是*号的情况，是一条sql
+							list.addLast(tempNext);//===下面不是*号的情况，是一条sql
 							break;//读到一句sql就跳出循环
 						}
 					}
