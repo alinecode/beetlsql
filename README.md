@@ -600,13 +600,13 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 			-- 输出成  select * from user where status in (?,?,?)
 * use  参数是同一个md文件的sqlid，类似mybatis的 sql功能，如
 
-				condtion
-				===
-				where 1=1 and name = #name##
-				
-				selectUser
-				===
-				select * from user #use("condition")##
+		condtion
+		===
+		where 1=1 and name = #name#
+		
+		selectUser
+		===
+		select * from user #use("condition")#
 	
 
 ## Debug功能
