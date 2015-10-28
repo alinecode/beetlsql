@@ -523,10 +523,11 @@ beetlsql 的其他属性也可以在此文件里设置
 * if else 这个同java，c，js。
 * for,循环语句，如for(id:ids){}
 	
-	select * from user where status in (
-	@for(id in ids){
-	#id# #idLP.isLast?"":","#
-	@}
+			select * from user where status in (
+			@for(id in ids){
+			#id# #idLP.isLast?"":","#
+			@}
+		
 注意：变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档
 
 	
@@ -539,14 +540,14 @@ beetlsql 的其他属性也可以在此文件里设置
 * 如果是数组或者list，用索引访问，如list[1],list[i];
 * 可以直采用java方式访问变量的方法和属性，如静态类Constatns
 	
-	public class Constatns{
-		public static int 	RUNNING = 0;
-		public static User getUser(){}
-	}
+			public class Constatns{
+				public static int 	RUNNING = 0;
+				public static User getUser(){}
+			}
 
 直接以java方式访问，需要再变量符号前加上@，可以在模板里访问
 	
-	select * from user where status = #@Constatns.RUNNING# and id = #@Constatns.getUser().getId()#
+		select * from user where status = #@Constatns.RUNNING# and id = #@Constatns.getUser().getId()#
 
 	注意，如果Constants 类 没有导入进beetl，则需要带包名，导入beetl方法是配置IMPORT_PACKAGE=包名.;包名.
 
@@ -595,17 +596,17 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 * text 输出，但可用于占位符号里
 * join, 用逗号连接集合或者数组，并输出？，用于in，如 
 
-	select * from user where status in ( #join(ids)＃)
-	-- 输出成  select * from user where status in (?,?,?)
+			select * from user where status in ( #join(ids)＃)
+			-- 输出成  select * from user where status in (?,?,?)
 * use  参数是同一个md文件的sqlid，类似mybatis的 sql功能，如
 
-	condtion
-	===
-	where 1=1 and name = #name##
-	
-	selectUser
-	===
-	select * from user #use("condition")##
+				condtion
+				===
+				where 1=1 and name = #name##
+				
+				selectUser
+				===
+				select * from user #use("condition")##
 	
 
 ## Debug功能
