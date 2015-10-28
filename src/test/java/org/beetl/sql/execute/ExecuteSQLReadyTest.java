@@ -33,8 +33,8 @@ public class ExecuteSQLReadyTest {
 	
 //	@Test
 	public void testQuery(){
-		SQLReady ready = new SQLReady(1);
-		List<User> list = manager.execute("select * from user w where id = ?", User.class,ready);
+		SQLReady ready = new SQLReady("select * from user w where id = ?",1);
+		List<User> list = manager.execute(ready,User.class);
 		System.out.println(list.size());
 
 	}
@@ -42,8 +42,8 @@ public class ExecuteSQLReadyTest {
 	
 	@Test
 	public void testUpdate(){
-		SQLReady ready = new SQLReady(1);
-		int result = manager.executeUpdate("delete from user where id=?",ready);
+		SQLReady ready = new SQLReady("delete from user where id=?",1);
+		int result = manager.executeUpdate(ready);
 		System.out.println(result);
 	
 	}

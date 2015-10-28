@@ -6,13 +6,13 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.gen.GenConfig;
 
 public class QuickTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		MySqlStyle style = new MySqlStyle();
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/sql");
@@ -49,10 +49,15 @@ public class QuickTest {
 		
 		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		sql.unique(UserInfo.class, 1);
-		UserInfo info = new UserInfo();
-		info.setUserName("name");
-		sql.template(info);
+//		UserInfo info = new UserInfo();
+//		info.setUserName("name");
+//		sql.template(info);
 		
+//		sql.genPojoCodeToConsole("userRole");
+		GenConfig config = new GenConfig();
+		config.preferBigDecimal(true);
+		config.setBaseClass("com.test.User");
+		sql.genPojoCode("UserRole","com.test",config);
 
 	}
 

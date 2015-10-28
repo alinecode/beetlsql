@@ -19,6 +19,13 @@ public class UnderlinedNameConversion extends NameConversion {
 		}
 		return StringKit.enCodeUnderlined(c.getSimpleName());
 	}
+	
+	public  String getClassName(String tableName){
+		 String temp = StringKit.deCodeUnderlined(tableName.toLowerCase());
+		 return StringKit.toUpperCaseFirstOne(temp);
+		 
+	}
+	
 	@Override
 	public String getColName(Class<?> c,String attrName) {
 		

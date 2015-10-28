@@ -89,6 +89,7 @@ public class MetadataManager {
 				while (rs.next()) {
 					count++;
 					String metaIdName=rs.getString("COLUMN_NAME");
+					
 					desc.setIdName(metaIdName.toUpperCase());
 				}
 				
@@ -99,8 +100,12 @@ public class MetadataManager {
 				rs = dbmd.getColumns(null, "%", desc.getMetaName(), "%");
 				while(rs.next()){
 					String colName = rs.getString("COLUMN_NAME");
-					desc.addCols(colName);
-					
+					Integer sqlType = rs.getInt("DATA_TYPE");
+					Integer size = rs.getInt("COLUMN_SIZE");
+					Integer digit = (Integer)rs.getObject("DECIMAL_DIGITS");
+					String remark = rs.getString("REMARKS");
+					ColDesc col = new ColDesc(colName,sqlType,size,digit,remark);
+					desc.addCols(col);
 				}
 				rs.close();
 				return desc;
@@ -139,6 +144,7 @@ public class MetadataManager {
 			close(conn);
 		}
 	}
+	
 	
 	private void close(Connection conn){
 		try{

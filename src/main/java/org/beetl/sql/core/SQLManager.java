@@ -10,12 +10,8 @@ import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
 import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
 import static org.beetl.sql.core.kit.Constants.classSQL;
 
+import java.io.File;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +20,8 @@ import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.engine.Beetl;
-import org.beetl.sql.core.mapping.BeanProcessor;
-import org.beetl.sql.core.mapping.RowMapperResultSetExt;
+import org.beetl.sql.ext.gen.GenConfig;
+import org.beetl.sql.ext.gen.SourceGen;
 
 /**
  *  Beetsql 操作入口
@@ -38,7 +34,7 @@ public class SQLManager {
 	private SQLLoader sqlLoader;
 	private ConnectionSource ds = null;//数据库连接管理
 	private NameConversion nc = null;//名字转换器
-	private static MetadataManager metaDataManager;
+	private  MetadataManager metaDataManager;
 	Interceptor[] inters = {};
 	Beetl beetl = null;
 	
@@ -94,7 +90,7 @@ public class SQLManager {
 	private MetadataManager initMetadataManager(){
 		
 		if(metaDataManager == null){
-			return new MetadataManager(this.ds,this);
+			metaDataManager =  new MetadataManager(this.ds,this);
 		}
 		return metaDataManager;
 		
@@ -706,8 +702,8 @@ public class SQLManager {
 	 * @param p
 	 * @return 返回查询结果
 	 */
-	public <T> List<T> execute(String sql,Class<T> clazz, SQLReady p){
-		SQLSource source = new SQLSource(sql,sql);
+	public <T> List<T> execute(SQLReady p,Class<T> clazz){
+		SQLSource source = new SQLSource(p.getSql(),p.getSql());
 		SQLScript script = new SQLScript(source,this);
 		return script.sqlReadySelect(clazz, p);
 	}
@@ -717,10 +713,81 @@ public class SQLManager {
 	 * @param p
 	 * @return 返回更新条数
 	 */
-	public int executeUpdate(String sql,  SQLReady p){
-		SQLSource source = new SQLSource(sql,sql);
+	public int executeUpdate(SQLReady p){
+		SQLSource source = new SQLSource(p.getSql(),p.getSql());
 		SQLScript script = new SQLScript(source,this);
 		return script.sqlReadyExecuteUpdate( p);
+	}
+	
+	
+	//========= 代码生成 =============//
+	
+	/** 根据表名生成对应的pojo类
+	 * @param table 表名
+	 * @param pkg 包名,如 com.test
+	 * @param srcPath: 文件保存路径
+	 * @param config 配置生成的风格
+	 * @throws Exception
+	 */
+	public void genPojoCode(String table,String pkg,String srcPath,GenConfig config) throws Exception{
+		SourceGen gen = new SourceGen(this,table,pkg,srcPath,config);
+		gen.gen();
+	}
+	
+	/** 同上，但路径自动根据项目当前目录推测，是src目录下，或者src/main/java 下
+	 * @param table
+	 * @param pkg
+	 * @param config
+	 * @throws Exception
+	 */
+	public void genPojoCode(String table,String pkg,GenConfig config) throws Exception{
+		String srcPath = null;
+		String userDir = System.getProperty("user.dir");
+		if(userDir==null){
+			throw new NullPointerException("用户目录未找到");
+		}
+		File src = new File(userDir,"src");
+		File javaSrc = new File(src.toString(),"/main/java");
+		if(javaSrc.exists()){
+			srcPath = javaSrc.toString();
+		}else{
+			srcPath = src.toString();
+		}		
+		SourceGen gen = new SourceGen(this,table,pkg,srcPath,config );
+		gen.gen();
+	}
+	
+	/** 生成pojo类,默认路径是当前工程src目录,或者是src/main/java 下
+	 * @param table
+	 * @param pkg
+	 * @throws Exception
+	 */
+	public void genPojoCode(String table,String pkg) throws Exception{
+		String srcPath = null;
+		String userDir = System.getProperty("user.dir");
+		if(userDir==null){
+			throw new NullPointerException("用户目录未找到");
+		}
+		File src = new File(userDir,"src");
+		File javaSrc = new File(src.toString(),"/main/java");
+		if(javaSrc.exists()){
+			srcPath = javaSrc.toString();
+		}else{
+			srcPath = src.toString();
+		}		
+		SourceGen gen = new SourceGen(this,table,pkg,srcPath,new GenConfig() );
+		gen.gen();
+	}
+	
+	/** 仅仅打印pojo类到控制台
+	 * @param table
+	 * @throws Exception
+	 */
+	public void genPojoCodeToConsole(String table) throws Exception{
+		String pkg ="com.test";
+		String srcPath= System.getProperty("user.dir");
+		SourceGen gen = new SourceGen(this,table,pkg,srcPath,new GenConfig().setDisplay(true));
+		gen.gen();
 	}
 	
 	
@@ -758,5 +825,11 @@ public class SQLManager {
 	public Beetl getBeetl() {
 		return beetl;
 	}
+
+	public  MetadataManager getMetaDataManager() {
+		return metaDataManager;
+	}
+
+
 
 }

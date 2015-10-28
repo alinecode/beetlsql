@@ -105,7 +105,10 @@
     <target name="jar" depends="compile">
         <mkdir dir="${build.dist.dir}" />
         <jar jarfile="${dist.jar}" whenempty="fail" level="9">
-            <fileset dir="${build.classes.dir}" includes="**" excludes="**/*.md*" />
+            <fileset dir="${build.classes.dir}" includes="**" >
+            	<exclude name="**/*.md*" />	
+            	<exclude name="org/beetl/sql/test/**" />	
+            </fileset>
         	
             <manifest>
                 <attribute name="Built-By" value="${product.author}" />

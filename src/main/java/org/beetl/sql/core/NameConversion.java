@@ -11,6 +11,15 @@ public abstract class NameConversion {
 	 * @return
 	 */
 	public abstract String getTableName(Class<?> c);
+	
+	
+	/**  不一定要实现，主要用于根据表生成java代码
+	 * @param tableName
+	 * @return
+	 */
+	public  String getClassName(String tableName){
+		return tableName;
+	}
 	/****
 	 * 根据class和属性名，获取字段名，此字段必须存在表中，否则返回空
 	 * @param c

@@ -12,13 +12,16 @@ public class TableDesc{
 	private String name;
 	// 默认为id，列明采用小写
 	private String idName="id";
-	// 采用大写
+	// 采用大写,为了方便查询
 	private Set<String> cols = new HashSet<String>();
 	
 	private Set<String> metaCols = new HashSet<String>();
 	private String metaName ;
 	private String metaIdName;
+	//跟table相关的类
 	private Map<Class,ClassDesc> classes = new HashMap<Class,ClassDesc>();
+	//table 列的详细描述
+	private Map<String,ColDesc> colsDetail = new HashMap<String,ColDesc>();
 	
 	
 	public TableDesc(String name){
@@ -30,9 +33,15 @@ public class TableDesc{
 		return cols .contains(col.toUpperCase());
 	}
 	
-	public void addCols(String col){
-		cols.add(col.toUpperCase());
-		metaCols.add(col);
+	public void addCols(ColDesc col){
+		colsDetail.put(col.colName, col);
+		
+		cols.add(col.colName.toUpperCase());
+		metaCols.add(col.colName);
+	}
+	
+	public ColDesc getColDesc(String name){
+		return colsDetail.get(name);
 	}
 
 	public String getName() {
