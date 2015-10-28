@@ -1,5 +1,7 @@
 package org.beetl.sql.test;
 
+import java.util.HashMap;
+
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
@@ -17,7 +19,10 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/sql");
 		SQLManager sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-//		sql.unique(SysRole.class, 1);
+		
+		sql.select("appliction.findAllByPage", SysRole.class, new HashMap());
+		
+		//		sql.unique(SysRole.class, 1);
 //		sql.all(SysRole.class);
 //		sql.allCount(SysRole.class);
 //		sql.deleteById(SysRole.class, 10000);
@@ -47,17 +52,17 @@ public class QuickTest {
 		}
 		
 		
-		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+//		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		sql.unique(UserInfo.class, 1);
 //		UserInfo info = new UserInfo();
 //		info.setUserName("name");
 //		sql.template(info);
 		
 //		sql.genPojoCodeToConsole("userRole");
-		GenConfig config = new GenConfig();
-		config.preferBigDecimal(true);
-		config.setBaseClass("com.test.User");
-		sql.genPojoCode("UserRole","com.test",config);
+//		GenConfig config = new GenConfig();
+//		config.preferBigDecimal(true);
+//		config.setBaseClass("com.test.User");
+//		sql.genPojoCode("UserRole","com.test",config);
 
 	}
 
