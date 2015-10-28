@@ -311,7 +311,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public <T> List<T> execute(SQLReady p,Class<T> clazz) SQLReady包含了需要执行的sql语句和参数，clazz是查询结果，如 
 
-	sqlManager.execute(new SQLReady("select * from user where name=? and age = ?","xiandafu",18),User.class);)
+			sqlManager.execute(new SQLReady("select * from user where name=? and age = ?","xiandafu",18),User.class);)
 
 * public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
 
@@ -424,16 +424,16 @@ SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，
 
 * 采用sql 自己的注释符号，"-- " ,优点是适合java和数据库sql之间互相迁移，如
 
-	select * from user where
-	--  status 代表状态
-	statu = 1
+		select * from user where
+		--  status 代表状态
+		statu = 1
 	
 * 采用beetl注释
 	
-	select * from user where
-	@ /* 这些sql语句被注释掉
-	statu = 1 
-	@ */
+		select * from user where
+		@ /* 这些sql语句被注释掉
+		statu = 1 
+		@ */
 
 * 在sqlId 的=== 紧挨着的下一行 后面连续使用“*”作为sql整个语句注释
 
