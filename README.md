@@ -321,6 +321,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public void useMaster(DBRunner f)  DBRunner里的beetlsql调用将使用主数据库库
 * public void useSlave(DBRunner f) DBRunner里的beetlsql调用将使用从数据库库
+
 **生成Pojo代码**
 
 * genPojoCodeToConsole(String table), 根据表名生成pojo类，输出到控制台
@@ -433,12 +434,12 @@ SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，
 
 * 在sqlId后面使用“*”作为sql整个语句注释
 
-	selectByUser
-	==
-	* 这个sql语句用来查询用户的
-	* status =1 表示查找有效用户
-	
-	select * from user where status = 1
+	->selectByUser
+	->==
+	->* 这个sql语句用来查询用户的
+	->* status =1 表示查找有效用户
+	->
+	->select * from user where status = 1
 	
 	 
   	
