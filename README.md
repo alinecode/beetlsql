@@ -434,12 +434,12 @@ SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，
 
 * 在sqlId后面使用“*”作为sql整个语句注释
 
-	->selectByUser
-	->==
-	->* 这个sql语句用来查询用户的
-	->* status =1 表示查找有效用户
-	->
-	->select * from user where status = 1
+	selectByUser
+	\==
+	\* 这个sql语句用来查询用户的
+	\* status =1 表示查找有效用户
+	
+	 select * from user where status = 1
 	
 	 
   	
