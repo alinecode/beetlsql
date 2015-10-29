@@ -1,4 +1,4 @@
-#Beetlsql
+# Beetlsql
 
 * 作者: 闲大赋,Gavin.King,Sue
 * 开发时间:2015-07
@@ -6,23 +6,23 @@
 * qq群 219324263
 * 当前版本 1.2.0 (108K), 另外还需要beetl 包
 
-#beetlsql 特点
+# beetlsql 特点
 
 BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用。
 
-* 无需注解，自动使用大量内置SQL，轻易完成增删改查功能
+* 无需注解，自动使用大量内置SQL，轻易完成增删改查功能，节省50%的开发工作量
 * 数据模型支持Pojo，也支持Map/List这种快速模型，也支持混合模型
 * SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试。
 * SQL 模板基于Beetl实现，更容易写和调试，以及扩展
 * 简单支持关系映射而不引入复杂的OR Mapping概念和技术。
 * 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
-* 内置支持主从数据库，通过扩展，可以支持更复杂的分库分表逻辑
+* 首个内置支持主从数据库支持的开源工具，通过扩展，可以支持更复杂的分库分表逻辑
 * 支持跨数据库平台，开发者所需工作减少到最小
 * 支持代码生成pojo类，减少代码编写工作量
 
 # 5 分钟例子
 
-##准备工作
+## 准备工作
 
 为了快速尝试BeetlSQL，需要准备一个Mysql数据库，然后执行如下sql脚本
 
@@ -48,26 +48,26 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 		public void setName(String name) {
 			this.name = name;
 		}
-	
+
 		public Integer getId() {
 			return id;
 		}
-	
+
 		public void setId(Integer id) {
 			this.id = id;
 		}
-	
+
 		public Integer getAge() {
 			return age;
 		}
-	
+
 		public void setAge(Integer age) {
 			this.age = age;
 		}
-	
+
 	}
 
-##代码例子
+## 代码例子
 
 写一个java的Main方法，内容如下
 
@@ -76,12 +76,12 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	// 采用mysql 习俗
 	DBStyle mysql = new MysqlStyle();
 	// sql语句放在classpagth的/sql 目录下
-	SQLLoader loader = new ClasspathLoader("/sql");	
+	SQLLoader loader = new ClasspathLoader("/sql");
 	// 数据库命名跟java命名一样，所以采用DefaultNameConversion
 	NameConversion nc = new  DefaultNameConversion();
 	// 最后，创建一个SQLManager,DebugInterceptor 不是必须的，但可以通过它查看sql执行情况
-	SqlManager sqlManager = new SqlManager(source,mysql,loader,nc,new Interceptor[]{new DebugInterceptor()}); 
-	
+	SqlManager sqlManager = new SqlManager(source,mysql,loader,nc,new Interceptor[]{new DebugInterceptor()});
+
 	//使用内置的生成的sql 新增用户
 	User user = new User();
 	user.setAge(19);
@@ -90,15 +90,15 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	//使用内置sql查询用户
 	int id = 1;
 	user = sqlManager.unque(User.class,id);
-	
+
 	//使用user.md 文件里的select语句，参考下一节
 	User query = new User();
 	query.setName("xiandafu");
 	List<User> list = sqlManager.select("user.select",User.class,query)
- 
-  	
 
-##SQL例子
+
+
+## SQL例子
 
 为了能执行user.select,需要在classpath里建立一个user.md 文件，内容如下
 
@@ -111,7 +111,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	@if(!isEmpty(name)){
 	and name = #name#
 	@}
-	
+
 
 关于如何写sql模板，会稍后章节说明，如下是一些简单说明。
 
@@ -119,21 +119,21 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 * "#" 是站位符号，生成sql语句得时候，将输出？，如果你想输出表达式值，需要用text函数，或者任何以db开头的函数，引擎则认为是直接输出文本。
 
-* isEmpty是beetl的一个函数，用来判断变量是否为空或者是否不存在.	
+* isEmpty是beetl的一个函数，用来判断变量是否为空或者是否不存在.
 
 sql模板采用beetl原因是因为beetl 语法类似js，且对模板渲染做了特定优化，相比于mybatis，更加容易掌握和功能强大，可读性更好，也容易在java和数据库之间迁移sql语句
-	
-#BeetlSQL 说明
+
+# BeetlSQL 说明
 
 ## 获得SQLManager
 
 SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManager，可以直接构造SQLManager.并通过过单例获取如：
 
-	ConnectionSource source = ConnectionSourceHelper.simple(driver,url,userName,password);	
+	ConnectionSource source = ConnectionSourceHelper.simple(driver,url,userName,password);
 	// 采用mysql 习俗
 	DBStyle mysql = new MysqlStyle();
 	// sql语句放在classpagth的/sql 目录下
-	SQLLoader loader = new ClasspathLoader("/sql");	
+	SQLLoader loader = new ClasspathLoader("/sql");
 	// 数据库命名跟java命名采用驼峰转化
 	NameConversion nc = new  DefaultNameConversion();
 	// 最后，创建一个SQLManager
@@ -146,10 +146,10 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 如果是主从Datasource
 
 	ConnectionSource source = ConnectionSourceHelper.getMasterSlave(master,slaves)
-	
 
 
-###Spring集成
+
+### Spring集成
 
 	<bean id="sqlManager" class="org.beetl.sql.ext.SpringBeetlSql">
 		<property name="cs" >
@@ -161,7 +161,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 			<bean class="org.beetl.sql.core.db.MySqlStyle"> </bean>
 		</property>
 		<property name="sqlLoader">
-			<bean class="org.beetl.sql.core.ClasspathLoader"> 
+			<bean class="org.beetl.sql.core.ClasspathLoader">
 				<property name="sqlRoot" value="/sql"></property>
 			</bean>
 		</property>
@@ -175,7 +175,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 			</list>
 		</property>
 	</bean>
-	
+
 * cs: 指定ConnectionSource，可以用系统提供的DefaultConnectionSource，支持按照CRUD决定主从。例子里只有一个master库
 
 * dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle
@@ -199,7 +199,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 		@Override
 		@Transactional()
 		public int total(User user) {
-			
+
 			SQLManager dao = beetlsql.getSQLMananger();
 			List<User> list = dao.all(User.class);
 			int total = list .size();
@@ -218,16 +218,16 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 可以参考demo https://git.oschina.net/xiandafu/springbeetlsql
 
-###JFinal集成
+### JFinal集成
 
 
 在configPlugin 里配置BeetlSql
 
 	JFinalBeetlSql.init();
 默认会采用c3p0 作为数据源，其配置来源于jfinal 配置，如果你自己提供数据源或者主从，可以如下
-	
+
 	JFinalBeetlSql.init(master,slaves);
-	
+
 由于使用了Beetlsql，因此你无需再配置 **数据库连接池插件，和ActiveRecordPlugin**,可以删除相关配置。
 
 在controller里，可以通过JFinalBeetlSql.dao 方法获取到SQLManager
@@ -246,12 +246,12 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 		@Before(Trans.class)
 		public void doXXX(){....+
-		
+
 这样，方法执行完毕才会提交事物，任何RuntimeException将回滚，如果想手工控制回滚.也可以通过
 
 	Trans.commit()
 	Trans.rollback()
-	
+
 如果习惯了JFinal Record模式，建议用户创建一个BaseBean，封装SQLManager CRUD 方法即可。然后其他模型继承此BaseBean
 
 可以参考demo https://git.oschina.net/xiandafu/jfinal_beet_beetsql_btjson
@@ -271,7 +271,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public <T> List<T> template(T t,RowMapper mapper,int start,int size) 翻页，并增加额外的映射
 * public <T> long templateCount(T t) 获取符合条件的个数
 
-**通过sqlid查询，sql语句在md文件里**
+**通过sqlid查询**,sql语句在md文件里
 
 * public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras) 根据sqlid来查询，参数是个map
 * public <T> List<T> select(String sqlId, Class<T> clazz, Object paras) 根据sqlid来查询，参数是个pojo
@@ -300,6 +300,8 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public int[] updateBatch(String sqlId,List<?> list) 批量更新
 * public int[] updateBatch(String sqlId,Map<String, Object>[] maps) 批量更新，参数是个数组，元素类型是map
 
+### 直接执行SQL
+
 **直接执行sql模板语句**
 
 * public <T> List<T> execute(String sql,Class<T> clazz, Object paras)
@@ -307,17 +309,16 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public int  executeUpdate(String sql,Object paras)  返回成功执行条数
 * public int  executeUpdate(String sql,Map paras) 返回成功执行条数
 
-**直接执行sql语句**
+**直接执行JDBC sql语句**
 
-* public <T> List<T> execute(SQLReady p,Class<T> clazz) SQLReady包含了需要执行的sql语句和参数，clazz是查询结果，如 
+* public <T> List<T> execute(SQLReady p,Class<T> clazz) SQLReady包含了需要执行的sql语句和参数，clazz是查询结果，如
 
 			sqlManager.execute(new SQLReady("select * from user where name=? and age = ?","xiandafu",18),User.class);)
 
 * public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
-
-
-
-**强制使用主或者从***
+*
+### 其他
+**强制使用主或者从**
 
 * public void useMaster(DBRunner f)  DBRunner里的beetlsql调用将使用主数据库库
 * public void useSlave(DBRunner f) DBRunner里的beetlsql调用将使用从数据库库
@@ -325,7 +326,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 **生成Pojo代码**
 
 * genPojoCodeToConsole(String table), 根据表名生成pojo类，输出到控制台
-* genPojoCode(String table,String pkg,String srcPath,GenConfig config) 根据表名，包名，生成路径，还有配置，生成pojo代码 
+* genPojoCode(String table,String pkg,String srcPath,GenConfig config) 根据表名，包名，生成路径，还有配置，生成pojo代码
 * genPojoCode(String table,String pkg,GenConfig config)  同上，生成路径自动是项目src路径，或者src/main/java (如果是maven工程)
 * genPojoCode(String table,String pkg),同上，采用默认的生成配置
 
@@ -336,7 +337,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 对于自动生成的sql，默认不需要任何annotaton，类名对应于表名（通过NameConverstion类），getter方法的属性名对应于列明（也是通过NameConverstion类），但有些情况还是需要anntation。
 
 *   标签@Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
-	
+
 	@Table(name="user")
 	public class QueryUser ..
 
@@ -387,7 +388,7 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
 
 
-##Markdown方式管理
+## Markdown方式管理
 ---
 BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，如User对象放到user.md 里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是
 
@@ -401,24 +402,24 @@ BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件�
 			SQL标示
 			===
 			以*开头的注释
-			SQL语句 
-				
+			SQL语句
+
 			SQL标示2
 			===
 			SQL语句 2
-	
+
 所有SQL文件建议放到一个sql目录，sql目录有多个子目录，表示数据库类型，这是公共SQL语句放到sql目录下，特定数据库的sql语句放到各自自目录下
 当程序获取SQL语句得时候，先会根据数据库找特定数据库下的sql语句，如果未找到，会寻找sql下的。如下代码
 
-			List<User> list = sqlManager.select("user.select",User.class); 
-			
-SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，确认是否有select语句，如果没有，则会寻找sql/user.md 
+			List<User> list = sqlManager.select("user.select",User.class);
+
+SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，确认是否有select语句，如果没有，则会寻找sql/user.md
 
 (注:默认的ClasspathLoader采用了这种方法，你可以实现SQLLoader来实现自己的格式和sql存储方式，如数据库存储)
 
 注释是以* 开头，注释语句不作为sql语句
 
-##SQL 注释
+## SQL 注释
 
 对于采用Markdown方式，可以采用多种方式对sql注释。
 
@@ -427,12 +428,12 @@ SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，
 		select * from user where
 		--  status 代表状态
 		statu = 1
-	
+
 * 采用beetl注释
-	
+
 		select * from user where
 		@ /* 这些sql语句被注释掉
-		statu = 1 
+		statu = 1
 		@ */
 
 * 在sqlId 的=== 紧挨着的下一行 后面连续使用“*”作为sql整个语句注释
@@ -441,12 +442,12 @@ SqlManager 会根据当前使用的数据库，先找sql/mysql/user.md 文件，
 		==
 		* 这个sql语句用来查询用户的
 		* status =1 表示查找有效用户
-		
+
 		 select * from user where status = 1
-		
-	
-(gitosc 不能正确处理显示此格式）
-  	
+
+
+
+
 ## 开发模式和产品模式
 
 beetlsql默认是开发模式，因此修改md的sql文件，不需要重启。但建议线上不要使用开发模式，因为此模式会每次sql调用都会检测md文件是否变化。可以通过修改/btsql-ext.properties ,修改如下属性改为产品模式
@@ -454,9 +455,9 @@ beetlsql默认是开发模式，因此修改md的sql文件，不需要重启。�
 	PRODUCT_MODE = true
 
 
-		
-##SQL 模板基于Beetl实现，更容易写和调试，以及扩展	
-		
+
+## SQL 模板基于Beetl实现，更容易写和调试，以及扩展
+
 SQL语句可以动态生成，基于Beetl语言，这是因为
 
 * beetl执行效率高效 ，因此对于基于模板的动态sql语句，采用beetl非常合适
@@ -471,7 +472,7 @@ SQL语句可以动态生成，基于Beetl语言，这是因为
 			--if(age!=null)
 			age=#age#
 			--}
-			
+
 
 
 * beetl 错误提示非常友好，减少写SQL脚本编写维护时间
@@ -522,15 +523,15 @@ beetlsql 的其他属性也可以在此文件里设置
 
 * if else 这个同java，c，js。
 * for,循环语句，如for(id:ids){}
-	
+
 			select * from user where status in (
 			@for(id in ids){
 			#id# #idLP.isLast?"":","#
 			@}
-		
+
 注意：变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档
 
-	
+
 * while 循环语句 ，如while(i<count))
 
 ### 访问变量属性
@@ -539,26 +540,26 @@ beetlsql 的其他属性也可以在此文件里设置
 * 如果是Map，用key访问 map["key"];
 * 如果是数组或者list，用索引访问，如list[1],list[i];
 * 可以直采用java方式访问变量的方法和属性，如静态类Constatns
-	
+
 			public class Constatns{
 				public static int 	RUNNING = 0;
 				public static User getUser(){}
 			}
 
 直接以java方式访问，需要再变量符号前加上@，可以在模板里访问
-	
+
 		select * from user where status = #@Constatns.RUNNING# and id = #@Constatns.getUser().getId()#
 
 	注意，如果Constants 类 没有导入进beetl，则需要带包名，导入beetl方法是配置IMPORT_PACKAGE=包名.;包名.
 
-###判断对象非空空
+### 判断对象非空空
 
 可以采用isEmpty判断变量表达式是否为空(为null)，是否存在，如果是字符串，是否是空字符串，如
 
 	if(isEmpty(user)||isEmpty(role.name))
 
 也可以用传统方法判断，如
-	
+
 	if(user==null) or if(role.name!=null))
 
 变量有可能不存在，则需要使用安全输出符号，如
@@ -567,7 +568,7 @@ beetlsql 的其他属性也可以在此文件里设置
 
 变量表达式后面跟上"!" 表示如果变量不存在，则为！后面的值，如果！后面没有值，则为null
 
-	
+
 ### 调用方法
 
 同js，唯一值得注意的是，在占位符里调用text方法，会直接输出变量而不是“？”，其他以db开头的方式也是这样。架构师可以设置SQLPlaceholderST.textFunList.add(xxxx) 来决定那些方法在占位符号里可以直接输出文本而不是符号"?"
@@ -594,7 +595,7 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 * print println 输出，同js，如print("table1");
 * debug  将变量输出到控制台，如 debug(user);
 * text 输出，但可用于占位符号里
-* join, 用逗号连接集合或者数组，并输出？，用于in，如 
+* join, 用逗号连接集合或者数组，并输出？，用于in，如
 
 			select * from user where status in ( #join(ids)＃)
 			-- 输出成  select * from user where status in (?,?,?)
@@ -603,11 +604,11 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 		condtion
 		===
 		where 1=1 and name = #name#
-		
+
 		selectUser
 		===
 		select * from user #use("condition")#
-	
+
 
 ## Debug功能
 
@@ -625,11 +626,11 @@ Debug 期望能在控制台或者日志系统输出执行的sql语句，参数�
 	sqlId : user.updatexxx
 	execution time : 54ms
 	成功更新[1]
-	
-	
+
+
 beetlsql会分别输出 执行前的sql和参数，以及执行后的结果和耗费的时间。你可以参考DebugInterceptor 实现自己的调试输出
 
-##Interceptor功能
+## Interceptor功能
 
 
 BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会执行各种扩展和监控，这比已知的通过数据库连接池做Interceptor更加容易。如下Interceptor都是有可能的
@@ -655,14 +656,14 @@ InterceptorContext 如下，包含了sqlId，实际得sql，和实际得参数, 
 		private boolean isUpdate = false ;
 		private Object result ;
 		private Map<String,Object> env  = null;
-		
+
 	}
 
 
 
-##内置支持主从数据库
+## 内置支持主从数据库
 
-BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操作此数据源，如果提供多个，则默认第一个为写库，其他为读库。用户在开发代码的时候，无需关心操作的是哪个数据库，因为调用sqlScrip 的 select相关api的时候，总是去读取从库，add/update/delete 的时候，总是读取主库。 
+BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操作此数据源，如果提供多个，则默认第一个为写库，其他为读库。用户在开发代码的时候，无需关心操作的是哪个数据库，因为调用sqlScrip 的 select相关api的时候，总是去读取从库，add/update/delete 的时候，总是读取主库。
 
 		sqlManager.insert(User.class,user) // 操作主库，如果只配置了一个数据源，则无所谓主从
 		sqlManager.unique(id,User.class) //读取从库
@@ -722,25 +723,25 @@ BeetlSql管理数据源，如果只提供一个数据源，则认为读写均操
 
 开发者也可以通过在Sql 模板里完成分表逻辑而对使用者透明，如下sql语句
 
-	  insert into 
+	  insert into
 		#text("log_"+ getMonth(date())#
 		values () ...
-		
+
 注：text函数直接输出表达式到sql语句，而不是输出？。
-		
+
 log表示按照一定规则分表，table可以根据输入的时间去确定是哪个表
 
-		select * from 
+		select * from
 		#text("log"+log.date)#
-		where 
-		
+		where
+
 注：text函数直接输出表达式到sql语句，而不是输出？。
 
 同样，根据输入条件决定去哪个表，或者查询所有表
 
 		@ var tables = getLogTables();
 		@ for(table in tables){
-		select * from #text(table)# 
+		select * from #text(table)#
 		@		if(!tableLP.isLast) print("union");
 		@}		
 		where name = #name#
@@ -759,15 +760,15 @@ log表示按照一定规则分表，table可以根据输入的时间去确定是
 ## 代码生成
 
 beetsql支持调用SQLManager.gen... 方法生成表对应的pojo类，如：
-	
+
 		SQLManager sqlManager = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 	    //sql.genPojoCodeToConsole("userRole"); 快速生成，显示到控制台
-	    
+			// 或者直接生成java文件
 	    GenConfig config = new GenConfig();
 		config.preferBigDecimal(true);
 		config.setBaseClass("com.test.User");
 		sqlManager.genPojoCode("UserRole","com.test",config);
-		
+
 config 类用来配置生成喜爱,目前支持生成pojo是否继承某个基类, 是否用BigDecimal代替Double,是否是直接输出到控制台而不是文件等
 生成的代码如下：
 
@@ -776,18 +777,18 @@ config 类用来配置生成喜爱,目前支持生成pojo是否继承某个基�
 	import java.sql.*;
 	public class UserRole extends com.test.User{
 	    private Integer id;
-	
+
 	    /* 数据库注释 */
 	    private String userName;
 	}
-	
+
 
 ##直接使用SQLResult
 
 有时候，也许你只需要SQL及其参数列表，然后传给你自己的dao工具类，这时候你需要SQLResult，它包含了你需要的sql，和sql参数。
 SQLManager 有如下方法，你需要传入sqlid，和参数即可
 
-	public SQLResult getSQLResult(String id, Map<String, Object> paras) 
+	public SQLResult getSQLResult(String id, Map<String, Object> paras)
 
 paras 是一个map，如果你只有一个pojo作为参数，你可以使用“_root” 作为key，这样sql模版找不到名称对应的属性值的时候，会寻找_root 对象，如果存在，则取其同名属性。
 
@@ -808,13 +809,8 @@ jdbcSql是渲染过后的sql，jdbcPara 是对应的参数值
 ###闲大赋
 ![xiandfu](http://ibeetl.com/guide/xiandafu.jpg)
 
-###Gavin·King 
+###Gavin·King
 ![Gavin](http://ibeetl.com/guide/GV2.png)
 
 ### Sue
 ![Sue](http://ibeetl.com/guide/SUE.jpg)
-
-
-
-
-
