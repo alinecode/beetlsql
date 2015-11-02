@@ -1,0 +1,15 @@
+package ${package};
+${imports}
+/*
+* ${comment}
+* gen by beetsql ${date(),"yyyy-MM-dd"}
+*/
+public class ${className} ${!isEmpty(ext)?"extends "+ext} {
+	@for(attr in attrs){
+	@		if(!isEmpty(attr.comment)){
+	//${attr.comment}
+	@		}
+	private ${attr.type} ${attr.name} ;
+	@}
+
+}
