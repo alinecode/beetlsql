@@ -20,7 +20,7 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/sql");
 		SQLManager sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
-		sql.select("appliction.findAllByPage", SysRole.class, new HashMap());
+//		sql.select("appliction.findAllByPage", SysRole.class, new HashMap());
 		
 		//		sql.unique(SysRole.class, 1);
 //		sql.all(SysRole.class);
@@ -58,11 +58,11 @@ public class QuickTest {
 //		info.setUserName("name");
 //		sql.template(info);
 		
-//		sql.genPojoCodeToConsole("userRole");
-//		GenConfig config = new GenConfig();
-//		config.preferBigDecimal(true);
+//		sql.genPojoCodeToConsole("sys_parametr_info");
+		GenConfig config = new GenConfig();
+		config.preferBigDecimal(true);
 //		config.setBaseClass("com.test.User");
-//		sql.genPojoCode("UserRole","com.test",config);
+		sql.genPojoCode("sys_role","com.test",config);
 
 	}
 

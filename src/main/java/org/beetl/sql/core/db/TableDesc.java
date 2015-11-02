@@ -12,6 +12,8 @@ public class TableDesc{
 	private String name;
 	// 默认为id，列明采用小写
 	private String idName="id";
+	
+	private String remark = null;
 	// 采用大写,为了方便查询
 	private Set<String> cols = new HashSet<String>();
 	
@@ -24,9 +26,10 @@ public class TableDesc{
 	private Map<String,ColDesc> colsDetail = new HashMap<String,ColDesc>();
 	
 	
-	public TableDesc(String name){
+	public TableDesc(String name,String remark){
 		this.name = name.toUpperCase();
 		this.metaName = name;
+		this.remark = remark;
 	}
 	
 	public boolean containCol(String col){
@@ -91,6 +94,10 @@ public class TableDesc{
 	
 
 	
+	public String getRemark() {
+		return remark;
+	}
+
 	public ClassDesc getClassDesc(Class c,NameConversion nc){
 		ClassDesc classDesc = classes.get(c);
 		if(classDesc==null){

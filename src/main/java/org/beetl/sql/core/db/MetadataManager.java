@@ -15,7 +15,7 @@ public class MetadataManager {
 
 	private ConnectionSource ds = null;
 	Map<String,TableDesc> map = null;
-	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST");
+	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
 	SQLManager sm = null;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
@@ -132,8 +132,9 @@ public class MetadataManager {
 					new String[] { "TABLE" });
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
-//				System.out.println("tableName="+name);
-				TableDesc desc = new TableDesc(name);
+				String remarks = rs.getString("REMARKS");
+//				System.out.println("remarks="+remarks);
+				TableDesc desc = new TableDesc(name,remarks);
 				map.put(desc.getName(),desc);
 			}
 		

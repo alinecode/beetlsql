@@ -2,8 +2,17 @@ package org.beetl.sql.ext.gen;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.beetl.core.Configuration;
+import org.beetl.core.GroupTemplate;
+import org.beetl.core.Template;
+import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.ColDesc;
 import org.beetl.sql.core.db.MetadataManager;
@@ -18,12 +27,24 @@ public class SourceGen {
 	GenConfig config;
 	public static String srcHead ="";
 	static String CR = System.getProperty("line.separator");
+	static GroupTemplate gt = null;
 	static {
+		Configuration conf = null;
+		try {
+			conf = Configuration.defaultConfiguration();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conf.setStatementStart("@");
+		conf.setStatementEnd(null);
+		gt = new GroupTemplate(new StringTemplateResourceLoader(),conf);
 		srcHead+="import java.math.*;"+CR;
-		srcHead+="import java.sql.*;"+CR;
-//		srcHead+="/** auto gen by beetlsql **/"+CR;
+		srcHead+="import java.sql.*;";
+
 		
 	}
+	
 	public SourceGen(SQLManager sm,String table,String pkg,String srcPath,GenConfig config){
 		this.mm = sm.getMetaDataManager();
 		this.sm = sm;
@@ -37,39 +58,40 @@ public class SourceGen {
 	 * 
 	 */
 	public void gen() throws Exception{
-		StringBuilder body = new StringBuilder();
 		TableDesc  tableDesc = mm.getTable(table);
 		String className = sm.getNc().getClassName(tableDesc.getMetaName());
-		body.append("public class ").append(className);
-		if(config.getBaseClass()!=null){
-			body.append(" extends ").append(config.getBaseClass());
-		}
-		body.append("{").append(CR);
-		Set<String> cols = tableDesc.getMetaCols();
-		for(String col:cols){
+		String ext = null;
 		
-			ColDesc desc = tableDesc.getColDesc(col);		
-			if(desc.remark!=null&&desc.remark.length()!=0){
-				body.append(CR);
-				body.append(config.getSpace());				
-				body.append("/* ").append(desc.remark).append(" */").append(CR);
-				
-			}
+		if(config.getBaseClass()!=null){
+			ext = config.getBaseClass();
+		}
+		
+		Set<String> cols = tableDesc.getMetaCols();
+		List<Map> attrs = new ArrayList<Map>();
+		for(String col:cols){
 			
-			String attrName = sm.getNc().getPropertyName(null, desc.colName);
+			ColDesc desc = tableDesc.getColDesc(col);
+			Map attr = new HashMap();
+			attr.put("comment", desc.remark);
+			attr.put("name", sm.getNc().getPropertyName(null, desc.colName));
+			attr.put("type", desc.remark);
+			
 			String type = JavaType.getType(desc.sqlType, desc.size, desc.digit);
 			if(config.isPreferBigDecimal()&&type.equals("Double")){
 				type = "BigDecimal";
 			}			
-			body.append(config.getSpace());
-			body.append("private ").append(type).append(" ").append(attrName).append(";").append(CR);
+			attr.put("type", type);
+			attrs.add(attr);
 		}
 		
-		body.append("}");
-		StringBuilder code =new StringBuilder();
-		code.append("package ").append(pkg).append(";").append(CR);
-		code.append(srcHead);
-		code.append(body);
+		Template template = gt.getTemplate(config.template);
+		template.binding("attrs", attrs);
+		template.binding("className", className);
+		template.binding("ext", ext);
+		template.binding("package", pkg);
+		template.binding("imports", srcHead);
+		template.binding("comment", tableDesc.getRemark());
+		String code = template.render();
 		if(config.isDisplay()){
 			System.out.println(code);
 		}else{
@@ -86,6 +108,5 @@ public class SourceGen {
 		
 	}
 	
-
-	
 }
+
