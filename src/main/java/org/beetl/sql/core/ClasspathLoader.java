@@ -113,7 +113,9 @@ public class ClasspathLoader implements SQLLoader {
 		首先根据DBStyle.getName() 找到对应的数据库名称，然后在ROOT/dbName 下找对应的sql，
 		如果ROOT/dbName 文件目录不存在，或者相应的sql文件不存在，再搜索ROOT目录下的sql文件。
 		如mysql 里查找user.select2,顺序如下：
-		- 先找ROOT/mysql/user.md 文件，如果有此文件，且包含了select2，则返回此sql语句，
+		- 先找ROOT/mysql/user.sql 文件，如果有此文件，且包含了select2，则返回此sql语句，
+        - 如果没有，下一步查找ROOT/mysql/user.md,如果有此文件，且包含了slect2，则返回sql语句
+        - 如果没有，下一步查找ROOT/user.sql,如果有此文件，且包含了slect2，则返回sql语句
 		- 如果没有，下一步查找ROOT/user.md,如果有此文件，且包含了slect2，则返回sql语句
 		- 都没有，抛错，告诉用户未在ROOT/,或者ROOT/mysql 下找到相关sql
 	 * 
@@ -224,19 +226,25 @@ public class ClasspathLoader implements SQLLoader {
 	private File getFile(String id){
 		String modelName = id.substring(0, id.lastIndexOf(".") );
 		String path  = modelName.replace('.', '/');
+        String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
-		String filePath2 = sqlRoot + "/" + path + ".md";
+        String filePath2 = sqlRoot + "/" + path + ".sql";
+		String filePath3 = sqlRoot + "/" + path + ".md";
 		
 		File file = null;
-		
-		file = this.getFile(filePath1, id);
-		if(!file.exists()){
-			file = this.getFile(filePath2, id);
-			if(!file.exists()){
-				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "+filePath1+" 和 "+filePath2+" 未找到[id="+id+"]相关的SQL");
-			}
-		}
-		
+        file = this.getFile(filePath0, id);
+        if(!file.exists()){
+            file = this.getFile(filePath1, id);
+            if(!file.exists()){
+                file = this.getFile(filePath2, id);
+                if(!file.exists()){
+                    file = this.getFile(filePath3, id);
+                    if(!file.exists()){
+                        throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "+filePath1+" 和 "+filePath2+"和"+filePath3+" 未找到[id="+id+"]相关的SQL");
+                    }
+                }
+            }
+        }
 		return file;
 	}
 	
