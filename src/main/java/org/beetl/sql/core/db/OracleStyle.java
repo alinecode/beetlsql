@@ -27,9 +27,9 @@ public class OracleStyle extends AbstractDBStyle {
 
 	@Override
 	public void initPagePara(Map<String, Object> paras,long start,long size) {
-//		// TODO Auto-generated method stub
-		paras.put(DBStyle.OFFSET,start);
-		paras.put(DBStyle.PAGE_END,start+size);
+		long s = start+(this.offsetStartZero?1:0);
+		paras.put(DBStyle.OFFSET,s);
+		paras.put(DBStyle.PAGE_END,s+size);
 	}
 
 	@Override

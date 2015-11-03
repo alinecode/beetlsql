@@ -11,10 +11,11 @@ import org.beetl.sql.core.SQLLoader;
 public class Beetl {
 	
 	GroupTemplate gt = null;  
+	Properties ps = null;
 	public Beetl(SQLLoader loader) {
 		try {
 			
-			Properties ps = loadDefaultConfig();
+			ps = loadDefaultConfig();
 			Properties ext = loadExtConfig();
 			ps.putAll(ext);
 			boolean product = Boolean.parseBoolean(ps.getProperty("PRODUCT_MODE"));
@@ -65,6 +66,10 @@ public class Beetl {
 
 	public GroupTemplate getGroupTemplate() {
 		return gt;
+	}
+
+	public Properties getPs() {
+		return ps;
 	}
 	
 	

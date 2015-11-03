@@ -1,6 +1,7 @@
 package org.beetl.sql.test;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
@@ -51,6 +52,12 @@ public class QuickTest {
 		
 		}
 		
+		{
+			List<SysRole> list = sql.all(SysRole.class, 1, 9);
+			System.out.println(list.size());
+			
+		}
+		
 		
 //		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		sql.unique(UserInfo.class, 1);
@@ -59,10 +66,10 @@ public class QuickTest {
 //		sql.template(info);
 		
 //		sql.genPojoCodeToConsole("sys_parametr_info");
-		GenConfig config = new GenConfig();
-		config.preferBigDecimal(true);
-//		config.setBaseClass("com.test.User");
-		sql.genPojoCode("sys_role","com.test",config);
+//		GenConfig config = new GenConfig();
+//		config.preferBigDecimal(true);
+////		config.setBaseClass("com.test.User");
+//		sql.genPojoCode("sys_role","com.test",config);
 
 	}
 

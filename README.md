@@ -151,6 +151,11 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 ### Spring集成
 
+  	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
 	<bean id="sqlManager" class="org.beetl.sql.ext.SpringBeetlSql">
 		<property name="cs" >
 			<bean  class="org.beetl.sql.ext.SpringConnectionSource">

@@ -25,6 +25,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 	protected String HOLDER_START;// 站位符开始符号
 	protected String HOLDER_END;// 站位符结束符号
 	protected String lineSeparator = System.getProperty("line.separator", "\n");
+	//翻页从0还是1开始，默认从1开始
+	protected boolean offsetStartZero = false ;
 	
 	public AbstractDBStyle() {
 	
@@ -40,6 +42,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		}
 		HOLDER_START = cf.getPlaceholderStart();
 		HOLDER_END = cf.getPlaceholderEnd();
+		offsetStartZero = Boolean.parseBoolean(beetl.getPs().getProperty("OFFSET_START_ZERO").trim());
 	}
 
 	public String getSTATEMENTSTART() {
