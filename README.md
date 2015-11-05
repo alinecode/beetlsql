@@ -89,7 +89,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	sqlManager.insert(user);
 	//使用内置sql查询用户
 	int id = 1;
-	user = sqlManager.unque(User.class,id);
+	user = sqlManager.unique(User.class,id);
 
 	//使用user.md 文件里的select语句，参考下一节
 	User query = new User();
@@ -150,7 +150,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 
 ### Spring集成
-
+	
   	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />

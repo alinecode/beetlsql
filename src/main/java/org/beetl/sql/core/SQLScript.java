@@ -146,7 +146,7 @@ public class SQLScript {
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps);
+			clean(true,conn,ps);
 		}
 	}
 	
@@ -219,7 +219,7 @@ public class SQLScript {
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps);
+			clean(true,conn,ps);
 		}
 	}
 	
@@ -282,7 +282,7 @@ public class SQLScript {
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps,rs);
+			clean(false,conn,ps,rs);
 		}
 		
 	}
@@ -383,7 +383,7 @@ public class SQLScript {
 			// TODO Auto-generated catch block
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps);
+			clean(true,conn,ps);
 		}
 		return rs;
 	}
@@ -424,7 +424,7 @@ public class SQLScript {
 			// TODO Auto-generated catch block
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps);
+			clean(true,conn,ps);
 		}
 		return rs;
 	}
@@ -459,10 +459,9 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx,rs);
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps);
+			clean(true,conn,ps);
 		}
 		return rs;
 	}
@@ -498,7 +497,7 @@ public class SQLScript {
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps,rs);
+			clean(false,conn,ps,rs);
 		}
 		return model;
 	}
@@ -534,7 +533,7 @@ public class SQLScript {
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps);
+			clean(true,conn,ps);
 		}
 		return rs;
 	}
@@ -562,7 +561,7 @@ public class SQLScript {
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps,rs);
+			clean(false,conn,ps,rs);
 		}
 	}
 	
@@ -590,25 +589,35 @@ public class SQLScript {
 			// TODO Auto-generated catch block
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
 		} finally {
-			clean(conn,ps);
+			clean(true,conn,ps);
 		}
 		return rs;
 	}
 	
-	private void clean(Connection conn,PreparedStatement ps,ResultSet rs){
+	private void clean(boolean isUpdate,Connection conn,PreparedStatement ps,ResultSet rs){
 		try {
 			if(rs!=null)rs.close();
 			if(ps!=null)ps.close();
 			if(!this.sm.getDs().isTransaction()){
-				if(conn!=null)conn.close();
+				try{
+					
+					if(conn!=null){
+						// colse 不一定能保证能自动commit
+						if(isUpdate)conn.commit();
+						conn.close();
+					}
+				}catch(SQLException e){
+					throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,e);
+				}
+				
 			}
 		} catch (SQLException e) {
-		
+			//ignore
 		}
 	}
 	
-	private void clean(Connection conn,PreparedStatement ps){
-		this.clean(conn, ps,null);
+	private void clean(boolean isUpdate,Connection conn,PreparedStatement ps){
+		this.clean(isUpdate,conn, ps,null);
 	}
 	
 
