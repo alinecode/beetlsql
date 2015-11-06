@@ -2,12 +2,9 @@
 package org.beetl.sql.core;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.rmi.UnexpectedException;
 import java.util.LinkedList;
 import java.util.Map;
@@ -33,7 +30,7 @@ public class ClasspathLoader implements SQLLoader {
 	private String lineSeparator = System.getProperty("line.separator", "\n");
 
 	private static Map<String, SQLSource> sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
-	private static Map<String, Long> sqlSourceVersion = new ConcurrentHashMap<String, Long> ();
+	private static Map<String, Integer> sqlSourceVersion = new ConcurrentHashMap<String, Integer> ();
 
 	private DBStyle dbs = null;
 	
@@ -74,7 +71,7 @@ public class ClasspathLoader implements SQLLoader {
 				return false;
 			}
 		}
-		File file = this.getFile(id);
+		InputStream is = this.getFile(id);
 		
 //		if(file==null) return true;
 //		long lastModify = file.lastModified();
@@ -85,10 +82,10 @@ public class ClasspathLoader implements SQLLoader {
 //		}else{
 //			return false;
 //		}
-		if(file != null){
-			Long lastModify = file.lastModified();
-			Long oldVersion = sqlSourceVersion.get(id);
-			if(oldVersion != null && oldVersion==lastModify){
+		if(is != null){
+			Integer lastModify = is.hashCode();
+			Integer oldVersion = sqlSourceVersion.get(id);
+			if(oldVersion != null && oldVersion.equals(lastModify)){
 				return false;
 			}
 		}
@@ -103,7 +100,7 @@ public class ClasspathLoader implements SQLLoader {
 	@Override
 	public void addGenSQL(String id, SQLSource source) {		
 	
-		sqlSourceVersion.put(id, 0l); //never change
+		sqlSourceVersion.put(id, 0); //never change
 		sqlSourceMap.put(id, source);
 		
 	}
@@ -125,17 +122,17 @@ public class ClasspathLoader implements SQLLoader {
 	private boolean loadSql(String id) {
 		
 		String modelName = id.substring(0, id.lastIndexOf(".") + 1);
-		
-		File file = this.getFile(id);
-		if(file==null) return false ;
-		InputStream ins  = null;
-		try{
-			ins = new FileInputStream(file);
-		}catch(IOException ioe){
-			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "未找到[id="+id+"]相关SQL"+id,ioe);
-		}
-		
-		long lastModified = file.lastModified();
+
+		InputStream ins = this.getFile(id);
+		if(ins == null) return false ;
+//			InputStream ins  = null;
+//		try{
+//			ins = new FileInputStream(file);
+//		}catch(IOException ioe){
+//			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "未找到[id="+id+"]相关SQL"+id,ioe);
+//		}
+		Integer lastModified = ins.hashCode();
+//		long lastModified = file.lastModified();
 		sqlSourceVersion.put(id, lastModified);
 //		InputStream ins = this.getClass().getResourceAsStream(
 //				sqlRoot + File.separator + modelName + "md");
@@ -223,39 +220,33 @@ public class ClasspathLoader implements SQLLoader {
 	 * @return
 	 * @throws UnexpectedException 
 	 */
-	private File getFile(String id){
+	private InputStream getFile(String id){
 		String modelName = id.substring(0, id.lastIndexOf(".") );
 		String path  = modelName.replace('.', '/');
         String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
         String filePath2 = sqlRoot + "/" + path + ".sql";
 		String filePath3 = sqlRoot + "/" + path + ".md";
-		
-		File file = null;
-        file = this.getFile(filePath0, id);
-        if(!file.exists()){
-            file = this.getFile(filePath1, id);
-            if(!file.exists()){
-                file = this.getFile(filePath2, id);
-                if(!file.exists()){
-                    file = this.getFile(filePath3, id);
-                    if(!file.exists()){
+
+		InputStream is = this.getFile(filePath0, id);
+        if(is==null){
+			is = this.getFile(filePath1, id);
+            if(is==null){
+				is = this.getFile(filePath2, id);
+                if(is==null){
+					is = this.getFile(filePath3, id);
+                    if(is==null){
                         throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "+filePath1+" 和 "+filePath2+"和"+filePath3+" 未找到[id="+id+"]相关的SQL");
                     }
                 }
             }
         }
-		return file;
+		return is;
 	}
 	
-	private File getFile(String filePath, String id){
-		URL url = this.getClass().getResource(filePath);
-		
-		if(url == null){
-			return new File("");
-		}
-		
-		return new File(url.getFile());
+	private InputStream getFile(String filePath, String id){
+		InputStream is = this.getClass().getResourceAsStream(filePath);
+		return is;
 	}
 	
 	@Override
