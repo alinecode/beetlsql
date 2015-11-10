@@ -4,7 +4,7 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 1.2.0 (108K), 另外还需要beetl 包
+* 当前版本 1.3.0 (120K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -276,6 +276,14 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public <T> List<T> template(T t,RowMapper mapper,int start,int size) 翻页，并增加额外的映射
 * public <T> long templateCount(T t) 获取符合条件的个数
 
+翻页的start，系统默认位从1开始，为了兼容各个数据库系统，会自动翻译成数据库习俗，比如start为1，会认为mysql，postgres从0开始（从start－1开始），oralce从1开始（start－0）开始。
+
+然而，如果你只用特定数据库，可以按照特定数据库习俗来，比如，你只用mysql，start为0代表起始纪录，需要配置
+
+	OFFSET_START_ZERO = true 
+	
+这样，翻页参数start传入0即可
+
 **通过sqlid查询**,sql语句在md文件里
 
 * public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras) 根据sqlid来查询，参数是个map
@@ -395,7 +403,7 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
 ## Markdown方式管理
 ---
-BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，如User对象放到user.md 里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是
+BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，文件名的扩展名是md或者sql。如User对象放到user.md 或者 user.sql里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是
 
 * XML格式过于复杂，书写不方便
 * XML 格式有保留符号，写SQL的时候也不方便，如常用的< 符号 必须转义
@@ -785,6 +793,24 @@ config 类用来配置生成喜爱,目前支持生成pojo是否继承某个基�
 
 	    /* 数据库注释 */
 	    private String userName;
+	}
+也可以自己设定输出模版，通过GenConfig.initTemplate(String classPath),指定模版文件在classpath 的路径，或者直接设置一个字符串模版
+GenConfig.initStringTemplate. 系统默认的模版如下：
+
+	package ${package};
+	${imports}
+	/*
+	* ${comment}
+	* gen by beetsql ${date(),"yyyy-MM-dd"}
+	*/
+	public class ${className} ${!isEmpty(ext)?"extends "+ext} {
+		@for(attr in attrs){
+		@		if(!isEmpty(attr.comment)){
+		//${attr.comment}
+		@		}
+		private ${attr.type} ${attr.name} ;
+		@}
+	
 	}
 
 
