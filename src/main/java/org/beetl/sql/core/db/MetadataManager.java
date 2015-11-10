@@ -102,7 +102,12 @@ public class MetadataManager {
 					String colName = rs.getString("COLUMN_NAME");
 					Integer sqlType = rs.getInt("DATA_TYPE");
 					Integer size = rs.getInt("COLUMN_SIZE");
-					Integer digit = (Integer)rs.getObject("DECIMAL_DIGITS");
+					Object o = rs.getObject("DECIMAL_DIGITS");
+					Integer digit = null;
+					if(o!=null){
+						digit = ((Number)o).intValue();
+					}
+					
 					String remark = rs.getString("REMARKS");
 					ColDesc col = new ColDesc(colName,sqlType,size,digit,remark);
 					desc.addCols(col);
