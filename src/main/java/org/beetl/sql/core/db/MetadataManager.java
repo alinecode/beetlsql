@@ -1,15 +1,15 @@
 package org.beetl.sql.core.db;
 
+import org.beetl.sql.core.BeetlSQLException;
+import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.SQLManager;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.ConnectionSource;
-import org.beetl.sql.core.SQLManager;
 
 public class MetadataManager {
 
@@ -156,10 +156,6 @@ public class MetadataManager {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		
-	}
-	
-	public static void main(String[] args){
 		
 	}
 }

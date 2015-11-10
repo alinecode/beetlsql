@@ -202,7 +202,6 @@ public abstract class AbstractDBStyle implements DBStyle {
 		StringBuilder valSql = new StringBuilder(" VALUES (");
 		int idType = DBStyle.ID_ASSIGN ;
 		SQLSource source = new SQLSource();
-		Method[] methods = cls.getMethods();
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(col.equals(classDesc.getIdName())){				
@@ -358,7 +357,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	private boolean isLegalSelectMethod(Method method){
 		
 		return method.getDeclaringClass() != Object.class 
-				&& method.getName().startsWith("get")
+				&& (method.getName().startsWith("get") || method.getName().startsWith("is"))
 				&& !java.util.Date.class.isAssignableFrom(method.getReturnType())	
 				&& !java.util.Calendar.class.isAssignableFrom(method.getReturnType());
 	}
@@ -369,7 +368,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @return
 	 */
 	private boolean isLegalOtherMethod(Method method){
-		return method.getDeclaringClass() != Object.class && method.getName().startsWith("get");
+		return method.getDeclaringClass() != Object.class &&
+                (method.getName().startsWith("get")||method.getName().startsWith("is"))
+                && method.getParameterTypes().length == 0;
 	}
 
 }

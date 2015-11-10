@@ -24,9 +24,17 @@ public class User {
 	Integer age;
 	String userName;
 	Role role;
+    boolean admin;
 
+    public boolean isAdmin() {
+        return admin;
+    }
 
-	public String getName() {
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public String getName() {
 		return name;
 	}
 
@@ -69,7 +77,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", age=" + age
-				+ ", userName=" + userName + ", role=" + role + "]";
+				+ ", userName=" + userName + ", role=" + role + ",admin="+admin+"]";
 	}
 
 }
