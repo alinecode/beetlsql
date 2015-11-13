@@ -53,19 +53,19 @@ public class QuickTest {
 		}
 		
 		{
-			List<SysRole> list = sql.all(SysRole.class, 1, 9);
-			System.out.println(list.size());
-			
+//			List<SysRole> list = sql.all(SysRole.class, 1, 9);
+//			System.out.println(list.size());
+//			
 		}
 		
 		
-//		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		sql.unique(UserInfo.class, 1);
 //		UserInfo info = new UserInfo();
 //		info.setUserName("name");
 //		sql.template(info);
 		
-//		sql.genPojoCodeToConsole("sys_parametr_info");
+		sql.genPojoCodeToConsole("sys_parametr_info");
 //		GenConfig config = new GenConfig();
 //		config.preferBigDecimal(true);
 ////		config.setBaseClass("com.test.User");
