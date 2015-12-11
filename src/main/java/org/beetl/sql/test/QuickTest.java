@@ -1,7 +1,9 @@
 package org.beetl.sql.test;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+
+import javax.sound.midi.MidiDevice.Info;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
@@ -11,7 +13,6 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.ext.gen.GenConfig;
 
 public class QuickTest {
 
@@ -60,12 +61,25 @@ public class QuickTest {
 		
 		
 		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+//		User info = new User();
+//		info.setId(2);
+//		info.setUserName("kk");
+//		info.setAge(1);
+//		
+//		sql.updateTemplateById(info);
+		
+		Map map = new HashMap();
+		map.put("id", 2);
+		map.put("userName", "kkg");
+		sql.updateTemplateById(User.class, map);
+		
+		
 //		sql.unique(UserInfo.class, 1);
 //		UserInfo info = new UserInfo();
 //		info.setUserName("name");
 //		sql.template(info);
 		
-		sql.genPojoCodeToConsole("sys_parametr_info");
+//		sql.genPojoCodeToConsole("user");
 //		GenConfig config = new GenConfig();
 //		config.preferBigDecimal(true);
 ////		config.setBaseClass("com.test.User");

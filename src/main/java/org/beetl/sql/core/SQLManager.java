@@ -8,6 +8,7 @@ import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
 import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
 import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
 import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.UPDATE_TEMPLATE_BY_ID;
 import static org.beetl.sql.core.kit.Constants.classSQL;
 
 import java.io.File;
@@ -163,6 +164,12 @@ public class SQLManager {
 				tempSource = this.dbStyle.genUpdateById(cls);
 				break ;
 			}
+			
+			case UPDATE_TEMPLATE_BY_ID: {
+				tempSource = this.dbStyle.genUpdateTemplate(cls);
+				break ;
+			}
+			
 			case INSERT: {
 				tempSource = this.dbStyle.genInsert(cls);
 				break ;
@@ -527,6 +534,26 @@ public class SQLManager {
 	public int updateById(Object obj){
 		SQLScript script = getScript(obj.getClass(), UPDATE_BY_ID);
 		return script.update(obj);
+	}
+	
+	/**
+	 * 为null的值不参与更新，如果想更新null值，请使用updateById
+	 * @param obj
+	 * @return
+	 */
+	public int updateTemplateById(Object obj){
+		SQLScript script = getScript(obj.getClass(), UPDATE_TEMPLATE_BY_ID);
+		return script.update(obj);
+	}
+	/**
+	 * 
+	 * @param c   c对应的表名
+	 * @param paras 参数，如需要更新的值，还有id
+	 * @return
+	 */
+	public int updateTemplateById(Class c ,Map paras){
+		SQLScript script = getScript(c, UPDATE_TEMPLATE_BY_ID);
+		return script.update(paras);
 	}
 	
 	/****

@@ -163,13 +163,18 @@ public abstract class AbstractDBStyle implements DBStyle {
 		for(String col:cols){
 			if(classDesc.getIdName().equals(col)){
 				//主键不更新
+				condition = condition + appendWhere(cls,table, col);
 				continue ;
 			}
 			
 			sql.append(appendSetColumn(cls,table, col));
-			condition = condition + appendWhere(cls,table, col);
+			
 		}
-		sql = removeComma(sql, condition);
+		StringBuilder trimSql = new StringBuilder();
+		
+		trimSql.append(this.getSTATEMENTSTART()).append("trim(){\n").append(this.getSTATEMENTEND()).append("\n").append(sql);
+		trimSql.append(this.getSTATEMENTSTART()).append("}\n").append(this.getSTATEMENTEND());
+		sql = removeComma(trimSql, condition);
 		return new SQLSource(sql.toString());
 		
 	}

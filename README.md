@@ -183,7 +183,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * cs: 指定ConnectionSource，可以用系统提供的DefaultConnectionSource，支持按照CRUD决定主从。例子里只有一个master库
 
-* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle
+* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle，SQLiteStyle
 
 * sqlLoader: sql语句加载来源
 
@@ -303,7 +303,9 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public void insert(Class<?> clazz,Object paras)  插入paras到paras关联的表
 * public void insert(Class<?> clazz,Object paras,KeyHolder holder)，插入paras到paras关联的表，如果需要主键，可以通过holder的getKey来获取
-* public int updateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键
+* public int updateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键，所有值参与更新
+* public int updateTemplateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新
+* public int updateTemplateById(Class<?> clazz，Map paras) 根据主键更新，组件通过clazz的annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新。
 * public int[] updateByIdBatch(List<?> list) 批量更新
 
 **通过sqlid更新**

@@ -8,6 +8,8 @@ public class Constants {
 	public static final int SELECT_ALL = 4;
 	public static final int UPDATE_ALL = 5;
 	public static final int UPDATE_BY_ID = 6;
+	public static final int UPDATE_TEMPLATE_BY_ID = 7;
+	
 	//public static final int UPDATE_BY_ID_BATCH =7;
 	public static final int INSERT = 8;
 	
