@@ -1,15 +1,14 @@
 package org.beetl.sql.core.db;
 
-import java.lang.reflect.Method;
-import java.util.Set;
-
 import org.beetl.core.Configuration;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.engine.Beetl;
-import org.beetl.sql.core.kit.StringKit;
+
+import java.lang.reflect.Method;
+import java.util.Set;
 /**
  * 按照mysql来的，oralce需要重载insert，page方法
  * @author xiandafu
@@ -152,7 +151,6 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	@Override
 	public SQLSource genUpdateTemplate (Class<?> cls) {
-		
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
@@ -166,9 +164,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 				condition = condition + appendWhere(cls,table, col);
 				continue ;
 			}
-			
 			sql.append(appendSetColumn(cls,table, col));
-			
 		}
 		StringBuilder trimSql = new StringBuilder();
 		
@@ -231,11 +227,99 @@ public abstract class AbstractDBStyle implements DBStyle {
 		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
 		source.setTemplate(sql.toString());
 		source.setIdType(idType);
-		
-		 
+
 		return source;
 	}
-	
+
+    /****
+     * 根据class生成字段名列表
+     * @param cls
+     * @return
+     */
+    public String genColumnList(Class<?> cls){
+        Set<String> colSet = getCols(cls);
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder cols = new StringBuilder();
+        for(String col:colSet){
+            cols.append(col).append(",");
+        }
+        return cols.deleteCharAt(cols.length()-1).toString();
+    }
+
+    /***
+     * 获取字段集合
+     * @param cls
+     * @return
+     */
+    public Set<String> getCols(Class<?> cls){
+        String tableName = nameConversion.getTableName(cls);
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        return classDesc.getInCols();
+    }
+
+    /***
+     * 生成通用条件语句 含有Empty判断
+     * @param cls
+     * @return
+     */
+    public String genCondition(Class<?> cls){
+        String tableName = nameConversion.getTableName(cls);
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        Set<String> colSet = classDesc.getInCols();
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder condition = new StringBuilder();
+        for(String col:colSet){
+            condition.append(appendWhere(cls,table,col));
+        }
+        return "1 = 1" + condition.toString();
+    }
+
+    /***
+     * 生成通用的col=property (示例：age=${age},name=${name}) 含有Empty判断
+     * @param cls
+     * @return
+     */
+    public String genColAssignProperty(Class<?> cls){
+        String tableName = nameConversion.getTableName(cls);
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        Set<String> colSet = classDesc.getInCols();
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder sql = new StringBuilder();
+        for(String col:colSet){
+            sql.append(appendSetColumn(cls, table, col));
+        }
+        return sql.deleteCharAt(sql.length() - 1).toString();
+    }
+
+    /***
+     * 生成通用的col=property (示例：age=${age},name=${name}) 没有Empty判断
+     * @param cls
+     * @return
+     */
+    public String genColAssignPropertyAbsolute(Class<?> cls){
+        String tableName = nameConversion.getTableName(cls);
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        Set<String> colSet = classDesc.getInCols();
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder sql = new StringBuilder();
+        for(String col:colSet){
+            sql.append(appendSetColumnAbsolute(cls,table,col));
+        }
+        return sql.deleteCharAt(sql.length()-1).toString();
+    }
+
 	public String getEscapeForKeyWord(){
 		return "\"";
 	}
@@ -252,7 +336,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 	/***
 	 * 生成一个追加在set子句的后面sql(示例：name=${name},)
-	 * @param tableName
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -263,7 +348,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	/***
 	 * 生成一个追加在set子句的后面sql(示例：name=${name},)有Empty判断
-	 * @param tableName
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -279,8 +365,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	}
 	
 	/*****
-	 * 生成一个追加在where子句的后面sql(示例：name=${name} and)
-	 * @param tableName
+	 * 生成一个追加在where子句的后面sql(示例：and name=${name} )
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -297,7 +384,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	/****
 	 * 生成一个追加在insert into 子句的后面sql(示例：name,)
-	 * @param tableName
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -308,7 +396,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	/****
 	 * 生成一个追加在insert into value子句的后面sql(示例：name=${name},)
-	 * @param tableName
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
