@@ -15,7 +15,7 @@ public class MetadataManager {
 
 	private ConnectionSource ds = null;
 	Map<String,TableDesc> map = null;
-	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
+//	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
 	SQLManager sm = null;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
@@ -48,13 +48,13 @@ public class MetadataManager {
 
 
 	public TableDesc getTable(String name){
-		TableDesc table =getTableFromMap(name);
-		if(table.getMetaCols().size()==0){
-			table = initTable(name);
+		TableDesc table =getTableFromMap(name);		
+		if(table==null){
+			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
 		}
 		
-		if(table==NOT_EXIST){
-			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
+		if(table.getMetaCols().size()==0){
+			table = initTable(name);
 		}
 		return table;
 	}

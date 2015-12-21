@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.beetl.core.exception.BeetlException;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 
@@ -59,6 +60,9 @@ public class ClasspathLoader implements SQLLoader {
 		
 		//处理完后再次获取
 		ss = sqlSourceMap.get(id);
+		if(ss==null){
+			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql");
+		}
 		return ss;
 	}
 	

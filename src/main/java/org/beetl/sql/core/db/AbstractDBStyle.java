@@ -277,7 +277,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         for(String col:colSet){
             condition.append(appendWhere(cls,table,col));
         }
-        return "1 = 1" + condition.toString();
+        return "1 = 1  \n " + condition.toString();
     }
 
     /***

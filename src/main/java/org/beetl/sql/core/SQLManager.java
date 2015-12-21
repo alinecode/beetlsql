@@ -816,6 +816,28 @@ public class SQLManager {
 		gen.gen();
 	}
 	
+	/** 生成sql语句片段,包含了条件查询，列名列表，更新，插入等语句
+	 * @param cls
+	 */
+	public void genSQLTemplate(Class<?> cls ){
+		String template = null;
+		System.out.println("====生成列名语句，通常用于select ====");
+		template = this.dbStyle.genColumnList(cls);
+		System.out.println(template);
+		System.out.println("====生成更新语句，通常用于update====");
+		template = this.dbStyle.genColAssignPropertyAbsolute(cls);
+		System.out.println(template);
+		System.out.println("====生成条件语句，通常用于where 部分====");
+		template = this.dbStyle.genCondition(cls);
+		System.out.println(template);	
+//		System.out.println("====生成按照条件更新语句，通常用于update====");
+//		template = this.dbStyle.genColAssignProperty(cls);
+//		System.out.println(template);
+		
+		
+		
+	}
+	
 	
 	//===============get/set===============
 

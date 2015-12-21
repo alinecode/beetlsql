@@ -48,7 +48,7 @@ public class SelectBySqlIdTest {
 		user.setAge(11);
 		Map<String, Object> paras = new HashMap<String, Object>();
 		paras.put("user", user);
-		List<User> result = manager.select("user.selectUser", User.class, paras);
+		List<User> result = manager.select("user.selectUser1", User.class, paras);
 		System.out.println(result.get(0));
 	}
 	
@@ -64,7 +64,7 @@ public class SelectBySqlIdTest {
 	    and age = #age#
 	    @}
 	 */
-	@Test
+//	@Test
 	public void selectBySqlId2() {
 		
 		Map<String, Object> paras = new HashMap<String, Object>();
@@ -74,7 +74,7 @@ public class SelectBySqlIdTest {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@Test
+//	@Test
 	public void selectBySqlId3() {
 		
 		Map<String, Object> paras = new HashMap<String, Object>();

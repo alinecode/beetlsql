@@ -19,8 +19,8 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception{
 		MySqlStyle style = new MySqlStyle();
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
-		SQLLoader loader = new ClasspathLoader("/sql");
-		SQLManager sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+//		SQLManager sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
 //		sql.select("appliction.findAllByPage", SysRole.class, new HashMap());
 		
@@ -59,19 +59,23 @@ public class QuickTest {
 //			
 		}
 		
+//		sql.genSQLTemplate(MysqlDBConfig.class);
 		
-		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		User info = new User();
 //		info.setId(2);
 //		info.setUserName("kk");
 //		info.setAge(1);
 //		
 //		sql.updateTemplateById(info);
+//		sql.all(User.class, 1, 2);
+//		sql.select("user.selectAll",User.class, new HashMap(),1,3);
+//		sql.genSQLTemplate(User.class);
+//		Map map = new HashMap();
+//		map.put("id", 2);
+//		map.put("userName", "kkg");
+//		sql.updateTemplateById(User.class, map);
 		
-		Map map = new HashMap();
-		map.put("id", 2);
-		map.put("userName", "kkg");
-		sql.updateTemplateById(User.class, map);
 		
 		
 //		sql.unique(UserInfo.class, 1);
@@ -80,6 +84,7 @@ public class QuickTest {
 //		sql.template(info);
 		
 //		sql.genPojoCodeToConsole("user");
+		sql.genSQLTemplate(User.class);
 //		GenConfig config = new GenConfig();
 //		config.preferBigDecimal(true);
 ////		config.setBaseClass("com.test.User");
