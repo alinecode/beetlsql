@@ -70,7 +70,7 @@ public class QuickTest {
 //		sql.updateTemplateById(info);
 //		sql.all(User.class, 1, 2);
 //		sql.select("user.selectAll",User.class, new HashMap(),1,3);
-//		sql.genSQLTemplate(User.class);
+		sql.genSQLTemplateToConsole("user");
 //		Map map = new HashMap();
 //		map.put("id", 2);
 //		map.put("userName", "kkg");
@@ -84,7 +84,7 @@ public class QuickTest {
 //		sql.template(info);
 		
 //		sql.genPojoCodeToConsole("user");
-		sql.genSQLTemplate(User.class);
+//		sql.genSQLTemplate(User.class);
 //		GenConfig config = new GenConfig();
 //		config.preferBigDecimal(true);
 ////		config.setBaseClass("com.test.User");

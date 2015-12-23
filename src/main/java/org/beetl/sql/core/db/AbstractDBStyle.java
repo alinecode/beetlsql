@@ -236,8 +236,9 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param cls
      * @return
      */
-    public String genColumnList(Class<?> cls){
-        Set<String> colSet = getCols(cls);
+	@Override
+    public String genColumnList(String table){
+        Set<String> colSet = getCols(table);
         if(null == colSet || colSet.isEmpty()){
             return "";
         }
@@ -253,10 +254,10 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param cls
      * @return
      */
-    public Set<String> getCols(Class<?> cls){
-        String tableName = nameConversion.getTableName(cls);
+    public Set<String> getCols(String tableName){
+        
         TableDesc table = this.metadataManager.getTable(tableName);
-        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        ClassDesc classDesc = table.getClassDesc(nameConversion);
         return classDesc.getInCols();
     }
 
@@ -265,17 +266,17 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param cls
      * @return
      */
-    public String genCondition(Class<?> cls){
-        String tableName = nameConversion.getTableName(cls);
+    @Override
+    public String genCondition(String tableName){
         TableDesc table = this.metadataManager.getTable(tableName);
-        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        ClassDesc classDesc = table.getClassDesc(nameConversion);
         Set<String> colSet = classDesc.getInCols();
         if(null == colSet || colSet.isEmpty()){
             return "";
         }
         StringBuilder condition = new StringBuilder();
         for(String col:colSet){
-            condition.append(appendWhere(cls,table,col));
+            condition.append(appendWhere(null,table,col));
         }
         return "1 = 1  \n " + condition.toString();
     }
@@ -285,17 +286,17 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param cls
      * @return
      */
-    public String genColAssignProperty(Class<?> cls){
-        String tableName = nameConversion.getTableName(cls);
+    @Override
+    public String genColAssignProperty(String tableName){
         TableDesc table = this.metadataManager.getTable(tableName);
-        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        ClassDesc classDesc = table.getClassDesc( nameConversion);
         Set<String> colSet = classDesc.getInCols();
         if(null == colSet || colSet.isEmpty()){
             return "";
         }
         StringBuilder sql = new StringBuilder();
         for(String col:colSet){
-            sql.append(appendSetColumn(cls, table, col));
+            sql.append(appendSetColumn(null,table, col));
         }
         return sql.deleteCharAt(sql.length() - 1).toString();
     }
@@ -305,17 +306,17 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param cls
      * @return
      */
-    public String genColAssignPropertyAbsolute(Class<?> cls){
-        String tableName = nameConversion.getTableName(cls);
+    @Override
+    public String genColAssignPropertyAbsolute(String tableName){
         TableDesc table = this.metadataManager.getTable(tableName);
-        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        ClassDesc classDesc = table.getClassDesc( nameConversion);
         Set<String> colSet = classDesc.getInCols();
         if(null == colSet || colSet.isEmpty()){
             return "";
         }
         StringBuilder sql = new StringBuilder();
         for(String col:colSet){
-            sql.append(appendSetColumnAbsolute(cls,table,col));
+            sql.append(appendSetColumnAbsolute(null,table,col));
         }
         return sql.deleteCharAt(sql.length()-1).toString();
     }

@@ -26,6 +26,7 @@ public class SourceGen {
 	String srcPath;
 	GenConfig config;
 	public static String srcHead ="";
+	public static String defaultPkg = "com.test";
 	static String CR = System.getProperty("line.separator");
 	static GroupTemplate gt = null;
 	static {

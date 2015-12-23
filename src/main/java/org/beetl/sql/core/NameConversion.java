@@ -20,6 +20,10 @@ public abstract class NameConversion {
 	public  String getClassName(String tableName){
 		return tableName;
 	}
+	
+	public  String getColName(String attrName){
+		return getColName(null,attrName);
+	}
 	/****
 	 * 根据class和属性名，获取字段名，此字段必须存在表中，否则返回空
 	 * @param c
@@ -34,6 +38,10 @@ public abstract class NameConversion {
 	 * @return
 	 */
 	public abstract String getPropertyName(Class<?> c,String colName);
+	
+	public  String getPropertyName(String colName){
+		return getPropertyName(null,colName);
+	}
 	/***
 	 *  根据class获取表中所有的id
 	 * @return

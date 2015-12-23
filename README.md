@@ -138,7 +138,7 @@ genPojoCodeToConsole 方法可以根据数据库表生成相应的Pojo代码，�
 	
 	}
 	
-上述生成的代码有些瑕疵，比如包名总是com.test，你需要修改成你要的包名，pojo类也没有生成getter，setter方法，你需要用ide自带的工具再次生成一下。
+上述生成的代码有些瑕疵，比如包名总是com.test，类名是小写开头（因为用了DefaultNameConversion)，你需要修改成你要的包名和正常的类名，pojo类也没有生成getter，setter方法，你需要用ide自带的工具再次生成一下。
 
 一旦有了User 类，如果你需要些sql语句，那么genSQLTemplate 将是个很好的辅助方法，可以输出一系列sql语句片段，你同样可以赋值粘贴到代码或者sql模板文件里（user.md),如上例所述，当调用genSQLTemplate的时候，生成如下
 
@@ -713,6 +713,26 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 		selectUser
 		===
 		select * from user #use("condition")#
+
+### 标签功能
+
+beetlsql 提供了trim标签函数，用于删除标签体最后一个逗号，这可以帮助拼接条件sql，如
+
+	updateStatus
+	=== 
+	
+	update user set
+	@trim(){
+	@if(!isEmpty(age){
+	age = #age# ,
+	@} if(!isEmpty(status){
+	status = #status#,
+	@}
+	@}
+	where id = #id#
+	
+trim 标签可以删除 标签体里的最后一个逗号.
+可以参考beetl官网 了解如何开发自定义标签以及注册标签函数
 
 
 ## Debug功能

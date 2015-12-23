@@ -2,6 +2,7 @@ package org.beetl.sql.core.db;
 
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.kit.StringKit;
+import org.beetl.sql.ext.gen.JavaType;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -48,6 +49,22 @@ public class ClassDesc {
 			}
 			
 		}
+	}
+	
+	public ClassDesc(TableDesc table,NameConversion nc){
+		this.table = table ;
+		this.nc = nc ;
+		for(String colName:table.getMetaCols()){
+			String prop = nc.getPropertyName(colName);
+			this.propertys.add(prop);   
+			ColDesc  colDes = table.getColDesc(colName);
+			if(JavaType.isDateType(colDes.sqlType)){
+				dateTypes.add(prop);
+			}
+			this.cols.add(prop);
+		}
+		this.idName = nc.getPropertyName(table.getIdName());
+		
 	}
 	public String getIdName(){
 		return this.idName;

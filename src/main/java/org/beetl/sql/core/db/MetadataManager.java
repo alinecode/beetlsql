@@ -1,15 +1,16 @@
 package org.beetl.sql.core.db;
 
-import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.ConnectionSource;
-import org.beetl.sql.core.SQLManager;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.beetl.sql.core.BeetlSQLException;
+import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.SQLManager;
 
 public class MetadataManager {
 
@@ -57,6 +58,13 @@ public class MetadataManager {
 			table = initTable(name);
 		}
 		return table;
+	}
+	
+	public Set<String> allTable(){
+		if(map==null){
+			this.initMetadata();
+		}
+		return this.map.keySet();
 	}
 	
 	private TableDesc getTableFromMap(String tableName){

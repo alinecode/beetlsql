@@ -37,13 +37,13 @@ public interface DBStyle {
 	public SQLSource genUpdateTemplate(Class<?> cls);
 	public SQLSource genInsert(Class<?> cls);
     //代码片段生成方法
-    public String genColumnList(Class<?> cls);
-    public String genCondition(Class<?> cls);
-    public String genColAssignProperty(Class<?> cls);
-    public String genColAssignPropertyAbsolute(Class<?> cls);
-
-
-    public Set<String> getCols(Class<?> cls);
+    public String genColumnList(String table);
+    public String genCondition(String table);
+    public String genColAssignProperty(String table);
+    public String genColAssignPropertyAbsolute(String table);
+    public Set<String> getCols(String  table);
+    
+    
 	public String getName();
 	
 	public String getPageSQL(String sql);

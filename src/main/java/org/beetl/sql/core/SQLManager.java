@@ -12,16 +12,21 @@ import static org.beetl.sql.core.kit.Constants.UPDATE_TEMPLATE_BY_ID;
 import static org.beetl.sql.core.kit.Constants.classSQL;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.ext.gen.GenConfig;
+import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
 
 /**
@@ -106,10 +111,28 @@ public class SQLManager {
 		return !sqlLoader.isAutoCheck();
 	}
 	
+	/** 不执行数据库操作，仅仅得到一个sql模板执行后的实际得sql和相应的参数
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
 	public SQLResult getSQLResult(String id, Map<String, Object> paras) {
 		SQLScript script = getScript(id);
 		return script.run(paras);
 	}
+	
+	/** 不执行数据库操作，仅仅得到一个sql模板执行后的实际得sql和相应的参数
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
+	public SQLResult getSQLResult(String id, Object paras) {
+		SQLScript script = getScript(id);
+		Map map = new HashMap();
+		map.put("_root",paras);
+		return script.run(map);
+	}
+	
 	public SQLResult getSQLResult(String id, Map<String, Object> paras,String parentId) {
 		SQLScript script = getScript(id);
 		return script.run(paras,parentId);
@@ -767,18 +790,7 @@ public class SQLManager {
 	 * @throws Exception
 	 */
 	public void genPojoCode(String table,String pkg,GenConfig config) throws Exception{
-		String srcPath = null;
-		String userDir = System.getProperty("user.dir");
-		if(userDir==null){
-			throw new NullPointerException("用户目录未找到");
-		}
-		File src = new File(userDir,"src");
-		File javaSrc = new File(src.toString(),"/main/java");
-		if(javaSrc.exists()){
-			srcPath = javaSrc.toString();
-		}else{
-			srcPath = src.toString();
-		}		
+		String srcPath = this.getJavaSRCPath();	
 		SourceGen gen = new SourceGen(this,table,pkg,srcPath,config );
 		gen.gen();
 	}
@@ -789,18 +801,7 @@ public class SQLManager {
 	 * @throws Exception
 	 */
 	public void genPojoCode(String table,String pkg) throws Exception{
-		String srcPath = null;
-		String userDir = System.getProperty("user.dir");
-		if(userDir==null){
-			throw new NullPointerException("用户目录未找到");
-		}
-		File src = new File(userDir,"src");
-		File javaSrc = new File(src.toString(),"/main/java");
-		if(javaSrc.exists()){
-			srcPath = javaSrc.toString();
-		}else{
-			srcPath = src.toString();
-		}		
+		String srcPath = this.getJavaSRCPath();	
 		SourceGen gen = new SourceGen(this,table,pkg,srcPath,new GenConfig() );
 		gen.gen();
 	}
@@ -810,32 +811,70 @@ public class SQLManager {
 	 * @throws Exception
 	 */
 	public void genPojoCodeToConsole(String table) throws Exception{
-		String pkg ="com.test";
+		String pkg =SourceGen.defaultPkg;
 		String srcPath= System.getProperty("user.dir");
 		SourceGen gen = new SourceGen(this,table,pkg,srcPath,new GenConfig().setDisplay(true));
 		gen.gen();
 	}
 	
+	/** 将sql模板文件输出到src下，如果采用的是ClasspathLoader，则使用ClasspathLoader的配置，否则，生成到src的sql代码里
+	 * @param table
+	 */
+	public void genSQLFile(String table) throws Exception{
+		String path = "/sql";
+		if(this.sqlLoader instanceof ClasspathLoader){
+			path = ((ClasspathLoader)sqlLoader).sqlRoot;
+		}
+		String target = this.getJavaSRCPath()+"/"+path+"/"+this.nc.getClassName(table)+".md";
+		FileWriter writer = new FileWriter(new File(target));
+		StringBuilder cols = new StringBuilder();
+//		cols.append("allCols").append("\n\n").append("* 所有列").append("\n\n").append( this.dbStyle.genColumnList(table);)
+		
+	}
+	
+	
+	
 	/** 生成sql语句片段,包含了条件查询，列名列表，更新，插入等语句
 	 * @param cls
 	 */
-	public void genSQLTemplate(Class<?> cls ){
+	public void genSQLTemplateToConsole(String table ){
+	
+		genSQLTemplateToConsole(table,new System.out)
+		
+	}
+	
+	private void genSQLTemplateToConsole(String table,Writer w ) throws IOException{
 		String template = null;
-		System.out.println("====生成列名语句，通常用于select ====");
-		template = this.dbStyle.genColumnList(cls);
-		System.out.println(template);
-		System.out.println("====生成更新语句，通常用于update====");
-		template = this.dbStyle.genColAssignPropertyAbsolute(cls);
-		System.out.println(template);
-		System.out.println("====生成条件语句，通常用于where 部分====");
-		template = this.dbStyle.genCondition(cls);
-		System.out.println(template);	
-//		System.out.println("====生成按照条件更新语句，通常用于update====");
-//		template = this.dbStyle.genColAssignProperty(cls);
-//		System.out.println(template);
+		StringBuilder cols = new StringBuilder();
+		cols.append("allCols").append("\n\n").append("* 列名语句，通常用于select").append("\n\n").append( this.dbStyle.genColumnList(table));
+		cols.append("\n");
 		
+		cols.append("updateSample").append("\n\n").append("* 更新语句，通常用于update").append("\n\n").append( this.dbStyle.genColAssignPropertyAbsolute(table));
+		cols.append("\n");
 		
-		
+		cols.append("updateSample").append("\n\n").append("* 条件语句，通常用于where 部分").append("\n\n").append( this.dbStyle.genCondition(table));
+		cols.append("\n");
+		w.write(cols.toString());
+	}
+	/**
+	 * 
+	 * @param pkg
+	 * @param config
+	 */
+	public void genALL(String pkg,GenConfig config,GenFilter filter) throws Exception{
+		Set<String> tables = this.metaDataManager.allTable();
+		for(String table:tables){
+			if(filter==null||filter.accept(table)){
+				try {
+					//生成代码
+					this.genPojoCode(table, pkg, config);
+					//生成模板文件
+					
+				} catch (Exception e) {
+					throw e;
+				}
+			}
+		}
 	}
 	
 	
@@ -878,6 +917,21 @@ public class SQLManager {
 		return metaDataManager;
 	}
 
+	private String getJavaSRCPath(){
+		String srcPath = null;
+		String userDir = System.getProperty("user.dir");
+		if(userDir==null){
+			throw new NullPointerException("用户目录未找到");
+		}
+		File src = new File(userDir,"src");
+		File javaSrc = new File(src.toString(),"/main/java");
+		if(javaSrc.exists()){
+			srcPath = javaSrc.toString();
+		}else{
+			srcPath = src.toString();
+		}		
+		return srcPath;
+	}
 
 
 }
