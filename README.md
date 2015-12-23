@@ -390,12 +390,19 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 
 * genPojoCodeToConsole(String table), 根据表名生成pojo类，输出到控制台.
+
 * genSQLTemplateToConsole(String table),生成查询，条件，更新sql模板，输出到控制台。
+
 * genPojoCode(String table,String pkg,String srcPath,GenConfig config) 根据表名，包名，生成路径，还有配置，生成pojo代码
+
 * genPojoCode(String table,String pkg,GenConfig config)  同上，生成路径自动是项目src路径，或者src/main/java (如果是maven工程)
+
 * genPojoCode(String table,String pkg),同上，采用默认的生成配置
-＊ genSQLFile(String table), 同上，但输出到工程，成为一个sql模版,sql模版文件的位置在src目录下，或者src／main／resources（如果是maven）工程
-＊ genALL(String pkg,GenConfig config,GenFilter filter)   生成所有的pojo代码和sql模版，**必须当心覆盖你掉你原来写好的类和方法**
+
+* genSQLFile(String table), 同上，但输出到工程，成为一个sql模版,sql模版文件的位置在src目录下，或者src／main／resources（如果是maven）工程.
+
+* genALL(String pkg,GenConfig config,GenFilter filter)   生成所有的pojo代码和sql模版，**必须当心覆盖你掉你原来写好的类和方法**
+
 	
 	sql.genALL("com.test", new GenConfig(), new GenFilter(){
 			public boolean accept(String tableName){
