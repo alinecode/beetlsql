@@ -404,15 +404,15 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * genALL(String pkg,GenConfig config,GenFilter filter)   生成所有的pojo代码和sql模版，**必须当心覆盖你掉你原来写好的类和方法**
 
 	
-	sql.genALL("com.test", new GenConfig(), new GenFilter(){
-			public boolean accept(String tableName){
-				if(tableName.equalsIgnoreCase("user")){
-					return true;
-				}else{
-					return false;
+			sql.genAll("com.test", new GenConfig(), new GenFilter(){
+				public boolean accept(String tableName){
+					if(tableName.equalsIgnoreCase("user")){
+						return true;
+					}else{
+						return false;
+					}
 				}
-			}
-	});
+			});
 	
 第一个参数是pojo类包名，GenConfig是生成pojo的配置，GenFilter 是过滤，返回true的才会生成。如果GenFilter为null，则数据库所有表都要生成
 
