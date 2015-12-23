@@ -163,7 +163,7 @@ public class MetadataManager {
 	private void close(Connection conn){
 		try{
 			if(!ds.isTransaction()){
-				conn.close();
+				if(conn!=null)conn.close();
 			}
 			
 		}catch(Exception ex){

@@ -1,25 +1,21 @@
 package org.beetl.sql.test;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sound.midi.MidiDevice.Info;
-
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.gen.GenConfig;
+import org.beetl.sql.ext.gen.GenFilter;
 
 public class QuickTest {
 
 	public static void main(String[] args) throws Exception{
 		MySqlStyle style = new MySqlStyle();
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
-		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+		SQLLoader loader = new ClasspathLoader("/sql");
 //		SQLManager sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
 //		sql.select("appliction.findAllByPage", SysRole.class, new HashMap());
@@ -71,6 +67,15 @@ public class QuickTest {
 //		sql.all(User.class, 1, 2);
 //		sql.select("user.selectAll",User.class, new HashMap(),1,3);
 		sql.genSQLTemplateToConsole("user");
+//		sql.genALL("com.test", new GenConfig(), new GenFilter(){
+//			public boolean accept(String tableName){
+//				if(tableName.equalsIgnoreCase("user")){
+//					return true;
+//				}else{
+//					return false;
+//				}
+//			}
+//		});
 //		Map map = new HashMap();
 //		map.put("id", 2);
 //		map.put("userName", "kkg");

@@ -19,10 +19,10 @@ public abstract class AbstractDBStyle implements DBStyle {
 	protected static AbstractDBStyle adbs;
 	protected NameConversion nameConversion;
 	protected MetadataManager metadataManager;
-	protected String STATEMENT_START;// 定界符开始符号
-	protected String STATEMENT_END;// 定界符结束符号
-	protected String HOLDER_START;// 站位符开始符号
-	protected String HOLDER_END;// 站位符结束符号
+	public  String STATEMENT_START;// 定界符开始符号
+	public  String STATEMENT_END;// 定界符结束符号
+	public  String HOLDER_START;// 站位符开始符号
+	public String HOLDER_END;// 站位符结束符号
 	protected String lineSeparator = System.getProperty("line.separator", "\n");
 	//翻页从0还是1开始，默认从1开始
 	protected boolean offsetStartZero = false ;
@@ -232,8 +232,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 	}
 
     /****
-     * 根据class生成字段名列表
-     * @param cls
+     * 根据table生成字段名列表
+     * @param table
      * @return
      */
 	@Override
@@ -251,7 +251,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     /***
      * 获取字段集合
-     * @param cls
+     * @param tableName
      * @return
      */
     public Set<String> getCols(String tableName){
@@ -263,7 +263,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     /***
      * 生成通用条件语句 含有Empty判断
-     * @param cls
+     * @param tableName
      * @return
      */
     @Override
@@ -278,12 +278,12 @@ public abstract class AbstractDBStyle implements DBStyle {
         for(String col:colSet){
             condition.append(appendWhere(null,table,col));
         }
-        return "1 = 1  \n " + condition.toString();
+        return "1 = 1  \n" + condition.toString();
     }
 
     /***
      * 生成通用的col=property (示例：age=${age},name=${name}) 含有Empty判断
-     * @param cls
+     * @param tableName
      * @return
      */
     @Override
@@ -303,7 +303,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     /***
      * 生成通用的col=property (示例：age=${age},name=${name}) 没有Empty判断
-     * @param cls
+     * @param tableName
      * @return
      */
     @Override

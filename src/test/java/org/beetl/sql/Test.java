@@ -33,10 +33,10 @@ public class Test {
     public static void testGen(){
         SQLLoader loader = new ClasspathLoader("/sql/mysql");
         SQLManager manager = new SQLManager(getStyle(),loader,ds);
-        System.out.println("genCondition==="+manager.getDbStyle().genCondition(User.class));
-        System.out.println("genColumnList==="+manager.getDbStyle().genColumnList(User.class));
-        System.out.println("genColAssignProperty==="+manager.getDbStyle().genColAssignProperty(User.class));
-        System.out.println("genColAssignPropertyAbsolute==="+manager.getDbStyle().genColAssignPropertyAbsolute(User.class));
+        System.out.println("genCondition==="+manager.getDbStyle().genCondition("user"));
+        System.out.println("genColumnList==="+manager.getDbStyle().genColumnList("user"));
+        System.out.println("genColAssignProperty==="+manager.getDbStyle().genColAssignProperty("user"));
+        System.out.println("genColAssignPropertyAbsolute==="+manager.getDbStyle().genColAssignPropertyAbsolute("user"));
     }
     public static void testManagergenera(){
     	SQLLoader loader = new ClasspathLoader("/sql/mysql");

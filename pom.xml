@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
-    <version>1.4.0-snapshot</version>
+    <version>1.5.0</version>
 
     <name>com.ibeetl:beetlsql</name>
     <url>http://maven.apache.org</url>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetl</artifactId>
-            <version>2.2.5</version>
+            <version>2.2.8</version>
         </dependency>
 
         <!-- junit -->

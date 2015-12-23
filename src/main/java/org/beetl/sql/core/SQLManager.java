@@ -14,6 +14,7 @@ import static org.beetl.sql.core.kit.Constants.classSQL;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.beetl.core.Configuration;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
@@ -825,36 +827,47 @@ public class SQLManager {
 		if(this.sqlLoader instanceof ClasspathLoader){
 			path = ((ClasspathLoader)sqlLoader).sqlRoot;
 		}
-		String target = this.getJavaSRCPath()+"/"+path+"/"+this.nc.getClassName(table)+".md";
+		String target = this.getJavaResourcePath()+"/"+path+"/"+this.nc.getClassName(table)+".md";
 		FileWriter writer = new FileWriter(new File(target));
-		StringBuilder cols = new StringBuilder();
-//		cols.append("allCols").append("\n\n").append("* 所有列").append("\n\n").append( this.dbStyle.genColumnList(table);)
-		
+		genSQLTemplate(table,writer);
+		writer.close();
+		System.out.println("gen \""+table +"\" success at "+target);
 	}
 	
 	
 	
 	/** 生成sql语句片段,包含了条件查询，列名列表，更新，插入等语句
-	 * @param cls
+	 * @param table
 	 */
-	public void genSQLTemplateToConsole(String table ){
+	public void genSQLTemplateToConsole(String table ) throws Exception{
 	
-		genSQLTemplateToConsole(table,new System.out)
+		genSQLTemplate(table,new OutputStreamWriter( System.out));
 		
 	}
 	
-	private void genSQLTemplateToConsole(String table,Writer w ) throws IOException{
+	private void genSQLTemplate(String table,Writer w ) throws IOException{
 		String template = null;
+		Configuration cf =beetl.getGroupTemplate().getConf();
+		
+		String hs  = cf.getPlaceholderStart();
+		String he = cf.getPlaceholderEnd();
 		StringBuilder cols = new StringBuilder();
-		cols.append("allCols").append("\n\n").append("* 列名语句，通常用于select").append("\n\n").append( this.dbStyle.genColumnList(table));
+		String sql = "select "+hs+"use(\"cols\")"+he+ " from "+table+" where "+hs+"use(\"condition\")"+he;
+		cols.append("sample").append("\n===\n").append("* 注释").append("\n\n\t").append( sql);
 		cols.append("\n");
 		
-		cols.append("updateSample").append("\n\n").append("* 更新语句，通常用于update").append("\n\n").append( this.dbStyle.genColAssignPropertyAbsolute(table));
+		
+		cols.append("\ncols").append("\n===\n").append("").append("\n\t").append( this.dbStyle.genColumnList(table));
 		cols.append("\n");
 		
-		cols.append("updateSample").append("\n\n").append("* 条件语句，通常用于where 部分").append("\n\n").append( this.dbStyle.genCondition(table));
+		cols.append("\nupdateSample").append("\n===\n").append("").append("\n\t").append( this.dbStyle.genColAssignPropertyAbsolute(table));
+		cols.append("\n");
+		String condition = this.dbStyle.genCondition(table);
+		condition = condition.replaceAll("\\n", "\n\t");
+		cols.append("\ncondition").append("\n===\n").append("").append("\n\t").append(condition );
 		cols.append("\n");
 		w.write(cols.toString());
+		w.flush();
 	}
 	/**
 	 * 
@@ -863,13 +876,15 @@ public class SQLManager {
 	 */
 	public void genALL(String pkg,GenConfig config,GenFilter filter) throws Exception{
 		Set<String> tables = this.metaDataManager.allTable();
+		
 		for(String table:tables){
+			table = metaDataManager.getTable(table).getMetaName();
 			if(filter==null||filter.accept(table)){
 				try {
 					//生成代码
 					this.genPojoCode(table, pkg, config);
 					//生成模板文件
-					
+					this.genSQLFile(table);
 				} catch (Exception e) {
 					throw e;
 				}
@@ -927,6 +942,22 @@ public class SQLManager {
 		File javaSrc = new File(src.toString(),"/main/java");
 		if(javaSrc.exists()){
 			srcPath = javaSrc.toString();
+		}else{
+			srcPath = src.toString();
+		}		
+		return srcPath;
+	}
+	
+	private String getJavaResourcePath(){
+		String srcPath = null;
+		String userDir = System.getProperty("user.dir");
+		if(userDir==null){
+			throw new NullPointerException("用户目录未找到");
+		}
+		File src = new File(userDir,"src");
+		File resSrc = new File(src.toString(),"/main/resources");
+		if(resSrc.exists()){
+			srcPath = resSrc.toString();
 		}else{
 			srcPath = src.toString();
 		}		

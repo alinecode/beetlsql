@@ -4,7 +4,7 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 1.4.0 (120K), 另外还需要beetl 包
+* 当前版本 1.5.0 (120K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -18,7 +18,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 * 首个内置支持主从数据库支持的开源工具，通过扩展，可以支持更复杂的分库分表逻辑
 * 支持跨数据库平台，开发者所需工作减少到最小
-* 支持代码生成pojo类，减少代码编写工作量
+* 可以针对单个表代码生成pojo类和sql模版，甚至是整个数据库。能减少代码编写工作量
 
 # 5 分钟例子
 
@@ -115,7 +115,7 @@ User类并非需要自己写，好的实践是可以在项目中专门写个类�
 	public static void main(String[] args){
 		SqlManager sqlManager  = ......
 		sqlManager.genPojoCodeToConsole("user");
-		//sqlManager.genSQLTemplate(User.class);
+		sqlManager.genSQLTemplateToConsole("user");
 	}
 	
 genPojoCodeToConsole 方法可以根据数据库表生成相应的Pojo代码，输出到控制台，开发者可以根据这些代码创建相应的类，如上例子，控制台将输出
@@ -140,13 +140,23 @@ genPojoCodeToConsole 方法可以根据数据库表生成相应的Pojo代码，�
 	
 上述生成的代码有些瑕疵，比如包名总是com.test，类名是小写开头（因为用了DefaultNameConversion)，你需要修改成你要的包名和正常的类名，pojo类也没有生成getter，setter方法，你需要用ide自带的工具再次生成一下。
 
-一旦有了User 类，如果你需要些sql语句，那么genSQLTemplate 将是个很好的辅助方法，可以输出一系列sql语句片段，你同样可以赋值粘贴到代码或者sql模板文件里（user.md),如上例所述，当调用genSQLTemplate的时候，生成如下
+一旦有了User 类，如果你需要些sql语句，那么genSQLTemplateToConsole 将是个很好的辅助方法，可以输出一系列sql语句片段，你同样可以赋值粘贴到代码或者sql模板文件里（user.md),如上例所述，当调用genSQLTemplateToConsole的时候，生成如下
 
-	===生成列名语句，通常用于select ====
+	sample
+	===
+	* 注释
+	select #use("cols")# from user where #use("condition")#
+
+	cols
+	===
 	roleId,name,id,userName,age
-	====生成更新语句，通常用于update====
+
+	updateSample
+	===
 	`roleId`=#roleId#,`name`=#name#,`id`=#id#,`userName`=#userName#,`age`=#age#
-	====生成条件语句，通常用于where 部分====
+
+	condition
+	===
 	1 = 1  
 	@if(!isEmpty(roleId)){
 	 and `roleId`=#roleId#
@@ -154,18 +164,9 @@ genPojoCodeToConsole 方法可以根据数据库表生成相应的Pojo代码，�
 	@if(!isEmpty(name)){
 	 and `name`=#name#
 	@}
-	@if(!isEmpty(id)){
-	 and `id`=#id#
-	@}
-	@if(!isEmpty(userName)){
-	 and `userName`=#userName#
-	@}
-	@if(!isEmpty(age)){
-	 and `age`=#age#
-	@}
-
-
-beetlsql生成了用于查询，更新，条件的sql片段，你可以按照你的需要copy到sql模板文件里
+	省略其他条件
+	
+beetlsql生成了用于查询，更新，条件的sql片段和一个简单例子。你可以按照你的需要copy到sql模板文件里.实际上，如果你熟悉gen方法，你可以直接gen代码和sql到你的工程里，甚至是整个数据库都可以调用genAll来一次生成
 
 # BeetlSQL 说明
 
@@ -389,53 +390,24 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 
 * genPojoCodeToConsole(String table), 根据表名生成pojo类，输出到控制台.
-	
-	package com.test;
-	import java.math.*;
-	import java.sql.*;
-	/*
-	* 
-	* gen by beetsql 2015-12-21
-	*/
-	public class user  {
-		//用户角色
-		private Integer roleId ;
-		private String name ;
-		private Integer id ;
-		//用户名称
-		private String userName ;
-		private Integer age ;
-	
-	}
-	
+* genSQLTemplateToConsole(String table),生成查询，条件，更新sql模板，输出到控制台。
 * genPojoCode(String table,String pkg,String srcPath,GenConfig config) 根据表名，包名，生成路径，还有配置，生成pojo代码
 * genPojoCode(String table,String pkg,GenConfig config)  同上，生成路径自动是项目src路径，或者src/main/java (如果是maven工程)
 * genPojoCode(String table,String pkg),同上，采用默认的生成配置
-* genSQLTemplate(Class c),生成查询，条件，更新sql模板，输出到控制台，如
-
-	====生成列名语句，通常用于select ====
-	roleId,name,id,userName,age
-	====生成更新语句，通常用于update====
-	`roleId`=#roleId#,`name`=#name#,`id`=#id#,`userName`=#userName#,`age`=#age#
-	====生成条件语句，通常用于where 部分====
-		1 = 1  
-		@if(!isEmpty(roleId)){
-		 and `roleId`=#roleId#
-		@}
-		@if(!isEmpty(name)){
-		 and `name`=#name#
-		@}
-		@if(!isEmpty(id)){
-		 and `id`=#id#
-		@}
-		@if(!isEmpty(userName)){
-		 and `userName`=#userName#
-		@}
-		@if(!isEmpty(age)){
-		 and `age`=#age#
-		@}
-
-
+＊ genSQLFile(String table), 同上，但输出到工程，成为一个sql模版,sql模版文件的位置在src目录下，或者src／main／resources（如果是maven）工程
+＊ genALL(String pkg,GenConfig config,GenFilter filter)   生成所有的pojo代码和sql模版，**必须当心覆盖你掉你原来写好的类和方法**
+	
+	sql.genALL("com.test", new GenConfig(), new GenFilter(){
+			public boolean accept(String tableName){
+				if(tableName.equalsIgnoreCase("user")){
+					return true;
+				}else{
+					return false;
+				}
+			}
+	});
+	
+第一个参数是pojo类包名，GenConfig是生成pojo的配置，GenFilter 是过滤，返回true的才会生成。如果GenFilter为null，则数据库所有表都要生成
 
 ## BeetlSQL Annotation
 
