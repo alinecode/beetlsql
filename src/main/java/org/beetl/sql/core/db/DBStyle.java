@@ -1,11 +1,13 @@
 package org.beetl.sql.core.db;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.engine.Beetl;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * 用来描述数据库差异，主键生成，sql语句，翻页等
  * @author xiandafu
@@ -34,7 +36,14 @@ public interface DBStyle {
 	public SQLSource genUpdateById(Class<?> cls);
 	public SQLSource genUpdateTemplate(Class<?> cls);
 	public SQLSource genInsert(Class<?> cls);
-	
+    //代码片段生成方法
+    public String genColumnList(String table);
+    public String genCondition(String table);
+    public String genColAssignProperty(String table);
+    public String genColAssignPropertyAbsolute(String table);
+    public Set<String> getCols(String  table);
+    
+    
 	public String getName();
 	
 	public String getPageSQL(String sql);

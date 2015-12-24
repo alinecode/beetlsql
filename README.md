@@ -4,7 +4,7 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 1.2.0 (108K), 另外还需要beetl 包
+* 当前版本 1.5.0 (120K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -18,7 +18,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 * 首个内置支持主从数据库支持的开源工具，通过扩展，可以支持更复杂的分库分表逻辑
 * 支持跨数据库平台，开发者所需工作减少到最小
-* 支持代码生成pojo类，减少代码编写工作量
+* 可以针对单个表代码生成pojo类和sql模版，甚至是整个数据库。能减少代码编写工作量
 
 # 5 分钟例子
 
@@ -26,46 +26,29 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 为了快速尝试BeetlSQL，需要准备一个Mysql数据库，然后执行如下sql脚本
 
-	DROP TABLE IF EXISTS `user`;
 	CREATE TABLE `user` (
 	  `id` int(11) NOT NULL,
 	  `name` varchar(64) DEFAULT NULL,
 	  `age` int(4) DEFAULT NULL,
-	  `userName` varchar(64) DEFAULT NULL,
-	  PRIMARY KEY (`id`)
+	  `userName` varchar(64) DEFAULT NULL COMMENT '用户名称',
+	  `roleId` int(11) DEFAULT NULL COMMENT '用户角色',
+	  PRIMARY KEY (`id`),
+	  KEY `user_age_index` (`age`) USING BTREE
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-编写一个Pojo类，与数据库表对应（或者可以通过beetlsql生成此类）
 
-	public class User {
-		Integer id;
-		String name;
-		Integer age;
-		public String getName() {
-			return name;
+
+编写一个Pojo类，与数据库表对应（或者可以通过beetlsql生成此类，参考一下节）
+
+	public class user  {
+			private Integer roleId ;
+			private String name ;
+			private Integer id ;
+			private String userName ;
+			private Integer age ;
+			// getter,setter方法 忽略
+		
 		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public Integer getId() {
-			return id;
-		}
-
-		public void setId(Integer id) {
-			this.id = id;
-		}
-
-		public Integer getAge() {
-			return age;
-		}
-
-		public void setAge(Integer age) {
-			this.age = age;
-		}
-
-	}
 
 ## 代码例子
 
@@ -89,9 +72,9 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	sqlManager.insert(user);
 	//使用内置sql查询用户
 	int id = 1;
-	user = sqlManager.unque(User.class,id);
+	user = sqlManager.unique(User.class,id);
 
-	//使用user.md 文件里的select语句，参考下一节
+	//使用user.md 文件里的select语句，参考下一节。实际上，此处可以用template 方法而不需要写sql，下面三行代码仅仅是演示如何操作sql模板语句
 	User query = new User();
 	query.setName("xiandafu");
 	List<User> list = sqlManager.select("user.select",User.class,query)
@@ -100,7 +83,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 ## SQL例子
 
-为了能执行user.select,需要在classpath里建立一个user.md 文件，内容如下
+为了能执行user.select,需要在classpath里建立一个sql目录（ClasspathLoader 配置成sql目录，参考上一节ClasspathLoader初始化的代码）以及下面的user.md 文件，内容如下
 
 	select
 	===
@@ -115,6 +98,8 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 关于如何写sql模板，会稍后章节说明，如下是一些简单说明。
 
+*  采用md格式，===上面是sql语句在本文件里的唯一标示，下面则是sql语句。
+
 * @ 和回车符号是定界符号，可以在里面写beetl语句。
 
 * "#" 是站位符号，生成sql语句得时候，将输出？，如果你想输出表达式值，需要用text函数，或者任何以db开头的函数，引擎则认为是直接输出文本。
@@ -122,6 +107,66 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * isEmpty是beetl的一个函数，用来判断变量是否为空或者是否不存在.
 
 sql模板采用beetl原因是因为beetl 语法类似js，且对模板渲染做了特定优化，相比于mybatis，更加容易掌握和功能强大，可读性更好，也容易在java和数据库之间迁移sql语句
+
+## 代码&sql生成
+
+User类并非需要自己写，好的实践是可以在项目中专门写个类用来辅助生成pojo和sql片段，代码如下
+
+	public static void main(String[] args){
+		SqlManager sqlManager  = ......
+		sqlManager.genPojoCodeToConsole("user");
+		sqlManager.genSQLTemplateToConsole("user");
+	}
+	
+genPojoCodeToConsole 方法可以根据数据库表生成相应的Pojo代码，输出到控制台，开发者可以根据这些代码创建相应的类，如上例子，控制台将输出
+
+	package com.test;
+	import java.math.*;
+	import java.sql.*;
+	/*
+	* 
+	* gen by beetsql 2015-12-21
+	*/
+	public class user  {
+		//用户角色
+		private Integer roleId ;
+		private String name ;
+		private Integer id ;
+		//用户名称
+		private String userName ;
+		private Integer age ;
+	
+	}
+	
+上述生成的代码有些瑕疵，比如包名总是com.test，类名是小写开头（因为用了DefaultNameConversion)，你需要修改成你要的包名和正常的类名，pojo类也没有生成getter，setter方法，你需要用ide自带的工具再次生成一下。
+
+一旦有了User 类，如果你需要些sql语句，那么genSQLTemplateToConsole 将是个很好的辅助方法，可以输出一系列sql语句片段，你同样可以赋值粘贴到代码或者sql模板文件里（user.md),如上例所述，当调用genSQLTemplateToConsole的时候，生成如下
+
+	sample
+	===
+	* 注释
+	select #use("cols")# from user where #use("condition")#
+
+	cols
+	===
+	roleId,name,id,userName,age
+
+	updateSample
+	===
+	`roleId`=#roleId#,`name`=#name#,`id`=#id#,`userName`=#userName#,`age`=#age#
+
+	condition
+	===
+	1 = 1  
+	@if(!isEmpty(roleId)){
+	 and `roleId`=#roleId#
+	@}
+	@if(!isEmpty(name)){
+	 and `name`=#name#
+	@}
+	省略其他条件
+	
+beetlsql生成了用于查询，更新，条件的sql片段和一个简单例子。你可以按照你的需要copy到sql模板文件里.实际上，如果你熟悉gen方法，你可以直接gen代码和sql到你的工程里，甚至是整个数据库都可以调用genAll来一次生成
 
 # BeetlSQL 说明
 
@@ -150,6 +195,11 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 
 ### Spring集成
+	
+  	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
 	<bean id="sqlManager" class="org.beetl.sql.ext.SpringBeetlSql">
 		<property name="cs" >
@@ -178,7 +228,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * cs: 指定ConnectionSource，可以用系统提供的DefaultConnectionSource，支持按照CRUD决定主从。例子里只有一个master库
 
-* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle
+* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle，SQLiteStyle
 
 * sqlLoader: sql语句加载来源
 
@@ -271,6 +321,16 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public <T> List<T> template(T t,RowMapper mapper,int start,int size) 翻页，并增加额外的映射
 * public <T> long templateCount(T t) 获取符合条件的个数
 
+翻页的start，系统默认位从1开始，为了兼容各个数据库系统，会自动翻译成数据库习俗，比如start为1，会认为mysql，postgres从0开始（从start－1开始），oralce从1开始（start－0）开始。
+
+然而，如果你只用特定数据库，可以按照特定数据库习俗来，比如，你只用mysql，start为0代表起始纪录，需要配置
+
+	OFFSET_START_ZERO = true 
+	
+这样，翻页参数start传入0即可。
+
+注意:根据模板查询并不包含时间字段
+
 **通过sqlid查询**,sql语句在md文件里
 
 * public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras) 根据sqlid来查询，参数是个map
@@ -281,8 +341,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public <T> T selectSingle(String id,Map<String, Object> paras, Class<T> target)  同上，参数是map
 * public Integer  intValue(String id,Object paras) 查询结果映射成Integer，输入是objct
-* public Integer  intValue(String id,Map paras) 查询结果映射成Integer，输入是map，
-其他还有 longValue，bigDecimalValue
+* public Integer  intValue(String id,Map paras) 查询结果映射成Integer，输入是map，其他还有 longValue，bigDecimalValue
 
 ### 更新API
 
@@ -290,7 +349,9 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public void insert(Class<?> clazz,Object paras)  插入paras到paras关联的表
 * public void insert(Class<?> clazz,Object paras,KeyHolder holder)，插入paras到paras关联的表，如果需要主键，可以通过holder的getKey来获取
-* public int updateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键
+* public int updateById(Object obj) 根据主键更新，主键通过annotation表示，如果没有，则认为属性id是主键，所有值参与更新
+* public int updateTemplateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新
+* public int updateTemplateById(Class<?> clazz，Map paras) 根据主键更新，组件通过clazz的annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新。
 * public int[] updateByIdBatch(List<?> list) 批量更新
 
 **通过sqlid更新**
@@ -317,20 +378,43 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
 *
+
 ### 其他
+
 **强制使用主或者从**
 
 * public void useMaster(DBRunner f)  DBRunner里的beetlsql调用将使用主数据库库
 * public void useSlave(DBRunner f) DBRunner里的beetlsql调用将使用从数据库库
 
-**生成Pojo代码**
+**生成Pojo代码和SQ片段**
 
-* genPojoCodeToConsole(String table), 根据表名生成pojo类，输出到控制台
+
+* genPojoCodeToConsole(String table), 根据表名生成pojo类，输出到控制台.
+
+* genSQLTemplateToConsole(String table),生成查询，条件，更新sql模板，输出到控制台。
+
 * genPojoCode(String table,String pkg,String srcPath,GenConfig config) 根据表名，包名，生成路径，还有配置，生成pojo代码
+
 * genPojoCode(String table,String pkg,GenConfig config)  同上，生成路径自动是项目src路径，或者src/main/java (如果是maven工程)
+
 * genPojoCode(String table,String pkg),同上，采用默认的生成配置
 
+* genSQLFile(String table), 同上，但输出到工程，成为一个sql模版,sql模版文件的位置在src目录下，或者src／main／resources（如果是maven）工程.
 
+* genALL(String pkg,GenConfig config,GenFilter filter)   生成所有的pojo代码和sql模版，**必须当心覆盖你掉你原来写好的类和方法**
+
+	
+			sql.genAll("com.test", new GenConfig(), new GenFilter(){
+				public boolean accept(String tableName){
+					if(tableName.equalsIgnoreCase("user")){
+						return true;
+					}else{
+						return false;
+					}
+				}
+			});
+	
+第一个参数是pojo类包名，GenConfig是生成pojo的配置，GenFilter 是过滤，返回true的才会生成。如果GenFilter为null，则数据库所有表都要生成
 
 ## BeetlSQL Annotation
 
@@ -390,7 +474,7 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
 ## Markdown方式管理
 ---
-BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，如User对象放到user.md 里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是
+BeetlSQL集中管理SQL语句，SQL 可以按照业务逻辑放到一个文件里，文件名的扩展名是md或者sql。如User对象放到user.md 或者 user.sql里，文件可以按照模块逻辑放到一个目录下。文件格式抛弃了XML格式，采用了Markdown，原因是
 
 * XML格式过于复杂，书写不方便
 * XML 格式有保留符号，写SQL的时候也不方便，如常用的< 符号 必须转义
@@ -609,6 +693,26 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 		===
 		select * from user #use("condition")#
 
+### 标签功能
+
+beetlsql 提供了trim标签函数，用于删除标签体最后一个逗号，这可以帮助拼接条件sql，如
+
+	updateStatus
+	=== 
+	
+	update user set
+	@trim(){
+	@if(!isEmpty(age){
+	age = #age# ,
+	@} if(!isEmpty(status){
+	status = #status#,
+	@}
+	@}
+	where id = #id#
+	
+trim 标签可以删除 标签体里的最后一个逗号.
+可以参考beetl官网 了解如何开发自定义标签以及注册标签函数
+
 
 ## Debug功能
 
@@ -780,6 +884,24 @@ config 类用来配置生成喜爱,目前支持生成pojo是否继承某个基�
 
 	    /* 数据库注释 */
 	    private String userName;
+	}
+也可以自己设定输出模版，通过GenConfig.initTemplate(String classPath),指定模版文件在classpath 的路径，或者直接设置一个字符串模版
+GenConfig.initStringTemplate. 系统默认的模版如下：
+
+	package ${package};
+	${imports}
+	/*
+	* ${comment}
+	* gen by beetsql ${date(),"yyyy-MM-dd"}
+	*/
+	public class ${className} ${!isEmpty(ext)?"extends "+ext} {
+		@for(attr in attrs){
+		@		if(!isEmpty(attr.comment)){
+		//${attr.comment}
+		@		}
+		private ${attr.type} ${attr.name} ;
+		@}
+	
 	}
 
 

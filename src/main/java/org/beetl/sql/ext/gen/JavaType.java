@@ -55,6 +55,14 @@ public class JavaType {
 		
 	}
 	
+	public static boolean isDateType(Integer sqlType){
+		//日期类型有特殊操作
+		if(sqlType==Types.DATE||sqlType==Types.TIME||sqlType==Types.TIME_WITH_TIMEZONE||sqlType==Types.TIMESTAMP||sqlType==Types.TIMESTAMP_WITH_TIMEZONE){
+			return  true ;
+		}else{
+			return false ;
+		}
+	}
 	public static String getType(Integer sqlType,Integer size,Integer digit){
 		String type  = mapping.get(sqlType);
 		if(type.equals(SPECIAL)){

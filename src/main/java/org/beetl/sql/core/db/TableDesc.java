@@ -113,6 +113,15 @@ public class TableDesc{
 		return classDesc;
 	}
 	
+	/** 根据table得到一个对应的class描述
+	 * @param nc
+	 * @return
+	 */
+	public ClassDesc getClassDesc(NameConversion nc){
+		ClassDesc c = new ClassDesc(this,nc);
+		return c ;
+	}
+	
 	
 
 	

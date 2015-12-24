@@ -22,7 +22,7 @@ public class MySqlStyle extends AbstractDBStyle {
 
 	@Override
 	public void initPagePara(Map<String, Object> param,long start,long size) {
-		param.put(DBStyle.OFFSET,start-1);
+		param.put(DBStyle.OFFSET,start-(this.offsetStartZero?0:1));
 		param.put(DBStyle.PAGE_SIZE,size);
 	}
 

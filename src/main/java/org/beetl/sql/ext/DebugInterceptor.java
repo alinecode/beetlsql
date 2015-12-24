@@ -25,7 +25,25 @@ public class DebugInterceptor implements Interceptor {
 		if(this.isDebugEanble(sqlId)){
 			ctx.put("debug.time", System.currentTimeMillis());
 		}
+	
 		print(sqlId,ctx.getSql(),ctx.getParas());
+		RuntimeException ex = new  RuntimeException();
+		StackTraceElement[] traces = ex.getStackTrace();
+		boolean found = false ;
+		for(StackTraceElement tr:traces){
+			if(!found&&tr.getClassName().indexOf("SQLManager")!=-1){
+				found = true ;
+			}
+			
+			if(found&&tr.getClassName().indexOf("SQLManager")==-1){
+					//found 
+				String className = tr.getClassName();
+				String mehodName = tr.getMethodName();
+				int line = tr.getLineNumber();
+				println("location:"+className+"."+mehodName+" "+line);
+			}
+		}
+		
 		return ;
 		
 
@@ -53,7 +71,7 @@ public class DebugInterceptor implements Interceptor {
 			sb.append("成功返回[").append(ctx.getResult()).append("]");
 		}
 		sb.append("\n");
-		System.out.println(sb.toString());
+		println(sb.toString());
 
 	}
 	
@@ -63,7 +81,7 @@ public class DebugInterceptor implements Interceptor {
 			.append("sqlId : "+sqlId).append("\n")
 			.append("sql ： " + sql)
 			.append("\nparas : " + paras);
-		System.out.println(sb.toString());
+		println(sb.toString());
 	}
 	
 	protected boolean isDebugEanble(String sqlId){
@@ -75,6 +93,10 @@ public class DebugInterceptor implements Interceptor {
 		}
 		
 		return false;
+	}
+	
+	protected void println(String str){
+		System.out.println(str);
 	}
 
 }

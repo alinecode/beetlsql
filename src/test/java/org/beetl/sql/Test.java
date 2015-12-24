@@ -1,16 +1,5 @@
 package org.beetl.sql;
 
-import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
-import static org.beetl.sql.core.kit.Constants.INSERT;
-import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
-import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
-import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
-import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
-import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
@@ -18,6 +7,11 @@ import org.beetl.sql.core.SQLScript;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.pojo.User;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.beetl.sql.core.kit.Constants.*;
 
 /** 简单快速的功能测试类
  * @author xiandafu
@@ -30,13 +24,20 @@ public class Test {
 //		testIf();
 //    		testManager();
 //    	testManagergenera();
-    	testUse();
+//    	testUse();
 //    	testNameConve();
-    	String a = "  \nabc  \ncc\n\n".trim();
-    	System.out.println(a);
-    	
+//    	String a = "  \nabc  \ncc\n\n".trim();
+//    	System.out.println(a);
+        testGen();
 	}
-   
+    public static void testGen(){
+        SQLLoader loader = new ClasspathLoader("/sql/mysql");
+        SQLManager manager = new SQLManager(getStyle(),loader,ds);
+        System.out.println("genCondition==="+manager.getDbStyle().genCondition("user"));
+        System.out.println("genColumnList==="+manager.getDbStyle().genColumnList("user"));
+        System.out.println("genColAssignProperty==="+manager.getDbStyle().genColAssignProperty("user"));
+        System.out.println("genColAssignPropertyAbsolute==="+manager.getDbStyle().genColAssignPropertyAbsolute("user"));
+    }
     public static void testManagergenera(){
     	SQLLoader loader = new ClasspathLoader("/sql/mysql");
 		SQLManager manager = new SQLManager(getStyle(),loader,ds);

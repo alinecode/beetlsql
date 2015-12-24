@@ -5,6 +5,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.BeetlSQLException;
@@ -15,7 +16,7 @@ public class MetadataManager {
 
 	private ConnectionSource ds = null;
 	Map<String,TableDesc> map = null;
-	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
+//	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
 	SQLManager sm = null;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
@@ -48,15 +49,22 @@ public class MetadataManager {
 
 
 	public TableDesc getTable(String name){
-		TableDesc table =getTableFromMap(name);
+		TableDesc table =getTableFromMap(name);		
+		if(table==null){
+			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
+		}
+		
 		if(table.getMetaCols().size()==0){
 			table = initTable(name);
 		}
-		
-		if(table==NOT_EXIST){
-			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
-		}
 		return table;
+	}
+	
+	public Set<String> allTable(){
+		if(map==null){
+			this.initMetadata();
+		}
+		return this.map.keySet();
 	}
 	
 	private TableDesc getTableFromMap(String tableName){
@@ -102,7 +110,12 @@ public class MetadataManager {
 					String colName = rs.getString("COLUMN_NAME");
 					Integer sqlType = rs.getInt("DATA_TYPE");
 					Integer size = rs.getInt("COLUMN_SIZE");
-					Integer digit = (Integer)rs.getObject("DECIMAL_DIGITS");
+					Object o = rs.getObject("DECIMAL_DIGITS");
+					Integer digit = null;
+					if(o!=null){
+						digit = ((Number)o).intValue();
+					}
+					
 					String remark = rs.getString("REMARKS");
 					ColDesc col = new ColDesc(colName,sqlType,size,digit,remark);
 					desc.addCols(col);
@@ -150,16 +163,12 @@ public class MetadataManager {
 	private void close(Connection conn){
 		try{
 			if(!ds.isTransaction()){
-				conn.close();
+				if(conn!=null)conn.close();
 			}
 			
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		
-	}
-	
-	public static void main(String[] args){
 		
 	}
 }

@@ -31,9 +31,10 @@ public class SelectAllTest {
 	public void before(){
 		loader = new ClasspathLoader("/sql/mysql");
 		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
+//		manager.seti
 	}
 
-	@Test
+	//@Test
 	public void selectAll(){
 		
 		List<User> userList = manager.all(User.class);
@@ -54,7 +55,7 @@ public class SelectAllTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void selectAll_RowMapper(){
 		
 		List<User> userList = manager.all(User.class, new RowMapper<User>() {
@@ -74,7 +75,7 @@ public class SelectAllTest {
 	}
 	
 	
-	@Test
+//	@Test
 	public void selectLike(){
 		
 		List users = manager.execute("select * from user where name like #'%'+name+'%'#",
@@ -83,7 +84,7 @@ public class SelectAllTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void selectUse(){
 		User para = new User();
 		para.setName("name1");

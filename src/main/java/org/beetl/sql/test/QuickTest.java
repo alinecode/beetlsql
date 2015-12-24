@@ -1,16 +1,14 @@
 package org.beetl.sql.test;
 
-import java.util.HashMap;
-
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.gen.GenConfig;
+import org.beetl.sql.ext.gen.GenFilter;
 
 public class QuickTest {
 
@@ -18,7 +16,7 @@ public class QuickTest {
 		MySqlStyle style = new MySqlStyle();
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/sql");
-		SQLManager sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
+//		SQLManager sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
 //		sql.select("appliction.findAllByPage", SysRole.class, new HashMap());
 		
@@ -51,18 +49,51 @@ public class QuickTest {
 		
 		}
 		
+		{
+//			List<SysRole> list = sql.all(SysRole.class, 1, 9);
+//			System.out.println(list.size());
+//			
+		}
 		
-//		sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+//		sql.genSQLTemplate(MysqlDBConfig.class);
+		
+		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+//		User info = new User();
+//		info.setId(2);
+//		info.setUserName("kk");
+//		info.setAge(1);
+//		
+//		sql.updateTemplateById(info);
+//		sql.all(User.class, 1, 2);
+//		sql.select("user.selectAll",User.class, new HashMap(),1,3);
+		sql.genSQLTemplateToConsole("user");
+//		sql.genALL("com.test", new GenConfig(), new GenFilter(){
+//			public boolean accept(String tableName){
+//				if(tableName.equalsIgnoreCase("user")){
+//					return true;
+//				}else{
+//					return false;
+//				}
+//			}
+//		});
+//		Map map = new HashMap();
+//		map.put("id", 2);
+//		map.put("userName", "kkg");
+//		sql.updateTemplateById(User.class, map);
+		
+		
+		
 //		sql.unique(UserInfo.class, 1);
 //		UserInfo info = new UserInfo();
 //		info.setUserName("name");
 //		sql.template(info);
 		
-//		sql.genPojoCodeToConsole("sys_parametr_info");
-		GenConfig config = new GenConfig();
-		config.preferBigDecimal(true);
-//		config.setBaseClass("com.test.User");
-		sql.genPojoCode("sys_role","com.test",config);
+//		sql.genPojoCodeToConsole("user");
+//		sql.genSQLTemplate(User.class);
+//		GenConfig config = new GenConfig();
+//		config.preferBigDecimal(true);
+////		config.setBaseClass("com.test.User");
+//		sql.genPojoCode("sys_role","com.test",config);
 
 	}
 

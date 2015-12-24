@@ -69,7 +69,12 @@ public class DefaultConnectionSource implements ConnectionSource{
 	
 	protected Connection doGetConnectoin(DataSource ds){
 		try {
-			return ds.getConnection();
+			if(DSTransactionManager.inTrans()){
+				return DSTransactionManager.getCurrentThreadConnection(ds);
+			}else{
+				return ds.getConnection();
+			}
+			
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_CONNECTION,e);
 		}
@@ -89,8 +94,7 @@ public class DefaultConnectionSource implements ConnectionSource{
 	
 	@Override
 	public boolean isTransaction() {
-		// TODO Auto-generated method stub
-		return false;
+		return DSTransactionManager.inTrans();
 	}
 	@Override
 	public Connection getSlave() {

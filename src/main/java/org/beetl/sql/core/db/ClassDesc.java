@@ -1,11 +1,12 @@
 package org.beetl.sql.core.db;
 
+import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.kit.StringKit;
+import org.beetl.sql.ext.gen.JavaType;
+
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.beetl.sql.core.NameConversion;
-import org.beetl.sql.core.kit.StringKit;
 
 public class ClassDesc {
 	Class c ;
@@ -20,9 +21,14 @@ public class ClassDesc {
 		Method[] ms = c.getMethods();
 		for(Method m:ms){
 			String name = m.getName();
-			if(name.startsWith("get")&&m.getParameterTypes().length==0){
-				//property;
-				String property = StringKit.toLowerCaseFirstOne(name.substring(3));
+			if((name.startsWith("get")|| (name.startsWith("is") && m.getReturnType().getSimpleName().equalsIgnoreCase("boolean")))
+                    && m.getParameterTypes().length==0){
+                String property = null;
+                if(name.startsWith("get")){
+                    property = StringKit.toLowerCaseFirstOne(name.substring(3));
+                }else{
+                    property = StringKit.toLowerCaseFirstOne(name.substring(2));
+                }
 				String col = nc.getColName(c, property);
 				propertys.add(property);
 				
@@ -43,6 +49,22 @@ public class ClassDesc {
 			}
 			
 		}
+	}
+	
+	public ClassDesc(TableDesc table,NameConversion nc){
+		this.table = table ;
+		this.nc = nc ;
+		for(String colName:table.getMetaCols()){
+			String prop = nc.getPropertyName(colName);
+			this.propertys.add(prop);   
+			ColDesc  colDes = table.getColDesc(colName);
+			if(JavaType.isDateType(colDes.sqlType)){
+				dateTypes.add(prop);
+			}
+			this.cols.add(prop);
+		}
+		this.idName = nc.getPropertyName(table.getIdName());
+		
 	}
 	public String getIdName(){
 		return this.idName;

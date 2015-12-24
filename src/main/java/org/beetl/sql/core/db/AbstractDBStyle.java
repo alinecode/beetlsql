@@ -1,15 +1,14 @@
 package org.beetl.sql.core.db;
 
-import java.lang.reflect.Method;
-import java.util.Set;
-
 import org.beetl.core.Configuration;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.engine.Beetl;
-import org.beetl.sql.core.kit.StringKit;
+
+import java.lang.reflect.Method;
+import java.util.Set;
 /**
  * 按照mysql来的，oralce需要重载insert，page方法
  * @author xiandafu
@@ -20,11 +19,13 @@ public abstract class AbstractDBStyle implements DBStyle {
 	protected static AbstractDBStyle adbs;
 	protected NameConversion nameConversion;
 	protected MetadataManager metadataManager;
-	protected String STATEMENT_START;// 定界符开始符号
-	protected String STATEMENT_END;// 定界符结束符号
-	protected String HOLDER_START;// 站位符开始符号
-	protected String HOLDER_END;// 站位符结束符号
+	public  String STATEMENT_START;// 定界符开始符号
+	public  String STATEMENT_END;// 定界符结束符号
+	public  String HOLDER_START;// 站位符开始符号
+	public String HOLDER_END;// 站位符结束符号
 	protected String lineSeparator = System.getProperty("line.separator", "\n");
+	//翻页从0还是1开始，默认从1开始
+	protected boolean offsetStartZero = false ;
 	
 	public AbstractDBStyle() {
 	
@@ -40,6 +41,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		}
 		HOLDER_START = cf.getPlaceholderStart();
 		HOLDER_END = cf.getPlaceholderEnd();
+		offsetStartZero = Boolean.parseBoolean(beetl.getPs().getProperty("OFFSET_START_ZERO").trim());
 	}
 
 	public String getSTATEMENTSTART() {
@@ -149,7 +151,6 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	@Override
 	public SQLSource genUpdateTemplate (Class<?> cls) {
-		
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
@@ -160,13 +161,16 @@ public abstract class AbstractDBStyle implements DBStyle {
 		for(String col:cols){
 			if(classDesc.getIdName().equals(col)){
 				//主键不更新
+				condition = condition + appendWhere(cls,table, col);
 				continue ;
 			}
-			
 			sql.append(appendSetColumn(cls,table, col));
-			condition = condition + appendWhere(cls,table, col);
 		}
-		sql = removeComma(sql, condition);
+		StringBuilder trimSql = new StringBuilder();
+		
+		trimSql.append(this.getSTATEMENTSTART()).append("trim(){\n").append(this.getSTATEMENTEND()).append("\n").append(sql);
+		trimSql.append(this.getSTATEMENTSTART()).append("}\n").append(this.getSTATEMENTEND());
+		sql = removeComma(trimSql, condition);
 		return new SQLSource(sql.toString());
 		
 	}
@@ -199,7 +203,6 @@ public abstract class AbstractDBStyle implements DBStyle {
 		StringBuilder valSql = new StringBuilder(" VALUES (");
 		int idType = DBStyle.ID_ASSIGN ;
 		SQLSource source = new SQLSource();
-		Method[] methods = cls.getMethods();
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(col.equals(classDesc.getIdName())){				
@@ -224,11 +227,100 @@ public abstract class AbstractDBStyle implements DBStyle {
 		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
 		source.setTemplate(sql.toString());
 		source.setIdType(idType);
-		
-		 
+
 		return source;
 	}
-	
+
+    /****
+     * 根据table生成字段名列表
+     * @param table
+     * @return
+     */
+	@Override
+    public String genColumnList(String table){
+        Set<String> colSet = getCols(table);
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder cols = new StringBuilder();
+        for(String col:colSet){
+            cols.append(col).append(",");
+        }
+        return cols.deleteCharAt(cols.length()-1).toString();
+    }
+
+    /***
+     * 获取字段集合
+     * @param tableName
+     * @return
+     */
+    public Set<String> getCols(String tableName){
+        
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(nameConversion);
+        return classDesc.getInCols();
+    }
+
+    /***
+     * 生成通用条件语句 含有Empty判断
+     * @param tableName
+     * @return
+     */
+    @Override
+    public String genCondition(String tableName){
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(nameConversion);
+        Set<String> colSet = classDesc.getInCols();
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder condition = new StringBuilder();
+        for(String col:colSet){
+            condition.append(appendWhere(null,table,col));
+        }
+        return "1 = 1  \n" + condition.toString();
+    }
+
+    /***
+     * 生成通用的col=property (示例：age=${age},name=${name}) 含有Empty判断
+     * @param tableName
+     * @return
+     */
+    @Override
+    public String genColAssignProperty(String tableName){
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc( nameConversion);
+        Set<String> colSet = classDesc.getInCols();
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder sql = new StringBuilder();
+        for(String col:colSet){
+            sql.append(appendSetColumn(null,table, col));
+        }
+        return sql.deleteCharAt(sql.length() - 1).toString();
+    }
+
+    /***
+     * 生成通用的col=property (示例：age=${age},name=${name}) 没有Empty判断
+     * @param tableName
+     * @return
+     */
+    @Override
+    public String genColAssignPropertyAbsolute(String tableName){
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc( nameConversion);
+        Set<String> colSet = classDesc.getInCols();
+        if(null == colSet || colSet.isEmpty()){
+            return "";
+        }
+        StringBuilder sql = new StringBuilder();
+        for(String col:colSet){
+            sql.append(appendSetColumnAbsolute(null,table,col));
+        }
+        return sql.deleteCharAt(sql.length()-1).toString();
+    }
+
 	public String getEscapeForKeyWord(){
 		return "\"";
 	}
@@ -245,7 +337,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 	/***
 	 * 生成一个追加在set子句的后面sql(示例：name=${name},)
-	 * @param tableName
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -256,7 +349,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	/***
 	 * 生成一个追加在set子句的后面sql(示例：name=${name},)有Empty判断
-	 * @param tableName
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -272,8 +366,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	}
 	
 	/*****
-	 * 生成一个追加在where子句的后面sql(示例：name=${name} and)
-	 * @param tableName
+	 * 生成一个追加在where子句的后面sql(示例：and name=${name} )
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -290,7 +385,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	/****
 	 * 生成一个追加在insert into 子句的后面sql(示例：name,)
-	 * @param tableName
+     * @param c
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -301,7 +397,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	/****
 	 * 生成一个追加在insert into value子句的后面sql(示例：name=${name},)
-	 * @param tableName
+	 * @param table
 	 * @param fieldName
 	 * @return
 	 */
@@ -355,7 +451,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	private boolean isLegalSelectMethod(Method method){
 		
 		return method.getDeclaringClass() != Object.class 
-				&& method.getName().startsWith("get")
+				&& (method.getName().startsWith("get") || method.getName().startsWith("is"))
 				&& !java.util.Date.class.isAssignableFrom(method.getReturnType())	
 				&& !java.util.Calendar.class.isAssignableFrom(method.getReturnType());
 	}
@@ -366,7 +462,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @return
 	 */
 	private boolean isLegalOtherMethod(Method method){
-		return method.getDeclaringClass() != Object.class && method.getName().startsWith("get");
+		return method.getDeclaringClass() != Object.class &&
+                (method.getName().startsWith("get")||method.getName().startsWith("is"))
+                && method.getParameterTypes().length == 0;
 	}
 
 }
