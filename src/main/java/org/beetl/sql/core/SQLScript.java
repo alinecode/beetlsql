@@ -166,7 +166,7 @@ public class SQLScript {
 				ResultSet seqRs = seqPs.executeQuery();
 				
 				if(seqRs.next()){
-					Object key =seqRs.getObject(0);
+					Object key =seqRs.getObject(1);
 					// 也许要做类型转化，todo
 					holder.setKey(key);
 					map.put("_tempKey", key); //TODO 这里貌似有问题。上面已经this.run(map)了

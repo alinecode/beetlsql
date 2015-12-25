@@ -41,6 +41,7 @@ public class DebugInterceptor implements Interceptor {
 				String mehodName = tr.getMethodName();
 				int line = tr.getLineNumber();
 				println("location:"+className+"."+mehodName+" "+line);
+				break ;
 			}
 		}
 		
