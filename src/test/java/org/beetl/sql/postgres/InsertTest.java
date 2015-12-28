@@ -1,5 +1,7 @@
 package org.beetl.sql.postgres;
 
+import java.util.Date;
+
 import org.beetl.sql.PostgresConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.HumpNameConversion;
@@ -8,7 +10,6 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.PostgresStyle;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.oracle.Dept;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,8 +26,8 @@ public class InsertTest {
 
 	
 
-	@Test
-	public void addUser() throws Exception {
+//	@Test
+	public void addCompany() throws Exception {
 		
 //		Connection conn = manager.getDs().getMaster();
 //		DatabaseMetaData dbmd =  conn.getMetaData();
@@ -40,12 +41,26 @@ public class InsertTest {
 
 		Company2 dept = new Company2();
 		dept.setName("ok");
+		dept.setDate(new Date());
 		manager.insert(Company2.class, dept);
 ////		List<Dept> list = manager.execute("select * from dept", Dept.class, new HashMap());
 //		System.out.println(list);
 		
 		
 	}
+	
+//	@Test
+//	public void addUser() throws Exception {
+//		
+//		User user = new User();
+//		user.setAge(12);
+//	
+//		manager.insert(User.class, user);
+//////		List<Dept> list = manager.execute("select * from dept", Dept.class, new HashMap());
+////		System.out.println(list);
+//		
+//		
+//	}
 	
 
 }

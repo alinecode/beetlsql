@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -135,7 +136,8 @@ public class SQLScript {
 			{
 				Object o = objs.get(i);
 				if(o!=null&&o.getClass() ==java.util.Date.class){
-					o =new  java.sql.Date(((java.util.Date)o).getTime());
+//					o =new  java.sql.Date(((java.util.Date)o).getTime());
+					o  = new Timestamp(((java.util.Date)o).getTime());
 				}
 				ps.setObject(i + 1, o);
 			}
@@ -201,7 +203,8 @@ public class SQLScript {
 				Object o = objs.get(i);
 				//兼容性修改：oralce 驱动 不识别util.Date
 				if(o!=null&&o.getClass() ==java.util.Date.class){
-					o =new  java.sql.Date(((java.util.Date)o).getTime());
+//					o =new  java.sql.Date(((java.util.Date)o).getTime());
+					o  = new Timestamp(((java.util.Date)o).getTime());
 				}
 				ps.setObject(i + 1, o);
 			}
