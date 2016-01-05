@@ -2,7 +2,7 @@ package ${package};
 ${imports}
 /*
 * ${comment}
-* gen by beetsql ${date(),"yyyy-MM-dd"}
+* gen by beetlsql ${date(),"yyyy-MM-dd"}
 */
 public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 	@for(attr in attrs){

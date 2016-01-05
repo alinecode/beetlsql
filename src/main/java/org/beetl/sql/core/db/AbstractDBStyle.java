@@ -260,8 +260,9 @@ public abstract class AbstractDBStyle implements DBStyle {
     public Set<String> getCols(String tableName){
         
         TableDesc table = this.metadataManager.getTable(tableName);
-        ClassDesc classDesc = table.getClassDesc(nameConversion);
-        return classDesc.getInCols();
+        return table.getMetaCols();
+//        ClassDesc classDesc = table.getClassDesc(nameConversion);
+//        return classDesc.getInCols();
     }
 
     /***
