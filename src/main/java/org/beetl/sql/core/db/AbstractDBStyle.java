@@ -106,6 +106,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 			if(classDesc.isDateType(col)){
 				continue ;
 			}
+			if(col.equals(classDesc.getIdName())){
+				continue ;
+			}
 			condition = condition + appendWhere(cls,table, col);
 		}
 		return condition;
@@ -276,6 +279,9 @@ public abstract class AbstractDBStyle implements DBStyle {
         }
         StringBuilder condition = new StringBuilder();
         for(String col:colSet){
+        		if(col.equals(classDesc.getIdName())){
+				continue ;
+			}
             condition.append(appendWhere(null,table,col));
         }
         return "1 = 1  \n" + condition.toString();

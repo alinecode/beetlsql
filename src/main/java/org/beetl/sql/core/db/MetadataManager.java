@@ -12,6 +12,7 @@ import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.SQLManager;
 
+
 public class MetadataManager {
 
 	private ConnectionSource ds = null;
@@ -92,17 +93,41 @@ public class MetadataManager {
 			try {
 				conn =  ds.getMaster();
 				DatabaseMetaData dbmd =  conn.getMetaData();
-				rs = dbmd.getPrimaryKeys(null, "%", desc.getMetaName());
-				int count = 0;
-				while (rs.next()) {
-					count++;
-					String metaIdName=rs.getString("COLUMN_NAME");
-					
-					desc.setIdName(metaIdName.toUpperCase());
-				}
+				if(this.sm.getDbStyle().getName().equals("postgres")){
+					String sql = "SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type " 
+						+ " FROM   pg_index i "
+						+" JOIN   pg_attribute a ON a.attrelid = i.indrelid "
+						+ " AND a.attnum = ANY(i.indkey) "
+						+" WHERE  i.indrelid = ?::regclass "
+						+" AND    i.indisprimary";
+					java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+					ps.setString(1, desc.getMetaName());
+					rs =ps.executeQuery();
+					int count = 0;
+					while(rs.next()){
+						count++;
+						String metaIdName=rs.getString("attname");
+						desc.setIdName(metaIdName.toUpperCase());
+					}
+					//多个主键 下个版本再做
+					if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
 				
-				//多个主键 下个版本再做
-				if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+					
+				}else{
+					rs = dbmd.getPrimaryKeys(null, "%", desc.getMetaName());
+					
+					int count = 0;
+					while (rs.next()) {
+						count++;
+						String metaIdName=rs.getString("COLUMN_NAME");
+						
+						desc.setIdName(metaIdName.toUpperCase());
+					}
+					
+					//多个主键 下个版本再做
+					if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+					
+				}
 				
 				
 				rs = dbmd.getColumns(null, "%", desc.getMetaName(), "%");
