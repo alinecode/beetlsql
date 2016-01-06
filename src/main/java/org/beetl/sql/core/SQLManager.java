@@ -52,7 +52,7 @@ public class SQLManager {
 	 * @param ds 数据库连接
 	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds) {
-		this(dbStyle, sqlLoader, ds, new HumpNameConversion(), new Interceptor[]{});
+		this(dbStyle, sqlLoader, ds, new DefaultNameConversion(), new Interceptor[]{});
 
 	}
 	

@@ -142,7 +142,7 @@ public class MetadataManager {
 			DatabaseMetaData dbmd =  conn.getMetaData();
 			
 			ResultSet rs = dbmd.getTables(null, "%", null,
-					new String[] { "TABLE" });
+					new String[] { "TABLE","VIEW" });
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
 				String remarks = rs.getString("REMARKS");

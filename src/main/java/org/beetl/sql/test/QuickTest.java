@@ -1,5 +1,8 @@
 package org.beetl.sql.test;
 
+import java.util.Date;
+import java.util.List;
+
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
@@ -7,8 +10,6 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.ext.gen.GenConfig;
-import org.beetl.sql.ext.gen.GenFilter;
 
 public class QuickTest {
 
@@ -58,7 +59,14 @@ public class QuickTest {
 //		sql.genSQLTemplate(MysqlDBConfig.class);
 		
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
-//		User info = new User();
+		User info = new User();
+		info.setName("aa");
+		info.setMaxDate(new Date());
+		info.setMinDate(new Date());
+		List<User> list = sql.template(info);
+		
+		
+		
 //		info.setId(2);
 //		info.setUserName("kk");
 //		info.setAge(1);
@@ -66,7 +74,7 @@ public class QuickTest {
 //		sql.updateTemplateById(info);
 //		sql.all(User.class, 1, 2);
 //		sql.select("user.selectAll",User.class, new HashMap(),1,3);
-		sql.genSQLTemplateToConsole("user");
+//		sql.genSQLTemplateToConsole("user");
 //		sql.genALL("com.test", new GenConfig(), new GenFilter(){
 //			public boolean accept(String tableName){
 //				if(tableName.equalsIgnoreCase("user")){
@@ -88,8 +96,8 @@ public class QuickTest {
 //		info.setUserName("name");
 //		sql.template(info);
 		
-//		sql.genPojoCodeToConsole("user");
-//		sql.genSQLTemplate(User.class);
+//		sql.genPojoCodeToConsole("MyUserRole");
+//		sql.genSQLTemplateToConsole("MyUserRole");
 //		GenConfig config = new GenConfig();
 //		config.preferBigDecimal(true);
 ////		config.setBaseClass("com.test.User");

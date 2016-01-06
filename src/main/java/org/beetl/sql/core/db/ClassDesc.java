@@ -1,20 +1,21 @@
 package org.beetl.sql.core.db;
 
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.ext.gen.JavaType;
-
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ClassDesc {
 	Class c ;
 	TableDesc  table;
 	NameConversion nc;
-	Set<String> propertys = new HashSet<String>();
-	Set<String> dateTypes =  new HashSet<String>();;
-	Set<String> cols =  new HashSet<String>();;
+	Set<String> propertys = new LinkedHashSet<String>();
+	Set<String> dateTypes =  new LinkedHashSet<String>();;
+	Set<String> cols =  new LinkedHashSet<String>();;
 	String idName;
 	Method idMethod = null;
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
