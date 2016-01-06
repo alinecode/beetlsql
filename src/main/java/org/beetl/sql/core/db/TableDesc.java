@@ -1,7 +1,8 @@
 package org.beetl.sql.core.db;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,15 +16,15 @@ public class TableDesc{
 	
 	private String remark = null;
 	// 采用大写,为了方便查询
-	private Set<String> cols = new HashSet<String>();
+	private Set<String> cols = new LinkedHashSet<String>();
 	
-	private Set<String> metaCols = new HashSet<String>();
+	private Set<String> metaCols = new LinkedHashSet<String>();
 	private String metaName ;
 	private String metaIdName;
 	//跟table相关的类
-	private Map<Class,ClassDesc> classes = new HashMap<Class,ClassDesc>();
+	private Map<Class,ClassDesc> classes = new LinkedHashMap<Class,ClassDesc>();
 	//table 列的详细描述
-	private Map<String,ColDesc> colsDetail = new HashMap<String,ColDesc>();
+	private Map<String,ColDesc> colsDetail = new LinkedHashMap<String,ColDesc>();
 	
 	
 	public TableDesc(String name,String remark){

@@ -1,16 +1,25 @@
 package org.beetl.sql.test;
-import java.math.*;
-import java.sql.*;
+import java.util.Date;
+
+import org.beetl.sql.core.annotatoin.DateTemplate;
+import org.beetl.sql.core.annotatoin.TableTemplate;
 /*
 * 
 * gen by beetsql 2015-12-11
 */
+@TableTemplate()
 public class User  {
 	private Integer roleId ;
 	private String name ;
 	private Integer id ;
 	private String userName ;
 	private Integer age ;
+	private Date date;
+	
+	//for query
+	private Date minDate;
+	private Date maxDate;
+	
 	public Integer getRoleId() {
 		return roleId;
 	}
@@ -41,5 +50,27 @@ public class User  {
 	public void setAge(Integer age) {
 		this.age = age;
 	}
+	
+	@DateTemplate()
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	public Date getMinDate() {
+		return minDate;
+	}
+	public void setMinDate(Date minDate) {
+		this.minDate = minDate;
+	}
+	public Date getMaxDate() {
+		return maxDate;
+	}
+	public void setMaxDate(Date maxDate) {
+		this.maxDate = maxDate;
+	}
+	
+	
 
 }

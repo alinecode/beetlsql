@@ -10,6 +10,8 @@ public class GenConfig {
 	public int spaceCount = 4;
 	// double 类型采用BigDecimal
 	private boolean preferBigDecimal = false ;
+	
+	
 	/**
 	 * 模板
 	 */

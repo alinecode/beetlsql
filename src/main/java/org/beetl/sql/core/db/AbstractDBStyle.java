@@ -4,7 +4,9 @@ import org.beetl.core.Configuration;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.annotatoin.DateTemplate;
 import org.beetl.sql.core.annotatoin.SeqID;
+import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.engine.Beetl;
 
 import java.lang.reflect.Method;
@@ -84,7 +86,15 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc  table = this.metadataManager.getTable(tableName);
 		String condition = getSelectTemplate(cls);
-		return new SQLSource(new StringBuilder("select * from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(condition).toString());
+		String appendSql = "";
+		TableTemplate t = cls.getAnnotation(TableTemplate.class);
+		if(t!=null){
+			appendSql = t.value();
+			if(appendSql==null||appendSql.length()==0){
+				appendSql = " order by "+table.getMetaIdName()+" desc ";
+			}
+		}
+		return new SQLSource(new StringBuilder("select * from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(condition).append(appendSql).toString());
 	}
 	
 	@Override
@@ -92,7 +102,15 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc  table = this.metadataManager.getTable(tableName);
 		String condition = getSelectTemplate(cls);
-		return new SQLSource(new StringBuilder("select count(1) from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(condition).toString());
+		String appendSql = "";
+		TableTemplate t = cls.getAnnotation(TableTemplate.class);
+		if(t!=null){
+			appendSql = t.value();
+			if(appendSql==null){
+				appendSql = " order by "+table.getMetaIdName()+" desc ";
+			}
+		}
+		return new SQLSource(new StringBuilder("select count(1) from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(condition).append(appendSql).toString());
 
 	}
 	
@@ -104,12 +122,29 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(classDesc.isDateType(col)){
-				continue ;
+				String attr = this.nameConversion.getColName(null, col);
+				//todo, attr属性并不完全是这么转成getter方法的
+				String getter = "get"+attr.substring(0,1).toUpperCase()+attr.substring(1);
+				try {
+					Method m = cls.getMethod(getter, new Class[]{});
+					DateTemplate dateTemplate = m.getAnnotation(DateTemplate.class);
+					if(dateTemplate==null) continue;
+					String sql = this.genDateAnnotatonSql(dateTemplate,cls,col);				
+					condition = condition + sql;
+					continue ;
+				} catch (Exception e) {
+					//不可能发生
+					throw new RuntimeException("获取metod出错");
+				} 
+				
+			}else {
+				condition = condition + appendWhere(cls,table, col);
 			}
 			if(col.equals(classDesc.getIdName())){
 				continue ;
 			}
 			condition = condition + appendWhere(cls,table, col);
+
 		}
 		return condition;
 	}
@@ -280,7 +315,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         }
         StringBuilder condition = new StringBuilder();
         for(String col:colSet){
-        		if(col.equals(classDesc.getIdName())){
+        		if(col.equals(table.getMetaIdName())){
 				continue ;
 			}
             condition.append(appendWhere(null,table,col));
@@ -390,6 +425,15 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 	}
 	
+	private String appendWhere(Class<?> c,String fieldName,String sql) {
+		String prefix = "";		
+		String colName = nameConversion.getColName(c,fieldName);
+		String connector = " and ";
+		return STATEMENT_START + "if(!isEmpty(" + prefix+fieldName + ")){"
+		+ STATEMENT_END + connector + sql + lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
+
+	}
+	
 	/****
 	 * 生成一个追加在insert into 子句的后面sql(示例：name,)
      * @param c
@@ -472,6 +516,39 @@ public abstract class AbstractDBStyle implements DBStyle {
 		return method.getDeclaringClass() != Object.class &&
                 (method.getName().startsWith("get")||method.getName().startsWith("is"))
                 && method.getParameterTypes().length == 0;
+	}
+	
+	private String genDateAnnotatonSql(DateTemplate t,Class c,String col){
+		String accept = t.accept();
+		String[] vars = null;
+		if(accept==null||accept.length()==0){
+			String col1 = col.substring(0,1).toUpperCase()+col.substring(1);
+			vars = new String[]{DateTemplate.MIN_PREFIX+col1,DateTemplate.MAX_PREFIX+col1};
+		}else{
+			vars = t.accept().split(",");
+		}
+		
+		
+		String[] comp = null;
+		String compare = t.compare();
+		if(compare==null||compare.length()==0){
+			comp = new String[]{DateTemplate.LARGE_OPT,DateTemplate.LESS_OPT};
+			
+		}else{
+			comp = t.accept().split(",");
+		}
+		t.compare().split(",");
+		
+		String prefix = "";		
+		
+		String connector = " and ";
+		String sql =  STATEMENT_START + "if(!isEmpty(" + prefix+vars[0] + ")){"
+		+ STATEMENT_END + connector + col+comp[0] +this.HOLDER_START+vars[0]+HOLDER_END+ lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
+		
+		sql =  sql+STATEMENT_START + "if(!isEmpty(" + prefix+vars[1] + ")){"
+				+ STATEMENT_END + connector + col+comp[1] +this.HOLDER_START+vars[1]+HOLDER_END+ lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
+		return sql;
+		
 	}
 
 }

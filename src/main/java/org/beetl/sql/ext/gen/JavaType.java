@@ -63,6 +63,14 @@ public class JavaType {
 			return false ;
 		}
 	}
+	
+	public static boolean isInteger(Integer sqlType){
+		if(sqlType==Types.BOOLEAN||sqlType==Types.BIT||sqlType==Types.INTEGER||sqlType==Types.TINYINT||sqlType==Types.SMALLINT){
+			return true ;
+		}else{
+			return false;
+		}
+	}
 	public static String getType(Integer sqlType,Integer size,Integer digit){
 		String type  = mapping.get(sqlType);
 		if(type.equals(SPECIAL)){

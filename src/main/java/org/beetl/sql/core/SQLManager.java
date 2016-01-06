@@ -52,7 +52,7 @@ public class SQLManager {
 	 * @param ds 数据库连接
 	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds) {
-		this(dbStyle, sqlLoader, ds, new HumpNameConversion(), new Interceptor[]{});
+		this(dbStyle, sqlLoader, ds, new DefaultNameConversion(), new Interceptor[]{});
 
 	}
 	
@@ -886,7 +886,8 @@ public class SQLManager {
 					//生成模板文件
 					this.genSQLFile(table);
 				} catch (Exception e) {
-					throw e;
+					System.out.println(e.getMessage());
+					continue;
 				}
 			}
 		}

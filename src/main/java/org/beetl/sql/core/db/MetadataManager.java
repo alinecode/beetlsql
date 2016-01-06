@@ -107,11 +107,12 @@ public class MetadataManager {
 					while(rs.next()){
 						count++;
 						String metaIdName=rs.getString("attname");
-						desc.setIdName(metaIdName.toUpperCase());
+						desc.setIdName(metaIdName);
 					}
+					rs.close();ps.close();
 					//多个主键 下个版本再做
 					if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
-				
+					
 					
 				}else{
 					rs = dbmd.getPrimaryKeys(null, "%", desc.getMetaName());
@@ -121,9 +122,9 @@ public class MetadataManager {
 						count++;
 						String metaIdName=rs.getString("COLUMN_NAME");
 						
-						desc.setIdName(metaIdName.toUpperCase());
+						desc.setIdName(metaIdName);
 					}
-					
+					rs.close();
 					//多个主键 下个版本再做
 					if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
 					
@@ -167,7 +168,7 @@ public class MetadataManager {
 			DatabaseMetaData dbmd =  conn.getMetaData();
 			
 			ResultSet rs = dbmd.getTables(null, "%", null,
-					new String[] { "TABLE" });
+					new String[] { "TABLE","VIEW" });
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
 				String remarks = rs.getString("REMARKS");

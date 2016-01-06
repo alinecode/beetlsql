@@ -1,6 +1,9 @@
 package org.beetl.sql.ext;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.beetl.sql.core.Interceptor;
@@ -81,7 +84,7 @@ public class DebugInterceptor implements Interceptor {
 		sb.append("======DebugInterceptor Before======\n")
 			.append("sqlId : "+sqlId).append("\n")
 			.append("sql ： " + sql)
-			.append("\nparas : " + paras);
+			.append("\nparas : " + formatParas(paras));
 		println(sb.toString());
 	}
 	
@@ -94,6 +97,28 @@ public class DebugInterceptor implements Interceptor {
 		}
 		
 		return false;
+	}
+	
+	protected List<String> formatParas(List<Object> list){
+		List<String> data = new ArrayList<String>(list.size());
+		for(Object obj:list){
+			if(obj==null){
+				data.add(null);
+			}else if(obj instanceof String){
+				String str = (String)obj;
+				if(str.length()>20){
+					data.add(str.substring(0, 20));
+				}else{
+					data.add(str);
+				}
+			}else if(obj instanceof Date){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				data.add(sdf.format((Date)obj));
+			}else {
+				data.add(obj.toString());
+			}
+		}
+		return data;
 	}
 	
 	protected void println(String str){
