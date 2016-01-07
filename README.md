@@ -18,7 +18,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 * 首个内置支持主从数据库支持的开源工具，通过扩展，可以支持更复杂的分库分表逻辑
 * 支持跨数据库平台，开发者所需工作减少到最小
-* 可以针对单个表代码生成pojo类和sql模版，甚至是整个数据库。能减少代码编写工作量
+* 可以针对单个表(或者视图）代码生成pojo类和sql模版，甚至是整个数据库。能减少代码编写工作量
 
 # 5 分钟例子
 
@@ -32,23 +32,37 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	  `age` int(4) DEFAULT NULL,
 	  `userName` varchar(64) DEFAULT NULL COMMENT '用户名称',
 	  `roleId` int(11) DEFAULT NULL COMMENT '用户角色',
-	  PRIMARY KEY (`id`),
-	  KEY `user_age_index` (`age`) USING BTREE
+	  `date` datetime NULL DEFAULT NULL,
+	  PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-编写一个Pojo类，与数据库表对应（或者可以通过beetlsql生成此类，参考一下节）
 
+编写一个Pojo类，与数据库表对应（或者可以通过SQLManager的gen方法生成此类，参考一下节）
+
+	import java.math.*;
+	import java.util.Date;
+	import java.sql.Timestamp;
+	
+	/*
+	* 
+	* gen by beetlsql 2016-01-06
+	*/
 	public class user  {
-			private Integer roleId ;
-			private String name ;
-			private Integer id ;
-			private String userName ;
-			private Integer age ;
-			// getter,setter方法 忽略
-		
-		}
+		private Integer id ;
+		private Integer age ;
+		//用户角色
+		private Integer roleId ;
+		private String name ;
+		//用户名称
+		private String userName ;
+		private Date date ;
+	
+	}
+	
+	
+
 
 ## 代码例子
 
@@ -60,30 +74,43 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	DBStyle mysql = new MysqlStyle();
 	// sql语句放在classpagth的/sql 目录下
 	SQLLoader loader = new ClasspathLoader("/sql");
-	// 数据库命名跟java命名一样，所以采用DefaultNameConversion
+	// 数据库命名跟java命名一样，所以采用DefaultNameConversion，还有一个是UnderlinedNameConversion，下划线风格的
 	NameConversion nc = new  DefaultNameConversion();
 	// 最后，创建一个SQLManager,DebugInterceptor 不是必须的，但可以通过它查看sql执行情况
 	SqlManager sqlManager = new SqlManager(source,mysql,loader,nc,new Interceptor[]{new DebugInterceptor()});
 
-	//使用内置的生成的sql 新增用户
+	//使用内置的生成的sql 新增用户，如果需要获取主键，可以传入KeyHolder
 	User user = new User();
 	user.setAge(19);
 	user.setName("xiandafu");
 	sqlManager.insert(user);
+	
 	//使用内置sql查询用户
 	int id = 1;
 	user = sqlManager.unique(User.class,id);
-
-	//使用user.md 文件里的select语句，参考下一节。实际上，此处可以用template 方法而不需要写sql，下面三行代码仅仅是演示如何操作sql模板语句
+	
+	//模板更新,仅仅根据id更新值不为null的列	
+	User newUser = new User();
+	newUser.setId(1);
+	newUser.setAge(20);
+	sqlManager.updateTemplateById(newUser);
+	
+	//模板查询	
 	User query = new User();
 	query.setName("xiandafu");
-	List<User> list = sqlManager.select("user.select",User.class,query)
+	List<User> list = sqlManager.template(query);
+	
+
+	//使用user.md 文件里的select语句，参考下一节。
+	User query2 = new User();
+	query.setName("xiandafu");
+	List<User> list2 = sqlManager.select("user.select",User.class,query2)
 
 
 
-## SQL例子
+## SQL文件例子
 
-为了能执行user.select,需要在classpath里建立一个sql目录（ClasspathLoader 配置成sql目录，参考上一节ClasspathLoader初始化的代码）以及下面的user.md 文件，内容如下
+通常一个项目还是有少量复杂sql，可能只有5，6行，也可能有上百行，放在单独的sql文件里更容易编写和维护，为了能执行上例的user.select,需要在classpath里建立一个sql目录（ClasspathLoader 配置成sql目录，参考上一节ClasspathLoader初始化的代码）以及下面的user.md 文件，内容如下
 
 	select
 	===
@@ -113,60 +140,74 @@ sql模板采用beetl原因是因为beetl 语法类似js，且对模板渲染做�
 User类并非需要自己写，好的实践是可以在项目中专门写个类用来辅助生成pojo和sql片段，代码如下
 
 	public static void main(String[] args){
-		SqlManager sqlManager  = ......
+		SqlManager sqlManager  = ...... //同上面的例子
 		sqlManager.genPojoCodeToConsole("user");
 		sqlManager.genSQLTemplateToConsole("user");
 	}
+	
+
+	注意:我经常在我的项目里写一个这样的辅助类，用来根据表或者视图生成各种代码和sql片段，以快速开发.
 	
 genPojoCodeToConsole 方法可以根据数据库表生成相应的Pojo代码，输出到控制台，开发者可以根据这些代码创建相应的类，如上例子，控制台将输出
 
 	package com.test;
 	import java.math.*;
-	import java.sql.*;
+	import java.util.Date;
+	import java.sql.Timestamp;
+	
 	/*
 	* 
-	* gen by beetsql 2015-12-21
+	* gen by beetlsql 2016-01-06
 	*/
 	public class user  {
+		private Integer id ;
+		private Integer age ;
 		//用户角色
 		private Integer roleId ;
 		private String name ;
-		private Integer id ;
 		//用户名称
 		private String userName ;
-		private Integer age ;
+		private Date date ;
 	
 	}
 	
 上述生成的代码有些瑕疵，比如包名总是com.test，类名是小写开头（因为用了DefaultNameConversion)，你需要修改成你要的包名和正常的类名，pojo类也没有生成getter，setter方法，你需要用ide自带的工具再次生成一下。
+
+	注意:生成属性的时候，id总是在前面，后面依次是类型为Integer的类型，最后面是日期类型，剩下的按照字母排序放到中间。
 
 一旦有了User 类，如果你需要些sql语句，那么genSQLTemplateToConsole 将是个很好的辅助方法，可以输出一系列sql语句片段，你同样可以赋值粘贴到代码或者sql模板文件里（user.md),如上例所述，当调用genSQLTemplateToConsole的时候，生成如下
 
 	sample
 	===
 	* 注释
-	select #use("cols")# from user where #use("condition")#
-
+	
+		select #use("cols")# from user where #use("condition")#
+	
 	cols
 	===
-	roleId,name,id,userName,age
-
+	
+		id,name,age,userName,roleId,date
+	
 	updateSample
 	===
-	`roleId`=#roleId#,`name`=#name#,`id`=#id#,`userName`=#userName#,`age`=#age#
-
+	
+		`id`=#id#,`name`=#name#,`age`=#age#,`userName`=#userName#,`roleId`=#roleId#,`date`=#date#
+	
 	condition
 	===
-	1 = 1  
-	@if(!isEmpty(roleId)){
-	 and `roleId`=#roleId#
-	@}
-	@if(!isEmpty(name)){
-	 and `name`=#name#
-	@}
-	省略其他条件
+	
+		1 = 1  
+		@if(!isEmpty(name)){
+		 and `name`=#name#
+		@}
+		@if(!isEmpty(age)){
+		 and `age`=#age#
+		@}
+		
 	
 beetlsql生成了用于查询，更新，条件的sql片段和一个简单例子。你可以按照你的需要copy到sql模板文件里.实际上，如果你熟悉gen方法，你可以直接gen代码和sql到你的工程里，甚至是整个数据库都可以调用genAll来一次生成
+
+	注意:sql 片段的生成顺序按照数据库表定义的顺序显示
 
 # BeetlSQL 说明
 
@@ -179,7 +220,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 	DBStyle mysql = new MysqlStyle();
 	// sql语句放在classpagth的/sql 目录下
 	SQLLoader loader = new ClasspathLoader("/sql");
-	// 数据库命名跟java命名采用驼峰转化
+	// 数据库命名跟java命名采用驼峰转化,也可以根据需要用UnderlinedNameConversion，或者自定义
 	NameConversion nc = new  DefaultNameConversion();
 	// 最后，创建一个SQLManager
 	SqlManager sqlManager = new SQLManager(mysql,loader,source,nc, new Interceptor[]{new DebugInterceptor()});
@@ -329,7 +370,19 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 	
 这样，翻页参数start传入0即可。
 
-注意:根据模板查询并不包含时间字段
+注意:根据模板查询并不包含时间字段，也不包含排序，然而，可以通过在pojo class上使用@TableTemplate() 或者日期字段的getter方法上使用@DateTemplate()来定制，如下:
+
+	@TableTemplate("order by id desc ")
+	public class User  {
+		private Integer id ;
+		private Integer age ;
+		....
+		@DateTemplate(accept="minDate,maxDate")
+		public Date getDate() {
+			return date;
+		}	
+		
+这样，模板查询将添加order by id desc ,以及date字段将按照日期范围来查询。 具体参考annotation一章
 
 **通过sqlid查询**,sql语句在md文件里
 
@@ -416,11 +469,13 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 	
 第一个参数是pojo类包名，GenConfig是生成pojo的配置，GenFilter 是过滤，返回true的才会生成。如果GenFilter为null，则数据库所有表都要生成
 
+	注意，不要轻易使用genAll，如果你用了，最好立刻将其注释掉，或者在genFilter写一些逻辑保证不会生成所有的代码好sql模板文件
+
 ## BeetlSQL Annotation
 
 对于自动生成的sql，默认不需要任何annotaton，类名对应于表名（通过NameConverstion类），getter方法的属性名对应于列明（也是通过NameConverstion类），但有些情况还是需要anntation。
 
-*   标签@Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
+*   标签 @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
 
 	@Table(name="user")
 	public class QueryUser ..
@@ -431,14 +486,38 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 对于属性名为id的自增主键，不需要加annotation，beetlsql默认就是@AutoID
 
-（注，如果想要获取自增主键或者序列主键，需要在SQLManager.insert中传入一个KeyHolder)
+	注一:如果想要获取自增主键或者序列主键，需要在SQLManager.insert中传入一个KeyHolder
+	注二:对于支持多种数据库的，这些annotation可以叠加在一起
 
+* @TableTemplate() 用于模板查询，如果没有任何值，将按照主键降序排，也就是order by 主键名称 desc 
+
+
+* @DateTemplate()，作用于日期字段的getter方法上，有俩个属性accept 和  compare 方法，分别表示 模板查询中，日期字段如果不为空，所在的日期范围，如
+
+	@DateTemplate(accept="minDate,maxDate",compare=">=,<")
+	public Date getDate() {
+	}
+	
+	在模板查询的时候，将会翻译成
+	
+	
+	@if(!isEmpty(minDate)){
+	 and date>=#minDate#
+	@}
+	@if(!isEmpty(maxDate)){
+	 and date<#maxDate#
+	@}
+	
+	
+	注意:minDate,maxDate 是俩个额外的变量,需要定义到pojo类里，DateTemplate也可以有默认值，如果@DateTemplate()，相当于@DateTemplate(accept="min日期字段,max日期字段",compare=">=,<")
+		
+	
 
 ## BeetlSQL 数据模型
 
 BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
-* Pojo, 也就是面向对象Java Objec。Beetlsql操作将选取Pojoe属性和sql列的交集。额外属性和额外列将忽略t
+* Pojo, 也就是面向对象Java Objec。Beetlsql操作将选取Pojoe属性和sql列的交集。额外属性和额外列将忽略. 
 
 * Map/List, 对于一些敏捷开发，可以直接使用Map/List 作为输入输出参数
 
@@ -571,7 +650,7 @@ Beetl 语法类似js，java，如下做简要说明，使用可以参考   http:
 ### 定界符号
 默认的定界符号是@ 和 回车。 里面可以放控制语句，表达式等语，，站位符号是##,站位符号默认是输出？，并在执行sql的传入对应的值。如果想在占位符号输出变量值，则需要使用text函数
 
-	@if(isEmpty(name)){
+	@if(!isEmpty(name)){
 		and name = #name#
 	}
 
@@ -726,6 +805,7 @@ Debug 期望能在控制台或者日志系统输出执行的sql语句，参数�
 	sqlId :user.updatexxx
 	sql ： insert into user (id,name,age) values (?,?,?)
 	paras : [4, old, null]
+	location:org.beetl.sql.test.QuickTest.main 66
 	======DebugInterceptor After======
 	sqlId : user.updatexxx
 	execution time : 54ms
