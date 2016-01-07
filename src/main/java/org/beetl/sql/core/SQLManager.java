@@ -886,7 +886,8 @@ public class SQLManager {
 					//生成模板文件
 					this.genSQLFile(table);
 				} catch (Exception e) {
-					throw e;
+					System.out.println(e.getMessage());
+					continue;
 				}
 			}
 		}
