@@ -15,6 +15,8 @@ public class User  {
 	private String userName ;
 	private Integer age ;
 	private Date date;
+	private Date createDate;
+	
 	
 	//for query
 	private Date minDate;
@@ -69,6 +71,12 @@ public class User  {
 	}
 	public void setMaxDate(Date maxDate) {
 		this.maxDate = maxDate;
+	}
+	public Date getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 	
 	

@@ -66,6 +66,7 @@ hs_err_pid*
 target/
 **/target/
 
+build/
 ###Node###
 
 lib-cov
