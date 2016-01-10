@@ -16,14 +16,10 @@ public class User  {
 	private String name ;
 	//用户名称
 	private String userName ;
-<<<<<<< HEAD
-	private Integer age ;
-	private Date date;
+
 	private Date createDate;
 	
-=======
-	private Date date ;
->>>>>>> 79a0e9bf589f4206c30f74a1dbd5d9cb83026c0e
+
 	
 	//for query
 	private Date minDate;
@@ -60,13 +56,7 @@ public class User  {
 		this.age = age;
 	}
 	
-	@DateTemplate()
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
+	
 	public Date getMinDate() {
 		return minDate;
 	}
