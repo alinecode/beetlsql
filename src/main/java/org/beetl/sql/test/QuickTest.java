@@ -64,6 +64,7 @@ public class QuickTest {
 		
 //		sql.unique(User.class, 1);
 		
+		
 //		info.setId(2);
 //		info.setUserName("kk");
 //		info.setAge(1);
@@ -93,8 +94,14 @@ public class QuickTest {
 //		info.setUserName("name");
 //		sql.template(info);
 		
-//		sql.genPojoCodeToConsole("MyUserRole");
+
+//		sql.genPojoCodeToConsole("user");
 //		sql.genSQLTemplateToConsole("user");
+
+//		sql.genPojoCodeToConsole("MyUserRole");
+
+		sql.genSQLTemplateToConsole("user");
+
 //		GenConfig config = new GenConfig();
 //		config.preferBigDecimal(true);
 ////		config.setBaseClass("com.test.User");

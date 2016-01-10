@@ -9,14 +9,21 @@ import org.beetl.sql.core.annotatoin.TableTemplate;
 */
 @TableTemplate()
 public class User  {
+	private Integer id ;
+	private Integer age ;
+	//用户角色
 	private Integer roleId ;
 	private String name ;
-	private Integer id ;
+	//用户名称
 	private String userName ;
+<<<<<<< HEAD
 	private Integer age ;
 	private Date date;
 	private Date createDate;
 	
+=======
+	private Date date ;
+>>>>>>> 79a0e9bf589f4206c30f74a1dbd5d9cb83026c0e
 	
 	//for query
 	private Date minDate;
