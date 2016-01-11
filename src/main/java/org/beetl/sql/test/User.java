@@ -16,7 +16,10 @@ public class User  {
 	private String name ;
 	//用户名称
 	private String userName ;
-	private Date date ;
+
+	private Date createDate;
+	
+
 	
 	//for query
 	private Date minDate;
@@ -53,13 +56,7 @@ public class User  {
 		this.age = age;
 	}
 	
-	@DateTemplate()
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
+	
 	public Date getMinDate() {
 		return minDate;
 	}
@@ -71,6 +68,12 @@ public class User  {
 	}
 	public void setMaxDate(Date maxDate) {
 		this.maxDate = maxDate;
+	}
+	public Date getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 	
 	

@@ -122,9 +122,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(classDesc.isDateType(col)){
-				String attr = this.nameConversion.getColName(null, col);
 				//todo, attr属性并不完全是这么转成getter方法的
-				String getter = "get"+attr.substring(0,1).toUpperCase()+attr.substring(1);
+				String getter = "get"+col.substring(0,1).toUpperCase()+col.substring(1);
 				try {
 					Method m = cls.getMethod(getter, new Class[]{});
 					DateTemplate dateTemplate = m.getAnnotation(DateTemplate.class);
@@ -134,7 +133,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 					continue ;
 				} catch (Exception e) {
 					//不可能发生
-					throw new RuntimeException("获取metod出错");
+					throw new RuntimeException("获取metod出错"+e.getMessage());
 				} 
 				
 			}else {
