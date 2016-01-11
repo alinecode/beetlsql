@@ -548,6 +548,19 @@ public class SQLManager {
 		return script.insert(paras,holder );
 	}
 	
+	
+	/** 插入，并获取主键
+	 * @param clazz
+	 * @param paras
+	 * @param holder
+	 */
+	public int  insert(String sqlId,Object paras,KeyHolder holder){
+		SQLScript script = getScript(sqlId);
+		return script.insertBySqlId(paras, holder);
+	}
+	
+	
+	
 	/**
 	 * 
 	 * 需要处理","的问题，可能会出现
