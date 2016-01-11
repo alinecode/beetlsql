@@ -1,10 +1,10 @@
 package org.beetl.sql.test;
 
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -55,7 +55,7 @@ public class QuickTest {
 		
 //		sql.genSQLTemplate(MysqlDBConfig.class);
 		
-		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		User info = new User();
 //		info.setName("aa");
 //		info.setMaxDate(new Date());
@@ -95,12 +95,12 @@ public class QuickTest {
 //		sql.template(info);
 		
 
-//		sql.genPojoCodeToConsole("user");
-//		sql.genSQLTemplateToConsole("user");
+//		sql.genPojoCodeToConsole("user2");
+//		sql.genSQLTemplateToConsole("user2");
 
 //		sql.genPojoCodeToConsole("MyUserRole");
 
-		sql.genSQLTemplateToConsole("user");
+//		sql.genSQLTemplateToConsole("user");
 
 //		GenConfig config = new GenConfig();
 //		config.preferBigDecimal(true);
@@ -108,8 +108,11 @@ public class QuickTest {
 //		sql.genPojoCode("sys_role","com.test",config);
 //		sql.allCount(User.class);
 //		sql.all(User.class);
-		SysUser query = new SysUser();
-		sql.template(query);
+		User2 user = new User2();
+		// user.setId(2L);
+		user.setUsername("eric11111112");
+		user.setPassword("xx");
+		sql.template(user);
 	}
 
 }
