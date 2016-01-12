@@ -115,7 +115,7 @@ public class MetadataManager {
 					
 					
 				}else{
-					rs = dbmd.getPrimaryKeys(null, "%", desc.getMetaName());
+					rs = dbmd.getPrimaryKeys(null, null, desc.getMetaName());
 					
 					int count = 0;
 					while (rs.next()) {

@@ -83,13 +83,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--  dependency>
+        <dependency>
             <groupId>oralce</groupId>
             <artifactId>oralce-express</artifactId>
             <version>6</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
-        </dependency-->
+        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -131,6 +131,16 @@
             <version>9.1-901-1.jdbc4</version>
             <scope>provided</scope>
         </dependency>
+        
+         <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>dbc-mysql-sqlserver</artifactId>
+            <version>4.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
+        </dependency>
+  
+		
     </dependencies>
 
     <build>
