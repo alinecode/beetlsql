@@ -268,6 +268,12 @@ public class ClasspathLoader implements SQLLoader {
 	public SQLSource getGenSQL(String id) {
 		return ClasspathLoader.sqlSourceMap.get(id);
 	}
+	public DBStyle getDbs() {
+		return dbs;
+	}
+	public void setDbs(DBStyle dbs) {
+		this.dbs = dbs;
+	}
 	
 }
 

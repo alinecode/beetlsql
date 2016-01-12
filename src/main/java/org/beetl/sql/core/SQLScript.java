@@ -41,6 +41,7 @@ public class SQLScript {
 	String sql;
 	SQLSource sqlSource;
 	String jdbcSql;
+	String dbName = null;
 
 	QueryMapping queryMapping = QueryMapping.getInstance();
 
@@ -49,6 +50,7 @@ public class SQLScript {
 		this.sql = sqlSource.getTemplate();
 		this.sm = sm;
 		this.id = sqlSource.getId();
+		this.dbName = sm.getDbStyle().getName();
 
 	}
 
@@ -222,7 +224,7 @@ public class SQLScript {
 		}
 	}
 
-	public int insertBySqlId(Object paras, KeyHolder holder) {
+	public int insertBySqlId(Object paras, KeyHolder holder,String keyName) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
 		PreparedStatement ps = null;
@@ -239,8 +241,9 @@ public class SQLScript {
 			if (conn == null) {
 				conn = sm.getDs().getConn(id, true, sql, objs);
 			}
-
-			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			
+			ps = conn.prepareStatement(sql, new String[]{keyName});
+			
 
 			for (int i = 0; i < objs.size(); i++) {
 				Object o = objs.get(i);
@@ -255,13 +258,7 @@ public class SQLScript {
 			ResultSet seqRs = ps.getGeneratedKeys();
 			seqRs.next();
 			Object key = seqRs.getObject(1);
-			if (sm.getDbStyle().getName().equals("oralce")) {
-				OralceRowID rowId = new OralceRowID(key);
-				holder.setKey(rowId);
-
-			} else {
-				holder.setKey(key);
-			}
+			holder.setKey(key);
 			seqRs.close();
 			this.callInterceptorAsAfter(ctx, ret);
 			return ret;

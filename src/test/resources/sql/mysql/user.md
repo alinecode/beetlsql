@@ -1,3 +1,8 @@
+insert
+===
+
+	insert user (name,age) value(#name#,#age#)
+
 selectUser
 ===
     select * from user where 1=1

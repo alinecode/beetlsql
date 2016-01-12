@@ -26,6 +26,7 @@ import org.beetl.core.Configuration;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
@@ -79,6 +80,7 @@ public class SQLManager {
 		beetl = new Beetl(sqlLoader);
 		this.dbStyle = dbStyle;
 		this.sqlLoader = sqlLoader;
+		
 		this.ds = ds;
 		this.nc = nc;
 		this.inters = inters;
@@ -553,10 +555,26 @@ public class SQLManager {
 	 * @param clazz
 	 * @param paras
 	 * @param holder
+	 * @param keyName  主键列名称
+	 */
+	public int  insert(String sqlId,Object paras,KeyHolder holder,String keyName){
+		SQLScript script = getScript(sqlId);
+		return script.insertBySqlId(paras, holder,keyName);
+	}
+	
+	/**
+	 * 插入，并获取主键,主键将通过paras所代表的表名来获取
+	 * 
+	 * @param sqlId
+	 * @param paras
+	 * @param holder
+	 * @return
 	 */
 	public int  insert(String sqlId,Object paras,KeyHolder holder){
 		SQLScript script = getScript(sqlId);
-		return script.insertBySqlId(paras, holder);
+		String tableName = this.nc.getTableName(paras.getClass());
+		TableDesc  table = this.metaDataManager.getTable(tableName);
+		return script.insertBySqlId(paras, holder,table.getMetaIdName());
 	}
 	
 	

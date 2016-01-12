@@ -20,7 +20,8 @@ public class InsertTest {
 
 	@Before
 	public void before() {
-		loader = new ClasspathLoader("/sql/");
+		OracleStyle style = new OracleStyle();
+		loader = new ClasspathLoader("/sql/",style);
 		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource(),new  DefaultNameConversion(),
 				new Interceptor[]{new DebugInterceptor()});
 	}
@@ -43,19 +44,22 @@ public class InsertTest {
 		Dept dept = new Dept();
 		dept.setName("ok");
 		KeyHolder holder = new KeyHolder();
-		manager.insert(Dept.class, dept,holder);
+//		manager.insert(Dept.class, dept,holder);
 		
 //		UserInfo info = new UserInfo();
 //		info.setId(1);
 //		info.setUserName("cl");
 //		KeyHolder holder = new KeyHolder();
 //		manager.insert(UserInfo.class,info,holder);
-		System.out.println(holder.getKey());
+//		System.out.println(holder.getKey());
 		
 //		manager.template(info);
 		
 ////		List<Dept> list = manager.execute("select * from dept", Dept.class, new HashMap());
 //		System.out.println(list);
+		
+		manager.insert("dept.insert", dept, holder);
+		System.out.println("kye is"+holder.getLong());
 		
 		
 	}
