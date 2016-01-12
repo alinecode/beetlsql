@@ -6,6 +6,7 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.KeyHolder;
+
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -57,12 +58,14 @@ public class QuickTest {
 //		sql.genSQLTemplate(MysqlDBConfig.class);
 		
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+
 		User info = new User();
 		info.setName("aa");
 		info.setAge(12);
 		KeyHolder h = new KeyHolder();
 		sql.insert("user.insert", info, h);
 		System.out.println(h.getLong());
+
 //		info.setMaxDate(new Date());
 //		info.setMinDate(new Date());
 //		List<User> list = sql.template(info);
@@ -100,8 +103,8 @@ public class QuickTest {
 //		sql.template(info);
 		
 
-//		sql.genPojoCodeToConsole("user");
-//		sql.genSQLTemplateToConsole("user");
+//		sql.genPojoCodeToConsole("user2");
+//		sql.genSQLTemplateToConsole("user2");
 
 //		sql.genPojoCodeToConsole("MyUserRole");
 
@@ -113,8 +116,7 @@ public class QuickTest {
 //		sql.genPojoCode("sys_role","com.test",config);
 //		sql.allCount(User.class);
 //		sql.all(User.class);
-//		SysUser query = new SysUser();
-//		sql.template(query);
+
 	}
 
 }

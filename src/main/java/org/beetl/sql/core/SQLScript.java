@@ -24,7 +24,7 @@ import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
-import org.beetl.sql.core.db.OralceRowID;
+
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.QueryMapping;
@@ -224,9 +224,8 @@ public class SQLScript {
 		}
 	}
 
-	public int insertBySqlId(Object paras, KeyHolder holder,String keyName) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("_root", paras);
+	public int insertBySqlId(Map  map, KeyHolder holder,String keyName) {
+		
 		PreparedStatement ps = null;
 		Connection conn = null;
 		try {

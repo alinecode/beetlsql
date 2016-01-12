@@ -559,7 +559,9 @@ public class SQLManager {
 	 */
 	public int  insert(String sqlId,Object paras,KeyHolder holder,String keyName){
 		SQLScript script = getScript(sqlId);
-		return script.insertBySqlId(paras, holder,keyName);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("_root", paras);
+		return script.insertBySqlId(map, holder,keyName);
 	}
 	
 	/**
@@ -574,9 +576,22 @@ public class SQLManager {
 		SQLScript script = getScript(sqlId);
 		String tableName = this.nc.getTableName(paras.getClass());
 		TableDesc  table = this.metaDataManager.getTable(tableName);
-		return script.insertBySqlId(paras, holder,table.getMetaIdName());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("_root", paras);
+		return script.insertBySqlId(map, holder,table.getMetaIdName());
 	}
 	
+	
+	/** 插入，并获取主键
+	 * @param clazz
+	 * @param paras
+	 * @param holder
+	 * @param keyName  主键列名称
+	 */
+	public int  insert(String sqlId,Map paras,KeyHolder holder,String keyName){
+		SQLScript script = getScript(sqlId);
+		return script.insertBySqlId(paras, holder,keyName);
+	}
 	
 	
 	/**

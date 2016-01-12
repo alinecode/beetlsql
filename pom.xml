@@ -5,7 +5,6 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
     <version>1.7.0-snapshots</version>
-
     <name>com.ibeetl:beetlsql</name>
     <url>http://maven.apache.org</url>
     <description>java template engine</description>
