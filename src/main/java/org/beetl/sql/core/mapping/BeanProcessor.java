@@ -294,6 +294,7 @@ public class BeanProcessor {
 			} else if (value instanceof String && params[0].isEnum()) {
 				value = Enum.valueOf(params[0].asSubclass(Enum.class),(String) value);
 			}
+			//@todo BigDecimal double 互相转化
 
 			//类型是否兼容
 			if (this.isCompatibleType(value, params[0])) {
