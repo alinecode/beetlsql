@@ -689,10 +689,11 @@ beetlsql 的其他属性也可以在此文件里设置
 
 			select * from user where status in (
 			@for(id in ids){
-			#id# #idLP.last?"":","#
+			#id#  #text(idLP.last?"","," )#
 			@}
 
-注意：变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档
+注意：变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档，text方法表示直接输出文本而不是符号“？”
+
 关于 sql中的in，可以使用内置的join方法更加方便
 
 * while 循环语句 ，如while(i<count))
