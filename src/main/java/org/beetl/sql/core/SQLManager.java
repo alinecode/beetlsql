@@ -46,6 +46,8 @@ public class SQLManager {
 	private  MetadataManager metaDataManager;
 	Interceptor[] inters = {};
 	Beetl beetl = null;
+	//数据库默认的shcema，对于单个schema应用，无需指定，但多个shcema，需要指定默认的shcema
+	private String defaultSchema = null ;
 	
 	/** 
 	 * @param dbStyle  数据个风格
@@ -53,7 +55,7 @@ public class SQLManager {
 	 * @param ds 数据库连接
 	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds) {
-		this(dbStyle, sqlLoader, ds, new DefaultNameConversion(), new Interceptor[]{});
+		this(dbStyle, sqlLoader, ds, new DefaultNameConversion(), new Interceptor[]{},null);
 
 	}
 	
@@ -64,9 +66,14 @@ public class SQLManager {
 	 * @param nc  数据库名称与java名称转化规则
 	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds,NameConversion nc) {
-		this(dbStyle, sqlLoader, ds, nc, new Interceptor[]{});
+		this(dbStyle, sqlLoader, ds, nc, new Interceptor[]{},null);
 
 	}
+	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,
+			ConnectionSource ds, NameConversion nc, Interceptor[] inters) {
+		this(dbStyle, sqlLoader, ds, nc, inters,null);
+	}
+	
 	
 	/**
 	 * @param dbStyle
@@ -76,7 +83,8 @@ public class SQLManager {
 	 * @param inters  
 	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,
-			ConnectionSource ds, NameConversion nc, Interceptor[] inters) {
+			ConnectionSource ds, NameConversion nc, Interceptor[] inters,String defaultSchema) {
+		this.defaultSchema = defaultSchema;
 		beetl = new Beetl(sqlLoader);
 		this.dbStyle = dbStyle;
 		this.sqlLoader = sqlLoader;
@@ -85,6 +93,7 @@ public class SQLManager {
 		this.nc = nc;
 		this.inters = inters;
 		this.dbStyle.setNameConversion(this.nc);
+		
 		this.dbStyle.setMetadataManager(initMetadataManager());
 		this.dbStyle.init(beetl);
 	}
@@ -1009,6 +1018,15 @@ public class SQLManager {
 			srcPath = src.toString();
 		}		
 		return srcPath;
+	}
+
+	public String getDefaultSchema() {
+		
+		return defaultSchema;
+	}
+
+	public void setDefaultSchema(String defaultSchema) {
+		this.defaultSchema = defaultSchema;
 	}
 
 

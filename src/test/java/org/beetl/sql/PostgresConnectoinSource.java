@@ -28,6 +28,7 @@ public class PostgresConnectoinSource implements ConnectionSource {
 			Class.forName(driver);
 			conn = DriverManager.getConnection(url, userName,
 	                password);
+			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {

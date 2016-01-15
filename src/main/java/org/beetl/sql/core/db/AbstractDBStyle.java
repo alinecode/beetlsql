@@ -309,13 +309,16 @@ public abstract class AbstractDBStyle implements DBStyle {
     public String genCondition(String tableName){
         TableDesc table = this.metadataManager.getTable(tableName);
         ClassDesc classDesc = table.getClassDesc(nameConversion);
-        Set<String> colSet = classDesc.getInCols();
-        if(null == colSet || colSet.isEmpty()){
+        Set<String> attrSet = classDesc.getInCols();
+        if(null == attrSet || attrSet.isEmpty()){
             return "";
         }
+        
+       
         StringBuilder condition = new StringBuilder();
-        for(String col:colSet){
-        		if(col.equals(table.getMetaIdName())){
+        for(String attr:attrSet){
+    		String col = this.nameConversion.getColName(attr);
+    		if(col.equalsIgnoreCase(table.getMetaIdName())){
 				continue ;
 			}
             condition.append(appendWhere(null,table,col));

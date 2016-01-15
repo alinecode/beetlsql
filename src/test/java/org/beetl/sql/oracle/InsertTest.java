@@ -8,6 +8,7 @@ import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.OracleStyle;
 import org.beetl.sql.ext.DebugInterceptor;
@@ -22,8 +23,9 @@ public class InsertTest {
 	public void before() {
 		OracleStyle style = new OracleStyle();
 		loader = new ClasspathLoader("/sql/",style);
-		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource(),new  DefaultNameConversion(),
+		manager = new SQLManager(new OracleStyle(), loader, new OracleConnectoinSource(),new  UnderlinedNameConversion(),
 				new Interceptor[]{new DebugInterceptor()});
+		
 	}
 
 	
@@ -40,10 +42,10 @@ public class InsertTest {
 //		    System.out.println(rs.getString("TABLE_NAME"));
 //		}
 		
-
-		Dept dept = new Dept();
-		dept.setName("ok");
-		KeyHolder holder = new KeyHolder();
+//
+//		Dept dept = new Dept();
+//		dept.setName("ok");
+//		KeyHolder holder = new KeyHolder();
 //		manager.insert(Dept.class, dept,holder);
 		
 //		UserInfo info = new UserInfo();
@@ -58,10 +60,10 @@ public class InsertTest {
 ////		List<Dept> list = manager.execute("select * from dept", Dept.class, new HashMap());
 //		System.out.println(list);
 		
-		manager.insert("dept.insert", dept, holder);
-		System.out.println("kye is"+holder.getLong());
+//		manager.insert("dept.insert", dept, holder);
+//		System.out.println("kye is"+holder.getLong());
 		
-		
+		manager.genSQLTemplateToConsole("dept");
 	}
 	
 

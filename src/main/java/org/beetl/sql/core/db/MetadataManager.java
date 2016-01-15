@@ -19,11 +19,14 @@ public class MetadataManager {
 	Map<String,TableDesc> map = null;
 //	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
 	SQLManager sm = null;
+	String defaultSchema;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
 		super();
 		this.ds = ds;
 		this.sm = sm ;
+		//获取数据库shcema
+		initSchema();
 	
 	}
 
@@ -70,13 +73,21 @@ public class MetadataManager {
 	
 	private TableDesc getTableFromMap(String tableName){
 		String name = tableName.toUpperCase();
+		
 		if(map==null){
 			synchronized(this){
 				if(map!=null) return map.get(name);
 				this.initMetadata();
 			}
 		}
-		return map.get(name);
+		TableDesc desc =  map.get(name);
+		if(desc==null){
+			if(name.indexOf(".")!=-1){
+				//
+			}
+			return null;
+		}
+		return desc ;
 	}
 	
 	private  TableDesc  initTable(String tableName){
@@ -93,45 +104,20 @@ public class MetadataManager {
 			try {
 				conn =  ds.getMaster();
 				DatabaseMetaData dbmd =  conn.getMetaData();
-				if(this.sm.getDbStyle().getName().equals("postgres")){
-					String sql = "SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type " 
-						+ " FROM   pg_index i "
-						+" JOIN   pg_attribute a ON a.attrelid = i.indrelid "
-						+ " AND a.attnum = ANY(i.indkey) "
-						+" WHERE  i.indrelid = ?::regclass "
-						+" AND    i.indisprimary";
-					java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-					ps.setString(1, desc.getMetaName());
-					rs =ps.executeQuery();
-					int count = 0;
-					while(rs.next()){
-						count++;
-						String metaIdName=rs.getString("attname");
-						desc.setIdName(metaIdName);
-					}
-					rs.close();ps.close();
-					//多个主键 下个版本再做
-					if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+				rs = dbmd.getPrimaryKeys(null,this.defaultSchema, desc.getMetaName());
+				
+				int count = 0;
+				while (rs.next()) {
+					count++;
+					String metaIdName=rs.getString("COLUMN_NAME");
 					
-					
-				}else{
-					rs = dbmd.getPrimaryKeys(null, null, desc.getMetaName());
-					
-					int count = 0;
-					while (rs.next()) {
-						count++;
-						String metaIdName=rs.getString("COLUMN_NAME");
-						
-						desc.setIdName(metaIdName);
-					}
-					rs.close();
-					//多个主键 下个版本再做
-					if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
-					
+					desc.setIdName(metaIdName);
 				}
+				rs.close();
+				//多个主键 下个版本再做
+				if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
 				
-				
-				rs = dbmd.getColumns(null, "%", desc.getMetaName(), "%");
+				rs = dbmd.getColumns(null, this.defaultSchema, desc.getMetaName(), "%");
 				while(rs.next()){
 					String colName = rs.getString("COLUMN_NAME");
 					Integer sqlType = rs.getInt("DATA_TYPE");
@@ -194,6 +180,39 @@ public class MetadataManager {
 			
 		}catch(Exception ex){
 			ex.printStackTrace();
+		}
+		
+	}
+	
+	private void initSchema(){
+		this.defaultSchema = sm.getDefaultSchema();
+		if(defaultSchema==null){
+			Connection conn = ds.getMaster();
+			
+			try {
+				setDefaultSchema(this.ds.getMaster());
+				conn.close();
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		
+	}
+	private void setDefaultSchema(Connection conn) throws SQLException{
+		
+		try{
+			defaultSchema =  conn.getSchema();
+		}catch(Throwable e){
+			String dbName = sm.getDbStyle().getName();
+			if(dbName.equals("postgres")){
+				defaultSchema = "public";
+			}else if(dbName.equals("sqlserver")){
+				defaultSchema="dbo";
+			}else if(dbName.equals("oracle")){
+				defaultSchema = conn.getMetaData().getUserName();
+			}
+			
 		}
 		
 	}
