@@ -395,8 +395,15 @@ public class SQLScript {
 		try {
 			conn = sm.getDs().getConn(id, true, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			for (int i = 0; i < objs.size(); i++){
+				Object o = objs.get(i);
+				if (o != null && o.getClass() == java.util.Date.class) {
+					// o =new java.sql.Date(((java.util.Date)o).getTime());
+					o = new Timestamp(((java.util.Date) o).getTime());
+				}
+				ps.setObject(i + 1,o);
+			}
+			
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, rs);
 		} catch (SQLException e) {
@@ -432,8 +439,15 @@ public class SQLScript {
 					ps = conn.prepareStatement(result.jdbcSql);
 					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.EMPTY_LIST);
 				}
-				for (int i = 0; i < objs.size(); i++)
-					ps.setObject(i + 1, objs.get(i));
+				for (int i = 0; i < objs.size(); i++){
+					Object o = objs.get(i);
+					if (o != null && o.getClass() == java.util.Date.class) {
+						// o =new java.sql.Date(((java.util.Date)o).getTime());
+						o = new Timestamp(((java.util.Date) o).getTime());
+					}
+					ps.setObject(i + 1,o);
+				}
+				
 				ps.addBatch();
 
 			}
