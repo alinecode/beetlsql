@@ -51,7 +51,7 @@ public class Beetl {
 	
 	public Properties loadExtConfig () {
 		Properties ps  = new Properties();
-		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+		InputStream ins = this.getClass().getResourceAsStream(
 				"/btsql-ext.properties");
 		if(ins==null) return ps;
 		try {
