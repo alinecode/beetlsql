@@ -6,7 +6,13 @@ insert
 selectAll
 ===
 	select * from user where 1=1
-	@if(!isEmpty(id)){
-		id = #id#
-	@}
+	`id` = #id#
+
+updateTest
+===
+
+	update activitys set `name` = #name#
+	where `id` = #id#
+	
+
 
