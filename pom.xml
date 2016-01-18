@@ -29,6 +29,10 @@
             <name>Sue</name>
             <email>15377535802@qq.com</email>
         </developer>
+        <developer>
+            <name>zhoupan</name>
+            <email>370267858@qq.com</email>
+            </developer>
     </developers>
 
     <scm>
@@ -132,13 +136,14 @@
             <scope>provided</scope>
         </dependency>
         
-         <!--dependency>
+        
+         <dependency>
             <groupId>org.apache</groupId>
             <artifactId>dbc-mysql-sqlserver</artifactId>
             <version>4.1</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
-        </dependency-->
+        </dependency>
   
 		
     </dependencies>

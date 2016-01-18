@@ -77,8 +77,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	@Override
 	public SQLSource genSelectById(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);
+		TableDesc  table = this.metadataManager.getTable(tableName);
 		String condition = appendIdCondition(cls);
-		return new SQLSource(new StringBuilder("select * from ").append(this.getEscapeForKeyWord()+tableName+this.getEscapeForKeyWord()).append(condition).toString());
+		return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 				appendSql = " order by "+table.getMetaIdName()+" desc ";
 			}
 		}
-		return new SQLSource(new StringBuilder("select * from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(condition).append(appendSql).toString());
+		return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(appendSql).toString());
 	}
 	
 	@Override
@@ -110,7 +111,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 				appendSql = " order by "+table.getMetaIdName()+" desc ";
 			}
 		}
-		return new SQLSource(new StringBuilder("select count(1) from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(condition).append(appendSql).toString());
+		return new SQLSource(new StringBuilder("select count(1) from ").append(getTableName(table)).append(condition).append(appendSql).toString());
 
 	}
 	
@@ -155,7 +156,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = this.metadataManager.getTable(tableName);
 		String condition = appendIdCondition(cls);
 		
-		return new SQLSource(new StringBuilder("delete from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(condition).toString());
+		return new SQLSource(new StringBuilder("delete from ").append(getTableName(table)).append(condition).toString());
 	}
 
 	@Override
@@ -163,7 +164,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);		
 		TableDesc table = this.metadataManager.getTable(tableName);
 		tableName = table.getMetaName();
-		return new SQLSource(new StringBuilder("select * from ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).toString());
+		return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).toString());
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
-		StringBuilder sql = new StringBuilder("update ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(" set ").append(lineSeparator);
+		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(classDesc.getIdName().equals(col)){
@@ -192,7 +193,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
-		StringBuilder sql = new StringBuilder("update ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(" set ").append(lineSeparator);
+		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
 		String condition = " where 1=1 " + lineSeparator;
 		
 		Set<String> cols = classDesc.getInCols();
@@ -218,7 +219,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc  table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);	
-		StringBuilder sql = new StringBuilder("update ").append(this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord()).append(" set ").append(lineSeparator);
+		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(classDesc.getIdName().equals(col)){
@@ -236,7 +237,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);	
-		StringBuilder sql = new StringBuilder("insert into " + this.getEscapeForKeyWord()+table.getMetaName()+this.getEscapeForKeyWord() + lineSeparator);
+		StringBuilder sql = new StringBuilder("insert into " + getTableName(table) + lineSeparator);
 		StringBuilder colSql = new StringBuilder("(");
 		StringBuilder valSql = new StringBuilder(" VALUES (");
 		int idType = DBStyle.ID_ASSIGN ;
@@ -551,6 +552,15 @@ public abstract class AbstractDBStyle implements DBStyle {
 		sql =  sql+STATEMENT_START + "if(!isEmpty(" + prefix+vars[1] + ")){"
 				+ STATEMENT_END + connector + col+comp[1] +this.HOLDER_START+vars[1]+HOLDER_END+ lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
 		return sql;
+		
+	}
+	
+	protected String getTableName(TableDesc desc ){
+		if(desc.getSchema()!=null){
+			return this.getEscapeForKeyWord()+desc.getSchema()+this.getEscapeForKeyWord()+"."+this.getEscapeForKeyWord()+desc.getMetaName()+this.getEscapeForKeyWord();
+		}else{
+			return this.getEscapeForKeyWord()+desc.getMetaName()+this.getEscapeForKeyWord();
+		}
 		
 	}
 

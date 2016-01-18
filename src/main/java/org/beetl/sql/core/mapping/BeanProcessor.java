@@ -7,6 +7,7 @@ import java.beans.PropertyDescriptor;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -459,7 +460,7 @@ public class BeanProcessor {
 		else if (propType.equals(Float.TYPE) || propType.equals(Float.class)) return Float.valueOf(rs.getFloat(index));
 		else if (propType.equals(Short.TYPE) || propType.equals(Short.class)) return Short.valueOf(rs.getShort(index));
 		else if (propType.equals(Byte.TYPE) || propType.equals(Byte.class)) return Byte.valueOf(rs.getByte(index));
-		
+		else if(propType.equals(BigDecimal.class)) return rs.getBigDecimal(index);
 		else if(propType.equals(char[].class)){
 			
 			if(dbName.equals("oracle")){

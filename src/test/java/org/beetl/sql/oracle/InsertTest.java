@@ -1,15 +1,15 @@
 package org.beetl.sql.oracle;
 
-import javax.sound.midi.MidiDevice.Info;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 
 import org.beetl.sql.OracleConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
-import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.OracleStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.junit.Before;
@@ -36,12 +36,12 @@ public class InsertTest {
 //		Connection conn = manager.getDs().getMaster();
 //		DatabaseMetaData dbmd =  conn.getMetaData();
 //		
-//		ResultSet rs = dbmd.getTables(null, "%", "DEPT",
+//		ResultSet rs = dbmd.getTables(null, "HR", "dept",
 //				new String[] { "TABLE" });
 //		while(rs.next()) {
 //		    System.out.println(rs.getString("TABLE_NAME"));
 //		}
-		
+//		
 //
 //		Dept dept = new Dept();
 //		dept.setName("ok");
@@ -63,7 +63,7 @@ public class InsertTest {
 //		manager.insert("dept.insert", dept, holder);
 //		System.out.println("kye is"+holder.getLong());
 		
-		manager.genSQLTemplateToConsole("dept");
+		manager.genSQLTemplateToConsole("hr.dept");
 	}
 	
 

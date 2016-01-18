@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.beetl.core.Configuration;
@@ -49,6 +50,15 @@ public class SQLManager {
 	//数据库默认的shcema，对于单个schema应用，无需指定，但多个shcema，需要指定默认的shcema
 	private String defaultSchema = null ;
 	
+	/** 创建一个beetlsql需要的sqlmanager
+	 * @param dbStyle
+	 * @param ds
+	 */
+	public SQLManager(DBStyle dbStyle, ConnectionSource ds) {
+		this(dbStyle,new ClasspathLoader("/sql"),ds);
+
+	}
+	
 	/** 
 	 * @param dbStyle  数据个风格
 	 * @param sqlLoader sql加载
@@ -69,10 +79,6 @@ public class SQLManager {
 		this(dbStyle, sqlLoader, ds, nc, new Interceptor[]{},null);
 
 	}
-	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,
-			ConnectionSource ds, NameConversion nc, Interceptor[] inters) {
-		this(dbStyle, sqlLoader, ds, nc, inters,null);
-	}
 	
 	
 	/**
@@ -80,12 +86,42 @@ public class SQLManager {
 	 * @param sqlLoader
 	 * @param ds
 	 * @param nc
-	 * @param inters  
+	 * @param inters
+	 */
+	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,
+			ConnectionSource ds, NameConversion nc, Interceptor[] inters) {
+		this(dbStyle, sqlLoader, ds, nc, inters,null);
+	}
+	
+	
+	/**
+	 * 
+	 * @param dbStyle
+	 * @param sqlLoader
+	 * @param ds
+	 * @param nc
+	 * @param inters
+	 * @param defaultSchema 数据库访问的schema，为null自动判断
 	 */
 	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,
 			ConnectionSource ds, NameConversion nc, Interceptor[] inters,String defaultSchema) {
+		this(dbStyle,sqlLoader,ds,nc,inters,defaultSchema,new Properties());
+	}
+	
+	/**
+	 * 
+	 * @param dbStyle
+	 * @param sqlLoader
+	 * @param ds
+	 * @param nc
+	 * @param inters
+	 * @param defaultSchema
+	 * @param ps  额外的beetl配置
+	 */
+	public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader,
+			ConnectionSource ds, NameConversion nc, Interceptor[] inters,String defaultSchema,Properties ps) {
 		this.defaultSchema = defaultSchema;
-		beetl = new Beetl(sqlLoader);
+		beetl = new Beetl(sqlLoader,ps);
 		this.dbStyle = dbStyle;
 		this.sqlLoader = sqlLoader;
 		

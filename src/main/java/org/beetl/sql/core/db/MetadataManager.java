@@ -12,21 +12,25 @@ import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.SQLManager;
 
+import com.alibaba.druid.stat.TableStat.Name;
+
 
 public class MetadataManager {
 
 	private ConnectionSource ds = null;
 	Map<String,TableDesc> map = null;
-//	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
+	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
 	SQLManager sm = null;
 	String defaultSchema;
+	String dbType = null;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
 		super();
 		this.ds = ds;
 		this.sm = sm ;
+		this.dbType = sm.getDbStyle().getName();
 		//获取数据库shcema
-		initSchema();
+		initDefaultSchema();
 	
 	}
 
@@ -58,8 +62,8 @@ public class MetadataManager {
 			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
 		}
 		
-		if(table.getMetaCols().size()==0){
-			table = initTable(name);
+		if(table.getCols().size()==0){
+			table = initTable(table);
 		}
 		return table;
 	}
@@ -81,30 +85,41 @@ public class MetadataManager {
 			}
 		}
 		TableDesc desc =  map.get(name);
-		if(desc==null){
-			if(name.indexOf(".")!=-1){
-				//
-			}
+		if(desc==NOT_EXIST){
 			return null;
+		}else if(desc==null){
+			int index = tableName.indexOf(".");
+			if(index!=-1){
+				//
+				String schema = tableName.substring(0, index);
+				String table = tableName.substring(index+1);
+				return initOtherSchemaTabel(schema,table);
+				
+			}else{
+				return null;
+			}
+			
+		}else{
+			return desc;
 		}
-		return desc ;
 	}
 	
-	private  TableDesc  initTable(String tableName){
-		TableDesc desc =this.getTableFromMap(tableName);
-		if(desc.getMetaCols().size()!=0){
-			return desc ;
-		}
+	private  TableDesc  initTable(TableDesc desc){
+	
+	
 		synchronized (desc){
+			
 			if(desc.getMetaCols().size()!=0){
 				return desc ;
 			}
 			Connection conn=null;
 			ResultSet rs = null;
 			try {
+				String catalog = this.getDbCatalog(desc.getSchema());
+				String schema = this.getDbSchema(desc.getSchema());
 				conn =  ds.getMaster();
 				DatabaseMetaData dbmd =  conn.getMetaData();
-				rs = dbmd.getPrimaryKeys(null,this.defaultSchema, desc.getMetaName());
+				rs = dbmd.getPrimaryKeys(catalog,schema, desc.getMetaName());
 				
 				int count = 0;
 				while (rs.next()) {
@@ -117,7 +132,7 @@ public class MetadataManager {
 				//多个主键 下个版本再做
 				if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
 				
-				rs = dbmd.getColumns(null, this.defaultSchema, desc.getMetaName(), "%");
+				rs = dbmd.getColumns(catalog,schema, desc.getMetaName(), "%");
 				while(rs.next()){
 					String colName = rs.getString("COLUMN_NAME");
 					Integer sqlType = rs.getInt("DATA_TYPE");
@@ -152,18 +167,20 @@ public class MetadataManager {
 		try {
 			conn =  ds.getMaster();
 			DatabaseMetaData dbmd =  conn.getMetaData();
-			
-			ResultSet rs = dbmd.getTables(null, "%", null,
+			String catalog = this.getDbCatalog(this.defaultSchema);
+			String schema = this.getDbSchema(this.defaultSchema);
+			ResultSet rs = dbmd.getTables(catalog,schema, null,
 					new String[] { "TABLE","VIEW" });
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
 				String remarks = rs.getString("REMARKS");
 //				System.out.println("remarks="+remarks);
 				TableDesc desc = new TableDesc(name,remarks);
+				desc.setSchema(this.defaultSchema);
 				map.put(desc.getName(),desc);
 			}
 		
-			
+			rs.close();
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		}finally{
@@ -171,6 +188,40 @@ public class MetadataManager {
 		}
 	}
 	
+	private TableDesc initOtherSchemaTabel(String sc,String table){
+		Connection conn=null;
+		try {
+			conn =  ds.getMaster();
+			DatabaseMetaData dbmd =  conn.getMetaData();
+			String catalog = this.getDbCatalog(sc);
+			String schema = this.getDbSchema(sc);
+			
+			ResultSet rs = null; rs = dbmd.getTables(catalog,schema, getDbTableName(table),
+						new String[] { "TABLE","VIEW" });
+		
+			TableDesc desc  = null;
+			while(rs.next()){
+				String  name = rs.getString("TABLE_NAME");
+				String remarks = rs.getString("REMARKS");
+				desc = new TableDesc(name,remarks);
+				desc.setSchema(sc);
+				map.put(sc+"."+table,desc);
+			}
+			rs.close();
+			if(desc!=null){
+				return desc ;
+			}else{
+				map.put(schema+"."+table,NOT_EXIST);
+				return null;
+			}
+			
+			
+		} catch (SQLException e) {
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		}finally{
+			close(conn);
+		}
+	}
 	
 	private void close(Connection conn){
 		try{
@@ -184,7 +235,7 @@ public class MetadataManager {
 		
 	}
 	
-	private void initSchema(){
+	private void initDefaultSchema(){
 		this.defaultSchema = sm.getDefaultSchema();
 		if(defaultSchema==null){
 			Connection conn = ds.getMaster();
@@ -203,7 +254,9 @@ public class MetadataManager {
 		
 		try{
 			defaultSchema =  conn.getSchema();
+			
 		}catch(Throwable e){
+			// jdbc低版本不支持
 			String dbName = sm.getDbStyle().getName();
 			if(dbName.equals("postgres")){
 				defaultSchema = "public";
@@ -211,9 +264,46 @@ public class MetadataManager {
 				defaultSchema="dbo";
 			}else if(dbName.equals("oracle")){
 				defaultSchema = conn.getMetaData().getUserName();
+			}else{
+				defaultSchema = null;
 			}
 			
 		}
 		
+	}
+	/**
+	 * 
+	 * 按照我理解，对于访问表xx.yyy, 不同数据库有不同的catalog和schema
+	 */
+	
+	/**
+	 * 
+	 * @param namespace
+	 * @return
+	 */
+	private String getDbSchema(String namespace){
+		if(dbType.equals("mysql")){
+			return null;
+		}else if(dbType.equals("oracle")){
+			return namespace.toUpperCase();
+		}else{
+			return namespace;
+		}
+	}
+	
+	private String getDbCatalog(String schema){
+		if(dbType.equals("mysql")){
+			return schema;
+		}else{
+			return null;
+		}
+	}
+	
+	private String getDbTableName(String name){
+		if(dbType.equals("oracle")){
+			return name.toUpperCase();
+		}else{
+			return name;
+		}
 	}
 }

@@ -65,7 +65,7 @@ public class InsertTest {
 	@Test
 	public void addUser() throws Exception {
 		
-		manager.genSQLTemplateToConsole("user");
+		manager.genSQLTemplateToConsole("bk.manager");
 		
 		
 	}

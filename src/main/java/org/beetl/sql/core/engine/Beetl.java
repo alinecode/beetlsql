@@ -12,12 +12,13 @@ public class Beetl {
 	
 	GroupTemplate gt = null;  
 	Properties ps = null;
-	public Beetl(SQLLoader loader) {
+	public Beetl(SQLLoader loader,Properties other) {
 		try {
 			
 			ps = loadDefaultConfig();
 			Properties ext = loadExtConfig();
 			ps.putAll(ext);
+			ps.putAll(other);
 			boolean product = Boolean.parseBoolean(ps.getProperty("PRODUCT_MODE"));
 			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader,product);
 			Configuration cfg =new Configuration(ps);			
@@ -56,12 +57,15 @@ public class Beetl {
 		if(ins==null) return ps;
 		try {
 			ps.load(ins);
+			ins.close();
 		} catch (IOException e) {
 			throw new RuntimeException("默认配置文件加载错:/btsql.properties");
 		}
+		
 		return ps;	
 	}
-
+	
+	
 
 
 	public GroupTemplate getGroupTemplate() {

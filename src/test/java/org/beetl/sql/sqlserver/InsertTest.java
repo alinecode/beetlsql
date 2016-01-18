@@ -1,6 +1,8 @@
 package org.beetl.sql.sqlserver;
 
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 
 import org.beetl.sql.SqlServerConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
@@ -43,15 +45,27 @@ public class InsertTest {
 	@Test
 	public void addUser() throws Exception {
 		
+//		Connection conn = manager.getDs().getMaster();
+//		DatabaseMetaData dbmd =  conn.getMetaData();
+//		
+//		ResultSet rs = dbmd.getTables(null, "guest", "user",
+//				new String[] { "TABLE" });
+//		while(rs.next()) {
+//		    System.out.println(rs.getString("TABLE_NAME"));
+//		}
+//		
 
 //		manager.genPojoCodeToConsole("test_lijz");
 //		manager.genSQLTemplateToConsole("test_lijz");
-		TestLijz user = new TestLijz();
-		user.setName("ok");
-		user.setAge(1d);
-		user.setCreateTime(new Date());
-		manager.insert(user);
+		manager.genPojoCodeToConsole("guest.user");
+		manager.genSQLTemplateToConsole("guest.user");
 		
+//		TestLijz user = new TestLijz();
+//		user.setName("ok");
+//		user.setAge(1d);
+//		user.setCreateTime(new Date());
+//		manager.insert(user);
+//		
 
 		
 	}

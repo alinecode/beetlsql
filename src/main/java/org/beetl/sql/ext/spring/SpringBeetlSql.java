@@ -1,8 +1,10 @@
 package org.beetl.sql.ext.spring;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
@@ -11,13 +13,14 @@ import org.beetl.core.Function;
 import org.beetl.core.TagFactory;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
-import org.beetl.sql.core.HumpNameConversion;
+import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.springframework.core.io.Resource;
 
 public class SpringBeetlSql {
 	ConnectionSource cs;
@@ -31,6 +34,12 @@ public class SpringBeetlSql {
 	
 	private Map<String, TagFactory> tagFactorys = Collections.emptyMap();
 
+	/**
+	 * 配置文件地址
+	 */
+	protected Resource configFileResource = null;
+	
+	protected String defaultSchema = null;
 	
 	//  beetl 相关 方法
 	
@@ -47,18 +56,51 @@ public class SpringBeetlSql {
 		}
 		
 		if(nc==null){
-			nc = new HumpNameConversion();
+			nc = new DefaultNameConversion();
 		}
 		
 		if(interceptors==null){
 			interceptors = new Interceptor[0];
 		}
-		sqlManager = new SQLManager(dbStyle,sqlLoader,cs,nc,interceptors);
 		
-		
-			for(Entry<String,Function> entry :functions.entrySet()){
-				sqlManager.getBeetl().getGroupTemplate().registerFunction(entry.getKey(),entry.getValue());
+		Properties properties = new Properties();
+		if(this.configFileResource!=null){
+			
+			if (configFileResource != null)
+			{
+				InputStream in = null;
+				try
+				{
+					// 如果指定了配置文件，先加载配置文件
+
+					in = configFileResource.getInputStream();
+					properties.load(in);
+				}
+				catch (IOException ex)
+				{
+					throw new RuntimeException(ex);
+				}
+				finally
+				{
+					if (in != null)
+					{
+						try {
+							in.close();
+						} catch (IOException e) {
+							
+						}
+						in = null;
+					}
+				}
 			}
+		}
+		sqlManager = new SQLManager(dbStyle,sqlLoader,cs,nc,interceptors,this.defaultSchema,properties);
+		
+		
+		for(Entry<String,Function> entry :functions.entrySet()){
+			sqlManager.getBeetl().getGroupTemplate().registerFunction(entry.getKey(),entry.getValue());
+		}
+		
 		for(Entry<String,TagFactory> entry:tagFactorys.entrySet()){
 			sqlManager.getBeetl().getGroupTemplate().registerTagFactory(entry.getKey(), entry.getValue());
 		}
@@ -124,6 +166,24 @@ public class SpringBeetlSql {
 	public void setTagFactorys(Map<String, TagFactory> tagFactorys) {
 		this.tagFactorys = tagFactorys;
 	}
+
+	public Resource getConfigFileResource() {
+		return configFileResource;
+	}
+
+	public void setConfigFileResource(Resource configFileResource) {
+		this.configFileResource = configFileResource;
+	}
+
+	public String getDefaultSchema() {
+		return defaultSchema;
+	}
+
+	public void setDefaultSchema(String defaultSchema) {
+		this.defaultSchema = defaultSchema;
+	}
+	
+	
 
 }
 	

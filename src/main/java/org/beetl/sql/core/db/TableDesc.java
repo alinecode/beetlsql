@@ -25,7 +25,8 @@ public class TableDesc{
 	private Map<Class,ClassDesc> classes = new LinkedHashMap<Class,ClassDesc>();
 	//table 列的详细描述
 	private Map<String,ColDesc> colsDetail = new LinkedHashMap<String,ColDesc>();
-	
+	//table所在的schema
+	private String schema ;
 	
 	public TableDesc(String name,String remark){
 		this.name = name.toUpperCase();
@@ -122,6 +123,18 @@ public class TableDesc{
 		ClassDesc c = new ClassDesc(this,nc);
 		return c ;
 	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+	
+	
+	
+	
 	
 	
 
