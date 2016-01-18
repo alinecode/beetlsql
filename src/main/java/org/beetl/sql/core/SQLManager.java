@@ -597,7 +597,7 @@ public class SQLManager {
 	
 	
 	/** 插入，并获取主键
-	 * @param clazz
+	 * @param sqlId
 	 * @param paras
 	 * @param holder
 	 * @param keyName  主键列名称
@@ -628,7 +628,7 @@ public class SQLManager {
 	
 	
 	/** 插入，并获取主键
-	 * @param clazz
+	 * @param sqlId
 	 * @param paras
 	 * @param holder
 	 * @param keyName  主键列名称

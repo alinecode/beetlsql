@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
-    <version>1.7.0-snapshots</version>
+    <version>1.7.0</version>
     <name>com.ibeetl:beetlsql</name>
     <url>http://maven.apache.org</url>
     <description>java template engine</description>
@@ -87,13 +87,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
+        <!--  dependency>
             <groupId>oralce</groupId>
             <artifactId>oralce-express</artifactId>
             <version>6</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -137,13 +137,13 @@
         </dependency>
         
         
-         <dependency>
+         <!-- dependency>
             <groupId>org.apache</groupId>
             <artifactId>dbc-mysql-sqlserver</artifactId>
             <version>4.1</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
-        </dependency>
+        </dependency-->
   
 		
     </dependencies>
