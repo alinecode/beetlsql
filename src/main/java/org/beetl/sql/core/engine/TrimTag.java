@@ -54,15 +54,15 @@ public class TrimTag extends Tag {
 	public void render() {
 		try {
 			Object[] args = this.args;
-			if (args != null) {
+			if (args != null && args.length!=0) {
 				initTrimArgs(args);
 				StringBuilder sb = buildTrimContent();
 				this.ctx.byteWriter.writeString(sb.toString());
 			} else {
 				// 兼容老版本 trim.
-				String sql = getBodyContent().getBody();
+				String sql = getBodyContent().getBody().trim();
 				if (sql.endsWith(",")) {
-					this.ctx.byteWriter.writeString(sql.substring(0, sql.length()));
+					this.ctx.byteWriter.writeString(sql.substring(0, sql.length()-1));
 				} else {
 					this.ctx.byteWriter.writeString(sql);
 				}
@@ -167,4 +167,6 @@ public class TrimTag extends Tag {
 		}
 		return CommonKit.trim(sql).isEmpty();
 	}
+	
+	
 }
