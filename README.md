@@ -4,7 +4,7 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 1.6.1 (130K), 另外还需要beetl 包
+* 当前版本 1.7.0 (150K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -17,17 +17,17 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * 简单支持关系映射而不引入复杂的OR Mapping概念和技术。
 * 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 * 首个内置支持主从数据库支持的开源工具，通过扩展，可以支持更复杂的分库分表逻辑
-* 支持跨数据库平台，开发者所需工作减少到最小
+* 支持跨数据库平台，开发者所需工作减少到最小，目前跨数据库支持mysql,postgres,oracle,sqlserver,h2,sqllite.
 * 可以针对单个表(或者视图）代码生成pojo类和sql模版，甚至是整个数据库。能减少代码编写工作量
 
 # 5 分钟例子
 
 ## 准备工作
 
-为了快速尝试BeetlSQL，需要准备一个Mysql数据库，然后执行如下sql脚本
+为了快速尝试BeetlSQL，需要准备一个Mysql数据库或者其他任何beetlsql支持的数据库，然后执行如下sql脚本
 
 	CREATE TABLE `user` (
-	  `id` int(11) NOT NULL,
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `name` varchar(64) DEFAULT NULL,
 	  `age` int(4) DEFAULT NULL,
 	  `userName` varchar(64) DEFAULT NULL COMMENT '用户名称',
@@ -269,7 +269,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * cs: 指定ConnectionSource，可以用系统提供的DefaultConnectionSource，支持按照CRUD决定主从。例子里只有一个master库
 
-* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle，SQLiteStyle
+* dbStyle: 数据库类型，目前只支持org.beetl.sql.core.db.MySqlStyle，以及OralceSytle，PostgresStyle，SQLiteStyle，SqlServerStyle，H2Style
 
 * sqlLoader: sql语句加载来源
 
@@ -306,6 +306,13 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 		}
 
 	}
+
+其他集成配置还包括:
+
+* functions  配置扩展函数
+* tagFactorys 配置扩展标签
+* configFileResource  扩展配置文件位置，beetlsql将读取此配置文件覆盖beetlsql默认选项
+* defaultSchema  数据库访问schema
 
 可以参考demo https://git.oschina.net/xiandafu/springbeetlsql
 
@@ -392,6 +399,8 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public <T> List<T> select(String sqlId, Class<T> clazz, Object paras, int start, int size) ，增加翻页
 * public <T> T selectSingle(String id,Object paras, Class<T> target) 根据sqlid查询，将对应的唯一值映射成指定的taget对象,RowMapper mapper 也随着这些api提供,不在此列出了
 
+	注：sqlserver 翻页依赖对id的排序，因此，请保证sqlserver表由主键id，否则不能start,size 进行翻页，只能自己写sql语句完成翻页
+
 * public <T> T selectSingle(String id,Map<String, Object> paras, Class<T> target)  同上，参数是map
 * public Integer  intValue(String id,Object paras) 查询结果映射成Integer，输入是objct
 * public Integer  intValue(String id,Map paras) 查询结果映射成Integer，输入是map，其他还有 longValue，bigDecimalValue
@@ -409,6 +418,9 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 **通过sqlid更新**
 
+* public int  insert(String sqlId,Object paras,KeyHolder holder) 根据sqlId 插入，并返回主键，主键id由paras对象所指定
+* public int  insert(String sqlId,Object paras,KeyHolder holder,String keyName) 同上，主键由keyName指定
+* public int  insert(String sqlId,Map paras,KeyHolder holder,String keyName)，同上，参数通过map提供
 * public int update(String sqlId, Object obj) 根据sqlid更新
 * public int update(String sqlId, Map<String, Object> paras) 根据sqlid更新，输出参数是map
 * public int[] updateBatch(String sqlId,List<?> list) 批量更新
@@ -464,6 +476,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 					}else{
 						return false;
 					}
+					// return false 
 				}
 			});
 	
@@ -479,6 +492,8 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 	@Table(name="user")
 	public class QueryUser ..
+	
+	注：可以为对象指定一个数据库shcema，如name="cms.user",此时将访问cms库（或者cms用户，对不同的数据库，称谓不一样）下的user数据表
 
 * @AutoID,作用于getter方法，告诉beetlsql，这是自增主键
 * @AssignID，作用于getter方法，告诉beetlsql，这是主键，且由代码设定主键
@@ -790,8 +805,11 @@ beetlsql 提供了trim标签函数，用于删除标签体最后一个逗号，�
 	@}
 	where id = #id#
 	
-trim 标签可以删除 标签体里的最后一个逗号.
-可以参考beetl官网 了解如何开发自定义标签以及注册标签函数
+trim 标签可以删除 标签体里的最后一个逗号.trim 也可以实现类似mybatis的功能，通过传入trim参数prefix，prefixOverrides来完成。具体参考标签api 文档
+
+
+
+	注:可以参考beetl官网 了解如何开发自定义标签以及注册标签函数
 
 
 ## Debug功能
