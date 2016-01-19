@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.beetl.core.Tag;
-import org.beetl.sql.core.kit.CommonKit;
+import org.beetl.sql.core.kit.StringKit;
 
 /**
  * 实现mybatis trim. <code>
- * <trim prefix="WHERE" prefixOverrides="AND |OR"> </trim>
- * <trim prefix="SET" suffixOverrides=","></trim>
+ * &lt;trim prefix="WHERE" prefixOverrides="AND |OR"&gt; &lt;/trim&gt;
+ * &lt;trim prefix="SET" suffixOverrides=","&gt;&lt;/trim&gt;
  * </code>
  *
  * @author zhoupan
@@ -84,29 +84,29 @@ public class TrimTag extends Tag {
 		boolean isSqlBlank = this.isSqlBlank(sql);
 		if (!isSqlBlank) {
 			// prefix
-			if (CommonKit.isNotBlank(this.prefix)) {
+			if (StringKit.isNotBlank(this.prefix)) {
 				appendSql(sb, this.prefix);
 			}
 			// prefixOverrides
-			String trimSql = CommonKit.trim(sql);
+			String trimSql = StringKit.trim(sql);
 			if (this.prefixOverrides != null && this.prefixOverrides.length > 0) {
 				for (String prefixOverride : this.prefixOverrides) {
-					if (CommonKit.startsWithIgnoreCase(trimSql, prefixOverride)) {
-						trimSql = CommonKit.substringAfter(trimSql, prefixOverride);
+					if (StringKit.startsWith(trimSql, prefixOverride,true)) {
+						trimSql = StringKit.substringAfter(trimSql, prefixOverride);
 					}
 				}
 			}
 			// suffixOverrides
 			if (this.suffixOverrides != null && this.suffixOverrides.length > 0) {
 				for (String suffixOverride : this.suffixOverrides) {
-					if (CommonKit.endsWithIgnoreCase(trimSql, suffixOverride)) {
-						trimSql = CommonKit.substringBeforeLast(trimSql, suffixOverride);
+					if (StringKit.endsWith(trimSql, suffixOverride,true)) {
+						trimSql = StringKit.substringBeforeLast(trimSql, suffixOverride);
 					}
 				}
 			}
 			this.appendSql(sb, trimSql);
 			// suffix
-			if (CommonKit.isNotBlank(this.suffix)) {
+			if (StringKit.isNotBlank(this.suffix)) {
 				appendSql(sb, this.suffix);
 			}
 		}
@@ -131,10 +131,10 @@ public class TrimTag extends Tag {
 					this.suffix = (String) params.get(SUFFIX);
 				}
 				if (params.containsKey(PREFIX_OVERRIDES)) {
-					this.prefixOverrides = CommonKit.split((String) params.get(PREFIX_OVERRIDES), SEPARATOR_CHAR);
+					this.prefixOverrides = StringKit.split((String) params.get(PREFIX_OVERRIDES), SEPARATOR_CHAR);
 				}
 				if (params.containsKey(SUFFIX_OVERRIDES)) {
-					this.suffixOverrides = CommonKit.split((String) params.get(SUFFIX_OVERRIDES), SEPARATOR_CHAR);
+					this.suffixOverrides = StringKit.split((String) params.get(SUFFIX_OVERRIDES), SEPARATOR_CHAR);
 				}
 			}
 		}
@@ -149,7 +149,7 @@ public class TrimTag extends Tag {
 	 *            the sql
 	 */
 	protected void appendSql(StringBuilder sb, String sql) {
-		if (CommonKit.isNotBlank(sql)) {
+		if (StringKit.isNotBlank(sql)) {
 			sb.append(SPACE).append(sql).append(SPACE);
 		}
 	}
@@ -162,10 +162,10 @@ public class TrimTag extends Tag {
 	 * @return true, if checks if is sql blank
 	 */
 	protected boolean isSqlBlank(String sql) {
-		if (CommonKit.isBlank(sql)) {
+		if (StringKit.isBlank(sql)) {
 			return true;
 		}
-		return CommonKit.trim(sql).isEmpty();
+		return StringKit.trim(sql).isEmpty();
 	}
 	
 	
