@@ -1,6 +1,7 @@
 package org.beetl.sql.test;
 
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
@@ -20,9 +21,10 @@ public class QuickTest {
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
-//		List<User2> user = sql.select("user2.selectSum", User2.class, null);
-		BigDecimal data  = sql.bigDecimalValue("user2.selectSum", null);
-		sql.all(User2.class);
+		List<Map> user = sql.select("user2.selectSum", Map.class, null);
+		System.out.println(user);
+//		BigDecimal data  = sql.bigDecimalValue("user2.selectSum", null);
+//		sql.all(User2.class);
 		
 //		User2 user = new User2();
 //		user.setUsername("ok");

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
-    <version>1.7.0</version>
+    <version>1.7.1</version>
     <name>com.ibeetl:beetlsql</name>
     <url>http://maven.apache.org</url>
     <description>java template engine</description>
@@ -78,6 +78,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>4.2.3.RELEASE</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
