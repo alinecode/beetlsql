@@ -29,6 +29,8 @@ import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
+import org.beetl.sql.core.mapper.DefaultMapperBuilder;
+import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
@@ -49,6 +51,8 @@ public class SQLManager {
 	Beetl beetl = null;
 	//数据库默认的shcema，对于单个schema应用，无需指定，但多个shcema，需要指定默认的shcema
 	private String defaultSchema = null ;
+	
+	MapperBuilder mapperBuilder = new DefaultMapperBuilder(this);
 	
 	/** 创建一个beetlsql需要的sqlmanager
 	 * @param dbStyle
@@ -984,6 +988,9 @@ public class SQLManager {
 		}
 	}
 	
+	public <T> T getMapper(Class<T> mapperInterface){
+		return this.mapperBuilder.getMapper(mapperInterface);
+	}
 	
 	//===============get/set===============
 
@@ -1064,6 +1071,16 @@ public class SQLManager {
 	public void setDefaultSchema(String defaultSchema) {
 		this.defaultSchema = defaultSchema;
 	}
+
+	public MapperBuilder getMapperBuilder() {
+		return mapperBuilder;
+	}
+
+	public void setMapperBuilder(MapperBuilder mapperBuilder) {
+		this.mapperBuilder = mapperBuilder;
+	}
+	
+	
 
 
 }

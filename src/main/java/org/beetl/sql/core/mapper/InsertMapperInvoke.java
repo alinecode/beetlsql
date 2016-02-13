@@ -1,0 +1,35 @@
+package org.beetl.sql.core.mapper;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.db.KeyHolder;
+
+/**
+ *  
+ * @author xiandafu
+ *
+ */
+public class InsertMapperInvoke extends BaseMapperInvoke {
+
+	@Override
+	public Object call(SQLManager sm, Class entityClass, String namespace, Method m, Object[] args) {
+		
+		MethodDesc desc = MethodDesc.getMetodDesc(sm,m);
+		Map<String,Object> sqlArgs = this.getSqlArgs(sm, m, args);
+		KeyHolder keyHolder = null;
+		if(desc.keyHolderPos!=-1){
+			keyHolder = (KeyHolder)args[desc.keyHolderPos];
+		}else{
+			keyHolder = new KeyHolder();
+		}
+		sm.insert(namespace+"."+m.getName(), sqlArgs, keyHolder);
+		return keyHolder;
+				
+	}
+
+	
+}

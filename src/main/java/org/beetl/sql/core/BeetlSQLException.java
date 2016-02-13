@@ -21,12 +21,15 @@ public class BeetlSQLException extends RuntimeException {
 	
 
 	//SQL 脚本运行出错
-	public static final int 	TABLE_NOT_EXIST  = 7;
+	public static final int 	TABLE_NOT_EXIST  = 8;
 		
 
 	//根据指定类创建实例出错
-	public static final int 	OBJECT_INSTANCE_ERROR  = 8;
+	public static final int 	OBJECT_INSTANCE_ERROR  = 9;
 		
+	//mapper 未知类型
+	public static final int 	UNKNOW_SQL_TYPE  = 10;
+			
 		
 	int code ;
 	
