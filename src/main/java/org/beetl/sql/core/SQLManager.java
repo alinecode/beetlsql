@@ -630,6 +630,22 @@ public class SQLManager {
 		return script.insertBySqlId(map, holder,table.getMetaIdName());
 	}
 	
+	/**
+	 * 
+	 * @param c
+	 * @param sqlId
+	 * @param paras
+	 * @param holder
+	 * @return
+	 */
+	public int  insert(String sqlId,Class<?> clazz,Map paras,KeyHolder holder){
+		SQLScript script = getScript(sqlId);
+		String tableName = this.nc.getTableName(clazz);
+		TableDesc  table = this.metaDataManager.getTable(tableName);
+		return script.insertBySqlId(paras, holder,table.getMetaIdName());
+	}
+	
+	
 	
 	/** 插入，并获取主键
 	 * @param sqlId

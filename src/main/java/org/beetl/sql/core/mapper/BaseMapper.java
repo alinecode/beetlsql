@@ -17,14 +17,14 @@ public interface BaseMapper<T> {
 	/* insert */
 	void insert(T entity);
 	void insert(T entity,KeyHolder holder);
-	KeyHolder insertRenturnKey(T entity);
+	KeyHolder insertReturnKey(T entity);
 	
 	/*update*/
 	int updateById(T entity);
 	int updateTemplateById(T entity);
 	
 	/*delete*/
-	int deleteById(T entity);
+	int deleteById(Object key);
 
 	/*select */
 	

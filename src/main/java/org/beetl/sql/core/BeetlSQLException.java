@@ -28,7 +28,10 @@ public class BeetlSQLException extends RuntimeException {
 	public static final int 	OBJECT_INSTANCE_ERROR  = 9;
 		
 	//mapper 未知类型
-	public static final int 	UNKNOW_SQL_TYPE  = 10;
+	public static final int 	UNKNOW_MAPPER_SQL_TYPE  = 10;
+	
+	//mapper 接口函数 参数定义错误
+	public static final int 	ERROR_MAPPER_PARAMEER  = 11;
 			
 		
 	int code ;

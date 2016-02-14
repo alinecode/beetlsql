@@ -17,8 +17,8 @@ public class SelectMapperInvoke extends BaseMapperInvoke {
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String namespace, Method m, Object[] args) {
 		
-		MethodDesc desc = MethodDesc.getMetodDesc(sm,m);
-		Map<String,Object> sqlArgs = this.getSqlArgs(sm, m, args);
+		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m);
+		Map<String,Object> sqlArgs = this.getSqlArgs(sm, entityClass,m, args);
 		
 		if(desc.paggerPos!=null){
 			int offset ,size ;

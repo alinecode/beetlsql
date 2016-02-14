@@ -167,7 +167,7 @@ public class MapperJavaProxy implements InvocationHandler {
 	 *            the mapper interface
 	 */
 	protected void onResolveNamespace(Class<?> mapperInterface) {
-		this.namespace =  this.entityClass.getName() ;
+		this.namespace =  this.entityClass.getSimpleName() ;
 	}
 
 	
@@ -195,7 +195,7 @@ public class MapperJavaProxy implements InvocationHandler {
 		if(c==BaseMapper.class){
 			invoke = new InnerMapperInvoke();
 		}else{
-			MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, method);
+			MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass,method);
 			switch(desc.type){
 			case 0 :invoke = new InsertMapperInvoke();break;
 			case 1:invoke = new InsertMapperInvoke();break;
@@ -204,8 +204,8 @@ public class MapperJavaProxy implements InvocationHandler {
 			case 4:invoke = new UpdateMapperInvoke();break;
 			}
 		}
-		
-		Object ret = invoke.call(this.sqlManager, c, namespace, method, args);
+		//handle Void.class ?
+		Object ret = invoke.call(this.sqlManager, this.entityClass, namespace, method, args);
 		return ret;
 		
 	}

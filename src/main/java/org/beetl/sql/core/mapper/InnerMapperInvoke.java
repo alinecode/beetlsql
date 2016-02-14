@@ -24,7 +24,7 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 				sm.insert(entityClass,args[0],(KeyHolder)args[1]);
 				return null;
 			}
-		}else if(name.equals("insertRenturnKey")){
+		}else if(name.equals("insertReturnKey")){
 			KeyHolder holder = new KeyHolder();
 			sm.insert(entityClass,args[0],holder);
 			return holder;
@@ -37,7 +37,7 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 		}else if(name.equals("unique")){
 			return sm.unique(entityClass, args[0]);
 		}else if(name.equals("all")){
-			if(args.length==0){
+			if(args==null){
 				return sm.all(entityClass);
 			}else{
 				return sm.all(entityClass,(Integer)args[0],(Integer)args[1]);
@@ -46,10 +46,10 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 		}else if(name.equals("allCount")){
 			return sm.allCount(entityClass);
 		}else if(name.equals("template")){
-			if(args.length==0){
+			if(args.length==1){
 				return sm.template(args[0]);
 			}else{
-				return sm.template(entityClass,(Integer)args[0],(Integer)args[1]);
+				return sm.template(args[0],(Integer)args[1],(Integer)args[2]);
 			}
 			
 		}else if(name.equals("templateCount")){

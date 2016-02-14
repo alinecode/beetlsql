@@ -18,15 +18,15 @@ public class InsertMapperInvoke extends BaseMapperInvoke {
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String namespace, Method m, Object[] args) {
 		
-		MethodDesc desc = MethodDesc.getMetodDesc(sm,m);
-		Map<String,Object> sqlArgs = this.getSqlArgs(sm, m, args);
+		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m);
+		Map<String,Object> sqlArgs = this.getSqlArgs(sm, entityClass,m, args);
 		KeyHolder keyHolder = null;
 		if(desc.keyHolderPos!=-1){
 			keyHolder = (KeyHolder)args[desc.keyHolderPos];
 		}else{
 			keyHolder = new KeyHolder();
 		}
-		sm.insert(namespace+"."+m.getName(), sqlArgs, keyHolder);
+		sm.insert(namespace+"."+m.getName(),entityClass, sqlArgs, keyHolder);
 		return keyHolder;
 				
 	}

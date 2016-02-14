@@ -38,8 +38,9 @@ public class DebugInterceptor implements Interceptor {
 				found = true ;
 			}
 			
-			if(found&&tr.getClassName().indexOf("SQLManager")==-1){
-					//found 
+			if(found&&!tr.getClassName().startsWith("org.beetl.sql.core")&&!tr.getClassName().startsWith("com.sun")){
+				//startwith("com.sun"),proxy call,please refer to MapperJava Proxy since beetlsql 2.0
+				//found 
 				String className = tr.getClassName();
 				String mehodName = tr.getMethodName();
 				int line = tr.getLineNumber();

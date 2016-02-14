@@ -222,7 +222,8 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 			}
 		}
 		else{
-			throw new IllegalArgumentException("无法转化成期望类型");
+			//todo int.class etc
+			throw new IllegalArgumentException("无法转化成期望类型:"+requiredType);
 		}
 	}
 

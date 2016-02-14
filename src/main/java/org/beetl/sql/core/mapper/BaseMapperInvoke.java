@@ -13,13 +13,19 @@ import org.beetl.sql.core.annotatoin.Param;
 
 public abstract class BaseMapperInvoke implements MapperInvoke {
 
-	protected Map getSqlArgs(SQLManager sm,Method m,Object[] args){
-		MethodDesc desc = MethodDesc.getMetodDesc(sm,m);
-		Map<String,Object> sqlArgs = new HashMap<String,Object>();
-		for(Entry<String,Integer> entry:desc.parasPos.entrySet()){
-			sqlArgs.put(entry.getKey(), args[entry.getValue()]);
+	protected Map getSqlArgs(SQLManager sm,Class entityClass,Method m,Object[] args){
+		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m);
+		if(desc.mapPos!=-1){
+			return (Map)args[desc.mapPos];
+		}else{
+			
+			Map<String,Object> sqlArgs = new HashMap<String,Object>();
+			for(Entry<String,Integer> entry:desc.parasPos.entrySet()){
+				sqlArgs.put(entry.getKey(), args[entry.getValue()]);
+			}
+			return sqlArgs;
 		}
-		return sqlArgs;
+		
 	}
 	
 	

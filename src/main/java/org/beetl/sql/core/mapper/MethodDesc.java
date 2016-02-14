@@ -1,9 +1,10 @@
 package org.beetl.sql.core.mapper;
 
-import java.awt.List;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.beetl.sql.core.BeetlSQLException;
@@ -31,22 +32,23 @@ public class MethodDesc {
 	public int[] paggerPos = null;
 	// -1 表示返回一个KeyHolder，否则，使用指定位置的参数
 	public int keyHolderPos = -1;
+	public int mapPos = -1;
 	
 	static Map<Method,MethodDesc> cache = new HashMap<Method,MethodDesc>();
-	public static MethodDesc getMetodDesc(SQLManager sm,Method m){
+	public static MethodDesc getMetodDesc(SQLManager sm,Class entityClass,Method m){
 		MethodDesc desc = cache.get(m);
 		if(desc!=null) return desc ;
 		desc = new MethodDesc();
-		desc.parse(sm,m);
+		desc.parse(sm,entityClass,m);
 		cache.put(m, desc);
 		return desc;
 		
 	}
 	
-	protected  void parse(SQLManager sm,Method m){
-		Class c = m.getDeclaringClass();
+	protected  void parse(SQLManager sm,Class entityClass,Method m){
+		
 		String name = m.getName();
-		String sqlId = c.getSimpleName()+"."+name;
+		String sqlId = entityClass.getSimpleName()+"."+name;
 		SqlStatement st = (SqlStatement)m.getAnnotation(SqlStatement.class);
 		// 先初步判断 sql 类型
 		type = 0;
@@ -71,65 +73,105 @@ public class MethodDesc {
 			}else if(sql.startsWith("update")){
 				type = 4;
 			}else{
-				throw new BeetlSQLException(BeetlSQLException.UNKNOW_SQL_TYPE,sqlId);
+				throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE,sqlId);
 			}
 			
 		}
-		
+		//纪录错误位置
+		List<Integer> errorPara = new LinkedList<Integer>();
 		Annotation[][] parameterAnnotations = m.getParameterAnnotations();
 		Class[] paraTypes = m.getParameterTypes();
 		for (int argIndex = 0; argIndex < parameterAnnotations.length; argIndex++) {
 			int length = parameterAnnotations[argIndex].length;
-			
-			for (int annIndex = 0; annIndex < length; annIndex++) {
-				Annotation paramAnn = parameterAnnotations[argIndex][annIndex];
-				// Param注解.
-				if (paramAnn instanceof Param) {
-					Param param = (Param) paramAnn;
-					parasPos.put(param.value(),argIndex);
-					
-				}else if(paramAnn instanceof RowStart){
-					if(paggerPos==null){
-						paggerPos = new int[2];
-					}
-					paggerPos[0] =argIndex;
-				}else if(paramAnn instanceof RowSize){
-					if(paggerPos==null){
-						paggerPos = new int[2];
-					}
-					paggerPos[1] =argIndex;
-				}
-			}
-			
-			
-			
-			if(type==0){
-				if(KeyHolder.class.isAssignableFrom(paraTypes[argIndex])){
-					type =1 ;
-					keyHolderPos = argIndex;
-				}
-			}
-		}
-		
-		
-		
-		if(this.parasPos.size()==0){
-			// try to find root
-			for(int i=0;i<paraTypes.length;i++){
-				Class cls  = paraTypes[i];
+			if(length==0){
+				Class cls  = paraTypes[argIndex];
 				if(KeyHolder.class.isAssignableFrom(cls)){
+					if(type==0){
+						type =1 ;
+						keyHolderPos = argIndex;
+						
+					}else{
+						errorPara.add(argIndex);
+					}
 					continue ;
 				}
+				
+				if(Map.class.isAssignableFrom(cls)){
+					if(!this.parasPos.containsKey("_root")){
+						mapPos = argIndex;
+						
+					}else{
+						errorPara.add(argIndex);
+					}
+					continue ;
+					
+				}
+				
 				Package pkg = cls.getPackage();
-				if(pkg==null) continue ;
+				if(pkg==null){
+					errorPara.add(argIndex);
+					continue ;
+				}
+				
 				String pkgName = pkg.getName();
 				if(pkgName.startsWith("java")){
+					errorPara.add(argIndex);
 					continue ;
 				}
-				this.parasPos.put("_root", i);
-				break;
+				
+				if(mapPos!=-1){
+					//已经有map参数了，不能与pojo并存
+					errorPara.add(argIndex);
+				}else{
+					//pojo
+					if(this.parasPos.containsKey("_root")){
+						int pos = this.parasPos.get("_root");
+						Class rootType = paraTypes[pos];
+						throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,sqlId+"接口参数定义错误，无法映射,在第"+pos+"个参数已经定义了_root:"+rootType);
+					}else{
+						this.parasPos.put("_root", argIndex);
+						
+					}
+				}
+				
+				
+				
+			}else{
+				for (int annIndex = 0; annIndex < length; annIndex++) {
+					Annotation paramAnn = parameterAnnotations[argIndex][annIndex];
+					// Param注解.
+					if (paramAnn instanceof Param) {
+						Param param = (Param) paramAnn;
+						parasPos.put(param.value(),argIndex);
+						
+					}else if(paramAnn instanceof RowStart){
+						if(paggerPos==null){
+							paggerPos = new int[2];
+						}
+						paggerPos[0] =argIndex;
+					}else if(paramAnn instanceof RowSize){
+						if(paggerPos==null){
+							paggerPos = new int[2];
+						}
+						paggerPos[1] =argIndex;
+					}else{
+						errorPara.add(argIndex);
+						}
+				}
 			}
+			
+			
+			
+			
+			
 		}
+		
+		
+		if(errorPara.size()!=0){
+			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,sqlId+"接口参数在"+errorPara+"定义错误，无法映射");
+			
+		}
+		
 		Class returnType = m.getReturnType();
 		if(type==0){
 			if(KeyHolder.class.isAssignableFrom(returnType)){

@@ -63,6 +63,7 @@ public class User  {
 	public void setMinDate(Date minDate) {
 		this.minDate = minDate;
 	}
+	
 	public Date getMaxDate() {
 		return maxDate;
 	}
@@ -76,6 +77,10 @@ public class User  {
 		this.createDate = createDate;
 	}
 	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + "]";
+	}
 	
 
 }
