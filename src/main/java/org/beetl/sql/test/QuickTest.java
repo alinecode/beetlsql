@@ -1,7 +1,8 @@
 package org.beetl.sql.test;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.DefaultNameConversion;
@@ -20,11 +21,11 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
-		User user = new User();
-		user.setAge(1);
-		user.setName("auto");
-		sql.insert(user,true);
-		System.out.println(user.getId());
+		Map query = new HashMap();
+		query.put("name", "lijz");
+		
+		List<User> list = sql.execute("select * from user where name=#name# ", User.class, query, 1, 2);
+		System.out.println(list.size());
 		
 
 

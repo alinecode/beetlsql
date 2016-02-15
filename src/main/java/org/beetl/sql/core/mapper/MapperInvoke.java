@@ -10,5 +10,5 @@ import org.beetl.sql.core.SQLManager;
  *
  */
 public interface MapperInvoke {
-	public Object call(SQLManager sm,Class entityClass,String namespace,Method m,Object[] args);
+	public Object call(SQLManager sm,Class entityClass,String sqlId,Method m,Object[] args);
 }

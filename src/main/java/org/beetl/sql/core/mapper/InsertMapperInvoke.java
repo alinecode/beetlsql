@@ -16,7 +16,7 @@ import org.beetl.sql.core.db.KeyHolder;
 public class InsertMapperInvoke extends BaseMapperInvoke {
 
 	@Override
-	public Object call(SQLManager sm, Class entityClass, String namespace, Method m, Object[] args) {
+	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
 		
 		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m);
 		Map<String,Object> sqlArgs = this.getSqlArgs(sm, entityClass,m, args);
@@ -26,7 +26,7 @@ public class InsertMapperInvoke extends BaseMapperInvoke {
 		}else{
 			keyHolder = new KeyHolder();
 		}
-		sm.insert(namespace+"."+m.getName(),entityClass, sqlArgs, keyHolder);
+		sm.insert(sqlId,entityClass, sqlArgs, keyHolder);
 		return keyHolder;
 				
 	}

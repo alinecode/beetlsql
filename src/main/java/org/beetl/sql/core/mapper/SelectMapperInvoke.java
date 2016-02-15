@@ -15,7 +15,7 @@ import org.beetl.sql.core.SQLManager;
 public class SelectMapperInvoke extends BaseMapperInvoke {
 
 	@Override
-	public Object call(SQLManager sm, Class entityClass, String namespace, Method m, Object[] args) {
+	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
 		
 		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m);
 		Map<String,Object> sqlArgs = this.getSqlArgs(sm, entityClass,m, args);
@@ -24,9 +24,9 @@ public class SelectMapperInvoke extends BaseMapperInvoke {
 			int offset ,size ;
 			offset = desc.paggerPos[0];
 			size = desc.paggerPos[1];
-			return sm.select(namespace+"."+m.getName(), entityClass, sqlArgs,offset,size);
+			return sm.select(sqlId, entityClass, sqlArgs,offset,size);
 		}else{
-			return sm.select(namespace+"."+m.getName(), entityClass, sqlArgs);
+			return sm.select(sqlId, entityClass, sqlArgs);
 		}
 		
 	}

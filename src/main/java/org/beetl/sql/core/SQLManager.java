@@ -583,18 +583,22 @@ public class SQLManager {
 	//============= 插入 ===================  //
 	
 	public int  insert(Class<?> clazz,Object paras){
-		SQLScript script = getScript(clazz,INSERT );
-		return script.insert(paras);
+		
+		return this.insert(clazz,paras,false);
 	}
 	
 	public int  insert(Object paras){
-		return this.insert(paras, false);
+		return this.insert(paras.getClass(),paras, false);
 	}
 	
 	public int  insert(Object paras,boolean autoAssignKey){
+		return this.insert(paras.getClass(),paras, autoAssignKey);
+	}
+	
+	public int  insert(Class clazz,Object paras,boolean autoAssignKey){
 		if(autoAssignKey){
 			KeyHolder holder = new KeyHolder();
-			Class target = paras.getClass();
+			Class target = clazz;
 			int result = this.insert(target, paras, holder);
 			String table = this.nc.getTableName(target);
 			ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
@@ -612,11 +616,8 @@ public class SQLManager {
 				throw new UnsupportedOperationException("autoAssignKey failure "+ex.getMessage());
 			}
 			
-			
-			
-			
 		}else{
-			SQLScript script = getScript(paras.getClass(),INSERT );
+			SQLScript script = getScript(clazz,INSERT );
 			return script.insert(paras);
 		}
 		
@@ -832,15 +833,10 @@ public class SQLManager {
 	 * @return
 	 */
 	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Object paras){
-		String key ="auto._gen_" +sqlTemplate;
-		SQLSource source = sqlLoader.getGenSQL(key);
-		if(source==null){
-			source = new SQLSource(key,sqlTemplate);
-			this.sqlLoader.addGenSQL(key, source);		
-		}
-	
-		SQLScript script = new SQLScript(source,this);
-		return script.select(clazz, paras);
+
+		Map map = new HashMap();
+		map.put("_root", paras);
+		return this.execute(sqlTemplate, clazz, map);
 	}
 	
 	/** 直接执行sql语句，sql是模板
@@ -859,6 +855,36 @@ public class SQLManager {
 	
 		SQLScript script = new SQLScript(source,this);
 		return script.select(clazz, paras);
+	}
+	
+	/**
+	 * 直接执行sql模版语句，sql是模板
+	 * @param sqlTemplate
+	 * @param clazz
+	 * @param paras
+	 * @param start 
+	 * @param size
+	 * @return
+	 */
+	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Map paras,int start,int size){
+		String key ="auto._gen_" +sqlTemplate;
+		SQLSource source = sqlLoader.getGenSQL(key);
+		if(source==null){
+			String pageSql =  this.dbStyle.getPageSQL(sqlTemplate);
+			source = new SQLSource(key,pageSql);
+			this.sqlLoader.addGenSQL(key, source);		
+		}
+		
+		this.dbStyle.initPagePara(paras, start, size);
+		SQLScript script = new SQLScript(source,this);
+		return script.select(clazz, paras);
+	}
+	
+	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Object paras,int start,int size){
+		
+		Map map = new HashMap();
+		map.put("_root", paras);
+		return this.execute(sqlTemplate, clazz, map, start, size);
 	}
 	
 	

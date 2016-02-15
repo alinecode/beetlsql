@@ -19,11 +19,11 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 		String name = m.getName();
 		if(name.equals("insert")){
 			if(args.length==1){
-				sm.insert(args[0]);
-				return null;
+				int ret = sm.insert(args[0]);
+				return ret;
 			}else{
-				sm.insert(entityClass,args[0],(KeyHolder)args[1]);
-				return null;
+				int ret = sm.insert(entityClass,args[0], (Boolean)args[1]);
+				return ret;
 			}
 		}else if(name.equals("insertReturnKey")){
 			KeyHolder holder = new KeyHolder();

@@ -14,13 +14,13 @@ import org.beetl.sql.core.SQLManager;
 public class UpdateBatchMapperInvoke extends BaseMapperInvoke {
 
 	@Override
-	public Object call(SQLManager sm, Class entityClass, String namespace, Method m, Object[] args) {
+	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
 		
 		if(args[0] instanceof List){
-			return sm.updateBatch(namespace+"."+m.getName(), (List)args[0]);
+			return sm.updateBatch(sqlId, (List)args[0]);
 		}else{
 			
-			return sm.updateBatch(namespace+"."+m.getName(), (Map<String, Object>[])args[0]);
+			return sm.updateBatch(sqlId, (Map<String, Object>[])args[0]);
 		}
 		
 		

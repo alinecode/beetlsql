@@ -15,9 +15,9 @@ import org.beetl.sql.core.SQLManager;
 public class SelecSingleMapperInvoke extends BaseMapperInvoke {
 
 	@Override
-	public Object call(SQLManager sm, Class entityClass, String namespace, Method m, Object[] args) {
+	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
 		Map<String,Object> sqlArgs = this.getSqlArgs(sm, entityClass,m, args);
-		return sm.selectSingle(namespace+"."+m.getName(),  sqlArgs,m.getReturnType());
+		return sm.selectSingle(sqlId,  sqlArgs,m.getReturnType());
 		
 	}
 

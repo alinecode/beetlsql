@@ -17,6 +17,8 @@ public class DefaultMapperBuilder implements MapperBuilder {
 
 	/** The sql manager. */
 	protected SQLManager sqlManager;
+	
+	protected SqlIdGenerator  idGen  = new DefaultSqlIdGenerator();
 
 	/**
 	 * The Constructor.
@@ -58,6 +60,16 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	@SuppressWarnings("unchecked")
 	public <T> T buildInstance(Class<T> mapperInterface) {
 		return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { mapperInterface },
-				new MapperJavaProxy(sqlManager, mapperInterface));
+				new MapperJavaProxy(this,sqlManager, mapperInterface));
 	}
+
+	public SqlIdGenerator getIdGen() {
+		return idGen;
+	}
+
+	public void setIdGen(SqlIdGenerator idGen) {
+		this.idGen = idGen;
+	}
+	
+	
 }

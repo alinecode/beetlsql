@@ -51,9 +51,9 @@ public class MapperJavaProxy implements InvocationHandler {
 	/** The entity class. */
 	protected Class<?> entityClass;
 
-	/** The namespace. */
-	protected String namespace;
+	
 
+	DefaultMapperBuilder builder;
 	/**
 	 * The Constructor.
 	 */
@@ -69,23 +69,14 @@ public class MapperJavaProxy implements InvocationHandler {
 	 * @param mapperInterface
 	 *            the entity class or mapper class
 	 */
-	public MapperJavaProxy(SQLManager sqlManager, Class<?> mapperInterface) {
+	public MapperJavaProxy(DefaultMapperBuilder builder,SQLManager sqlManager, Class<?> mapperInterface) {
 		super();
 		this.sqlManager = sqlManager;
+		this.builder = builder;
 		this.mapperInterface(mapperInterface);
 	}
 
-	/**
-	 * Sql manager.
-	 *
-	 * @param sqlManager
-	 *            the sql manager
-	 * @return the mapper proxy
-	 */
-	public MapperJavaProxy sqlManager(SQLManager sqlManager) {
-		this.sqlManager = sqlManager;
-		return this;
-	}
+	
 
 	/**
 	 * Mapper interface.
@@ -96,21 +87,10 @@ public class MapperJavaProxy implements InvocationHandler {
 	 */
 	public MapperJavaProxy mapperInterface(Class<?> mapperInterface) {
 		this.onResolveEntityClassFromMapperInterface(mapperInterface);
-		this.onResolveNamespace(mapperInterface);
 		return this;
 	}
 
-	/**
-	 * Namespace.
-	 *
-	 * @param namespace
-	 *            the namespace
-	 * @return the mapper proxy
-	 */
-	public MapperJavaProxy namespace(String namespace) {
-		this.namespace = namespace;
-		return this;
-	}
+	
 
 	/**
 	 * Entity class.
@@ -161,16 +141,7 @@ public class MapperJavaProxy implements InvocationHandler {
 		}
 	}
 
-	/**
-	 * On resolve namespace.
-	 *
-	 * @param mapperInterface
-	 *            the mapper interface
-	 */
-	protected void onResolveNamespace(Class<?> mapperInterface) {
-		this.namespace =  this.entityClass.getSimpleName() ;
-	}
-
+	
 	
 
 
@@ -207,7 +178,7 @@ public class MapperJavaProxy implements InvocationHandler {
 			}
 		}
 		//handle Void.class ?
-		Object ret = invoke.call(this.sqlManager, this.entityClass, namespace, method, args);
+		Object ret = invoke.call(this.sqlManager, this.entityClass, this.builder.getIdGen().getId(entityClass, method), method, args);
 		return ret;
 		
 	}
