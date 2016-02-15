@@ -10,6 +10,27 @@ import java.util.Map;
  *
  */
 public class JavaType {
+	static int majorJavaVersion = 15;
+	static {  
+        String javaVersion = System.getProperty("java.version");  
+        // version String should look like "1.4.2_10"  
+        if (javaVersion.contains("1.9.")) {  
+            majorJavaVersion = 19;  
+        }else
+        if (javaVersion.contains("1.8.")) {  
+            majorJavaVersion = 18;  
+        }else
+        if (javaVersion.contains("1.7.")) {  
+            majorJavaVersion = 18;  
+        }  
+        else if (javaVersion.contains("1.6.")) {  
+            majorJavaVersion = 16;  
+        }  
+        else {  
+            // else leave 1.5 as default (it's either 1.5 or unknown)  
+            majorJavaVersion = 15;  
+        }  
+    }  
 	public final static  String UNKNOW  = "UNKNOW";
 	public final static  String SPECIAL  = "SPECIAL";
 	
@@ -41,17 +62,22 @@ public class JavaType {
 		mapping.put(Types.OTHER, "Object");
 		mapping.put(Types.REAL, "Double");
 		mapping.put(Types.REF, UNKNOW);
-		mapping.put(Types.REF_CURSOR, UNKNOW);
+		
 		mapping.put(Types.SMALLINT, "Integer");
 		mapping.put(Types.SQLXML, "String");
 		mapping.put(Types.STRUCT, UNKNOW);
 		mapping.put(Types.TIME, "Date");
-		mapping.put(Types.TIME_WITH_TIMEZONE, "Timestamp");
 		mapping.put(Types.TIMESTAMP, "Timestamp");
-		mapping.put(Types.TIMESTAMP_WITH_TIMEZONE, "Timestamp");
 		mapping.put(Types.TINYINT, "Integer");
 		mapping.put(Types.VARBINARY, "byte[]");
 		mapping.put(Types.VARCHAR, "String");
+		
+		//jdk 8 support
+		if(majorJavaVersion>=18){
+			mapping.put(Types.REF_CURSOR, UNKNOW);
+			mapping.put(Types.TIMESTAMP_WITH_TIMEZONE, "Timestamp");
+			mapping.put(Types.TIME_WITH_TIMEZONE, "Timestamp");
+		}
 		
 	}
 	
