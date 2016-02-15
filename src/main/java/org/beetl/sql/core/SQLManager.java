@@ -699,7 +699,7 @@ public class SQLManager {
 	 */
 	public int[] updateByIdBatch(List<?> list){
 		if(list == null || list.isEmpty()){
-			return null;
+			return new int[0];
 		}
 		SQLScript script = getScript(list.get(0).getClass(), UPDATE_BY_ID);
 		return script.updateBatch(list);

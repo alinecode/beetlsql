@@ -16,7 +16,7 @@ public class NumberKit {
 	 * @param targetClass
 	 * @return
 	 */
-	public static <T extends Number> T convertNumberToTargetClass(Number number, Class<T> targetClass) {
+	public static Number convertNumberToTargetClass(Number number, Class targetClass) {
 		if(number == null){
 			throw new IllegalArgumentException("Number不能为空");
 		}
@@ -25,30 +25,30 @@ public class NumberKit {
 		}
 		
 		if (targetClass.isInstance(number)) {
-			return (T) number;
+			return  number;
 		}
-		else if (Byte.class == targetClass) {
+		else if (Byte.class == targetClass||byte.class==targetClass) {
 			long value = number.longValue();
 			if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
 				throw new IllegalArgumentException(number.getClass().getName()+"无法转化为目标对象"+targetClass.getName());
 			}
-			return (T) new Byte(number.byteValue());
+			return new Byte(number.byteValue());
 		}
-		else if (Short.class == targetClass) {
+		else if (Short.class == targetClass||short.class == targetClass) {
 			long value = number.longValue();
 			if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
 				throw new IllegalArgumentException(number.getClass().getName()+"无法转化为目标对象"+targetClass.getName());
 			}
-			return (T) new Short(number.shortValue());
+			return new Short(number.shortValue());
 		}
-		else if (Integer.class == targetClass) {
+		else if (Integer.class == targetClass||int.class==targetClass) {
 			long value = number.longValue();
 			if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
 				throw new IllegalArgumentException(number.getClass().getName()+"无法转化为目标对象"+targetClass.getName());
 			}
-			return (T) new Integer(number.intValue());
+			return new Integer(number.intValue());
 		}
-		else if (Long.class == targetClass) {
+		else if (Long.class == targetClass||long.class == targetClass) {
 			BigInteger bigInt = null;
 			if (number instanceof BigInteger) {
 				bigInt = (BigInteger) number;
@@ -60,28 +60,28 @@ public class NumberKit {
 			if (bigInt != null && (bigInt.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) < 0 || bigInt.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) > 0)) {
 				throw new IllegalArgumentException(number.getClass().getName()+"无法转化为目标对象"+targetClass.getName());
 			}
-			return (T) new Long(number.longValue());
+			return new Long(number.longValue());
 		}
 		else if (BigInteger.class == targetClass) {
 			if (number instanceof BigDecimal) {
 				// do not lose precision - use BigDecimal's own conversion
-				return (T) ((BigDecimal) number).toBigInteger();
+				return  ((BigDecimal) number).toBigInteger();
 			}
 			else {
 				// original value is not a Big* number - use standard long conversion
-				return (T) BigInteger.valueOf(number.longValue());
+				return  BigInteger.valueOf(number.longValue());
 			}
 		}
-		else if (Float.class == targetClass) {
-			return (T) new Float(number.floatValue());
+		else if (Float.class == targetClass||float.class == targetClass) {
+			return new Float(number.floatValue());
 		}
-		else if (Double.class == targetClass) {
-			return (T) new Double(number.doubleValue());
+		else if (Double.class == targetClass||double.class == targetClass) {
+			return  new Double(number.doubleValue());
 		}
 		else if (BigDecimal.class == targetClass) {
 			// always use BigDecimal(String) here to avoid unpredictability of BigDecimal(double)
 			// (see BigDecimal javadoc for details)
-			return (T) new BigDecimal(number.toString());
+			return new BigDecimal(number.toString());
 		}
 		else {
 			throw new IllegalArgumentException(number.getClass().getName()+"无法转化为目标对象"+targetClass.getName());

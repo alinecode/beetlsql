@@ -11,6 +11,10 @@ import java.util.Map.Entry;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.annotatoin.Param;
 
+/**
+ *  @author zhoupan,xiandafu
+ *
+ */
 public abstract class BaseMapperInvoke implements MapperInvoke {
 
 	protected Map getSqlArgs(SQLManager sm,Class entityClass,Method m,Object[] args){

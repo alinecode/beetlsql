@@ -67,7 +67,14 @@ public class DebugInterceptor implements Interceptor {
 		if(ctx.isUpdate()){
 			sb.append("成功更新[");
 			if(ctx.getResult().getClass().isArray()){
-				sb.append(Arrays.asList((int[])ctx.getResult()));
+				int[] ret = (int[])ctx.getResult();
+				for(int i=0;i<ret.length;i++){
+					sb.append(ret[i]);
+					if(i!=ret.length-1){
+						sb.append(",");
+					}
+				}
+				
 			}else{
 				sb.append(ctx.getResult());
 			}

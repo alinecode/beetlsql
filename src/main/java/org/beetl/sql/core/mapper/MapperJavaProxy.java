@@ -41,6 +41,7 @@ updateXXX
 ===
 update user set status = #status# where id=#id#
  * </pre>
+ * @author zhoupan,xiandafu
  */
 public class MapperJavaProxy implements InvocationHandler {
 
@@ -202,6 +203,7 @@ public class MapperJavaProxy implements InvocationHandler {
 			case 2:invoke = new SelecSingleMapperInvoke();break;
 			case 3:invoke = new SelectMapperInvoke();break;
 			case 4:invoke = new UpdateMapperInvoke();break;
+			case 5:invoke = new UpdateBatchMapperInvoke();break;
 			}
 		}
 		//handle Void.class ?

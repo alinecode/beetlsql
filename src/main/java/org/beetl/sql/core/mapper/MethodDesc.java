@@ -3,6 +3,7 @@ package org.beetl.sql.core.mapper;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class MethodDesc {
 			
 		}
 		//纪录错误位置
-		List<Integer> errorPara = new LinkedList<Integer>();
+		LinkedHashMap<Integer,String> errorPara = new LinkedHashMap<Integer,String>();
 		Annotation[][] parameterAnnotations = m.getParameterAnnotations();
 		Class[] paraTypes = m.getParameterTypes();
 		for (int argIndex = 0; argIndex < parameterAnnotations.length; argIndex++) {
@@ -91,7 +92,7 @@ public class MethodDesc {
 						keyHolderPos = argIndex;
 						
 					}else{
-						errorPara.add(argIndex);
+						errorPara.put(argIndex,"出现KeyHolder，但操作类型是"+getTypeDesc(type));
 					}
 					continue ;
 				}
@@ -101,33 +102,52 @@ public class MethodDesc {
 						mapPos = argIndex;
 						
 					}else{
-						errorPara.add(argIndex);
+						errorPara.put(argIndex,"该参数没有用@Param，但已经有一个Pojo或者Map");
 					}
 					continue ;
 					
 				}
 				
+				
+				if(List.class.isAssignableFrom(cls)){
+					if(type==4){
+						type =5 ; //batch update
+						
+					}else{
+						errorPara.put(argIndex,"只有批量更新语句才允许List参数");
+					}
+					continue ;
+				}
+				
+				if(cls.isArray()&&Map.class.isAssignableFrom(cls.getComponentType())){
+					if(type==4){
+						type =5 ; //batch update
+					}else{
+						errorPara.put(argIndex,"只有批量更新语句才允许Map<String,Object>参数");
+					}
+					continue ;
+				}
+				
 				Package pkg = cls.getPackage();
 				if(pkg==null){
-					errorPara.add(argIndex);
+					errorPara.put(argIndex,"没有申明@Param的参数");
 					continue ;
 				}
 				
 				String pkgName = pkg.getName();
 				if(pkgName.startsWith("java")){
-					errorPara.add(argIndex);
+					errorPara.put(argIndex,"没有申明@Param的参数");
 					continue ;
 				}
 				
 				if(mapPos!=-1){
 					//已经有map参数了，不能与pojo并存
-					errorPara.add(argIndex);
+					errorPara.put(argIndex,"该参数没有用@Param，但已经有一个Pojo或者Map");
 				}else{
 					//pojo
 					if(this.parasPos.containsKey("_root")){
 						int pos = this.parasPos.get("_root");
-						Class rootType = paraTypes[pos];
-						throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,sqlId+"接口参数定义错误，无法映射,在第"+pos+"个参数已经定义了_root:"+rootType);
+						errorPara.put(argIndex,"该参数没有用@Param，但已经有一个Pojo或者Map");
 					}else{
 						this.parasPos.put("_root", argIndex);
 						
@@ -155,7 +175,7 @@ public class MethodDesc {
 						}
 						paggerPos[1] =argIndex;
 					}else{
-						errorPara.add(argIndex);
+						errorPara.put(argIndex,"不能识别的注解"+paramAnn.getClass());
 						}
 				}
 			}
@@ -166,9 +186,14 @@ public class MethodDesc {
 			
 		}
 		
-		
+		//错误检查
 		if(errorPara.size()!=0){
-			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,sqlId+"接口参数在"+errorPara+"定义错误，无法映射");
+			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,sqlId+"接口参数如下位置"+errorPara+"定义错误，无法映射");
+			
+		}
+		
+		if(type==5&&paraTypes.length!=1){
+			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,sqlId+"批量更新只允许一个List<?> 或者Map[]参数");
 			
 		}
 		
@@ -187,6 +212,20 @@ public class MethodDesc {
 		
 		
 		
+	}
+	
+	private String getTypeDesc(int type){
+		switch(type){
+		case 0:
+		case 1:return "insert";
+		case 2:
+		case 3: return "select";
+		case 4:
+		case 5: return "update/delete";
+		default:{
+			throw new IllegalArgumentException("unknow type:"+type);
+		}
+		}
 	}
 	
 }

@@ -1,6 +1,7 @@
 package org.beetl.sql.core.mapper;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.KeyHolder;
@@ -54,6 +55,8 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 			
 		}else if(name.equals("templateCount")){
 			return sm.templateCount(args[0]);
+		}else if(name.equals("updateByIdBatch")){
+			return sm.updateByIdBatch((List<?>)args[0]);
 		}else{
 			throw new UnsupportedOperationException(m.getName());
 		}

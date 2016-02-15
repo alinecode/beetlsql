@@ -209,7 +209,7 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 	
 //	AtomicInteger, AtomicLong, BigDecimal, BigInteger, Byte, Double, Float, Integer, Long, Short 
 //	都是java.lang.Number的已知子类
-	private Object convertValueToRequiredType(Object result, Class<?> requiredType) {
+	public  Object convertValueToRequiredType(Object result, Class<?> requiredType) {
 		if(String.class == requiredType){
 			return result.toString();
 		}
@@ -220,11 +220,13 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 			}else{
 				return NumberKit.parseNumber(result.toString(), (Class<Number>) requiredType);
 			}
+		}else if(requiredType.isPrimitive()){
+			if(result instanceof Number){
+				return NumberKit.convertNumberToTargetClass(((Number) result), requiredType);
+			}
 		}
-		else{
-			//todo int.class etc
-			throw new IllegalArgumentException("无法转化成期望类型:"+requiredType);
-		}
+		
+		throw new IllegalArgumentException("无法转化成期望类型:"+requiredType);
 	}
 
 }

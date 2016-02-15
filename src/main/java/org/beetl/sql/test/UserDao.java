@@ -12,8 +12,10 @@ import org.beetl.sql.core.mapper.BaseMapper;
 public interface UserDao extends BaseMapper<User> {
 	public List<User> queryUser(@Param("name") String name,@Param("age") Integer age,@RowStart int start,@RowSize int size);
 	public User findById(@Param("id") Integer id);
-	public Integer getCount();
+	public int getCount();
 	public Integer setAge(@Param("id") Integer id,@Param("age") Integer age);
 	public void setUserStatus(Map paras);
+	public int[] setUserStatus(Map<String,Object>[] paras);
+	public int[] setUserStatus(List<User> paras);
 	public KeyHolder newUser(User user);
 }

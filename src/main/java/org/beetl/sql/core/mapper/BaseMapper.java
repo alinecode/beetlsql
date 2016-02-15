@@ -3,6 +3,7 @@ package org.beetl.sql.core.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.beetl.sql.core.SQLScript;
 import org.beetl.sql.core.annotatoin.Param;
 import org.beetl.sql.core.db.KeyHolder;
 
@@ -11,6 +12,7 @@ import org.beetl.sql.core.db.KeyHolder;
  *
  * @param <T>
  *            the generic type
+ * @author zhoupan,xiandafu
  */
 public interface BaseMapper<T> {
 
@@ -22,6 +24,7 @@ public interface BaseMapper<T> {
 	/*update*/
 	int updateById(T entity);
 	int updateTemplateById(T entity);
+	int[] updateByIdBatch(List<?> list);
 	
 	/*delete*/
 	int deleteById(Object key);
@@ -38,6 +41,8 @@ public interface BaseMapper<T> {
 	List<T> template(T entity);
 	List<T> template(T entity,int start,int size);
 	long templateCount(T entity);
+	
+	
 	
 	
 
