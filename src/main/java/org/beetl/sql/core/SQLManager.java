@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.beetl.core.Configuration;
+import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
@@ -31,6 +33,7 @@ import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
+import org.beetl.sql.core.mapping.handler.ScalarHandler;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
@@ -585,9 +588,44 @@ public class SQLManager {
 	}
 	
 	public int  insert(Object paras){
-		SQLScript script = getScript(paras.getClass(),INSERT );
-		return script.insert(paras);
+		return this.insert(paras, false);
 	}
+	
+	public int  insert(Object paras,boolean autoAssignKey){
+		if(autoAssignKey){
+			KeyHolder holder = new KeyHolder();
+			Class target = paras.getClass();
+			int result = this.insert(target, paras, holder);
+			String table = this.nc.getTableName(target);
+			ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
+			Method getterMethod =  desc.getIdMethod();
+			String name = getterMethod.getName();
+			String setterName = name.replaceFirst("get", "set");
+			try{
+				Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
+				Object value = holder.getKey();
+				value = ScalarHandler.convertValueToRequiredType(value, getterMethod.getReturnType());
+				setterMethod.invoke(paras, new Object[]{value});
+				return result;
+			}catch(Exception ex){
+				
+				throw new UnsupportedOperationException("autoAssignKey failure "+ex.getMessage());
+			}
+			
+			
+			
+			
+		}else{
+			SQLScript script = getScript(paras.getClass(),INSERT );
+			return script.insert(paras);
+		}
+		
+	}
+	
+	
+	
+	
+	
 	
 	/** 插入，并获取主键
 	 * @param clazz
@@ -1018,6 +1056,7 @@ public class SQLManager {
 		this.sqlLoader = sqlLoader;
 	}
 
+	
 	public ConnectionSource getDs() {
 		return ds;
 	}

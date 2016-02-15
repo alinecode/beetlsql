@@ -100,6 +100,12 @@ public class TableDesc{
 		return remark;
 	}
 
+	/**
+	 * 获得一个类的详细描述
+	 * @param c
+	 * @param nc
+	 * @return
+	 */
 	public ClassDesc getClassDesc(Class c,NameConversion nc){
 		ClassDesc classDesc = classes.get(c);
 		if(classDesc==null){
@@ -115,7 +121,7 @@ public class TableDesc{
 		return classDesc;
 	}
 	
-	/** 根据table得到一个对应的class描述
+	/** 根据table得到一个对应的class描述，仅仅用于代码生成
 	 * @param nc
 	 * @return
 	 */

@@ -5,7 +5,7 @@ import java.math.BigInteger;
 
 /**  
  * Number工具类
- * @author: suxj  
+ * @author: suxj 
  */
 public class NumberKit {
 

@@ -20,10 +20,11 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
-		UserDao dao = sql.getMapper(UserDao.class);
-		int ret = dao.getCount();
-		System.out.println(ret);
-		
+		User user = new User();
+		user.setAge(1);
+		user.setName("auto");
+		sql.insert(user,true);
+		System.out.println(user.getId());
 		
 
 
