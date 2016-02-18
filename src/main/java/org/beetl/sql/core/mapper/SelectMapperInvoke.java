@@ -22,8 +22,8 @@ public class SelectMapperInvoke extends BaseMapperInvoke {
 		
 		if(desc.paggerPos!=null){
 			int offset ,size ;
-			offset = desc.paggerPos[0];
-			size = desc.paggerPos[1];
+			offset = ((Number)args[desc.paggerPos[0]]).intValue();
+			size = ((Number)args[desc.paggerPos[1]]).intValue();
 			return sm.select(sqlId, entityClass, sqlArgs,offset,size);
 		}else{
 			return sm.select(sqlId, entityClass, sqlArgs);

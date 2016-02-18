@@ -210,6 +210,12 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 //	AtomicInteger, AtomicLong, BigDecimal, BigInteger, Byte, Double, Float, Integer, Long, Short 
 //	都是java.lang.Number的已知子类
 	public  static Object convertValueToRequiredType(Object result, Class<?> requiredType) {
+		if(result==null) return null;
+		Class type = result.getClass();
+		if(type==result){
+			//大多数情况，都是这样
+			return result;
+		}
 		if(String.class == requiredType){
 			return result.toString();
 		}

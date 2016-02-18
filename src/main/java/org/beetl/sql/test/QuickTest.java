@@ -23,7 +23,8 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		sql.genPojoCodeToConsole("user");
 		
-
+		UserDao dao = sql.getMapper(UserDao.class);
+		dao.queryUser("lijz",13, 1, 10);
 
 	}
 

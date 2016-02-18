@@ -1,7 +1,12 @@
 queryUser
 ===
+* 按照年纪查找用户
+select * from User where 1 =1 
+@if(isNotEmpty(age)d){
+and age = #age#
+@}
 
-select * from User where age = #age#
+
 
 
 findById

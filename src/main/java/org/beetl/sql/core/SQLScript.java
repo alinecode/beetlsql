@@ -462,6 +462,8 @@ public class SQLScript {
 		}
 		return rs;
 	}
+	
+	
 
 	public int[] updateBatch(List<?> list) {
 
@@ -484,8 +486,15 @@ public class SQLScript {
 					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.emptyList());
 				}
 
-				for (int i = 0; i < objs.size(); i++)
-					ps.setObject(i + 1, objs.get(i));
+				for (int i = 0; i < objs.size(); i++){
+					Object o = objs.get(i);
+					if (o != null && o.getClass() == java.util.Date.class) {
+						// o =new java.sql.Date(((java.util.Date)o).getTime());
+						o = new Timestamp(((java.util.Date) o).getTime());
+					}
+					ps.setObject(i + 1,o);
+				}
+				
 				ps.addBatch();
 
 			}
