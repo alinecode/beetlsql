@@ -4,7 +4,7 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 1.7.0 (150K), 另外还需要beetl 包
+* 当前版本 2.0 (150K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -49,7 +49,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 	* 
 	* gen by beetlsql 2016-01-06
 	*/
-	public class user  {
+	public class User  {
 		private Integer id ;
 		private Integer age ;
 		//用户角色
@@ -132,6 +132,8 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * "#" 是站位符号，生成sql语句得时候，将输出？，如果你想输出表达式值，需要用text函数，或者任何以db开头的函数，引擎则认为是直接输出文本。
 
 * isEmpty是beetl的一个函数，用来判断变量是否为空或者是否不存在.
+
+* 文件名约定为类名，首字母小写。
 
 sql模板采用beetl原因是因为beetl 语法类似js，且对模板渲染做了特定优化，相比于mybatis，更加容易掌握和功能强大，可读性更好，也容易在java和数据库之间迁移sql语句
 
@@ -411,6 +413,7 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public void insert(Class<?> clazz,Object paras)  插入paras到paras关联的表
 * public void insert(Class<?> clazz,Object paras,KeyHolder holder)，插入paras到paras关联的表，如果需要主键，可以通过holder的getKey来获取
+* public int  insert(Class clazz,Object paras,boolean autoAssignKey) 插入paras，并且指定是否自动将数据库主键赋值到paras里
 * public int updateById(Object obj) 根据主键更新，主键通过annotation表示，如果没有，则认为属性id是主键，所有值参与更新
 * public int updateTemplateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新
 * public int updateTemplateById(Class<?> clazz，Map paras) 根据主键更新，组件通过clazz的annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新。
@@ -439,10 +442,10 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public <T> List<T> execute(SQLReady p,Class<T> clazz) SQLReady包含了需要执行的sql语句和参数，clazz是查询结果，如
 
-			sqlManager.execute(new SQLReady("select * from user where name=? and age = ?","xiandafu",18),User.class);)
+	sqlManager.execute(new SQLReady("select * from user where name=? and age = ?","xiandafu",18),User.class);)
 
 * public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
-*
+
 
 ### 其他
 
@@ -483,6 +486,48 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 第一个参数是pojo类包名，GenConfig是生成pojo的配置，GenFilter 是过滤，返回true的才会生成。如果GenFilter为null，则数据库所有表都要生成
 
 	注意，不要轻易使用genAll，如果你用了，最好立刻将其注释掉，或者在genFilter写一些逻辑保证不会生成所有的代码好sql模板文件
+
+##  使用Mapper
+
+SQLManager 提供了所有需要知道的API，但通过sqlid来访问sql有时候还是很麻烦，因为需要手敲字符串，另外参数不是map就是para，对代码理解没有好处，BeetlSql支持Mapper，将sql文件映射到一个interface。如下示例
+
+	public interface UserDao extends BaseMapper<User> {
+		public List<User> queryUser(@Param("name") String name,@Param("age") Integer age,@RowStart int start,@RowSize int size);
+		public int getCount();
+		public void setUserStatus(Map paras); //更新用户状态
+		public int[] setUserStatus(List<User> paras); //批量更新用户状态
+		public KeyHolder newUser(User user);// 添加用户
+	}
+	
+	
+Interface 需要继承BaseMapper，这样可以使用BaseMapper的一些公共方法，如insert，unqiue,updateById,deleteById等。
+
+Interface里的方法名与Sql文件对应，如果方法名对应错了，会在调用的时候报错找不到sql。
+
+方法参数可以是一个Object,或者是Map，这样，BeetlSql 自动识别为 sql的参数，也可以使用注解@Param来标注，或者混合这俩种情况
+如:
+	
+	public void setUserStatus(Map paras,@Param("name") String name);
+
+方法如果是查询语句，可以使用@RowStart，@RowSize 作为翻页参数，BeetlSQL将自动完成翻页功能
+
+* 注意 BeetlSQL 会根据 对应的方法对应的SQL语句，解析开头，如果是select开头，就认为是select操作，同理还有update，delete，insert。如果sql 模板不是以这些关键字开头，则需要使用注解 @SqlStatement
+
+	@SqlStatement(type=SqlStatementType.INSERT)
+	public KeyHolder newUser(User user);// 添加用户
+
+方法返回值和参数会暗示对应的SQLManager操作，如下是规则
+
+* 查询语句返回的是List，则对应SQLManager.select
+* 查询语句返回的是Pojo，原始类型等非List类型，则对应的SQLManager.selectSignle，如上面的getCount
+* insert 语句 如果有KeyHolder，则表示需要获取主键，对应SQLManager.insert(....,keyHolder)方法
+* 参数列表里只允许有一个Pojo或者Map，作为查询参数_root，否则，需要加上@Param
+* 参数列表里如果有List 或者Map[],则期望对应的是一个updateBatch操作
+* 参数列表里如果@RowStart ,@RowSize,则认为是翻页语句
+
+
+使用Mapper能增加Dao维护性，并能提高开发效率，建议在项目中使用。
+
 
 ## BeetlSQL Annotation
 
@@ -526,7 +571,8 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 	
 	注意:minDate,maxDate 是俩个额外的变量,需要定义到pojo类里，DateTemplate也可以有默认值，如果@DateTemplate()，相当于@DateTemplate(accept="min日期字段,max日期字段",compare=">=,<")
 		
-	
+
+* Mapper中的注解，包括	SqlStatement ，SqlStatementType ，Param RowSize ，RowStart，具体参考Mapper
 
 ## BeetlSQL 数据模型
 
@@ -1022,6 +1068,10 @@ SQLResult 如下：
 
 jdbcSql是渲染过后的sql，jdbcPara 是对应的参数值
 
+
+## Hibernate,MyBatis,MySQL 对比
+
+http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。在犹豫使用BeetlSQL，可以参考这个全面的对比文章
 
 
 
