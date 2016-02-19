@@ -1,6 +1,6 @@
 # Beetlsql
 
-* 作者: 闲大赋,Gavin.King,Sue
+* 作者: 闲大赋,Gavin.King,Sue,zhoupan
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
@@ -494,7 +494,7 @@ SQLManager 提供了所有需要知道的API，但通过sqlid来访问sql有时�
 	public interface UserDao extends BaseMapper<User> {
 		public List<User> queryUser(@Param("name") String name,@Param("age") Integer age,@RowStart int start,@RowSize int size);
 		public int getCount();
-		public void setUserStatus(Map paras); //更新用户状态
+		public int setUserStatus(Map paras); //更新用户状态，成功语法通过返回值判断
 		public int[] setUserStatus(List<User> paras); //批量更新用户状态
 		public KeyHolder newUser(User user);// 添加用户
 	}
@@ -513,6 +513,7 @@ Interface里的方法名与Sql文件对应，如果方法名对应错了，会�
 
 * 注意 BeetlSQL 会根据 对应的方法对应的SQL语句，解析开头，如果是select开头，就认为是select操作，同理还有update，delete，insert。如果sql 模板不是以这些关键字开头，则需要使用注解 @SqlStatement
 
+	
 	@SqlStatement(type=SqlStatementType.INSERT)
 	public KeyHolder newUser(User user);// 添加用户
 
@@ -1085,3 +1086,8 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 
 ### Sue
 ![Sue](http://ibeetl.com/guide/SUE.jpg)
+
+### Sue
+![Sue](http://ibeetl.com/guide/SUE.jpg)
+
+### zhoupan
