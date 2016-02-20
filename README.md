@@ -32,16 +32,13 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 
 # 开发人员帅照
 
-##闲大赋
-![xiandfu](http://ibeetl.com/guide/xiandafu.jpg)
+<img src="http://ibeetl.com/guide/xiandafu.jpg" width = "100" height = "100"  />
 
-##Gavin·King
-![Gavin](http://ibeetl.com/guide/GV2.png)
+<img src="http://ibeetl.com/guide/GV2.png" width = "100" height = "100"  />
 
-## Sue
-![Sue](http://ibeetl.com/guide/SUE.jpg)
+<img src="http://ibeetl.com/guide/SUE.jpg" width = "100" height = "100"  />
 
-## Zhoupan
-![Zhoupan](http://ibeetl.com/guide/fitz.jpg.png)
+
+<img src="http://ibeetl.com/guide/fitz.jpg.png" width = "100" height = "100"  />
 
 
