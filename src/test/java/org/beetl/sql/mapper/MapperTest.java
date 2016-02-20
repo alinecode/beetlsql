@@ -34,7 +34,7 @@ public class MapperTest {
 		newUser.setAge(12);
 	}
 
-//	@Test
+	@Test
 	public void insert() {
 		
 		
@@ -47,7 +47,7 @@ public class MapperTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void queryInner() {
 		
 		long count = dao.allCount();

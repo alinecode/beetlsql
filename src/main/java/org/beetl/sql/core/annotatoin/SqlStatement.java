@@ -7,18 +7,19 @@ import java.lang.annotation.Target;
 @Target({ java.lang.annotation.ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SqlStatement {
+	
 	/**
-	 * 指定statement名称.
-	 * 
+	 *  参数名列表，
 	 * @return
 	 */
-	String name() default "";
+	
+	String params() default "";
 
 	/**
 	 * statement类型.
 	 * 
 	 * @return
 	 */
-	SqlStatementType type() default SqlStatementType.NONE;
+	SqlStatementType type() default SqlStatementType.AUTO;
 
 }

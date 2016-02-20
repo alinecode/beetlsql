@@ -29,8 +29,8 @@ public class ClasspathLoader implements SQLLoader {
 
 	private String lineSeparator = System.getProperty("line.separator", "\n");
 
-	private static Map<String, SQLSource> sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
-	private static Map<String, Integer> sqlSourceVersion = new ConcurrentHashMap<String, Integer> ();
+	private  Map<String, SQLSource> sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
+	private  Map<String, Integer> sqlSourceVersion = new ConcurrentHashMap<String, Integer> ();
 
 	private DBStyle dbs = null;
 	
@@ -49,11 +49,13 @@ public class ClasspathLoader implements SQLLoader {
 
 	@Override
 	public SQLSource getSQL(String id) {
-		SQLSource ss = sqlSourceMap.get(id);		
+		SQLSource ss = sqlSourceMap.get(id);	
+		boolean hasLoad = false ;
 		if (ss == null) {
 			loadSql(id);
+			hasLoad = true;
 		}
-		if(this.autoCheck&&isModified(id)){
+		if(hasLoad&&this.autoCheck&&isModified(id)){
 			loadSql(id);
 		}
 		
@@ -304,7 +306,7 @@ public class ClasspathLoader implements SQLLoader {
 	
 	@Override
 	public SQLSource getGenSQL(String id) {
-		return ClasspathLoader.sqlSourceMap.get(id);
+		return sqlSourceMap.get(id);
 	}
 	public DBStyle getDbs() {
 		return dbs;
