@@ -1,6 +1,6 @@
 # Beetlsql
 
-* 作者: 闲大赋,Gavin.King,Sue
+* 作者: 闲大赋,Gavin.King,Sue,Zhoupan
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
