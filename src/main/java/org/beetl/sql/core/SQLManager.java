@@ -671,8 +671,8 @@ public class SQLManager {
 	
 	/**
 	 * 
-	 * @param c
 	 * @param sqlId
+	 * @param clazz
 	 * @param paras
 	 * @param holder
 	 * @return

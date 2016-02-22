@@ -2,7 +2,7 @@ queryUser
 ===
 * 按照年纪查找用户
 select * from User where 1 =1 
-@if(isNotEmpty(age)d){
+@if(isNotEmpty(age)){
 and age = #age#
 @}
 

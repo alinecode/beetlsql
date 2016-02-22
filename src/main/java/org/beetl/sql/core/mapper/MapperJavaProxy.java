@@ -17,30 +17,10 @@ import org.beetl.sql.core.annotatoin.SqlStatementType;
 /**
  * Java代理实现.
  * <p>
- * <a href="http://git.oschina.net/xiandafu/beetlsql/issues/54"># 54
+ * <a href="http://git.oschina.net/xiandafu/beetlsql/issues/54"># 54</a>
  * 封装sqlmanager
  * </p>
  * 
- * <pre>
- * public interface BaseMapper<T>
-{
-    insert(T t);
-    List<T> template(T t)
-}
-
-
-public interface UserMapper<User> extends BaseMapper{
-    public void updateXXX(int id,int status);
-}
-
-UserMapper uerDao = sqlManager.getMapper(UserMapper) ;
-userDao.insert(new User());
-userDao.updateXXX(1,2);
-
-updateXXX
-===
-update user set status = #status# where id=#id#
- * </pre>
  * @author zhoupan,xiandafu
  */
 public class MapperJavaProxy implements InvocationHandler {
@@ -62,12 +42,10 @@ public class MapperJavaProxy implements InvocationHandler {
 	}
 
 	/**
-	 * The Constructor.
-	 *
+	 * 
+	 * @param builder
 	 * @param sqlManager
-	 *            the sql manager
 	 * @param mapperInterface
-	 *            the entity class or mapper class
 	 */
 	public MapperJavaProxy(DefaultMapperBuilder builder,SQLManager sqlManager, Class<?> mapperInterface) {
 		super();
@@ -121,7 +99,7 @@ public class MapperJavaProxy implements InvocationHandler {
 	}
 
 	/**
-	 * 获取BaseMapper<EntityClass>接口的泛型实体参数类.
+	 * 获取BaseMapper&lt;EntityClass&gt;接口的泛型实体参数类.
 	 *
 	 * @param mapperInterface
 	 *            the mapper interface
@@ -161,13 +139,13 @@ public class MapperJavaProxy implements InvocationHandler {
 	 */
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		
+		String sqlId = this.builder.getIdGen().getId(entityClass, method);
 		MapperInvoke invoke = null;
 		Class c = method.getDeclaringClass();
 		if(c==BaseMapper.class){
 			invoke = new InnerMapperInvoke();
 		}else{
-			MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass,method);
+			MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass,method, sqlId);
 			switch(desc.type){
 			case 0 :invoke = new InsertMapperInvoke();break;
 			case 1:invoke = new InsertMapperInvoke();break;
@@ -178,7 +156,7 @@ public class MapperJavaProxy implements InvocationHandler {
 			}
 		}
 		//handle Void.class ?
-		Object ret = invoke.call(this.sqlManager, this.entityClass, this.builder.getIdGen().getId(entityClass, method), method, args);
+		Object ret = invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
 		return ret;
 		
 	}
