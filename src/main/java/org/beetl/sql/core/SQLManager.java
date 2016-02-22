@@ -459,7 +459,7 @@ public class SQLManager {
 	 */
 	public long allCount(Class<?> clazz) {
 		SQLScript script = getScript(clazz, SELECT_COUNT_BY_TEMPLATE);
-		return script.singleSelect(null, Long.class);
+		return script.selectSingle(null, Long.class);
 	}
 	
 	/**
@@ -561,8 +561,21 @@ public class SQLManager {
 	
 	public <T> T selectSingle(String id,Map<String, Object> paras, Class<T> target) {
 		SQLScript script = getScript(id);
-		return script.singleSelect(paras, target);
+		return script.selectSingle(paras, target);
 	}
+	
+	public <T> T selectUnique(String id,Object paras, Class<T> target) {
+		SQLScript script = getScript(id);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("_root", paras);
+		return script.selectUnique(map, target);
+	}
+	
+	public <T> T selectUnique(String id,Map<String, Object> paras, Class<T> target) {
+		SQLScript script = getScript(id);
+		return script.selectUnique(paras, target);
+	}
+	
 	
 	/**
 	 * 

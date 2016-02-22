@@ -3,7 +3,7 @@
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.0.1 (150K), 另外还需要beetl 包
+* 当前版本 2.0.2 (150K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -280,13 +280,16 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public <T> List<T> select(String sqlId, Class<T> clazz, Object paras) 根据sqlid来查询，参数是个pojo
 * public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras, int start, int size)， 增加翻页
 * public <T> List<T> select(String sqlId, Class<T> clazz, Object paras, int start, int size) ，增加翻页
-* public <T> T selectSingle(String id,Object paras, Class<T> target) 根据sqlid查询，将对应的唯一值映射成指定的taget对象,RowMapper mapper 也随着这些api提供,不在此列出了
+* public <T> T selectSingle(String id,Object paras, Class<T> target) 根据sqlid查询，输入是Pojo，将对应的唯一值映射成指定的taget对象，如果未找到，则返回空。需要注意的时候，有时候结果集本生是空，这时候建议使用unique
+* public <T> T selectSingle(String id,Map<String, Object> paras, Class<T> target) 根据sqlid查询，输入是Map，将对应的唯一值映射成指定的taget对象，如果未找到，则返回空。需要注意的时候，有时候结果集本生是空，这时候建议使用unique
+* public <T> T selectUnique(String id,Object paras, Class<T> target) 根据sqlid查询，输入是Pojo或者Map，将对应的唯一值映射成指定的taget对象,如果未找到，则抛出异常
+* public <T> T selectUnique(String id,Map<String, Object> paras, Class<T> target) 根据sqlid查询，输入是Pojo或者Map，将对应的唯一值映射成指定的taget对象,如果未找到，则抛出异常
 
 	注：sqlserver 翻页依赖对id的排序，因此，请保证sqlserver表由主键id，否则不能start,size 进行翻页，只能自己写sql语句完成翻页
 
-* public <T> T selectSingle(String id,Map<String, Object> paras, Class<T> target)  同上，参数是map
-* public Integer  intValue(String id,Object paras) 查询结果映射成Integer，输入是objct
-* public Integer  intValue(String id,Map paras) 查询结果映射成Integer，输入是map，其他还有 longValue，bigDecimalValue
+* public Integer  intValue(String id,Object paras) 查询结果映射成Integer，如果找不到，返回null，输入是objct
+* public Integer  intValue(String id,Map paras) 查询结果映射成Integer，如果找不到，返回null，输入是map，其他还有 longValue，bigDecimalValue
+* public <T> T unique(Class<T> clazz,Object pk) 根据主键查询，如果未找到，抛出异常
 
 ### 更新API
 

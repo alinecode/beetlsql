@@ -33,6 +33,9 @@ public class BeetlSQLException extends RuntimeException {
 	//mapper 接口函数 参数定义错误
 	public static final int 	ERROR_MAPPER_PARAMEER  = 11;
 			
+	
+	//mapper 接口函数 参数定义错误
+	public static final int 	UNIQUE_EXCEPT_ERROR  = 12;
 		
 	int code ;
 	

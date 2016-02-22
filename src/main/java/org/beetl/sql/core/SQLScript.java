@@ -272,10 +272,10 @@ public class SQLScript {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
-		return this.singleSelect(map, target);
+		return this.selectSingle(map, target);
 	}
 
-	public <T> T singleSelect(Map<String, Object> map, Class<T> target) {
+	public <T> T selectSingle(Map<String, Object> map, Class<T> target) {
 
 		List<T> result = select(target, map);
 
@@ -283,6 +283,18 @@ public class SQLScript {
 			return result.get(0);
 		}
 		return null;
+	}
+	
+	public <T> T selectUnique(Map<String, Object> map, Class<T> target) {
+
+		List<T> result = select(target, map);
+
+		if (result.size() == 1) {
+			return result.get(0);
+		}else{
+			throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集:参数是"+map);
+		}
+		
 	}
 
 	public <T> List<T> select(Class<T> clazz, Object paras) {
@@ -382,7 +394,7 @@ public class SQLScript {
 	}
 
 	public long selectCount(Map<String, Object> paras) {
-		return this.singleSelect(paras, Long.class);
+		return this.selectSingle(paras, Long.class);
 	}
 
 	public int update(Map<String, Object> paras) {
@@ -540,7 +552,16 @@ public class SQLScript {
 			for (int i = 0; i < objs.size(); i++)
 				ps.setObject(i + 1, objs.get(i));
 			rs = ps.executeQuery();
-			model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm));
+			try{
+				model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm,true));
+				
+			}catch(BeetlSQLException ex){
+				if(ex.code==BeetlSQLException.UNIQUE_EXCEPT_ERROR){
+					throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR,"unique查询"+table.getMetaName()+",但数据库未找到结果集:主键是"+objId);
+				}else{
+					throw ex;
+				}
+			}
 			this.callInterceptorAsAfter(ctx, model);
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
@@ -685,7 +706,7 @@ public class SQLScript {
 				List list = (List) result;
 				ctx.setResult(list.size());
 			} else {
-				ctx.setResult(1);
+				ctx.setResult(result);
 			}
 
 		} else {
