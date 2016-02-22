@@ -21,11 +21,8 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
-		sql.genPojoCodeToConsole("user");
-		
-		UserDao dao = sql.getMapper(UserDao.class);
-		dao.queryUser("lijz",13, 1, 10);
-
+		List<String> list = sql.execute("select name from user where 1!=1", String.class, null);
+		System.out.println(list);
 	}
 
 }

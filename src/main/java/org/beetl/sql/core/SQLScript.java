@@ -332,12 +332,18 @@ public class SQLScript {
 		return this.select(clazz, paras, null);
 	}
 
-	public <T> List<T> mappingSelect(ResultSet rs, Class<T> clazz) {
-		List<T> resultList = new ArrayList<T>();
+	public <T> List<T> mappingSelect(ResultSet rs, Class<T> clazz) throws SQLException {
+		List<T> resultList = null;
 
 		if (isBaseDataType(clazz)) { // 基本数据类型，如果有需要可以继续在isBaseDataType()添加
-			T result = queryMapping.query(rs, new ScalarHandler<T>(clazz));
-			resultList.add(result);
+			resultList = new ArrayList<T>();
+			
+			while(rs.next()){
+				T result = queryMapping.query(rs, new ScalarHandler<T>(clazz));
+				resultList.add(result);
+			}
+			
+			
 		} else if (clazz.isAssignableFrom(Map.class)) { // 如果是Map的子类或者父类，返回List<Map<String,Object>>
 			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm));
 		} else {

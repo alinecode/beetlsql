@@ -51,8 +51,12 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 //    		//TODO 需定义一个异常抛出
 //    		throw new SQLException("ResultSet存在多列");
 //    	}
-    	
-    	rs.next();
+//    	Object result = null;
+//    	if(rs.next()){
+//    		 result = this.getColumnValue(rs, this.columnIndex, this.requiredType);
+//    	}else{
+//    		result =  null;
+//    	}
     	
     	Object result = this.getColumnValue(rs, this.columnIndex, this.requiredType);
 		if (result != null && this.requiredType != null && !this.requiredType.isInstance(result)) {
