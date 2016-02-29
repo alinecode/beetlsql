@@ -21,7 +21,7 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
-		List<String> list = sql.execute("select name from user where 1=1", String.class, null);
+		List<User> list  = sql.select("user.queryUser", User.class, null);
 		System.out.println(list);
 //		User user  = sql.unique(User.class, 1555);
 //		System.out.println("kk"+user.getName());

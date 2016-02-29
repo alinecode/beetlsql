@@ -967,6 +967,8 @@ jdbcSql是渲染过后的sql，jdbcPara 是对应的参数值
 
 http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。在犹豫使用BeetlSQL，可以参考这个全面的对比文章
 
+##集成和Demo
+
 ### Spring集成和Demo
 	
   	<bean id="txManager"
@@ -974,7 +976,7 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="sqlManager" class="org.beetl.sql.ext.SpringBeetlSql">
+	<bean id="sqlManager" class="org.beetl.sql.ext.spring	.SpringBeetlSql">
 		<property name="cs" >
 			<bean  class="org.beetl.sql.ext.SpringConnectionSource">
 				<property name="master" ref="dataSource"></property>
