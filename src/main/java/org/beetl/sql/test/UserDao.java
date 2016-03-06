@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.beetl.sql.core.annotatoin.Param;
-import org.beetl.sql.core.annotatoin.RowSize;
-import org.beetl.sql.core.annotatoin.RowStart;
 import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.BaseMapper;
 
 public interface UserDao extends BaseMapper<User> {
@@ -21,4 +20,5 @@ public interface UserDao extends BaseMapper<User> {
 	public int[] setUserStatus(Map<String,Object>[] paras);
 	public int[] setUserStatus(List<User> paras);
 	public KeyHolder newUser(User user);
+	public void queryNewUser(PageQuery query);
 }

@@ -153,6 +153,7 @@ public class MapperJavaProxy implements InvocationHandler {
 			case 3:invoke = new SelectMapperInvoke();break;
 			case 4:invoke = new UpdateMapperInvoke();break;
 			case 5:invoke = new UpdateBatchMapperInvoke();break;
+			case 6:invoke = new PageQueryMapperInvoke();break;
 			}
 		}
 		//handle Void.class ?

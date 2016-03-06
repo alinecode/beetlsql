@@ -11,7 +11,7 @@ public class OracleStyle extends AbstractDBStyle {
 
 	public OracleStyle() {
 	}
-
+	
 	@Override
 	public String getPageSQL(String sql) {
 		//beetlT，beetl_rn 避免与sql重复

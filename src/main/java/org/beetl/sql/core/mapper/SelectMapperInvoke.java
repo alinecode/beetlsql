@@ -1,11 +1,10 @@
 package org.beetl.sql.core.mapper;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.engine.PageQuery;
 
 /**
  *  
@@ -21,9 +20,9 @@ public class SelectMapperInvoke extends BaseMapperInvoke {
 		Map<String,Object> sqlArgs = this.getSqlArgs(sm, entityClass,m, args,sqlId);
 		
 		if(desc.paggerPos!=null){
-			int offset ,size ;
-			offset = ((Number)args[desc.paggerPos[0]]).intValue();
-			size = ((Number)args[desc.paggerPos[1]]).intValue();
+			long offset ,size ;
+			offset = ((Number)args[desc.paggerPos[0]]).longValue();
+			size = ((Number)args[desc.paggerPos[1]]).longValue();
 			return sm.select(sqlId, entityClass, sqlArgs,offset,size);
 		}else{
 			return sm.select(sqlId, entityClass, sqlArgs);

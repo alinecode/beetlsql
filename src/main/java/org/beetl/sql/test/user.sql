@@ -1,12 +1,19 @@
 queryUser
 ===
 * 按照年纪查找用户
-select * from User where 1 =1 
+select #page()# from User where 1 =1 
 @if(isNotEmpty(age)){
 and age = #age#
 @}
 
-
+queryNewUser
+===
+* 按照年纪查找用户
+	select 
+	@pageTag(){
+	a.id,a.name
+	@}
+	from User a
 
 
 findById

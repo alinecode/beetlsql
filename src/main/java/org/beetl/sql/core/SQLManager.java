@@ -18,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapping.handler.ScalarHandler;
@@ -56,6 +58,8 @@ public class SQLManager {
 	private String defaultSchema = null ;
 	
 	MapperBuilder mapperBuilder = new DefaultMapperBuilder(this);
+	boolean offsetStartZero = false;
+
 	
 	/** 创建一个beetlsql需要的sqlmanager
 	 * @param dbStyle
@@ -139,6 +143,8 @@ public class SQLManager {
 		
 		this.dbStyle.setMetadataManager(initMetadataManager());
 		this.dbStyle.init(beetl);
+		
+		offsetStartZero = Boolean.parseBoolean(beetl.getPs().getProperty("OFFSET_START_ZERO").trim());
 	}
 	
 	/**
@@ -288,6 +294,9 @@ public class SQLManager {
 	
 
 	/*============ 查询部分 ==================*/
+	
+	
+	
 	/**
 	 * 通过sqlId进行查询,查询结果映射到clazz上
 	 * @param sqlId sql标记
@@ -351,7 +360,7 @@ public class SQLManager {
 	 * @param size  查询条数
 	 * @return
 	 */
-	public <T> List<T> select(String sqlId, Class<T> clazz, Object paras, int start, int size) { 
+	public <T> List<T> select(String sqlId, Class<T> clazz, Object paras, long start, long size) { 
 		return this.select(sqlId, clazz, paras, null, start, size);
 	}
 	
@@ -365,7 +374,7 @@ public class SQLManager {
 	 * @param size  查询条数
 	 * @return Pojo集合
 	 */
-	public <T> List<T> select(String sqlId, Class<T> clazz, Object paras, RowMapper<T> mapper, int start, int size) { 
+	public <T> List<T> select(String sqlId, Class<T> clazz, Object paras, RowMapper<T> mapper, long start, long size) { 
 		SQLScript script = getScript(sqlId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
@@ -381,7 +390,7 @@ public class SQLManager {
 	 * @param size  查询条数
 	 * @return
 	 */
-	public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras, int start, int size) { 
+	public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras, long start, long size) { 
 		
 		SQLScript script = getScript(sqlId);
 		return script.select(paras, clazz, null,start, size);
@@ -397,10 +406,63 @@ public class SQLManager {
 	 * @param size  查询条数
 	 * @return
 	 */
-	public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras, RowMapper<T> mapper, int start, int size) { 
+	public <T> List<T> select(String sqlId, Class<T> clazz, Map<String, Object> paras, RowMapper<T> mapper, long start, long size) { 
 		SQLScript script = getScript(sqlId);
 		return script.select(paras, clazz, mapper,start, size);
 	}
+	
+	public <T> void pageQuery(String sqlId,Class<T> clazz,PageQuery query){
+		pageQuery(sqlId, clazz, query, null);
+	}
+	
+	/** 翻页查询，假设sqlId包含了page函数或者标签 ，如<p></p>
+	 * <pre>
+	 * queryUser		
+	 * ===
+	 * select #page("a.*,b.name")# from user a left join role b ....
+	 * </pre>
+	 * @param sqlId
+	 * @param query
+	 */
+	public <T> void pageQuery(String sqlId,Class<T> clazz,PageQuery query,RowMapper<T> mapper){
+		Object paras = query.getParas();
+		Map<String,Object> root =  null;
+		Long totalRow = query.getTotalRow();
+		List<T> list = null;
+		if(paras==null){
+			root = new HashMap<String,Object>();
+		}else if(paras instanceof Map){
+			root = (Map<String,Object>)paras;
+		}else{
+			root = new HashMap<String,Object>();
+			root.put("_root", paras);
+		}
+		
+		if(query.getTotalRow()==-1){
+			//需要查询行数
+			root.put(PageQuery.pageFlag, PageQuery.pageObj);
+			totalRow = this.selectSingle(sqlId, root, Long.class);
+			
+			query.setTotalRow(totalRow);
+		}
+		
+		
+		root.remove(PageQuery.pageFlag);
+		
+		if(totalRow!=-1){
+			long start=this.offsetStartZero?0:1+(query.getPageNumber()-1)*query.getPageSize();
+			long size = query.getPageSize();
+			list = this.select(sqlId,clazz, root,mapper,start,size);
+		}else{
+			list = Collections.EMPTY_LIST;
+		}
+		
+		query.setList(list);
+		
+		
+	}
+	
+	
 	
 	/**
 	 * 根据主键查询
@@ -446,7 +508,7 @@ public class SQLManager {
 	 * @param size
 	 * @return
 	 */
-	public <T> List<T> all(Class<T> clazz, int start, int size) {
+	public <T> List<T> all(Class<T> clazz, long start, long size) {
 		SQLScript script = getScript(clazz, SELECT_ALL);
 		return script.select(null, clazz, null, start, size);
 	}
@@ -470,7 +532,7 @@ public class SQLManager {
 	 * @param end
 	 * @return
 	 */
-	public <T> List<T> all(Class<T> clazz, RowMapper<T> mapper, int start, int end) {
+	public <T> List<T> all(Class<T> clazz, RowMapper<T> mapper, long start, int end) {
 		SQLScript script = getScript(clazz, SELECT_ALL);
 		return script.select(null, clazz, mapper, start, end);
 	}
@@ -501,11 +563,11 @@ public class SQLManager {
 		return (List<T>) script.select(t.getClass(), param,mapper);
 	}
 	
-	public <T> List<T> template(T t,int start,int size) {
+	public <T> List<T> template(T t,long start,long size) {
 		return this.template(t, null, start, size);
 	}
 	
-	public <T> List<T> template(T t,RowMapper mapper,int start,int size) {		
+	public <T> List<T> template(T t,RowMapper mapper,long start,long size) {		
 		SQLScript script = getScript(t.getClass(), SELECT_BY_TEMPLATE);
 		SQLScript pageScript = this.getPageSqlScript(script.id);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -879,7 +941,7 @@ public class SQLManager {
 	 * @param size
 	 * @return
 	 */
-	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Map paras,int start,int size){
+	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Map paras,long start,long size){
 		String key ="auto._gen_" +sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if(source==null){
@@ -893,7 +955,7 @@ public class SQLManager {
 		return script.select(clazz, paras);
 	}
 	
-	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Object paras,int start,int size){
+	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Object paras,long start,long size){
 		
 		Map map = new HashMap();
 		map.put("_root", paras);

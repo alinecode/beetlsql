@@ -17,6 +17,7 @@ import org.beetl.sql.core.annotatoin.RowStart;
 import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.engine.PageQuery;
 
 /**
  * mapper 参数
@@ -27,7 +28,7 @@ import org.beetl.sql.core.db.KeyHolder;
 public class MethodDesc {
 	public Map<String, Integer> parasPos = new HashMap<String, Integer>();
 	// 0 insert , 1 insert with key holder, 2 select single ,3 select list 4
-	// update 5 batchUpdate
+	// update 5 batchUpdate 6 page query
 	public int type = 0;
 	public Method method = null;
 	// 如果存在翻页，pagger［0］ ＝offet,pagger[1]= size;
@@ -113,6 +114,12 @@ public class MethodDesc {
 					}
 					continue;
 				}
+				
+				if(PageQuery.class.isAssignableFrom(cls)){
+					type = 6 ;// page query
+					break;
+				}
+				
 
 				if (Map.class.isAssignableFrom(cls)) {
 					if (!this.parasPos.containsKey("_root")) {
@@ -143,7 +150,8 @@ public class MethodDesc {
 					}
 					continue;
 				}
-
+				
+				
 				Package pkg = cls.getPackage();
 				if (pkg == null) {
 					errorPara.put(argIndex, "没有申明@Param的参数");

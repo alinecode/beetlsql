@@ -20,11 +20,16 @@ public class SQLPlaceholderST extends Statement
 	public Expression expression;
 	public Type type = null;
 	FormatExpression format;
+	/**
+	 *  这些函数调用总是返回函数结果而不是一个sql占位符号“?”
+	 */
 	public static final Set<String> textFunList = new HashSet<String>();
 	static{
 		textFunList.add("text");
 		textFunList.add("use");
 		textFunList.add("join");
+		textFunList.add("page");
+		
 		
 	}
 

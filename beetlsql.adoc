@@ -3,7 +3,7 @@
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.0.2 (150K), 另外还需要beetl 包
+* 当前版本 2.1 (160K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -67,16 +67,15 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 写一个java的Main方法，内容如下
 
-	// 创建一个简单的ConnectionSource，只有一个master
-	ConnectionSource source = ConnectionSourceHelper.simple(driver,url,userName,password);
-	// 采用mysql 习俗
-	DBStyle mysql = new MysqlStyle();
-	// sql语句放在classpagth的/sql 目录下
-	SQLLoader loader = new ClasspathLoader("/sql");
-	// 数据库命名跟java命名一样，所以采用DefaultNameConversion，还有一个是UnderlinedNameConversion，下划线风格的
-	NameConversion nc = new  DefaultNameConversion();
-	// 最后，创建一个SQLManager,DebugInterceptor 不是必须的，但可以通过它查看sql执行情况
-	SqlManager sqlManager = new SqlManager(source,mysql,loader,nc,new Interceptor[]{new DebugInterceptor()});
+        ConnectionSource source = ConnectionSourceHelper.getSimple(driver, url, "", userName, password);
+		DBStyle mysql = new MySqlStyle();
+		// sql语句放在classpagth的/sql 目录下
+		SQLLoader loader = new ClasspathLoader("/sql");
+		// 数据库命名跟java命名一样，所以采用DefaultNameConversion，还有一个是UnderlinedNameConversion，下划线风格的
+		UnderlinedNameConversion nc = new  UnderlinedNameConversion();
+		// 最后，创建一个SQLManager,DebugInterceptor 不是必须的，但可以通过它查看sql执行情况
+		SQLManager sqlManager = new SQLManager(mysql,loader,source,nc,new Interceptor[]{new DebugInterceptor()});
+		
 
 	//使用内置的生成的sql 新增用户，如果需要获取主键，可以传入KeyHolder
 	User user = new User();
@@ -216,15 +215,15 @@ beetlsql生成了用于查询，更新，条件的sql片段和一个简单例子
 
 SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManager，可以直接构造SQLManager.并通过过单例获取如：
 
-	ConnectionSource source = ConnectionSourceHelper.simple(driver,url,userName,password);
-	// 采用mysql 习俗
-	DBStyle mysql = new MysqlStyle();
-	// sql语句放在classpagth的/sql 目录下
-	SQLLoader loader = new ClasspathLoader("/sql");
-	// 数据库命名跟java命名采用驼峰转化,也可以根据需要用UnderlinedNameConversion，或者自定义
-	NameConversion nc = new  DefaultNameConversion();
-	// 最后，创建一个SQLManager
-	SqlManager sqlManager = new SQLManager(mysql,loader,source,nc, new Interceptor[]{new DebugInterceptor()});
+        ConnectionSource source = ConnectionSourceHelper.getSimple(driver, url, "", userName, password);
+		DBStyle mysql = new MySqlStyle();
+		// sql语句放在classpagth的/sql 目录下
+		SQLLoader loader = new ClasspathLoader("/sql");
+		// 数据库命名跟java命名一样，所以采用DefaultNameConversion，还有一个是UnderlinedNameConversion，下划线风格的
+		UnderlinedNameConversion nc = new  UnderlinedNameConversion();
+		// 最后，创建一个SQLManager,DebugInterceptor 不是必须的，但可以通过它查看sql执行情况
+		SQLManager sqlManager = new SQLManager(mysql,loader,source,nc,new Interceptor[]{new DebugInterceptor()});
+		
 
 更常见的是，已经有了DataSource，创建ConnectionSource 可以采用如下代码
 
@@ -247,9 +246,8 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 * public <T> List<T> all(Class<T> clazz, int start, int size)  翻页
 * public int allCount(Class<?> clazz) 总数
 * public <T> List<T> template(T t)  根据模板查询，返回所有符合这个模板的数据库
-* public <T> List<T> template(T t,RowMapper mapper) 同上，mapper可以提供额外的映射，如处理一对多，一对一
+ 同上，mapper可以提供额外的映射，如处理一对多，一对一
 * public <T> List<T> template(T t,int start,int size) 同上，可以翻页
-* public <T> List<T> template(T t,RowMapper mapper,int start,int size) 翻页，并增加额外的映射
 * public <T> long templateCount(T t) 获取符合条件的个数
 
 翻页的start，系统默认位从1开始，为了兼容各个数据库系统，会自动翻译成数据库习俗，比如start为1，会认为mysql，postgres从0开始（从start－1开始），oralce从1开始（start－0）开始。
@@ -289,7 +287,38 @@ SQLManager 是系统的核心，他提供了所有的dao方法。获得SQLManage
 
 * public Integer  intValue(String id,Object paras) 查询结果映射成Integer，如果找不到，返回null，输入是objct
 * public Integer  intValue(String id,Map paras) 查询结果映射成Integer，如果找不到，返回null，输入是map，其他还有 longValue，bigDecimalValue
-* public <T> T unique(Class<T> clazz,Object pk) 根据主键查询，如果未找到，抛出异常
+* public <T> T unique(Class<T> clazz,Object pk) 根据主键查询，如果未找到，抛出异常.
+
+
+### 翻页查询API
+
+BeetlSQL 提供一个PageQUery对象,用于web应用的翻页查询,此时sqlId 要求使用page函数或者pageTag标签,这样才能同时获得查询结果集总数和当前查询的结果
+
+* public <T> void pageQuery(String sqlId,Class<T> clazz,PageQuery query) 
+
+    
+    queryNewUser
+    ===
+    select 
+    @pageTag(){
+    a.*,b.name role_name
+    @}
+    from user a left join b ...
+
+如上sql,会在查询的时候转为俩条sql语句
+
+    select count(1) from user a left join b...
+    select a.*,b.name role_name  from user a left join b...
+    
+如果字段较多,为了输出方便,也可以使用pageTag 标签函数,如果字段简单,可以用page函数,具体参考pageTag和page函数说明
+
+    PageQuery query = new PageQuery(); //从第一页开始查询,无参数
+	sql.pageQuery("user.queryNewUser", User.class,query);
+    System.out.println(query.getTotalPage());
+	System.out.println(query.getTotalRow());
+	System.out.println(query.getPageNumber());
+	List<User> list = query.getList();
+
 
 ### 更新API
 
@@ -381,6 +410,7 @@ SQLManager 提供了所有需要知道的API，但通过sqlid来访问sql有时�
 		public void setUserStatus(Map paras); //更新用户状态
 		public int[] setUserStatus(List<User> paras); //批量更新用户状态
 		public KeyHolder newUser(User user);// 添加用户
+		public void queryNewUser(PageQuery query) ; 翻页查询
 	}
 	
 	
@@ -418,6 +448,7 @@ params列表按照参数申明顺序,_root保留字 代表查询得root对象,_s
 * 参数列表里只允许有一个Pojo或者Map，作为查询参数_root，否则，需要加上@Param
 * 参数列表里如果有List 或者Map[],则期望对应的是一个updateBatch操作
 * 参数列表里如果@RowStart ,@RowSize,则认为是翻页语句
+* 参数里如果有PageQuery,则认为是翻页查询
 
 
 使用Mapper能增加Dao维护性，并能提高开发效率，建议在项目中使用。
@@ -727,10 +758,18 @@ beetl提供了很多内置方法，如print，debug,isEmpty,date等，具体请�
 		selectUser
 		===
 		select * from user #use("condition")#
+		
+* page 用于pagequery,但beetlsql 使用pagequery查询,会将sql模板翻译成带有count(1),和列表名的俩个sql语句,因此必须使用page函数或者pageTag标签
+
+    queryNewUser
+	===
+	select #page()# from user
+	
+如果无参数,则在查询的时候解释成 *,如果有参数,则解释成列名,如 page("a.name,a.id,b.name role_name") ,如果列名较多,可以使用pageTag
 
 ### 标签功能
 
-beetlsql 提供了trim标签函数，用于删除标签体最后一个逗号，这可以帮助拼接条件sql，如
+* beetlsql 提供了trim标签函数，用于删除标签体最后一个逗号，这可以帮助拼接条件sql，如
 
 	updateStatus
 	=== 
@@ -747,9 +786,19 @@ beetlsql 提供了trim标签函数，用于删除标签体最后一个逗号，�
 	
 trim 标签可以删除 标签体里的最后一个逗号.trim 也可以实现类似mybatis的功能，通过传入trim参数prefix，prefixOverrides来完成。具体参考标签api 文档
 
+* pageTag,同page函数,用于pageQuery,如
+
+    queryNewUser
+	===
+	select 
+	@pageTag(){
+	id,name,status
+	@}
+	from user
 
 
-	注:可以参考beetl官网 了解如何开发自定义标签以及注册标签函数
+
+注:可以参考beetl官网 了解如何开发自定义标签以及注册标签函数
 
 
 ## Debug功能
