@@ -1074,7 +1074,7 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 		@Transactional()
 		public int total(User user) {
 
-			SQLManager dao = beetlsql.getSQLMananger();
+			SQLManager dao = beetlsql.getSQLManager();
 			List<User> list = dao.all(User.class);
 			int total = list .size();
 			dao.deleteById(User.class, 3);
