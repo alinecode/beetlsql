@@ -34,6 +34,7 @@ public class ClasspathLoader implements SQLLoader {
 
 	private DBStyle dbs = null;
 	
+	
 	private boolean autoCheck = true;
 
 	public  ClasspathLoader() {
@@ -49,6 +50,15 @@ public class ClasspathLoader implements SQLLoader {
 
 	@Override
 	public SQLSource getSQL(String id) {
+		SQLSource ss = this.tryLoadSQL(id);
+		
+		if(ss==null){
+			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql");
+		}
+		return ss;
+	}
+	
+	private SQLSource tryLoadSQL(String id){
 		SQLSource ss = sqlSourceMap.get(id);	
 		boolean hasLoad = false ;
 		if (ss == null) {
@@ -61,9 +71,6 @@ public class ClasspathLoader implements SQLLoader {
 		
 		//处理完后再次获取
 		ss = sqlSourceMap.get(id);
-		if(ss==null){
-			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql");
-		}
 		return ss;
 	}
 	
@@ -103,7 +110,7 @@ public class ClasspathLoader implements SQLLoader {
 	}
 	
 	public boolean exist(String id){
-		return loadSql(id);
+		return this.tryLoadSQL(id)!=null;
 	}
 	
 	@Override

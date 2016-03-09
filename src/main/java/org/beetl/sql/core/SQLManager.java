@@ -437,17 +437,22 @@ public class SQLManager {
 			root = new HashMap<String,Object>();
 			root.put("_root", paras);
 		}
-		
+		String sqlCountId = sqlId.concat("#count");
+		boolean hasCountSQL = this.sqlLoader.exist(sqlCountId);
 		if(query.getTotalRow()==-1){
 			//需要查询行数
-			root.put(PageQuery.pageFlag, PageQuery.pageObj);
-			totalRow = this.selectSingle(sqlId, root, Long.class);
-			
+			if(hasCountSQL){
+				totalRow = this.selectSingle(sqlCountId, root, Long.class);
+			}else{
+				root.put(PageQuery.pageFlag, PageQuery.pageObj);
+				totalRow = this.selectSingle(sqlId, root, Long.class);
+			}
+				
 			query.setTotalRow(totalRow);
 		}
 		
 		
-		root.remove(PageQuery.pageFlag);
+		if(!hasCountSQL)root.remove(PageQuery.pageFlag);
 		
 		if(totalRow!=-1){
 			long start=this.offsetStartZero?0:1+(query.getPageNumber()-1)*query.getPageSize();

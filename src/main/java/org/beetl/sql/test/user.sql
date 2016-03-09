@@ -10,11 +10,15 @@ queryNewUser
 ===
 * 按照年纪查找用户
 	select 
-	@pageTag(){
 	a.id,a.name
-	@}
 	from User a
 
+queryNewUser#count
+===
+* 按照年纪查找用户
+	select 
+	count(1) 
+	from User a
 
 findById
 ===
