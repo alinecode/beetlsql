@@ -28,7 +28,7 @@ public class PageQuery implements Serializable{
 	public static long 	DEFAULT_PAGE_SIZE = 20 ;
 	protected   long pageSize = DEFAULT_PAGE_SIZE;		//每页记录数
 	protected long totalPage;		//总页数
-	protected long totalRow=-1;		//总行数,如果不为0，则不需要再次查询
+	protected long totalRow=-1;		//总行数,如果不为-1，则不需要再次查询
 	
 	
 	public PageQuery(){
@@ -54,6 +54,9 @@ public class PageQuery implements Serializable{
 	}
 	
 	
+	public void setPageSize(long pageSize) {
+		this.pageSize = pageSize;
+	}
 	/**  
 	 * @param pageNumber 页数
 	 * @param paras 参数

@@ -21,9 +21,9 @@ public class QuickTest {
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		UserDao dao = sql.getMapper(UserDao.class);
-		PageQuery.DEFAULT_PAGE_SIZE = 10;
+//		PageQuery.DEFAULT_PAGE_SIZE = 10;
 		PageQuery query = new PageQuery();
-		sql.pageQuery("user.queryNewUser", User.class,query);
+//		sql.pageQuery("user.queryNewUser", User.class,query);
 		dao.queryNewUser(query);
 		System.out.println(query.getTotalPage());
 		System.out.println(query.getTotalRow());

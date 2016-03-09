@@ -55,7 +55,7 @@ public class ClasspathLoader implements SQLLoader {
 			loadSql(id);
 			hasLoad = true;
 		}
-		if(hasLoad&&this.autoCheck&&isModified(id)){
+		if(!hasLoad&&this.autoCheck&&isModified(id)){
 			loadSql(id);
 		}
 		
