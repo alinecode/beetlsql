@@ -322,7 +322,7 @@ public abstract class AbstractDBStyle implements DBStyle {
     		if(col.equalsIgnoreCase(table.getMetaIdName())){
 				continue ;
 			}
-            condition.append(appendWhere(null,table,col));
+            condition.append(appendWhere(null,table,attr));
         }
         return "1 = 1  \n" + condition.toString();
     }

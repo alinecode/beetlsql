@@ -115,7 +115,7 @@ public class ClasspathLoader implements SQLLoader {
 	}
 
 	/***
-	 *  考虑到夸数据库支持，ClasspathLoader加载SQL顺序如下：
+	 *  考虑到跨数据库支持，ClasspathLoader加载SQL顺序如下：
 		首先根据DBStyle.getName() 找到对应的数据库名称，然后在ROOT/dbName 下找对应的sql，
 		如果ROOT/dbName 文件目录不存在，或者相应的sql文件不存在，再搜索ROOT目录下的sql文件。
 		如mysql 里查找user.select2,顺序如下：
