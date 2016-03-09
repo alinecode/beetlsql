@@ -22,7 +22,9 @@ public class QuickTest {
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		sql.genSQLTemplateToConsole("user");
-				UserDao dao = sql.getMapper(UserDao.class);
+		UserDao dao = sql.getMapper(UserDao.class);
+//		int count = dao.queryNewUser$count();
+//		System.out.println("结果"+count);
 		PageQuery query = new PageQuery();
 		query.setPageSize(5);
 		dao.queryNewUser(query);

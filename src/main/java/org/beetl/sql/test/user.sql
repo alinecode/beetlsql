@@ -10,15 +10,10 @@ queryNewUser
 ===
 * 按照年纪查找用户
 	select 
-	a.id,a.name
+	#page()#
 	from User a
 
-queryNewUser#count
-===
-* 按照年纪查找用户
-	select 
-	count(1) 
-	from User a
+
 
 findById
 ===
