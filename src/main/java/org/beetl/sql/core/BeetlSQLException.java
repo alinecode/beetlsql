@@ -27,14 +27,14 @@ public class BeetlSQLException extends RuntimeException {
 	//根据指定类创建实例出错
 	public static final int 	OBJECT_INSTANCE_ERROR  = 9;
 		
-	//mapper 未知类型
+	//dao2 未知类型
 	public static final int 	UNKNOW_MAPPER_SQL_TYPE  = 10;
 	
-	//mapper 接口函数 参数定义错误
+	//dao2 接口函数 参数定义错误
 	public static final int 	ERROR_MAPPER_PARAMEER  = 11;
 			
 	
-	//mapper 接口函数 参数定义错误
+	//dao2 接口函数 参数定义错误
 	public static final int 	UNIQUE_EXCEPT_ERROR  = 12;
 		
 	int code ;

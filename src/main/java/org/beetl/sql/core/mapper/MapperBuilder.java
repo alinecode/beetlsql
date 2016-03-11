@@ -8,13 +8,13 @@ package org.beetl.sql.core.mapper;
 public interface MapperBuilder {
 
 	/**
-	 * Gets the mapper.
+	 * Gets the dao2.
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param mapperInterface
-	 *            the mapper interface
-	 * @return the mapper
+	 *            the dao2 interface
+	 * @return the dao2
 	 */
 	<T> T getMapper(Class<T> mapperInterface);
 

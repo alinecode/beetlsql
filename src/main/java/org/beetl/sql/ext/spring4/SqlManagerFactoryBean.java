@@ -1,0 +1,185 @@
+package org.beetl.sql.ext.spring4;
+
+import org.beetl.core.Function;
+import org.beetl.core.TagFactory;
+import org.beetl.sql.core.*;
+import org.beetl.sql.core.db.DBStyle;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.core.io.Resource;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.springframework.util.Assert.notNull;
+
+/**
+ * SqlManager创建工厂
+ * @author woate
+ */
+public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, InitializingBean, ApplicationListener<ApplicationEvent> {
+    /**
+     * BeetlSql数据源
+     */
+    BeetlSqlDataSource beetlSqlDataSource;
+    /**
+     * 数据库样式
+     */
+    DBStyle dbStyle;
+    /**
+     * 名称转换样式
+     */
+    NameConversion nameConversion;
+    /**
+     * 拦截器
+     */
+    Interceptor[] interceptors;
+    /**
+     * BeetlSql核心类
+     */
+    SQLManager sqlManager;
+    /**
+     * 配置扫描的Mapper对应md文件的存放路径
+     */
+    private Resource[] mapperLocations;
+
+    private Map<String, Function> functions = Collections.emptyMap();
+
+    private Map<String, TagFactory> tagFactorys = Collections.emptyMap();
+
+    /**
+     * 配置文件地址
+     */
+    protected Resource configLocation = null;
+
+    protected String defaultSchema = null;
+
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+
+    }
+
+    @Override
+    public SQLManager getObject() throws Exception {
+        if (sqlManager != null) {
+            return sqlManager;
+        }
+        //根据mapper指定的路径加载映射文件
+        //FIXME 这里要增加多个文件路径加载
+        SQLLoader sqlLoader = new ClasspathLoader(mapperLocations[0].getFile().getPath());
+        //这里配置拦截器
+        if (interceptors == null) {
+            interceptors = new Interceptor[0];
+        }
+
+        Properties properties = new Properties();
+
+        if (configLocation != null) {
+            InputStream in = null;
+            try {
+                // 如果指定了配置文件，先加载配置文件
+
+                in = configLocation.getInputStream();
+                properties.load(in);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+
+                    }
+                    in = null;
+                }
+            }
+        }
+        sqlManager = new SQLManager(dbStyle, sqlLoader, beetlSqlDataSource, nameConversion, interceptors, this.defaultSchema, properties);
+
+
+        for (Map.Entry<String, Function> entry : functions.entrySet()) {
+            sqlManager.getBeetl().getGroupTemplate().registerFunction(entry.getKey(), entry.getValue());
+        }
+
+        for (Map.Entry<String, TagFactory> entry : tagFactorys.entrySet()) {
+            sqlManager.getBeetl().getGroupTemplate().registerTagFactory(entry.getKey(), entry.getValue());
+        }
+        return sqlManager;
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return SQLManager.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
+
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        notNull(beetlSqlDataSource, "'beetlSqlDataSource'数据源是必须配置的");
+        notNull(mapperLocations, "'mapperLocations'映射配置文件所在路径是必须配置的");
+    }
+
+    /**
+     * 配置BeetlSql数据源
+     *
+     * @param beetlSqlDataSource 数据源对象
+     */
+    public void setBeetlSqlDataSource(BeetlSqlDataSource beetlSqlDataSource) {
+        this.beetlSqlDataSource = beetlSqlDataSource;
+    }
+
+    /**
+     * 指定配置文件路径
+     *
+     * @param configLocation 配置路径
+     */
+    public void setConfigLocation(Resource configLocation) {
+        this.configLocation = configLocation;
+    }
+
+    /**
+     * 配置多个Mapper文件存放路径
+     *
+     * @param mapperLocations 多个Mapper文件存放路径
+     */
+    public void setMapperLocations(Resource[] mapperLocations) {
+        this.mapperLocations = mapperLocations;
+    }
+
+    /**
+     * 设置数据库方言
+     *
+     * @param dbStyle 数据库方言
+     */
+    public void setDbStyle(DBStyle dbStyle) {
+        this.dbStyle = dbStyle;
+    }
+
+    /**
+     * 设置名称转换样式
+     *
+     * @param nameConversion 名称转换样式
+     */
+    public void setNameConversion(NameConversion nameConversion) {
+        this.nameConversion = nameConversion;
+    }
+
+    /**
+     * 设置拦截器列表
+     *
+     * @param interceptors
+     */
+    public void setInterceptors(Interceptor[] interceptors) {
+        this.interceptors = interceptors;
+    }
+}

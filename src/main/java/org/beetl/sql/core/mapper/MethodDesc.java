@@ -20,7 +20,7 @@ import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
 
 /**
- * mapper 参数
+ * dao2 参数
  * 
  * @author xiandafu
  *

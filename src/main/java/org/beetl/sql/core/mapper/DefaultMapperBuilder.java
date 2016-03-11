@@ -34,7 +34,7 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.beetl.sql.ext.mapper.MapperBuilder#getMapper(java.lang.Class)
+	 * @see org.beetl.sql.ext.dao2.MapperBuilder#getMapper(java.lang.Class)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -54,7 +54,7 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	 * @param <T>
 	 *            the generic type
 	 * @param mapperInterface
-	 *            the mapper interface
+	 *            the dao2 interface
 	 * @return the t
 	 */
 	@SuppressWarnings("unchecked")

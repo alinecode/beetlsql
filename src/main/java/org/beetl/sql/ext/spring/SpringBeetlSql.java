@@ -20,8 +20,14 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.ext.spring4.SqlManagerFactoryBean;
 import org.springframework.core.io.Resource;
 
+/**
+ * 这个类已过时，将采用SqlManagerFactoryBean构造SqlManager
+ * @see SqlManagerFactoryBean
+ */
+@Deprecated
 public class SpringBeetlSql {
 	ConnectionSource cs;
 	DBStyle dbStyle;

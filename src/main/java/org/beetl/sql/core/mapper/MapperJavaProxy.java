@@ -60,8 +60,8 @@ public class MapperJavaProxy implements InvocationHandler {
 	 * Mapper interface.
 	 *
 	 * @param mapperInterface
-	 *            the mapper interface
-	 * @return the mapper proxy
+	 *            the dao2 interface
+	 * @return the dao2 proxy
 	 */
 	public MapperJavaProxy mapperInterface(Class<?> mapperInterface) {
 		this.onResolveEntityClassFromMapperInterface(mapperInterface);
@@ -75,7 +75,7 @@ public class MapperJavaProxy implements InvocationHandler {
 	 *
 	 * @param entityClass
 	 *            the entity class
-	 * @return the mapper proxy
+	 * @return the dao2 proxy
 	 */
 	public MapperJavaProxy entityClass(Class<?> entityClass) {
 		this.entityClass = entityClass;
@@ -91,7 +91,7 @@ public class MapperJavaProxy implements InvocationHandler {
 	/**
 	 * Builds the.
 	 *
-	 * @return the mapper proxy
+	 * @return the dao2 proxy
 	 */
 	public MapperJavaProxy build() {
 		this.checkArgs();
@@ -102,7 +102,7 @@ public class MapperJavaProxy implements InvocationHandler {
 	 * 获取BaseMapper&lt;EntityClass&gt;接口的泛型实体参数类.
 	 *
 	 * @param mapperInterface
-	 *            the mapper interface
+	 *            the dao2 interface
 	 */
 	protected void onResolveEntityClassFromMapperInterface(Class<?> mapperInterface) {
 		if (mapperInterface.isInterface()) {
