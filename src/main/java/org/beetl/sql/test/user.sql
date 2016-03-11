@@ -21,7 +21,7 @@ select * from User where id = #id#
 
 getCount
 ===
-select count(*) from User
+select count(*) from User 
 
 setAge
 ===

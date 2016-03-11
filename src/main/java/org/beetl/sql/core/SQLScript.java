@@ -36,14 +36,13 @@ import org.beetl.sql.core.mapping.handler.ScalarHandler;
 
 public class SQLScript {
 
-	SQLManager sm;
-	String id;
-	String sql;
-	SQLSource sqlSource;
-	String jdbcSql;
-	String dbName = null;
+	final SQLManager sm;
+	final String id;
+	final String sql;
+	final SQLSource sqlSource;
+	final String dbName ;
 
-	QueryMapping queryMapping = QueryMapping.getInstance();
+	final QueryMapping queryMapping = QueryMapping.getInstance();
 
 	public SQLScript(SQLSource sqlSource, SQLManager sm) {
 		this.sqlSource = sqlSource;
@@ -722,16 +721,12 @@ public class SQLScript {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	
 
 	public String getSql() {
 		return sql;
 	}
 
-	public void setSql(String sql) {
-		this.sql = sql;
-	}
+
 
 }

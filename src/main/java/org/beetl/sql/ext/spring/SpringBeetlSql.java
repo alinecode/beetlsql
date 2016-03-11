@@ -153,6 +153,15 @@ public class SpringBeetlSql {
 		this.interceptors = interceptors;
 	}
 	
+	
+	public SQLManager getSQLManager(){
+		return this.sqlManager;
+	}
+	
+	/** 错误的拼写，请使用getSQLManager，囧
+	 * @return
+	 */
+	@Deprecated
 	public SQLManager getSQLMananger(){
 		return this.sqlManager;
 	}

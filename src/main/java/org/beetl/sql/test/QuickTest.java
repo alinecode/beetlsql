@@ -21,18 +21,22 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-//		sql.genSQLTemplateToConsole("user");
+
 		UserDao dao = sql.getMapper(UserDao.class);
+		dao.getCount();
+		int a = 1;
+		dao.getCount();
 //		int count = dao.queryNewUser$count();
 //		System.out.println("结果"+count);
-		PageQuery query = new PageQuery();
-		query.setPageSize(5);
-		dao.queryNewUser(query);
-		System.out.println(query.getTotalPage());
-		System.out.println(query.getTotalRow());
-		System.out.println(query.getPageNumber());
-		List<User> list = query.getList();
-		System.out.println("结果"+list.size());
+//		PageQuery query = new PageQuery();
+//
+//		query.setPageSize(5);
+//		dao.queryNewUser(query);
+//		System.out.println(query.getTotalPage());
+//		System.out.println(query.getTotalRow());
+//		System.out.println(query.getPageNumber());
+//		List<User> list = query.getList();
+//		System.out.println("结果"+list.size());
 //		query.setPageNumber(query.getPageNumber()+1);
 ////		sql.pageQuery("user.queryNewUser", User.class,query);
 //		dao.queryNewUser(query);
