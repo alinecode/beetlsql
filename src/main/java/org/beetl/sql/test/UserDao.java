@@ -21,4 +21,5 @@ public interface UserDao extends BaseMapper<User> {
 	public int[] setUserStatus(List<User> paras);
 	public KeyHolder newUser(User user);
 	public void queryNewUser(PageQuery query);
+	public int queryNewUser$count();
 }

@@ -415,12 +415,17 @@ public class SQLManager {
 		pageQuery(sqlId, clazz, query, null);
 	}
 	
-	/** 翻页查询，假设sqlId包含了page函数或者标签 ，如<p></p>
+	/** 翻页查询，假设有sqlId和sqlId$count 俩个sql存在，beetlsql会通过
+	 * 这俩个sql来查询总数以及翻页操作，如果没有sqlId$count，则假设sqlId
+	 * 包含了page函数或者标签 ，如<p></p>
 	 * <pre>
 	 * queryUser		
 	 * ===
 	 * select #page("a.*,b.name")# from user a left join role b ....
 	 * </pre>
+	 * 
+	 * 
+	 * 
 	 * @param sqlId
 	 * @param query
 	 */
@@ -437,7 +442,7 @@ public class SQLManager {
 			root = new HashMap<String,Object>();
 			root.put("_root", paras);
 		}
-		String sqlCountId = sqlId.concat("#count");
+		String sqlCountId = sqlId.concat("$count");
 		boolean hasCountSQL = this.sqlLoader.exist(sqlCountId);
 		if(query.getTotalRow()==-1){
 			//需要查询行数
