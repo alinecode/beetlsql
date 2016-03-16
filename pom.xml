@@ -186,7 +186,12 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
         </dependency-->
-  
+        <dependency>
+            <groupId>com.wing321.wingframework</groupId>
+            <artifactId>wingframework-test</artifactId>
+            <version>0.0.1-snapshot</version>
+            <scope>test</scope>
+        </dependency>
 		
     </dependencies>
 
