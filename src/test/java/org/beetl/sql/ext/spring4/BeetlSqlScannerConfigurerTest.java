@@ -31,8 +31,6 @@ public class BeetlSqlScannerConfigurerTest extends PersistenceBaseTest{
     Demo2Mapper demo2Mapper;
     @Autowired
     Demo3Mapper demo3Mapper;
-    @Autowired
-    JdbcTemplate jdbcTemplate;
     @Rollback(false)
     @Test
     @CreateTable(UserEntity.class)

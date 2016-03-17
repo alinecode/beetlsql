@@ -32,7 +32,11 @@
         <developer>
             <name>zhoupan</name>
             <email>370267858@qq.com</email>
-            </developer>
+        </developer>
+        <developer>
+            <name>woate</name>
+            <email>woate@qq.com</email>
+        </developer>
     </developers>
 
     <scm>
@@ -186,13 +190,15 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
         </dependency-->
+        <!--用于进行测试-->
         <dependency>
             <groupId>com.wing321.wingframework</groupId>
             <artifactId>wingframework-test</artifactId>
             <version>0.0.1-snapshot</version>
-            <scope>test</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/wingframework-assembly-0.0.1-snapshot-jar-with-dependencies.jar</systemPath>
         </dependency>
-		
+
     </dependencies>
 
     <build>
