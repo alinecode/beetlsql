@@ -17,7 +17,7 @@
 		http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url">
             <value>jdbc:h2:mem:account_test</value>
@@ -28,10 +28,8 @@
         <property name="password">
             <value></value>
         </property>
-        <property name="maxActive" value="2"/>
+        <property name="maxTotal" value="1"/>
         <property name="initialSize" value="1"/>
-        <property name="maxIdle" value="2"/>
-        <property name="minIdle" value="1"/>
-        <property name="maxWait" value="30000"/>
+       
     </bean>
 </beans>
