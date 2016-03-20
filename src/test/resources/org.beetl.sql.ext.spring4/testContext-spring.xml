@@ -30,10 +30,10 @@
         <property name="mapperLocations" value="classpath*:org"/>
         <property name="beetlSqlDataSource" ref="beetlSqlDataSource"/>
         <property name="dbStyle">
-            <bean class="org.beetl.sql.core.db.MySqlStyle"/>
+            <bean class="org.beetl.sql.core.db.H2Style"/>
         </property>
         <property name="nameConversion">
-            <bean class="org.beetl.sql.core.UnderlinedNameConversion"/>
+            <bean class="org.beetl.sql.core.UpperCaseUnderlinedNameConversion"/>
         </property>
         <property name="interceptors">
             <list>
