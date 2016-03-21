@@ -7,16 +7,15 @@ import javax.sql.DataSource;
 
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.DefaultConnectionSource;
-import org.beetl.sql.ext.spring4.BeetlSqlDataSource;
+
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * 这个类将过时
- * @see BeetlSqlDataSource
+ * @see SpringConnectionSource
  */
-@Deprecated
 public class SpringConnectionSource extends  DefaultConnectionSource{
 	
 	

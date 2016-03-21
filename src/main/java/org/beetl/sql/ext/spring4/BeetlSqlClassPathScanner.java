@@ -24,6 +24,8 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
      * 这用于指定SqlManagerFactoryBean的名称，利用Spring Bean机制自动创建
      */
     String sqlManagerFactoryBeanName;
+    
+    String suffix;
 
     public BeetlSqlClassPathScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
@@ -34,7 +36,7 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
             public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) throws IOException {
                 String className = metadataReader.getClassMetadata().getClassName();
                 //这里设置包含条件
-                return className.endsWith("Mapper");
+                return className.endsWith(suffix);
             }
         });
         addExcludeFilter(new TypeFilter() {
@@ -91,4 +93,12 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
     public void setSqlManagerFactoryBeanName(String sqlManagerFactoryBeanName) {
         this.sqlManagerFactoryBeanName = sqlManagerFactoryBeanName;
     }
+	public String getSuffix() {
+		return suffix;
+	}
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
+    
+    
 }

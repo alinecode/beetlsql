@@ -19,13 +19,14 @@ public class QuickTest {
 	
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+		
 
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-
-		UserDao dao = sql.getMapper(UserDao.class);
-		dao.getCount();
-		int a = 1;
-		dao.getCount();
+		sql.genSQLTemplateToConsole("user");
+//		UserDao dao = sql.getMapper(UserDao.class);
+//		dao.getCount();
+//		int a = 1;
+//		dao.getCount();
 //		int count = dao.queryNewUser$count();
 //		System.out.println("结果"+count);
 //		PageQuery query = new PageQuery();

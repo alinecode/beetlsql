@@ -133,15 +133,7 @@ public class SQLScript {
 
 			conn = sm.getDs().getConn(this.id, true, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++) {
-				Object o = objs.get(i);
-				if (o != null && o.getClass() == java.util.Date.class) {
-					// o =new java.sql.Date(((java.util.Date)o).getTime());
-					o = new Timestamp(((java.util.Date) o).getTime());
-				}
-				ps.setObject(i + 1, o);
-			}
-
+			this.setPreparedStatementPara(ps, objs);
 			int ret = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, ret);
 			return ret;
@@ -196,15 +188,8 @@ public class SQLScript {
 				ps = conn.prepareStatement(sql);
 			}
 
-			for (int i = 0; i < objs.size(); i++) {
-				Object o = objs.get(i);
-				// 兼容性修改：oralce 驱动 不识别util.Date
-				if (o != null && o.getClass() == java.util.Date.class) {
-					// o =new java.sql.Date(((java.util.Date)o).getTime());
-					o = new Timestamp(((java.util.Date) o).getTime());
-				}
-				ps.setObject(i + 1, o);
-			}
+			this.setPreparedStatementPara(ps, objs);
+			
 			int ret = ps.executeUpdate();
 
 			if (this.sqlSource.getIdType() == DBStyle.ID_AUTO) {
@@ -243,15 +228,8 @@ public class SQLScript {
 			ps = conn.prepareStatement(sql, new String[]{keyName});
 			
 
-			for (int i = 0; i < objs.size(); i++) {
-				Object o = objs.get(i);
-				// 兼容性修改：oralce 驱动 不识别util.Date
-				if (o != null && o.getClass() == java.util.Date.class) {
-					// o =new java.sql.Date(((java.util.Date)o).getTime());
-					o = new Timestamp(((java.util.Date) o).getTime());
-				}
-				ps.setObject(i + 1, o);
-			}
+			this.setPreparedStatementPara(ps, objs);
+			
 			int ret = ps.executeUpdate();
 			ResultSet seqRs = ps.getGeneratedKeys();
 			seqRs.next();
@@ -316,8 +294,9 @@ public class SQLScript {
 		try {
 			conn = sm.getDs().getConn(id, false, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			this.setPreparedStatementPara(ps, objs);
+			
+			
 			rs = ps.executeQuery();
 
 			if (mapper != null) {
@@ -412,15 +391,7 @@ public class SQLScript {
 		try {
 			conn = sm.getDs().getConn(id, true, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++){
-				Object o = objs.get(i);
-				if (o != null && o.getClass() == java.util.Date.class) {
-					// o =new java.sql.Date(((java.util.Date)o).getTime());
-					o = new Timestamp(((java.util.Date) o).getTime());
-				}
-				ps.setObject(i + 1,o);
-			}
-			
+			this.setPreparedStatementPara(ps, objs);
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, rs);
 		} catch (SQLException e) {
@@ -456,14 +427,7 @@ public class SQLScript {
 					ps = conn.prepareStatement(result.jdbcSql);
 					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.EMPTY_LIST);
 				}
-				for (int i = 0; i < objs.size(); i++){
-					Object o = objs.get(i);
-					if (o != null && o.getClass() == java.util.Date.class) {
-						// o =new java.sql.Date(((java.util.Date)o).getTime());
-						o = new Timestamp(((java.util.Date) o).getTime());
-					}
-					ps.setObject(i + 1,o);
-				}
+				this.setPreparedStatementPara(ps, objs);
 				
 				ps.addBatch();
 
@@ -503,14 +467,7 @@ public class SQLScript {
 					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.emptyList());
 				}
 
-				for (int i = 0; i < objs.size(); i++){
-					Object o = objs.get(i);
-					if (o != null && o.getClass() == java.util.Date.class) {
-						// o =new java.sql.Date(((java.util.Date)o).getTime());
-						o = new Timestamp(((java.util.Date) o).getTime());
-					}
-					ps.setObject(i + 1,o);
-				}
+				this.setPreparedStatementPara(ps, objs);
 				
 				ps.addBatch();
 
@@ -548,8 +505,7 @@ public class SQLScript {
 		try {
 			conn = sm.getDs().getConn(id, false, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			this.setPreparedStatementPara(ps, objs);
 			rs = ps.executeQuery();
 			try{
 				model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm,true));
@@ -593,8 +549,7 @@ public class SQLScript {
 		try {
 			conn = sm.getDs().getConn(id, true, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			this.setPreparedStatementPara(ps, objs);
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, rs);
 		} catch (SQLException e) {
@@ -618,8 +573,7 @@ public class SQLScript {
 		try {
 			conn = sm.getDs().getConn(id, false, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			this.setPreparedStatementPara(ps, objs);
 			rs = ps.executeQuery();
 			resultList = mappingSelect(rs, clazz);
 
@@ -646,8 +600,7 @@ public class SQLScript {
 		try {
 			conn = sm.getDs().getConn(id, true, sql, objs);
 			ps = conn.prepareStatement(sql);
-			for (int i = 0; i < objs.size(); i++)
-				ps.setObject(i + 1, objs.get(i));
+			this.setPreparedStatementPara(ps, objs);
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, rs);
 		} catch (SQLException e) {
@@ -659,6 +612,19 @@ public class SQLScript {
 		return rs;
 	}
 
+	private void setPreparedStatementPara(PreparedStatement ps,List<Object> objs) throws SQLException {
+		for (int i = 0; i < objs.size(); i++) {
+			Object o = objs.get(i);
+			// 兼容性修改：oralce 驱动 不识别util.Date
+			if (o != null &&  o.getClass() == java.util.Date.class) {
+//				 o =new java.sql.Date(((java.util.Date)o).getTime());
+				o = new Timestamp(((java.util.Date) o).getTime());
+			}
+			ps.setObject(i + 1, o);
+		}
+	}
+	
+	
 	private void clean(boolean isUpdate, Connection conn, PreparedStatement ps, ResultSet rs) {
 		try {
 			if (rs != null)

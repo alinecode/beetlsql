@@ -1,19 +1,27 @@
 package org.beetl.sql.ext.spring4;
 
-import com.wing321.annotations.runtime.persistence.Comment;
-import org.beetl.sql.core.annotatoin.TableTemplate;
-
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.beetl.sql.core.annotatoin.AutoID;
+
+import com.wing321.annotations.runtime.persistence.Comment;
 
 @Table(name = "USER_ENTITY")
 @Comment("用户信息")
-@TableTemplate()
 public class UserEntity {
     @Id
-    @Column(name="SERIAL_NO", nullable=true, scale = 10)
+    @Column(name="ID", nullable=true, scale = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
     @Comment("用户编号")
-    private String serialNo ;
+    private Integer id ;
     @Column(name="AGE", nullable=true)
     @Comment("年龄")
     private Integer age ;
@@ -42,15 +50,17 @@ public class UserEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date maxDate;
 
-    public String getSerialNo() {
-        return serialNo;
-    }
+   
+    @AutoID  //beetlsql 注解
+    public Integer getId() {
+		return id;
+	}
 
-    public void setSerialNo(String serialNo) {
-        this.serialNo = serialNo;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public Integer getAge() {
+	public Integer getAge() {
         return age;
     }
 

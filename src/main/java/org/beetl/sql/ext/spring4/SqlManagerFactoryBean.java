@@ -20,13 +20,13 @@ import static org.springframework.util.Assert.notNull;
 
 /**
  * SqlManager创建工厂
- * @author woate
+ * @author woate，xiandafu
  */
 public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, InitializingBean, ApplicationListener<ApplicationEvent> {
     /**
      * BeetlSql数据源
      */
-    BeetlSqlDataSource beetlSqlDataSource;
+	BeetlSqlDataSource cs;
     /**
      * 数据库样式
      */
@@ -34,7 +34,7 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
     /**
      * 名称转换样式
      */
-    NameConversion nameConversion;
+    NameConversion nc;
     /**
      * 拦截器
      */
@@ -43,10 +43,10 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
      * BeetlSql核心类
      */
     SQLManager sqlManager;
-    /**
-     * 配置扫描的Mapper对应md文件的存放路径
-     */
-    private Resource[] mapperLocations;
+    
+    
+    SQLLoader sqlLoader;
+
 
     private Map<String, Function> functions = Collections.emptyMap();
 
@@ -69,9 +69,12 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
         if (sqlManager != null) {
             return sqlManager;
         }
-        //根据mapper指定的路径加载映射文件
-        //FIXME 这里要增加多个文件路径加载
-        SQLLoader sqlLoader = new ClasspathLoader(mapperLocations[0].getFile().getPath());
+        
+        //加载数据库
+        if(sqlLoader==null){
+			sqlLoader = new ClasspathLoader("/sql");
+		}
+        
         //这里配置拦截器
         if (interceptors == null) {
             interceptors = new Interceptor[0];
@@ -99,7 +102,7 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
                 }
             }
         }
-        sqlManager = new SQLManager(dbStyle, sqlLoader, beetlSqlDataSource, nameConversion, interceptors, this.defaultSchema, properties);
+        sqlManager = new SQLManager(dbStyle, sqlLoader, cs, nc, interceptors, this.defaultSchema, properties);
 
 
         for (Map.Entry<String, Function> entry : functions.entrySet()) {
@@ -125,8 +128,8 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        notNull(beetlSqlDataSource, "'beetlSqlDataSource'数据源是必须配置的");
-        notNull(mapperLocations, "'mapperLocations'映射配置文件所在路径是必须配置的");
+        notNull(cs, "'beetlSqlDataSource'数据源是必须配置的");
+      
     }
 
     /**
@@ -134,8 +137,8 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
      *
      * @param beetlSqlDataSource 数据源对象
      */
-    public void setBeetlSqlDataSource(BeetlSqlDataSource beetlSqlDataSource) {
-        this.beetlSqlDataSource = beetlSqlDataSource;
+    public void setCs(BeetlSqlDataSource beetlSqlDataSource) {
+        this.cs = beetlSqlDataSource;
     }
 
     /**
@@ -147,14 +150,7 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
         this.configLocation = configLocation;
     }
 
-    /**
-     * 配置多个Mapper文件存放路径
-     *
-     * @param mapperLocations 多个Mapper文件存放路径
-     */
-    public void setMapperLocations(Resource[] mapperLocations) {
-        this.mapperLocations = mapperLocations;
-    }
+  
 
     /**
      * 设置数据库方言
@@ -170,8 +166,8 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
      *
      * @param nameConversion 名称转换样式
      */
-    public void setNameConversion(NameConversion nameConversion) {
-        this.nameConversion = nameConversion;
+    public void setNc(NameConversion nameConversion) {
+        this.nc = nameConversion;
     }
 
     /**
@@ -182,4 +178,11 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
     public void setInterceptors(Interceptor[] interceptors) {
         this.interceptors = interceptors;
     }
+
+
+	public void setSqlLoader(SQLLoader sqlLoader) {
+		this.sqlLoader = sqlLoader;
+	}
+    
+    
 }

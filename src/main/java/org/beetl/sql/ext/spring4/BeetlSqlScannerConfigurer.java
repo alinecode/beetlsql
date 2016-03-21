@@ -23,6 +23,8 @@ public class BeetlSqlScannerConfigurer  implements BeanDefinitionRegistryPostPro
      * 基本包，用于指定在该基本包路径下进行扫描，可以支持;空格,等分割多个包
      */
     String basePackage;
+    
+    String daoSuffix="Dao";
     /**
      * Spring上下文
      */
@@ -48,6 +50,8 @@ public class BeetlSqlScannerConfigurer  implements BeanDefinitionRegistryPostPro
         String[] packages = StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
         //创建一个扫描器
         BeetlSqlClassPathScanner scanner = new BeetlSqlClassPathScanner(registry);
+        scanner.setSuffix(daoSuffix);
+        
         scanner.setResourceLoader(this.applicationContext);
         scanner.setBeanNameGenerator(this.nameGenerator);
         scanner.setSqlManagerFactoryBeanName(this.sqlManagerFactoryBeanName);
@@ -86,4 +90,15 @@ public class BeetlSqlScannerConfigurer  implements BeanDefinitionRegistryPostPro
     public void setSqlManagerFactoryBeanName(String sqlManagerFactoryBeanName) {
         this.sqlManagerFactoryBeanName = sqlManagerFactoryBeanName;
     }
+
+	public String getDaoSuffix() {
+		return daoSuffix;
+	}
+
+	public void setDaoSuffix(String daoSuffix) {
+		this.daoSuffix = daoSuffix;
+	}
+
+    
+    
 }

@@ -8,7 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-/** 用于翻页，要求sqlid必须具有page使用了page函数和pageTag
+/** 用于翻页，要求sqlid必须具有page使用了page函数和pageTag,或者sqlId还有一个以$count 结尾的sqlId
  * @author suxj,xiandafu
  *
  */

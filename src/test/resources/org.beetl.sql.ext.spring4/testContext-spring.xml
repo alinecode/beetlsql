@@ -14,25 +14,35 @@
     <!--author woate 这个文件用于BeetlSql对Spring整合的测试-->
     <import resource="classpath*:org.beetl.sql.ext.spring4/testContext-datasource-h2.xml"/>
     <import resource="classpath*:org.beetl.sql.ext.spring4/applicationContext-tx.xml"/>
+    <!--Spring Data 自动扫描DAO-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+   
     <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
     <bean name="beetlSqlScannerConfigurer" class="org.beetl.sql.ext.spring4.BeetlSqlScannerConfigurer">
-        <property name="basePackage" value="org.beetl.sql.ext.spring4.dao;
-        org.beetl.sql.ext.spring4.dao3,org.beetl.sql.ext.spring4.dao2"/>
+        <!-- 哪些类可以自动注入 -->
+        <property name="basePackage" value="org.beetl.sql.ext.spring4"/>
+        <property name="daoSuffix" value="Dao"/>
         <property name="sqlManagerFactoryBeanName" value="sqlManagerFactoryBean"/>
     </bean>
 
-    <!--Spring Data 自动扫描DAO-->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-    <bean id="beetlSqlDataSource" class="org.beetl.sql.ext.spring4.BeetlSqlDataSource">
-        <property name="masterSource" ref="dataSource"></property>
-    </bean>
+    
     <bean id="sqlManagerFactoryBean" class="org.beetl.sql.ext.spring4.SqlManagerFactoryBean">
-        <property name="mapperLocations" value="classpath*:org"/>
-        <property name="beetlSqlDataSource" ref="beetlSqlDataSource"/>
+        
+       <property name="cs" >
+			<bean  class="org.beetl.sql.ext.spring4.BeetlSqlDataSource">
+				<property name="masterSource" ref="dataSource"></property>
+			</bean>
+		</property>
         <property name="dbStyle">
             <bean class="org.beetl.sql.core.db.H2Style"/>
         </property>
-        <property name="nameConversion">
+       
+        <property name="sqlLoader">
+			<bean class="org.beetl.sql.core.ClasspathLoader">
+				<property name="sqlRoot" value="/sql"></property>
+			</bean>
+		</property>
+		 <property name="nc">
             <bean class="org.beetl.sql.core.UpperCaseUnderlinedNameConversion"/>
         </property>
         <property name="interceptors">

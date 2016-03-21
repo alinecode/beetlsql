@@ -27,7 +27,6 @@ import org.springframework.core.io.Resource;
  * 这个类已过时，将采用SqlManagerFactoryBean构造SqlManager
  * @see SqlManagerFactoryBean
  */
-@Deprecated
 public class SpringBeetlSql {
 	ConnectionSource cs;
 	DBStyle dbStyle;
