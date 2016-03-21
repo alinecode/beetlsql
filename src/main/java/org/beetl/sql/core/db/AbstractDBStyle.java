@@ -122,9 +122,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
-			if(col.equals(classDesc.getIdName())){
-				continue ;
-			}
+//			if(col.equals(classDesc.getIdName())){
+//				continue ;
+//			}
 			if(classDesc.isDateType(col)){
 				//todo, attr属性并不完全是这么转成getter方法的
 				String getter = "get"+col.substring(0,1).toUpperCase()+col.substring(1);
