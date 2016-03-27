@@ -17,7 +17,7 @@ public class SQLiteStyle extends AbstractDBStyle {
 
     @Override
     public String getPageSQL(String sql) {
-        return sql+" \nlimit " + HOLDER_START + PAGE_SIZE + HOLDER_END + " offset " + HOLDER_START + OFFSET + HOLDER_END;
+        return sql+ this.getOrderBy()+" \nlimit " + HOLDER_START + PAGE_SIZE + HOLDER_END + " offset " + HOLDER_START + OFFSET + HOLDER_END;
     }
 
     @Override

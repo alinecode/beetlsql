@@ -20,6 +20,7 @@ public class PageQuery implements Serializable{
 	
 	protected List list;		//分页结果List
 	protected Object paras ;   	//参数，pojo or map
+	protected String orderBy ;	//排序
 	
 	protected long pageNumber;		//页数
 	/**
@@ -43,6 +44,18 @@ public class PageQuery implements Serializable{
 		this.paras = paras;
 	}
 	
+	/**
+	 * 
+	 ** @param pageNumber 页数
+	 * @param paras 参数，pojo或者map
+	 * @param userDefinedOrderBy 翻页字符串，如 create_date desc;  将自动增加到翻页语句里，这要求sqlId没有order by
+	 */
+	public PageQuery(long pageNumber, Object paras,String userDefinedOrderBy){
+		this.pageNumber = pageNumber;
+		this.paras = paras;
+		this.orderBy = userDefinedOrderBy;
+	}
+	
 	/**  
 	 * @param pageNumber 页数，从1开始
 	 * @param paras 参数
@@ -53,6 +66,12 @@ public class PageQuery implements Serializable{
 		this.totalRow = totalRow;
 	}
 	
+	public PageQuery(long pageNumber, Object paras,String userDefinedOrderBy,long totalRow){
+		this.pageNumber = pageNumber;
+		this.paras = paras;
+		this.orderBy = userDefinedOrderBy;
+		this.totalRow =totalRow;
+	}
 	
 	public void setPageSize(long pageSize) {
 		this.pageSize = pageSize;
@@ -122,8 +141,18 @@ public class PageQuery implements Serializable{
 
 	
 	
+	public String getOrderBy() {
+		return orderBy;
+	}
+	/** 如 name desc,create_date asc , 是数据库sql语句一部分
+	 * @param orderBy
+	 */
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
+	}
 	protected void calcTotalPage(){
-		if(totalRow%this.pageSize==0){
+		if(totalRow==0) this.totalPage= 1;
+		else if(totalRow%this.pageSize==0){
 			this.totalPage = totalRow/this.pageSize;
 		}else{
 			this.totalPage = totalRow/this.pageSize+1;

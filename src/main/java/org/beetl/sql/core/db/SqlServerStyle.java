@@ -19,7 +19,7 @@ public class SqlServerStyle extends AbstractDBStyle {
 		String pageSql = "select top "+HOLDER_START+"text("+DBStyle.PAGE_END+")"+HOLDER_END +" * from  "
 		+" ( "
 		+" select row_number() over(order by id) as rownumber,beetlT.* from ( "
-		+ sql
+		+ sql+ this.getOrderBy()
 		+") beetlT ) beetlT2  "
 		+" where beetlT2.rownumber >="  +HOLDER_START+DBStyle.OFFSET+HOLDER_END ;
 		return pageSql;

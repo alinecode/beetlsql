@@ -442,6 +442,11 @@ public class SQLManager {
 			root = new HashMap<String,Object>();
 			root.put("_root", paras);
 		}
+	
+		if(query.getOrderBy()!=null){
+			root.put(DBStyle.ORDER_BY, query.getOrderBy());
+		}
+		
 		String sqlCountId = sqlId.concat("$count");
 		boolean hasCountSQL = this.sqlLoader.exist(sqlCountId);
 		if(query.getTotalRow()==-1){
@@ -452,14 +457,17 @@ public class SQLManager {
 				root.put(PageQuery.pageFlag, PageQuery.pageObj);
 				totalRow = this.selectSingle(sqlId, root, Long.class);
 			}
-				
+			
+			if(totalRow==null){
+				totalRow = 0l;
+			}
 			query.setTotalRow(totalRow);
 		}
 		
 		
 		if(!hasCountSQL)root.remove(PageQuery.pageFlag);
 		
-		if(totalRow!=-1){
+		if(totalRow!=0){
 			long start=this.offsetStartZero?0:1+(query.getPageNumber()-1)*query.getPageSize();
 			long size = query.getPageSize();
 			list = this.select(sqlId,clazz, root,mapper,start,size);

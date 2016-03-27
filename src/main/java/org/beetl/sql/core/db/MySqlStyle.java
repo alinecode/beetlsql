@@ -17,7 +17,7 @@ public class MySqlStyle extends AbstractDBStyle {
 	
 	@Override
 	public String getPageSQL(String sql) {
-		return sql+" \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
+		return sql+this.getOrderBy()+" \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
 	}
 
 	@Override

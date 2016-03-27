@@ -18,7 +18,7 @@ public class OracleStyle extends AbstractDBStyle {
 		String pageSql = "SELECT * FROM "
 		+" ( "
 		+" SELECT beeltT.*, ROWNUM beetl_rn "
-		+" FROM ( \n" +sql+"\n )  beeltT " 
+		+" FROM ( \n" +sql+ this.getOrderBy()+"\n )  beeltT " 
 		+" WHERE ROWNUM <"+HOLDER_START+DBStyle.PAGE_END+HOLDER_END
 		+") "
 		+"WHERE beetl_rn >= " +HOLDER_START+DBStyle.OFFSET+HOLDER_END ;

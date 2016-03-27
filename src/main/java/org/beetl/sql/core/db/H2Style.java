@@ -17,7 +17,7 @@ import org.beetl.sql.core.annotatoin.SeqID;
 public class H2Style extends AbstractDBStyle {
 
 	public String getPageSQL(String sql) {
-		return sql + " \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
+		return sql + this.getOrderBy()+ " \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
 	}
 
 	public void initPagePara(Map<String, Object> param, long start, long size) {

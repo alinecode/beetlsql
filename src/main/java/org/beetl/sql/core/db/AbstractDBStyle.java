@@ -26,6 +26,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public  String HOLDER_START;// 站位符开始符号
 	public String HOLDER_END;// 站位符结束符号
 	protected String lineSeparator = System.getProperty("line.separator", "\n");
+	
 	//翻页从0还是1开始，默认从1开始
 	protected boolean offsetStartZero = false ;
 	
@@ -562,6 +563,10 @@ public abstract class AbstractDBStyle implements DBStyle {
 			return this.getEscapeForKeyWord()+desc.getMetaName()+this.getEscapeForKeyWord();
 		}
 		
+	}
+	
+	protected String getOrderBy(){
+		return lineSeparator+ HOLDER_START+"text(has(_orderBy)?' order by '+_orderBy)"+HOLDER_END+" ";
 	}
 
 }

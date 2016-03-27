@@ -292,8 +292,13 @@ public class BeanProcessor {
 					value = new java.sql.Timestamp(tsValue.getTime());
 					((Timestamp) value).setNanos(nanos);
 				}
-			} else if (value instanceof String && params[0].isEnum()) {
-				value = Enum.valueOf(params[0].asSubclass(Enum.class),(String) value);
+			} else if (params[0].isEnum()) {
+				if(value instanceof String ){
+					value = Enum.valueOf(params[0].asSubclass(Enum.class),(String) value);
+				}else if(value instanceof Number){
+					value=params[0].getEnumConstants()[((Number)value).intValue()];
+				}
+				
 			}
 			//@todo BigDecimal double 互相转化
 

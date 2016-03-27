@@ -15,7 +15,7 @@ public class PostgresStyle extends AbstractDBStyle {
 	@Override
 	public String getPageSQL(String sql) {
 		String pageSql = "select _a.* from ( \n"
-		+sql
+		+sql+ this.getOrderBy()
 		+" \n) _a "
 		+" limit "+ HOLDER_START+ this.PAGE_SIZE+HOLDER_END+" offset "+ HOLDER_START+ this.OFFSET+HOLDER_END;
 		return pageSql;
