@@ -27,6 +27,7 @@ import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.kit.LobKit;
 
 /**
@@ -279,7 +280,7 @@ public class BeanProcessor {
 
 		Class<?>[] params = setter.getParameterTypes();
 		try {
-			//对date特殊处理
+			//一些特殊处理，对date特殊处理
 			if (value instanceof java.util.Date) {
 				final String targetType = params[0].getName();
 				if ("java.sql.Date".equals(targetType)) {
@@ -292,8 +293,9 @@ public class BeanProcessor {
 					value = new java.sql.Timestamp(tsValue.getTime());
 					((Timestamp) value).setNanos(nanos);
 				}
-			} else if (value instanceof String && params[0].isEnum()) {
-				value = Enum.valueOf(params[0].asSubclass(Enum.class),(String) value);
+			} else if (params[0].isEnum()) {
+				value = EnumKit.getEnumByValue(params[0], value);
+//				value = Enum.valueOf(params[0].asSubclass(Enum.class),(String) value);
 			}
 			//@todo BigDecimal double 互相转化
 

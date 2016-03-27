@@ -17,7 +17,14 @@
     <!--Spring Data 自动扫描DAO-->
     <tx:annotation-driven transaction-manager="transactionManager"/>
    
-  
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean name="beetlSqlScannerConfigurer" class="org.beetl.sql.ext.spring4.BeetlSqlScannerConfigurer">
+        <!-- 哪些类可以自动注入 -->
+        <property name="basePackage" value="org.beetl.sql.ext.spring4"/>
+        <property name="daoSuffix" value="Dao"/>
+        <property name="sqlManagerFactoryBeanName" value="sqlManagerFactoryBean"/>
+    </bean>
+
     
     <bean id="sqlManagerFactoryBean" class="org.beetl.sql.ext.spring4.SqlManagerFactoryBean">
         
