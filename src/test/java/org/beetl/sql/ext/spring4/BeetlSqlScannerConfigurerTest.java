@@ -24,9 +24,6 @@ import com.wing321.test.PersistenceBaseTest;
 @ContextConfiguration(locations = {"classpath*:org.beetl.sql.ext.spring4/testContext-spring.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class BeetlSqlScannerConfigurerTest extends PersistenceBaseTest{
-    @Autowired
-    DemoDao dao;
-
     
     @Autowired
     SQLManager sql;
@@ -37,8 +34,8 @@ public class BeetlSqlScannerConfigurerTest extends PersistenceBaseTest{
     @CreateTable(UserEntity.class)
     @StoreData(enable = true)
     public void testDemo(){
-        List<UserEntity> list0 = dao.all();
-        Assert.assertEquals(0, list0.size());
+//        List<UserEntity> list0 = dao.all();
+//        Assert.assertEquals(0, list0.size());
         UserEntity userEntity = new UserEntity();
         userEntity.setName("1");
         userEntity.setAge(2);
@@ -46,17 +43,17 @@ public class BeetlSqlScannerConfigurerTest extends PersistenceBaseTest{
         userEntity.setRoleId(3);
         sql.insert(userEntity,true);
      
-        List<UserEntity> list1 = dao.all();
-        Assert.assertEquals(1, list1.size());
-        
-        list1 = dao.queryAll();
-        Assert.assertEquals(1, list1.size());
-
-        List<UserEntity> list2 = dao.all();
-        Assert.assertEquals(1, list2.size());
-
-        List<UserEntity> list3 = dao.all();
-        Assert.assertEquals(1, list3.size());
+//        List<UserEntity> list1 = dao.all();
+//        Assert.assertEquals(1, list1.size());
+//        
+//        list1 = dao.queryAll();
+//        Assert.assertEquals(1, list1.size());
+//
+//        List<UserEntity> list2 = dao.all();
+//        Assert.assertEquals(1, list2.size());
+//
+//        List<UserEntity> list3 = dao.all();
+//        Assert.assertEquals(1, list3.size());
 //        //尝试使用DaoSupport支持类,这种需要自己实例化SqlManager
 //        DemoMapper demoMapper1 = beetlSqlDaoSupport.getSqlManager().getMapper(DemoMapper.class);
 //        List<User> list4 = demoMapper1.all();

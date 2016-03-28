@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
+import org.beetl.sql.core.kit.EnumKit;
 
 /** 控制台输出sql
  * @author joelli
@@ -122,6 +123,9 @@ public class DebugInterceptor implements Interceptor {
 			}else if(obj instanceof Date){
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 				data.add(sdf.format((Date)obj));
+			}else if(obj instanceof Enum){
+				Object value = EnumKit.getValueByEnum(obj);
+				data.add(String.valueOf(value));
 			}else {
 				data.add(obj.toString());
 			}

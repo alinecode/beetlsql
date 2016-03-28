@@ -1,9 +1,9 @@
 # Beetlsql
 
-* 作者: 闲大赋,Gavin.King,Sue,Zhoupan
+* 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.1.1 (160K), 另外还需要beetl 包
+* 当前版本 2.2.0 (174K), 另外还需要beetl 包
 
 # beetlsql 特点
 
@@ -1044,36 +1044,41 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 ##集成和Demo
 
 ### Spring集成和Demo
-	
-  	<bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
 
-	<bean id="sqlManager" class="org.beetl.sql.ext.spring	.SpringBeetlSql">
-		<property name="cs" >
-			<bean  class="org.beetl.sql.ext.SpringConnectionSource">
-				<property name="master" ref="dataSource"></property>
+集成提供了Mapper类的自动注入以及SQLManager的自动注入,以及与spring事务集成
+	
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean name="beetlSqlScannerConfigurer" class="org.beetl.sql.ext.spring4.BeetlSqlScannerConfigurer">
+        <!-- 哪些类可以自动注入 -->
+        <property name="basePackage" value="org.beetl.sql.ext.spring4"/>
+        <property name="daoSuffix" value="Dao"/>
+        <property name="sqlManagerFactoryBeanName" value="sqlManagerFactoryBean"/>
+    </bean>
+    <bean id="sqlManagerFactoryBean" class="org.beetl.sql.ext.spring4.SqlManagerFactoryBean">
+       <property name="cs" >
+			<bean  class="org.beetl.sql.ext.spring4.BeetlSqlDataSource">
+				<property name="masterSource" ref="dataSource"></property>
 			</bean>
 		</property>
-		<property name="dbStyle">
-			<bean class="org.beetl.sql.core.db.MySqlStyle"> </bean>
-		</property>
-		<property name="sqlLoader">
+        <property name="dbStyle">
+            <bean class="org.beetl.sql.core.db.H2Style"/>
+        </property>
+        <property name="sqlLoader">
 			<bean class="org.beetl.sql.core.ClasspathLoader">
 				<property name="sqlRoot" value="/sql"></property>
 			</bean>
 		</property>
-		<property name="nc">
-			<bean class="org.beetl.sql.core.DefaultNameConversion">
-			</bean>
-		</property>
-		<property name="interceptors">
-			<list>
-				<bean class="org.beetl.sql.ext.DebugInterceptor"></bean>
-			</list>
-		</property>
-	</bean>
+		 <property name="nc">
+            <bean class="org.beetl.sql.core.UpperCaseUnderlinedNameConversion"/>
+        </property>
+        <property name="interceptors">
+            <list>
+                <bean class="org.beetl.sql.ext.DebugInterceptor"></bean>
+            </list>
+        </property>
+    </bean>
+
+* BeetlSqlScannerConfigurer 根据包名和类后缀来自动注入Dao类,如果没有Dao,可以不配置此项
 
 * cs: 指定ConnectionSource，可以用系统提供的DefaultConnectionSource，支持按照CRUD决定主从。例子里只有一个master库
 
@@ -1092,15 +1097,17 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 
 	public class MyServiceImpl implements MyService {
 
-		@Autowired
-		SpringBeetlSql beetlsql ;
+    	@Autowired
+        UserDao dao;
+        
+        @Autowired
+        SQLManager sql;
 
 		@Override
 		@Transactional()
 		public int total(User user) {
 
-			SQLManager dao = beetlsql.getSQLManager();
-			List<User> list = dao.all(User.class);
+		
 			int total = list .size();
 			dao.deleteById(User.class, 3);
 			User u =new User();
@@ -1123,6 +1130,39 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 * defaultSchema  数据库访问schema
 
 可以参考demo https://git.oschina.net/xiandafu/springbeetlsql
+
+    注意,2.2.0 版本的spring集成已经改成如上配置,以前的方式可以继续支持,但不推荐使用了.
+    如下是以前的配置方式
+    
+    <bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="sqlManager" class="org.beetl.sql.ext.spring	.SpringBeetlSql">
+		<property name="cs" >
+			<bean  class="org.beetl.sql.ext.spring.SpringConnectionSource">
+				<property name="master" ref="dataSource"></property>
+			</bean>
+		</property>
+		<property name="dbStyle">
+			<bean class="org.beetl.sql.core.db.MySqlStyle"> </bean>
+		</property>
+		<property name="sqlLoader">
+			<bean class="org.beetl.sql.core.ClasspathLoader">
+				<property name="sqlRoot" value="/sql"></property>
+			</bean>
+		</property>
+		<property name="nc">
+			<bean class="org.beetl.sql.core.DefaultNameConversion">
+			</bean>
+		</property>
+		<property name="interceptors">
+			<list>
+				<bean class="org.beetl.sql.ext.DebugInterceptor"></bean>
+			</list>
+		</property>
+	</bean>
+    
 
 ### JFinal集成和Demo
 

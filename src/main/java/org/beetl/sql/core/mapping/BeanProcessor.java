@@ -27,6 +27,7 @@ import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.kit.LobKit;
 
 /**
@@ -279,26 +280,27 @@ public class BeanProcessor {
 
 		Class<?>[] params = setter.getParameterTypes();
 		try {
-			//对date特殊处理
+			//一些特殊处理，对date特殊处理
 			if (value instanceof java.util.Date) {
-				final String targetType = params[0].getName();
-				if ("java.sql.Date".equals(targetType)) {
+				final Class targetType = params[0];
+				if (java.sql.Date.class==targetType) {
 					value = new java.sql.Date(((java.util.Date) value).getTime());
-				} else if ("java.sql.Time".equals(targetType)) {
+				} else if (java.sql.Time.class==targetType) {
 					value = new java.sql.Time(((java.util.Date) value).getTime());
-				} else if ("java.sql.Timestamp".equals(targetType)) {
+				} else if (java.sql.Timestamp.class==targetType) {
 					Timestamp tsValue = (Timestamp) value;
 					int nanos = tsValue.getNanos();
 					value = new java.sql.Timestamp(tsValue.getTime());
 					((Timestamp) value).setNanos(nanos);
 				}
 			} else if (params[0].isEnum()) {
-				if(value instanceof String ){
-					value = Enum.valueOf(params[0].asSubclass(Enum.class),(String) value);
-				}else if(value instanceof Number){
-					value=params[0].getEnumConstants()[((Number)value).intValue()];
+
+				value = EnumKit.getEnumByValue(params[0], value);
+				if(value==null){
+					throw new SQLException("Cannot set ENUM " + prop.getName() + ": Convert to NULL for value"+ value);
+					
 				}
-				
+
 			}
 			//@todo BigDecimal double 互相转化
 

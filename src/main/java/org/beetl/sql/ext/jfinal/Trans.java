@@ -14,7 +14,16 @@ import com.jfinal.aop.Invocation;
 
 public class Trans implements Interceptor {
 
+	public static void start() throws SQLException {
+		DSTransactionManager.start();
+	}
+	public static void commit() throws SQLException {
+		DSTransactionManager.commit();
+	}
 	
+	public static void rollback() throws SQLException {
+		DSTransactionManager.rollback();
+	}
 		@Override
 	public void intercept(Invocation inv) {
 		try{

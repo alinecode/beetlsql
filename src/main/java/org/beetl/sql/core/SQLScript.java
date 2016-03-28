@@ -26,6 +26,7 @@ import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 
 import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.QueryMapping;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
@@ -616,9 +617,15 @@ public class SQLScript {
 		for (int i = 0; i < objs.size(); i++) {
 			Object o = objs.get(i);
 			// 兼容性修改：oralce 驱动 不识别util.Date
-			if (o != null &&  o.getClass() == java.util.Date.class) {
+			if (o != null ) {
+				Class c = o.getClass();
+				if(c== java.util.Date.class){
+					o = new Timestamp(((java.util.Date) o).getTime());
+				}else if(Enum.class.isAssignableFrom(c)){
+					o = EnumKit.getValueByEnum(o);
+				}
 //				 o =new java.sql.Date(((java.util.Date)o).getTime());
-				o = new Timestamp(((java.util.Date) o).getTime());
+				
 			}
 			ps.setObject(i + 1, o);
 		}
