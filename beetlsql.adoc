@@ -3,7 +3,7 @@
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.2.0 (174K), 另外还需要beetl 包
+* 当前版本 2.2.1 (174K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 
 # beetlsql 特点
 
@@ -344,6 +344,7 @@ BeetlSQL 提供一个PageQUery对象,用于web应用的翻页查询,BeetlSql假�
 	System.out.println(query.getPageNumber());
 	List<User> list = query.getList();
 
+PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id desc"
 
 ### 更新API
 
@@ -498,6 +499,7 @@ params列表按照参数申明顺序,_root保留字 代表查询得root对象,_s
 
 	注一:如果想要获取自增主键或者序列主键，需要在SQLManager.insert中传入一个KeyHolder
 	注二:对于支持多种数据库的，这些annotation可以叠加在一起
+
 
 * @TableTemplate() 用于模板查询，如果没有任何值，将按照主键降序排，也就是order by 主键名称 desc 
 
@@ -691,7 +693,7 @@ beetlsql 的其他属性也可以在此文件里设置
 
 有“&&” “||” ，还有 “！”，分别表示与，或，非， beetl也支持三元表达式
 
-	#user.gender=1?'女':'男'##
+	#user.gender=1?'女':'男'#
 
 ### 控制语句
 
@@ -700,7 +702,7 @@ beetlsql 的其他属性也可以在此文件里设置
 
 			select * from user where status in (
 			@for(id in ids){
-			#id#  #text(idLP.last?"","," )#
+			#id#  #text(idLP.last?"":"," )#
 			@}
 
 注意：变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档，text方法表示直接输出文本而不是符号“？”

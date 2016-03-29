@@ -35,5 +35,18 @@ newUser
 ===
 insert into user (name,age) values (#name#,#age#)
 
+insertBatch
+===  批量插入
+insert into  user_info  (  id,user_name)
+		values
+		@for(item in list){
+			(   #item.id# ,
+				#item.userName# 
+			)
+			@debug(itemLP.last);
+			#text(!itemLP.last?",")#
+		@}
+
+		
 
 
