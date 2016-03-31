@@ -30,12 +30,11 @@ public class QuickTest {
 //		Map paras = new HashMap();
 //		paras.put("list", list);
 //		sql.update("user.insertBatch", paras);
+		User user1 = new User();
+		user1.setName("a");
+		user1.setId(3);
+		sql.updateById(user1);
 		
-		String[] str = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-		System.out.println(Arrays.asList(str));
-		
-		Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-		System.out.println(Arrays.asList(fonts));
 	}
 
 	

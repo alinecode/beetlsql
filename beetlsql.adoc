@@ -836,6 +836,7 @@ Beetl 语法类似js，java，如下做简要说明，使用可以参考   http:
 
 [source,text]
 ----------------------------
+
 DELIMITER_PLACEHOLDER_START=#
 DELIMITER_PLACEHOLDER_END=#
 DELIMITER_STATEMENT_START=@
@@ -872,7 +873,7 @@ select * from user where name like #'%'+name+'%'#
 
 [source,javascript]
 ----------------------------
-#user.gender=1?'女':'男'#
+#user.gender==1?'女':'男'#
 ----------------------------
 	
 
@@ -892,7 +893,7 @@ select * from user where status in (
 
 .注意
 **********************************************************************
-*变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档，text方法表示直接输出文本而不是符号“？”
+* 变量名＋LP 是一个内置变量，包含了循环状态，具体请参考beetl文档，text方法表示直接输出文本而不是符号“？”
 * 关于 sql中的in，可以使用内置的join方法更加方便
 **********************************************************************
 

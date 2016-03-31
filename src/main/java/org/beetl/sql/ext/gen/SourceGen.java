@@ -30,7 +30,7 @@ public class SourceGen {
 	public static String srcHead ="";
 	public static String defaultPkg = "com.test";
 	static String CR = System.getProperty("line.separator");
-	static GroupTemplate gt = null;
+	public static GroupTemplate gt = null;
 	static {
 		Configuration conf = null;
 		try {
