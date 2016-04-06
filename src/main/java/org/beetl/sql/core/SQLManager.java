@@ -468,7 +468,7 @@ public class SQLManager {
 		if(!hasCountSQL)root.remove(PageQuery.pageFlag);
 		
 		if(totalRow!=0){
-			long start=this.offsetStartZero?0:1+(query.getPageNumber()-1)*query.getPageSize();
+			long start=(this.offsetStartZero?0:1)+(query.getPageNumber()-1)*query.getPageSize();
 			long size = query.getPageSize();
 			list = this.select(sqlId,clazz, root,mapper,start,size);
 		}else{
