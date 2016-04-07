@@ -36,6 +36,8 @@ public class MethodDesc {
 	// -1 表示返回一个KeyHolder，否则，使用指定位置的参数
 	public int keyHolderPos = -1;
 	public int mapRootPos = -1;
+	
+	public String sqlReady = "";
 
 	static Map<Method, MethodDesc> cache = new HashMap<Method, MethodDesc>();
 
@@ -44,15 +46,57 @@ public class MethodDesc {
 		if (desc != null)
 			return desc;
 		desc = new MethodDesc();
-		desc.parse(sm, entityClass, m, sqlId);
+		desc.doParse(sm, entityClass, m, sqlId);
 		cache.put(m, desc);
 		return desc;
 
 	}
-
+	
+	
+	
+	protected void doParse(SQLManager sm, Class entityClass, Method m, String sqlId){
+		
+		SqlStatement st = (SqlStatement) m.getAnnotation(SqlStatement.class);
+		if(st==null){
+			parse(sm, entityClass, m, sqlId);
+		}else {
+			this.sqlReady = st.sqlReady();
+			if(sqlReady.length()!=0){
+				parseSqlReady(sm, entityClass, st,m,sqlId);
+			}else{
+				parse(sm, entityClass, m, sqlId);
+			}
+		}
+	}
+	
+	protected void parseSqlReady(SQLManager sm, Class entityClass, SqlStatement st,Method m,String sqlId) {
+		//确定type  2（单选），3（多选），4 更新
+		SqlStatementType sqlType = st.type();
+		if (sqlType == SqlStatementType.AUTO) {
+			type = getTypeBySql(sqlReady);
+			if(type==-1){
+				throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId);
+			}else if(type==0){
+				type = 4;// 认为update
+			}
+		
+		} else if (sqlType == SqlStatementType.SELECT) {
+			type = 2;
+		} else {
+			type = 4;
+		}
+		
+		Class returnType = m.getReturnType();
+		if (type==2&&List.class.isAssignableFrom(returnType)) {
+			type = 3;
+		}
+	
+			
+		
+		
+	}
 	protected void parse(SQLManager sm, Class entityClass, Method m, String sqlId) {
 
-		String name = m.getName();
 		SqlStatement st = (SqlStatement) m.getAnnotation(SqlStatement.class);
 		String params = null;
 		// 先初步判断 sql 类型
@@ -249,9 +293,8 @@ public class MethodDesc {
 
 	}
 
-	private int getTypeBySqlId(SQLManager sm, String sqlId) {
-		SQLScript script = sm.getScript(sqlId);
-		String sql = script.getSql().trim();
+	private int getTypeBySql(String sql) {
+		
 		if (sql.startsWith("select")) {
 			return 2;
 		} else if (sql.startsWith("insert")) {
@@ -261,8 +304,22 @@ public class MethodDesc {
 		} else if (sql.startsWith("update")) {
 			return 4;
 		} else {
-			throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId);
+			return -1; //unknow
 		}
+	}
+	
+	private int getTypeBySqlId(SQLManager sm, String sqlId) {
+		String sql = null;
+		SQLScript script = sm.getScript(sqlId);
+		sql = script.getSql().trim();
+		int ret = getTypeBySql(sql);
+		if(ret==-1){
+			throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId);
+		}else{
+			return ret;
+		}
+		
+		
 	}
 
 	private String getTypeDesc(int type) {

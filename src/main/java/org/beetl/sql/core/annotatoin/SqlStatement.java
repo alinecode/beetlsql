@@ -21,5 +21,12 @@ public @interface SqlStatement {
 	 * @return
 	 */
 	SqlStatementType type() default SqlStatementType.AUTO;
+	
+	
+	/**
+	 * 采用这个sqlReady，如update xxx set a = ? where id = ?
+	 * @return
+	 */
+	String sqlReady() default "";
 
 }

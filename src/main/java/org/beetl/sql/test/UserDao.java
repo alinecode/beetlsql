@@ -22,4 +22,8 @@ public interface UserDao extends BaseMapper<User> {
 	public KeyHolder newUser(User user);
 	public void queryNewUser(PageQuery query);
 	public int queryNewUser$count();
+	@SqlStatement(sqlReady="update user set age = ? where id = ? ")
+	public void updateAge(int age,int id);
+	@SqlStatement(sqlReady="select * from user  ")
+	public List<User> selectAll();
 }
