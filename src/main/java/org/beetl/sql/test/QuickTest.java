@@ -19,9 +19,9 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		UserDao dao = sql.getMapper(UserDao.class);
-//		dao.updateAge(12,2);
+		dao.updateAge(12,2);
 //		dao.executeUpdate("update user set age=? where id =?", 12,2);
-		dao.selectAll()	;	
+//		dao.selectAll()	;	
 	}
 
 	

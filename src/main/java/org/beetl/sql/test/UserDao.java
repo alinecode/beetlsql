@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.beetl.sql.core.annotatoin.Param;
+import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.annotatoin.SqlStatement;
+import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.BaseMapper;
@@ -22,8 +24,8 @@ public interface UserDao extends BaseMapper<User> {
 	public KeyHolder newUser(User user);
 	public void queryNewUser(PageQuery query);
 	public int queryNewUser$count();
-	@SqlStatement(sqlReady="update user set age = ? where id = ? ")
+	@Sql(value=" update user set age = ? where id = ? ", type=SqlStatementType.UPDATE)
 	public void updateAge(int age,int id);
-	@SqlStatement(sqlReady="select * from user  ")
+	@Sql("select * from user  ")
 	public List<User> selectAll();
 }

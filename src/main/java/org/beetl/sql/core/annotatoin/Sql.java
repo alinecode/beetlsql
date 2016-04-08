@@ -6,14 +6,9 @@ import java.lang.annotation.Target;
 
 @Target({ java.lang.annotation.ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SqlStatement {
+public @interface Sql {
 	
-	/**
-	 *  参数名列表，
-	 * @return
-	 */
 	
-	String params() default "";
 
 	/**
 	 * statement类型.
@@ -23,6 +18,10 @@ public @interface SqlStatement {
 	SqlStatementType type() default SqlStatementType.AUTO;
 	
 	
-
+	/**
+	 * 采用这个sql，如update xxx set a = ? where id = ?
+	 * @return
+	 */
+	String value() ;
 
 }

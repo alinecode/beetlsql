@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +13,7 @@ import org.beetl.sql.core.SQLScript;
 import org.beetl.sql.core.annotatoin.Param;
 import org.beetl.sql.core.annotatoin.RowSize;
 import org.beetl.sql.core.annotatoin.RowStart;
+import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
@@ -57,21 +57,22 @@ public class MethodDesc {
 	protected void doParse(SQLManager sm, Class entityClass, Method m, String sqlId){
 		
 		SqlStatement st = (SqlStatement) m.getAnnotation(SqlStatement.class);
-		if(st==null){
+		Sql sql =  (Sql) m.getAnnotation(Sql.class);
+		if(sql==null&&st==null){
+			// 模板
 			parse(sm, entityClass, m, sqlId);
-		}else {
-			this.sqlReady = st.sqlReady();
-			if(sqlReady.length()!=0){
-				parseSqlReady(sm, entityClass, st,m,sqlId);
-			}else{
-				parse(sm, entityClass, m, sqlId);
-			}
+		}else if(sql!=null){
+			this.sqlReady = sql.value();
+			parseSqlReady(sm, entityClass, sql,m,sqlId);
+		}else{
+			parse(sm, entityClass, m, sqlId);
+
 		}
 	}
 	
-	protected void parseSqlReady(SQLManager sm, Class entityClass, SqlStatement st,Method m,String sqlId) {
+	protected void parseSqlReady(SQLManager sm, Class entityClass, Sql sql,Method m,String sqlId) {
 		//确定type  2（单选），3（多选），4 更新
-		SqlStatementType sqlType = st.type();
+		SqlStatementType sqlType = sql.type();
 		if (sqlType == SqlStatementType.AUTO) {
 			type = getTypeBySql(sqlReady);
 			if(type==-1){

@@ -520,19 +520,32 @@ SQLManager 提供了所有需要知道的API，但通过sqlid来访问sql有时�
 [source,java,numbered]
 ----------------------------
 public interface UserDao extends BaseMapper<User> {
-	public List<User> queryUser(@Param("name") String name,@Param("age") Integer age,@RowStart int start,@RowSize int size);
+	// 使用"user.getCount"语句,无参数
 	public int getCount();
+	//使用"user.setUserStatus" 语句
 	public void setUserStatus(Map paras); //更新用户状态
-	public int[] setUserStatus(List<User> paras); //批量更新用户状态
-	public KeyHolder newUser(User user);// 添加用户
-	public void queryNewUser(PageQuery query) ; 翻页查询
+	public void setUserAnnotherStatus(User user); //更新用户状态
+	//使用"user.findById", 传入参数id
+	public User findById(@Param("id") Integer id);
+	//or 使用params，一一对应
+	@SqlStatement(params="id,status")
+	public User findByIdAndStatus( Integer id,Integer status);
+	//翻页查询，使用"user.queryNewUser"
+	public void queryNewUser(PageQuery query) ; 
+	// 使用_st,_sz 翻页
+	@SqlStatement(params="name,age,_st,_sz")
+	public List<User> queryUser( String name, Integer age,int start, int size);
+	//使用sqlready
+	@Sql(value=" update user set age = ? where id = ? ")
+	public void updateAge(int age,int id);
+	
 }
 	
 ----------------------------
 	
 	
 	
-- Interface 需要继承BaseMapper，这样可以使用BaseMapper的一些公共方法，如insert，unqiue,updateById,deleteById等。
+- Interface 可以继承BaseMapper，这样可以使用BaseMapper的一些公共方法，如insert，unqiue,updateById,deleteById等，也可以不继承
 
 - Interface里的方法名与Sql文件对应，如果方法名对应错了，会在调用的时候报错找不到sql。
 
@@ -582,6 +595,17 @@ params列表按照参数申明顺序,_root保留字 代表查询得root对象,_s
 * 参数列表里如果@RowStart ,@RowSize,则认为是翻页语句
 * 参数里如果有PageQuery,则认为是翻页查询
 
+
+Mapper 也支持使用JDBC SQL，这时候需要采用Sql注解
+
+[source,java]
+----------------------------
+@Sql(value=" update user set age = ? where id = ? ")
+public void updateAge(int age,int id);
+@Sql("select * from user  ")
+public List<User> selectAll();
+
+----------------------------
 
 使用Mapper能增加Dao维护性，并能提高开发效率，建议在项目中使用。
 
