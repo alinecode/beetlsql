@@ -28,22 +28,7 @@ public class PostgresStyle extends AbstractDBStyle {
 		paras.put(DBStyle.PAGE_SIZE,size);
 	}
 
-	@Override
-	public int getIdType(Method idMethod) {
-		Annotation[] ans = idMethod.getAnnotations();
-		int idType = DBStyle.ID_AUTO; // 默认是自增长
 
-		for (Annotation an : ans) {
-			if (an instanceof SeqID) {
-				idType = DBStyle.ID_SEQ;
-			} else if (an instanceof AssignID) {
-				idType = DBStyle.ID_ASSIGN;
-			}
-		}
-
-		return idType;
-
-	}
 
 	@Override
 	public String getName() {

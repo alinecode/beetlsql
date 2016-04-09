@@ -4,7 +4,8 @@ public class SQLSource {
 	
 	private String id;
 	private String template;
-	private String seqName;
+	//主键名称
+	private String IdCol;
 	private int idType;
 	private int line = 0;
 	public SQLSource() {
@@ -39,12 +40,12 @@ public class SQLSource {
 		this.idType = idType;
 	}
 
-	public String getSeqName() {
-		return seqName;
+	public String getIdCol() {
+		return IdCol;
 	}
 
-	public void setSeqName(String seqName) {
-		this.seqName = seqName;
+	public void setIdCol(String IdCol) {
+		this.IdCol = IdCol;
 	}
 
 	public String getId() {

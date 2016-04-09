@@ -3,7 +3,9 @@ package org.beetl.sql.core.db;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Set;
 
+import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.SeqID;
 
@@ -40,6 +42,8 @@ public class OracleStyle extends AbstractDBStyle {
 		for (Annotation an : ans) {
 			if (an instanceof SeqID) {
 				idType = DBStyle.ID_SEQ;
+				//seq 总是优先
+				break ;
 			} else if (an instanceof AssignID) {
 				idType = DBStyle.ID_ASSIGN;
 			}
@@ -57,6 +61,46 @@ public class OracleStyle extends AbstractDBStyle {
 	@Override
 	public String getEscapeForKeyWord(){
 		return "";
+	}
+	
+	@Override
+	public SQLSource genInsert(Class<?> cls) {
+		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = this.metadataManager.getTable(tableName);
+		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);	
+		StringBuilder sql = new StringBuilder("insert into " + getTableName(table) + lineSeparator);
+		StringBuilder colSql = new StringBuilder("(");
+		StringBuilder valSql = new StringBuilder(" VALUES (");
+		int idType = DBStyle.ID_ASSIGN ;
+		SQLSource source = new SQLSource();
+		Set<String> cols = classDesc.getInCols();
+		for(String col:cols){
+			if(col.equals(classDesc.getIdName())){				
+				idType = this.getIdType(classDesc.getIdMethod());
+				if(idType==DBStyle.ID_AUTO){
+					continue ; //忽略这个字段
+				}else if(idType==DBStyle.ID_SEQ){
+					
+					colSql.append(appendInsertColumn(cls,table, col));
+//					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
+					SeqID seqId = classDesc.getIdMethod().getAnnotation(SeqID.class);
+					source.setIdCol(col);
+					
+					valSql.append( seqId.name()+".nextval,");
+					continue;
+				}else if(idType==DBStyle.ID_ASSIGN){
+					//normal
+				}
+			}
+			colSql.append(appendInsertColumn(cls,table, col));
+			valSql.append(appendInsertVlaue(cls,table, col));
+		}
+
+		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
+		source.setTemplate(sql.toString());
+		source.setIdType(idType);
+
+		return source;
 	}
 
 }

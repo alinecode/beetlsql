@@ -37,7 +37,7 @@ public class MySqlStyle extends AbstractDBStyle {
 		for(Annotation an :ans){
 			if(an instanceof AutoID){
 				idType = DBStyle.ID_AUTO;
-				continue ;
+				break;// 优先
 			}else if(an instanceof SeqID){
 				//my sql not support 
 			}else if(an instanceof AssignID){

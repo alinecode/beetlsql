@@ -103,25 +103,7 @@ public class SQLScript {
 		map.put("_root", paras);
 		PreparedStatement ps = null;
 		Connection conn = null;
-		try {
-			if (this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
-				String seqName = sqlSource.getSeqName();
-				// 序列。
-				conn = sm.getDs().getMaster();
-				PreparedStatement seqPs = conn.prepareStatement("select " + seqName + ".NEXTVAL seq from dual");
-				ResultSet seqRs = seqPs.executeQuery();
-
-				if (seqRs.next()) {
-					Object key = seqRs.getObject("seq");
-					map.put("_tempKey", key); // TODO 这里貌似有问题。上面已经this.run(map)了
-				}
-				seqRs.close();
-				seqPs.close();
-
-			}
-		} catch (SQLException ex) {
-			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, ex);
-		}
+	
 
 		SQLResult result = this.run(map);
 		String sql = result.jdbcSql;
@@ -152,23 +134,7 @@ public class SQLScript {
 		Connection conn = null;
 		try {
 
-			if (this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
-				String seqName = sqlSource.getSeqName();
-				// 序列。
-				conn = sm.getDs().getMaster();
-				PreparedStatement seqPs = conn.prepareStatement("select " + seqName + ".NEXTVAL from dual");
-				ResultSet seqRs = seqPs.executeQuery();
 
-				if (seqRs.next()) {
-					Object key = seqRs.getObject(1);
-					// 也许要做类型转化，todo
-					holder.setKey(key);
-					map.put("_tempKey", key); // TODO 这里貌似有问题。上面已经this.run(map)了
-				}
-				seqRs.close();
-				seqPs.close();
-
-			}
 
 			SQLResult result = this.run(map);
 			String sql = result.jdbcSql;
@@ -185,7 +151,10 @@ public class SQLScript {
 				ps = conn.prepareStatement(sql);
 			} else if (this.sqlSource.getIdType() == DBStyle.ID_AUTO) {
 				ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			} else {
+			} else if(this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
+				ps = conn.prepareStatement(sql, new String[]{this.sqlSource.getIdCol()});
+			}
+			else {
 				ps = conn.prepareStatement(sql);
 			}
 
@@ -193,7 +162,7 @@ public class SQLScript {
 			
 			int ret = ps.executeUpdate();
 
-			if (this.sqlSource.getIdType() == DBStyle.ID_AUTO) {
+			if (this.sqlSource.getIdType() == DBStyle.ID_AUTO||this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
 				ResultSet seqRs = ps.getGeneratedKeys();
 				seqRs.next();
 				Object key = seqRs.getObject(1);
@@ -484,6 +453,8 @@ public class SQLScript {
 		return rs;
 	}
 
+	
+	
 	public <T> T unique(Class<T> clazz, RowMapper<T> mapper, Object objId) {
 
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();

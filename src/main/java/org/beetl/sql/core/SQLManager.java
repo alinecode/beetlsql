@@ -716,6 +716,15 @@ public class SQLManager {
 		
 	}
 	
+	/**
+	 * 批量插入
+	 * @param clazz
+	 * @param list
+	 */
+	public void insertBatch(Class clazz,List<?> list){
+		SQLScript script = getScript(clazz,INSERT );
+		script.updateBatch(list);
+	}
 	
 	
 	

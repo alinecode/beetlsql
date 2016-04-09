@@ -29,23 +29,7 @@ public class SQLiteStyle extends AbstractDBStyle {
     public SQLiteStyle() {
     }
 
-    @Override
-    public int getIdType(Method idMethod) {
-        Annotation[] ans = idMethod.getAnnotations();
-        int  idType = DBStyle.ID_AUTO ; //默认是自增长
-
-        for(Annotation an :ans){
-            if(an instanceof AutoID){
-                idType = DBStyle.ID_AUTO;
-                continue ;
-            }else if(an instanceof SeqID){
-                //my sql not support
-            }else if(an instanceof AssignID){
-                idType =DBStyle.ID_ASSIGN;
-            }
-        }
-        return idType;
-    }
+    
 
     @Override
     public String getName() {

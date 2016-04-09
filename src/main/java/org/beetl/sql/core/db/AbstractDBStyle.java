@@ -4,11 +4,14 @@ import org.beetl.core.Configuration;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.DateTemplate;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.engine.Beetl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 /**
@@ -252,10 +255,10 @@ public abstract class AbstractDBStyle implements DBStyle {
 				}else if(idType==DBStyle.ID_SEQ){
 					
 					colSql.append(appendInsertColumn(cls,table, col));
-					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
+//					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
 					SeqID seqId = classDesc.getIdMethod().getAnnotation(SeqID.class);
-					source.setSeqName(seqId.name());
-					continue;
+					source.setIdCol(col);
+					valSql.append( seqId.name()+".nextval,");
 				}else if(idType==DBStyle.ID_ASSIGN){
 					//normal
 				}
@@ -378,7 +381,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param sql
 	 * @return
 	 */
-	private StringBuilder removeComma(StringBuilder sql, String condition) {
+	protected StringBuilder removeComma(StringBuilder sql, String condition) {
 		return sql.deleteCharAt(sql.lastIndexOf(",")).append((condition == null ? "" : condition));
 	}
 
@@ -446,7 +449,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendInsertColumn(Class<?> c,TableDesc table,String fieldName) {
+	protected String appendInsertColumn(Class<?> c,TableDesc table,String fieldName) {
 		String colName = nameConversion.getColName(c,fieldName);
 		return  this.getEscapeForKeyWord()+colName +this.getEscapeForKeyWord()+ ",";
 	}
@@ -457,7 +460,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendInsertVlaue(Class<?> c,TableDesc table,String fieldName) {
+	protected String appendInsertVlaue(Class<?> c,TableDesc table,String fieldName) {
 		
 		return  HOLDER_START+ fieldName + HOLDER_END+",";
 		
@@ -567,6 +570,28 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	protected String getOrderBy(){
 		return lineSeparator+ HOLDER_START+"text(has(_orderBy)?' order by '+_orderBy)"+HOLDER_END+" ";
+	}
+	
+	/* 根据注解来决定主键采用哪种方式生成。在跨数据库应用中，可以为一个id指定多个注解方式，如mysql，postgres 用auto，oracle 用seq 
+	 */
+	@Override
+	public int getIdType(Method idMethod) {
+		Annotation[] ans = idMethod.getAnnotations();
+		int  idType = DBStyle.ID_AUTO ; //默认是自增长
+		
+		for(Annotation an :ans){
+			if(an instanceof AutoID){
+				idType = DBStyle.ID_AUTO;
+				break;// 优先
+			}else if(an instanceof SeqID){
+				//my sql not support 
+			}else if(an instanceof AssignID){
+				idType =DBStyle.ID_ASSIGN;
+			}
+		}
+		
+		return idType;
+
 	}
 
 }
