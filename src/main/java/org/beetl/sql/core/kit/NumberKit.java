@@ -57,7 +57,7 @@ public class NumberKit {
 				bigInt = ((BigDecimal) number).toBigInteger();
 			}
 			// Effectively analogous to JDK 8's BigInteger.longValueExact()
-			if (bigInt != null && (bigInt.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) < 0 || bigInt.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) > 0)) {
+			if (bigInt != null && (bigInt.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) < 0 || bigInt.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0)) {
 				throw new IllegalArgumentException(number.getClass().getName()+"无法转化为目标对象"+targetClass.getName());
 			}
 			return new Long(number.longValue());

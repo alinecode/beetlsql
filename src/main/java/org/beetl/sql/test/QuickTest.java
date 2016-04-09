@@ -16,11 +16,14 @@ import org.beetl.sql.ext.DebugInterceptor;
 public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
-		MySqlStyle style = new MySqlStyle();
-	
-		MySqlConnectoinSource cs = new MySqlConnectoinSource();
-		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
-		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		
+		int a = (true?0:1)+5;
+		System.out.println(a);
+//		MySqlStyle style = new MySqlStyle();
+//	
+//		MySqlConnectoinSource cs = new MySqlConnectoinSource();
+//		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+//		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 //		sql.genPojoCodeToConsole("role");
 //		List list = new ArrayList();
 //		User user1 = new User();
@@ -30,10 +33,10 @@ public class QuickTest {
 //		Map paras = new HashMap();
 //		paras.put("list", list);
 //		sql.update("user.insertBatch", paras);
-		User user1 = new User();
-		user1.setName("a");
-		user1.setId(3);
-		sql.updateById(user1);
+//		User user1 = new User();
+//		user1.setName("a");
+//		user1.setId(3);
+//		sql.updateById(user1);
 		
 	}
 

@@ -33,6 +33,12 @@ public class InsertTest {
 	@Test
 	public void addUser() throws Exception {
 		
+		MyUser user = new MyUser();
+		user.setName("lijz");
+		user.setAge(1);
+		manager.insert(user,true);
+		System.out.println(user.getId());
+		
 //		Connection conn = manager.getDs().getMaster();
 //		DatabaseMetaData dbmd =  conn.getMetaData();
 //		
@@ -62,8 +68,8 @@ public class InsertTest {
 		
 //		manager.insert("dept.insert", dept, holder);
 //		System.out.println("kye is"+holder.getLong());
-		
-		manager.genSQLTemplateToConsole("hr.dept");
+//		
+//		manager.genSQLTemplateToConsole("hr.dept");
 	}
 	
 

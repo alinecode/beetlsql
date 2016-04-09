@@ -45,7 +45,7 @@ public class JavaType {
 		mapping.put(Types.CLOB, "String");
 		mapping.put(Types.DATALINK, UNKNOW);
 		mapping.put(Types.DATE, "Date");
-		mapping.put(Types.DECIMAL, "Double");
+		mapping.put(Types.DECIMAL, "SPECIAL");
 		mapping.put(Types.DISTINCT, UNKNOW);
 		mapping.put(Types.DOUBLE, "Double");
 		mapping.put(Types.FLOAT, "Float");
@@ -101,7 +101,7 @@ public class JavaType {
 		String type  = mapping.get(sqlType);
 		if(type.equals(SPECIAL)){
 			
-			if(digit!=null){
+			if(digit!=null&&digit!=0){
 				return "Double";
 			}else{
 				//有可能是BigInt，但先忽略，这种情况很少，用户也可以手工改
