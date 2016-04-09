@@ -38,6 +38,13 @@ public interface BaseMapper<T> {
 	List<T> template(T entity,int start,int size);
 	long templateCount(T entity);
 	
+	
+	/*sql ready*/
+	
+	List<T> execute(String sql,Object... args);
+	
+	int executeUpdate(String sql,Object... args );
+	
 
 	
 	

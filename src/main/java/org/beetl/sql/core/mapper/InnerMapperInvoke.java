@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.db.KeyHolder;
 
 /**
@@ -57,7 +58,13 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 			return sm.templateCount(args[0]);
 		}else if(name.equals("updateByIdBatch")){
 			return sm.updateByIdBatch((List<?>)args[0]);
-		}else{
+		}else if(name.equals("execute")){
+			return sm.execute(new SQLReady((String)args[0],(Object[])args[1]), entityClass);
+		}else if(name.equals("executeUpdate")){
+			return sm.executeUpdate(new SQLReady((String)args[0],(Object[])args[1]));
+		}
+		
+		else{
 			throw new UnsupportedOperationException(m.getName());
 		}
 		
