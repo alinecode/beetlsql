@@ -30,6 +30,9 @@ public class SourceGen {
 	public static String srcHead ="";
 	public static String defaultPkg = "com.test";
 	static String CR = System.getProperty("line.separator");
+	/**
+	 * 代码生成的Beetl的GroupTemplate，与BeetSQL 不同
+	 */
 	public static GroupTemplate gt = null;
 	static {
 		Configuration conf = null;
