@@ -1,5 +1,7 @@
 package org.beetl.sql.oracle;
 
+import java.util.Date;
+
 import org.beetl.sql.core.annotatoin.SeqID;
 
 /*
@@ -10,6 +12,7 @@ public class MyUser  {
 	private Long id ;
 	private Integer age ;
 	private String name ;
+	private Date bir;
 	@SeqID(name="my_user_seq")
 	public Long getId() {
 		return id;
@@ -28,6 +31,12 @@ public class MyUser  {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Date getBir() {
+		return bir;
+	}
+	public void setBir(Date bir) {
+		this.bir = bir;
 	}
 	
 

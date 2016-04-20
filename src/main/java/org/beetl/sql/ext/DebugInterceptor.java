@@ -36,7 +36,7 @@ public class DebugInterceptor implements Interceptor {
 		boolean found = false ;
 		for(StackTraceElement tr:traces){
 			if(!found&&tr.getClassName().indexOf("SQLManager")!=-1){
-				found = true ;
+				found = true ;	
 			}
 			
 			if(found&&!tr.getClassName().startsWith("org.beetl.sql.core")&&!tr.getClassName().startsWith("com.sun")){

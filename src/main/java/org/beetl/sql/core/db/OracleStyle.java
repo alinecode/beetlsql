@@ -84,7 +84,8 @@ public class OracleStyle extends AbstractDBStyle {
 					colSql.append(appendInsertColumn(cls,table, col));
 //					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
 					SeqID seqId = classDesc.getIdMethod().getAnnotation(SeqID.class);
-					source.setIdCol(col);
+				
+					source.setIdCol(table.getIdName());
 					
 					valSql.append( seqId.name()+".nextval,");
 					continue;

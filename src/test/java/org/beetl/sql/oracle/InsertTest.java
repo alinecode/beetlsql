@@ -1,7 +1,6 @@
 package org.beetl.sql.oracle;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 import org.beetl.sql.OracleConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
@@ -9,6 +8,7 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
+import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.OracleStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.pojo.User;
@@ -33,11 +33,18 @@ public class InsertTest {
 	@Test
 	public void addUser() throws Exception {
 		
-		MyUser user = new MyUser();
-		user.setName("lijz");
-		user.setAge(1);
-		manager.insert(user,true);
-		System.out.println(user.getId());
+		manager.genPojoCodeToConsole("MESSAGE_HEAD");
+		MessageHead h = new MessageHead();
+		h.setFunctionCode("aa");
+		manager.insert(h,true);
+		System.out.println(h.getHeadId());
+		
+//		MyUser user = new MyUser();
+//		user.setName("lijz");
+//		user.setAge(1);
+//		user.setBir(new Date());
+//		manager.insert(MyUser.class,user,new KeyHolder());
+//		System.out.println(user.getId());
 		
 		
 		
@@ -45,23 +52,23 @@ public class InsertTest {
 	}
 	
 	
-	@Test
-	public void addBatchUser() throws Exception {
-		
-		MyUser user = new MyUser();
-		user.setName("lijz");
-		user.setAge(1);
-		List list = new ArrayList();
-		
-		list.add(user);
-		list.add(user);
-		manager.insertBatch(MyUser.class, list);
-		
-		
-		
-
-	}
-	
+//	@Test
+//	public void addBatchUser() throws Exception {
+//		
+//		MyUser user = new MyUser();
+//		user.setName("lijz");
+//		user.setAge(1);
+//		List list = new ArrayList();
+//		
+//		list.add(user);
+//		list.add(user);
+//		manager.insertBatch(MyUser.class, list);
+//		
+//		
+//		
+//
+//	}
+//	
 	
 	
 	

@@ -14,8 +14,10 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.2.1 (174K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.3.0 (174K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
+
+
 
 
 
@@ -42,6 +44,26 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 ** 支持跨数据库平台，开发者所需工作减少到最小，目前跨数据库支持mysql,postgres,oracle,sqlserver,h2,sqllite.
 
 == 5 分钟例子
+
+=== 安装
+
+
+[source,xml]
+----------------------------
+<dependency>
+	<groupId>com.ibeetl</groupId>
+	<artifactId>beetl</artifactId>
+	<version>2.2.14</version>
+</dependency>
+
+<dependency>
+	<groupId>com.ibeetl</groupId>
+	<artifactId>beetlsql</artifactId>
+	<version>2.3.0</version>
+</dependency>
+----------------------------
+
+或者依次下载beetlsql，beetl 包放到classpath里
 
 
 === 准备工作
@@ -429,6 +451,7 @@ PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id des
 * public int updateTemplateById(Object obj) 根据主键更新，组件通过annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新
 * public int updateTemplateById(Class<?> clazz，Map paras) 根据主键更新，组件通过clazz的annotation表示，如果没有，则认为属性id是主键,属性为null的不会更新。
 * public int[] updateByIdBatch(List<?> list) 批量更新
+* public void insertBatch(Class clazz,List<?> list) 批量插入数据
 
 ==== 通过sqlid更新
 

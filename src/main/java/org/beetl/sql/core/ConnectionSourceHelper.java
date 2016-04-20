@@ -14,7 +14,21 @@ public class ConnectionSourceHelper {
 	public  static ConnectionSource getMasterSlave(DataSource ds,DataSource[] slaves){
 		return new DefaultConnectionSource(ds,slaves);
 	}
+	/**
+	 *  多余参数 dbName
+	 * @param driver
+	 * @param url
+	 * @param dbName 多余了
+	 * @param userName
+	 * @param password
+	 * @return
+	 */
+	@Deprecated
 	public static ConnectionSource getSimple(String driver,String url,String dbName,String userName,String password){
+		return new SimpleConnectoinSource(driver,url,userName,password);
+	}
+	
+	public static ConnectionSource getSimple(String driver,String url,String userName,String password){
 		return new SimpleConnectoinSource(driver,url,userName,password);
 	}
 	
