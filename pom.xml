@@ -6,7 +6,7 @@
     <version>2.3.1</version>
     <name>com.ibeetl:beetlsql</name>
     <url>http://maven.apache.org</url>
-    <description>java template engine</description>
+    <description>java DAO tool</description>
     <licenses>
         <license>
             <name>The "BSD license</name>
@@ -114,6 +114,7 @@
             <scope>provided</scope>
         </dependency>
 
+
         <dependency>
             <groupId>oracle</groupId>
             <artifactId>oralce-express</artifactId>
@@ -121,6 +122,7 @@
             <scope>system</scope>
             <systemPath>${basedir}/build/ojdbc6.jar</systemPath>
         </dependency>
+
 
         <dependency>
             <groupId>com.alibaba</groupId>

@@ -695,7 +695,7 @@ minDate,maxDate 是俩个额外的变量,需要定义到pojo类里，DateTemplat
 **********************************************************************	
 		
 
-* Mapper中的注解，包括	SqlStatement ，SqlStatementType ，Param RowSize ，RowStart，具体参考Mapper
+* Mapper中的注解，包括	SqlStatement ，SqlStatementType ，Sql,Param RowSize ，RowStart，具体参考Mapper
 
 == BeetlSQL 数据模型
 

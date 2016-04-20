@@ -417,7 +417,9 @@ public class SQLScript {
 	
 
 	public int[] updateBatch(List<?> list) {
-
+		if(list.size()==0){
+			return new int[0];
+		}
 		int[] rs = null;
 		PreparedStatement ps = null;
 		Connection conn = null;
