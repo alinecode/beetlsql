@@ -52,4 +52,6 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 
 <img src="http://ibeetl.com/guide/fitz.jpg.png" width = "100" height = "100"  />
 
+<img src="http://ibeetl.com/guide/liucheng.jpg" width = "100" height = "100"  />
+
 
