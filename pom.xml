@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
     <name>com.ibeetl:beetlsql</name>
     <url>http://maven.apache.org</url>
     <description>java DAO tool</description>
@@ -115,13 +115,13 @@
         </dependency>
 
 
-        <dependency>
+    <!--     <dependency>
             <groupId>oracle</groupId>
             <artifactId>oralce-express</artifactId>
             <version>6</version>
             <scope>system</scope>
             <systemPath>${basedir}/build/ojdbc6.jar</systemPath>
-        </dependency>
+        </dependency> -->
 
 
         <dependency>
