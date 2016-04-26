@@ -13,6 +13,13 @@ queryNewUser
 	#page()#
 	from User a
 
+insertTestUser
+===
+* 按照年纪查找用户
+	
+	insert User (id,name) values (#id#,#name#)
+
+
 
 
 findById
