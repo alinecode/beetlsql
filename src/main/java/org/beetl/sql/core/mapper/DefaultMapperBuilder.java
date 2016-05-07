@@ -59,7 +59,9 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T buildInstance(Class<T> mapperInterface) {
-		return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { mapperInterface },
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		//使用ContextLoader，适合大多数框架
+		return (T) Proxy.newProxyInstance(loader==null?this.getClass().getClassLoader():loader, new Class<?>[] { mapperInterface },
 				new MapperJavaProxy(this,sqlManager, mapperInterface));
 	}
 

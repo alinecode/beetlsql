@@ -1108,6 +1108,18 @@ public class SQLManager {
 		gen.gen();
 	}
 	
+	/** 仅仅打印pojo类到控制台
+	 * @param table
+	 * @throws Exception
+	 */
+	public void genPojoCodeToConsole(String table,GenConfig config) throws Exception{
+		String pkg =SourceGen.defaultPkg;
+		String srcPath= System.getProperty("user.dir");
+		config.setDisplay(true);
+		SourceGen gen = new SourceGen(this,table,pkg,srcPath,config);
+		gen.gen();
+	}
+	
 	/** 将sql模板文件输出到src下，如果采用的是ClasspathLoader，则使用ClasspathLoader的配置，否则，生成到src的sql代码里
 	 * @param table
 	 */

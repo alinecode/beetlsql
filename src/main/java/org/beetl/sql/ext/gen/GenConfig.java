@@ -9,7 +9,9 @@ public class GenConfig {
 	//格式控制，4个隔空
 	public int spaceCount = 4;
 	// double 类型采用BigDecimal
-	private boolean preferBigDecimal = false ;
+	public boolean preferBigDecimal = false ;
+	//采用java.util.Date
+	public boolean preferDate = false ;
 	
 	
 	/**
@@ -62,6 +64,15 @@ public class GenConfig {
 	}
 
 	
+	public boolean isPreferDate() {
+		return preferDate;
+	}
+	public void setPreferDate(boolean preferDate) {
+		this.preferDate = preferDate;
+	}
+	public void setPreferBigDecimal(boolean preferBigDecimal) {
+		this.preferBigDecimal = preferBigDecimal;
+	}
 	public String getSpace(){
 		return space;
 	}
