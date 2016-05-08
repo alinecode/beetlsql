@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.beetlsql.org/schema/beetlsql-spring"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:tool="http://www.springframework.org/schema/tool"
+  targetNamespace="http://www.beetlsql.org/schema/beetlsql-spring"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <!--author woate-->
+  <xsd:element name="scan">
+    <xsd:annotation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="basePackage" type="xsd:string"
+        use="required">
+        <xsd:annotation>
+          <xsd:documentation>
+            <![CDATA[
+             指定要进行扫描DAO所在的包路径，支持多个包路径
+            ]]>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="daoSuffix" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            <![CDATA[
+             指定要进行扫描的DAO的后缀
+            ]]>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="sqlManagerFactoryBeanName" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            <![CDATA[
+              指定sqlManagerFactoryBean的名称
+                    ]]>
+                  </xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
