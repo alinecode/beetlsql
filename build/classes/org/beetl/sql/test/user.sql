@@ -54,6 +54,8 @@ insert into  user_info  (  id,user_name)
 			#text(!itemLP.last?",")#
 		@}
 
-		
+getMyNames
+===
+	select * from user where name like #name#
 
 

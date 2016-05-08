@@ -209,13 +209,13 @@ public class MethodDesc {
 				
 				Package pkg = cls.getPackage();
 				if (pkg == null) {
-					errorPara.put(argIndex, "没有申明@Param的参数");
+					errorPara.put(argIndex, "没有申明params的参数");
 					continue;
 				}
 
 				String pkgName = pkg.getName();
 				if (pkgName.startsWith("java")) {
-					errorPara.put(argIndex, "没有申明@Param的参数");
+					errorPara.put(argIndex, "没有申明params的参数");
 					continue;
 				}
 
