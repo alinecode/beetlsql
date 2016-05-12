@@ -47,6 +47,7 @@ public class SourceGen {
 		gt = new GroupTemplate(new StringTemplateResourceLoader(),conf);
 		srcHead+="import java.math.*;"+CR;
 		srcHead+="import java.util.Date;"+CR;
+		
 		srcHead+="import java.sql.Timestamp;"+CR;
 		
 
@@ -87,7 +88,11 @@ public class SourceGen {
 			String type = JavaType.getType(desc.sqlType, desc.size, desc.digit);
 			if(config.isPreferBigDecimal()&&type.equals("Double")){
 				type = "BigDecimal";
-			}			
+			}		
+			if(config.isPreferDate()&&type.equals("Timestamp")){
+				type ="Date";
+			}
+			
 			attr.put("type", type);
 			attr.put("desc", desc);
 			attrs.add(attr);

@@ -28,4 +28,12 @@ public interface UserDao extends BaseMapper<User> {
 	public void updateAge(int age,int id);
 	@Sql("select * from user  ")
 	public List<User> selectAll();
+	
+	@Sql(value="select name from user",returnType=String.class)
+	public List<String> getNames();
+	
+	@SqlStatement(params="name",returnType=String.class)
+	public List<String> getMyNames(String name);
+	
+	public void insertTestUser(User user);
 }

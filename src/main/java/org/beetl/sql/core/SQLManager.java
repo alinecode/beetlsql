@@ -741,6 +741,7 @@ public class SQLManager {
 	}
 	
 	
+	
 	/** 插入，并获取主键
 	 * @param sqlId
 	 * @param paras
@@ -764,11 +765,16 @@ public class SQLManager {
 	 */
 	public int  insert(String sqlId,Object paras,KeyHolder holder){
 		SQLScript script = getScript(sqlId);
-		String tableName = this.nc.getTableName(paras.getClass());
-		TableDesc  table = this.metaDataManager.getTable(tableName);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
-		return script.insertBySqlId(map, holder,table.getMetaIdName());
+		if(holder!=null){
+			String tableName = this.nc.getTableName(paras.getClass());
+			TableDesc  table = this.metaDataManager.getTable(tableName);
+			return script.insertBySqlId(map, holder,table.getMetaIdName());
+		}else{
+			return script.insertBySqlId(map,null,null);
+		}
+		
 	}
 	
 	/**
@@ -781,9 +787,15 @@ public class SQLManager {
 	 */
 	public int  insert(String sqlId,Class<?> clazz,Map paras,KeyHolder holder){
 		SQLScript script = getScript(sqlId);
-		String tableName = this.nc.getTableName(clazz);
-		TableDesc  table = this.metaDataManager.getTable(tableName);
-		return script.insertBySqlId(paras, holder,table.getMetaIdName());
+		if(holder!=null){
+			String tableName = this.nc.getTableName(clazz);
+			TableDesc  table = this.metaDataManager.getTable(tableName);
+			ClassDesc  clsDesc = table.getClassDesc(this.nc);
+			return script.insertBySqlId(paras, holder,table.getMetaIdName());
+		}else{
+			return script.insertBySqlId(paras, holder,null);
+
+		}
 	}
 	
 	
@@ -1093,6 +1105,18 @@ public class SQLManager {
 		String pkg =SourceGen.defaultPkg;
 		String srcPath= System.getProperty("user.dir");
 		SourceGen gen = new SourceGen(this,table,pkg,srcPath,new GenConfig().setDisplay(true));
+		gen.gen();
+	}
+	
+	/** 仅仅打印pojo类到控制台
+	 * @param table
+	 * @throws Exception
+	 */
+	public void genPojoCodeToConsole(String table,GenConfig config) throws Exception{
+		String pkg =SourceGen.defaultPkg;
+		String srcPath= System.getProperty("user.dir");
+		config.setDisplay(true);
+		SourceGen gen = new SourceGen(this,table,pkg,srcPath,config);
 		gen.gen();
 	}
 	

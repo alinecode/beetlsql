@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.3</version>
     <name>com.ibeetl:beetlsql</name>
     <url>http://maven.apache.org</url>
     <description>java DAO tool</description>
@@ -115,13 +115,14 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>oralce-express</artifactId>
-            <version>6</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/build/ojdbc6.jar</systemPath>
-        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>oracle</groupId>-->
+            <!--<artifactId>oralce-express</artifactId>-->
+            <!--<version>6</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${basedir}/build/ojdbc6.jar</systemPath>-->
+        <!--</dependency>-->
 
 
         <dependency>
@@ -201,6 +202,12 @@
             <version>1.4.189</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0.2</version>
+            <scope>provided</scope>
+        </dependency>
          <!-- dependency>
             <groupId>org.apache</groupId>
             <artifactId>dbc-mysql-sqlserver</artifactId>
@@ -209,13 +216,11 @@
             <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
         </dependency-->
         <!--用于进行测试-->
-        <dependency>
-            <groupId>com.wing321.wingframework</groupId>
-            <artifactId>wingframework-test</artifactId>
-            <version>0.0.1-snapshot</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/wingframework-assembly-0.0.1-snapshot-jar-with-dependencies.jar</systemPath>
-        </dependency>
+		<dependency>
+			<groupId>com.321wing.wingframework</groupId>
+			<artifactId>wingframework-test</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 
     </dependencies>
 
@@ -241,7 +246,14 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
 
             <!-- Source -->
             <plugin>

@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.3.0 (174K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.3.3 (190K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
 
 
@@ -474,15 +474,15 @@ PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id des
 
 ==== 直接执行JDBC sql语句
 
-* public <T> List<T> execute(SQLReady p,Class<T> clazz) SQLReady包含了需要执行的sql语句和参数，clazz是查询结果，如
+* 查询 public <T> List<T> execute(SQLReady p,Class<T> clazz) SQLReady包含了需要执行的sql语句和参数，clazz是查询结果，如
 
 [source,java]
 ----------------------------
-	sqlManager.execute(new SQLReady("select * from user where name=? and age = ?","xiandafu",18),User.class);)
+	List<User> list = sqlManager.execute(new SQLReady("select * from user where name=? and age = ?","xiandafu",18),User.class);)
 ----------------------------
 	
 
-* public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
+* 更新 public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
 
 
 
@@ -562,6 +562,9 @@ public interface UserDao extends BaseMapper<User> {
 	@Sql(value=" update user set age = ? where id = ? ")
 	public void updateAge(int age,int id);
 	
+	@Sql(value=" select name from user",returnType=String.class)
+	public List<String> allNames();
+	
 }
 	
 ----------------------------
@@ -617,6 +620,7 @@ params列表按照参数申明顺序,_root保留字 代表查询得root对象,_s
 * 参数列表里如果有List 或者Map[],则期望对应的是一个updateBatch操作
 * 参数列表里如果@RowStart ,@RowSize,则认为是翻页语句
 * 参数里如果有PageQuery,则认为是翻页查询
+* 在查询中，返回的是List，但类型非Mapper指定的类型，无论是用@Sql ,还是 @SqlStatement，需要用returnType来说明，如上例子allNames 返回一个List<String>
 
 
 Mapper 也支持使用JDBC SQL，这时候需要采用Sql注解
@@ -1316,7 +1320,7 @@ sqlManager.genPojoCode("UserRole","com.test",config);
 ----------------------------
 		
 
-config 类用来配置生成喜爱,目前支持生成pojo是否继承某个基类, 是否用BigDecimal代替Double,是否是直接输出到控制台而不是文件等
+config 类用来配置生成喜爱,目前支持生成pojo是否继承某个基类, 是否用BigDecimal代替Double,是否采用Date而不是Timestamp来表示日期，是否是直接输出到控制台而不是文件等
 生成的代码如下：
 
 [source,java]

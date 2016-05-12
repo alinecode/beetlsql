@@ -38,6 +38,8 @@ public class MethodDesc {
 	public int mapRootPos = -1;
 	
 	public String sqlReady = "";
+	
+	public Class renturnType = Void.class;
 
 	static Map<Method, MethodDesc> cache = new HashMap<Method, MethodDesc>();
 
@@ -71,8 +73,13 @@ public class MethodDesc {
 	}
 	
 	protected void parseSqlReady(SQLManager sm, Class entityClass, Sql sql,Method m,String sqlId) {
+		
+		Class c = sql.returnType();
+		if(c!=Void.class)this.renturnType = c;
+		
 		//确定type  2（单选），3（多选），4 更新
 		SqlStatementType sqlType = sql.type();
+		
 		if (sqlType == SqlStatementType.AUTO) {
 			type = getTypeBySql(sqlReady);
 			if(type==-1){
@@ -114,6 +121,9 @@ public class MethodDesc {
 			} else {
 				type = 4;
 			}
+			
+			Class c = st.returnType();
+			if(c!=Void.class)this.renturnType = c;
 		} else {
 			type = getTypeBySqlId(sm, sqlId);
 
@@ -199,13 +209,13 @@ public class MethodDesc {
 				
 				Package pkg = cls.getPackage();
 				if (pkg == null) {
-					errorPara.put(argIndex, "没有申明@Param的参数");
+					errorPara.put(argIndex, "没有申明params的参数");
 					continue;
 				}
 
 				String pkgName = pkg.getName();
 				if (pkgName.startsWith("java")) {
-					errorPara.put(argIndex, "没有申明@Param的参数");
+					errorPara.put(argIndex, "没有申明params的参数");
 					continue;
 				}
 

@@ -23,9 +23,8 @@ public class InsertMapperInvoke extends BaseMapperInvoke {
 		KeyHolder keyHolder = null;
 		if(desc.keyHolderPos!=-1){
 			keyHolder = (KeyHolder)args[desc.keyHolderPos];
-		}else{
-			keyHolder = new KeyHolder();
 		}
+		
 		sm.insert(sqlId,entityClass, sqlArgs, keyHolder);
 		return keyHolder;
 				

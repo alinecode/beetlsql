@@ -22,7 +22,11 @@ public @interface SqlStatement {
 	 */
 	SqlStatementType type() default SqlStatementType.AUTO;
 	
+	/**
+	 * @return 返回类型，默认是Mapper类的泛型，需要特别声明才用这个
+	 */
 	
+	Class returnType() default Void.class;
 
 
 }

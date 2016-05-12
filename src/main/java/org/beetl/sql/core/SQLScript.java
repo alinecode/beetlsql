@@ -180,6 +180,8 @@ public class SQLScript {
 
 	public int insertBySqlId(Map  map, KeyHolder holder,String keyName) {
 		
+		boolean getKey = holder!=null ;
+		
 		PreparedStatement ps = null;
 		Connection conn = null;
 		try {
@@ -195,17 +197,26 @@ public class SQLScript {
 				conn = sm.getDs().getConn(id, true, sql, objs);
 			}
 			
-			ps = conn.prepareStatement(sql, new String[]{keyName});
+			if(getKey){
+				ps = conn.prepareStatement(sql, new String[]{keyName});
+			}else{
+				ps = conn.prepareStatement(sql);
+			}
+			
 			
 
 			this.setPreparedStatementPara(ps, objs);
 			
 			int ret = ps.executeUpdate();
-			ResultSet seqRs = ps.getGeneratedKeys();
-			seqRs.next();
-			Object key = seqRs.getObject(1);
-			holder.setKey(key);
-			seqRs.close();
+			
+			if(getKey){
+				ResultSet seqRs = ps.getGeneratedKeys();
+				seqRs.next();
+				Object key = seqRs.getObject(1);
+				holder.setKey(key);
+				seqRs.close();
+			}
+			
 			this.callInterceptorAsAfter(ctx, ret);
 			return ret;
 		} catch (SQLException e) {
