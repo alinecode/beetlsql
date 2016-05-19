@@ -37,7 +37,7 @@ public class ClassDesc {
 					cols.add(property);
 				}
 				
-				if(table.getIdName().equalsIgnoreCase(col)){
+				if(col.equalsIgnoreCase(table.getIdName())){
 					idName = property;
 					idMethod  = m;
 				}

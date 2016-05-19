@@ -129,8 +129,16 @@ public class MetadataManager {
 					desc.setIdName(metaIdName);
 				}
 				rs.close();
-				//多个主键 下个版本再做
-				if(count>1) throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+				
+//				//多个主键 下个版本再做
+//				if(count!=1){
+//					throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+//				}
+				
+				if(count!=1){
+					System.out.println(desc.getMetaName()+"发现主键"+count+",期望1个");
+					desc.setIdName(null);
+				}
 				
 				rs = dbmd.getColumns(catalog,schema, desc.getMetaName(), "%");
 				while(rs.next()){
