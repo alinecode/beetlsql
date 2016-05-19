@@ -1,10 +1,7 @@
 package org.beetl.sql.ext.spring4;
 
-import com.wing321.annotations.devtime.CreateTable;
-import com.wing321.annotations.devtime.StoreData;
-import com.wing321.test.PersistenceBaseTest;
-import junit.framework.Assert;
-import org.beetl.sql.core.SQLManager;
+import java.util.List;
+
 import org.beetl.sql.ext.spring4.dao.DemoDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +10,11 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
+import com.wing321.annotations.devtime.CreateTable;
+import com.wing321.annotations.devtime.StoreData;
+import com.wing321.test.PersistenceBaseTest;
+
+import junit.framework.Assert;
 
 /**
  * 对BeetSql整合Spring进行测试,逐步使用win框架  http://git.oschina.net/woate/Wing

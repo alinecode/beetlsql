@@ -27,6 +27,7 @@ import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.kit.LobKit;
 
@@ -373,14 +374,12 @@ public class BeanProcessor {
 	 */
 	private PropertyDescriptor[] propertyDescriptors(Class<?> c) throws SQLException {
 		
-		BeanInfo beanInfo = null;
 		try {
-			beanInfo = Introspector.getBeanInfo(c);
+			return BeanKit.propertyDescriptors(c);
 		} catch (IntrospectionException e) {
 			throw new SQLException("Bean introspection failed: " + e.getMessage());
 		}
-
-		return beanInfo.getPropertyDescriptors();
+		
 		
 	}
 
