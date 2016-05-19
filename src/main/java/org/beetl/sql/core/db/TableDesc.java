@@ -78,8 +78,14 @@ public class TableDesc{
 	}
 
 	public void setIdName(String idName) {
-		this.idName = idName.toUpperCase();
-		this.metaIdName = idName;
+		if(idName!=null){
+			this.idName = idName.toUpperCase();
+			this.metaIdName = idName;
+		}else{
+			this.idName = null;
+			this.metaIdName = null;
+		}
+		
 	}
 
 	public Set<String> getCols() {
