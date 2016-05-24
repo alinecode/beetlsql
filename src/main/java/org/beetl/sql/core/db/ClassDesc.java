@@ -1,11 +1,14 @@
 package org.beetl.sql.core.db;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.ext.gen.JavaType;
 
@@ -19,18 +22,17 @@ public class ClassDesc {
 	String idName;
 	Method idMethod = null;
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
-		Method[] ms = c.getMethods();
-		for(Method m:ms){
-			String name = m.getName();
-			if((name.startsWith("get")|| (name.startsWith("is") && m.getReturnType().getSimpleName().equalsIgnoreCase("boolean")))
-                    && m.getParameterTypes().length==0){
-                String property = null;
-                if(name.startsWith("get")){
-                    property = StringKit.toLowerCaseFirstOne(name.substring(3));
-                }else{
-                    property = StringKit.toLowerCaseFirstOne(name.substring(2));
-                }
-				String col = nc.getColName(c, property);
+		PropertyDescriptor[] ps;
+		try {
+			ps = BeanKit.propertyDescriptors(c);
+		} catch (IntrospectionException e) {
+			throw new RuntimeException(e);
+		}
+		for(PropertyDescriptor p:ps){
+			if(p.getReadMethod()!=null&&p.getWriteMethod()!=null){
+				Method readMethod = p.getReadMethod();
+                String property = p.getName();
+               	String col = nc.getColName(c, property);
 				propertys.add(property);
 				
 				if(table.containCol(col)){
@@ -39,17 +41,19 @@ public class ClassDesc {
 				
 				if(col.equalsIgnoreCase(table.getIdName())){
 					idName = property;
-					idMethod  = m;
+					idMethod  = readMethod;
 				}
 				
 			
-				 if( java.util.Date.class.isAssignableFrom(m.getReturnType())	
-					|| java.util.Calendar.class.isAssignableFrom(m.getReturnType())){
+				 if( java.util.Date.class.isAssignableFrom(readMethod.getReturnType())	
+					|| java.util.Calendar.class.isAssignableFrom(readMethod.getReturnType())){
 					 dateTypes.add(property);
 				 }
 			}
 			
 		}
+			
+		
 	}
 	
 	public ClassDesc(TableDesc table,NameConversion nc){

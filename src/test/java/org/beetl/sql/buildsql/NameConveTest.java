@@ -1,10 +1,11 @@
 package org.beetl.sql.buildsql;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
+
 import org.beetl.sql.core.HumpNameConversion;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.pojo.User;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,5 +62,12 @@ public class NameConveTest {
 ////		Assert.assertEquals(unc.getId().toString(), "");
 //	
 //	}
+	
+	@Test
+	public void testJPANameConversion(){
+		
+	}
+	
+	
 
 }

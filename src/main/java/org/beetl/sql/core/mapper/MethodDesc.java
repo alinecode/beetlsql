@@ -83,7 +83,7 @@ public class MethodDesc {
 		if (sqlType == SqlStatementType.AUTO) {
 			type = getTypeBySql(sqlReady);
 			if(type==-1){
-				throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId);
+				throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId+" 请指定Sql类型");
 			}else if(type==0){
 				type = 4;// 认为update
 			}
@@ -305,14 +305,18 @@ public class MethodDesc {
 	}
 
 	private int getTypeBySql(String sql) {
+		sql = sql.trim();
+		int index = sql.charAt(' ');
+		if(index==-1) return  -1;
+		String sqlType = sql.substring(0,index);
 		
-		if (sql.startsWith("select")) {
+		if (sqlType.equalsIgnoreCase("select")) {
 			return 2;
-		} else if (sql.startsWith("insert")) {
+		} else if (sqlType.equalsIgnoreCase("insert")) {
 			return 0;
-		} else if (sql.startsWith("delete")) {
+		} else if (sqlType.equalsIgnoreCase("delete")) {
 			return 4;
-		} else if (sql.startsWith("update")) {
+		} else if (sqlType.equalsIgnoreCase("update")) {
 			return 4;
 		} else {
 			return -1; //unknow
@@ -322,10 +326,10 @@ public class MethodDesc {
 	private int getTypeBySqlId(SQLManager sm, String sqlId) {
 		String sql = null;
 		SQLScript script = sm.getScript(sqlId);
-		sql = script.getSql().trim();
+		sql = script.getSql();
 		int ret = getTypeBySql(sql);
 		if(ret==-1){
-			throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId);
+			throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId+" 请指定Sql类型");
 		}else{
 			return ret;
 		}
