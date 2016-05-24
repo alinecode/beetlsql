@@ -198,13 +198,13 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
 		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
-		String condition = " where 1=1 " + lineSeparator;
+		String condition = null;
 		
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(classDesc.getIdName().equals(col)){
-				//主键不更新
-				condition = condition + appendWhere(cls,table, col);
+				
+				condition = appendIdCondition(cls);
 				continue ;
 			}
 			sql.append(appendSetColumn(cls,table, col));
@@ -214,6 +214,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		trimSql.append(this.getSTATEMENTSTART()).append("trim(){\n").append(this.getSTATEMENTEND()).append("\n").append(sql);
 		trimSql.append(this.getSTATEMENTSTART()).append("}\n").append(this.getSTATEMENTEND());
 		sql = removeComma(trimSql, condition);
+		if(condition==null){
+			throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR,"无法生成sql语句，缺少主键");
+		}
 		return new SQLSource(sql.toString());
 		
 	}

@@ -306,7 +306,7 @@ public class MethodDesc {
 
 	private int getTypeBySql(String sql) {
 		sql = sql.trim();
-		int index = sql.charAt(' ');
+		int index = sql.indexOf(' ');
 		if(index==-1) return  -1;
 		String sqlType = sql.substring(0,index);
 		

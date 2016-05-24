@@ -1286,6 +1286,14 @@ public class SQLManager {
 	public void setMapperBuilder(MapperBuilder mapperBuilder) {
 		this.mapperBuilder = mapperBuilder;
 	}
+
+	public Interceptor[] getInters() {
+		return inters;
+	}
+
+	public void setInters(Interceptor[] inters) {
+		this.inters = inters;
+	}
 	
 	
 
