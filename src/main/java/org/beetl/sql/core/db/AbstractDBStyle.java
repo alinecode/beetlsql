@@ -198,13 +198,13 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
 		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
-		String condition = " where 1=1 " + lineSeparator;
+		String condition = null;
 		
 		Set<String> cols = classDesc.getInCols();
 		for(String col:cols){
 			if(classDesc.getIdName().equals(col)){
 				//主键不更新
-				condition = condition + appendWhere(cls,table, col);
+				condition= appendIdCondition(cls);
 				continue ;
 			}
 			sql.append(appendSetColumn(cls,table, col));
@@ -433,14 +433,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 	}
 	
-	private String appendWhere(Class<?> c,String fieldName,String sql) {
-		String prefix = "";		
-		String colName = nameConversion.getColName(c,fieldName);
-		String connector = " and ";
-		return STATEMENT_START + "if(!isEmpty(" + prefix+fieldName + ")){"
-		+ STATEMENT_END + connector + sql + lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
-
-	}
+	
 	
 	/****
 	 * 生成一个追加在insert into 子句的后面sql(示例：name,)

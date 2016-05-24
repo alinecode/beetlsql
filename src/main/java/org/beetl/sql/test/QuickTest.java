@@ -21,19 +21,24 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		User user = new User();
+//		user.setId(28);
+		user.setName("lijz");
+		sql.updateTemplateById(user);
 		
-		GenConfig config = new GenConfig();
-		config.setPreferDate(true);
-//		sql.genPojoCodeToConsole("ok",config);
-//		sql.genSQLTemplateToConsole("ok");
-		
-		Ok ok = new Ok();
-		ok.setAge("a");
-		ok.setName("bc");
-		sql.insert(ok);
-		
-		List<Ok> ls = sql.all(Ok.class);
-		System.out.println(ls);
+//		
+//		GenConfig config = new GenConfig();
+//		config.setPreferDate(true);
+////		sql.genPojoCodeToConsole("ok",config);
+////		sql.genSQLTemplateToConsole("ok");
+//		
+//		Ok ok = new Ok();
+//		ok.setAge("a");
+//		ok.setName("bc");
+//		sql.insert(ok);
+//		
+//		List<Ok> ls = sql.all(Ok.class);
+//		System.out.println(ls);
 		
 //		UserDao dao = sql.getMapper(UserDao.class);
 ////		List<String> list = dao.getNames();
