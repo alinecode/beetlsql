@@ -1,8 +1,6 @@
 package org.beetl.sql.core.mapping;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.HumpNameConversion;
@@ -54,6 +53,21 @@ public class BeanProcessor {
 		primitiveDefaults.put(Character.TYPE, Character.valueOf((char) 0));
 	}
 
+	
+	private static final Map<Class, Method> tailBeans = new ConcurrentHashMap<Class, Method>();
+	private static  Method NULL = null;
+	static{
+		try {
+			NULL = Object.class.getMethod("toString", new Class[]{});
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	SQLManager sm ;
 	String dbName;
 	protected BeanProcessor() {
@@ -217,6 +231,8 @@ public class BeanProcessor {
             return super.remove(realKey);
         }
     }
+	
+	
 
 	/**
 	 * 创建 一个新的对象，并从ResultSet初始化
@@ -240,6 +256,40 @@ public class BeanProcessor {
 					String key = rs.getMetaData().getColumnLabel(i);
 					key = this.nc.getPropertyName(type, key);
 					bean2.set(key, value);
+				}else{
+					//如果实现了注解也行@Tail也行
+					Method m  = tailBeans.get(type);
+					
+					if(m!=null){
+						if(m==NULL){
+							continue ;
+						}
+						
+					}else{
+						org.beetl.sql.core.annotatoin.Tail an = type.getAnnotation(org.beetl.sql.core.annotatoin.Tail.class);
+						if(an==null){
+							tailBeans.put(type, null);
+						}
+						else{
+							 m = BeanKit.tailMethod(type, an.set());
+							if(m==null){
+								tailBeans.put(type, NULL);
+							}else{
+								tailBeans.put(type, m);
+							}
+						}
+					}
+					//使用指定方法赋值
+					if(m!=null){
+						Object value = rs.getObject(i);
+						String key = rs.getMetaData().getColumnLabel(i);
+						key = this.nc.getPropertyName(type, key);
+						try {
+							m.invoke(bean, new Object[]{key,value});
+						} catch (Exception ex) {
+							throw new BeetlSQLException(BeetlSQLException.TAIL_CALL_ERROR,ex);
+						} 
+					}
 				}
 				continue;
 			}

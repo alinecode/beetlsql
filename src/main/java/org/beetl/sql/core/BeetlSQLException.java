@@ -36,6 +36,10 @@ public class BeetlSQLException extends RuntimeException {
 	
 	//dao2 接口函数 参数定义错误
 	public static final int 	UNIQUE_EXCEPT_ERROR  = 12;
+	
+	
+	//dao2 接口函数 参数定义错误
+	public static final int 	TAIL_CALL_ERROR  = 13;
 		
 	int code ;
 	

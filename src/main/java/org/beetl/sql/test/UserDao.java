@@ -36,4 +36,7 @@ public interface UserDao extends BaseMapper<User> {
 	public List<String> getMyNames(String name);
 	
 	public void insertTestUser(User user);
+	
+	@SqlStatement(params="suffix",type=SqlStatementType.UPDATE)
+	public void initUserDatabase(String suffix);
 }

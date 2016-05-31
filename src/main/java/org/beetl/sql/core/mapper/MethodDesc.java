@@ -306,7 +306,7 @@ public class MethodDesc {
 
 	private int getTypeBySql(String sql) {
 		sql = sql.trim();
-		int index = sql.charAt(' ');
+		int index = sql.indexOf(' ');
 		if(index==-1) return  -1;
 		String sqlType = sql.substring(0,index);
 		
@@ -318,7 +318,12 @@ public class MethodDesc {
 			return 4;
 		} else if (sqlType.equalsIgnoreCase("update")) {
 			return 4;
-		} else {
+		} else if(sqlType.equals("create")){
+			return 4;
+		}else if(sqlType.equals("drop")){
+			return 4;
+		}
+		else {
 			return -1; //unknow
 		}
 	}

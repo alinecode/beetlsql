@@ -57,5 +57,28 @@ insert into  user_info  (  id,user_name)
 getMyNames
 ===
 	select * from user where name like #name#
+	
+initUserDatabase
+===
 
+	CREATE TABLE `user_#text(suffix)#` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `name` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+	  `age` int(11) DEFAULT NULL COMMENT '年纪123',
+	  `bir` datetime DEFAULT NULL COMMENT '生日',
+	  `user_name` varchar(255) DEFAULT NULL,
+		  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+		
+
+
+	CREATE TABLE `user_role_#text(suffix)#` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `name` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+	  `age` int(11) DEFAULT NULL COMMENT '年纪123',
+	  `bir` datetime DEFAULT NULL COMMENT '生日',
+	  `user_name` varchar(255) DEFAULT NULL,
+		  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+		
 

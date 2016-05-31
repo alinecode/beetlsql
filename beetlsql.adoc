@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.3.3 (190K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.3.5 (190K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
 
 
@@ -1441,7 +1441,7 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 
 * sqlLoader: sql语句加载来源
 
-* nc:  命名转化，有默认的DefaultNameConversion，数据库跟类名一致，还有有数据库下划线的UnderlinedNameConversion。
+* nc:  命名转化，有默认的DefaultNameConversion，数据库跟类名一致，还有有数据库下划线的UnderlinedNameConversion,JPANameConversion,
 
 * interceptors:DebugInterceptor 用来打印sql语句，参数和执行时间
 
@@ -1597,6 +1597,15 @@ Trans.rollback()
 	
 
 如果习惯了JFinal Record模式，建议用户创建一个BaseBean，封装SQLManager CRUD 方法即可。然后其他模型继承此BaseBean
+
+.注意
+**********************************************************************
+可以通过jfinal属性文件来配置sqlManager，比如
+PropKit.use("config.txt", "UTF-8"),然后可以配置
+sql.nc,sql.root，sql.interceptor，sql.dbStyle，具体参考代码
+
+JFinalBeetlSql.initProp
+**********************************************************************
 
 .参考
 **********************************************************************

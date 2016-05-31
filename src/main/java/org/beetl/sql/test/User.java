@@ -1,36 +1,33 @@
 package org.beetl.sql.test;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.beetl.sql.core.annotatoin.DateTemplate;
 import org.beetl.sql.core.annotatoin.TableTemplate;
+import org.beetl.sql.core.annotatoin.Tail;
 /*
 * 
 * gen by beetsql 2015-12-11
 */
 @TableTemplate()
+@Tail(set="addValue")
 public class User  {
 	private Integer id ;
 	private Integer age ;
-	//用户角色
-	private Integer roleId ;
+	
 	private String name ;
 	//用户名称
 	private String userName ;
 
-	private Date createDate;
 	
-
+	
+	Map<String,Object> ext = new HashMap<String,Object>();
 	
 	//for query
 	private Date minDate;
 	private Date maxDate;
 	
-	public Integer getRoleId() {
-		return roleId;
-	}
-	public void setRoleId(Integer roleId) {
-		this.roleId = roleId;
-	}
+	
 	public String getName() {
 		return name;
 	}
@@ -70,16 +67,22 @@ public class User  {
 	public void setMaxDate(Date maxDate) {
 		this.maxDate = maxDate;
 	}
-	public Date getCreateDate() {
-		return createDate;
-	}
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+	
 	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + "]";
+	}
+	
+	public User addValue(String str,Object ok){
+		ext.put(str, ok);
+		return this;
+	}
+	public Map<String, Object> getExt() {
+		return ext;
+	}
+	public void setExt(Map<String, Object> ext) {
+		this.ext = ext;
 	}
 	
 
