@@ -1,26 +1,34 @@
 package org.beetl.sql.core.db;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.beetl.sql.core.NameConversion;
-
+/**
+ * 数据库注解
+ * @author xiandafu
+ *
+ */
 public class TableDesc{
 	//保持大写
 	private String name;
-	// 默认为id，列明采用小写
-	private String idName="id";
-	
+	// 列明采用大写
+	private List<String> idNames= new ArrayList<String>(3);
+	// 数据库返回的列名字
+	private List<String> metaIdNames = new ArrayList<String>(3) ;
+	// 数据表注释
 	private String remark = null;
 	// 采用大写,为了方便查询
 	private Set<String> cols = new LinkedHashSet<String>();
 	
 	private Set<String> metaCols = new LinkedHashSet<String>();
 	private String metaName ;
-	private String metaIdName;
+	
 	//跟table相关的类
 	private Map<Class,ClassDesc> classes = new LinkedHashMap<Class,ClassDesc>();
 	//table 列的详细描述
@@ -72,19 +80,17 @@ public class TableDesc{
 	public void setMetaName(String metaName) {
 		this.metaName = metaName;
 	}
-
-	public String getIdName() {
-		return idName;
+	/**
+	 * 大写存放的
+	 */
+	public List<String> getIdNames() {
+		return idNames;
 	}
 
-	public void setIdName(String idName) {
-		if(idName!=null){
-			this.idName = idName.toUpperCase();
-			this.metaIdName = idName;
-		}else{
-			this.idName = null;
-			this.metaIdName = null;
-		}
+	public void addIdName(String idName) {
+		this.idNames.add(idName.toUpperCase());
+		this.metaIdNames.add(idName);
+		
 		
 	}
 
@@ -96,8 +102,8 @@ public class TableDesc{
 		this.cols = cols;
 	}
 
-	public String getMetaIdName() {
-		return metaIdName;
+	public List<String> getMetaIdNames() {
+		return metaIdNames;
 	}
 	
 

@@ -54,19 +54,7 @@ public class BeanProcessor {
 	}
 
 	
-	private static final Map<Class, Method> tailBeans = new ConcurrentHashMap<Class, Method>();
-	private static  Method NULL = null;
-	static{
-		try {
-			NULL = Object.class.getMethod("toString", new Class[]{});
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 	
 	SQLManager sm ;
 	String dbName;
@@ -257,28 +245,7 @@ public class BeanProcessor {
 					key = this.nc.getPropertyName(type, key);
 					bean2.set(key, value);
 				}else{
-					//如果实现了注解也行@Tail也行
-					Method m  = tailBeans.get(type);
-					
-					if(m!=null){
-						if(m==NULL){
-							continue ;
-						}
-						
-					}else{
-						org.beetl.sql.core.annotatoin.Tail an = type.getAnnotation(org.beetl.sql.core.annotatoin.Tail.class);
-						if(an==null){
-							tailBeans.put(type, null);
-						}
-						else{
-							 m = BeanKit.tailMethod(type, an.set());
-							if(m==null){
-								tailBeans.put(type, NULL);
-							}else{
-								tailBeans.put(type, m);
-							}
-						}
-					}
+					Method m = BeanKit.getTailMethod(type);
 					//使用指定方法赋值
 					if(m!=null){
 						Object value = rs.getObject(i);

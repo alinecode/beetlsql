@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.beetl.core.Configuration;
+import org.beetl.core.exception.BeetlException;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -695,7 +696,9 @@ public class SQLManager {
 			int result = this.insert(target, paras, holder);
 			String table = this.nc.getTableName(target);
 			ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
-			Method getterMethod =  desc.getIdMethod();
+			
+			Method getterMethod =  desc.getIdMethods().get(desc.getIdNames().get(0));
+			
 			String name = getterMethod.getName();
 			String setterName = name.replaceFirst("get", "set");
 			try{
@@ -770,7 +773,11 @@ public class SQLManager {
 		if(holder!=null){
 			String tableName = this.nc.getTableName(paras.getClass());
 			TableDesc  table = this.metaDataManager.getTable(tableName);
-			return script.insertBySqlId(map, holder,table.getMetaIdName());
+			List<String> idCols = table.getMetaIdNames();
+			if(idCols.size()!=1){
+				throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR,"有多个主键，不能自动设置");
+			}
+			return script.insertBySqlId(map, holder,idCols.get(0));
 		}else{
 			return script.insertBySqlId(map,null,null);
 		}
@@ -791,7 +798,11 @@ public class SQLManager {
 			String tableName = this.nc.getTableName(clazz);
 			TableDesc  table = this.metaDataManager.getTable(tableName);
 			ClassDesc  clsDesc = table.getClassDesc(this.nc);
-			return script.insertBySqlId(paras, holder,table.getMetaIdName());
+			List<String> idCols = table.getMetaIdNames();
+			if(idCols.size()!=1){
+				throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR,"有多个主键，不能自动设置");
+			}
+			return script.insertBySqlId(paras, holder,idCols.get(0));
 		}else{
 			return script.insertBySqlId(paras, holder,null);
 

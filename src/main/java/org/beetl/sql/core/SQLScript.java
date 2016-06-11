@@ -1,5 +1,6 @@
 package org.beetl.sql.core;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
@@ -152,7 +153,11 @@ public class SQLScript {
 			} else if (this.sqlSource.getIdType() == DBStyle.ID_AUTO) {
 				ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			} else if(this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
-				ps = conn.prepareStatement(sql, new String[]{this.sqlSource.getIdCol()});
+				List<String> idCols =  this.sqlSource.getIdCol();
+				if(idCols.size()!=1){
+					throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
+				}
+				ps = conn.prepareStatement(sql, new String[]{idCols.get(0)});
 			}
 			else {
 				ps = conn.prepareStatement(sql);
@@ -473,10 +478,8 @@ public class SQLScript {
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
 		TableDesc table = mm.getTable(this.sm.getNc().getTableName(clazz));
 		ClassDesc classDesc = table.getClassDesc(clazz, this.sm.getNc());
-		String pk = classDesc.getIdName();
-
 		Map<String, Object> paras = new HashMap<String, Object>();
-		paras.put(pk, objId);
+		this.setIdsParas(classDesc, objId, paras);
 		SQLResult result = run(paras);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
@@ -516,10 +519,9 @@ public class SQLScript {
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
 		TableDesc table = mm.getTable(this.sm.getNc().getTableName(clazz));
 		ClassDesc classDesc = table.getClassDesc(clazz, this.sm.getNc());
-		String pk = classDesc.getIdName();
-
+		
 		Map<String, Object> paras = new HashMap<String, Object>();
-		paras.put(pk, objId);
+		this.setIdsParas(classDesc, objId, paras);
 
 		SQLResult result = run(paras);
 		String sql = result.jdbcSql;
@@ -677,7 +679,31 @@ public class SQLScript {
 	public String getId() {
 		return id;
 	}
-
+	
+	/**
+	 * 为主键设置参数
+	 * @param desc
+	 * @param obj
+	 * @param paras
+	 */
+	private void setIdsParas(ClassDesc desc,Object obj,Map<String, Object> paras){
+		List<String> idCols = desc.getIdNames();
+		if(idCols.size()==1){
+			paras.put(idCols.get(0), obj);
+		}else{
+			//来自对象id的属性.
+			Map<String,Method> map = desc.getIdMethods();
+			for(String idCol:idCols){
+				Method m =  map.get(idCol);
+				try{
+					Object os = m.invoke(obj, new Object[0]);
+					paras.put(idCol, os);
+				}catch(Exception ex){
+					throw new BeetlSQLException(BeetlSQLException.ID_VALUE_ERROR,ex);
+				}
+			}
+		}
+	}
 	
 
 	public String getSql() {

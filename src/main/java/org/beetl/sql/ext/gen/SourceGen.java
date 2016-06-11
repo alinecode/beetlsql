@@ -117,7 +117,7 @@ public class SourceGen {
 			}
 			
 			private int score(ColDesc desc){
-				if(tableDesc.getMetaIdName()!=null&&tableDesc.getMetaIdName().equalsIgnoreCase(desc.colName)){
+				if(tableDesc.getMetaIdNames().contains(desc.colName)){
 					return 99;
 				}else if(JavaType.isInteger(desc.sqlType)){
 					return 9;

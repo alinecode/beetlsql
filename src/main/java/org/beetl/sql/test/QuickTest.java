@@ -21,11 +21,22 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-//		UserDao dao = sql.getMapper(UserDao.class);
-//		dao.initUserDatabase("_001");
+//		Party key = new Party();
+//		key.setId1(1);
+//		key.setId2(2);
+//		Party party = sql.unique(Party.class, key);
+//		party.setName("anc");
+//		sql.deleteById(Party.class, key);
 		
-		List<User> list = sql.execute(new SQLReady("select t.*,1 status from user t"), User.class);
-		System.out.println(list.get(0).getExt());
+//		Party newParty = new Party();
+//		newParty.setId1(1);
+//		newParty.setId2(2);
+//		newParty.setName("gf");
+//		sql.template(newParty);
+//		sql.updateTemplateById(newParty);
+		User user = sql.unique(User.class, 2);
+		user.setName("hello");
+		sql.updateTemplateById(user);
 	}
 
 	
