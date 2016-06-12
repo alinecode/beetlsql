@@ -13,6 +13,7 @@ import org.beetl.sql.core.engine.Beetl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
 /**
  * 按照mysql来的，oralce需要重载insert，page方法
@@ -95,8 +96,17 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableTemplate t = cls.getAnnotation(TableTemplate.class);
 		if(t!=null){
 			appendSql = t.value();
-			if(appendSql==null||appendSql.length()==0){
-				appendSql = " order by "+table.getMetaIdName()+" desc ";
+			if((appendSql==null||appendSql.length()==0)&&table.getMetaIdNames().size()!=0){
+				
+				appendSql = " order by ";
+				List<String> ids = table.getMetaIdNames();
+				for(int i= 0;i<ids.size();i++){
+					appendSql+=ids.get(i)+" desc";
+					if(i!=ids.size()-1){
+						appendSql+=",";
+					}
+				}
+				
 			}
 		}
 		return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(appendSql).toString());
@@ -107,15 +117,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc  table = this.metadataManager.getTable(tableName);
 		String condition = getSelectTemplate(cls);
-		String appendSql = "";
-		TableTemplate t = cls.getAnnotation(TableTemplate.class);
-		if(t!=null){
-			appendSql = t.value();
-			if(appendSql==null){
-				appendSql = " order by "+table.getMetaIdName()+" desc ";
-			}
-		}
-		return new SQLSource(new StringBuilder("select count(1) from ").append(getTableName(table)).append(condition).append(appendSql).toString());
+		
+		return new SQLSource(new StringBuilder("select count(1) from ").append(getTableName(table)).append(condition).toString());
 
 	}
 	
@@ -178,8 +181,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
 		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
 		Set<String> cols = classDesc.getInCols();
+		List<String> idCols = classDesc.getIdNames();
 		for(String col:cols){
-			if(classDesc.getIdName().equals(col)){
+			if(idCols.contains(col)){
 				//主键不更新
 				continue ;
 			}
@@ -198,15 +202,12 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
 		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
-		String condition = null;
+		String condition = appendIdCondition(cls);;
 		
 		Set<String> cols = classDesc.getInCols();
+		List<String> idcols = classDesc.getIdNames();
 		for(String col:cols){
-			if(classDesc.getIdName().equals(col)){
-
-				//主键不更新
-				condition= appendIdCondition(cls);
-
+			if(idcols.contains(col)){
 				continue ;
 			}
 			sql.append(appendSetColumn(cls,table, col));
@@ -230,8 +231,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);	
 		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
 		Set<String> cols = classDesc.getInCols();
+		List<String> idCols = classDesc.getIdNames();
 		for(String col:cols){
-			if(classDesc.getIdName().equals(col)){
+			if(idCols.contains(col)){
 				//主键不更新
 				continue ;
 			}			
@@ -252,17 +254,20 @@ public abstract class AbstractDBStyle implements DBStyle {
 		int idType = DBStyle.ID_ASSIGN ;
 		SQLSource source = new SQLSource();
 		Set<String> cols = classDesc.getInCols();
+		List<String> idCols = classDesc.getIdNames();
 		for(String col:cols){
-			if(col.equals(classDesc.getIdName())){				
-				idType = this.getIdType(classDesc.getIdMethod());
+			if(idCols.contains(col)){
+				//会不会有多个主键，又包含自增的？
+				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType(classDesc.getIdMethods().get(col));
 				if(idType==DBStyle.ID_AUTO){
 					continue ; //忽略这个字段
 				}else if(idType==DBStyle.ID_SEQ){
 					
 					colSql.append(appendInsertColumn(cls,table, col));
 //					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
-					SeqID seqId = classDesc.getIdMethod().getAnnotation(SeqID.class);
-					source.setIdCol(table.getIdName());
+					SeqID seqId = classDesc.getIdMethods().get(col).getAnnotation(SeqID.class);
+					int index = idCols.indexOf(col);
+					source.addIdCol(col);
 					valSql.append( seqId.name()+".nextval,");
 				}else if(idType==DBStyle.ID_ASSIGN){
 					//normal
@@ -326,10 +331,11 @@ public abstract class AbstractDBStyle implements DBStyle {
         
        
         StringBuilder condition = new StringBuilder();
+        List<String> colsIds = table.getIdNames();
         for(String attr:attrSet){
-    		String col = this.nameConversion.getColName(attr);
-    		if(col.equalsIgnoreCase(table.getMetaIdName())){
-				continue ;
+	    		String col = this.nameConversion.getColName(attr).toUpperCase();
+	    		if(colsIds.contains(col)){
+					continue ;
 			}
             condition.append(appendWhere(null,table,attr));
         }
@@ -474,15 +480,20 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String condition = null;
 		TableDesc  table = metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls,nameConversion );
-		if(table.getMetaIdName()!=null){		
-			condition = " where 1=1";		
-			condition = condition + " and " + this.getEscapeForKeyWord()+table.getIdName()+this.getEscapeForKeyWord()+ "= "+HOLDER_START
-					+ classDesc.getIdName()
-					+ HOLDER_END;
-	
-		}else{
+		condition = " where 1=1";	
+		if(table.getIdNames().size()==0){
 			throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND,"ID NOT FOUND");
 		}
+		 List<String>  colIds = table.getIdNames();
+		 List<String> propertieIds = classDesc.getIdNames();
+		for(int i=0;i<colIds.size();i++){
+			String colId = colIds.get(i);
+			String properId = propertieIds.get(i);
+			condition = condition + " and " + this.getEscapeForKeyWord()+colId+this.getEscapeForKeyWord()+ "= "+HOLDER_START
+					+ properId
+					+ HOLDER_END;
+		}
+		
 		return condition;
 	}
 	

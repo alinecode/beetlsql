@@ -40,6 +40,9 @@ public class BeetlSQLException extends RuntimeException {
 	
 	//dao2 接口函数 参数定义错误
 	public static final int 	TAIL_CALL_ERROR  = 13;
+	
+	//dao2 复合主键，未找到相应值
+	public static final int 	ID_VALUE_ERROR  = 14;
 		
 	int code ;
 	

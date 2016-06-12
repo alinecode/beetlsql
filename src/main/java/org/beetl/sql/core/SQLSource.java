@@ -1,11 +1,14 @@
 package org.beetl.sql.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLSource {
 	
 	private String id;
 	private String template;
 	//主键名称
-	private String IdCol;
+	private List<String> idCols = new ArrayList<String>(3);
 	private int idType;
 	private int line = 0;
 	public SQLSource() {
@@ -40,12 +43,12 @@ public class SQLSource {
 		this.idType = idType;
 	}
 
-	public String getIdCol() {
-		return IdCol;
+	public List<String> getIdCol() {
+		return idCols;
 	}
 
-	public void setIdCol(String IdCol) {
-		this.IdCol = IdCol;
+	public void addIdCol(String idCol) {
+		this.idCols.add(idCol);
 	}
 
 	public String getId() {

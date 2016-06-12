@@ -7,8 +7,72 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.beetl.sql.core.annotatoin.Tail;
 
 public class BeanKit {
+	private static final Map<Class, Method> tailBeans = new ConcurrentHashMap<Class, Method>();
+	private static  Method NULL = null;
+	static{
+		try {
+			NULL = Object.class.getMethod("toString", new Class[]{});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	public static Method getTailMethod(Class type){
+		//如果实现了注解也行@Tail也行
+		Method m  = tailBeans.get(type);
+		if(m!=null){
+			if(m==NULL){
+				return null;
+			}else{
+				return m;
+			}
+			
+		}else{
+			Tail an = getTailAnnotation(type);
+			if(an==null){
+				tailBeans.put(type, NULL);
+				return null;
+			}
+			else{
+				 m = BeanKit.tailMethod(type, an.set());
+				if(m==null){
+					tailBeans.put(type, NULL);
+					return null;
+				}else{
+					tailBeans.put(type, m);
+					return m;
+				}
+				
+			}
+		}
+		
+		
+	}
+	
+	private static Tail getTailAnnotation(Class type){
+		if(Object.class.isAssignableFrom(type)){
+			Tail an = (Tail)type.getAnnotation(Tail.class);
+			if(an!=null){
+				return an;
+			}else{
+				Class parent = type.getSuperclass();
+				if(parent==null){
+					return null;
+				}
+				return getTailAnnotation(parent);
+			}
+		}else{
+			return null;
+		}
+		
+	}
 	public static PropertyDescriptor[] propertyDescriptors(Class<?> c) throws IntrospectionException  {
 
 		BeanInfo beanInfo = null;

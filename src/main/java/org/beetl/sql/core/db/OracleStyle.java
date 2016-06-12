@@ -2,6 +2,7 @@ package org.beetl.sql.core.db;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,18 +75,18 @@ public class OracleStyle extends AbstractDBStyle {
 		int idType = DBStyle.ID_ASSIGN ;
 		SQLSource source = new SQLSource();
 		Set<String> cols = classDesc.getInCols();
+		List<String> idCols = classDesc.getIdNames();
 		for(String col:cols){
-			if(col.equals(classDesc.getIdName())){				
-				idType = this.getIdType(classDesc.getIdMethod());
+			if(idCols.contains(col)){					
+				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType(classDesc.getIdMethods().get(col));
+				
 				if(idType==DBStyle.ID_AUTO){
 					continue ; //忽略这个字段
 				}else if(idType==DBStyle.ID_SEQ){
 					
 					colSql.append(appendInsertColumn(cls,table, col));
-//					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
-					SeqID seqId = classDesc.getIdMethod().getAnnotation(SeqID.class);
-				
-					source.setIdCol(table.getIdName());
+					SeqID seqId = classDesc.getIdMethods().get(col).getAnnotation(SeqID.class);
+					source.addIdCol(col);
 					
 					valSql.append( seqId.name()+".nextval,");
 					continue;
