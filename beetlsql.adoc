@@ -484,6 +484,22 @@ PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id des
 
 * 更新 public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
 
+* 直接使用Connection public <T> T executeOnConnection(OnConnection<T> call),使用者需要实现onConnection方法的call方法，如调用存储过程
+
+[source,java]
+----------------------------
+	
+	String md5 = sql.executeOnConnection(new OnConnection<String>(){
+
+			@Override
+			public String call(Connection conn) throws SQLException {
+				CallableStatement cstmt = conn.prepareCall("{ ? = call md5( ? ) }");
+				// 其他代码
+				return true;
+			}
+			
+		});
+----------------------------
 
 
 
@@ -535,6 +551,48 @@ sql.genAll("com.test", new GenConfig(), new GenFilter(){
 **********************************************************************
 必须当心覆盖你掉你原来写好的类和方法，不要轻易使用genAll，如果你用了，最好立刻将其注释掉，或者在genFilter写一些逻辑保证不会生成所有的代码好sql模板文件
 **********************************************************************
+
+==== 复合主键
+
+beetlsql 支持复合主键，无需像其他dao工具那样创建一个特别的主键对象，主键对象就是实体对象本生
+
+
+[source,sql]
+----------------------------
+CREATE TABLE `party` (
+  `id1` int(11) NOT NULL,
+  `id2` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id1`,`id2`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+	
+----------------------------
+
+Party代码如下
+[source,java,numbered]
+----------------------------
+public class Party  {
+	private Integer id1 ;
+	private Integer id2 ;
+	private String name ;
+	//忽略其他 getter setter方法
+}
+	
+----------------------------
+
+根据主键获取Party
+[source,java,numbered]
+----------------------------
+Party key = new Party();
+key.setId1(1);
+key.setId2(2);
+Party party = sql.unique(Party.class, key);
+----------------------------
+
+		
+
+
 
 ==  使用Mapper
 
@@ -1062,6 +1120,9 @@ selectUser
 select * from user #use("condition")#
 ----------------------------
 	
+# globalUse 参数是其他文件的globalUse，如#use("share.accessControl")#,将访问share.md(sql)文件的accessControl片段
+
+
 		
 * page 用于pagequery,但beetlsql 使用pagequery查询,会将sql模板翻译成带有count(1),和列表名的俩个sql语句,因此必须使用page函数或者pageTag标签
 

@@ -45,7 +45,7 @@ public class ListMapTest {
 		QueryMapping query = QueryMapping.getInstance();
 		
 //		List<Map<String ,Object>> list1 = query.query(rs, new MapListHandler());//断点查看
-		List<Map<String ,Object>> list2 = query.query(rs, new MapListHandler(new UnderlinedNameConversion(),manager));//断点查看
+		List<Map<String ,Object>> list2 = query.query(rs, new MapListHandler(new UnderlinedNameConversion(),manager,Map.class));//断点查看
 		
 		//测试忽略key的大小写
 		System.out.println(list2.get(0).get("tname"));

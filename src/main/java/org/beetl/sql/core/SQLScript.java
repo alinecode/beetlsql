@@ -320,8 +320,8 @@ public class SQLScript {
 			}
 			
 			
-		} else if (clazz.isAssignableFrom(Map.class)) { // 如果是Map的子类或者父类，返回List<Map<String,Object>>
-			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm));
+		} else if (Map.class.isAssignableFrom(clazz)) { // 如果是Map的子类或者父类，返回List<Map<String,Object>>
+			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm,clazz));
 		} else {
 			resultList = queryMapping.query(rs, new BeanListHandler<T>(clazz, this.sm.getNc(), this.sm));
 		}
@@ -618,7 +618,7 @@ public class SQLScript {
 	}
 	
 	
-	private void clean(boolean isUpdate, Connection conn, PreparedStatement ps, ResultSet rs) {
+	protected void clean(boolean isUpdate, Connection conn, PreparedStatement ps, ResultSet rs) {
 		try {
 			if (rs != null)
 				rs.close();
@@ -643,8 +643,12 @@ public class SQLScript {
 		}
 	}
 
-	private void clean(boolean isUpdate, Connection conn, PreparedStatement ps) {
+	protected void clean(boolean isUpdate, Connection conn, PreparedStatement ps) {
 		this.clean(isUpdate, conn, ps, null);
+	}
+	
+	protected void clean( Connection conn) {
+		this.clean(true, conn, null, null);
 	}
 
 	private InterceptorContext callInterceptorAsBefore(String sqlId, String sql, boolean isUpdate, List<Object> paras) {
@@ -699,7 +703,7 @@ public class SQLScript {
 					Object os = m.invoke(obj, new Object[0]);
 					paras.put(idCol, os);
 				}catch(Exception ex){
-					throw new BeetlSQLException(BeetlSQLException.ID_VALUE_ERROR,ex);
+					throw new BeetlSQLException(BeetlSQLException.ID_VALUE_ERROR,"无法设置复合主键:"+idCol,ex);
 				}
 			}
 		}

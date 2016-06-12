@@ -24,8 +24,7 @@ insertTestUser
 
 findById
 ===
-select * from User where id = #id#
-
+select * from User where #globalUse("share.id")#
 getCount
 ===
 select count(*) from User 
