@@ -36,6 +36,8 @@ public class ClasspathLoader implements SQLLoader {
 	
 	
 	private boolean autoCheck = true;
+	
+	private String charset = null;
 
 	public  ClasspathLoader() {
 		this("/sql");
@@ -176,7 +178,8 @@ public class ClasspathLoader implements SQLLoader {
         LinkedList<String> list = new LinkedList<String>();
         BufferedReader bf = null;
         try {
-            bf = new BufferedReader(new InputStreamReader(ins));
+       
+            bf = new BufferedReader(new InputStreamReader(ins,charset));
             String temp = null;
             StringBuilder sql = null;
             String key = null;
@@ -320,6 +323,16 @@ public class ClasspathLoader implements SQLLoader {
 	}
 	public void setDbs(DBStyle dbs) {
 		this.dbs = dbs;
+	}
+	@Override
+	public String getCharset() {
+		
+		return charset;
+	}
+	@Override
+	public void setCharset(String charset) {
+		this.charset = charset;
+		
 	}
 	
 }
