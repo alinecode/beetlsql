@@ -472,8 +472,15 @@ public class SQLScript {
 	}
 
 	
-	
 	public <T> T unique(Class<T> clazz, RowMapper<T> mapper, Object objId) {
+		return single(clazz,mapper,objId,true);
+	}
+	
+	public <T> T single(Class<T> clazz, RowMapper<T> mapper, Object objId) {
+		return single(clazz,mapper,objId,false);
+	}
+	
+	public <T> T single(Class<T> clazz, RowMapper<T> mapper, Object objId,boolean throwException) {
 
 		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
 		TableDesc table = mm.getTable(this.sm.getNc().getTableName(clazz));
@@ -496,9 +503,10 @@ public class SQLScript {
 			this.setPreparedStatementPara(ps, objs);
 			rs = ps.executeQuery();
 			try{
-				model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm,true));
+				model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm,throwException));
 				
 			}catch(BeetlSQLException ex){
+				
 				if(ex.code==BeetlSQLException.UNIQUE_EXCEPT_ERROR){
 					throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR,"unique查询"+table.getMetaName()+",但数据库未找到结果集:主键是"+objId);
 				}else{

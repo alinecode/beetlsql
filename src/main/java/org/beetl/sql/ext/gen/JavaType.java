@@ -55,6 +55,7 @@ public class JavaType {
 		mapping.put(Types.LONGVARBINARY, "byte[]");
 		mapping.put(Types.LONGVARCHAR, "String");
 		mapping.put(Types.NCHAR, "String");
+		mapping.put(Types.NVARCHAR, "String");
 		mapping.put(Types.NCLOB, "String");
 		mapping.put(Types.NULL, UNKNOW);
 		//根据长度制定Integer，或者Double

@@ -27,13 +27,13 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
-		List<Map> ret =sql.select("user.findById", HashMap.class, Params.ins().add("id", 2).map());
-		System.out.println(ret.get(0));
+//		List<Map> ret =sql.select("user.findById", HashMap.class, Params.ins().add("id", 2).map());
+//		System.out.println(ret.get(0));
 		
-		//		Party key = new Party();
-//		key.setId1(1);
-//		key.setId2(2);
-//		Party party = sql.unique(Party.class, 1);
+		Party key = new Party();
+		key.setId1(2);
+		key.setId2(2);
+		Party party = sql.single(Party.class, key);
 //		party.setName("anc");
 //		sql.deleteById(Party.class, key);
 		
