@@ -42,6 +42,11 @@ public interface SQLLoader {
 	 * @param check
 	 */
 	public void setAutoCheck(boolean check);
+	
+	
+	public String getCharset();
+	
+	public void setCharset(String charset);
 
 	
 }

@@ -2,6 +2,7 @@ package org.beetl.sql.core.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import org.beetl.core.Configuration;
@@ -24,6 +25,12 @@ public class Beetl {
 			Configuration cfg =new Configuration(ps);			
 			gt = new GroupTemplate(resourceLoader, cfg);		
 			loader.setAutoCheck(!product);
+			String charset = ps.getProperty("CHARSET");
+			if(charset==null||charset.length()==0){
+				charset = Charset.defaultCharset().name();
+			}
+			loader.setCharset(charset);
+			
 			
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);

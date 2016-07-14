@@ -35,6 +35,7 @@ public class QuickTest {
 		dao.insert(user, true);
 		System.out.println(user.getId());
 		
+
 		
 
 	}

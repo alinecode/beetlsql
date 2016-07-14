@@ -497,7 +497,7 @@ public class SQLManager {
 	}
 	
 	/**
-	 * 根据主键查询
+	 * 根据主键查询,获取唯一记录，如果纪录不存在，将会抛出异常
 	 * @param clazz
 	 * @param mapper 自定义结果映射方式
 	 * @param pk 主键
@@ -506,6 +506,17 @@ public class SQLManager {
 	public <T> T unique(Class<T> clazz, RowMapper<T> mapper,Object pk) {
 		SQLScript script = getScript(clazz, SELECT_BY_ID);
 		return script.unique(clazz, mapper,pk);
+	}
+	
+	/**
+	 * 
+	 * @param clazz
+	 * @param pk
+	 * @return 如果没有找到，返回null
+	 */
+	public <T> T single(Class<T> clazz,Object pk) {
+		SQLScript script = getScript(clazz, SELECT_BY_ID);
+		return script.single(clazz, null,pk);
 	}
 	
 	
