@@ -4,10 +4,11 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.2.0 (174K), 另外还需要beetl 包
+* 当前版本 2.4.0 (190K), 另外还需要beetl 包
 * 文档地址: http://ibeetl.com/guide/beetlsql.html 或者 https://git.oschina.net/xiandafu/beetlsql/attach_files 下载pdf 
  
 # beetlsql 特点
+
 
 
 BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用

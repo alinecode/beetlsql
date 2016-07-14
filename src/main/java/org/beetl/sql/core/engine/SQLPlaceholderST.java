@@ -27,6 +27,7 @@ public class SQLPlaceholderST extends Statement
 	static{
 		textFunList.add("text");
 		textFunList.add("use");
+		textFunList.add("globalUse");
 		textFunList.add("join");
 		textFunList.add("page");
 		

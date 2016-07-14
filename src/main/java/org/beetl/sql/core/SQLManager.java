@@ -18,6 +18,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +28,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.beetl.core.Configuration;
-import org.beetl.core.exception.BeetlException;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -1068,6 +1069,31 @@ public class SQLManager {
 		SQLSource source = new SQLSource(p.getSql(),p.getSql());
 		SQLScript script = new SQLScript(source,this);
 		return script.sqlReadyExecuteUpdate( p);
+	}
+	
+	public <T> T executeOnConnection(OnConnection<T> onConnection){
+		Connection conn = null;
+		try {
+			conn = onConnection.getConn(getDs());
+			return onConnection.call(conn);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		} finally {
+			//非事务环境提交
+			if (!getDs().isTransaction()) {
+				try {
+						if (!conn.getAutoCommit()){
+							conn.commit();
+						}
+						conn.close();
+					
+				} catch (SQLException e) {
+					throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+				}
+
+			}
+		}
 	}
 	
 	

@@ -12,21 +12,23 @@ import org.beetl.sql.core.mapping.RowProcessor;
 
 /**  
  * 将rs处理为List&lt;Map&lt;String ,Object&gt;&gt;  
- * @author: suxj  
+ * @author: suxj  ,xiandafu
  */
 public class MapListHandler implements ResultSetHandler<java.util.List<java.util.Map<String, Object>>> {
 	
 	private final RowProcessor convert;
+	private  Class clazz;
 	
 	
-	
-	public MapListHandler(NameConversion nc,SQLManager sm) {
+	public MapListHandler(NameConversion nc,SQLManager sm,Class clazz) {
         this(new BasicRowProcessor(nc,sm));
+        this.clazz = clazz;
     }
 	
 	protected  MapListHandler(RowProcessor convert) {
         super();
         this.convert = convert;
+        clazz = Map.class;
     }
 
 	@Override
@@ -34,7 +36,7 @@ public class MapListHandler implements ResultSetHandler<java.util.List<java.util
 		
 		java.util.List<java.util.Map<String, Object>> rows = new java.util.ArrayList<java.util.Map<String, Object>>();
         while (rs.next()) {
-            rows.add(this.convert.toMap(rs,Map.class));
+            rows.add(this.convert.toMap(rs,clazz));
         }
         return rows;
         

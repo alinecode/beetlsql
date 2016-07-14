@@ -7,21 +7,15 @@ import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLResult;
-/**
- * 用于全局#gloabUse("other.xxxx")#
- * @author xiandafu
- *
- */
-public class UseFunction implements Function {
 
+public class GlobalUseFunction implements Function {
 	@Override
 	public Object call(Object[] paras, Context ctx) {
 		String id = (String)paras[0];
 		SQLManager sm = (SQLManager) ctx.getGlobal("_manager");
 		// 保留，免得被覆盖
 		List list = (List)ctx.getGlobal("_paras");
-		String file = this.getParentId(ctx);
-		SQLResult result = sm.getSQLResult(file+"."+id, ctx.globalVar,(String)ctx.getGlobal("_id"));
+		SQLResult result = sm.getSQLResult(id, ctx.globalVar);
 		list.addAll(result.jdbcPara);
 		ctx.set("_paras", list);
 		try {
@@ -31,13 +25,6 @@ public class UseFunction implements Function {
 		}
 		return null;
 	}
-	
-	private String getParentId( Context ctx){
-		String id = (String)ctx.getGlobal("_id");
-		int index = id.lastIndexOf(".");
-		String file = id.substring(0, index);
-		return file;
-	}	
 	
 
 }

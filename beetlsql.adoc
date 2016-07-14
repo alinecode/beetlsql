@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.3.7 (190K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.4.0 (190K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
 
 
@@ -53,13 +53,13 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetl</artifactId>
-	<version>2.2.14</version>
+	<version>2.4.2</version>
 </dependency>
 
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.3.0</version>
+	<version>2.4.0</version>
 </dependency>
 ----------------------------
 
@@ -484,6 +484,22 @@ PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id des
 
 * 更新 public int executeUpdate(SQLReady p)  SQLReady包含了需要执行的sql语句和参数，返回更新结果
 
+* 直接使用Connection public <T> T executeOnConnection(OnConnection<T> call),使用者需要实现onConnection方法的call方法，如调用存储过程
+
+[source,java]
+----------------------------
+	
+	String md5 = sql.executeOnConnection(new OnConnection<String>(){
+
+			@Override
+			public String call(Connection conn) throws SQLException {
+				CallableStatement cstmt = conn.prepareCall("{ ? = call md5( ? ) }");
+				// 其他代码
+				return true;
+			}
+			
+		});
+----------------------------
 
 
 
@@ -536,6 +552,7 @@ sql.genAll("com.test", new GenConfig(), new GenFilter(){
 必须当心覆盖你掉你原来写好的类和方法，不要轻易使用genAll，如果你用了，最好立刻将其注释掉，或者在genFilter写一些逻辑保证不会生成所有的代码好sql模板文件
 **********************************************************************
 
+
 ==  命名转化，表和列名映射
 
 Beetlsql 默认提供了三种列明和属性名的映射类。
@@ -578,6 +595,47 @@ public class DefaultNameConversion extends NameConversion {
 
 
 如果有特殊的表并不符合DefaultNameConversion实现方式，你可以重新实现上面的三个方法
+
+== 复合主键
+
+beetlsql 支持复合主键，无需像其他dao工具那样创建一个特别的主键对象，主键对象就是实体对象本生
+
+
+[source,sql]
+----------------------------
+CREATE TABLE `party` (
+  `id1` int(11) NOT NULL,
+  `id2` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id1`,`id2`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+	
+----------------------------
+
+Party代码如下
+[source,java,numbered]
+----------------------------
+public class Party  {
+	private Integer id1 ;
+	private Integer id2 ;
+	private String name ;
+	//忽略其他 getter setter方法
+}
+	
+----------------------------
+
+根据主键获取Party
+[source,java,numbered]
+----------------------------
+Party key = new Party();
+key.setId1(1);
+key.setId2(2);
+Party party = sql.unique(Party.class, key);
+----------------------------
+
+		
+
 
 
 ==  使用Mapper
@@ -753,6 +811,11 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 * Pojo, 也就是面向对象Java Objec。Beetlsql操作将选取Pojoe属性和sql列的交集。额外属性和额外列将忽略. 
 
 * Map/List, 对于一些敏捷开发，可以直接使用Map/List 作为输入输出参数
+
+[source,java]
+----------------------------
+List<Map<String,Object>> list = sqlManager.select("user.find",Map.class,paras)
+----------------------------
 
 * 混合模型，推荐使用混合模型。兼具灵活性和更好的维护性。Pojo可以实现Tail（尾巴的意思)，或者继承TailBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如下一个混合模型:
 
@@ -1128,6 +1191,9 @@ selectUser
 select * from user #use("condition")#
 ----------------------------
 	
+# globalUse 参数是其他文件的globalUse，如#use("share.accessControl")#,将访问share.md(sql)文件的accessControl片段
+
+
 		
 * page 用于pagequery,但beetlsql 使用pagequery查询,会将sql模板翻译成带有count(1),和列表名的俩个sql语句,因此必须使用page函数或者pageTag标签
 
