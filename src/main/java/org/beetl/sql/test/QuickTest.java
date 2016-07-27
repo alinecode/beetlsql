@@ -26,23 +26,12 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		AppScanRecordMapper dao = sql.getMapper(AppScanRecordMapper.class);
+		AppScanRecord r = new AppScanRecord();
+		r.setLatitude("12");
+		dao.insert(r, true);
+		System.out.println(r.getId());
 		
-//		List<Map> ret =sql.select("user.findById", HashMap.class, Params.ins().add("id", 2).map());
-//		System.out.println(ret.get(0));
-		
-		Party key = new Party();
-		key.setId1(2);
-		key.setId2(2);
-		Party party = sql.single(Party.class, key);
-//		party.setName("anc");
-//		sql.deleteById(Party.class, key);
-		
-//		Party newParty = new Party();
-//		newParty.setId1(1);
-//		newParty.setId2(2);
-//		newParty.setName("gf");
-//		sql.template(newParty);
-//		sql.updateTemplateById(newParty);
 //		boolean sucess = sql.executeOnConnection(new OnConnection<Boolean>(){
 //
 //			@Override
