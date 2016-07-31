@@ -116,7 +116,7 @@ public class DebugInterceptor implements Interceptor {
 			}else if(obj instanceof String){
 				String str = (String)obj;
 				if(str.length()>20){
-					data.add(str.substring(0, 20));
+					data.add(str.substring(0, 20)+"...("+str.length()+")");
 				}else{
 					data.add(str);
 				}

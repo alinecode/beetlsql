@@ -1,5 +1,7 @@
 package org.beetl.sql.ext.spring4;
 
+import static org.springframework.util.Assert.notNull;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -11,8 +13,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
-
-import static org.springframework.util.Assert.notNull;
 
 /**
  * 扫描配置，根据配置的信息进行扫描

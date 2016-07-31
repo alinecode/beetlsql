@@ -552,7 +552,51 @@ sql.genAll("com.test", new GenConfig(), new GenFilter(){
 必须当心覆盖你掉你原来写好的类和方法，不要轻易使用genAll，如果你用了，最好立刻将其注释掉，或者在genFilter写一些逻辑保证不会生成所有的代码好sql模板文件
 **********************************************************************
 
-==== 复合主键
+
+==  命名转化，表和列名映射
+
+Beetlsql 默认提供了三种列明和属性名的映射类。
+
+* DefaultNameConversion   数据库名和java属性名保持一致，如数据库表User，对应Java类也是User，数据库列是sysytemId,则java属性也是systemId，反之亦然
+
+* UnderlinedNameConversion 将数据库下划线去掉，首字母大写，如数据库是SYS_USER（oralce数据库的表和属性总是大写的), 则会改成SysUser
+
+* JPANameConversion 支持JPA方式的映射，适合不能用确定的映射关系
+
+* 自定义命名转化，如果以上3个都不合适,可以自己实现一个命名转化。实现DefaultNameConversion实现方式
+
+[source,java,numbered]
+----------------------------
+public class DefaultNameConversion extends NameConversion {
+
+	@Override
+	public String getTableName(Class<?> c) {
+		Table table = (Table)c.getAnnotation(Table.class);
+		if(table!=null){
+			return table.name();
+		}
+		return c.getSimpleName();
+	}
+
+	@Override
+	public String getColName(Class<?> c, String attrName) {
+		return attrName;
+	}
+
+	@Override
+	public String getPropertyName(Class<?> c, String colName) {
+		return colName;
+	}
+
+}
+
+	
+----------------------------
+
+
+如果有特殊的表并不符合DefaultNameConversion实现方式，你可以重新实现上面的三个方法
+
+== 复合主键
 
 beetlsql 支持复合主键，无需像其他dao工具那样创建一个特别的主键对象，主键对象就是实体对象本生
 
@@ -716,6 +760,7 @@ public class QueryUser ..
 * @AutoID,作用于getter方法，告诉beetlsql，这是自增主键
 * @AssignID，作用于getter方法，告诉beetlsql，这是主键，且由代码设定主键
 * @SeqID(name="xx_seq"，作用于getter方法，告诉beetlsql，这是序列主键。
+* @Tail  作用于类上，表示该对象是混合模型，参考下一章混合模型
 
 对于属性名为id的自增主键，不需要加annotation，beetlsql默认就是@AutoID
 
@@ -767,6 +812,11 @@ BeetlSQL是一个全功能DAO工具，支持的模型也很全面，包括
 
 * Map/List, 对于一些敏捷开发，可以直接使用Map/List 作为输入输出参数
 
+[source,java]
+----------------------------
+List<Map<String,Object>> list = sqlManager.select("user.find",Map.class,paras)
+----------------------------
+
 * 混合模型，推荐使用混合模型。兼具灵活性和更好的维护性。Pojo可以实现Tail（尾巴的意思)，或者继承TailBean，这样查询出的ResultSet 除了按照pojo进行映射外，无法映射的值将按照列表/值保存。如下一个混合模型:
 
 [source,java]
@@ -790,6 +840,8 @@ selectUser
 select u.*,r.name r_name from user u left join role r on u.roleId=r.id .....
 
 ----------------------------
+
+
 	
 执行查询的时候
 
@@ -804,6 +856,25 @@ for(User user:list){
 ----------------------------
 	
 程序可以通过get方法获取到未被映射到pojo的值，也可以在模板里直接 ${user.rName}  显示（对于大多数模板引擎都支持）
+
+
+另外一种更自由的实现混合模型的方法是在目标Pojo上采用注解@Tail，如果注解不带参数，则默认会调用set(String,Object) 方法来放置额外的查询属性，否则，依据注解的set参数来确定调用方法
+
+
+[source,java]
+----------------------------
+@Tail(set="addValue")
+public class User  {
+	private Integer id ;
+	private Integer age ;
+	public User addValue(String str,Object ok){
+		ext.put(str, ok);
+		return this;
+	}
+
+----------------------------
+
+
 
 == Markdown方式管理
 
@@ -1530,7 +1601,7 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 		</bean>
 	</property>
 	 <property name="nc">
-        <bean class="org.beetl.sql.core.UpperCaseUnderlinedNameConversion"/>
+        <bean class="org.beetl.sql.core.UnderlinedNameConversion"/>
     </property>
     <property name="interceptors">
         <list>

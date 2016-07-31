@@ -305,18 +305,16 @@ public class MethodDesc {
 	}
 
 	private int getTypeBySql(String sql) {
-		sql = sql.trim();
-		int index = sql.indexOf(' ');
-		if(index==-1) return  -1;
-		String sqlType = sql.substring(0,index);
 		
-		if (sqlType.equalsIgnoreCase("select")) {
+		String sqlType = getFirstToken(sql);
+		
+		if (sqlType.equals("select")) {
 			return 2;
-		} else if (sqlType.equalsIgnoreCase("insert")) {
+		} else if (sqlType.equals("insert")) {
 			return 0;
-		} else if (sqlType.equalsIgnoreCase("delete")) {
+		} else if (sqlType.equals("delete")) {
 			return 4;
-		} else if (sqlType.equalsIgnoreCase("update")) {
+		} else if (sqlType.equals("update")) {
 			return 4;
 		} else if(sqlType.equals("create")){
 			return 4;
@@ -327,6 +325,33 @@ public class MethodDesc {
 			return -1; //unknow
 		}
 	}
+	
+	private static String getFirstToken(String sql){
+		boolean start = false;
+		int startIndex = 0;
+		for(int i=0;i<sql.length();i++){
+			char c = sql.charAt(i);
+			if(!start){
+				if(!isSpecialChar(c)){
+					start = true;
+					startIndex = i;
+					
+				}
+				continue;
+			}
+			
+			if(isSpecialChar(c)){
+				return sql.substring(startIndex,i).toLowerCase();
+			}
+			
+		}
+		return "";
+	}
+	
+	private static boolean isSpecialChar(char c){
+		return c==' '||c=='\t'||c=='\r'||c=='\n';
+	}
+	
 	
 	private int getTypeBySqlId(SQLManager sm, String sqlId) {
 		String sql = null;

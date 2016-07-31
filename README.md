@@ -10,6 +10,7 @@
 # beetlsql 特点
 
 
+
 BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优点功能，适用于承认以SQL为中心，同时又需求工具能自动能生成大量常用的SQL的应用
 
 * 开发效率
