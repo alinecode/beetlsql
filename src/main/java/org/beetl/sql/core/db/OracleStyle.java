@@ -78,14 +78,14 @@ public class OracleStyle extends AbstractDBStyle {
 		List<String> idCols = classDesc.getIdNames();
 		for(String col:cols){
 			if(idCols.contains(col)){					
-				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType(classDesc.getIdMethods().get(col));
+				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType((Method)classDesc.getIdMethods().get(col));
 				
 				if(idType==DBStyle.ID_AUTO){
 					continue ; //忽略这个字段
 				}else if(idType==DBStyle.ID_SEQ){
 					
 					colSql.append(appendInsertColumn(cls,table, col));
-					SeqID seqId = classDesc.getIdMethods().get(col).getAnnotation(SeqID.class);
+					SeqID seqId = ((Method)classDesc.getIdMethods().get(col)).getAnnotation(SeqID.class);
 					source.addIdCol(col);
 					
 					valSql.append( seqId.name()+".nextval,");

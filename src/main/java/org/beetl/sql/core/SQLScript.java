@@ -508,7 +508,7 @@ public class SQLScript {
 			}catch(BeetlSQLException ex){
 				
 				if(ex.code==BeetlSQLException.UNIQUE_EXCEPT_ERROR){
-					throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR,"unique查询"+table.getMetaName()+",但数据库未找到结果集:主键是"+objId);
+					throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR,"unique查询"+table.getName()+",但数据库未找到结果集:主键是"+objId);
 				}else{
 					throw ex;
 				}
@@ -704,9 +704,9 @@ public class SQLScript {
 			paras.put(idCols.get(0), obj);
 		}else{
 			//来自对象id的属性.
-			Map<String,Method> map = desc.getIdMethods();
+			Map<String,Object> map = desc.getIdMethods();
 			for(String idCol:idCols){
-				Method m =  map.get(idCol);
+				Method m =  (Method)map.get(idCol);
 				try{
 					Object os = m.invoke(obj, new Object[0]);
 					paras.put(idCol, os);

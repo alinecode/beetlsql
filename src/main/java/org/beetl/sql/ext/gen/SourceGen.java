@@ -68,14 +68,14 @@ public class SourceGen {
 	 */
 	public void gen() throws Exception{
 		final TableDesc  tableDesc = mm.getTable(table);
-		String className = sm.getNc().getClassName(tableDesc.getMetaName());
+		String className = sm.getNc().getClassName(tableDesc.getName());
 		String ext = null;
 		
 		if(config.getBaseClass()!=null){
 			ext = config.getBaseClass();
 		}
 		
-		Set<String> cols = tableDesc.getMetaCols();
+		Set<String> cols = tableDesc.getCols();
 		List<Map> attrs = new ArrayList<Map>();
 		for(String col:cols){
 			
@@ -117,7 +117,7 @@ public class SourceGen {
 			}
 			
 			private int score(ColDesc desc){
-				if(tableDesc.getMetaIdNames().contains(desc.colName)){
+				if(tableDesc.getIdNames().contains(desc.colName)){
 					return 99;
 				}else if(JavaType.isInteger(desc.sqlType)){
 					return 9;

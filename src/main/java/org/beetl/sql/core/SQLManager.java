@@ -35,6 +35,7 @@ import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapping.handler.ScalarHandler;
@@ -709,7 +710,7 @@ public class SQLManager {
 			String table = this.nc.getTableName(target);
 			ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
 			
-			Method getterMethod =  desc.getIdMethods().get(desc.getIdNames().get(0));
+			Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdNames().get(0));
 			
 			String name = getterMethod.getName();
 			String setterName = name.replaceFirst("get", "set");
@@ -785,11 +786,11 @@ public class SQLManager {
 		if(holder!=null){
 			String tableName = this.nc.getTableName(paras.getClass());
 			TableDesc  table = this.metaDataManager.getTable(tableName);
-			List<String> idCols = table.getMetaIdNames();
+			Set<String> idCols = table.getIdNames();
 			if(idCols.size()!=1){
 				throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR,"有多个主键，不能自动设置");
 			}
-			return script.insertBySqlId(map, holder,idCols.get(0));
+			return script.insertBySqlId(map, holder,((CaseInsensitiveOrderSet)idCols).getFirst());
 		}else{
 			return script.insertBySqlId(map,null,null);
 		}
@@ -810,11 +811,11 @@ public class SQLManager {
 			String tableName = this.nc.getTableName(clazz);
 			TableDesc  table = this.metaDataManager.getTable(tableName);
 			ClassDesc  clsDesc = table.getClassDesc(this.nc);
-			List<String> idCols = table.getMetaIdNames();
+			Set<String> idCols = table.getIdNames();
 			if(idCols.size()!=1){
 				throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR,"有多个主键，不能自动设置");
 			}
-			return script.insertBySqlId(paras, holder,idCols.get(0));
+			return script.insertBySqlId(paras, holder,((CaseInsensitiveOrderSet)idCols).getFirst());
 		}else{
 			return script.insertBySqlId(paras, holder,null);
 
@@ -1227,7 +1228,7 @@ public class SQLManager {
 		Set<String> tables = this.metaDataManager.allTable();
 		
 		for(String table:tables){
-			table = metaDataManager.getTable(table).getMetaName();
+			table = metaDataManager.getTable(table).getName();
 			if(filter==null||filter.accept(table)){
 				try {
 					//生成代码

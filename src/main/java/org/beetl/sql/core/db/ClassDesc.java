@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.ext.gen.JavaType;
 
 public class ClassDesc {
@@ -20,9 +22,9 @@ public class ClassDesc {
 	NameConversion nc;
 	Set<String> propertys = new LinkedHashSet<String>();
 	Set<String> dateTypes =  new LinkedHashSet<String>();;
-	Set<String> cols =  new LinkedHashSet<String>();;
+	Set<String> cols =  new CaseInsensitiveOrderSet<String>();
 	List<String> idProperties =  new ArrayList<String>(3);
-	Map<String,Method> idMethods = new HashMap<String,Method>(3);
+	Map<String,Object> idMethods = new CaseInsensitiveHashMap<String,Object>();
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		PropertyDescriptor[] ps;
 		try {
@@ -30,9 +32,8 @@ public class ClassDesc {
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
-		List<String> ids = table.getIdNames();
-		idProperties =  new ArrayList<String>(ids.size());
-		idMethods = new HashMap<String,Method>(ids.size());
+		Set<String> ids = table.getIdNames();
+
 		
 		for(PropertyDescriptor p:ps){
 			if(p.getReadMethod()!=null&&p.getWriteMethod()!=null){
@@ -45,11 +46,9 @@ public class ClassDesc {
 					
 					cols.add(property);
 				}
-				String tempId = col.toUpperCase();
-				if(ids.contains(tempId)){
-					//保持与table顺序一致
-					int index = ids.indexOf(tempId);
-					idProperties.add(index,col);
+				if(ids.contains(col)){
+					
+					idProperties.add(col);
 					idMethods.put(col,readMethod);
 				}
 				
@@ -73,7 +72,7 @@ public class ClassDesc {
 	public ClassDesc(TableDesc table,NameConversion nc){
 		this.table = table ;
 		this.nc = nc ;
-		for(String colName:table.getMetaCols()){
+		for(String colName:table.getCols()){
 			String prop = nc.getPropertyName(colName);
 			this.propertys.add(prop);   
 			ColDesc  colDes = table.getColDesc(colName);
@@ -103,7 +102,7 @@ public class ClassDesc {
 	public  Set<String>  getInCols(){
 		return this.cols;
 	}
-	public Map<String,Method> getIdMethods() {
+	public Map<String,Object> getIdMethods() {
 		return this.idMethods;
 	}
 	

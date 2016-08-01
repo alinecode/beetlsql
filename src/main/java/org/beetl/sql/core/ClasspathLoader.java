@@ -299,9 +299,25 @@ public class ClasspathLoader implements SQLLoader {
     }
 
 	private InputStream getFile(String filePath, String id){
-		InputStream is = this.getClass().getResourceAsStream(filePath);
-		return is;
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		InputStream is  = null;
+		if(loader!=null){
+			is = loader.getResourceAsStream(filePath);
+			if(is!=null){
+				return is;
+			}else{
+				is = this.getClass().getResourceAsStream(filePath);
+				return is;
+			}
+		}else{
+			is = this.getClass().getResourceAsStream(filePath);
+			return is;
+		}
+		
+		
 	}
+	
+	
 	
 	@Override
 	public boolean isAutoCheck() {

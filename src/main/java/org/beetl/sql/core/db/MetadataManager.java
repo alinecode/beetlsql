@@ -6,19 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.SQLManager;
-
-import com.alibaba.druid.stat.TableStat.Name;
+import org.beetl.sql.core.kit.ThreadSafeCaseInsensitiveHashMap;
 
 
 public class MetadataManager {
 
 	private ConnectionSource ds = null;
-	Map<String,TableDesc> map = null;
+	ThreadSafeCaseInsensitiveHashMap map = null;
 	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
 	SQLManager sm = null;
 	String defaultSchema;
@@ -76,15 +74,14 @@ public class MetadataManager {
 	}
 	
 	private TableDesc getTableFromMap(String tableName){
-		String name = tableName.toUpperCase();
 		
 		if(map==null){
 			synchronized(this){
-				if(map!=null) return map.get(name);
+				if(map!=null) return (TableDesc)map.get(tableName);
 				this.initMetadata();
 			}
 		}
-		TableDesc desc =  map.get(name);
+		TableDesc desc = (TableDesc) map.get(tableName);
 		if(desc==NOT_EXIST){
 			return null;
 		}else if(desc==null){
@@ -109,7 +106,7 @@ public class MetadataManager {
 	
 		synchronized (desc){
 			
-			if(desc.getMetaCols().size()!=0){
+			if(desc.getCols().size()!=0){
 				return desc ;
 			}
 			Connection conn=null;
@@ -119,28 +116,16 @@ public class MetadataManager {
 				String schema = this.getDbSchema(desc.getSchema());
 				conn =  ds.getMaster();
 				DatabaseMetaData dbmd =  conn.getMetaData();
-				rs = dbmd.getPrimaryKeys(catalog,schema, desc.getMetaName());
+				rs = dbmd.getPrimaryKeys(catalog,schema, desc.getName());
 				
-				int count = 0;
 				while (rs.next()) {
-					count++;
-					String metaIdName=rs.getString("COLUMN_NAME");
-					
-					desc.addIdName(metaIdName);
+					String idName=rs.getString("COLUMN_NAME");
+					desc.addIdName(idName);
 				}
 				rs.close();
 				
-//				//多个主键 下个版本再做
-//				if(count!=1){
-//					throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
-//				}
 				
-//				if(count!=1){
-//					System.out.println(desc.getMetaName()+"发现主键"+count+",期望1个");
-//					desc.setIdName(null);
-//				}
-				
-				rs = dbmd.getColumns(catalog,schema, desc.getMetaName(), "%");
+				rs = dbmd.getColumns(catalog,schema, desc.getName(), "%");
 				while(rs.next()){
 					String colName = rs.getString("COLUMN_NAME");
 					Integer sqlType = rs.getInt("DATA_TYPE");
@@ -170,7 +155,7 @@ public class MetadataManager {
 	
 	private synchronized void initMetadata(){
 		if(map!=null) return ;
-		map = new ConcurrentHashMap<String,TableDesc>();
+		map = new ThreadSafeCaseInsensitiveHashMap();
 		Connection conn=null;
 		try {
 			conn =  ds.getMaster();

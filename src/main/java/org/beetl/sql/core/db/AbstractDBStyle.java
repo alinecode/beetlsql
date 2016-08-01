@@ -1,5 +1,11 @@
 package org.beetl.sql.core.db;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.beetl.core.Configuration;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
@@ -10,11 +16,6 @@ import org.beetl.sql.core.annotatoin.DateTemplate;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.engine.Beetl;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
 /**
  * 按照mysql来的，oralce需要重载insert，page方法
  * @author xiandafu
@@ -96,14 +97,17 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableTemplate t = cls.getAnnotation(TableTemplate.class);
 		if(t!=null){
 			appendSql = t.value();
-			if((appendSql==null||appendSql.length()==0)&&table.getMetaIdNames().size()!=0){
+			if((appendSql==null||appendSql.length()==0)&&table.getIdNames().size()!=0){
 				
 				appendSql = " order by ";
-				List<String> ids = table.getMetaIdNames();
-				for(int i= 0;i<ids.size();i++){
-					appendSql+=ids.get(i)+" desc";
+				Set<String> ids = table.getIdNames();
+				int i = 0;
+				for(String  id:ids){
+					appendSql+=id+" desc,";
 					if(i!=ids.size()-1){
 						appendSql+=",";
+					}else{
+						i++;
 					}
 				}
 				
@@ -170,7 +174,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public SQLSource genSelectAll(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);		
 		TableDesc table = this.metadataManager.getTable(tableName);
-		tableName = table.getMetaName();
+		tableName = table.getName();
 		return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).toString());
 	}
 
@@ -258,14 +262,14 @@ public abstract class AbstractDBStyle implements DBStyle {
 		for(String col:cols){
 			if(idCols.contains(col)){
 				//会不会有多个主键，又包含自增的？
-				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType(classDesc.getIdMethods().get(col));
+				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType((Method)classDesc.getIdMethods().get(col));
 				if(idType==DBStyle.ID_AUTO){
 					continue ; //忽略这个字段
 				}else if(idType==DBStyle.ID_SEQ){
 					
 					colSql.append(appendInsertColumn(cls,table, col));
 //					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
-					SeqID seqId = classDesc.getIdMethods().get(col).getAnnotation(SeqID.class);
+					SeqID seqId = ((Method)classDesc.getIdMethods().get(col)).getAnnotation(SeqID.class);
 					int index = idCols.indexOf(col);
 					source.addIdCol(col);
 					valSql.append( seqId.name()+".nextval,");
@@ -310,7 +314,7 @@ public abstract class AbstractDBStyle implements DBStyle {
     public Set<String> getCols(String tableName){
         
         TableDesc table = this.metadataManager.getTable(tableName);
-        return table.getMetaCols();
+        return table.getCols();
 //        ClassDesc classDesc = table.getClassDesc(nameConversion);
 //        return classDesc.getInCols();
     }
@@ -331,7 +335,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         
        
         StringBuilder condition = new StringBuilder();
-        List<String> colsIds = table.getIdNames();
+        Set<String> colsIds = table.getIdNames();
         for(String attr:attrSet){
 	    		String col = this.nameConversion.getColName(attr).toUpperCase();
 	    		if(colsIds.contains(col)){
@@ -484,15 +488,18 @@ public abstract class AbstractDBStyle implements DBStyle {
 		if(table.getIdNames().size()==0){
 			throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND,"ID NOT FOUND");
 		}
-		 List<String>  colIds = table.getIdNames();
+		 Set<String>  colIds = table.getIdNames();
 		 List<String> propertieIds = classDesc.getIdNames();
-		for(int i=0;i<colIds.size();i++){
-			String colId = colIds.get(i);
-			String properId = propertieIds.get(i);
-			condition = condition + " and " + this.getEscapeForKeyWord()+colId+this.getEscapeForKeyWord()+ "= "+HOLDER_START
-					+ properId
-					+ HOLDER_END;
-		}
+		 Iterator<String> colIt = colIds.iterator();
+		 Iterator<String> propertieIt = propertieIds.iterator();
+		 while(colIt.hasNext()&&propertieIt.hasNext()){
+			 String colId = colIt.next();
+				String properId = propertieIt.next();
+				condition = condition + " and " + this.getEscapeForKeyWord()+colId+this.getEscapeForKeyWord()+ "= "+HOLDER_START
+						+ properId
+						+ HOLDER_END;
+		 }
+		
 		
 		return condition;
 	}
@@ -570,9 +577,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	
 	protected String getTableName(TableDesc desc ){
 		if(desc.getSchema()!=null){
-			return this.getEscapeForKeyWord()+desc.getSchema()+this.getEscapeForKeyWord()+"."+this.getEscapeForKeyWord()+desc.getMetaName()+this.getEscapeForKeyWord();
+			return this.getEscapeForKeyWord()+desc.getSchema()+this.getEscapeForKeyWord()+"."+this.getEscapeForKeyWord()+desc.getName()+this.getEscapeForKeyWord();
 		}else{
-			return this.getEscapeForKeyWord()+desc.getMetaName()+this.getEscapeForKeyWord();
+			return this.getEscapeForKeyWord()+desc.getName()+this.getEscapeForKeyWord();
 		}
 		
 	}

@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class CaseInsensitiveHashMap  extends LinkedHashMap<String, Object> {
+public class CaseInsensitiveHashMap<K,V> extends LinkedHashMap<String, Object> {
 
 	private static final long serialVersionUID = 9178606903603606031L;
 	
