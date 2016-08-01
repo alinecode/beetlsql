@@ -282,7 +282,7 @@ public class ClasspathLoader implements SQLLoader {
 		return is;
 	}
 
-    private InputStream getDBRootFile(String id){
+	protected InputStream getDBRootFile(String id){
         String modelName = id.substring(0, id.lastIndexOf(".") );
         String path  = modelName.replace('.', '/');
         String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
@@ -298,8 +298,14 @@ public class ClasspathLoader implements SQLLoader {
         return is;
     }
 
-	private InputStream getFile(String filePath, String id){
+	protected InputStream getFile(String filePath, String id){
 		InputStream is = this.getClass().getResourceAsStream(filePath);
+		if(is==null){
+			System.out.println("not found filePath");
+			
+			is = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+			
+		}
 		return is;
 	}
 	
