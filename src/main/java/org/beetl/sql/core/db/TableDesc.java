@@ -40,6 +40,16 @@ public class TableDesc{
 		return cols .contains(col);
 	}
 	
+	public String getExactCol(String col){
+		for(String str:cols){
+			if(str.equalsIgnoreCase(col)){
+				return str;
+			}
+		}
+		//不可能发生
+		throw new RuntimeException("call containCol first to ensure exist");
+	}
+	
 	public void addCols(ColDesc col){
 		colsDetail.put(col.colName, col);
 		cols.add(col.colName);

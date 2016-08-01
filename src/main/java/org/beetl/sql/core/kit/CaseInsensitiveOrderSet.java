@@ -24,7 +24,7 @@ public class CaseInsensitiveOrderSet<T> extends LinkedHashSet<String> {
 			throw new NullPointerException(value);
 		}
 		boolean b = lowerSet.add(value.toLowerCase());
-		if (!b) {
+		if (b) {
 			super.add(value);
 		}
 		

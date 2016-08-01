@@ -131,11 +131,12 @@ public abstract class AbstractDBStyle implements DBStyle {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc  table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
-		Set<String> cols = classDesc.getInCols();
-		for(String col:cols){
-//			if(col.equals(classDesc.getIdName())){
-//				continue ;
-//			}
+		Iterator<String> cols = classDesc.getInCols().iterator();
+		Iterator<String> attrs = classDesc.getAttrs().iterator();
+		
+		while(cols.hasNext()&&attrs.hasNext()){
+			String  col = cols.next();
+			String attr = attrs.next();
 			if(classDesc.isDateType(col)){
 				//todo, attr属性并不完全是这么转成getter方法的
 				String getter = "get"+col.substring(0,1).toUpperCase()+col.substring(1);
@@ -152,7 +153,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 				} 
 				
 			}else {
-				condition = condition + appendWhere(cls,table, col);
+				condition = condition + appendWhere(cls,table, col,attr);
 			}
 			
 //			condition = condition + appendWhere(cls,table, col);
@@ -184,15 +185,19 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = this.metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
 		StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
-		Set<String> cols = classDesc.getInCols();
+		Iterator<String> cols = classDesc.getInCols().iterator();
+		Iterator<String> properties = classDesc.getAttrs().iterator();
+		
 		List<String> idCols = classDesc.getIdNames();
-		for(String col:cols){
+		while(cols.hasNext()&&properties.hasNext()){
+			String col = cols.next();
+			String prop = properties.next();
 			if(idCols.contains(col)){
 				//主键不更新
 				continue ;
 			}
 			
-			sql.append(appendSetColumnAbsolute(cls,table, col));
+			sql.append(appendSetColumnAbsolute(cls,table, col,prop));
 		}
 		
 		String condition = appendIdCondition(cls);
@@ -328,20 +333,24 @@ public abstract class AbstractDBStyle implements DBStyle {
     public String genCondition(String tableName){
         TableDesc table = this.metadataManager.getTable(tableName);
         ClassDesc classDesc = table.getClassDesc(nameConversion);
-        Set<String> attrSet = classDesc.getInCols();
+        Set<String> attrSet = classDesc.getAttrs();
         if(null == attrSet || attrSet.isEmpty()){
             return "";
         }
         
+        Iterator<String> attrIt = attrSet.iterator();
+        Iterator<String> colIt = table.getCols().iterator();
+        
        
         StringBuilder condition = new StringBuilder();
         Set<String> colsIds = table.getIdNames();
-        for(String attr:attrSet){
-	    		String col = this.nameConversion.getColName(attr).toUpperCase();
+        while(colIt.hasNext()&&attrIt.hasNext()){
+	    		String col = colIt.next();
+	    		String attr = attrIt.next();
 	    		if(colsIds.contains(col)){
 					continue ;
 			}
-            condition.append(appendWhere(null,table,attr));
+            condition.append(appendWhere(null,table,col,attr));
         }
         return "1 = 1  \n" + condition.toString();
     }
@@ -376,12 +385,18 @@ public abstract class AbstractDBStyle implements DBStyle {
         TableDesc table = this.metadataManager.getTable(tableName);
         ClassDesc classDesc = table.getClassDesc( nameConversion);
         Set<String> colSet = classDesc.getInCols();
+        Set<String> properties = classDesc.getAttrs();
         if(null == colSet || colSet.isEmpty()){
             return "";
         }
         StringBuilder sql = new StringBuilder();
-        for(String col:colSet){
-            sql.append(appendSetColumnAbsolute(null,table,col));
+        Iterator<String> colIt = colSet.iterator();
+        Iterator<String> propertiesIt = properties.iterator();
+        
+        while(colIt.hasNext()&&propertiesIt.hasNext()){
+        		String col = colIt.next();
+        		String prop = propertiesIt.next();
+            sql.append(appendSetColumnAbsolute(null,table,col,prop));
         }
         return sql.deleteCharAt(sql.length()-1).toString();
     }
@@ -407,8 +422,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendSetColumnAbsolute(Class<?> c,TableDesc table,String fieldName) {
-		String colName = nameConversion.getColName(c,fieldName);
+	private String appendSetColumnAbsolute(Class<?> c,TableDesc table,String colName,String fieldName) {
 		return this.getEscapeForKeyWord()+colName +this.getEscapeForKeyWord()+ "="+HOLDER_START + fieldName + HOLDER_END+",";
 	}
 	
@@ -437,10 +451,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * @param fieldName
 	 * @return
 	 */
-	private String appendWhere(Class<?> c,TableDesc table,String fieldName) {
+	private String appendWhere(Class<?> c,TableDesc table,String colName,String fieldName) {
 		String prefix = "";
 		
-		String colName = nameConversion.getColName(c,fieldName);
 		String connector = " and ";
 		return STATEMENT_START + "if(!isEmpty(" + prefix+fieldName + ")){"
 		+ STATEMENT_END + connector + this.getEscapeForKeyWord()+colName+this.getEscapeForKeyWord() + "="+HOLDER_START + prefix+fieldName

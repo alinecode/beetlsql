@@ -40,12 +40,16 @@ public class ClassDesc {
 				Method readMethod = p.getReadMethod();
                 String property = p.getName();
                	String col = nc.getColName(c, property);
-				propertys.add(property);
+				
 				
 				if(table.containCol(col)){
-					
-					cols.add(property);
+					col = table.getExactCol(col);
+					cols.add(col);
+					propertys.add(property);
+				}else{
+					continue ;
 				}
+				
 				if(ids.contains(col)){
 					
 					idProperties.add(col);
@@ -79,7 +83,7 @@ public class ClassDesc {
 			if(JavaType.isDateType(colDes.sqlType)){
 				dateTypes.add(prop);
 			}
-			this.cols.add(prop);
+			this.cols.add(colName);
 		}
 		for(String name:table.getIdNames()){
 			this.idProperties.add(nc.getPropertyName(name));
