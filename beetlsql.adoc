@@ -1601,7 +1601,7 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 		</bean>
 	</property>
 	 <property name="nc">
-        <bean class="org.beetl.sql.core.UpperCaseUnderlinedNameConversion"/>
+        <bean class="org.beetl.sql.core.UnderlinedNameConversion"/>
     </property>
     <property name="interceptors">
         <list>
