@@ -3,16 +3,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.annotatoin.Tail;
 /*
 * 
 * gen by beetsql 2015-12-11
 */
-@TableTemplate()
+//@TableTemplate()
 @Tail(set="addValue")
 public class User  {
-	private Integer id ;
+	private Integer userId ;
 	private Integer age ;
 	
 	private String name ;
@@ -34,11 +35,13 @@ public class User  {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getId() {
-		return id;
+	
+	@AssignID
+	public Integer getUserId() {
+		return userId;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 	public String getUserName() {
 		return userName;
@@ -69,10 +72,7 @@ public class User  {
 	}
 	
 	
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", name=" + name + "]";
-	}
+	
 	
 	public User addValue(String str,Object ok){
 		ext.put(str, ok);

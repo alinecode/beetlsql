@@ -699,7 +699,7 @@ public class SQLScript {
 	 * @param paras
 	 */
 	private void setIdsParas(ClassDesc desc,Object obj,Map<String, Object> paras){
-		List<String> idCols = desc.getIdNames();
+		List<String> idCols = desc.getIdCols();
 		if(idCols.size()==1){
 			paras.put(idCols.get(0), obj);
 		}else{

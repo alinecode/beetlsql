@@ -710,7 +710,7 @@ public class SQLManager {
 			String table = this.nc.getTableName(target);
 			ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
 			
-			Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdNames().get(0));
+			Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdCols().get(0));
 			
 			String name = getterMethod.getName();
 			String setterName = name.replaceFirst("get", "set");

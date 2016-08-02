@@ -24,6 +24,8 @@ public class ClassDesc {
 	Set<String> dateTypes =  new LinkedHashSet<String>();;
 	Set<String> cols =  new CaseInsensitiveOrderSet<String>();
 	List<String> idProperties =  new ArrayList<String>(3);
+	List<String> idCols =  new ArrayList<String>(3);
+	
 	Map<String,Object> idMethods = new CaseInsensitiveHashMap<String,Object>();
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		PropertyDescriptor[] ps;
@@ -33,7 +35,7 @@ public class ClassDesc {
 			throw new RuntimeException(e);
 		}
 		Set<String> ids = table.getIdNames();
-
+		idCols.addAll(ids);
 		
 		for(PropertyDescriptor p:ps){
 			if(p.getReadMethod()!=null&&p.getWriteMethod()!=null){
@@ -52,7 +54,8 @@ public class ClassDesc {
 				
 				if(ids.contains(col)){
 					
-					idProperties.add(col);
+					idProperties.add(property);
+					
 					idMethods.put(col,readMethod);
 				}
 				
@@ -91,8 +94,12 @@ public class ClassDesc {
 		
 		
 	}
-	public List<String> getIdNames(){
+	public List<String> getIdAttrs(){
 		return this.idProperties;
+	}
+	
+	public List<String> getIdCols(){
+		return idCols;
 	}
 	
 	public Set<String>  getAttrs(){

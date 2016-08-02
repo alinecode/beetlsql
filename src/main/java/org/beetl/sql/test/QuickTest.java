@@ -24,15 +24,14 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-		String table = "party"; 
-		sql.genPojoCodeToConsole(table);
-		sql.genSQLTemplateToConsole(table);
-//		
-//		Party p = new Party();
-//		p.setId1(1);
-//		p.setId2(2);
-//		p.setName("test");
-//		sql.updateById(p);
+//		String table = "party"; 
+//		sql.genPojoCodeToConsole(table);
+//		sql.genSQLTemplateToConsole(table);
+		
+		User  user = new User();
+		user.setUserId(12);
+		user.setAge(12);
+		sql.template(user);
 	
 	}
 	

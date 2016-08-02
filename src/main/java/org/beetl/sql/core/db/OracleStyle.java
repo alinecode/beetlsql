@@ -75,7 +75,7 @@ public class OracleStyle extends AbstractDBStyle {
 		int idType = DBStyle.ID_ASSIGN ;
 		SQLSource source = new SQLSource();
 		Set<String> cols = classDesc.getInCols();
-		List<String> idCols = classDesc.getIdNames();
+		List<String> idCols = classDesc.getIdCols();
 		for(String col:cols){
 			if(idCols.contains(col)){					
 				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType((Method)classDesc.getIdMethods().get(col));
