@@ -1,6 +1,6 @@
 package org.beetl.sql.oracle;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import org.beetl.sql.OracleConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
@@ -8,10 +8,8 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.OracleStyle;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.pojo.User;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,11 +31,21 @@ public class InsertTest {
 	@Test
 	public void addUser() throws Exception {
 		
-		manager.genPojoCodeToConsole("MESSAGE_HEAD");
-		MessageHead h = new MessageHead();
-		h.setFunctionCode("aa");
-		manager.insert(h,true);
-		System.out.println(h.getHeadId());
+		SysUser2 user2 = new SysUser2();
+		user2.setId("2");
+		user2.setBir(new Timestamp(System.currentTimeMillis()));
+		user2.setMoney(1.23);
+		user2.setUserName("ll");
+//		manager.insert(user2);
+//		manager.updateById(user2);
+		manager.template(user2);
+		
+		
+		
+//		MessageHead h = new MessageHead();
+//		h.setFunctionCode("aa");
+//		manager.insert(h,true);
+//		System.out.println(h.getHeadId());
 		
 //		MyUser user = new MyUser();
 //		user.setName("lijz");

@@ -2,6 +2,7 @@ package org.beetl.sql.core.db;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,10 +75,14 @@ public class OracleStyle extends AbstractDBStyle {
 		StringBuilder valSql = new StringBuilder(" VALUES (");
 		int idType = DBStyle.ID_ASSIGN ;
 		SQLSource source = new SQLSource();
-		Set<String> cols = classDesc.getInCols();
+		Iterator<String> cols = classDesc.getInCols().iterator();
+		Iterator<String> attrs = classDesc.getAttrs().iterator();
 		List<String> idCols = classDesc.getIdCols();
-		for(String col:cols){
-			if(idCols.contains(col)){					
+		while(cols.hasNext()&&attrs.hasNext()){
+			String col = cols.next();
+			String attr = attrs.next();
+			if(idCols.contains(col)){
+				
 				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType((Method)classDesc.getIdMethods().get(col));
 				
 				if(idType==DBStyle.ID_AUTO){
@@ -95,7 +100,7 @@ public class OracleStyle extends AbstractDBStyle {
 				}
 			}
 			colSql.append(appendInsertColumn(cls,table, col));
-			valSql.append(appendInsertVlaue(cls,table, col));
+			valSql.append(appendInsertVlaue(cls,table, attr));
 		}
 
 		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
