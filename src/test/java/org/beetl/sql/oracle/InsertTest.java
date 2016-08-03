@@ -37,8 +37,11 @@ public class InsertTest {
 		user2.setMoney(1.23);
 		user2.setUserName("ll");
 //		manager.insert(user2);
-//		manager.updateById(user2);
-		manager.template(user2);
+		manager.updateById(user2);
+//		manager.template(user2);
+		
+		
+//		manager.genSQLTemplateToConsole("SYS_USER2");
 		
 		
 		

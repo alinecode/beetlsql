@@ -113,7 +113,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 				
 			}
 		}
-		return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(appendSql).toString());
+		String sql = new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(appendSql).toString();
+		return new SQLSource(sql);
 	}
 	
 	@Override
