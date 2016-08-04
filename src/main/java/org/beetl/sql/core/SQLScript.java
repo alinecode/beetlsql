@@ -21,12 +21,13 @@ import java.util.Map.Entry;
 
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
+import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
-
 import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.QueryMapping;
@@ -102,6 +103,8 @@ public class SQLScript {
 	public int insert(Object paras) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
+		addParaIfAssignId(map);
+		
 		PreparedStatement ps = null;
 		Connection conn = null;
 	
@@ -131,6 +134,8 @@ public class SQLScript {
 	public int insert(Object paras, KeyHolder holder) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
+		addParaIfAssignId(map);
+		
 		PreparedStatement ps = null;
 		Connection conn = null;
 		try {
@@ -153,11 +158,11 @@ public class SQLScript {
 			} else if (this.sqlSource.getIdType() == DBStyle.ID_AUTO) {
 				ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			} else if(this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
-				List<String> idCols =  this.sqlSource.getIdCol();
+				CaseInsensitiveOrderSet idCols =  (CaseInsensitiveOrderSet)this.sqlSource.getTableDesc().getIdNames();
 				if(idCols.size()!=1){
 					throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
 				}
-				ps = conn.prepareStatement(sql, new String[]{idCols.get(0)});
+				ps = conn.prepareStatement(sql, new String[]{idCols.getFirst()});
 			}
 			else {
 				ps = conn.prepareStatement(sql);
@@ -717,7 +722,22 @@ public class SQLScript {
 		}
 	}
 	
-
+	private void addParaIfAssignId(Map map){
+		if (this.sqlSource.getIdType() == DBStyle.ID_ASSIGN&&sqlSource.getAssignIds()!=null) {
+			Map<String, AssignID> ids = sqlSource.getAssignIds();
+			for(Entry<String, AssignID> entry:ids.entrySet()){
+				String attrName = entry.getKey();
+				AssignID assignId = entry.getValue();
+				String algorithm = assignId.algorithm();
+				String param = assignId.param();
+				Object o = this.sm.getAssignIdByIdAutonGen(algorithm,param);
+				map.put(attrName, o);
+			}
+			
+		}
+		
+	}
+	
 	public String getSql() {
 		return sql;
 	}

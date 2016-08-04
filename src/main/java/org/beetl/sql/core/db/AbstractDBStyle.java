@@ -3,8 +3,10 @@ package org.beetl.sql.core.db;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.beetl.core.Configuration;
@@ -270,19 +272,17 @@ public abstract class AbstractDBStyle implements DBStyle {
 		while(cols.hasNext()&&attrs.hasNext()){
 			String col = cols.next();
 			String attr = attrs.next();
-			if(idCols.contains(col)){
-				//会不会有多个主键，又包含自增的？
-				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType((Method)classDesc.getIdMethods().get(col));
+			if(idCols.size()==1&&idCols.contains(col)){
+				
+				idType = this.getIdType((Method)classDesc.getIdMethods().get(col));
 				if(idType==DBStyle.ID_AUTO){
 					continue ; //忽略这个字段
 				}else if(idType==DBStyle.ID_SEQ){
 					
 					colSql.append(appendInsertColumn(cls,table, col));
-//					valSql.append( HOLDER_START+ "_tempKey" + HOLDER_END+",");
-					SeqID seqId = ((Method)classDesc.getIdMethods().get(col)).getAnnotation(SeqID.class);
-					int index = idCols.indexOf(col);
-					source.addIdCol(col);
+					SeqID seqId = ((Method)classDesc.getIdMethods().get(col)).getAnnotation(SeqID.class);				
 					valSql.append( seqId.name()+".nextval,");
+					continue;
 				}else if(idType==DBStyle.ID_ASSIGN){
 					//normal
 				}
@@ -294,7 +294,23 @@ public abstract class AbstractDBStyle implements DBStyle {
 		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
 		source.setTemplate(sql.toString());
 		source.setIdType(idType);
-
+		source.setTableDesc(table);
+		if(idType==DBStyle.ID_ASSIGN){
+			Map<String,AssignID> map = new HashMap<String,AssignID>(); 
+			for(String idAttr:idCols){
+				AssignID assignId = ((Method)classDesc.getIdMethods().get(idAttr)).getAnnotation(AssignID.class);
+				if(assignId!=null&&assignId.algorithm().length()!=0){
+					
+						map.put(idAttr, assignId);
+				}
+			}
+				
+			if(map.size()!=0){
+				source.setAssignIds(map);
+			}
+		
+		}
+		
 		return source;
 	}
 
