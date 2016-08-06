@@ -728,9 +728,9 @@ public class SQLScript {
 			for(Entry<String, AssignID> entry:ids.entrySet()){
 				String attrName = entry.getKey();
 				AssignID assignId = entry.getValue();
-				String algorithm = assignId.algorithm();
+				String algorithm = assignId.value();
 				String param = assignId.param();
-				Object o = this.sm.getAssignIdByIdAutonGen(algorithm,param);
+				Object o = this.sm.getAssignIdByIdAutonGen(algorithm,param,sqlSource.getTableDesc().getName());
 				map.put(attrName, o);
 			}
 			

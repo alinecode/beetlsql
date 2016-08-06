@@ -5,7 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AssignID  {
-	public String algorithm() default "";
+	public String value() default "";
 	public String param() default "";
 }
 
