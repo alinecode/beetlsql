@@ -117,13 +117,13 @@
 
 
 
-       <dependency>
+       <!-- dependency>
             <groupId>oracle</groupId>
             <artifactId>oralce-express</artifactId>
            <version>6</version>
             <scope>system</scope>
             <systemPath>${basedir}/build/ojdbc6-11.2.0.1.0.jar</systemPath>
-        </dependency>
+        </dependency-->
 
 
         <dependency>
