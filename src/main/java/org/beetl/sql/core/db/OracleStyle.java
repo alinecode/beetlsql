@@ -65,49 +65,6 @@ public class OracleStyle extends AbstractDBStyle {
 		return "";
 	}
 	
-	@Override
-	public SQLSource genInsert(Class<?> cls) {
-		String tableName = nameConversion.getTableName(cls);
-		TableDesc table = this.metadataManager.getTable(tableName);
-		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);	
-		StringBuilder sql = new StringBuilder("insert into " + getTableName(table) + lineSeparator);
-		StringBuilder colSql = new StringBuilder("(");
-		StringBuilder valSql = new StringBuilder(" VALUES (");
-		int idType = DBStyle.ID_ASSIGN ;
-		SQLSource source = new SQLSource();
-		Iterator<String> cols = classDesc.getInCols().iterator();
-		Iterator<String> attrs = classDesc.getAttrs().iterator();
-		List<String> idCols = classDesc.getIdCols();
-		while(cols.hasNext()&&attrs.hasNext()){
-			String col = cols.next();
-			String attr = attrs.next();
-			if(idCols.contains(col)){
-				
-				idType = idCols.size()!=1?DBStyle.ID_ASSIGN:this.getIdType((Method)classDesc.getIdMethods().get(col));
-				
-				if(idType==DBStyle.ID_AUTO){
-					continue ; //忽略这个字段
-				}else if(idType==DBStyle.ID_SEQ){
-					
-					colSql.append(appendInsertColumn(cls,table, col));
-					SeqID seqId = ((Method)classDesc.getIdMethods().get(col)).getAnnotation(SeqID.class);
-					source.addIdCol(col);
-					
-					valSql.append( seqId.name()+".nextval,");
-					continue;
-				}else if(idType==DBStyle.ID_ASSIGN){
-					//normal
-				}
-			}
-			colSql.append(appendInsertColumn(cls,table, col));
-			valSql.append(appendInsertVlaue(cls,table, attr));
-		}
-
-		sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
-		source.setTemplate(sql.toString());
-		source.setIdType(idType);
-
-		return source;
-	}
+	
 
 }

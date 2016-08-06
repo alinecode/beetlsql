@@ -1,16 +1,20 @@
 package org.beetl.sql.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+
+import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.db.TableDesc;
 
 public class SQLSource {
 	
 	private String id;
 	private String template;
-	//主键名称
-	private List<String> idCols = new ArrayList<String>(3);
-	private int idType;
 	private int line = 0;
+	private TableDesc tableDesc;
+	//数据库插入用
+	private Map<String,AssignID> assignIds;
+	private int idType;
+	
 	public SQLSource() {
 	}
 
@@ -43,14 +47,7 @@ public class SQLSource {
 		this.idType = idType;
 	}
 
-	public List<String> getIdCol() {
-		return idCols;
-	}
-
-	public void addIdCol(String idCol) {
-		this.idCols.add(idCol);
-	}
-
+	
 	public String getId() {
 		return id;
 	}
@@ -67,4 +64,22 @@ public class SQLSource {
 		this.line = line;
 	}
 
+	public TableDesc getTableDesc() {
+		return tableDesc;
+	}
+
+	public void setTableDesc(TableDesc tableDesc) {
+		this.tableDesc = tableDesc;
+	}
+
+	public Map<String, AssignID> getAssignIds() {
+		return assignIds;
+	}
+
+	public void setAssignIds(Map<String, AssignID> assignIds) {
+		this.assignIds = assignIds;
+	}
+
+
+	
 }

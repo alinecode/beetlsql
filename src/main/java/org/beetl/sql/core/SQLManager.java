@@ -39,6 +39,7 @@ import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapping.handler.ScalarHandler;
+import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
@@ -62,6 +63,12 @@ public class SQLManager {
 	
 	MapperBuilder mapperBuilder = new DefaultMapperBuilder(this);
 	boolean offsetStartZero = false;
+	
+	Map<String,IDAutoGen> idAutonGenMap = new HashMap<String,IDAutoGen>();
+	{
+		//添加一个id简单实现
+		idAutonGenMap.put("simple", new SnowflakeIDAutoGen() );
+	}
 
 	
 	/** 创建一个beetlsql需要的sqlmanager
@@ -1344,6 +1351,24 @@ public class SQLManager {
 		this.inters = inters;
 	}
 	
+	
+	public void addIdAutonGen(String name,IDAutoGen alorithm){
+		this.idAutonGenMap.put(name, alorithm);
+	}
+	
+	/** 根据某种算法自动计算id
+	 * @param algorithm
+	 * @param param
+	 * @return
+	 */
+	public Object getAssignIdByIdAutonGen(String algorithm,String param){
+		IDAutoGen idGen=  idAutonGenMap.get(algorithm);
+		if(idGen==null){
+			throw new BeetlSQLException(BeetlSQLException.ID_AUTOGEN_ERROR,"未发现自动id生成器:"+algorithm);
+		}
+		return idGen.nextID(param);
+		
+	}
 	
 
 

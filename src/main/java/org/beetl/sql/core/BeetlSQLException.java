@@ -43,6 +43,8 @@ public class BeetlSQLException extends RuntimeException {
 	
 	//dao2 复合主键，未找到相应值
 	public static final int 	ID_VALUE_ERROR  = 14;
+	
+	public static final int 	ID_AUTOGEN_ERROR  = 15;
 		
 	int code ;
 	
