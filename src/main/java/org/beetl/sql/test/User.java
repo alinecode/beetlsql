@@ -13,7 +13,7 @@ import org.beetl.sql.core.annotatoin.Tail;
 //@TableTemplate()
 @Tail(set="addValue")
 public class User  {
-	private Integer userId ;
+	private Integer id ;
 	private Integer age ;
 	
 	private String name ;
@@ -36,12 +36,12 @@ public class User  {
 		this.name = name;
 	}
 	
-	@AssignID
-	public Integer getUserId() {
-		return userId;
+	
+	public Integer getId() {
+		return id;
 	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public String getUserName() {
 		return userName;

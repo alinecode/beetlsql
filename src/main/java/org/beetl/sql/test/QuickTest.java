@@ -29,9 +29,11 @@ public class QuickTest {
 //		sql.genSQLTemplateToConsole(table);
 		
 		User  user = new User();
-		user.setUserId(12);
+		user.setId(12);
 		user.setAge(12);
-		sql.template(user);
+		user.setUserName("dfdf");
+//		sql.template(user);
+		sql.updateTemplateById(user);
 	
 	}
 	
