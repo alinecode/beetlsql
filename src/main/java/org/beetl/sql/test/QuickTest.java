@@ -26,21 +26,21 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-//		sql.addIdAutonGen("uuid2", new IDAutoGen(){
-//
-//			@Override
-//			public Object nextID(String params) {
-//				return "hi"+new Random().nextInt(10000);
-//			}
-//			
-//		});
+		sql.addIdAutonGen("uuid2", new IDAutoGen(){
+
+			@Override
+			public Object nextID(String params) {
+				return "hi"+new Random().nextInt(10000);
+			}
+			
+		});
 		//		String table = "party"; 
-		sql.genPojoCodeToConsole("user");
+//		sql.genPojoCodeToConsole("user");
 //		sql.genSQLTemplateToConsole(table);
-//		Party party = new Party();
-//		party.setName("party");
-//		party.setId("abc123");
-//		sql.insert(party);
+		Party party = new Party();
+		party.setName("party");
+		party.setId("abc123");
+		sql.insert(party);
 	
 	}
 	

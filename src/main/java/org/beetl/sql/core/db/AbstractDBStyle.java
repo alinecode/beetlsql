@@ -496,7 +496,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	 * 生成一个追加在insert into 子句的后面sql(示例：name,)
      * @param c
 	 * @param table
-	 * @param fieldName
+	 * @param colName
 	 * @return
 	 */
 	protected String appendInsertColumn(Class<?> c,TableDesc table,String colName) {

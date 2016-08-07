@@ -112,7 +112,7 @@ public class SQLScript {
 		SQLResult result = this.run(map);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 
@@ -145,7 +145,7 @@ public class SQLScript {
 			SQLResult result = this.run(map);
 			String sql = result.jdbcSql;
 			List<Object> objs = result.jdbcPara;
-			InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs);
+			InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 			sql = ctx.getSql();
 			objs = ctx.getParas();
 
@@ -199,7 +199,7 @@ public class SQLScript {
 			SQLResult result = this.run(map);
 			String sql = result.jdbcSql;
 			List<Object> objs = result.jdbcPara;
-			InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs);
+			InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 			sql = ctx.getSql();
 			objs = ctx.getParas();
 
@@ -278,7 +278,7 @@ public class SQLScript {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		List<T> resultList = null;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,paras);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -372,7 +372,7 @@ public class SQLScript {
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
 
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,paras);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		int rs = 0;
@@ -416,7 +416,7 @@ public class SQLScript {
 				if (ps == null) {
 					conn = sm.getDs().getConn(id, true, sql, objs);
 					ps = conn.prepareStatement(result.jdbcSql);
-					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.EMPTY_LIST);
+					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.EMPTY_LIST,paras);
 				}
 				this.setPreparedStatementPara(ps, objs);
 				
@@ -457,7 +457,7 @@ public class SQLScript {
 				if (ps == null) {
 					conn = sm.getDs().getConn(id, true, sql, objs);
 					ps = conn.prepareStatement(result.jdbcSql);
-					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.emptyList());
+					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.emptyList(),paras);
 				}
 
 				this.setPreparedStatementPara(ps, objs);
@@ -498,7 +498,7 @@ public class SQLScript {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		T model = null;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,paras);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -540,7 +540,7 @@ public class SQLScript {
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
 
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,paras);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		int rs = 0;
@@ -566,7 +566,7 @@ public class SQLScript {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		List<T> resultList = null;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,this.getSQLReadyParas(objs));
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -590,7 +590,7 @@ public class SQLScript {
 
 		String sql = this.sql;
 		List<Object> objs = Arrays.asList(p.args);
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs);
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,this.getSQLReadyParas(objs));
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		int rs = 0;
@@ -664,9 +664,10 @@ public class SQLScript {
 		this.clean(true, conn, null, null);
 	}
 
-	private InterceptorContext callInterceptorAsBefore(String sqlId, String sql, boolean isUpdate, List<Object> paras) {
+	private InterceptorContext callInterceptorAsBefore(String sqlId, String sql, 
+				boolean isUpdate, List<Object> jdbcParas,Map<String,Object> inputParas) {
 
-		InterceptorContext ctx = new InterceptorContext(sqlId, sql, paras, isUpdate);
+		InterceptorContext ctx = new InterceptorContext(sqlId, sql, jdbcParas,inputParas, isUpdate);
 		for (Interceptor in : sm.inters) {
 			in.before(ctx);
 		}
@@ -691,6 +692,12 @@ public class SQLScript {
 			in.after(ctx);
 		}
 		return;
+	}
+	
+	private Map<String,Object> getSQLReadyParas(List<Object> paras){
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("_root", paras);
+		return map ;
 	}
 
 	public String getId() {

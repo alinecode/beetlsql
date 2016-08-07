@@ -11,10 +11,12 @@ public class InterceptorContext {
 	private Map<String,Object> env  = null;
 	private boolean isUpdate = false ;
 	private Object result ;
-	public InterceptorContext(String sqlId,String sql,List<Object> paras, boolean isUpdate){
+	private Map<String,Object> inputParas;
+	public InterceptorContext(String sqlId,String sql,List<Object> paras, Map<String,Object> inputParas,boolean isUpdate){
 		this.sql = sql ;
 		this.paras = paras;
 		this.sqlId = sqlId;
+		this.inputParas = inputParas;
 		this.isUpdate = isUpdate;
 	}
 	public void put(String key,Object value){
