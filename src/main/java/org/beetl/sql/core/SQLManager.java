@@ -1357,14 +1357,14 @@ public class SQLManager {
 	}
 	
 	/** 根据某种算法自动计算id
-	 * @param algorithm
+	 * @param name
 	 * @param param
 	 * @return
 	 */
-	public Object getAssignIdByIdAutonGen(String algorithm,String param){
-		IDAutoGen idGen=  idAutonGenMap.get(algorithm);
+	protected Object getAssignIdByIdAutonGen(String name,String param,String table){
+		IDAutoGen idGen=  idAutonGenMap.get(name);
 		if(idGen==null){
-			throw new BeetlSQLException(BeetlSQLException.ID_AUTOGEN_ERROR,"未发现自动id生成器:"+algorithm);
+			throw new BeetlSQLException(BeetlSQLException.ID_AUTOGEN_ERROR,"未发现自动id生成器:"+name+" in "+table);
 		}
 		return idGen.nextID(param);
 		

@@ -82,7 +82,10 @@ public class SourceGen {
 			ColDesc desc = tableDesc.getColDesc(col);
 			Map attr = new HashMap();
 			attr.put("comment", desc.remark);
-			attr.put("name", sm.getNc().getPropertyName(null, desc.colName));
+			String attrName = sm.getNc().getPropertyName(null, desc.colName);
+			attr.put("name", attrName);
+			attr.put("methodName", getMethodName(attrName));
+			
 			attr.put("type", desc.remark);
 			
 			String type = JavaType.getType(desc.sqlType, desc.size, desc.digit);
@@ -153,6 +156,22 @@ public class SourceGen {
 		}
 	
 		
+	}
+	
+	private String getMethodName(String name){
+		char ch1 = name.charAt(0);
+		char ch2 = name.charAt(1);
+		if(Character.isLowerCase(ch1)&&Character.isUpperCase(ch2)){
+			//aUname---> getaUname();
+			return name;
+		}else if(Character.isUpperCase(ch1)&&Character.isUpperCase(ch2)){
+			//ULR --> getURL();
+			return name ;
+		}else{
+			//general  name --> getName()
+			char upper = Character.toUpperCase(ch1);
+			return upper+name.substring(1);
+		}
 	}
 	
 }

@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.4.1 (190K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.4.3 (194K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
 
 
@@ -53,13 +53,13 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetl</artifactId>
-	<version>2.4.4</version>
+	<version>2.5.0</version>
 </dependency>
 
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.4.1</version>
+	<version>2.4.3</version>
 </dependency>
 ----------------------------
 
@@ -92,7 +92,7 @@ CREATE TABLE `user` (
 ----------------------------
 import java.math.*;
 import java.util.Date;
-import java.sql.Timestamp;
+
 
 /*
 * 
@@ -565,6 +565,8 @@ Beetlsql 默认提供了三种列明和属性名的映射类。
 
 * 自定义命名转化，如果以上3个都不合适,可以自己实现一个命名转化。实现DefaultNameConversion实现方式
 
+* 因为数据库表和列都忽略大小写区别，所以，实现NameConversion也不需要考虑大小写
+
 [source,java,numbered]
 ----------------------------
 public class DefaultNameConversion extends NameConversion {
@@ -757,8 +759,55 @@ public class QueryUser ..
 注：可以为对象指定一个数据库shcema，如name="cms.user",此时将访问cms库（或者cms用户，对不同的数据库，称谓不一样）下的user数据表
 
 
-* @AutoID,作用于getter方法，告诉beetlsql，这是自增主键
-* @AssignID，作用于getter方法，告诉beetlsql，这是主键，且由代码设定主键
+* @AutoID,作用于getter方法，告诉beetlsql，这是自增主键,对应于数据自增长
+
+* @AssignID，作用于getter方法，告诉beetlsql，这是程序设定
+
+[source,java]
+----------------------------
+@AssignID()
+public Long getId() {
+	return id;
+}
+
+----------------------------
+
+代码设定主键允许像@AssignID 传入id的生成策略以自动生成序列，beetl默认提供了一个snowflake算法，一个用于分布式环境的id生成器(https://github.com/twitter/snowflake)
+[source,java]
+----------------------------
+@AssignID("simple")
+public Long getId() {
+	return id;
+}
+
+----------------------------
+simple 是beetlsql提供的一个默认的snowflake实现，你可以通过sqlManager自己注册id生成器
+
+[source,java]
+----------------------------
+sqlManager.addIdAutonGen("uuid2", new IDAutoGen(){
+
+		@Override
+		public Object nextID(String params) {
+			return "hi"+new Random().nextInt(10000);
+		}
+		
+});
+
+----------------------------
+
+[source,java]
+----------------------------
+@AssignID("uuid2")
+public Long getId() {
+	return id;
+}
+
+----------------------------
+
+
+
+
 * @SeqID(name="xx_seq"，作用于getter方法，告诉beetlsql，这是序列主键。
 * @Tail  作用于类上，表示该对象是混合模型，参考下一章混合模型
 
@@ -1670,52 +1719,13 @@ public class MyServiceImpl implements MyService {
 .参考
 **********************************************************************
 可以参考demo https://git.oschina.net/xiandafu/springbeetlsql
-**********************************************************************
-
-
-
-.过时
-**********************************************************************
- 注意,2.2.0 版本的spring集成已经改成如上配置,以前的方式可以继续支持,但不推荐使用了.
- 如下是以前的配置方式
-
-[source,xml,numbered]
-----------------------------
- <bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-	<bean id="sqlManager" class="org.beetl.sql.ext.spring	.SpringBeetlSql">
-		<property name="cs" >
-			<bean  class="org.beetl.sql.ext.spring.SpringConnectionSource">
-				<property name="master" ref="dataSource"></property>
-			</bean>
-		</property>
-		<property name="dbStyle">
-			<bean class="org.beetl.sql.core.db.MySqlStyle"> </bean>
-		</property>
-		<property name="sqlLoader">
-			<bean class="org.beetl.sql.core.ClasspathLoader">
-				<property name="sqlRoot" value="/sql"></property>
-			</bean>
-		</property>
-		<property name="nc">
-			<bean class="org.beetl.sql.core.DefaultNameConversion">
-			</bean>
-		</property>
-		<property name="interceptors">
-			<list>
-				<bean class="org.beetl.sql.ext.DebugInterceptor"></bean>
-			</list>
-		</property>
-	</bean>
-    
-
-----------------------------
+spring boot集成可以参考 demo 
+http://git.oschina.net/xiandafu/springboot_beetl_beetlsql，请参考demo配置好  META-INF/spring-devtools.properties文件，否则运行不起来
 
 **********************************************************************
+
    
-    
+
    
 
 === JFinal集成和Demo

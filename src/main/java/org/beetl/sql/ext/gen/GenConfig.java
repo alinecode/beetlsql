@@ -9,9 +9,9 @@ public class GenConfig {
 	//格式控制，4个隔空
 	public int spaceCount = 4;
 	// double 类型采用BigDecimal
-	public boolean preferBigDecimal = false ;
+	public boolean preferBigDecimal = true ;
 	//采用java.util.Date
-	public boolean preferDate = false ;
+	public boolean preferDate = true ;
 	
 	
 	/**

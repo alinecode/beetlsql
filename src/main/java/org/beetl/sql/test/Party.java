@@ -3,24 +3,18 @@ package org.beetl.sql.test;
 import org.beetl.sql.core.annotatoin.AssignID;
 
 public class Party  {
-	private Integer id1 ;
-	private Integer id2 ;
+	private String id="abc" ;
 	private String name ;
+
+	@AssignID("uuid2")
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+
+	}
 	
-	@AssignID(algorithm="simple")
-	public Integer getId1() {
-		return id1;
-	}
-	public void setId1(Integer id1) {
-		this.id1 = id1;
-	}
-	@AssignID(algorithm="simple")
-	public Integer getId2() {
-		return id2;
-	}
-	public void setId2(Integer id2) {
-		this.id2 = id2;
-	}
 	public String getName() {
 		return name;
 	}
