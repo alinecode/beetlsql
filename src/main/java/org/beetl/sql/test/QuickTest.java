@@ -7,7 +7,6 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -28,10 +27,13 @@ public class QuickTest {
 //		sql.genPojoCodeToConsole(table);
 //		sql.genSQLTemplateToConsole(table);
 		
-		User  user = new User();
-		user.setUserId(12);
-		user.setAge(12);
-		sql.template(user);
+//		User  user = new User();
+//		user.setUserId(12);
+//		user.setAge(12);
+//		sql.template(user);
+		Party party = new Party();
+		party.setName("hello,test");
+		sql.insert(party);
 	
 	}
 	

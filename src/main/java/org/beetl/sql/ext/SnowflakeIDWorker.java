@@ -8,7 +8,7 @@ public class SnowflakeIDWorker  {
 	    private long datacenterId;
 	    private long sequence = 0L;
 	 
-	    //
+	    //日期，2010年，用到2080年
 	    public  static long twepoch = 1288834974657L;
 	 
 	    private long workerIdBits = 5L;
