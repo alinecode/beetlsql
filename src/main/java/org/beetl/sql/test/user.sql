@@ -81,3 +81,9 @@ initUserDatabase
 	) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 		
 
+
+selectUserAndDepartment
+===
+select * from user where user_id=#userId#
+@ db.mappingClass.single({"departmentId":"id"},"Department","depts");
+

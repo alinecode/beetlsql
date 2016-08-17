@@ -20,7 +20,7 @@ public class User  {
 	//用户名称
 	private String userName ;
 
-	
+	private Integer departmentId ;
 	
 	Map<String,Object> ext = new HashMap<String,Object>();
 	
@@ -71,7 +71,12 @@ public class User  {
 		this.maxDate = maxDate;
 	}
 	
-	
+	public Integer getDepartmentId(){
+		return  departmentId;
+	}
+	public void setDepartmentId(Integer departmentId ){
+		this.departmentId = departmentId;
+	}
 	
 	
 	public User addValue(String str,Object ok){

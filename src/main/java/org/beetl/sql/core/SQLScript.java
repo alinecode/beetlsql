@@ -36,6 +36,7 @@ import org.beetl.sql.core.mapping.handler.BeanHandler;
 import org.beetl.sql.core.mapping.handler.BeanListHandler;
 import org.beetl.sql.core.mapping.handler.MapListHandler;
 import org.beetl.sql.core.mapping.handler.ScalarHandler;
+import org.beetl.sql.core.orm.MappingEntity;
 
 public class SQLScript {
 
@@ -75,6 +76,9 @@ public class SQLScript {
 		SQLResult result = new SQLResult();
 		result.jdbcSql = jdbcSql;
 		result.jdbcPara = jdbcPara;
+		
+		result.mapingEntrys= (List<MappingEntity>)t.getCtx().getGlobal("_mapping");
+		
 		return result;
 	}
 
@@ -297,6 +301,12 @@ public class SQLScript {
 
 			} else {
 				resultList = mappingSelect(rs, clazz);
+				//1.5.0 feature 
+				if(result.mapingEntrys!=null){
+					for(MappingEntity mapConf:result.mapingEntrys){
+						mapConf.map(resultList, sm);
+					}
+				}
 			}
 
 			this.callInterceptorAsAfter(ctx, resultList);
@@ -329,6 +339,7 @@ public class SQLScript {
 			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm,clazz));
 		} else {
 			resultList = queryMapping.query(rs, new BeanListHandler<T>(clazz, this.sm.getNc(), this.sm));
+			
 		}
 
 		return resultList;

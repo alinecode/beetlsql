@@ -1080,7 +1080,7 @@ SQL语句可以动态生成，基于Beetl语言，这是因为
 ----------------------------
 selectByCond
 ===
-select * form user where 1=1
+select * from user where 1=1
 --:if(age!=null)
 age=#age#
 --:}
