@@ -35,7 +35,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * 维护性
 ** SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试。
 ** 可以自动将sql文件映射为dao接口类
-** 简单支持关系映射而不引入复杂的OR Mapping概念和技术。
+** 简单支持支持一对一，一对多，多对多关系映射而不引入复杂的OR Mapping概念和技术。
 ** 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 
 
@@ -1617,6 +1617,59 @@ jdbcSql是渲染过后的sql，jdbcPara 是对应的参数值
 == Hibernate,MyBatis,MySQL 对比
 
 http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。在犹豫使用BeetlSQL，可以参考这个全面的对比文章
+
+== ORM
+
+   BeetlSql的Pojo类与数据库表对应，没有关系映射相关特性，除非Pojo实现@Tail 或者继承TailBean（或者实现Tail接口），额外的关系映射才会放到tail属性里供查询的时候
+调用。
+
+* 要注意的是，beetlsql的orm 仅仅限于查询结果集，而不包括新增，更新，删除。这些需要调用sqlManager的api直接操作就行了而不像JPA那样还需要成为容器管理对象才能更新
+
+beetlsql 关系映射是在sql语句里通过orm.single和 orm.many 函数进行申明。beetlsql会根据这些申明来完成关系映射
+
+orm.single,orm.many 函数名字本身说明了是一对一，还是一对多或者多对多。可以放在sql语句任何地方，建议放到头部或者尾部，参数格式有俩种形式，
+
+* 使用模板方式查询关系对象，orm.single({"departmentId","id"},"Department") 第一个参数申明了关系映射，即sql查询结果里字段，对应到关系表的查询字段，
+如User表里，departmentId应到Department表的id，beetlsql会根据此关系发起一次template查询。映射的结果集放在第二个参数Department类里，如果Department与User类在同一个包下，可以省略包名，否则需要加上类包名
+
+* 使用sqlId来查询关系对象，orm.single({"departmentId","id"},"user.selectDepatment","Department")
+第一个参数还是映射关系，第二个参数是一sql查询id，beetlsql将查询此sql语句，将结果集放到第三个参数Deparmtent类里
+
+
+如上查询关系对象，均放到tail属性里，名称就是类名小写开头，如
+
+User user = sqlManager.select("user.selectUserAndDepartment",User.class,paras);
+Department dept = user.get("department");
+
+
+如下是个例子，假设user表与department表示一对一关系，user.departmentId对应于deparment.id,因此关系映射是{"departmentId":"id"}
+user与 role表示多对多关系，通过user_role做关联
+
+[source,sql]
+----------------------------
+selectUserAndDepartment
+===
+	select * from user where user_id=#userId#
+	@ orm.single({"departmentId":"id"},"Department");
+	@ orm.many({"id":"userId"},"user.selectRole","Role");
+
+user.selectRole
+===
+
+	select r.* from user_role ur left join role r on ur.role_id=r.id
+	
+	where ur.user_id=#userId#
+----------------------------
+
+java代码的样子:
+
+[source,java]
+----------------------------
+User user = sqlManager.select("user.selectUserAndDepartment",User.class,paras);
+Department dept = user.get("department");
+List<Role> roles = user.get("role");
+----------------------------
+
 
 
 == 集成和Demo

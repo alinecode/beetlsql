@@ -12,6 +12,11 @@ import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.StringKit;
 
 
+/**
+ * 实现关系映射
+ * @author xiandafu
+ *
+ */
 public class MappingEntity {
 	private String target;
 	private boolean isSingle = false;
