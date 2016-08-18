@@ -7,11 +7,12 @@ import java.util.Map;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 /**
- * 记录映射关系
+ * 记录映射关系,可以处理一对多，多对对多关系
  * <pre>
  * 
- * db.mappingClass.many({"id":"orderId"},"com.test.OrderDetail","orderDetail");
- * db.mappingSql.many({"id":"orderId"},"orderDetail.query","orderDetail");
+ * orm.many({"id":"orderId"},"OrderDetail");
+ * orm.single({"id":"orderId"},"orderDetail.query","OrderDetail");
+ * orm.many({"id":"user_id"},"role.selectRoleByUserId","Role");
  * </pre>
  * @author xiandafu
  *
@@ -20,7 +21,7 @@ public class ORMManyEntityFunction extends MappingFunctionHelper implements Func
 
 	@Override
 	public Object call(Object[] paras, Context ctx) {
-		this.parse(true, true, paras, ctx);
+		this.parse(true, paras, ctx);
 		return null;
 	}
 

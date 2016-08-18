@@ -30,6 +30,8 @@ public class SQLPlaceholderST extends Statement
 		textFunList.add("globalUse");
 		textFunList.add("join");
 		textFunList.add("page");
+		textFunList.add("orm.single");
+		textFunList.add("orm.many");
 		
 		
 	}

@@ -15,22 +15,30 @@ public class MappingFunctionHelper  {
 
 	
 	
-	protected void parse(boolean single,boolean isClass,Object[] paras,Context ctx){
+	protected void parse(boolean single,Object[] paras,Context ctx){
 		Map<String,String> mapkey = (Map<String,String>)paras[0];
-		String className = (String)paras[1];
+		String className = null;
+		String sqlId = null;
+		if(paras.length==3){
+			
+			className = (String)paras[2];
+			sqlId = (String)paras[1];
+		}else{
+			className = (String)paras[1];
+			
+		}
 	
-		String tailAttrName = (String)paras[2];
-		
-		List<MappingEntity> list =(List<MappingEntity>) ctx.getGlobal("_mappping");
+	
+		List<MappingEntity> list =(List<MappingEntity>) ctx.getGlobal("_mapping");
 		if(list==null){
 			list = new LinkedList<MappingEntity>();
 		}
 		MappingEntity mappingEntity = new MappingEntity();
 		mappingEntity.setSingle(single);
 		mappingEntity.setMapkey(mapkey);
-		mappingEntity.setTailAttrName(tailAttrName);
 		mappingEntity.setTarget(className);
-		mappingEntity.setClassMapping(isClass);
+		
+		mappingEntity.setSqlId(sqlId);
 		list.add(mappingEntity);
 		ctx.globalVar.put("_mapping", list);
 	}

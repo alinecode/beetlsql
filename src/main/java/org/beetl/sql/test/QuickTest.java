@@ -50,7 +50,7 @@ public class QuickTest {
 		
 		
 		User user = sql.selectSingle("user.selectUserAndDepartment",Params.ins().add("userId", 3).map(), User.class);
-		Department depart = (Department)user.getExt().get("depts");
+		Department depart = (Department)user.getExt().get("department");
 		System.out.println(depart.getName());
 	}
 	

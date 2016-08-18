@@ -84,6 +84,14 @@ initUserDatabase
 
 selectUserAndDepartment
 ===
-select * from user where user_id=#userId#
-@ db.mappingClass.single({"departmentId":"id"},"Department","depts");
+	select * from user where user_id=#userId#
+	@ orm.single({"departmentId":"id"},"Department");
+	@ /*orm.many({"id":"userId"},"user.selectRole","Role")*/;
+
+user.selectRole
+===
+
+	select r.* from user_role ur left join role r on ur.role_id=r.id
+	
+	where ur.user_id=#userId#
 

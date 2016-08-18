@@ -10,8 +10,8 @@ import org.beetl.core.Function;
  * 记录映射关系
  * <pre>
  * 
- * db.mappingClass.single({"id":"orderId"},"com.test.OrderDetail","orderDetail");
- * db.mappingSql.many({"id":"orderId"},"orderDetail.query","orderDetail");
+ * db.orm.single({"id":"orderId"},"com.test.OrderDetail","orderDetail");
+ * db.orm.many({"id":"orderId"},"orderDetail.query","orderDetail");
  * </pre>
  * @author xiandafu
  *
@@ -20,7 +20,7 @@ public class ORMSingleEntityFunction extends MappingFunctionHelper implements Fu
 
 	@Override
 	public Object call(Object[] paras, Context ctx) {
-		this.parse(false, true, paras, ctx);
+		this.parse(false, paras, ctx);
 		return null;
 	}
 
