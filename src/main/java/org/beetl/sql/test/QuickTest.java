@@ -2,10 +2,9 @@ package org.beetl.sql.test;
 
 
 
-import java.util.Random;
+import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
-import org.beetl.sql.core.IDAutoGen;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.Params;
 import org.beetl.sql.core.SQLLoader;
@@ -47,11 +46,12 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
+//		sql.genPojoCodeToConsole("user");
 		
 		
 		User user = sql.selectSingle("user.selectUserAndDepartment",Params.ins().add("userId", 3).map(), User.class);
-		Department depart = (Department)user.getExt().get("department");
-		System.out.println(depart.getName());
+		List<Department> depart = (List<Department> )user.getExt().get("department");
+		System.out.println(depart.size());
 	}
 	
 	

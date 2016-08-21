@@ -101,6 +101,7 @@ public class SQLScript {
 		SQLResult result = new SQLResult();
 		result.jdbcSql = jdbcSql;
 		result.jdbcPara = jdbcPara;
+		result.mapingEntrys= (List<MappingEntity>)t.getCtx().getGlobal("_mapping");
 		return result;
 	}
 

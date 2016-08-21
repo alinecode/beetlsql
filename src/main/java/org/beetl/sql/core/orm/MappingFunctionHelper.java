@@ -16,6 +16,10 @@ public class MappingFunctionHelper  {
 	
 	
 	protected void parse(boolean single,Object[] paras,Context ctx){
+		if(ctx.getGlobal("_page")!=null){
+			//翻页查询
+			return ;
+		}
 		Map<String,String> mapkey = (Map<String,String>)paras[0];
 		String className = null;
 		String sqlId = null;

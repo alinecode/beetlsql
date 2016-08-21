@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.beetl.core.om.MethodInvoker;
+import org.beetl.core.om.ObjectUtil;
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
 import org.beetl.sql.core.kit.BeanKit;
@@ -27,9 +30,14 @@ public class MappingEntity {
 	String tailName;
 	boolean absentPackage = false;
 	Class targetClass = null;
+	
+	Map<String, Method> setMethod = new HashMap<String,Method>();
 
 	public void map(List list, SQLManager sm) {
-		init();
+		if(list.size()==0){
+			return ;
+		}
+		init(list.get(0));
 		for (Object obj : list) {
 			mapClassItem(obj, sm);
 
@@ -37,14 +45,14 @@ public class MappingEntity {
 
 	}
 
-	private void init() {
+	private void init(Object obj) {
 		if (target.indexOf(".") == -1) {
 			// 参数不带包名
 			this.tailName = StringKit.toLowerCaseFirstOne(target);
 			absentPackage = true;
 		} else {
 			int index = target.lastIndexOf(".");
-			String className = target.substring(index);
+			String className = target.substring(index+1);
 			this.tailName = StringKit.toLowerCaseFirstOne(className);
 
 		}
@@ -84,7 +92,12 @@ public class MappingEntity {
 		}
 
 		if (!this.isSingle) {
-			setTailAttr(obj, ret.get(0));
+			if(ret.isEmpty()){
+				setTailAttr(obj, null);
+			}else{
+				setTailAttr(obj, ret.get(0));
+			}
+			
 
 		} else {
 			
@@ -92,36 +105,42 @@ public class MappingEntity {
 		}
 	}
 
-	private Method getGetter(Object o, String attrName) {
-		String getter = "get" + StringKit.toUpperCaseFirstOne(attrName);
-		try {
-			Method m = o.getClass().getMethod(getter, new Class[] {});
-			return m;
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+
 
 	private Object getBeanProperty(Object o, String attrName) {
 
 		try {
-			Method m = getGetter(o, attrName);
-			return m.invoke(o, new Object[0]);
+			MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
+			return inv.get(o);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
 
 	private void setBeanProperty(Object o, Object value, String attrName) {
-		// for simple
-		String setter = "set" + StringKit.toUpperCaseFirstOne(attrName);
-		try {
-			Method getter = getGetter(o, attrName);
-			Method m = o.getClass().getMethod(setter, getter.getReturnType());
+		Method m = setMethod.get(attrName);
+		if(m==null){
+			try {
+				Class t = o.getClass();
+				MethodInvoker inv = ObjectUtil.getInvokder(t, attrName);
+				if(inv==null){
+					throw new BeetlSQLException(BeetlSQLException.ORM_ERROR,"映射为找到属性"+attrName+" in "+t);
+				}
+				String getterName = inv.getMethod().getName();
+				String setterName = "s"+getterName.substring(1);
+				m = t.getMethod(setterName, inv.getReturnType());
+				setMethod.put(attrName, m);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		try{
 			m.invoke(o, value);
-		} catch (Exception ex) {
+		}catch(Exception ex){
 			throw new RuntimeException(ex);
 		}
+		
+		
 	}
 
 	private void setTailAttr(Object o, Object value) {

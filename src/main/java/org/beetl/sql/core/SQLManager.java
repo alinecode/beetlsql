@@ -36,6 +36,7 @@ import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
+import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapping.handler.ScalarHandler;
@@ -1184,7 +1185,8 @@ public class SQLManager {
 		if(this.sqlLoader instanceof ClasspathLoader){
 			path = ((ClasspathLoader)sqlLoader).sqlRoot;
 		}
-		String target = this.getJavaResourcePath()+"/"+path+"/"+this.nc.getClassName(table)+".md";
+		String fileName =StringKit.toLowerCaseFirstOne(this.nc.getClassName(table));
+		String target = this.getJavaResourcePath()+"/"+path+"/"+fileName+".md";
 		FileWriter writer = new FileWriter(new File(target));
 		genSQLTemplate(table,writer);
 		writer.close();

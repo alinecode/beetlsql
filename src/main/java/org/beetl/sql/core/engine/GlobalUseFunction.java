@@ -15,9 +15,19 @@ public class GlobalUseFunction implements Function {
 		SQLManager sm = (SQLManager) ctx.getGlobal("_manager");
 		// 保留，免得被覆盖
 		List list = (List)ctx.getGlobal("_paras");
+		List mapping = (List)ctx.getGlobal("_mapping");
 		SQLResult result = sm.getSQLResult(id, ctx.globalVar);
 		list.addAll(result.jdbcPara);
 		ctx.set("_paras", list);
+		if(mapping!=null){
+			if(result.mapingEntrys!=null){
+				mapping.addAll(result.mapingEntrys);
+			}
+			
+		}else if(result.mapingEntrys!=null){
+			ctx.set("_mapping", result.mapingEntrys);
+		}
+		
 		try {
 			ctx.byteWriter.writeString( result.jdbcSql);
 		} catch (IOException e) {
