@@ -2,11 +2,9 @@ package org.beetl.sql.test;
 
 
 
-import java.util.List;
-
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.Params;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
@@ -44,14 +42,22 @@ public class QuickTest {
 		
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
-		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		SQLManager 	sql = new SQLManager(style,loader,cs,new DarrenNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
-//		sql.genPojoCodeToConsole("user");
+//		sql.genPojoCodeToConsole("Sys_User");
+//		sql.unique(SysUser.class, 1);
+		SysUser user = new SysUser();
+		user.setName("c");
+		user.setUserAge(2);
+//		sql.insert(user);
+//		
+		sql.template(user);
 		
-		
-		User user = sql.selectSingle("user.selectUserAndDepartment",Params.ins().add("userId", 3).map(), User.class);
-		List<Department> depart = (List<Department> )user.getExt().get("department");
-		System.out.println(depart.size());
+//		Party party = new Party();
+//		party.setId1(1);
+//		party.setId2(1);
+//		sql.unique(Party.class, party);
+//		sql.genPojoCodeToConsole("party");
 	}
 	
 	

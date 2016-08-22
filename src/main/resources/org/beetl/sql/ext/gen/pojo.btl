@@ -12,6 +12,9 @@ public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 	private ${attr.type} ${attr.name} ;
 	@}
 	
+	public ${className}() {
+	}
+	
 	@for(attr in attrs){
 	public ${attr.type} get${attr.methodName}(){
 		return  ${attr.name};

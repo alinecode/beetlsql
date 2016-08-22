@@ -13,62 +13,30 @@ import org.beetl.sql.core.annotatoin.Tail;
 //@TableTemplate()
 @Tail(set="addValue")
 public class User  {
-	private Integer userId ;
+	private Integer userid ;
+	//å¹´çºª123
 	private Integer age ;
-	
-	private String name ;
-	//用户名称
-	private String userName ;
-
 	private Integer departmentId ;
+	private String name ;
+	private String userName ;
+	//ç”Ÿæ—¥
+	private Date bir ;
 	
-	Map<String,Object> ext = new HashMap<String,Object>();
-	
-	//for query
-	private Date minDate;
-	private Date maxDate;
-	
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+	public User() {
 	}
 	
-	@AssignID
-	public Integer getUserId() {
-		return userId;
+	public Integer getUserid(){
+		return  userid;
 	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setUserid(Integer userid ){
+		this.userid = userid;
 	}
-	public String getUserName() {
-		return userName;
+	
+	public Integer getAge(){
+		return  age;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public Integer getAge() {
-		return age;
-	}
-	public void setAge(Integer age) {
+	public void setAge(Integer age ){
 		this.age = age;
-	}
-	
-	
-	public Date getMinDate() {
-		return minDate;
-	}
-	public void setMinDate(Date minDate) {
-		this.minDate = minDate;
-	}
-	
-	public Date getMaxDate() {
-		return maxDate;
-	}
-	public void setMaxDate(Date maxDate) {
-		this.maxDate = maxDate;
 	}
 	
 	public Integer getDepartmentId(){
@@ -78,16 +46,25 @@ public class User  {
 		this.departmentId = departmentId;
 	}
 	
+	public String getName(){
+		return  name;
+	}
+	public void setName(String name ){
+		this.name = name;
+	}
 	
-	public User addValue(String str,Object ok){
-		ext.put(str, ok);
-		return this;
+	public String getUserName(){
+		return  userName;
 	}
-	public Map<String, Object> getExt() {
-		return ext;
+	public void setUserName(String userName ){
+		this.userName = userName;
 	}
-	public void setExt(Map<String, Object> ext) {
-		this.ext = ext;
+	
+	public Date getBir(){
+		return  bir;
+	}
+	public void setBir(Date bir ){
+		this.bir = bir;
 	}
 	
 
