@@ -723,21 +723,26 @@ public class SQLScript {
 	 * @param paras
 	 */
 	private void setIdsParas(ClassDesc desc,Object obj,Map<String, Object> paras){
-		List<String> idCols = desc.getIdCols();
-		if(idCols.size()==1){
-			paras.put(idCols.get(0), obj);
+		List<String> idAttrs = desc.getIdAttrs();
+		if(idAttrs.size()==1){
+			paras.put(idAttrs.get(0), obj);
 		}else{
 			//来自对象id的属性.
+			List<String> idClos = desc.getIdCols();
+			
 			Map<String,Object> map = desc.getIdMethods();
-			for(String idCol:idCols){
+			for(int i=0;i<idAttrs.size();i++){
+				String idCol = idAttrs.get(i);
+				String idAttr = idAttrs.get(i);
 				Method m =  (Method)map.get(idCol);
 				try{
 					Object os = m.invoke(obj, new Object[0]);
-					paras.put(idCol, os);
+					paras.put(idAttr, os);
 				}catch(Exception ex){
 					throw new BeetlSQLException(BeetlSQLException.ID_VALUE_ERROR,"无法设置复合主键:"+idCol,ex);
 				}
 			}
+			
 		}
 	}
 	

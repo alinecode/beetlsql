@@ -40,7 +40,7 @@ public class ClassDesc {
 			throw new RuntimeException(e);
 		}
 		Set<String> ids = table.getIdNames();
-		idCols.addAll(ids);
+//		idCols.addAll(ids);
 		CaseInsensitiveHashMap<String,PropertyDescriptor> tempMap = new CaseInsensitiveHashMap<String,PropertyDescriptor>();
 		
 		
@@ -60,8 +60,9 @@ public class ClassDesc {
 				PropertyDescriptor p = (PropertyDescriptor)tempMap.get(col);
 				propertys.add(p.getName());
 				if(ids.contains(col)){
-					
+					//保持同一个顺序
 					idProperties.add(p.getName());
+					idCols.add(col);
 					Method readMethod =  p.getReadMethod();
 					Class retType = readMethod.getReturnType();
 					idMethods.put(col,readMethod);

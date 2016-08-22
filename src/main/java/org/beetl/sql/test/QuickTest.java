@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.Params;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
@@ -45,13 +44,10 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-		
-//		sql.genPojoCodeToConsole("user");
-		
-		
-		User user = sql.selectSingle("user.selectUserAndDepartment",Params.ins().add("userId", 3).map(), User.class);
-		List<Department> depart = (List<Department> )user.getExt().get("department");
-		System.out.println(depart.size());
+		List<User> list = sql.select("user.selectUserAndDepartment", User.class, null);
+		User user = list.get(0);
+		Department dept = (Department)user.get("department");
+		System.out.println(dept.getName());
 	}
 	
 	

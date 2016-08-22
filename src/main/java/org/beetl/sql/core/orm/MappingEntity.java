@@ -1,17 +1,24 @@
 package org.beetl.sql.core.orm;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.beetl.core.om.MethodInvoker;
 import org.beetl.core.om.ObjectUtil;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.db.ClassDesc;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.StringKit;
 
 
@@ -32,17 +39,89 @@ public class MappingEntity {
 	Class targetClass = null;
 	
 	Map<String, Method> setMethod = new HashMap<String,Method>();
+	
+	Map<String,List> cache = new HashMap<String,List>();
 
 	public void map(List list, SQLManager sm) {
 		if(list.size()==0){
 			return ;
 		}
+		
 		init(list.get(0));
+//		if(mapkey.size()==1){
+//			//有可能是主键映射
+//			String tableName = sm.getNc().getTableName(targetClass);
+//			TableDesc tableDesc = sm.getMetaDataManager().getTable(tableName);
+//			ClassDesc classDesc = tableDesc.getClassDesc(targetClass, sm.getNc());
+//			if(classDesc.getIdAttrs().size()==1&&classDesc.getIdAttrs().containsAll(mapkey.values())){
+//				//外键查询
+//				allInOneQuery(list,tableDesc,classDesc,sm);
+//				return ;
+//				
+//			}else{
+//				//使用下面的普通查询,普通查询也用了缓存，性能也会提高
+//			}
+//		}
+		
+		
 		for (Object obj : list) {
 			mapClassItem(obj, sm);
 
 		}
 
+	}
+	
+	private void allInOneQuery(List list,TableDesc tableDesc,ClassDesc classDesc,SQLManager sm){
+		String idAttr= classDesc.getIdCols().get(0);
+		String idCol = ((CaseInsensitiveOrderSet)tableDesc.getIdNames()).getFirst();
+		StringBuilder sb = new StringBuilder();
+		sb.append("select * from ").append(tableDesc.getSchema()==null?"":tableDesc.getSchema()+".")
+		.append(tableDesc.getName()).append(" where ").append(idCol).append(" in (?)");
+		Set<Object> idValues = new HashSet<Object>(list.size());
+		StringBuilder paras = new StringBuilder();
+		String foreignAttr = this.mapkey.keySet().iterator().next();
+		for(Object o:list){
+			Object id = this.getBeanProperty(o, foreignAttr);
+			idValues.add(id);
+			
+		}
+		for(Object id:idValues){
+			if(id instanceof Number){
+				paras.append(id).append(",");
+			}else{
+				paras.append("'").append(id).append("',");
+			}
+			
+		}
+		paras.setLength(paras.length()-1);
+		//合并成一条查询
+		SQLReady ready = new SQLReady(sb.toString(),new Object[]{paras.toString()});
+		List rets = sm.execute(ready, targetClass);
+		Map<Object,Object> mapRets = new HashMap<Object,Object>();
+		for(Object ret:rets){
+			Object id = this.getBeanProperty(ret, idAttr);
+			mapRets.put(id, ret);
+		}
+		
+		//赋值给list里完成映射		
+	
+		for(Object o:list){
+			Object id = this.getBeanProperty(o, foreignAttr);
+			Object ref = mapRets.get(id);
+			if(this.isSingle){
+				setTailAttr(o,ref);
+			}else{
+				List listRet = new ArrayList(1);
+				listRet.add(ref);
+				setTailAttr(o,listRet);
+			}
+			
+			
+		}
+		
+		
+		
+		
 	}
 
 	private void init(Object obj) {
@@ -56,18 +135,19 @@ public class MappingEntity {
 			this.tailName = StringKit.toLowerCaseFirstOne(className);
 
 		}
+		
+		String fullName = absentPackage ? obj.getClass().getPackage().getName() + "." + target : target;
+		targetClass = getCls(fullName);
 	}
 
 
 
 	private void mapClassItem(Object obj, SQLManager sm) {
-		if (targetClass == null) {
-			String fullName = absentPackage ? obj.getClass().getPackage().getName() + "." + target : target;
-			targetClass = getCls(fullName);
-		}
-
-	
+		
+	    
 		List ret = null;
+		StringBuilder key = new StringBuilder();
+		
 		if (sqlId != null) {
 			Map<String,Object> paras = new HashMap<String,Object>();
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
@@ -75,9 +155,17 @@ public class MappingEntity {
 				String targetAttr = entry.getValue();
 				Object value = getBeanProperty(obj, attr);
 				paras.put(targetAttr, value);
-
+				key.append(value).append("_");
+				
 			}
-			ret = sm.select(sqlId, targetClass, paras);
+			String cacheKey = key.toString();
+			if(cache.containsKey(cacheKey)){
+				ret = cache.get(cacheKey);
+			}else{
+				ret = sm.select(sqlId, targetClass, paras);
+				cache.put(cacheKey, ret);
+			}
+			
 		} else {
 			
 			Object ins = getIns(targetClass);
@@ -86,12 +174,19 @@ public class MappingEntity {
 				String targetAttr = entry.getValue();
 				Object value = getBeanProperty(obj, attr);
 				setBeanProperty(ins, value, targetAttr);
+				key.append(value).append("_");
 
 			}
-			ret = sm.template(ins);
+			String cacheKey = key.toString();
+			if(cache.containsKey(cacheKey)){
+				ret = cache.get(cacheKey);
+			}else{
+				ret = sm.template(ins);
+				cache.put(cacheKey, ret);
+			}
 		}
 
-		if (!this.isSingle) {
+		if (this.isSingle) {
 			if(ret.isEmpty()){
 				setTailAttr(obj, null);
 			}else{
@@ -113,7 +208,7 @@ public class MappingEntity {
 			MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
 			return inv.get(o);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new RuntimeException("POJO属性访问出错:"+attrName,ex);
 		}
 	}
 

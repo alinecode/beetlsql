@@ -191,10 +191,14 @@ public class BeanProcessor {
 		for (int i = 1; i < columnToProperty.length; i++) {
 			//Array.fill数组为-1 ，-1则无对应name
 			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
+				String key = rs.getMetaData().getColumnLabel(i);
+				if(key.equals("beetl_rn")){
+					//sql server 特殊处理，sql'server的翻页使用了额外列作为翻页参数，需要过滤
+					continue;
+				}
 				if(bean instanceof Tail){
 					Tail  bean2 = (Tail)bean;
 					Object value = rs.getObject(i);
-					String key = rs.getMetaData().getColumnLabel(i);
 					key = this.nc.getPropertyName(type, key);
 					bean2.set(key, value);
 				}else{
@@ -202,7 +206,6 @@ public class BeanProcessor {
 					//使用指定方法赋值
 					if(m!=null){
 						Object value = rs.getObject(i);
-						String key = rs.getMetaData().getColumnLabel(i);
 						key = this.nc.getPropertyName(type, key);
 						try {
 							m.invoke(bean, new Object[]{key,value});

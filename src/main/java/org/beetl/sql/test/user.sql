@@ -84,7 +84,7 @@ initUserDatabase
 
 selectUserAndDepartment
 ===
-	select * from user where user_id=#userId#
+	select * from user 
 	#use("userMapping")#
 
 selectRole
@@ -98,6 +98,6 @@ selectRole
 userMapping
 ===
 
-	@ orm.many({"departmentId":"id"},"org.beetl.sql.test.Department");
+	@ orm.single({"departmentId":"id"},"org.beetl.sql.test.Department");
 	@ /*orm.many({"id":"userId"},"user.selectRole","Role")*/;
 
