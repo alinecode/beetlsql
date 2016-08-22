@@ -81,3 +81,23 @@ initUserDatabase
 	) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 		
 
+
+selectUserAndDepartment
+===
+	select * from user where user_id=#userId#
+	#use("userMapping")#
+
+selectRole
+===
+
+	select r.* from user_role ur left join role r on ur.role_id=r.id
+	
+	where ur.user_id=#userId#
+	
+
+userMapping
+===
+
+	@ orm.many({"departmentId":"id"},"org.beetl.sql.test.Department");
+	@ /*orm.many({"id":"userId"},"user.selectRole","Role")*/;
+
