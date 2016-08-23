@@ -61,12 +61,11 @@ public class DebugInterceptor implements Interceptor {
 		long start = (Long)ctx.get("debug.time");
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("======DebugInterceptor After======\n")
-			.append("sqlId : " + ctx.getSqlId()).append("\n")
-			.append("execution time : "+(time-start)+"ms").append("\n");
+		sb.append("\t======DebugInterceptor After [").append(this.getSqlId(ctx.getSqlId())).append("]\n")
+			.append("\texecution time : "+(time-start)+"ms").append("\n");
 		
 		if(ctx.isUpdate()){
-			sb.append("成功更新[");
+			sb.append("\t成功更新[");
 			if(ctx.getResult().getClass().isArray()){
 				int[] ret = (int[])ctx.getResult();
 				for(int i=0;i<ret.length;i++){
@@ -81,7 +80,7 @@ public class DebugInterceptor implements Interceptor {
 			}
 			sb.append("]");
 		}else{
-			sb.append("成功返回[").append(ctx.getResult()).append("]");
+			sb.append("\t成功返回[").append(ctx.getResult()).append("]");
 		}
 		sb.append("\n");
 		println(sb.toString());
@@ -90,9 +89,9 @@ public class DebugInterceptor implements Interceptor {
 	
 	protected void print(String sqlId,String sql,List<Object> paras){
 		StringBuilder sb = new StringBuilder();
-		sb.append("======DebugInterceptor Before======\n")
-			.append("sqlId : "+sqlId).append("\n")
+		sb.append("======DebugInterceptor Before [").append(this.getSqlId(sqlId)).append("]\n")
 			.append("sql ： " + sql)
+	
 			.append("\nparas : " + formatParas(paras));
 		println(sb.toString());
 	}
@@ -136,5 +135,17 @@ public class DebugInterceptor implements Interceptor {
 	protected void println(String str){
 		System.out.println(str);
 	}
+	
+	protected String getSqlId(String sqlId){
+		if(sqlId.length()>50){
+			sqlId = sqlId.substring(0,50);
+			sqlId= sqlId+"...";
+		}
+		return sqlId;
+		
+		
+	}
+	
+
 
 }

@@ -466,6 +466,7 @@ public class SQLManager {
 				totalRow = this.selectSingle(sqlCountId, root, Long.class);
 			}else{
 				root.put(PageQuery.pageFlag, PageQuery.pageObj);
+				//todo: 如果sql并不包含翻页标签，没有报错，会有隐患
 				totalRow = this.selectSingle(sqlId, root, Long.class);
 			}
 			

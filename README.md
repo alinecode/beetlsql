@@ -24,7 +24,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 1. SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试。
 1. 可以自动将sql文件映射为dao接口类
-1. 简单支持关系映射而不引入复杂的OR Mapping概念和技术。
+1. 简单支持支持一对一，一对多，多对多关系映射而不引入复杂的OR Mapping概念和技术。
 1. 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 	
 * 其他

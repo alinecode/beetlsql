@@ -302,6 +302,11 @@ public class SQLScript {
 
 			} else {
 				resultList = mappingSelect(rs, clazz);
+				
+				
+			}
+			this.callInterceptorAsAfter(ctx, resultList);
+			if(mapper==null){
 				//1.5.0 feature 
 				if(result.mapingEntrys!=null){
 					for(MappingEntity mapConf:result.mapingEntrys){
@@ -310,7 +315,7 @@ public class SQLScript {
 				}
 			}
 
-			this.callInterceptorAsAfter(ctx, resultList);
+			
 			return resultList;
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);

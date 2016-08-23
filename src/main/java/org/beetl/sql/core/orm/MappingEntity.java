@@ -48,20 +48,20 @@ public class MappingEntity {
 		}
 		
 		init(list.get(0));
-//		if(mapkey.size()==1){
-//			//有可能是主键映射
-//			String tableName = sm.getNc().getTableName(targetClass);
-//			TableDesc tableDesc = sm.getMetaDataManager().getTable(tableName);
-//			ClassDesc classDesc = tableDesc.getClassDesc(targetClass, sm.getNc());
-//			if(classDesc.getIdAttrs().size()==1&&classDesc.getIdAttrs().containsAll(mapkey.values())){
-//				//外键查询
-//				allInOneQuery(list,tableDesc,classDesc,sm);
-//				return ;
-//				
-//			}else{
-//				//使用下面的普通查询,普通查询也用了缓存，性能也会提高
-//			}
-//		}
+		if(mapkey.size()==1){
+			//有可能是主键映射
+			String tableName = sm.getNc().getTableName(targetClass);
+			TableDesc tableDesc = sm.getMetaDataManager().getTable(tableName);
+			ClassDesc classDesc = tableDesc.getClassDesc(targetClass, sm.getNc());
+			if(classDesc.getIdAttrs().size()==1&&classDesc.getIdAttrs().containsAll(mapkey.values())){
+				//外键查询
+				allInOneQuery(list,tableDesc,classDesc,sm);
+				return ;
+				
+			}else{
+				//使用下面的普通查询,普通查询也用了缓存，性能也会提高
+			}
+		}
 		
 		
 		for (Object obj : list) {
@@ -76,9 +76,8 @@ public class MappingEntity {
 		String idCol = ((CaseInsensitiveOrderSet)tableDesc.getIdNames()).getFirst();
 		StringBuilder sb = new StringBuilder();
 		sb.append("select * from ").append(tableDesc.getSchema()==null?"":tableDesc.getSchema()+".")
-		.append(tableDesc.getName()).append(" where ").append(idCol).append(" in (?)");
+		.append(tableDesc.getName()).append(" where ").append(idCol).append(" in (");
 		Set<Object> idValues = new HashSet<Object>(list.size());
-		StringBuilder paras = new StringBuilder();
 		String foreignAttr = this.mapkey.keySet().iterator().next();
 		for(Object o:list){
 			Object id = this.getBeanProperty(o, foreignAttr);
@@ -86,28 +85,24 @@ public class MappingEntity {
 			
 		}
 		for(Object id:idValues){
-			if(id instanceof Number){
-				paras.append(id).append(",");
-			}else{
-				paras.append("'").append(id).append("',");
-			}
+			sb.append("?,");
 			
 		}
-		paras.setLength(paras.length()-1);
+		
+		sb.setLength(sb.length()-1);
+		sb.append(")");
 		//合并成一条查询
-		SQLReady ready = new SQLReady(sb.toString(),new Object[]{paras.toString()});
+		SQLReady ready = new SQLReady(sb.toString(),idValues.toArray());
 		List rets = sm.execute(ready, targetClass);
 		Map<Object,Object> mapRets = new HashMap<Object,Object>();
 		for(Object ret:rets){
 			Object id = this.getBeanProperty(ret, idAttr);
 			mapRets.put(id, ret);
-		}
-		
+		}		
 		//赋值给list里完成映射		
-	
 		for(Object o:list){
-			Object id = this.getBeanProperty(o, foreignAttr);
-			Object ref = mapRets.get(id);
+			Object foreignId = this.getBeanProperty(o, foreignAttr);
+			Object ref = mapRets.get(foreignId);
 			if(this.isSingle){
 				setTailAttr(o,ref);
 			}else{
