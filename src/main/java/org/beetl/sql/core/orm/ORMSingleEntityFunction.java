@@ -20,7 +20,7 @@ public class ORMSingleEntityFunction extends MappingFunctionHelper implements Fu
 
 	@Override
 	public Object call(Object[] paras, Context ctx) {
-		this.parse(true, paras, ctx);
+		this.parse(true, false,paras, ctx);
 		return null;
 	}
 

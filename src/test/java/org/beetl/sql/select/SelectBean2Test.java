@@ -2,7 +2,6 @@ package org.beetl.sql.select;
 
 import java.util.List;
 
-import org.beetl.sql.MySqlConnectoinSource;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
@@ -18,7 +17,7 @@ public class SelectBean2Test {
 	@Before
 	public void before(){
 		loader = new ClasspathLoader("/sql/mysql");
-		manager = new SQLManager(new MySqlStyle(), loader, new MySqlConnectoinSource());
+		manager = new SQLManager(new MySqlStyle(), loader, new org.beetl.sql.test.MySqlConnectoinSource());
 	}
 	
 	@Test

@@ -21,7 +21,7 @@ public class ORMManyEntityFunction extends MappingFunctionHelper implements Func
 
 	@Override
 	public Object call(Object[] paras, Context ctx) {
-		this.parse(false, paras, ctx);
+		this.parse(false, false,paras, ctx);
 		return null;
 	}
 

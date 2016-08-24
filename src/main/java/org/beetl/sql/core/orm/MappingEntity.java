@@ -28,19 +28,19 @@ import org.beetl.sql.core.kit.StringKit;
  *
  */
 public class MappingEntity {
-	private String target;
-	private boolean isSingle = false;
-	Map<String, String> mapkey;
-	String sqlId = null;
+	protected String target;
+	protected boolean isSingle = false;
+	protected Map<String, String> mapkey;
+	protected String sqlId = null;
 
 	//
-	String tailName;
-	boolean absentPackage = false;
-	Class targetClass = null;
+	protected String tailName;
+	protected boolean absentPackage = false;
+	protected Class targetClass = null;
 	
-	Map<String, Method> setMethod = new HashMap<String,Method>();
+	protected Map<String, Method> setMethod = new HashMap<String,Method>();
 	
-	Map<String,List> cache = new HashMap<String,List>();
+   Map<String,List> cache = new HashMap<String,List>();
 
 	public void map(List list, SQLManager sm) {
 		if(list.size()==0){
@@ -119,7 +119,7 @@ public class MappingEntity {
 		
 	}
 
-	private void init(Object obj) {
+	protected void init(Object obj) {
 		if (target.indexOf(".") == -1) {
 			// 参数不带包名
 			this.tailName = StringKit.toLowerCaseFirstOne(target);
@@ -137,7 +137,7 @@ public class MappingEntity {
 
 
 
-	private void mapClassItem(Object obj, SQLManager sm) {
+	protected void mapClassItem(Object obj, SQLManager sm) {
 		
 	    
 		List ret = null;
@@ -197,7 +197,7 @@ public class MappingEntity {
 
 
 
-	private Object getBeanProperty(Object o, String attrName) {
+	protected Object getBeanProperty(Object o, String attrName) {
 
 		try {
 			MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
@@ -207,7 +207,7 @@ public class MappingEntity {
 		}
 	}
 
-	private void setBeanProperty(Object o, Object value, String attrName) {
+	protected void setBeanProperty(Object o, Object value, String attrName) {
 		Method m = setMethod.get(attrName);
 		if(m==null){
 			try {
@@ -233,7 +233,7 @@ public class MappingEntity {
 		
 	}
 
-	private void setTailAttr(Object o, Object value) {
+	protected void setTailAttr(Object o, Object value) {
 		if (o instanceof Tail) {
 			((Tail) o).set(tailName, value);
 		} else {
@@ -251,7 +251,7 @@ public class MappingEntity {
 		}
 	}
 
-	private Object getIns(Class cls) {
+	protected Object getIns(Class cls) {
 		try {
 
 			return cls.newInstance();
@@ -261,7 +261,7 @@ public class MappingEntity {
 
 	}
 
-	private Class getCls(String fullName) {
+	protected Class getCls(String fullName) {
 		Class cls = null;
 
 		try {

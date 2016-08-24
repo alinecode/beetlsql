@@ -47,6 +47,9 @@ public class BeetlSQLException extends RuntimeException {
 	public static final int 	ID_AUTOGEN_ERROR  = 15;
 	
 	public static final int 	ORM_ERROR  = 16;
+	public static final int 	ORM_LAZY_ERROR  = 17;
+	
+	
 		
 	int code ;
 	

@@ -15,7 +15,7 @@ public class MappingFunctionHelper  {
 
 	
 	
-	protected void parse(boolean single,Object[] paras,Context ctx){
+	protected void parse(boolean single,boolean lazy,Object[] paras,Context ctx){
 		if(ctx.getGlobal("_page")!=null){
 			//翻页查询
 			return ;
@@ -37,7 +37,13 @@ public class MappingFunctionHelper  {
 		if(list==null){
 			list = new LinkedList<MappingEntity>();
 		}
-		MappingEntity mappingEntity = new MappingEntity();
+		MappingEntity mappingEntity = null;
+		if(lazy){
+			 mappingEntity = new LazyMappingEntity();
+		}else{
+			 mappingEntity = new MappingEntity();
+		}
+		
 		mappingEntity.setSingle(single);
 		mappingEntity.setMapkey(mapkey);
 		mappingEntity.setTarget(className);
