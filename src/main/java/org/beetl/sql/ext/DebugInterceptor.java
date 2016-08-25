@@ -2,7 +2,6 @@ package org.beetl.sql.ext;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -10,8 +9,10 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
 import org.beetl.sql.core.kit.EnumKit;
 
-/** 控制台输出sql
- * @author joelli
+/**
+ * Debug重新美化版本
+ * @author darren xiandafu
+ * @version 2016年8月25日
  *
  */
 public class DebugInterceptor implements Interceptor {
@@ -30,7 +31,12 @@ public class DebugInterceptor implements Interceptor {
 			ctx.put("debug.time", System.currentTimeMillis());
 		}
 	
-		print(sqlId,ctx.getSql(),ctx.getParas());
+
+		StringBuilder sb = new StringBuilder();
+		String lineSeparator = System.getProperty("line.separator", "\n");
+		sb.append("┏━━━━━ Debug [").append(this.getSqlId(sqlId)).append("] ━━━").append(lineSeparator)
+		.append("┣ SQL：\t " + ctx.getSql().replaceAll("\\s+", " ")).append(lineSeparator)
+		.append("┣ 参数：\t " + formatParas(ctx.getParas())).append(lineSeparator);
 		RuntimeException ex = new  RuntimeException();
 		StackTraceElement[] traces = ex.getStackTrace();
 		boolean found = false ;
@@ -38,62 +44,45 @@ public class DebugInterceptor implements Interceptor {
 			if(!found&&tr.getClassName().indexOf("SQLManager")!=-1){
 				found = true ;	
 			}
-			
 			if(found&&!tr.getClassName().startsWith("org.beetl.sql.core")&&!tr.getClassName().startsWith("com.sun")){
 				//startwith("com.sun"),proxy call,please refer to MapperJava Proxy since beetlsql 2.0
 				//found 
 				String className = tr.getClassName();
 				String mehodName = tr.getMethodName();
 				int line = tr.getLineNumber();
-				println("location:"+className+"."+mehodName+" "+line);
+				sb.append("┣ 位置：\t "+className+"."+mehodName+"("+tr.getFileName()+":"+line+")");
 				break ;
 			}
 		}
-		
-		return ;
-		
-
+		println(sb.toString());
 	}
 
 	@Override
 	public void after(InterceptorContext ctx) {
 		long time = System.currentTimeMillis();
 		long start = (Long)ctx.get("debug.time");
-		
+		String lineSeparator = System.getProperty("line.separator", "\n");
 		StringBuilder sb = new StringBuilder();
-		sb.append("\t======DebugInterceptor After [").append(this.getSqlId(ctx.getSqlId())).append("]\n")
-			.append("\texecution time : "+(time-start)+"ms").append("\n");
+		sb.append("┣ 时间：\t "+(time-start)+"ms").append(lineSeparator);
 		
 		if(ctx.isUpdate()){
-			sb.append("\t成功更新[");
+			sb.append("┣ 更新：\t [");
 			if(ctx.getResult().getClass().isArray()){
 				int[] ret = (int[])ctx.getResult();
 				for(int i=0;i<ret.length;i++){
+					if(i>0) sb.append(",");
 					sb.append(ret[i]);
-					if(i!=ret.length-1){
-						sb.append(",");
-					}
 				}
-				
 			}else{
 				sb.append(ctx.getResult());
 			}
-			sb.append("]");
+			sb.append("]").append(lineSeparator);
 		}else{
-			sb.append("\t成功返回[").append(ctx.getResult()).append("]");
+			sb.append("┣ 结果：\t [").append(ctx.getResult()).append("]").append(lineSeparator);
 		}
-		sb.append("\n");
+		sb.append("┗━━━━━ Debug [").append(this.getSqlId(ctx.getSqlId())).append("] ━━━").append(lineSeparator);
 		println(sb.toString());
 
-	}
-	
-	protected void print(String sqlId,String sql,List<Object> paras){
-		StringBuilder sb = new StringBuilder();
-		sb.append("======DebugInterceptor Before [").append(this.getSqlId(sqlId)).append("]\n")
-			.append("sql ： " + sql)
-	
-			.append("\nparas : " + formatParas(paras));
-		println(sb.toString());
 	}
 	
 	protected boolean isDebugEanble(String sqlId){
@@ -103,7 +92,6 @@ public class DebugInterceptor implements Interceptor {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	

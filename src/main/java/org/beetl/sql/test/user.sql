@@ -85,6 +85,7 @@ initUserDatabase
 selectUserAndDepartment
 ===
 	select * from user 
+	where 1 = 1
 	#use("userMapping")#
 
 selectRole

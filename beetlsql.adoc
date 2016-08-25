@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.5.2 (204K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.5.3 (204K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
 
 
@@ -1352,15 +1352,15 @@ SqlManager sqlManager = new SqlManager(source,mysql,loader,nc ,new Interceptor[]
 
 [source,java]
 ----------------------------
-	======DebugInterceptor Before======
-	sqlId :user.updatexxx
-	sql ： insert into user (id,name,age) values (?,?,?)
-	paras : [4, old, null]
-	location:org.beetl.sql.test.QuickTest.main 66
-	======DebugInterceptor After======
-	sqlId : user.updatexxx
-	execution time : 54ms
-	成功更新[1]
+
+┏━━━━━ Debug [user.selectUserAndDepartment] ━━━
+┣ SQL：	 select * from user where 1 = 1 
+┣ 参数：	 []
+┣ 位置：	 org.beetl.sql.test.QuickTest.main(QuickTest.java:47)
+┣ 时间：	 23ms
+┣ 结果：	 [3]
+┗━━━━━ Debug [user.selectUserAndDepartment] ━━━
+
 ----------------------------
 	
 
@@ -1375,6 +1375,8 @@ BeetlSql可以在执行sql前后执行一系列的Intercetor，从而有机会�
 *  监控sql执行较长时间语句，打印并收集。TimeStatInterceptor 类完成
 *  对每一条sql语句执行后输出其sql和参数，也可以根据条件只输出特定sql集合的sql。便于用户调试。DebugInterceptor完成
 *  对sql预计解析，汇总sql执行情况（未完成，需要集成第三方sql分析工具）
+
+
 
 你也可以自行扩展Interceptor类，来完成特定需求。
 如下，在执行数据库操作前会执行befor，通过ctx可以获取执行的上下文参数，数据库成功执行后，会执行after方法
@@ -1616,20 +1618,26 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 
 == ORM
 
-   BeetlSql的Pojo类与数据库表对应，没有关系映射相关特性，除非Pojo实现@Tail 或者继承TailBean（或者实现Tail接口），额外的关系映射才会放到tail属性里供查询的时候
-调用。
+
+.注意
+**********************************************************************
+* BeetlSql的Pojo类与数据库表对应，没有关系映射相关特性，除非Pojo实现@Tail 或者继承TailBean（或者实现Tail接口），额外的关系映射才会放到tail属性里供查询的时候调用。
 
 * 要注意的是，beetlsql的orm 仅仅限于查询结果集，而不包括新增，更新，删除。这些需要调用sqlManager的api直接操作就行了而不像JPA那样还需要成为容器管理对象才能更新
+**********************************************************************
+  
 
-beetlsql 关系映射是在sql语句里通过orm.single和 orm.many 函数进行申明。beetlsql会根据这些申明来完成关系映射
+beetlsql 关系映射是在sql语句里通过orm.single和 orm.many,orm.lazySingle,orm.lazyMany 函数进行申明。beetlsql会根据这些申明来完成关系映射
 
-orm.single,orm.many 函数名字本身说明了是一对一，还是一对多或者多对多。可以放在sql语句任何地方，建议放到头部或者尾部，参数格式有俩种形式，
+orm.single,orm.many ,orm.lazySingle,orm.lazyMany函数名字本身说明了是一对一，还是一对多或者多对多。以及是直接加载还是懒加载。函数可以放在sql语句任何地方，建议放到头部或者尾部，参数格式有俩种形式，
 
-* 使用模板方式查询关系对象，orm.single({"departmentId","id"},"Department") 第一个参数申明了关系映射，即sql查询结果里字段，对应到关系表的查询字段，
-如User表里，departmentId应到Department表的id，beetlsql会根据此关系发起一次template查询。映射的结果集放在第二个参数Department类里，如果Department与User类在同一个包下，可以省略包名，否则需要加上类包名
+* 使用模板方式查询关系对象，orm.single({"departmentId","id"},"Department") 第一个参数申明了关系映射，即sql查询结果里属性（非字段名)，对应到关系表的查询属性，
+如User对象里，departmentId应到Department对象的id，beetlsql会根据此关系发起一次template查询。映射的结果集放在第二个参数Department类里，如果Department与User类在同一个包下，可以省略包名，否则需要加上类包名
 
 * 使用sqlId来查询关系对象，orm.single({"departmentId","id"},"user.selectDepatment","Department")
 第一个参数还是映射关系，第二个参数是一sql查询id，beetlsql将查询此sql语句，将结果集放到第三个参数Deparmtent类里
+
+* lazy 意味着当调用的时候再加载。如果在事务外调用，并不会像hibernate，JPA那样报错，beetlsql会再用一个数据库连接去查询。一般来讲，如果业务代码确定要用，建议不用lazy方式。因为lazy不会有查询优化，性能可能慢一些
 
 
 如上查询关系对象，均放到tail属性里，名称就是类名小写开头，如
@@ -1667,6 +1675,51 @@ List<Role> roles = user.get("role");
 ----------------------------
 
 
+完整的orm查询例子可以参考 https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master
+
+.注意
+**********************************************************************
+lazy方式只能继承TailBean才行，如果实现Tail接口，或者@Tail，你取出来的对象并不是你期望的Pojo，而是LazyEntity，你还需要调用get()方法获取到期数据库查询结果
+，可以参看TailBean代码来实现你的Lazy支持
+**********************************************************************
+
+[source,java]
+----------------------------
+public class TailBean implements Tail {
+	protected Map<String,Object> extMap = new HashMap<String,Object>();
+	boolean hasLazy = false ;
+	public Object get(String key){
+		if(hasLazy){
+			Object o = extMap.get(key);;
+			if(o instanceof LazyEntity ){
+				LazyEntity lazyEntity = (LazyEntity)o;
+				try{
+					Object real = lazyEntity.get();
+					extMap.put(key, real);
+					return real;
+				}catch(RuntimeException ex){
+					throw new BeetlSQLException(BeetlSQLException.ORM_LAZY_ERROR,"Lazy Load Error:"+key+","+ex.getMessage(),ex);
+				}
+				
+				
+			}else{
+				return o;
+			}
+		}else{
+			return extMap.get(key);
+		}
+		
+	}
+	
+	public void set(String key,Object value){
+		if(value instanceof LazyEntity ){
+			hasLazy = true;
+		}
+		this.extMap.put(key, value);
+		
+	}
+	
+----------------------------
 
 == 集成和Demo
 
@@ -1840,7 +1893,7 @@ Trans.rollback()
 **********************************************************************
 可以通过jfinal属性文件来配置sqlManager，比如
 PropKit.use("config.txt", "UTF-8"),然后可以配置
-sql.nc,sql.root，sql.interceptor，sql.dbStyle，具体参考代码
+sql.nc,sql.root，sql.interceptor，sql.dbStyle，具体参考源代码
 
 JFinalBeetlSql.initProp
 **********************************************************************
@@ -1848,6 +1901,8 @@ JFinalBeetlSql.initProp
 .参考
 **********************************************************************
 可以参考demo https://git.oschina.net/xiandafu/jfinal_beet_beetsql_btjson
+demo https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master
+
 **********************************************************************
 
 
