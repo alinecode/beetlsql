@@ -305,7 +305,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		source.setTableDesc(table);
 		if(idType==DBStyle.ID_ASSIGN){
 			Map<String,AssignID> map = new HashMap<String,AssignID>(); 
-			for(String idAttr:idCols){
+			
+			
+			for(String idAttr:classDesc.getIdAttrs()){
 				AssignID assignId = ((Method)classDesc.getIdMethods().get(idAttr)).getAnnotation(AssignID.class);
 				if(assignId!=null&&assignId.value().length()!=0){
 					
