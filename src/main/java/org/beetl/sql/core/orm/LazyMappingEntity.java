@@ -54,7 +54,7 @@ public class LazyMappingEntity extends MappingEntity {
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
 				String attr = entry.getKey();
 				String targetAttr = entry.getValue();
-				Object value = getBeanProperty(obj, attr);
+				Object value = BeanKit.getBeanProperty(obj, attr);
 				paras.put(targetAttr, value);
 				
 			}
@@ -76,8 +76,8 @@ public class LazyMappingEntity extends MappingEntity {
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
 				String attr = entry.getKey();
 				String targetAttr = entry.getValue();
-				Object value = getBeanProperty(obj, attr);
-				setBeanProperty(ins, value, targetAttr);
+				Object value = BeanKit.getBeanProperty(obj, attr);
+				BeanKit.setBeanProperty(ins, value, targetAttr);
 
 			}
 			LazyEntity lazy = new LazyEntity(){

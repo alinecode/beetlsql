@@ -5,6 +5,7 @@ package org.beetl.sql.test;
 import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.IDAutoGen;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
@@ -44,10 +45,25 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-		List<User> list = sql.select("user.selectUserAndDepartment", User.class, null);
-		User user = list.get(0);
-		Department dept = (Department)user.get("department");
-		System.out.println(dept.getName());
+		sql.addIdAutonGen("uuid", new IDAutoGen(){
+			int a = 1000;
+			@Override
+			public Object nextID(String params) {
+				return a++;
+			}
+			
+		});
+		
+//		List<User> list = sql.select("user.selectUserAndDepartment", User.class, null);
+//		User user = list.get(0);
+//		Department dept = (Department)user.get("department");
+//		System.out.println(dept.getName());
+		
+		User user = new User();
+		user.setName("abcddfdf");
+		sql.insert(user);
+		System.out.println(user.getUserid());
+		
 	}
 	
 	

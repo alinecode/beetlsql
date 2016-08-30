@@ -2,6 +2,7 @@ package org.beetl.sql.test;
 import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
+import org.beetl.sql.core.annotatoin.AssignID;
 
 public class User extends TailBean  {
 	private Integer userid ;
@@ -16,6 +17,7 @@ public class User extends TailBean  {
 	public User() {
 	}
 	
+	@AssignID("uuid")
 	public Integer getUserid(){
 		return  userid;
 	}

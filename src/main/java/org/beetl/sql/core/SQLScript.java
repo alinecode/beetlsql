@@ -21,12 +21,15 @@ import java.util.Map.Entry;
 
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
+import org.beetl.core.om.MethodInvoker;
+import org.beetl.core.om.ObjectUtil;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
@@ -108,7 +111,7 @@ public class SQLScript {
 	public int insert(Object paras) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
-		addParaIfAssignId(map);
+		addParaIfAssignId(paras);
 		
 		PreparedStatement ps = null;
 		Connection conn = null;
@@ -139,7 +142,7 @@ public class SQLScript {
 	public int insert(Object paras, KeyHolder holder) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("_root", paras);
-		addParaIfAssignId(map);
+		addParaIfAssignId(paras);
 		
 		PreparedStatement ps = null;
 		Connection conn = null;
@@ -751,7 +754,14 @@ public class SQLScript {
 		}
 	}
 	
-	private void addParaIfAssignId(Map map){
+	private void addParaIfAssignId(Object obj){
+		if(obj instanceof Map) {
+			return ;
+		}
+		if(obj==null) {
+			return;
+		}
+		Class clz = obj.getClass();
 		if (this.sqlSource.getIdType() == DBStyle.ID_ASSIGN&&sqlSource.getAssignIds()!=null) {
 			Map<String, AssignID> ids = sqlSource.getAssignIds();
 			for(Entry<String, AssignID> entry:ids.entrySet()){
@@ -760,7 +770,8 @@ public class SQLScript {
 				String algorithm = assignId.value();
 				String param = assignId.param();
 				Object o = this.sm.getAssignIdByIdAutonGen(algorithm,param,sqlSource.getTableDesc().getName());
-				map.put(attrName, o);
+				BeanKit.setBeanProperty(obj, o, attrName);
+				
 			}
 			
 		}

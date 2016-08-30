@@ -38,7 +38,7 @@ public class MappingEntity {
 	protected boolean absentPackage = false;
 	protected Class targetClass = null;
 	
-	protected Map<String, Method> setMethod = new HashMap<String,Method>();
+
 	
    Map<String,List> cache = new HashMap<String,List>();
 
@@ -80,7 +80,7 @@ public class MappingEntity {
 		Set<Object> idValues = new HashSet<Object>(list.size());
 		String foreignAttr = this.mapkey.keySet().iterator().next();
 		for(Object o:list){
-			Object id = this.getBeanProperty(o, foreignAttr);
+			Object id = BeanKit.getBeanProperty(o, foreignAttr);
 			idValues.add(id);
 			
 		}
@@ -96,12 +96,12 @@ public class MappingEntity {
 		List rets = sm.execute(ready, targetClass);
 		Map<Object,Object> mapRets = new HashMap<Object,Object>();
 		for(Object ret:rets){
-			Object id = this.getBeanProperty(ret, idAttr);
+			Object id = BeanKit.getBeanProperty(ret, idAttr);
 			mapRets.put(id, ret);
 		}		
 		//赋值给list里完成映射		
 		for(Object o:list){
-			Object foreignId = this.getBeanProperty(o, foreignAttr);
+			Object foreignId = BeanKit.getBeanProperty(o, foreignAttr);
 			Object ref = mapRets.get(foreignId);
 			if(this.isSingle){
 				setTailAttr(o,ref);
@@ -148,7 +148,7 @@ public class MappingEntity {
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
 				String attr = entry.getKey();
 				String targetAttr = entry.getValue();
-				Object value = getBeanProperty(obj, attr);
+				Object value = BeanKit.getBeanProperty(obj, attr);
 				paras.put(targetAttr, value);
 				key.append(value).append("_");
 				
@@ -167,8 +167,8 @@ public class MappingEntity {
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
 				String attr = entry.getKey();
 				String targetAttr = entry.getValue();
-				Object value = getBeanProperty(obj, attr);
-				setBeanProperty(ins, value, targetAttr);
+				Object value = BeanKit.getBeanProperty(obj, attr);
+				BeanKit.setBeanProperty(ins, value, targetAttr);
 				key.append(value).append("_");
 
 			}
@@ -197,41 +197,7 @@ public class MappingEntity {
 
 
 
-	protected Object getBeanProperty(Object o, String attrName) {
-
-		try {
-			MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
-			return inv.get(o);
-		} catch (Exception ex) {
-			throw new RuntimeException("POJO属性访问出错:"+attrName,ex);
-		}
-	}
-
-	protected void setBeanProperty(Object o, Object value, String attrName) {
-		Method m = setMethod.get(attrName);
-		if(m==null){
-			try {
-				Class t = o.getClass();
-				MethodInvoker inv = ObjectUtil.getInvokder(t, attrName);
-				if(inv==null){
-					throw new BeetlSQLException(BeetlSQLException.ORM_ERROR,"映射为找到属性"+attrName+" in "+t);
-				}
-				String getterName = inv.getMethod().getName();
-				String setterName = "s"+getterName.substring(1);
-				m = t.getMethod(setterName, inv.getReturnType());
-				setMethod.put(attrName, m);
-			} catch (Exception ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		try{
-			m.invoke(o, value);
-		}catch(Exception ex){
-			throw new RuntimeException(ex);
-		}
-		
-		
-	}
+	
 
 	protected void setTailAttr(Object o, Object value) {
 		if (o instanceof Tail) {
