@@ -4,11 +4,13 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.annotatoin.ColumnIgnore;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -28,6 +30,7 @@ public class ClassDesc {
 	Set<String> cols =  new CaseInsensitiveOrderSet<String>();
 	List<String> idProperties =  new ArrayList<String>(3);
 	List<String> idCols =  new ArrayList<String>(3);
+	Map<String,ColumnIgnore> attrIgnores = new HashMap<String,ColumnIgnore>();
 	
 	Map<String,Object> idMethods = new CaseInsensitiveHashMap<String,Object>();
 	
@@ -59,6 +62,10 @@ public class ClassDesc {
 				cols.add(col);
 				PropertyDescriptor p = (PropertyDescriptor)tempMap.get(col);
 				propertys.add(p.getName());
+				ColumnIgnore sqlIgnore = p.getReadMethod().getAnnotation(ColumnIgnore.class);
+				if(sqlIgnore!=null){
+					attrIgnores.put(p.getName(), sqlIgnore);
+				}
 				if(ids.contains(col)){
 					//保持同一个顺序
 					idProperties.add(p.getName());
@@ -125,6 +132,22 @@ public class ClassDesc {
 	}
 	public Map<String,Object> getIdMethods() {
 		return this.idMethods;
+	}
+	
+	public boolean isInsertIgnore(String attrName){
+		ColumnIgnore ignore = attrIgnores.get(attrName);
+		if(ignore==null){
+			return false;
+		}
+		return ignore.insert();
+	}
+	
+	public boolean isUpdateIgnore(String attrName){
+		ColumnIgnore ignore = attrIgnores.get(attrName);
+		if(ignore==null){
+			return false;
+		}
+		return ignore.update();
 	}
 	
 	

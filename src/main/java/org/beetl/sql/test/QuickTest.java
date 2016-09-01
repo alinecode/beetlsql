@@ -2,7 +2,7 @@ package org.beetl.sql.test;
 
 
 
-import java.util.List;
+import java.util.Date;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.IDAutoGen;
@@ -46,7 +46,7 @@ public class QuickTest {
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		sql.addIdAutonGen("uuid", new IDAutoGen(){
-			int a = 1000;
+			int a = 1019;
 			@Override
 			public Object nextID(String params) {
 				return a++;
@@ -60,8 +60,13 @@ public class QuickTest {
 //		System.out.println(dept.getName());
 		
 		User user = new User();
+		user.setUserid(1019);
 		user.setName("abcddfdf");
-		sql.insert(user);
+		user.setBir(new Date());
+		sql.updateById(user);
+		
+	
+		
 		System.out.println(user.getUserid());
 		
 	}

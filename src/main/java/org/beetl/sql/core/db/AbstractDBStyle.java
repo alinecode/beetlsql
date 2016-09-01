@@ -196,6 +196,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		while(cols.hasNext()&&properties.hasNext()){
 			String col = cols.next();
 			String prop = properties.next();
+			if(classDesc.isUpdateIgnore(prop)){
+				continue;
+			}
 			if(idCols.contains(col)){
 				//主键不更新
 				continue ;
@@ -223,6 +226,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		while(cols.hasNext()&&properties.hasNext()){
 			String col = cols.next();
 			String prop = properties.next();
+			if(classDesc.isUpdateIgnore(prop)){
+				continue;
+			}
 			if(idCols.contains(col)){
 				continue ;
 			}
@@ -253,6 +259,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		while(cols.hasNext()&&properties.hasNext()){
 			String col = cols.next();
 			String prop = properties.next();
+			if(classDesc.isUpdateIgnore(prop)){
+				continue;
+			}
 			if(idCols.contains(col)){
 				//主键不更新
 				continue ;
@@ -280,6 +289,10 @@ public abstract class AbstractDBStyle implements DBStyle {
 		while(cols.hasNext()&&attrs.hasNext()){
 			String col = cols.next();
 			String attr = attrs.next();
+			if(classDesc.isInsertIgnore(attr)){
+				continue;
+			}
+				
 			if(idCols.size()==1&&idCols.contains(col)){
 				
 				idType = this.getIdType((Method)classDesc.getIdMethods().get(col));
@@ -295,6 +308,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 					//normal
 				}
 			}
+			
+			
 			colSql.append(appendInsertColumn(cls,table, col));
 			valSql.append(appendInsertVlaue(cls,table, attr));
 		}

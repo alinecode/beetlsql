@@ -3,6 +3,7 @@ import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.ColumnIgnore;
 
 public class User extends TailBean  {
 	private Integer userid ;
@@ -53,6 +54,7 @@ public class User extends TailBean  {
 		this.userName = userName;
 	}
 	
+	@ColumnIgnore(insert=true,update=false)
 	public Date getBir(){
 		return  bir;
 	}
