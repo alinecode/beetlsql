@@ -6,7 +6,8 @@
 * qq群 219324263
 * 当前版本 2.4.0 (190K), 另外还需要beetl 包
 * 文档地址: http://ibeetl.com/guide/beetlsql.html 或者 https://git.oschina.net/xiandafu/beetlsql/attach_files 下载pdf 
- 
+* 单元测试使用  https://github.com/javamonkey/xlsunit 
+
 # beetlsql 特点
 
 
