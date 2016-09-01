@@ -212,13 +212,12 @@
             <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
         </dependency-->
         <!--用于进行测试-->
-		<dependency> 
-				<groupId>com.coamctech</groupId>
-				<artifactId>unit</artifactId>
-			<version>1.1.0</version>
+		<dependency>
+		    <groupId>com.ibeetl</groupId>
+		    <artifactId>xlsunit</artifactId>
+		    <version>1.0.1</version>
 			<scope>test</scope>
 		</dependency>
-
     </dependencies>
 
     <build>
