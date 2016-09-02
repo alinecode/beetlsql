@@ -719,20 +719,26 @@ public class SQLManager {
 			String table = this.nc.getTableName(target);
 			ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
 			
-			Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdCols().get(0));
-			
-			String name = getterMethod.getName();
-			String setterName = name.replaceFirst("get", "set");
-			try{
-				Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
-				Object value = holder.getKey();
-				value = ScalarHandler.convertValueToRequiredType(value, getterMethod.getReturnType());
-				setterMethod.invoke(paras, new Object[]{value});
+			if(desc.getIdCols().isEmpty()){
 				return result;
-			}catch(Exception ex){
+			}else{
+				Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdCols().get(0));
 				
-				throw new UnsupportedOperationException("autoAssignKey failure "+ex.getMessage());
+				String name = getterMethod.getName();
+				String setterName = name.replaceFirst("get", "set");
+				try{
+					Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
+					Object value = holder.getKey();
+					value = ScalarHandler.convertValueToRequiredType(value, getterMethod.getReturnType());
+					setterMethod.invoke(paras, new Object[]{value});
+					return result;
+				}catch(Exception ex){
+					
+					throw new UnsupportedOperationException("autoAssignKey failure "+ex.getMessage());
+				}
 			}
+			
+		
 			
 		}else{
 			SQLScript script = getScript(clazz,INSERT );

@@ -1,5 +1,7 @@
 package org.beetl.sql.test.mysql.entity;
 
+import org.beetl.sql.core.annotatoin.AssignID;
+
 public class Role  {
 	private Integer id ;
 	private String name ;
@@ -7,6 +9,7 @@ public class Role  {
 	public Role() {
 	}
 	
+	@AssignID
 	public Integer getId(){
 		return  id;
 	}
