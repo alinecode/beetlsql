@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.5.3 (204K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.6.0 (208K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
 
 
@@ -53,7 +53,7 @@ maven 方式:
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetl</artifactId>
-	<version>2.5.2</version>
+	<version>2.6.0</version>
 </dependency>
 
 
@@ -811,9 +811,22 @@ public Long getId() {
 
 .备注
 **********************************************************************
-* 如果想要获取自增主键或者序列主键，需要在SQLManager.insert中传入一个KeyHolder
 * 对于支持多种数据库的，这些annotation可以叠加在一起
 **********************************************************************
+
+* @ColumnIgnore ，在beetlsql 内置的insert或者update方法的时候，使用此注解的字段（作用于getter方法）将根据注解的属性来决定是否忽略此字段
+
+[source,java]
+----------------------------
+    @ColumnIgnore(insert=true,update=false)
+	public Date getBir(){
+		return  bir;
+	}
+----------------------------
+
+如上例子，插入的时候忽略bir属性（往往是因为数据库指定了默认值为当前时间），更新的时候不能忽略
+@ColumnIgnore的insert默认是true，update是false，因此也可以直接用 @ColumnIgnore()
+
 
 
 * @TableTemplate() 用于模板查询，如果没有任何值，将按照主键降序排，也就是order by 主键名称 desc 

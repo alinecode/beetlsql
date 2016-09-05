@@ -4,7 +4,7 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.4.0 (190K), 另外还需要beetl 包
+* 当前版本 2.6.0 (208K), 另外还需要beetl 包
 * 文档地址: http://ibeetl.com/guide/beetlsql.html 或者 https://git.oschina.net/xiandafu/beetlsql/attach_files 下载pdf 
 * 单元测试使用  https://github.com/javamonkey/xlsunit 
 
