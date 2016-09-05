@@ -12,16 +12,22 @@ public class GenConfig {
 	public boolean preferBigDecimal = true ;
 	//采用java.util.Date
 	public boolean preferDate = true ;
-	
+	//生成mapper代码
+	public String mapperPkg = null ;
+	// 也生成内置的insert和update相关代码
+	public boolean genAutoSql=false;
 	
 	/**
 	 * 模板
 	 */
 	public static  String template =  null;
+	public static String mapperTemplate=null;
 	static {
 		initTemplate("/org/beetl/sql/ext/gen/pojo.btl");
-		
+		initMapper("/org/beetl/sql/ext/gen/mapper.btl");
 	}
+	
+	
 	
 	//对于数字，优先使用封装类型
 //	private boolean preferPrimitive = false ;
@@ -88,6 +94,18 @@ public class GenConfig {
 	 * @param classPath
 	 */
 	public static void initTemplate(String classPath){
+		template = getTemplate(classPath);
+	}
+	/**
+	 * mapper 代码生成
+	 * @since 2.6.1
+	 * @param classPath
+	 */
+	public static void initMapper(String classPath){
+		mapperTemplate = getTemplate(classPath);
+	}
+	
+	private static String getTemplate(String classPath){
 		try{
 			//系统提供一个pojo模板
 			InputStream ins = GenConfig.class.getResourceAsStream(classPath);
@@ -95,17 +113,27 @@ public class GenConfig {
 			//todo, 根据长度来，不过现在模板不可能超过8k
 			char[] buffer = new char[1024*8];
 			int len = reader.read(buffer);
-			template = new String(buffer,0,len);
+			return new String(buffer,0,len);
 		}catch(Exception ex){
 			throw new RuntimeException(ex);
 		}
 	}
+	
+	
 	/**
 	 * 传入pojo模板
 	 * @param temp
 	 */
 	public static void initStringTemplate(String temp){
 		template = temp;
+	}
+	
+	/**
+	 * 传入mapper代码
+	 * @param temp
+	 */
+	public static void initStringMapperTemplate(String temp){
+		mapperTemplate = temp;
 	}
 	
 	

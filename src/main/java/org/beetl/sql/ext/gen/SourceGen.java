@@ -145,17 +145,39 @@ public class SourceGen {
 		if(config.isDisplay()){
 			System.out.println(code);
 		}else{
-//			new File(srcPath).mkdirs();
-			String file = srcPath+File.separator+pkg.replace('.',File.separatorChar);
-			File f  = new File(file);
-			f.mkdirs();
-			File target = new File(file,className+".java");
-			FileWriter writer = new FileWriter(target);
-			writer.write(code.toString());
-			writer.close();
+			saveSourceFile(pkg,className,code);
 		}
+		
+		
+		if(config.mapperPkg!=null){
+			Template mapperTemplate = gt.getTemplate(config.mapperTemplate);
+			String mapperClass = className+"Dao";
+			mapperTemplate.binding("className", mapperClass);
+			mapperTemplate.binding("package", config.mapperPkg);
+			String mapperHead = "import "+pkg+".*;"+CR;
+			mapperTemplate.binding("imports", mapperHead);
+			String mapperCode = mapperTemplate.render();
+			if(config.isDisplay()){
+				System.out.println(mapperCode);
+				
+			}else{
+				saveSourceFile(config.mapperPkg,mapperClass,mapperCode);
+			}
+		}
+		
+		
 	
 		
+	}
+	
+	private void saveSourceFile(String pkg,String className,String content) throws IOException{
+		String file = srcPath+File.separator+pkg.replace('.',File.separatorChar);
+		File f  = new File(file);
+		f.mkdirs();
+		File target = new File(file,className+".java");
+		FileWriter writer = new FileWriter(target);
+		writer.write(content);;
+		writer.close();
 	}
 	
 	private String getMethodName(String name){
