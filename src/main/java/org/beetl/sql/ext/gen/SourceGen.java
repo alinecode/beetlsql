@@ -154,6 +154,8 @@ public class SourceGen {
 			String mapperClass = className+"Dao";
 			mapperTemplate.binding("className", mapperClass);
 			mapperTemplate.binding("package", config.mapperPkg);
+			mapperTemplate.binding("entityClass", className);
+			
 			String mapperHead = "import "+pkg+".*;"+CR;
 			mapperTemplate.binding("imports", mapperHead);
 			String mapperCode = mapperTemplate.render();
