@@ -2,6 +2,8 @@ package org.beetl.sql.ext.gen;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenConfig {
 	//基类，默认就是Object
@@ -12,20 +14,22 @@ public class GenConfig {
 	public boolean preferBigDecimal = true ;
 	//采用java.util.Date
 	public boolean preferDate = true ;
-	//生成mapper代码
-	public String mapperPkg = null ;
-	// 也生成内置的insert和update相关代码
-	public boolean genAutoSql=false;
+	
 	
 	/**
 	 * 模板
 	 */
 	public static  String template =  null;
-	public static String mapperTemplate=null;
+	
 	static {
 		initTemplate("/org/beetl/sql/ext/gen/pojo.btl");
-		initMapper("/org/beetl/sql/ext/gen/mapper.btl");
+		
 	}
+	
+	/**
+	 * 同时生成其他代码，比如Mapper
+	 */
+	public List<CodeGen> codeGens = new ArrayList<CodeGen>();
 	
 	
 	
@@ -101,11 +105,8 @@ public class GenConfig {
 	 * @since 2.6.1
 	 * @param classPath
 	 */
-	public static void initMapper(String classPath){
-		mapperTemplate = getTemplate(classPath);
-	}
 	
-	private static String getTemplate(String classPath){
+	public static String getTemplate(String classPath){
 		try{
 			//系统提供一个pojo模板
 			InputStream ins = GenConfig.class.getResourceAsStream(classPath);
@@ -128,13 +129,6 @@ public class GenConfig {
 		template = temp;
 	}
 	
-	/**
-	 * 传入mapper代码
-	 * @param temp
-	 */
-	public static void initStringMapperTemplate(String temp){
-		mapperTemplate = temp;
-	}
 	
 	
 	

@@ -17,6 +17,8 @@ import org.beetl.sql.core.annotatoin.EnumMapping;
  *
  */
 public class EnumKit {
+	
+	
 	private static Map<Class, EnumConfig> cache = new HashMap<Class, EnumConfig>();
 
 	/**
@@ -30,14 +32,14 @@ public class EnumKit {
 			 throw new IllegalArgumentException(c.getName());
 		EnumConfig config = cache.get(c);
 		if (config == null) {
-			
 			init(c);
 			config = cache.get(c);
 		}
-		
-		Enum e =  config.map.get(value);
-		
-		return e;
+		//测试 SQLServer 数据库的 tinyint 类型 会被转为 Short 而如果封装时Key的类型为Integer 则无法取出
+		if(Short.class == value.getClass()) {
+			value = ((Short)value).intValue();
+		}
+		return config.map.get(value);
 	}
 	
 	public static Object getValueByEnum(Object en) {
@@ -77,7 +79,8 @@ public class EnumKit {
 				initNoAnotation(c);
 			}else{
 				String name = db.value();
-				String getter = "get" + StringKit.toUpperCaseFirstOne(name);
+				//参考Hibernate 对简单 Enum 进行支持
+				String getter =EnumMapping.EnumType.STRING.equals(name)?"toString":EnumMapping.EnumType.ORDINAL.equals(name)?"ordinal":"get" + StringKit.toUpperCaseFirstOne(name);
 				Method m = c.getMethod(getter, new Class[] {});
 				Map<Object, Enum> map = new HashMap<Object, Enum>();
 				Map<Enum, Object> map2 = new HashMap(); // db
@@ -91,10 +94,6 @@ public class EnumKit {
 				EnumConfig config = new EnumConfig(map, map2);
 				cache.put(c, config);
 			}
-			
-			
-			
-
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -103,7 +102,6 @@ public class EnumKit {
 	public static class EnumConfig {
 		Map<Object, Enum> map = new HashMap<Object, Enum>();
 		Map<Enum, Object> dbMap = new HashMap(); // db
-
 		public EnumConfig(Map<Object, Enum> map, Map<Enum, Object> dbMap) {
 			this.map = map;
 			this.dbMap = dbMap;
@@ -112,7 +110,6 @@ public class EnumKit {
 	}
 	
 	private static Enum[] getEnumValues(Class c){
-		
 		try {
 			final Method values = c.getMethod("values");
 			java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
@@ -121,13 +118,22 @@ public class EnumKit {
 					return null;
 				}
 			});
-
 			Enum[] temporaryConstants;
 			temporaryConstants = (Enum[]) values.invoke(null);
 			return temporaryConstants;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
+		
+	}
+	public static void main(String[] args){
+		Color c = Color.RED;
+		Object value = EnumKit.getValueByEnum(c);
+		System.out.println(value);
+		
+		String a = "BLUE" ;
+		Color e = (Color)EnumKit.getEnumByValue(Color.class, 1);
+		System.out.println(e);
 		
 	}
 	
@@ -153,16 +159,6 @@ public class EnumKit {
 			this.value = value;
 		}  
 		
-		
 	} 
-	public static void main(String[] args){
-		Color c = Color.BLUE;
-		Object value = EnumKit.getValueByEnum(c);
-		System.out.println(value);
-		
-		String a = "BLUE" ;
-		Color e = (Color)EnumKit.getEnumByValue(Color.class, a);
-		System.out.println(e);
-		
-	}
+	
 }

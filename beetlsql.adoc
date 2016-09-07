@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.6.0 (208K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.6.1 (208K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 **********************************************************************
 
 
@@ -53,7 +53,7 @@ maven 方式:
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetl</artifactId>
-	<version>2.6.0</version>
+	<version>2.6.1</version>
 </dependency>
 
 
@@ -741,19 +741,9 @@ public List<User> selectAll();
 
 对于自动生成的sql，默认不需要任何annotaton，类名对应于表名（通过NameConverstion类），getter方法的属性名对应于列明（也是通过NameConverstion类），但有些情况还是需要anntation。
 
-*   标签 @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
 
-	
-[source,java]
-----------------------------
-@Table(name="user")
-public class QueryUser ..
 
-----------------------------
-	
-	
-注：可以为对象指定一个数据库shcema，如name="cms.user",此时将访问cms库（或者cms用户，对不同的数据库，称谓不一样）下的user数据表
-
+=== @AutoID 和 @AssignID ，@SeqID
 
 * @AutoID,作用于getter方法，告诉beetlsql，这是自增主键,对应于数据自增长
 
@@ -805,7 +795,9 @@ public Long getId() {
 
 
 * @SeqID(name="xx_seq"，作用于getter方法，告诉beetlsql，这是序列主键。
-* @Tail  作用于类上，表示该对象是混合模型，参考下一章混合模型
+
+=== @Tail
+@Tail作用于类上，表示该对象是混合模型，参考下一章混合模型
 
 对于属性名为id的自增主键，不需要加annotation，beetlsql默认就是@AutoID
 
@@ -814,7 +806,9 @@ public Long getId() {
 * 对于支持多种数据库的，这些annotation可以叠加在一起
 **********************************************************************
 
-* @ColumnIgnore ，在beetlsql 内置的insert或者update方法的时候，使用此注解的字段（作用于getter方法）将根据注解的属性来决定是否忽略此字段
+=== @ColumnIgnore
+
+在beetlsql 内置的insert或者update方法的时候，使用此注解的字段（作用于getter方法）将根据注解的属性来决定是否忽略此字段
 
 [source,java]
 ----------------------------
@@ -828,6 +822,65 @@ public Long getId() {
 @ColumnIgnore的insert默认是true，update是false，因此也可以直接用 @ColumnIgnore()
 
 
+=== @EnumMapping
+
+对于Entity使用了枚举作为属性值，可以再枚举类上定义EnumMapping，指出如何将枚举与数据库值互相转化，有四种方法
+
+* 如果没有使用@EnumMapping，则使用枚举的名称作为属性
+
+* @EnumMapping(EnumMapping.EnumType.STRING) 同上，使用枚举名称作为属性，数据库对应列应该是字符列
+
+* @EnumMapping(EnumMapping.EnumType.ORDINAL) 使用枚举的顺序作为属性，数据库对应列应该是int类型，用此作为映射需要防止重构枚举的时候导致数据库也重构，应该慎用
+
+* @EnumMapping(“xxx”)，如果不是上面的的定义，则beetlsql会查找枚举类的xxx属性，用这个值作为属性，比如
+
+[source,java]
+----------------------------
+@EnumMapping("value")
+	public enum Color { 
+		RED("RED",1),BLUE ("BLUE",2);
+		private String name;  
+		private int value;
+		private Color(String name, int value) {  
+		    this.name = name;  
+		    this.value = value;  
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public int getValue() {
+			return value;
+		}
+		public void setValue(int value) {
+			this.value = value;
+		}  
+		
+	} 
+----------------------------
+
+beetlsq 会获取枚举的value属性（调用getValue)来获取枚举属性值
+
+
+
+=== @Table
+
+标签 @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表
+
+	
+[source,java]
+----------------------------
+@Table(name="user")
+public class QueryUser ..
+
+----------------------------
+	
+	
+注：可以为对象指定一个数据库shcema，如name="cms.user",此时将访问cms库（或者cms用户，对不同的数据库，称谓不一样）下的user数据表*
+
+=== @TableTemplate
 
 * @TableTemplate() 用于模板查询，如果没有任何值，将按照主键降序排，也就是order by 主键名称 desc 
 
@@ -859,8 +912,9 @@ public Long getId() {
 minDate,maxDate 是俩个额外的变量,需要定义到pojo类里，DateTemplate也可以有默认值，如果@DateTemplate()，相当于@DateTemplate(accept="min日期字段,max日期字段",compare=">=,<")
 **********************************************************************	
 		
+=== Mapper相关注解
 
-* Mapper中的注解，包括	SqlStatement ，SqlStatementType ，Sql,Param RowSize ，RowStart，具体参考Mapper
+* Mapper中的注解，包括常用的	SqlStatement ，SqlStatementType ，Sql,Param 还有不常用的 RowSize ，RowStart，具体参考Mapper
 
 == BeetlSQL 数据模型
 
@@ -1545,6 +1599,8 @@ where name = #name#
 
 == 代码生成
 
+=== 生成pojo 和 md文件
+
 beetsql支持调用SQLManager.gen... 方法生成表对应的pojo类，如：
 
 [source,java]
@@ -1597,6 +1653,79 @@ public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 
 }
 ----------------------------
+
+
+如果你需要给beetl模板注册函数等扩展，可以在生成sqlManager.genPojoCode之前，先注册扩展函数
+[source,java]
+----------------------------
+SourceGen.gt.registerFunction("xxx",yourFunction)
+
+----------------------------
+、
+这样就可以再代码模板里使用扩展函数了
+
+
+=== 生成更多的代码
+
+可以实现MapperCodeGen的genCode接口，然后添加到 GenConfig里，这样再生成代码后，也会调用自定义的MapperCodeGen来生成更多代码。如系统内置的生成Mapper的代码
+
+[source,java]
+----------------------------
+MapperCodeGen mapper = new MapperCodeGen("com.dao");
+config.codeGens.add(mapper);
+sql.genPojoCodeToConsole("user", config);
+
+----------------------------
+
+这样，除了生成pojo代码外，还生成mapper代码，内置的mapper代码实现如下，供参考
+
+[source,java]
+----------------------------
+public class MapperCodeGen implements CodeGen {
+	String pkg = null;
+	public MapperCodeGen(){
+		
+	}
+	public MapperCodeGen(String pkg){
+		this.pkg = pkg;
+	}
+	public static String mapperTemplate="";
+	static {
+		mapperTemplate = GenConfig.getTemplate("/org/beetl/sql/ext/gen/mapper.btl");
+	}
+	
+	@Override
+	public void genCode(String entityPkg, String entityClass, TableDesc tableDesc,GenConfig config,boolean isDisplay) {
+		if(pkg==null){
+			pkg = entityPkg;
+		}
+		Template template = SourceGen.gt.getTemplate(mapperTemplate);
+		String mapperClass = entityClass+"Dao";
+		template.binding("className", mapperClass);
+		template.binding("package",pkg);
+		template.binding("entityClass", entityClass);
+		
+		String mapperHead = "import "+entityPkg+".*;"+SourceGen.CR;
+		template.binding("imports", mapperHead);
+		String mapperCode = template.render();
+		if(isDisplay){
+			System.out.println();
+			System.out.println(mapperCode);
+		}else{
+			try {
+				SourceGen.saveSourceFile(GenKit.getJavaSRCPath(), pkg, mapperClass, mapperCode);
+			} catch (IOException e) {
+				throw new RuntimeException("mapper代码生成失败",e);
+			}
+		}
+		
+
+	}
+
+}
+
+----------------------------
+
 
 == 直接使用SQLResult
 
@@ -1688,7 +1817,9 @@ List<Role> roles = user.get("role");
 ----------------------------
 
 
-完整的orm查询例子可以参考 https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master
+完整的orm查询例子可以参考 https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master 还有文档
+
+http://my.oschina.net/xiandafu/blog/735809
 
 .注意
 **********************************************************************

@@ -10,6 +10,7 @@ import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.gen.GenConfig;
+import org.beetl.sql.ext.gen.MapperCodeGen;
 
 
 
@@ -52,8 +53,13 @@ public class QuickTest {
 //			
 //		});
 		GenConfig config = new GenConfig();
-		config.mapperPkg = "com.mapper";
-		sql.genPojoCode("user", "com.entity", config);;
+		
+		MapperCodeGen mapper = new MapperCodeGen("com.dao");
+		config.codeGens.add(mapper);
+		sql.genPojoCode("user", "com.entity", config);
+		
+		
+		
 		
 	}
 	

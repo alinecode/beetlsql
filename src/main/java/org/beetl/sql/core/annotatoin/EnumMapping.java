@@ -9,7 +9,12 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumMapping {
-	public String value();
+	public String value() default EnumType.STRING;
+	
+	static public class EnumType{
+		public static final String ORDINAL = "ORDINAL";
+		public static final String STRING = "STRING";
+	}
 }
 
 

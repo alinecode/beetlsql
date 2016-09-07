@@ -145,34 +145,20 @@ public class SourceGen {
 		if(config.isDisplay()){
 			System.out.println(code);
 		}else{
-			saveSourceFile(pkg,className,code);
+			saveSourceFile(srcPath,pkg,className,code);
 		}
 		
 		
-		if(config.mapperPkg!=null){
-			Template mapperTemplate = gt.getTemplate(config.mapperTemplate);
-			String mapperClass = className+"Dao";
-			mapperTemplate.binding("className", mapperClass);
-			mapperTemplate.binding("package", config.mapperPkg);
-			mapperTemplate.binding("entityClass", className);
-			
-			String mapperHead = "import "+pkg+".*;"+CR;
-			mapperTemplate.binding("imports", mapperHead);
-			String mapperCode = mapperTemplate.render();
-			if(config.isDisplay()){
-				System.out.println(mapperCode);
-				
-			}else{
-				saveSourceFile(config.mapperPkg,mapperClass,mapperCode);
-			}
+		for(CodeGen codeGen:config.codeGens){
+			codeGen.genCode(pkg, className, tableDesc, config,config.isDisplay());
 		}
-		
+	
 		
 	
 		
 	}
 	
-	private void saveSourceFile(String pkg,String className,String content) throws IOException{
+	public static  void saveSourceFile(String srcPath,String pkg,String className,String content) throws IOException{
 		String file = srcPath+File.separator+pkg.replace('.',File.separatorChar);
 		File f  = new File(file);
 		f.mkdirs();

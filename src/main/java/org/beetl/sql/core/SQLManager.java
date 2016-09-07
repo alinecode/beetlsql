@@ -36,6 +36,7 @@ import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
+import org.beetl.sql.core.kit.GenKit;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
@@ -1145,7 +1146,7 @@ public class SQLManager {
 	 * @throws Exception
 	 */
 	public void genPojoCode(String table,String pkg,GenConfig config) throws Exception{
-		String srcPath = this.getJavaSRCPath();	
+		String srcPath = GenKit.getJavaSRCPath();	
 		SourceGen gen = new SourceGen(this,table,pkg,srcPath,config );
 		gen.gen();
 	}
@@ -1156,7 +1157,7 @@ public class SQLManager {
 	 * @throws Exception
 	 */
 	public void genPojoCode(String table,String pkg) throws Exception{
-		String srcPath = this.getJavaSRCPath();	
+		String srcPath = GenKit.getJavaSRCPath();	
 		SourceGen gen = new SourceGen(this,table,pkg,srcPath,new GenConfig() );
 		gen.gen();
 	}
@@ -1193,7 +1194,7 @@ public class SQLManager {
 			path = ((ClasspathLoader)sqlLoader).sqlRoot;
 		}
 		String fileName =StringKit.toLowerCaseFirstOne(this.nc.getClassName(table));
-		String target = this.getJavaResourcePath()+"/"+path+"/"+fileName+".md";
+		String target = GenKit.getJavaResourcePath()+"/"+path+"/"+fileName+".md";
 		FileWriter writer = new FileWriter(new File(target));
 		genSQLTemplate(table,writer);
 		writer.close();
@@ -1303,37 +1304,7 @@ public class SQLManager {
 		return metaDataManager;
 	}
 
-	private String getJavaSRCPath(){
-		String srcPath = null;
-		String userDir = System.getProperty("user.dir");
-		if(userDir==null){
-			throw new NullPointerException("用户目录未找到");
-		}
-		File src = new File(userDir,"src");
-		File javaSrc = new File(src.toString(),"/main/java");
-		if(javaSrc.exists()){
-			srcPath = javaSrc.toString();
-		}else{
-			srcPath = src.toString();
-		}		
-		return srcPath;
-	}
 	
-	private String getJavaResourcePath(){
-		String srcPath = null;
-		String userDir = System.getProperty("user.dir");
-		if(userDir==null){
-			throw new NullPointerException("用户目录未找到");
-		}
-		File src = new File(userDir,"src");
-		File resSrc = new File(src.toString(),"/main/resources");
-		if(resSrc.exists()){
-			srcPath = resSrc.toString();
-		}else{
-			srcPath = src.toString();
-		}		
-		return srcPath;
-	}
 
 	public String getDefaultSchema() {
 		
