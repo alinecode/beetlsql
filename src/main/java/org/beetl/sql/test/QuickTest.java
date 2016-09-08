@@ -56,7 +56,7 @@ public class QuickTest {
 		
 		MapperCodeGen mapper = new MapperCodeGen("com.dao");
 		config.codeGens.add(mapper);
-		sql.genPojoCode("user", "com.entity", config);
+		sql.genPojoCodeToConsole("user", config);
 		
 		
 		

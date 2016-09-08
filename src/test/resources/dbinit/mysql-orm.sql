@@ -107,6 +107,25 @@ CREATE TABLE `user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+DROP TABLE IF EXISTS `mysql_type`;
+
+CREATE TABLE `mysql_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gender` tinyint(4) DEFAULT NULL,
+  `age` smallint(6) DEFAULT NULL,
+  `money` decimal(12,2) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `contract` text,
+  `all_contract` longtext,
+  `pic` blob,
+  `version` double DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+
+
 --
 -- Dumping data for table `user_role`
 --

@@ -54,13 +54,10 @@ public class BaseMySqlTest {
 		});
 	}
 	
-//	@Test
+	@Test
 	public void testEnv() throws Exception{
-		sqlManager.genPojoCodeToConsole("department");
-		sqlManager.genPojoCodeToConsole("product_order");
-		sqlManager.genPojoCodeToConsole("role");
-		sqlManager.genPojoCodeToConsole("user");
-		sqlManager.genPojoCodeToConsole("user_role");
+		sqlManager.genPojoCodeToConsole("mysql_type");
+	
 		
 	}
 	
