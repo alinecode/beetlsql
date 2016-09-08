@@ -723,7 +723,7 @@ public class SQLManager {
 			if(desc.getIdCols().isEmpty()){
 				return result;
 			}else{
-				Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdCols().get(0));
+				Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdAttrs().get(0));
 				
 				String name = getterMethod.getName();
 				String setterName = name.replaceFirst("get", "set");

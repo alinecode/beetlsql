@@ -295,13 +295,13 @@ public abstract class AbstractDBStyle implements DBStyle {
 				
 			if(idCols.size()==1&&idCols.contains(col)){
 				
-				idType = this.getIdType((Method)classDesc.getIdMethods().get(col));
+				idType = this.getIdType((Method)classDesc.getIdMethods().get(attr));
 				if(idType==DBStyle.ID_AUTO){
 					continue ; //忽略这个字段
 				}else if(idType==DBStyle.ID_SEQ){
 					
 					colSql.append(appendInsertColumn(cls,table, col));
-					SeqID seqId = ((Method)classDesc.getIdMethods().get(col)).getAnnotation(SeqID.class);				
+					SeqID seqId = ((Method)classDesc.getIdMethods().get(attr)).getAnnotation(SeqID.class);				
 					valSql.append( seqId.name()+".nextval,");
 					continue;
 				}else if(idType==DBStyle.ID_ASSIGN){

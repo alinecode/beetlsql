@@ -6,7 +6,7 @@ import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
 
 public class User extends TailBean  {
-	private Integer userid ;
+	private long userid ;
 	//å¹´çºª123
 	private Integer age ;
 	private Integer departmentId ;
@@ -18,11 +18,11 @@ public class User extends TailBean  {
 	public User() {
 	}
 	
-	@AssignID("uuid")
-	public Integer getUserid(){
+	@AssignID("simple")
+	public long getUserid(){
 		return  userid;
 	}
-	public void setUserid(Integer userid ){
+	public void setUserid(long userid ){
 		this.userid = userid;
 	}
 	

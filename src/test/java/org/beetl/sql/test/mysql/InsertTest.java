@@ -1,11 +1,7 @@
 package org.beetl.sql.test.mysql;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.test.mysql.entity.Role;
 import org.beetl.sql.test.mysql.entity.User;
 import org.beetl.xlsunit.RowHolderFacotoy;
 import org.beetl.xlsunit.VariableTable;
@@ -50,6 +46,15 @@ public class InsertTest extends BaseMySqlTest {
 		
 	}
 	
+	@Test
+	public void testAssign() {
+		Role role = new Role();
+		role.setId(2);
+		role.setName("ok");
+		sqlManager.insert(Role.class,role);
+		
+		
+	}
 	
 	
 	

@@ -7,10 +7,8 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.db.SqlServerStyle;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.ext.gen.GenConfig;
-import org.beetl.sql.ext.gen.MapperCodeGen;
 
 
 
@@ -39,7 +37,7 @@ public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
 
-		MySqlStyle style = new MySqlStyle();
+		SqlServerStyle style = new SqlServerStyle();
 		
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
@@ -52,14 +50,18 @@ public class QuickTest {
 //			}
 //			
 //		});
-		GenConfig config = new GenConfig();
+//		GenConfig config = new GenConfig();
+//		
+//		MapperCodeGen mapper = new MapperCodeGen("com.dao");
+//		config.codeGens.add(mapper);
+//		sql.genPojoCodeToConsole("user", config);
 		
-		MapperCodeGen mapper = new MapperCodeGen("com.dao");
-		config.codeGens.add(mapper);
-		sql.genPojoCodeToConsole("user", config);
+//		User user = new User();
+//		user.setUserid(123);
+//		user.setUserName("bnac");
+//		sql.insert(user);
 		
-		
-		
+		sql.genSQLFile("user");
 		
 	}
 	

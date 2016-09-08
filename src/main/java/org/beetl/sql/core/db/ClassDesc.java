@@ -72,7 +72,7 @@ public class ClassDesc {
 					idCols.add(col);
 					Method readMethod =  p.getReadMethod();
 					Class retType = readMethod.getReturnType();
-					idMethods.put(col,readMethod);
+					idMethods.put(p.getName(),readMethod);
 					
 					
 					 if( java.util.Date.class.isAssignableFrom(retType)	

@@ -742,7 +742,7 @@ public class SQLScript {
 			for(int i=0;i<idAttrs.size();i++){
 				String idCol = idAttrs.get(i);
 				String idAttr = idAttrs.get(i);
-				Method m =  (Method)map.get(idCol);
+				Method m =  (Method)map.get(idAttr);
 				try{
 					Object os = m.invoke(obj, new Object[0]);
 					paras.put(idAttr, os);
