@@ -56,7 +56,7 @@ public class BaseMySqlTest {
 	
 	@Test
 	public void testEnv() throws Exception{
-		sqlManager.genPojoCodeToConsole("mysql_type");
+		sqlManager.genPojoCodeToConsole("MUTIPLE_KEYS");
 	
 		
 	}

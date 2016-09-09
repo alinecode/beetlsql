@@ -544,7 +544,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		ClassDesc classDesc = table.getClassDesc(cls,nameConversion );
 		condition = " where 1=1";	
 		
-		 Set<String>  colIds = table.getIdNames();
+		 List<String>  colIds = classDesc.getIdCols();
 		 List<String> propertieIds = classDesc.getIdAttrs();
 		 this.checkId(colIds, propertieIds,cls.getName());
 		 Iterator<String> colIt = colIds.iterator();

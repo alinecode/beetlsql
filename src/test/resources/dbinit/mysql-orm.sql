@@ -124,6 +124,13 @@ CREATE TABLE `mysql_type` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `mutiple_keys`;
+CREATE TABLE `mutiple_keys` (
+  `user_name` varchar(255) NOT NULL,
+  `gender` int(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`user_name`,`gender`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 --
