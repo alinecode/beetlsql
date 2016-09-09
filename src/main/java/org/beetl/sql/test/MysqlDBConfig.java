@@ -11,7 +11,7 @@ public class MysqlDBConfig {
     public static String dbName = "test";
     public static String password = "123456";
     public static String userName = "test";
-    public static String url = "jdbc:sqlserver://LIJIAZHI:1833;" +  
+    public static String url = "jdbc:sqlserver://LIJIAZHI:1433;" +  
     		   "databaseName=test;user=test;password=123456;";  ;
     
     

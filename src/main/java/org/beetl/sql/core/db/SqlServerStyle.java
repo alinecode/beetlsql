@@ -21,12 +21,19 @@ public class SqlServerStyle extends AbstractDBStyle {
 				+" ) inner_query ) select * from query where beetl_rn between "+HOLDER_START+OFFSET+HOLDER_END+" and "+HOLDER_START+PAGE_END+HOLDER_END;
 	}
 
+//	@Override
+//	public void initPagePara(Map<String, Object> paras,long start,long size) {
+//		paras.put(DBStyle.OFFSET,(start-1)*size+1);//开始索引   (pageNumber-1)*pageSize+1
+//		paras.put(DBStyle.PAGE_END,start*size);//结束索引 pageNumber*pageSize
+//	}
+
+	
 	@Override
 	public void initPagePara(Map<String, Object> paras,long start,long size) {
-		paras.put(DBStyle.OFFSET,(start-1)*size+1);//开始索引   (pageNumber-1)*pageSize+1
-		paras.put(DBStyle.PAGE_END,start*size);//结束索引 pageNumber*pageSize
+		long s = start+(this.offsetStartZero?1:0);
+		paras.put(DBStyle.OFFSET,s);
+		paras.put(DBStyle.PAGE_END,size);
 	}
-
 
 
 	@Override
