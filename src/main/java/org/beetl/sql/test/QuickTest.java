@@ -61,7 +61,8 @@ public class QuickTest {
 //		user.setUserName("bnac");
 //		sql.insert(user);
 		
-		sql.genSQLFile("user");
+//		sql.genSQLFile("user");
+		sql.genSQLTemplateToConsole("user");
 		
 	}
 	

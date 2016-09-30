@@ -32,7 +32,7 @@ public class SqlServerStyle extends AbstractDBStyle {
 	public void initPagePara(Map<String, Object> paras,long start,long size) {
 		long s = start+(this.offsetStartZero?1:0);
 		paras.put(DBStyle.OFFSET,s);
-		paras.put(DBStyle.PAGE_END,s+size-1);
+		paras.put(DBStyle.PAGE_END,size);
 	}
 
 
