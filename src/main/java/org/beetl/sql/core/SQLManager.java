@@ -1260,6 +1260,29 @@ public class SQLManager {
 		}
 	}
 	
+	/**
+	 * 生成内置的sql，插入，更新，主键查找，删除语句
+	 * @param cls
+	 */
+	public void genBuiltInSqlToConsole(Class cls){
+		StringBuilder sb = new StringBuilder();
+		SQLSource tempSource =  this.dbStyle.genSelectById(cls);
+		sb.append(tempSource.getTemplate());
+		sb.append("\n\r");
+		
+		tempSource = this.dbStyle.genUpdateById(cls);
+		sb.append(tempSource.getTemplate());
+		sb.append("\n\r");
+		tempSource = this.dbStyle.genDeleteById(cls);
+		sb.append(tempSource.getTemplate());
+		sb.append("\n\r");
+		tempSource = this.dbStyle.genInsert(cls);
+		
+		sb.append(tempSource.getTemplate());
+		sb.append("\n\r");
+		System.out.println(sb.toString());
+	}
+	
 	public <T> T getMapper(Class<T> mapperInterface){
 		return this.mapperBuilder.getMapper(mapperInterface);
 	}

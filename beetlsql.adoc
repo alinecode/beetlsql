@@ -120,7 +120,7 @@ DBStyle mysql = new MySqlStyle();
 // sql语句放在classpagth的/sql 目录下
 SQLLoader loader = new ClasspathLoader("/sql");
 // 数据库命名跟java命名一样，所以采用DefaultNameConversion，还有一个是UnderlinedNameConversion，下划线风格的
-UnderlinedNameConversion nc = new  UnderlinedNameConversion();
+所以采用DefaultNameConversion nc = new  所以采用DefaultNameConversion();
 // 最后，创建一个SQLManager,DebugInterceptor 不是必须的，但可以通过它查看sql执行情况
 SQLManager sqlManager = new SQLManager(mysql,loader,source,nc,new Interceptor[]{new DebugInterceptor()});
 	
@@ -519,6 +519,7 @@ PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id des
 
 ==== 生成Pojo代码和SQ片段
 
+用于开发阶段根据表名来生成pojo代码和相应的sql文件
 
 * genPojoCodeToConsole(String table), 根据表名生成pojo类，输出到控制台.
 
@@ -534,6 +535,7 @@ PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id des
 
 * genALL(String pkg,GenConfig config,GenFilter filter)   生成所有的pojo代码和sql模版，
 
+* genBuiltInSqlToConsole(Class z) 根据类来生成内置的增删改查sql语句，并打印到控制台
 
 [source,java,numbered]
 ----------------------------
@@ -1978,6 +1980,22 @@ public class MyServiceImpl implements MyService {
 * configFileResource  扩展配置文件位置，beetlsql将读取此配置文件覆盖beetlsql默认选项
 * defaultSchema  数据库访问schema
 
+
+
+
+.参考
+**********************************************************************
+可以参考demo https://git.oschina.net/xiandafu/springbeetlsql
+
+
+**********************************************************************
+
+=== SpringBoot集成
+
+采用java config方式
+
+参考 demo ，http://git.oschina.net/xiandafu/springboot_beetl_beetlsql
+
 spring boot集成需要注意的是要添加spring-devtools.properties文件,并配置如下选项
 
 [source,test]
@@ -1988,19 +2006,6 @@ restart.include.beetlsql=/beetlsql-xxx..jar
 ----------------------------
 
 spring-devtools.properties 为spring boot的配置文件,位于META-INF目录下
-
-
-.参考
-**********************************************************************
-可以参考demo https://git.oschina.net/xiandafu/springbeetlsql
-spring boot集成可以参考 demo 
-http://git.oschina.net/xiandafu/springboot_beetl_beetlsql
-
-**********************************************************************
-
-   
-
-   
 
 === JFinal集成和Demo
 

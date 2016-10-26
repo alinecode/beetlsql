@@ -7,7 +7,11 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({   
 	GeneralUserTest.class,   
 	KeysTest.class,
-	InsertTest.class 
+	InsertTest.class,
+	MapperTest.class,
+	OrmTest.class,
+	TypeTest.class
+	
 })  
 
 public class AllMysqlTestSuit {

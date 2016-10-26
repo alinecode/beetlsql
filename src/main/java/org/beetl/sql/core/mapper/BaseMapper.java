@@ -16,7 +16,7 @@ public interface BaseMapper<T> {
 	/* insert */
 	void insert(T entity);
 	void insert(T entity,boolean assignKey);
-	void batchSave(List<T> list);
+	void insertBatch(List<T> list);
 	KeyHolder insertReturnKey(T entity);
 	
 	/*update*/
@@ -46,6 +46,7 @@ public interface BaseMapper<T> {
 	List<T> execute(String sql,Object... args);
 	
 	int executeUpdate(String sql,Object... args );
+	
 	
 	SQLManager getSQLManager();
 

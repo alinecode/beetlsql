@@ -42,26 +42,7 @@ public class QuickTest {
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-//		sql.addIdAutonGen("uuid", new IDAutoGen(){
-//			int a = 1019;
-//			@Override
-//			public Object nextID(String params) {
-//				return a++;
-//			}
-//			
-//		});
-//		GenConfig config = new GenConfig();
-//		
-//		MapperCodeGen mapper = new MapperCodeGen("com.dao");
-//		config.codeGens.add(mapper);
-//		sql.genPojoCodeToConsole("user", config);
-		
-//		User user = new User();
-//		user.setUserid(123);
-//		user.setUserName("bnac");
-//		sql.insert(user);
-		
-		sql.genSQLFile("user");
+		sql.genBuiltInSqlToConsole(User.class);
 		
 	}
 	
