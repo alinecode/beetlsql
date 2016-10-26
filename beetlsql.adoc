@@ -14,7 +14,8 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.6.4 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.6.5 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+
 **********************************************************************
 
 
@@ -53,7 +54,7 @@ maven 方式:
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetl</artifactId>
-	<version>2.6.1</version>
+	<version>2.6.4</version>
 </dependency>
 
 
@@ -392,7 +393,8 @@ queryNewUser$count
 ===
 select count(1) from user
 ----------------------------
-   
+
+对于俩个相似的sql语句,你可以使用use函数,把公共部分提炼出来.   
 
 大部分情况下,都不需要2个sql来完成,一个sql也可以,要求使用page函数或者pageTag标签,这样才能同时获得查询结果集总数和当前查询的结果
 
@@ -407,8 +409,6 @@ a.*,b.name role_name
 from user a left join b ...
 ----------------------------
 
-    
-   
 
 如上sql,会在查询的时候转为俩条sql语句
 
@@ -434,6 +434,17 @@ List<User> list = query.getList();
    
 
 PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id desc"
+
+.垮数据库支持
+**********************************************************************
+如果你打算使用PageQuery做翻页,且只想提供一个sql语句+page函数,那考虑到垮数据库,应该不要在这个sql语句里包含排序,因为大部分数据库都不支持. page函数生成的查询总数sql语句,因为包含了oder by,在大部分数据库都是会报错的的,比如:select count(1) form user order by name,在sqlserver,mysql,postgres都会出错,oracle允许这种情况, 因此,如果你要使用一条sql语句+page函数,建议排序用PageQuery对象里有排序属性oderBy,可用于排序,而不是放在sql语句里.
+
+如果你不打算使用PageQuery+一条sql的方式,而是用俩条sql来分别翻页查询和统计总数,那无所谓
+
+或者你直接使用select 带有起始和读取总数的接口,也没有关系,可以在sql语句里包含排序
+
+**********************************************************************
+   
 
 
 === 更新API
@@ -671,7 +682,7 @@ public interface UserDao extends BaseMapper<User> {
 	
 	
 	
-- Interface 可以继承BaseMapper，这样可以使用BaseMapper的一些公共方法，如insert，unqiue,updateById,deleteById等，也可以不继承
+- Interface 可以继承BaseMapper，这样可以使用BaseMapper的一些公共方法，如insert，unqiue,single,updateById,deleteById等，也可以不继承
 
 - Interface里的方法名与Sql文件对应，如果方法名对应错了，会在调用的时候报错找不到sql。
 
@@ -720,7 +731,7 @@ params列表按照参数申明顺序,_root保留字 代表查询得root对象,_s
 * 参数列表里如果有List 或者Map[],则期望对应的是一个updateBatch操作
 * 参数列表里如果@RowStart ,@RowSize,则认为是翻页语句
 * 参数里如果有PageQuery,则认为是翻页查询
-* 在查询中，返回的是List，但类型非Mapper指定的类型，无论是用@Sql ,还是 @SqlStatement，需要用returnType来说明，如上例子allNames 返回一个List<String>
+* 在查询中，返回的是List，但类型非Mapper指定的类型，无论是用@Sql ,还是 @SqlStatement，需要用returnType来说明，如上例子allNames 返回一个List<String>而不是List<User>,因此需要使用returnType做额外说明
 
 
 Mapper 也支持使用JDBC SQL，这时候需要采用Sql注解
@@ -796,15 +807,18 @@ public Long getId() {
 
 * @SeqID(name="xx_seq"，作用于getter方法，告诉beetlsql，这是序列主键。
 
-=== @Tail
-@Tail作用于类上，表示该对象是混合模型，参考下一章混合模型
-
 对于属性名为id的自增主键，不需要加annotation，beetlsql默认就是@AutoID
 
 .备注
 **********************************************************************
 * 对于支持多种数据库的，这些annotation可以叠加在一起
 **********************************************************************
+
+=== @Tail
+
+@Tail作用于类上，表示该对象是混合模型，参考下一章混合模型,sql查询无法在pojo映射的列或者结果集将使用Tail指定的方法
+
+
 
 === @ColumnIgnore
 
@@ -1126,6 +1140,8 @@ TAG.trim= org.beetl.sql.core.engine.TrimTag
 TAG.pageTag= org.beetl.sql.core.engine.PageQueryTag
 
 ----------------------------
+
+EmptyExpressionFunction 用在很多地方,如template 类操作,where语句里的条件判断,它 沿用了beetl习惯,对于不存在的变量,或者为null的变量,都返回true,同时如果是字符串,为空字符串也返回true,数组,集合也是这样,有些项目,认为空字符串应该算有值而不应该返回true,你可以参考EmptyExpressionFunction的实现,按照项目语义来定义isEmpty
 
 
 

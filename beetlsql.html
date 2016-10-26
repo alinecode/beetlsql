@@ -2157,7 +2157,17 @@ p {
 <li><a href="#true--6">4. 命名转化，表和列名映射</a></li>
 <li><a href="#true--7">5. 复合主键</a></li>
 <li><a href="#true-mapper">6. 使用Mapper</a></li>
-<li><a href="#truebeetlsql-annotation">7. BeetlSQL Annotation</a></li>
+<li><a href="#truebeetlsql-annotation">7. BeetlSQL Annotation</a>
+<ul class="sectlevel2">
+<li><a href="#true-autoid-assignid-seqid">7.1. @AutoID 和 @AssignID ，@SeqID</a></li>
+<li><a href="#true-tail">7.2. @Tail</a></li>
+<li><a href="#true-columnignore">7.3. @ColumnIgnore</a></li>
+<li><a href="#true-enummapping">7.4. @EnumMapping</a></li>
+<li><a href="#true-table">7.5. @Table</a></li>
+<li><a href="#true-tabletemplate">7.6. @TableTemplate</a></li>
+<li><a href="#truemapper">7.7. Mapper相关注解</a></li>
+</ul>
+</li>
 <li><a href="#truebeetlsql-3">8. BeetlSQL 数据模型</a></li>
 <li><a href="#truemarkdown">9. Markdown方式管理</a></li>
 <li><a href="#truesql-2">10. SQL 注释</a></li>
@@ -2190,7 +2200,12 @@ p {
 <li><a href="#true--22">16. 内置支持主从数据库</a></li>
 <li><a href="#true--23">17. 可以支持更复杂的分库分表逻辑</a></li>
 <li><a href="#true--24">18. 跨数据库平台</a></li>
-<li><a href="#true--25">19. 代码生成</a></li>
+<li><a href="#true--25">19. 代码生成</a>
+<ul class="sectlevel2">
+<li><a href="#true-pojo-md">19.1. 生成pojo 和 md文件</a></li>
+<li><a href="#true--26">19.2. 生成更多的代码</a></li>
+</ul>
+</li>
 <li><a href="#true-sqlresult">20. 直接使用SQLResult</a></li>
 <li><a href="#truehibernate-mybatis-mysql">21. Hibernate,MyBatis,MySQL 对比</a></li>
 <li><a href="#trueorm">22. ORM</a></li>
@@ -2221,7 +2236,7 @@ p {
 <p>qq群 219324263</p>
 </li>
 <li>
-<p>当前版本 2.5.3 (204K), 另外还需要beetl(<a href="http://git.oschina.net/xiandafu/beetl2.0/attach_files" class="bare">http://git.oschina.net/xiandafu/beetl2.0/attach_files</a>) 包</p>
+<p>当前版本 2.6.4 (208K), 另外还需要beetl(<a href="http://git.oschina.net/xiandafu/beetl2.0/attach_files" class="bare">http://git.oschina.net/xiandafu/beetl2.0/attach_files</a>) 包</p>
 </li>
 </ul>
 </div>
@@ -2305,7 +2320,7 @@ p {
 <pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.ibeetl&lt;/groupId&gt;
 	&lt;artifactId&gt;beetl&lt;/artifactId&gt;
-	&lt;version&gt;2.5.2&lt;/version&gt;
+	&lt;version&gt;2.6.4&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -3197,22 +3212,8 @@ public List&lt;User&gt; selectAll();</code></pre>
 <div class="paragraph">
 <p>对于自动生成的sql，默认不需要任何annotaton，类名对应于表名（通过NameConverstion类），getter方法的属性名对应于列明（也是通过NameConverstion类），但有些情况还是需要anntation。</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>标签 @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Table(name="user")
-public class QueryUser ..</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>注：可以为对象指定一个数据库shcema，如name="cms.user",此时将访问cms库（或者cms用户，对不同的数据库，称谓不一样）下的user数据表</p>
-</div>
+<div class="sect2">
+<h3 id="true-autoid-assignid-seqid"><a class="anchor" href="#true-autoid-assignid-seqid"></a>7.1. @AutoID 和 @AssignID ，@SeqID</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -3270,9 +3271,6 @@ public Long getId() {
 <li>
 <p>@SeqID(name="xx_seq"，作用于getter方法，告诉beetlsql，这是序列主键。</p>
 </li>
-<li>
-<p>@Tail  作用于类上，表示该对象是混合模型，参考下一章混合模型</p>
-</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -3284,15 +3282,106 @@ public Long getId() {
 <div class="ulist">
 <ul>
 <li>
-<p>如果想要获取自增主键或者序列主键，需要在SQLManager.insert中传入一个KeyHolder</p>
-</li>
-<li>
 <p>对于支持多种数据库的，这些annotation可以叠加在一起</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="true-tail"><a class="anchor" href="#true-tail"></a>7.2. @Tail</h3>
+<div class="paragraph">
+<p>@Tail作用于类上，表示该对象是混合模型，参考下一章混合模型,sql查询无法在pojo映射的列或者结果集将使用Tail指定的方法</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-columnignore"><a class="anchor" href="#true-columnignore"></a>7.3. @ColumnIgnore</h3>
+<div class="paragraph">
+<p>在beetlsql 内置的insert或者update方法的时候，使用此注解的字段（作用于getter方法）将根据注解的属性来决定是否忽略此字段</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">    @ColumnIgnore(insert=true,update=false)
+	public Date getBir(){
+		return  bir;
+	}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如上例子，插入的时候忽略bir属性（往往是因为数据库指定了默认值为当前时间），更新的时候不能忽略
+@ColumnIgnore的insert默认是true，update是false，因此也可以直接用 @ColumnIgnore()</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-enummapping"><a class="anchor" href="#true-enummapping"></a>7.4. @EnumMapping</h3>
+<div class="paragraph">
+<p>对于Entity使用了枚举作为属性值，可以再枚举类上定义EnumMapping，指出如何将枚举与数据库值互相转化，有四种方法</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>如果没有使用@EnumMapping，则使用枚举的名称作为属性</p>
+</li>
+<li>
+<p>@EnumMapping(EnumMapping.EnumType.STRING) 同上，使用枚举名称作为属性，数据库对应列应该是字符列</p>
+</li>
+<li>
+<p>@EnumMapping(EnumMapping.EnumType.ORDINAL) 使用枚举的顺序作为属性，数据库对应列应该是int类型，用此作为映射需要防止重构枚举的时候导致数据库也重构，应该慎用</p>
+</li>
+<li>
+<p>@EnumMapping(“xxx”)，如果不是上面的的定义，则beetlsql会查找枚举类的xxx属性，用这个值作为属性，比如</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@EnumMapping("value")
+	public enum Color {
+		RED("RED",1),BLUE ("BLUE",2);
+		private String name;
+		private int value;
+		private Color(String name, int value) {
+		    this.name = name;
+		    this.value = value;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public int getValue() {
+			return value;
+		}
+		public void setValue(int value) {
+			this.value = value;
+		}
+
+	}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>beetlsq 会获取枚举的value属性（调用getValue)来获取枚举属性值</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-table"><a class="anchor" href="#true-table"></a>7.5. @Table</h3>
+<div class="paragraph">
+<p>标签 @Table(name="xxxx")  告诉beetlsql，此类对应xxxx表。比如数据库有User表，User类对应于User表，也可以创建一个UserQuery对象，也对应于User表</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Table(name="user")
+public class QueryUser ..</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>注：可以为对象指定一个数据库shcema，如name="cms.user",此时将访问cms库（或者cms用户，对不同的数据库，称谓不一样）下的user数据表*</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-tabletemplate"><a class="anchor" href="#true-tabletemplate"></a>7.6. @TableTemplate</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -3331,12 +3420,16 @@ public Long getId() {
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="truemapper"><a class="anchor" href="#truemapper"></a>7.7. Mapper相关注解</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>Mapper中的注解，包括	SqlStatement ，SqlStatementType ，Sql,Param RowSize ，RowStart，具体参考Mapper</p>
+<p>Mapper中的注解，包括常用的	SqlStatement ，SqlStatementType ，Sql,Param 还有不常用的 RowSize ，RowStart，具体参考Mapper</p>
 </li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -4228,6 +4321,8 @@ where name = #name#</code></pre>
 <div class="sect1">
 <h2 id="true--25"><a class="anchor" href="#true--25"></a>19. 代码生成</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="true-pojo-md"><a class="anchor" href="#true-pojo-md"></a>19.1. 生成pojo 和 md文件</h3>
 <div class="paragraph">
 <p>beetsql支持调用SQLManager.gen&#8230;&#8203; 方法生成表对应的pojo类，如：</p>
 </div>
@@ -4280,6 +4375,81 @@ public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 	@}
 
 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如果你需要给beetl模板注册函数等扩展，可以在生成sqlManager.genPojoCode之前，先注册扩展函数</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">SourceGen.gt.registerFunction("xxx",yourFunction)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>、
+这样就可以再代码模板里使用扩展函数了</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true--26"><a class="anchor" href="#true--26"></a>19.2. 生成更多的代码</h3>
+<div class="paragraph">
+<p>可以实现MapperCodeGen的genCode接口，然后添加到 GenConfig里，这样再生成代码后，也会调用自定义的MapperCodeGen来生成更多代码。如系统内置的生成Mapper的代码</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">MapperCodeGen mapper = new MapperCodeGen("com.dao");
+config.codeGens.add(mapper);
+sql.genPojoCodeToConsole("user", config);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>这样，除了生成pojo代码外，还生成mapper代码，内置的mapper代码实现如下，供参考</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public class MapperCodeGen implements CodeGen {
+	String pkg = null;
+	public MapperCodeGen(){
+
+	}
+	public MapperCodeGen(String pkg){
+		this.pkg = pkg;
+	}
+	public static String mapperTemplate="";
+	static {
+		mapperTemplate = GenConfig.getTemplate("/org/beetl/sql/ext/gen/mapper.btl");
+	}
+
+	@Override
+	public void genCode(String entityPkg, String entityClass, TableDesc tableDesc,GenConfig config,boolean isDisplay) {
+		if(pkg==null){
+			pkg = entityPkg;
+		}
+		Template template = SourceGen.gt.getTemplate(mapperTemplate);
+		String mapperClass = entityClass+"Dao";
+		template.binding("className", mapperClass);
+		template.binding("package",pkg);
+		template.binding("entityClass", entityClass);
+
+		String mapperHead = "import "+entityPkg+".*;"+SourceGen.CR;
+		template.binding("imports", mapperHead);
+		String mapperCode = template.render();
+		if(isDisplay){
+			System.out.println();
+			System.out.println(mapperCode);
+		}else{
+			try {
+				SourceGen.saveSourceFile(GenKit.getJavaSRCPath(), pkg, mapperClass, mapperCode);
+			} catch (IOException e) {
+				throw new RuntimeException("mapper代码生成失败",e);
+			}
+		}
+
+
+	}
+
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -4400,7 +4570,10 @@ List&lt;Role&gt; roles = user.get("role");</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>完整的orm查询例子可以参考 <a href="https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master" class="bare">https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master</a></p>
+<p>完整的orm查询例子可以参考 <a href="https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master" class="bare">https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master</a> 还有文档</p>
+</div>
+<div class="paragraph">
+<p><a href="http://my.oschina.net/xiandafu/blog/735809" class="bare">http://my.oschina.net/xiandafu/blog/735809</a></p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -4670,7 +4843,7 @@ demo <a href="https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-08-25 12:46:02
+Last updated 2016-09-12 10:14:33
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

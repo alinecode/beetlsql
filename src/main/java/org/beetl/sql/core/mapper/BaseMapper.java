@@ -2,8 +2,8 @@ package org.beetl.sql.core.mapper;
 
 import java.util.List;
 
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.engine.PageQuery;
 
 /**
  * BaseMapper.
@@ -16,6 +16,7 @@ public interface BaseMapper<T> {
 	/* insert */
 	void insert(T entity);
 	void insert(T entity,boolean assignKey);
+	void batchSave(List<T> list);
 	KeyHolder insertReturnKey(T entity);
 	
 	/*update*/
@@ -28,6 +29,7 @@ public interface BaseMapper<T> {
 	/*select */
 	
 	T unique(Object key);
+	T single(Object key);
 	
 	List<T> all();
 	List<T> all(int start,int size);
@@ -45,6 +47,7 @@ public interface BaseMapper<T> {
 	
 	int executeUpdate(String sql,Object... args );
 	
+	SQLManager getSQLManager();
 
 	
 	
