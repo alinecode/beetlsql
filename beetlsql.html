@@ -2212,7 +2212,8 @@ p {
 <li><a href="#true-demo">23. 集成和Demo</a>
 <ul class="sectlevel2">
 <li><a href="#truespring-demo">23.1. Spring集成和Demo</a></li>
-<li><a href="#truejfinal-demo">23.2. JFinal集成和Demo</a></li>
+<li><a href="#truespringboot">23.2. SpringBoot集成</a></li>
+<li><a href="#truejfinal-demo">23.3. JFinal集成和Demo</a></li>
 </ul>
 </li>
 </ul>
@@ -2236,7 +2237,7 @@ p {
 <p>qq群 219324263</p>
 </li>
 <li>
-<p>当前版本 2.6.4 (208K), 另外还需要beetl(<a href="http://git.oschina.net/xiandafu/beetl2.0/attach_files" class="bare">http://git.oschina.net/xiandafu/beetl2.0/attach_files</a>) 包</p>
+<p>当前版本 2.6.6 (216K), 另外还需要beetl(<a href="http://git.oschina.net/xiandafu/beetl2.0/attach_files" class="bare">http://git.oschina.net/xiandafu/beetl2.0/attach_files</a>) 包</p>
 </li>
 </ul>
 </div>
@@ -2747,6 +2748,9 @@ select count(1) from user</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>对于俩个相似的sql语句,你可以使用use函数,把公共部分提炼出来.</p>
+</div>
+<div class="paragraph">
 <p>大部分情况下,都不需要2个sql来完成,一个sql也可以,要求使用page函数或者pageTag标签,这样才能同时获得查询结果集总数和当前查询的结果</p>
 </div>
 <div class="listingblock">
@@ -2785,6 +2789,20 @@ List&lt;User&gt; list = query.getList();</code></pre>
 </div>
 <div class="paragraph">
 <p>PageQuery 对象也提供了 orderBy属性，用于数据库排序，如 "id desc"</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">垮数据库支持</div>
+<div class="paragraph">
+<p>如果你打算使用PageQuery做翻页,且只想提供一个sql语句+page函数,那考虑到垮数据库,应该不要在这个sql语句里包含排序,因为大部分数据库都不支持. page函数生成的查询总数sql语句,因为包含了oder by,在大部分数据库都是会报错的的,比如:select count(1) form user order by name,在sqlserver,mysql,postgres都会出错,oracle允许这种情况, 因此,如果你要使用一条sql语句+page函数,建议排序用PageQuery对象里有排序属性oderBy,可用于排序,而不是放在sql语句里.</p>
+</div>
+<div class="paragraph">
+<p>如果你不打算使用PageQuery+一条sql的方式,而是用俩条sql来分别翻页查询和统计总数,那无所谓</p>
+</div>
+<div class="paragraph">
+<p>或者你直接使用select 带有起始和读取总数的接口,也没有关系,可以在sql语句里包含排序</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2927,6 +2945,9 @@ List&lt;User&gt; list = query.getList();</code></pre>
 </div>
 <div class="sect3">
 <h4 id="true-pojo-sq"><a class="anchor" href="#true-pojo-sq"></a>3.6.2. 生成Pojo代码和SQ片段</h4>
+<div class="paragraph">
+<p>用于开发阶段根据表名来生成pojo代码和相应的sql文件</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -2949,6 +2970,9 @@ List&lt;User&gt; list = query.getList();</code></pre>
 </li>
 <li>
 <p>genALL(String pkg,GenConfig config,GenFilter filter)   生成所有的pojo代码和sql模版，</p>
+</li>
+<li>
+<p>genBuiltInSqlToConsole(Class z) 根据类来生成内置的增删改查sql语句，并打印到控制台</p>
 </li>
 </ul>
 </div>
@@ -3116,7 +3140,7 @@ Party party = sql.unique(Party.class, key);</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Interface 可以继承BaseMapper，这样可以使用BaseMapper的一些公共方法，如insert，unqiue,updateById,deleteById等，也可以不继承</p>
+<p>Interface 可以继承BaseMapper，这样可以使用BaseMapper的一些公共方法，如insert，unqiue,single,updateById,deleteById等，也可以不继承</p>
 </li>
 <li>
 <p>Interface里的方法名与Sql文件对应，如果方法名对应错了，会在调用的时候报错找不到sql。</p>
@@ -3186,7 +3210,7 @@ public List&lt;User&gt; queryUser(String name,Integer age,int start,int size);</
 <p>参数里如果有PageQuery,则认为是翻页查询</p>
 </li>
 <li>
-<p>在查询中，返回的是List，但类型非Mapper指定的类型，无论是用@Sql ,还是 @SqlStatement，需要用returnType来说明，如上例子allNames 返回一个List&lt;String&gt;</p>
+<p>在查询中，返回的是List，但类型非Mapper指定的类型，无论是用@Sql ,还是 @SqlStatement，需要用returnType来说明，如上例子allNames 返回一个List&lt;String&gt;而不是List&lt;User&gt;,因此需要使用returnType做额外说明</p>
 </li>
 </ul>
 </div>
@@ -3695,6 +3719,9 @@ FN.page=org.beetl.sql.core.engine.PageQueryFuntion
 TAG.trim= org.beetl.sql.core.engine.TrimTag
 TAG.pageTag= org.beetl.sql.core.engine.PageQueryTag</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>EmptyExpressionFunction 用在很多地方,如template 类操作,where语句里的条件判断,它 沿用了beetl习惯,对于不存在的变量,或者为null的变量,都返回true,同时如果是字符串,为空字符串也返回true,数组,集合也是这样,有些项目,认为空字符串应该算有值而不应该返回true,你可以参考EmptyExpressionFunction的实现,按照项目语义来定义isEmpty</p>
 </div>
 </div>
 </div>
@@ -4746,15 +4773,34 @@ public class MyServiceImpl implements MyService {
 <div class="content">
 <div class="title">参考</div>
 <div class="paragraph">
-<p>可以参考demo <a href="https://git.oschina.net/xiandafu/springbeetlsql" class="bare">https://git.oschina.net/xiandafu/springbeetlsql</a>
-spring boot集成可以参考 demo
-<a href="http://git.oschina.net/xiandafu/springboot_beetl_beetlsql，请参考demo配置好" class="bare">http://git.oschina.net/xiandafu/springboot_beetl_beetlsql，请参考demo配置好</a>  META-INF/spring-devtools.properties文件，否则运行不起来</p>
+<p>可以参考demo <a href="https://git.oschina.net/xiandafu/springbeetlsql" class="bare">https://git.oschina.net/xiandafu/springbeetlsql</a></p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="truejfinal-demo"><a class="anchor" href="#truejfinal-demo"></a>23.2. JFinal集成和Demo</h3>
+<h3 id="truespringboot"><a class="anchor" href="#truespringboot"></a>23.2. SpringBoot集成</h3>
+<div class="paragraph">
+<p>采用java config方式</p>
+</div>
+<div class="paragraph">
+<p>参考 demo ，http://git.oschina.net/xiandafu/springboot_beetl_beetlsql</p>
+</div>
+<div class="paragraph">
+<p>spring boot集成需要注意的是要添加spring-devtools.properties文件,并配置如下选项</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-test" data-lang="test">restart.include.beetl=/beetl-xxx.jar
+restart.include.beetlsql=/beetlsql-xxx..jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>spring-devtools.properties 为spring boot的配置文件,位于META-INF目录下</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truejfinal-demo"><a class="anchor" href="#truejfinal-demo"></a>23.3. JFinal集成和Demo</h3>
 <div class="paragraph">
 <p>在configPlugin 里配置BeetlSql</p>
 </div>
@@ -4843,7 +4889,7 @@ demo <a href="https://code.csdn.net/xiandafu/beetlsql_orm_sample/tree/master" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-30 09:31:05
+Last updated 2016-10-27 19:10:17 CST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

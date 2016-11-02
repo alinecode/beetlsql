@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.6.5 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.6.6 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 
 **********************************************************************
 
