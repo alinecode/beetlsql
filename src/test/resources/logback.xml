@@ -6,18 +6,7 @@
 		</encoder>
 	</appender>
 
-	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logs/workflow.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>logs/workflow.%d{yyyy-MM-dd}.log</fileNamePattern>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%date %level %logger:%line - %msg%n</pattern>
-		</encoder>
-	</appender>
-
-	<!-- project default level -->
-	<logger name="com.coamctech.workflow" level="INFO" />
+	
 	
 	<!--log4jdbc -->
 	<logger name="jdbc.sqltiming" level="INFO"/>
@@ -28,6 +17,5 @@
 
 	<root level="INFO">
 		<appender-ref ref="console" />
-		<appender-ref ref="rollingFile" />
 	</root>
 </configuration>

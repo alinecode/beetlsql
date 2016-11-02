@@ -13,7 +13,7 @@
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 	<context:annotation-config />
-	<context:component-scan base-package="org.beetl.sql.test">
+	<context:component-scan base-package="org.beetl.sql.test.mysql">
 	</context:component-scan>
 
 
@@ -40,7 +40,7 @@
 	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
 	<bean name="beetlSqlScannerConfigurer" class="org.beetl.sql.ext.spring4.BeetlSqlScannerConfigurer">
 	    <!-- 哪些类可以自动注入 -->
-	    <property name="basePackage" value="org.beetl.sql.test"/>
+	    <property name="basePackage" value="org.beetl.sql.test.mysql"/>
 	    <!-- 通过类后缀 来自动注入Dao -->
 	    <property name="daoSuffix" value="Dao"/>
 	    <property name="sqlManagerFactoryBeanName" value="sqlManagerFactoryBean"/>

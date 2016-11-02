@@ -3,10 +3,11 @@ package org.beetl.sql.test;
 
 
 import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.UnderlinedNameConversion;
+import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.db.SqlServerStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -41,28 +42,12 @@ public class QuickTest {
 		
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
-		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), new Interceptor[]{new DebugInterceptor()});
-//		sql.addIdAutonGen("uuid", new IDAutoGen(){
-//			int a = 1019;
-//			@Override
-//			public Object nextID(String params) {
-//				return a++;
-//			}
-//			
-//		});
-//		GenConfig config = new GenConfig();
-//		
-//		MapperCodeGen mapper = new MapperCodeGen("com.dao");
-//		config.codeGens.add(mapper);
-//		sql.genPojoCodeToConsole("user", config);
+		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
 		
-//		User user = new User();
-//		user.setUserid(123);
-//		user.setUserName("bnac");
-//		sql.insert(user);
+		SQLSource tempSource = sql.getDbStyle().genUpdateTemplate(User.class);
 		
-//		sql.genSQLFile("user");
-		sql.genSQLTemplateToConsole("user");
+		System.out.println(tempSource.getTemplate());
+//		sql.genBuiltInSqlToConsole(User.class);
 		
 	}
 	

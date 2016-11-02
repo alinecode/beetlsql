@@ -55,11 +55,12 @@ public class BaseMySqlTest {
 	}
 	
 //	@Test
-//	public void testEnv() throws Exception{
-//		sqlManager.genPojoCodeToConsole("MUTIPLE_KEYS");
-//	
-//		
-//	}
+	public void testEnv() throws Exception{
+		sqlManager.genPojoCodeToConsole("MUTIPLE_KEYS");
+	
+		
+	}
+
 	
 	
 

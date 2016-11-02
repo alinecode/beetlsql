@@ -38,7 +38,10 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 			return sm.deleteById(entityClass, args[0]);
 		}else if(name.equals("unique")){
 			return sm.unique(entityClass, args[0]);
-		}else if(name.equals("all")){
+		}else if(name.equals("single")){
+			return sm.single(entityClass, args[0]);
+		}
+		else if(name.equals("all")){
 			if(args==null){
 				return sm.all(entityClass);
 			}else{
@@ -63,7 +66,12 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 		}else if(name.equals("executeUpdate")){
 			return sm.executeUpdate(new SQLReady((String)args[0],(Object[])args[1]));
 		}
-		
+		else if(name.equals("insertBatch")){
+			sm.insertBatch(entityClass, (List)args[0]);
+			return null;
+		}else if(name.equals("getSQLManager")){
+			return sm;
+		}
 		else{
 			throw new UnsupportedOperationException(m.getName());
 		}

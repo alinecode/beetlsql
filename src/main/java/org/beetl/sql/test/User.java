@@ -3,27 +3,26 @@ import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
 
 public class User extends TailBean  {
-	private long userid ;
-	//å¹´çºª123
+	private long userId ;
 	private Integer age ;
 	private Integer departmentId ;
 	private String name ;
 	private String userName ;
-	//ç”Ÿæ—¥
 	private Date bir ;
 	
 	public User() {
 	}
 	
-	@AssignID("simple")
-	public long getUserid(){
-		return  userid;
+	@AutoID
+	public long getUserId(){
+		return  userId;
 	}
-	public void setUserid(long userid ){
-		this.userid = userid;
+	public void setUserId(long userid ){
+		this.userId = userid;
 	}
 	
 	public Integer getAge(){
