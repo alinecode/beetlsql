@@ -1276,11 +1276,16 @@ public class SQLManager {
 		tempSource = this.dbStyle.genDeleteById(cls);
 		sb.append(tempSource.getTemplate());
 		sb.append("\n\r");
-		tempSource = this.dbStyle.genInsert(cls);
 		
+		tempSource = this.dbStyle.genInsert(cls);
 		sb.append(tempSource.getTemplate());
 		sb.append("\n\r");
-		System.out.println(sb.toString());
+		
+		
+		
+		
+		
+		
 	}
 	
 	public <T> T getMapper(Class<T> mapperInterface){

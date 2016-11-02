@@ -52,6 +52,11 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 	protected SQLLoader getSqlLLoader() {
 		return sqlLoader;
 	}
+	@Override
+	public String getInfo() {
+		// TODO Auto-generated method stub
+		return sqlLoader.toString();
+	}
 
 
 }

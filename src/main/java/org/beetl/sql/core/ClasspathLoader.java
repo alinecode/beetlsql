@@ -351,5 +351,9 @@ public class ClasspathLoader implements SQLLoader {
 		
 	}
 	
+	public String toString(){
+		return this.sqlRoot;
+	}
+	
 }
 

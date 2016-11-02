@@ -11,7 +11,6 @@ import org.junit.runners.Suite;
 	MapperTest.class,
 	OrmTest.class,
 	TypeTest.class
-	
 })  
 
 public class AllMysqlTestSuit {

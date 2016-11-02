@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.6.6 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.6.7 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 
 **********************************************************************
 
@@ -53,8 +53,8 @@ maven 方式:
 ----------------------------
 <dependency>
 	<groupId>com.ibeetl</groupId>
-	<artifactId>beetl</artifactId>
-	<version>2.6.4</version>
+	<artifactId>beetlsql</artifactId>
+	<version>2.6.7</version>
 </dependency>
 
 
@@ -1104,6 +1104,16 @@ beetlsql默认是开发模式，因此修改md的sql文件，不需要重启。�
 ----------------------------
 PRODUCT_MODE = true
 ----------------------------
+
+=== NameConversion
+
+数据库字段名与java属性名的映射关系必须配置正确，否则会导致各种问题，如下是一些建议
+
+字段名字是user_id, java属性名是userId, 则使用UnderlinedNameConversion
+字段名是userId,  java属性名是userId，则使用DefaultNameConversion
+
+如果是其他映射关系，可以考虑自己实现NameConversion接口
+
 
 === 模板字符集
 
