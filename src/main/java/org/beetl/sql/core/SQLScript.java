@@ -287,6 +287,9 @@ public class SQLScript {
 		PreparedStatement ps = null;
 		List<T> resultList = null;
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,paras);
+		if(ctx.getResult()!=null){
+			return (List<T>)ctx.getResult();
+		}
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -519,6 +522,9 @@ public class SQLScript {
 		PreparedStatement ps = null;
 		T model = null;
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,paras);
+		if(ctx.getResult()!=null){
+			return (T) ctx.getResult();
+		}
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -561,6 +567,7 @@ public class SQLScript {
 		List<Object> objs = result.jdbcPara;
 
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,paras);
+		
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		int rs = 0;
@@ -611,6 +618,7 @@ public class SQLScript {
 		String sql = this.sql;
 		List<Object> objs = Arrays.asList(p.args);
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,this.getSQLReadyParas(objs));
+		
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		int rs = 0;

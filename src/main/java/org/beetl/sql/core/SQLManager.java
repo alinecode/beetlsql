@@ -1000,7 +1000,7 @@ public class SQLManager {
 	 * @return
 	 */
 	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Map paras){
-		String key ="auto._gen_" +sqlTemplate;
+		String key ="auto." +sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if(source==null){
 			source = new SQLSource(key,sqlTemplate);
@@ -1083,7 +1083,7 @@ public class SQLManager {
 	 * @return 返回查询结果
 	 */
 	public <T> List<T> execute(SQLReady p,Class<T> clazz){
-		SQLSource source = new SQLSource(p.getSql(),p.getSql());
+		SQLSource source = new SQLSource("native."+p.getSql(),p.getSql());
 		SQLScript script = new SQLScript(source,this);
 		return script.sqlReadySelect(clazz, p);
 	}
@@ -1094,7 +1094,7 @@ public class SQLManager {
 	 * @return 返回更新条数
 	 */
 	public int executeUpdate(SQLReady p){
-		SQLSource source = new SQLSource(p.getSql(),p.getSql());
+		SQLSource source = new SQLSource("native."+p.getSql(),p.getSql());
 		SQLScript script = new SQLScript(source,this);
 		return script.sqlReadyExecuteUpdate( p);
 	}
