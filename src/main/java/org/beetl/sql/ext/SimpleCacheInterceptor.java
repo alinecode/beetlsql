@@ -26,23 +26,26 @@ public class SimpleCacheInterceptor implements Interceptor {
 	public final Logger logger = LoggerFactory.getLogger(SimpleCacheInterceptor.class);
 
 	/** The cache. */
-	Map<String, Map<String,Object>> cache = new ConcurrentHashMap<String,  Map<String,Object>>();
+	Map<String, Map<String, Object>> cache = new ConcurrentHashMap<String, Map<String, Object>>();
 	Set<String> nsSet = null;
+
 	/**
 	 * The Constructor.
 	 */
 	public SimpleCacheInterceptor() {
 		nsSet = Collections.emptySet();
 	}
+
 	/**
 	 * 哪些实体类会被考虑缓存
+	 * 
 	 * @param clsz
 	 */
 	public SimpleCacheInterceptor(List<Class> entitys) {
 		nsSet = new HashSet<String>();
-		for(Class c:entitys){
+		for (Class c : entitys) {
 			String name = c.getSimpleName();
-			//TODO dbstyle 里做这个转化
+			// TODO dbstyle 里做这个转化
 			nsSet.add(StringKit.toLowerCaseFirstOne(name));
 		}
 	}
@@ -54,28 +57,34 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * InterceptorContext)
 	 */
 	public void before(InterceptorContext ctx) {
+		logger.debug("before {}", ctx);
+		// 查询的操作,尝试从缓存取结果.
+		// 判断是否需要缓存.
 		String ns = this.getSqlIdNameSpace(ctx.getSqlId());
-		if(this.cacheRequire(ns)){
-			return ;
+		if (!this.cacheRequire(ns)) {
+			return;
 		}
 		ctx.put("cache.required", Boolean.TRUE);
 		ctx.put("cache.ns", ns);
-		
-		if(!ctx.isUpdate()){
-			return;
-		}
-		
+
 		String cacheKey = this.getCacheKey(ctx);
 		ctx.put("cache.key", cacheKey);
+		// 更新操作不处理.
+		if (ctx.isUpdate()) {
+			return;
+		}
+		// 缓存无结果,不处理.
+		if (!this.existCacheKey(ns, cacheKey)) {
+			return;
+		}
+		// 从缓存获取结果。
 		Object cacheObject;
 		try {
-			
-			cacheObject = this.getCacheObject(ns,cacheKey);
+			cacheObject = this.getCacheObject(ns, cacheKey);
 			ctx.setResult(cacheObject);
 		} catch (Throwable e) {
 			logger.error("get cache object with cache key:{} exception:{}", cacheKey, e);
 		}
-		
 		return;
 	}
 
@@ -86,19 +95,25 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * InterceptorContext)
 	 */
 	public void after(InterceptorContext ctx) {
-		if(ctx.get("cache.required")==null){
-			return ;
-		}
+		logger.debug("after {}", ctx);
 		String ns = (String) ctx.get("cache.ns");
 		// 清缓存
 		if (ctx.isUpdate()) {
-			this.clearCache(ns);
+			if (ns != null) {
+				this.clearCache(ns);
+			} else {
+				this.clearCache();
+			}
 		} else {
+			// 如果不需要缓存,忽略.
+			if (ctx.get("cache.required") == null) {
+				return;
+			}
 			// 缓存结果.
-			String key = (String)ctx.get("cache.cacheKey");
-			this.putCache(ns,key,ctx);
+			String key = (String) ctx.get("cache.key");
+			this.putCache(ns, key, ctx);
 		}
-		
+
 	}
 
 	/**
@@ -123,7 +138,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 *            the paras
 	 * @return the cache key
 	 */
-	private  String getCacheKey(String sqlId, List<Object> paras) {
+	protected String getCacheKey(String sqlId, List<Object> paras) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("sqlId : " + sqlId).append("\nparas : " + paras);
 		return sb.toString();
@@ -138,22 +153,24 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Object getCacheObject(String ns,String cacheKey) throws Exception {
+	public Object getCacheObject(String ns, String cacheKey) throws Exception {
 		logger.debug("get cache object by cacheKey:{}", cacheKey);
-		Map<String,Object>  map = this.cache.get(ns);
-		if(map!=null){
-			map = new ConcurrentHashMap<String,Object>();
-			this.cache.put(ns,map);
-		}
-		if(!map.containsKey(cacheKey)){
+		Map<String, Object> map = getOrCreate(ns);
+		if (!map.containsKey(cacheKey)) {
 			return null;
 		}
-		
 		return map.get(cacheKey);
-		
-		
 	}
-	
+
+	public boolean existCacheKey(String ns, String cacheKey) {
+		logger.debug("get cache object by cacheKey:{}", cacheKey);
+		Map<String, Object> map = this.cache.get(ns);
+		if (map == null) {
+			return false;
+		} else {
+			return map.containsKey(cacheKey);
+		}
+	}
 
 	/**
 	 * Clear cache.
@@ -162,7 +179,25 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 *            the ctx
 	 */
 	public void clearCache(String ns) {
-		this.cache.get(ns).clear();
+		logger.debug("clear cache ns:{}", ns);
+		Map<String, Object> map = getOrCreate(ns);
+		map.clear();
+	}
+
+	/**
+	 * Clear cache.
+	 */
+	public void clearCache() {
+		this.cache.clear();
+	}
+
+	private Map<String, Object> getOrCreate(String ns) {
+		Map<String, Object> map = this.cache.get(ns);
+		if (map == null) {
+			map = new ConcurrentHashMap<String, Object>();
+			this.cache.put(ns, map);
+		}
+		return map;
 	}
 
 	/**
@@ -171,21 +206,27 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * @param ctx
 	 *            the ctx
 	 */
-	public void putCache(String ns,String key,InterceptorContext ctx) {
-		// 缓存内容.
-		this.cache.get(ns).put(key, ctx.getResult());
-		
+	public void putCache(String ns, String key, InterceptorContext ctx) {
+		logger.debug("putCache: ns={} key={} result:{}", ns, key, ctx.getResult());
+		Map<String, Object> map = getOrCreate(ns);
+		map.put(key, ctx.getResult());
 	}
-	
-	protected String getSqlIdNameSpace(String sqlId){
-		int index =sqlId.indexOf('.');
-		return sqlId.substring(0, index);
+
+	protected String getSqlIdNameSpace(String sqlId) {
+		int index = sqlId.lastIndexOf('.');
+		if (index > -1) {
+			return sqlId.substring(0, index);
+		} else {
+			return sqlId;
+		}
 	}
-	
-	protected boolean cacheRequire(String ns){
+
+	protected boolean cacheRequire(String ns) {
+		// 默认缓存所有.
+		if (this.nsSet.isEmpty()) {
+			return true;
+		}
 		return this.nsSet.contains(ns);
 	}
-	
-	
 
 }
