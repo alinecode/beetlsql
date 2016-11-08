@@ -15,25 +15,20 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 尝试用一个Map实现简单的缓存.(最终想集成redis)
- * 
- * 
+ * 如果跟缓存相关的实体被修改，则缓存全部清空，如果只想清空跟实体相关的缓存，需要重载
+ * clearCache(String ns)
+ * <p></p>
+ * 注意，对于直接调用模板sql或者jdbc sql，此缓存不起作用
  * 
  * @author zhoupan,xiandafu
  */
 public class SimpleCacheInterceptor implements Interceptor {
 
-	/** The Constant logger. */
-	public final Logger logger = LoggerFactory.getLogger(SimpleCacheInterceptor.class);
-
+	
 	/** The cache. */
-	Map<String, Map<String,Object>> cache = new ConcurrentHashMap<String,  Map<String,Object>>();
+	Map<String, Map<Object,Object>> cache = new ConcurrentHashMap<String,  Map<Object,Object>>();
 	Set<String> nsSet = null;
-	/**
-	 * The Constructor.
-	 */
-	public SimpleCacheInterceptor() {
-		nsSet = Collections.emptySet();
-	}
+	
 	/**
 	 * 哪些实体类会被考虑缓存
 	 * @param clsz
@@ -43,7 +38,9 @@ public class SimpleCacheInterceptor implements Interceptor {
 		for(Class c:entitys){
 			String name = c.getSimpleName();
 			//TODO dbstyle 里做这个转化
-			nsSet.add(StringKit.toLowerCaseFirstOne(name));
+			String ns = StringKit.toLowerCaseFirstOne(name);
+			nsSet.add(ns);
+			cache.put(ns, new ConcurrentHashMap<Object,Object>());
 		}
 	}
 
@@ -55,26 +52,23 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 */
 	public void before(InterceptorContext ctx) {
 		String ns = this.getSqlIdNameSpace(ctx.getSqlId());
-		if(this.cacheRequire(ns)){
+		if(!this.cacheRequire(ns)){
 			return ;
 		}
 		ctx.put("cache.required", Boolean.TRUE);
 		ctx.put("cache.ns", ns);
 		
-		if(!ctx.isUpdate()){
+		if(ctx.isUpdate()){
 			return;
 		}
 		
-		String cacheKey = this.getCacheKey(ctx);
+		Object cacheKey = this.getCacheKey(ctx);
 		ctx.put("cache.key", cacheKey);
 		Object cacheObject;
-		try {
-			
-			cacheObject = this.getCacheObject(ns,cacheKey);
-			ctx.setResult(cacheObject);
-		} catch (Throwable e) {
-			logger.error("get cache object with cache key:{} exception:{}", cacheKey, e);
-		}
+		
+		cacheObject = this.getCacheObject(ns,cacheKey);
+		ctx.setResult(cacheObject);
+		
 		
 		return;
 	}
@@ -95,7 +89,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 			this.clearCache(ns);
 		} else {
 			// 缓存结果.
-			String key = (String)ctx.get("cache.cacheKey");
+			Object key = (Object)ctx.get("cache.key");
 			this.putCache(ns,key,ctx);
 		}
 		
@@ -108,8 +102,8 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 *            the ctx
 	 * @return the cache key
 	 */
-	public String getCacheKey(InterceptorContext ctx) {
-		return this.getCacheKey(ctx.getSqlId(), ctx.getParas());
+	public Object getCacheKey(InterceptorContext ctx) {
+		return this.getCacheKey(ctx.getSqlId(), ctx.getSql(),ctx.getParas());
 	}
 
 	/**
@@ -123,9 +117,10 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 *            the paras
 	 * @return the cache key
 	 */
-	private  String getCacheKey(String sqlId, List<Object> paras) {
+	private  Object getCacheKey(String sqlId, String sql,List<Object> paras) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("sqlId : " + sqlId).append("\nparas : " + paras);
+		sb.append("sqlId : " + sqlId).append("\nsql:").append(sql).append("\nparas : " + paras);
+		//TODO:性能有点慢
 		return sb.toString();
 	}
 
@@ -138,31 +133,22 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Object getCacheObject(String ns,String cacheKey) throws Exception {
-		logger.debug("get cache object by cacheKey:{}", cacheKey);
-		Map<String,Object>  map = this.cache.get(ns);
-		if(map!=null){
-			map = new ConcurrentHashMap<String,Object>();
-			this.cache.put(ns,map);
-		}
-		if(!map.containsKey(cacheKey)){
-			return null;
-		}
-		
+	public Object getCacheObject(String ns,Object cacheKey)  {
+		Map<Object,Object>  map = this.cache.get(ns);
 		return map.get(cacheKey);
-		
 		
 	}
 	
 
 	/**
-	 * Clear cache.
+	 * 清楚所有缓存
 	 *
 	 * @param ctx
 	 *            the ctx
 	 */
 	public void clearCache(String ns) {
-		this.cache.get(ns).clear();
+		this.cache.clear();
+		
 	}
 
 	/**
@@ -171,7 +157,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * @param ctx
 	 *            the ctx
 	 */
-	public void putCache(String ns,String key,InterceptorContext ctx) {
+	public void putCache(String ns,Object key,InterceptorContext ctx) {
 		// 缓存内容.
 		this.cache.get(ns).put(key, ctx.getResult());
 		

@@ -1,10 +1,8 @@
 queryUser
 ===
 * 按照年纪查找用户
-select #page()# from User where 1 =1 
-@if(isNotEmpty(age)){
-and age = #age#
-@}
+select *  from User where 1 =1  
+
 
 queryNewUser
 ===

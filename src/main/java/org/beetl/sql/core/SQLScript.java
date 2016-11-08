@@ -288,6 +288,7 @@ public class SQLScript {
 		List<T> resultList = null;
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,paras);
 		if(ctx.getResult()!=null){
+			this.callInterceptorAsAfter(ctx, ctx.getResult());
 			return (List<T>)ctx.getResult();
 		}
 		sql = ctx.getSql();
@@ -523,6 +524,7 @@ public class SQLScript {
 		T model = null;
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,paras);
 		if(ctx.getResult()!=null){
+			this.callInterceptorAsAfter(ctx, ctx.getResult());
 			return (T) ctx.getResult();
 		}
 		sql = ctx.getSql();
@@ -706,12 +708,7 @@ public class SQLScript {
 		if (sm.inters == null)
 			return;
 		if (!ctx.isUpdate()) {
-			if (result instanceof List) {
-				List list = (List) result;
-				ctx.setResult(list.size());
-			} else {
-				ctx.setResult(result);
-			}
+			ctx.setResult(result);
 
 		} else {
 			ctx.setResult(result);

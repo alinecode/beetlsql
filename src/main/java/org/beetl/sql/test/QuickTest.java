@@ -2,14 +2,17 @@ package org.beetl.sql.test;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.beetl.sql.core.ClasspathLoader;
-import org.beetl.sql.core.DefaultNameConversion;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLSource;
-import org.beetl.sql.core.db.SqlServerStyle;
+import org.beetl.sql.core.UnderlinedNameConversion;
+import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.SimpleCacheInterceptor;
 
 
 
@@ -38,17 +41,20 @@ public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
 
-		SqlServerStyle style = new SqlServerStyle();
+		MySqlStyle style = new MySqlStyle();
 		
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
-		SQLManager 	sql = new SQLManager(style,loader,cs,new DefaultNameConversion(), new Interceptor[]{new DebugInterceptor()});
+		List<Class> lcs = new ArrayList<Class>();
+		lcs.add(User.class);
+		SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
+		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
+		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+		for(int i=0;i<3;i++){
+			sql.select("user.queryUser", User.class, null);
+		}
 		
-		SQLSource tempSource = sql.getDbStyle().genUpdateTemplate(User.class);
-		
-		System.out.println(tempSource.getTemplate());
-//		sql.genBuiltInSqlToConsole(User.class);
-		
+		//		sql.genBuiltInSqlToConsole(User.class);
 	}
 	
 	

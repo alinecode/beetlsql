@@ -2,6 +2,7 @@ package org.beetl.sql.ext;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -78,7 +79,12 @@ public class DebugInterceptor implements Interceptor {
 			}
 			sb.append("]").append(lineSeparator);
 		}else{
-			sb.append("┣ 结果：\t [").append(ctx.getResult()).append("]").append(lineSeparator);
+			if(ctx.getResult() instanceof Collection){
+				sb.append("┣ 结果：\t [").append(((Collection)ctx.getResult()).size()).append("]").append(lineSeparator);
+			}else{
+				sb.append("┣ 结果：\t [").append(ctx.getResult()).append("]").append(lineSeparator);
+			}
+			
 		}
 		sb.append("┗━━━━━ Debug [").append(this.getSqlId(ctx.getSqlId())).append("] ━━━").append(lineSeparator);
 		println(sb.toString());

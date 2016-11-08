@@ -1281,6 +1281,7 @@ public class SQLManager {
 		sb.append(tempSource.getTemplate());
 		sb.append("\n\r");
 		
+		System.out.println(sb);
 		
 		
 		
