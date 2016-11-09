@@ -214,8 +214,8 @@
 		<!--用于进行测试 -->
 		<dependency>
 			<groupId>com.ibeetl</groupId>
-			<artifactId>xlsunit</artifactId>
-			<version>1.0.4</version>
+			<artifactId>ormunit</artifactId>
+			<version>1.0</version>
 
 			<scope>test</scope>
 		</dependency>

@@ -1,15 +1,10 @@
 package org.beetl.sql.test.mysql;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.beetl.ormunit.RowHolderFacotoy;
+import org.beetl.ormunit.VariableTable;
+import org.beetl.ormunit.XLSParser;
 import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.test.mysql.entity.User;
-import org.beetl.xlsunit.RowHolderFacotoy;
-import org.beetl.xlsunit.VariableTable;
-import org.beetl.xlsunit.XLSParser;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,11 +1,15 @@
 package org.beetl.sql.ext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.beetl.sql.core.InterceptorContext;
+import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
+
+
 
 /**
  * SimpleCacheInterceptorTest.
@@ -14,25 +18,26 @@ public class SimpleCacheInterceptorTest {
 
 	@Test
 	public void simple() throws Exception {
-		String ns = "com.company.app.entity.AppUser";
-		SimpleCacheInterceptor sci = new SimpleCacheInterceptor();
+		List<Class> lcs = new ArrayList<Class>();
+		lcs.add(User.class);
+		SimpleCacheInterceptor sci =new SimpleCacheInterceptor(lcs);
+		String ns = "user";
 		String selectSqlId = ns + ".select";
 		String selectSql = "SELECT appUser.USER_ID \"id\" ,appUser.USER_CODE \"code\" FROM app_user"
 				+ " WHERE appUser.USER_ID = ?";
 		List<Object> params = new ArrayList<Object>();
 		params.add("fitz");
+		InterceptorContext ctx = new InterceptorContext(selectSqlId, selectSql, params, null, false);
 		String namespace = sci.getSqlIdNameSpace(selectSqlId);
 		Assert.assertEquals(ns, namespace);
-		String cacheKey = sci.getCacheKey(selectSqlId, params);
-		Assert.assertFalse(sci.existCacheKey(ns, cacheKey));
+		Object cacheKey = sci.getCacheKey(ctx);
 
 		// 初次放缓存进对象.
-		InterceptorContext ctx = new InterceptorContext(selectSqlId, selectSql, params, null, false);
+		
 		sci.before(ctx);
 		Assert.assertNull(ctx.getResult());
 		ctx.setResult("fitz");
 		sci.after(ctx);
-		Assert.assertTrue(sci.existCacheKey(ns, cacheKey));
 		Assert.assertEquals("fitz", sci.getCacheObject(ns, cacheKey).toString());
 
 		// 第二次应该从缓存获取对象.
@@ -46,7 +51,7 @@ public class SimpleCacheInterceptorTest {
 		InterceptorContext ctxUpdate = new InterceptorContext(updateSqlId, "update some_field", params, null, true);
 		sci.before(ctxUpdate);
 		sci.after(ctxUpdate);
-		Assert.assertFalse(sci.existCacheKey(ns, cacheKey));
+		Assert.assertFalse(sci.containCache(ns, cacheKey));
 
 	}
 }

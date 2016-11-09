@@ -1,14 +1,13 @@
 package org.beetl.sql.test.mysql;
 
 
+import org.beetl.ormunit.BeetlSQLDatabaseAccess;
+import org.beetl.ormunit.BeetlSQLMapper;
+import org.beetl.ormunit.XLSFileLoader;
+import org.beetl.ormunit.XLSLoader;
 import org.beetl.sql.core.IDAutoGen;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.xlsunit.BeetlSQLDatabaseAccess;
-import org.beetl.xlsunit.BeetlSQLMapper;
-import org.beetl.xlsunit.XLSFileLoader;
-import org.beetl.xlsunit.XLSLoader;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

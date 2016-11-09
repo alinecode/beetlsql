@@ -1,24 +1,22 @@
 package org.beetl.sql.ext;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
 import org.beetl.sql.core.kit.StringKit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * 尝试用一个Map实现简单的缓存.(最终想集成redis)
+ * 尝试用一个Map实现简单的缓存.如果想使用其他实现，可以实现CacheManager方法
  * 如果跟缓存相关的实体被修改，则缓存全部清空，如果只想清空跟实体相关的缓存，需要重载
  * clearCache(String ns)
  * <p></p>
- * 注意，对于直接调用模板sql或者jdbc sql，此缓存不起作用
+ * 注意，对于直接调用模板sql或者jdbc sql(execute系列方法）此缓存不起作用，因为没有sqlId，还不能判断作用于哪些实体
  * 
  * @author zhoupan,xiandafu
  */
@@ -26,23 +24,36 @@ public class SimpleCacheInterceptor implements Interceptor {
 
 	
 	/** The cache. */
-	Map<String, Map<Object,Object>> cache = new ConcurrentHashMap<String,  Map<Object,Object>>();
+
 	Set<String> nsSet = null;
+	CacheManager cm = null;
 	
-	/**
-	 * 哪些实体类会被考虑缓存
-	 * @param clsz
+	
+	/** 用MapCacheManager来实现缓存
+	 * @param entitys 需要考虑缓存的实体
 	 */
 	public SimpleCacheInterceptor(List<Class> entitys) {
+		this(entitys,new MapCacheManager());
+	}
+	
+	/**
+	 * 
+	 * @param entitys
+	 * @param cm  指定的缓存管理
+	 */
+	public SimpleCacheInterceptor(List<Class> entitys,CacheManager cm) {
+		this.cm = cm;
 		nsSet = new HashSet<String>();
 		for(Class c:entitys){
 			String name = c.getSimpleName();
 			//TODO dbstyle 里做这个转化
 			String ns = StringKit.toLowerCaseFirstOne(name);
 			nsSet.add(ns);
-			cache.put(ns, new ConcurrentHashMap<Object,Object>());
+			this.cm.initCache(ns);
 		}
 	}
+	
+
 
 	/*
 	 * (non-Javadoc)
@@ -120,7 +131,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	private  Object getCacheKey(String sqlId, String sql,List<Object> paras) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("sqlId : " + sqlId).append("\nsql:").append(sql).append("\nparas : " + paras);
-		//TODO:性能有点慢
+		//TODO:性能有点慢，换一种专门的Key ？
 		return sb.toString();
 	}
 
@@ -134,8 +145,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 *             the exception
 	 */
 	public Object getCacheObject(String ns,Object cacheKey)  {
-		Map<Object,Object>  map = this.cache.get(ns);
-		return map.get(cacheKey);
+		return  this.cm.getCache(ns, cacheKey);
 		
 	}
 	
@@ -147,7 +157,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 *            the ctx
 	 */
 	public void clearCache(String ns) {
-		this.cache.clear();
+		this.cm.clearCache(ns);
 		
 	}
 
@@ -159,7 +169,8 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 */
 	public void putCache(String ns,Object key,InterceptorContext ctx) {
 		// 缓存内容.
-		this.cache.get(ns).put(key, ctx.getResult());
+		this.cm.putCache(ns, key,ctx.getResult() );
+		
 		
 	}
 	
@@ -172,6 +183,61 @@ public class SimpleCacheInterceptor implements Interceptor {
 		return this.nsSet.contains(ns);
 	}
 	
+
+
+	
+
+	public CacheManager getCacheManger() {
+		return cm;
+	}
+	public Set<String> getNsSet() {
+		return nsSet;
+	}
+	
+	public boolean containCache(String ns,Object key){
+		return this.cm.containCache(ns, key);
+	}
+	
+	public static interface CacheManager{
+		public void initCache(String ns);
+		public void putCache(String ns,Object key,Object value);
+		public Object getCache(String ns,Object key);
+		public void clearCache(String ns);
+		public boolean containCache(String ns,Object key);
+	}
+	
+	
+	public static class MapCacheManager implements CacheManager{
+		Map<String, Map<Object,Object>> cache = new ConcurrentHashMap<String,  Map<Object,Object>>();
+		
+		public void initCache(String ns){
+			cache.put(ns, new ConcurrentHashMap<Object,Object>());
+		}
+		@Override
+		public void putCache(String ns, Object key, Object value) {
+			 this.cache.get(ns).put(key, value);
+			
+		}
+
+		@Override
+		public Object getCache(String ns, Object key) {
+			return this.cache.get(ns).get(key);
+		}
+
+		@Override
+		public void clearCache(String ns) {
+			//清除所有缓存，避免关联带来数据不一致
+			for(Entry<String, Map<Object,Object>> entry:this.cache.entrySet()){
+				entry.getValue().clear();
+			}
+		}
+
+		@Override
+		public boolean containCache(String ns, Object key) {
+			return this.cache.get(ns).containsKey(key);
+		}
+		
+	}
 	
 
 }
