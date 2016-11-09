@@ -291,6 +291,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, ctx.getResult());
 			return (List<T>)ctx.getResult();
 		}
+		//再次获取参数，因为有可能被改变
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;

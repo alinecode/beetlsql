@@ -30,7 +30,6 @@ public class BeanKit {
 		} 
 	}
 	
-	private static  Map<String, Method> setMethod = new HashMap<String,Method>();
 	
 	public static Method getTailMethod(Class type){
 		//如果实现了注解也行@Tail也行
@@ -162,29 +161,10 @@ public class BeanKit {
 	}
 
 	public static void setBeanProperty(Object o, Object value, String attrName) {
-		Method m = setMethod.get(attrName);
-		if(m==null){
-			try {
-				Class t = o.getClass();
-				MethodInvoker inv = ObjectUtil.getInvokder(t, attrName);
-				if(inv==null){
-					throw new BeetlSQLException(BeetlSQLException.ORM_ERROR,"映射为找到属性"+attrName+" in "+t);
-				}
-				String getterName = inv.getMethod().getName();
-				String setterName = "s"+getterName.substring(1);
-				m = t.getMethod(setterName, inv.getReturnType());
-				setMethod.put(attrName, m);
-			} catch (Exception ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		try{
-			m.invoke(o, value);
-		}catch(Exception ex){
-			throw new RuntimeException(ex);
-		}
-		
-		
+	
+		MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
+		inv.set(o, value);
+	
 	}
 	
 	

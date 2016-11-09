@@ -45,12 +45,12 @@ public class QuickTest {
 		
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
-		List<Class> lcs = new ArrayList<Class>();
-		lcs.add(User.class);
+		List<String> lcs = new ArrayList<String>();
+		lcs.add("user");
 		SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		for(int i=0;i<3;i++){
+		for(int i=0;i<2;i++){
 			sql.select("user.queryUser", User.class, null);
 		}
 		

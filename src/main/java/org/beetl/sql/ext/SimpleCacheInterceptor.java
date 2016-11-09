@@ -30,24 +30,22 @@ public class SimpleCacheInterceptor implements Interceptor {
 	
 	
 	/** 用MapCacheManager来实现缓存
-	 * @param entitys 需要考虑缓存的实体
+	 * @param namespaces 需要考虑缓存的实体
 	 */
-	public SimpleCacheInterceptor(List<Class> entitys) {
-		this(entitys,new MapCacheManager());
+	public SimpleCacheInterceptor(List<String> namespaces) {
+		this(namespaces,new MapCacheManager());
 	}
 	
 	/**
 	 * 
-	 * @param entitys
+	 * @param namespaces
 	 * @param cm  指定的缓存管理
 	 */
-	public SimpleCacheInterceptor(List<Class> entitys,CacheManager cm) {
+	public SimpleCacheInterceptor(List<String> namespaces,CacheManager cm) {
 		this.cm = cm;
 		nsSet = new HashSet<String>();
-		for(Class c:entitys){
-			String name = c.getSimpleName();
+		for(String ns:namespaces){
 			//TODO dbstyle 里做这个转化
-			String ns = StringKit.toLowerCaseFirstOne(name);
 			nsSet.add(ns);
 			this.cm.initCache(ns);
 		}
@@ -136,13 +134,10 @@ public class SimpleCacheInterceptor implements Interceptor {
 	}
 
 	/**
-	 * Gets the cache object.
-	 *
+	 *  获取缓存对象
+	 * @param ns
 	 * @param cacheKey
-	 *            the cache key
-	 * @return the cache object
-	 * @throws Exception
-	 *             the exception
+	 * @return
 	 */
 	public Object getCacheObject(String ns,Object cacheKey)  {
 		return  this.cm.getCache(ns, cacheKey);
@@ -151,21 +146,19 @@ public class SimpleCacheInterceptor implements Interceptor {
 	
 
 	/**
-	 * 清楚所有缓存
-	 *
-	 * @param ctx
-	 *            the ctx
+	 * 清除缓存对象
+	 * @param ns
 	 */
 	public void clearCache(String ns) {
 		this.cm.clearCache(ns);
 		
 	}
-
+	
 	/**
-	 * Put cache.
-	 *
+	 * 设置缓存对象
+	 * @param ns
+	 * @param key
 	 * @param ctx
-	 *            the ctx
 	 */
 	public void putCache(String ns,Object key,InterceptorContext ctx) {
 		// 缓存内容.
@@ -175,7 +168,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	}
 	
 	protected String getSqlIdNameSpace(String sqlId){
-		int index =sqlId.indexOf('.');
+		int index =sqlId.lastIndexOf('.');
 		return sqlId.substring(0, index);
 	}
 	

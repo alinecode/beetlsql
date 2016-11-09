@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.6.7</version>
+	<version>2.6.8</version>
 
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
@@ -215,8 +215,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>ormunit</artifactId>
-			<version>1.0</version>
-
+			<version>1.0.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

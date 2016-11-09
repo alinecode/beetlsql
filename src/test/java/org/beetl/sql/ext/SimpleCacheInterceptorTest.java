@@ -18,8 +18,8 @@ public class SimpleCacheInterceptorTest {
 
 	@Test
 	public void simple() throws Exception {
-		List<Class> lcs = new ArrayList<Class>();
-		lcs.add(User.class);
+		List<String> lcs = new ArrayList<String>();
+		lcs.add("user");
 		SimpleCacheInterceptor sci =new SimpleCacheInterceptor(lcs);
 		String ns = "user";
 		String selectSqlId = ns + ".select";

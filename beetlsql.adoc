@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.6.7 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.6.8 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 
 **********************************************************************
 
@@ -54,13 +54,13 @@ maven 方式:
 <dependency>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.6.7</version>
+	<version>2.6.8</version>
 </dependency>
 
 
 ----------------------------
 
-或者依次下载beetlsql，beetl 包放到classpath里
+或者依次下载beetlsql，beetl 最新版本 包放到classpath里
 
 
 === 准备工作
@@ -1461,6 +1461,72 @@ SqlManager sqlManager = new SqlManager(source,mysql,loader,nc ,new Interceptor[]
 
 
 beetlsql会分别输出 执行前的sql和参数，以及执行后的结果和耗费的时间。你可以参考DebugInterceptor 实现自己的调试输出
+
+== 缓存功能
+
+同DebugInterceptor构造方式一样，  SimpleCacheInterceptor能缓存指定的sql查询结果
+
+[source,java]
+----------------------------
+List<String> lcs = new ArrayList<String>();
+lcs.add("user");
+SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
+Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
+SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+for(int i=0;i<2;i++){
+	sql.select("user.queryUser", User.class, null);
+}
+
+----------------------------
+
+如上例子，指定所有namespace为user查询都讲被缓存，如果此namepace有更新操作，则缓存清除，输出如下
+
+[source,java]
+----------------------------
+
+┏━━━━━ Debug [user.queryUser] ━━━
+┣ SQL：	 select * from User where 1 =1
+┣ 参数：	 []
+┣ 位置：	 org.beetl.sql.test.QuickTest.main(QuickTest.java:54)
+┣ 时间：	 52ms
+┣ 结果：	 [9]
+┗━━━━━ Debug [user.queryUser] ━━━
+
+┏━━━━━ Debug [user.queryUser] ━━━
+┣ SQL：	 select * from User where 1 =1
+┣ 参数：	 []
+┣ 位置：	 org.beetl.sql.test.QuickTest.main(QuickTest.java:54)
+┣ 时间：	 0ms
+┣ 结果：	 [9]
+┗━━━━━ Debug [user.queryUser] ━━━
+
+
+----------------------------
+	
+	
+第二条查询的时间为0，这是因为直接使用了缓存缘故。
+
+SimpleCacheInterceptor 构造的时候接受一个类列表，所有sqlid的namespace，比如“user.queryUser” 的namespace是“user”，如果beetlsql的查询sqlid此列表里，将参与缓存处理，否则，不参与缓存处理
+
+默认的缓存实现是使用内存Map，也可以使用其他实现方式，比如redies，只需要实现如下接口
+
+
+[source,java]
+
+----------------------------
+
+public static interface CacheManager{
+	public void initCache(String ns);
+	public void putCache(String ns,Object key,Object value);
+	public Object getCache(String ns,Object key);
+	public void clearCache(String ns);
+	public boolean containCache(String ns,Object key);
+}
+
+----------------------------
+
+
+
 
 ==  Interceptor功能
 
