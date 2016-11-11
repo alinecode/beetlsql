@@ -5,6 +5,19 @@ import java.util.Map;
 public class SqlServerStyle extends AbstractDBStyle {
 
 	public SqlServerStyle() {
+		this.keyWordHandler = new KeyWordHandler(){
+			@Override
+			public String getTable(String tableName) {
+				return "["+tableName+"]";
+				
+			}
+
+			@Override
+			public String getCol(String colName) {
+				return "["+colName+"]";
+			}
+			
+		};
 	}
 
 
@@ -33,9 +46,5 @@ public class SqlServerStyle extends AbstractDBStyle {
 		return "sqlserver";
 	}
 	
-	@Override
-	public String getEscapeForKeyWord(){
-		return "";
-	}
 
 }

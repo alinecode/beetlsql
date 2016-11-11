@@ -35,9 +35,6 @@ public class PostgresStyle extends AbstractDBStyle {
 		return "postgres";
 	}
 	
-	@Override
-	public String getEscapeForKeyWord(){
-		return "";
-	}
+	
 
 }

@@ -15,6 +15,8 @@ import org.beetl.sql.core.annotatoin.SeqID;
  */
 public class MySqlStyle extends AbstractDBStyle {
 	
+	
+	
 	@Override
 	public String getPageSQL(String sql) {
 		return sql+this.getOrderBy()+" \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
@@ -27,6 +29,19 @@ public class MySqlStyle extends AbstractDBStyle {
 	}
 
 	public MySqlStyle() {
+		this.keyWordHandler = new KeyWordHandler(){
+			@Override
+			public String getTable(String tableName) {
+				return "`"+tableName+"`";
+				
+			}
+
+			@Override
+			public String getCol(String colName) {
+				return "`"+colName+"`";
+			}
+			
+		};
 	}
 
 	@Override
@@ -53,9 +68,5 @@ public class MySqlStyle extends AbstractDBStyle {
 	public String getName() {
 		return "mysql";
 	}
-	
-	@Override
-	public String getEscapeForKeyWord(){
-		return "`";
-	}
+
 }

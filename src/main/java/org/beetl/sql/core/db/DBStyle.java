@@ -52,7 +52,8 @@ public interface DBStyle {
 	
 	public int getIdType(Method idMethod);
 	
-	public String getEscapeForKeyWord();
+	public KeyWordHandler getKeyWordHandler();
+	public void setKeyWordHandler(KeyWordHandler keyWordHandler);
 	
 	
 	public NameConversion getNameConversion();

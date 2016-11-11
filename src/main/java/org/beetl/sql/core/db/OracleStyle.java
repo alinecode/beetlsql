@@ -60,11 +60,7 @@ public class OracleStyle extends AbstractDBStyle {
 		return "oracle";
 	}
 	
-	@Override
-	public String getEscapeForKeyWord(){
-		return "";
-	}
-	
+
 	
 
 }

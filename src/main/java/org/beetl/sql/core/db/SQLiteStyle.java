@@ -15,6 +15,23 @@ import java.util.Map;
  */
 public class SQLiteStyle extends AbstractDBStyle {
 
+  public SQLiteStyle() {
+    	this.keyWordHandler = new KeyWordHandler(){
+			@Override
+			public String getTable(String tableName) {
+				return "`"+tableName+"`";
+				
+			}
+
+			@Override
+			public String getCol(String colName) {
+				return "`"+colName+"`";
+			}
+			
+		};
+    }
+  
+  
     @Override
     public String getPageSQL(String sql) {
         return sql+ this.getOrderBy()+" \nlimit " + HOLDER_START + PAGE_SIZE + HOLDER_END + " offset " + HOLDER_START + OFFSET + HOLDER_END;
@@ -26,8 +43,7 @@ public class SQLiteStyle extends AbstractDBStyle {
         param.put(DBStyle.PAGE_SIZE,size);
     }
 
-    public SQLiteStyle() {
-    }
+  
 
     
 
@@ -36,8 +52,4 @@ public class SQLiteStyle extends AbstractDBStyle {
         return "sqlite";
     }
 
-    @Override
-    public String getEscapeForKeyWord(){
-        return "`";
-    }
 }

@@ -35,7 +35,7 @@ public abstract class AbstractDBStyle implements DBStyle {
     public String HOLDER_START;// 站位符开始符号
     public String HOLDER_END;// 站位符结束符号
     protected String lineSeparator = System.getProperty("line.separator", "\n");
-
+    protected  KeyWordHandler  keyWordHandler= new DefaultKeyWordHandler();
     //翻页从0还是1开始，默认从1开始
     protected boolean offsetStartZero = false;
 
@@ -455,9 +455,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         return sql.deleteCharAt(sql.length() - 1).toString();
     }
 
-    public String getEscapeForKeyWord() {
-        return "\"";
-    }
+ 
 
     /****
      * 去掉逗号后面的加上结束符和条件并换行
@@ -478,7 +476,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @return
      */
     private String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
-        return this.getEscapeForKeyWord() + colName + this.getEscapeForKeyWord() + "=" + HOLDER_START + fieldName + HOLDER_END + ",";
+        return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + fieldName + HOLDER_END + ",";
     }
 
     /***
@@ -493,7 +491,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         String prefix = "";
 
         return STATEMENT_START + "if(!isEmpty(" + prefix + fieldName + ")){"
-                + STATEMENT_END + "\t" + this.getEscapeForKeyWord() + colName + this.getEscapeForKeyWord() + "=" + HOLDER_START + prefix + fieldName + HOLDER_END + ","
+                + STATEMENT_END + "\t" + this.getKeyWordHandler().getCol(colName) + "=" + HOLDER_START + prefix + fieldName + HOLDER_END + ","
                 + lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
 
 
@@ -512,7 +510,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
         String connector = " and ";
         return STATEMENT_START + "if(!isEmpty(" + prefix + fieldName + ")){"
-                + STATEMENT_END + connector + this.getEscapeForKeyWord() + colName + this.getEscapeForKeyWord() + "=" + HOLDER_START + prefix + fieldName
+                + STATEMENT_END + connector + this.getKeyWordHandler().getCol(colName) + "=" + HOLDER_START + prefix + fieldName
                 + HOLDER_END + lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
 
     }
@@ -527,7 +525,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendInsertColumn(Class<?> c, TableDesc table, String colName) {
-        return this.getEscapeForKeyWord() + colName + this.getEscapeForKeyWord() + ",";
+        return this.getKeyWordHandler().getCol(colName) + ",";
     }
 
     /****
@@ -563,14 +561,12 @@ public abstract class AbstractDBStyle implements DBStyle {
         if(colIt.hasNext() && propertieIt.hasNext()){
             String colId = colIt.next();
             String properId = propertieIt.next();
-            condition.append(this.getEscapeForKeyWord()).append(colId)
-                    .append(this.getEscapeForKeyWord()).append(" = ")
+            condition.append(this.getKeyWordHandler().getCol(colId)).append(" = ")
                     .append(HOLDER_START).append(properId).append(HOLDER_END);
             while (colIt.hasNext() && propertieIt.hasNext()) {
                 colId = colIt.next();
                 properId = propertieIt.next();
-                condition.append(" and ").append(this.getEscapeForKeyWord()).append(colId)
-                        .append(this.getEscapeForKeyWord()).append(" = ")
+                condition.append(" and ").append(this.getKeyWordHandler().getCol(colId)).append(" = ")
                         .append(HOLDER_START).append(properId).append(HOLDER_END);
             }
         }
@@ -651,16 +647,16 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     protected String getTableName(TableDesc desc) {
         if (desc.getSchema() != null) {
-            return this.getEscapeForKeyWord() + desc.getSchema() + this.getEscapeForKeyWord() + "." + this.getEscapeForKeyWord() + desc.getName() + this.getEscapeForKeyWord();
+            return this.getKeyWordHandler().getTable(desc.getSchema())+ "." + this.getKeyWordHandler().getTable(desc.getName()) ;
         } else {
-            return this.getEscapeForKeyWord() + desc.getName() + this.getEscapeForKeyWord();
+            return this.getKeyWordHandler().getTable(desc.getName());
         }
 
     }
 
     protected void checkId(Collection colsId, Collection attrsId, String clsName) {
         if (colsId.size() == 0 || attrsId.size() == 0) {
-            throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND, "PRIMARY KEY NOT FOUND IN " + clsName);
+            throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND, "主键未发现," + clsName+",检查数据库表定义或者NameConversion");
         }
     }
 
@@ -690,4 +686,11 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     }
 
+    @Override
+    public KeyWordHandler getKeyWordHandler(){
+    	return this.keyWordHandler;
+    }
+	public void setKeyWordHandler(KeyWordHandler keyWordHandler){
+		this.keyWordHandler = keyWordHandler;
+	}
 }

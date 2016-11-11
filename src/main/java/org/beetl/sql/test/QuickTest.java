@@ -50,10 +50,13 @@ public class QuickTest {
 		SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		for(int i=0;i<2;i++){
-			sql.select("user.queryUser", User.class, null);
-		}
-		
+//		for(int i=0;i<2;i++){
+//			sql.select("user.queryUser", User.class, null);
+//		}
+//		
+		sql.genSQLTemplateToConsole("user");
+		sql.genBuiltInSqlToConsole(User.class);
+//		sql.unique(User.class, 1);
 		//		sql.genBuiltInSqlToConsole(User.class);
 	}
 	
