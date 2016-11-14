@@ -461,6 +461,48 @@ public class SQLScript {
 	}
 	
 	
+	public int[] insertBatch(List<?> list) {
+		//与updateBatch区别是需要考虑到id生成
+		if(list.size()==0){
+			return new int[0];
+		}
+		int[] rs = null;
+		PreparedStatement ps = null;
+		Connection conn = null;
+		// 执行jdbc
+		InterceptorContext ctx = null;
+		try {
+
+			for (int k = 0; k < list.size(); k++) {
+				Map<String, Object> paras = new HashMap<String, Object>();
+				Object entity =  list.get(k);
+				this.addParaIfAssignId(entity);
+				paras.put("_root",entity);
+				SQLResult result = run(paras);
+				List<Object> objs = result.jdbcPara;
+
+				if (ps == null) {
+					conn = sm.getDs().getConn(id, true, sql, objs);
+					ps = conn.prepareStatement(result.jdbcSql);
+					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.emptyList(),paras);
+				}
+
+				this.setPreparedStatementPara(ps, objs);
+				
+				ps.addBatch();
+
+			}
+			rs = ps.executeBatch();
+			this.callInterceptorAsAfter(ctx, rs);
+
+		} catch (SQLException e) {
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		} finally {
+			clean(true, conn, ps);
+		}
+		return rs;
+	}
+	
 
 	public int[] updateBatch(List<?> list) {
 		if(list.size()==0){

@@ -54,8 +54,9 @@ public class QuickTest {
 //			sql.select("user.queryUser", User.class, null);
 //		}
 //		
-		sql.genSQLTemplateToConsole("user");
-		sql.genBuiltInSqlToConsole(User.class);
+		User user = new User();
+		user.setName("hello000");
+		sql.insert(sql);
 //		sql.unique(User.class, 1);
 		//		sql.genBuiltInSqlToConsole(User.class);
 	}

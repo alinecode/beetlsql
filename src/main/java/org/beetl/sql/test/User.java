@@ -17,7 +17,7 @@ public class User extends TailBean  {
 	public User() {
 	}
 	
-	@AutoID
+	@AssignID("simple")
 	public long getUserId(){
 		return  userId;
 	}

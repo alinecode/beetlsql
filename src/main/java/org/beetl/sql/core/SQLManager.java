@@ -755,7 +755,7 @@ public class SQLManager {
 	 */
 	public void insertBatch(Class clazz,List<?> list){
 		SQLScript script = getScript(clazz,INSERT );
-		script.updateBatch(list);
+		script.insertBatch(list);
 	}
 	
 	
