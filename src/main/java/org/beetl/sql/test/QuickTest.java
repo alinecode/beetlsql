@@ -3,6 +3,7 @@ package org.beetl.sql.test;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -56,7 +57,10 @@ public class QuickTest {
 //		
 		User user = new User();
 		user.setName("hello000");
-		sql.insert(sql);
+		
+		User user1 = new User();
+		user1.setName("dfdsfdsf00");
+		sql.insertBatch(User.class, Arrays.asList(user,user1));
 //		sql.unique(User.class, 1);
 		//		sql.genBuiltInSqlToConsole(User.class);
 	}
