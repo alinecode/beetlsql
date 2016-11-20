@@ -3,6 +3,7 @@ package org.beetl.sql.test;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -51,6 +52,7 @@ public class QuickTest {
 		SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+
 
 		StringBuilder sb = new StringBuilder();
 		SQLSource tempSource =  sql.getDbStyle().genSelectById(User.class);
