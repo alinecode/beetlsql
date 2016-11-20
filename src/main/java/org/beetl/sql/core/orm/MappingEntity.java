@@ -2,6 +2,7 @@ package org.beetl.sql.core.orm;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +42,9 @@ public class MappingEntity {
 
 	
    Map<String,List> cache = new HashMap<String,List>();
-
+   public void map(Object o, SQLManager sm) {
+	   this.map(Arrays.asList(o), sm);
+   }
 	public void map(List list, SQLManager sm) {
 		if(list.size()==0){
 			return ;

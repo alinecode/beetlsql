@@ -11,6 +11,9 @@ import java.util.Set;
 
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
+import org.beetl.sql.core.annotatoin.OrmCondition;
+import org.beetl.sql.core.annotatoin.OrmQuery;
+import org.beetl.sql.core.annotatoin.OrmQueryType;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -31,8 +34,8 @@ public class ClassDesc {
 	List<String> idProperties =  new ArrayList<String>(3);
 	List<String> idCols =  new ArrayList<String>(3);
 	Map<String,ColumnIgnore> attrIgnores = new HashMap<String,ColumnIgnore>();
-	
 	Map<String,Object> idMethods = new CaseInsensitiveHashMap<String,Object>();
+	String ormQuery = null;
 	
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		this.c = c ;
@@ -85,7 +88,6 @@ public class ClassDesc {
 		}
 		
 		
-			
 		
 	}
 	/**

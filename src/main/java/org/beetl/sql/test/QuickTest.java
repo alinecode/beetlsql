@@ -9,6 +9,7 @@ import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
@@ -50,15 +51,12 @@ public class QuickTest {
 		SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-//		for(int i=0;i<2;i++){
-//			sql.select("user.queryUser", User.class, null);
-//		}
-//		
-		User user = new User();
-		user.setName("hello000");
-		sql.insert(sql);
-//		sql.unique(User.class, 1);
-		//		sql.genBuiltInSqlToConsole(User.class);
+
+		StringBuilder sb = new StringBuilder();
+		SQLSource tempSource =  sql.getDbStyle().genSelectById(User.class);
+		sb.append(tempSource.getTemplate());
+		sb.append("\n\r");
+		System.out.println(sb);
 	}
 	
 	

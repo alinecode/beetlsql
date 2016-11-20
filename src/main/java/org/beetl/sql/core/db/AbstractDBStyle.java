@@ -16,6 +16,9 @@ import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.DateTemplate;
+import org.beetl.sql.core.annotatoin.OrmCondition;
+import org.beetl.sql.core.annotatoin.OrmQuery;
+import org.beetl.sql.core.annotatoin.OrmQueryType;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.engine.Beetl;
@@ -89,7 +92,8 @@ public abstract class AbstractDBStyle implements DBStyle {
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
         String condition = appendIdCondition(cls);
-        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
+        String ormQuery = getOrmQuery(cls);
+        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(ormQuery).toString());
     }
 
     @Override
@@ -692,5 +696,35 @@ public abstract class AbstractDBStyle implements DBStyle {
     }
 	public void setKeyWordHandler(KeyWordHandler keyWordHandler){
 		this.keyWordHandler = keyWordHandler;
+	}
+	
+	protected String getOrmQuery(Class c){
+		// 查看是否有orm查询
+		OrmQuery oq = (OrmQuery) c.getAnnotation(OrmQuery.class);
+		if(oq==null){
+			return "";
+		}
+		
+		OrmCondition[] qcs = oq.value();
+		StringBuilder sb = new StringBuilder("\n");
+		for(OrmCondition qc:qcs){
+			if(qc.type()==OrmQueryType.MANY){
+				sb.append(STATEMENT_START).append("orm.lazyMany(").
+					append(qc.mapping());
+				
+			}else{
+				sb.append(STATEMENT_START).append("orm.lazySingle(").
+				append(qc.mapping());
+			}
+			
+			if(qc.sqlId().length()!=0){
+				sb.append(",\"").append(qc.sqlId()).append("\"");
+			}
+			
+			sb.append(",").append("\"").append(qc.target().getName())
+			.append("\"").append(");");
+			sb.append(STATEMENT_END);
+		}
+		return sb.toString();
 	}
 }

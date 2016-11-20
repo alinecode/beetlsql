@@ -580,7 +580,11 @@ public class SQLScript {
 			rs = ps.executeQuery();
 			try{
 				model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm,throwException));
-				
+				if(result.mapingEntrys!=null){
+					for(MappingEntity mapConf:result.mapingEntrys){
+						mapConf.map(model, sm);
+					}
+				}
 			}catch(BeetlSQLException ex){
 				
 				if(ex.code==BeetlSQLException.UNIQUE_EXCEPT_ERROR){
