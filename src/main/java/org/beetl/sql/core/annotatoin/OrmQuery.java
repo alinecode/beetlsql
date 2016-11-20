@@ -13,7 +13,30 @@ import java.lang.annotation.Target;
 @Target({TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OrmQuery {
+	public static enum Type {
+
+		ONE, MANY;
+
+		/**
+		 * The Constructor.
+		 */
+		private Type() {
+		}
+	}
+	
+	public static enum On {
+
+		INNER, MD,ALL;
+
+		/**
+		 * The Constructor.
+		 */
+		private On() {
+		}
+	}
+	
 	public OrmCondition[] value();
+	public On on() default On.INNER;
 
 }
 

@@ -14,7 +14,7 @@ public @interface OrmCondition {
 	public Class target();
 	public String mapping();
 	public String sqlId() default "";
-	public OrmQueryType type() default OrmQueryType.MANY;
+	public OrmQuery.Type type() default OrmQuery.Type.MANY;
 }
 
 

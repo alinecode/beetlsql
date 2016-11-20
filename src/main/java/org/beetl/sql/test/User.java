@@ -4,15 +4,7 @@ import java.util.Date;
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
-import org.beetl.sql.core.annotatoin.OrmQuery;
-import org.beetl.sql.core.annotatoin.OrmQueryType;
-import org.beetl.sql.core.annotatoin.OrmCondition;
-@OrmQuery(
-{
-	@OrmCondition(target=User.class,mapping="{'userId':'id'}"),
-	@OrmCondition(target=User.class,mapping="{'userId':id}",sqlId="user.ttt",type=OrmQueryType.ONE)
-}
-)
+
 public class User extends TailBean  {
 	private long userId ;
 	private Integer age ;
