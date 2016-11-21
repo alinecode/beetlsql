@@ -711,7 +711,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		if(oq==null){
 			return "";
 		}
-		if(oq.on()==OrmQuery.On.INNER.ALL||(inner&&oq.on()==OrmQuery.On.INNER)||(!inner&&oq.on()==OrmQuery.On.MD)){
+		if(oq.applyFor()==OrmQuery.On.INNER.ALL||(inner&&oq.applyFor()==OrmQuery.On.INNER)||(!inner&&oq.applyFor()==OrmQuery.On.MD)){
 			
 			OrmCondition[] qcs = oq.value();
 			StringBuilder sb = new StringBuilder("\n");

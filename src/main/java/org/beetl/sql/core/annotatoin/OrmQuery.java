@@ -36,7 +36,7 @@ public @interface OrmQuery {
 	}
 	
 	public OrmCondition[] value();
-	public On on() default On.INNER;
+	public On applyFor() default On.INNER;
 
 }
 
