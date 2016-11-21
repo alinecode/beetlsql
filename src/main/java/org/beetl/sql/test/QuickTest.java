@@ -3,7 +3,6 @@ package org.beetl.sql.test;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -52,6 +51,7 @@ public class QuickTest {
 		SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+<<<<<<< master
 
 
 		StringBuilder sb = new StringBuilder();
@@ -59,6 +59,17 @@ public class QuickTest {
 		sb.append(tempSource.getTemplate());
 		sb.append("\n\r");
 		System.out.println(sb);
+=======
+//		for(int i=0;i<2;i++){
+//			sql.select("user.queryUser", User.class, null);
+//		}
+//		
+		User user = new User();
+		user.setName("hello000");
+		sql.insert(sql);
+//		sql.unique(User.class, 1);
+		//		sql.genBuiltInSqlToConsole(User.class);
+>>>>>>> c0936b8 bug fix
 	}
 	
 	

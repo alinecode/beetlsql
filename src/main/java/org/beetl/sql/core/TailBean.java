@@ -54,7 +54,7 @@ public class TailBean implements Tail {
 					try{
 						LazyEntity lazyEntity = (LazyEntity)value;
 						Object real = lazyEntity.get();
-						newExtMap.put(key, value);
+						newExtMap.put(key, real);
 					}catch(RuntimeException ex){
 						throw new BeetlSQLException(BeetlSQLException.ORM_LAZY_ERROR,"Lazy Load Error:"+key+","+ex.getMessage(),ex);
 					}

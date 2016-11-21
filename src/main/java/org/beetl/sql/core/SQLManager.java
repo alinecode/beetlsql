@@ -1000,7 +1000,7 @@ public class SQLManager {
 	 * @return
 	 */
 	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Map paras){
-		String key ="auto._gen_" +sqlTemplate;
+		String key ="auto." +sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if(source==null){
 			source = new SQLSource(key,sqlTemplate);
