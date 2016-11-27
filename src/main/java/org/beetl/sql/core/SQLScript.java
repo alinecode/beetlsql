@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
-import org.beetl.core.om.MethodInvoker;
-import org.beetl.core.om.ObjectUtil;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
@@ -39,7 +37,10 @@ import org.beetl.sql.core.mapping.handler.BeanHandler;
 import org.beetl.sql.core.mapping.handler.BeanListHandler;
 import org.beetl.sql.core.mapping.handler.MapListHandler;
 import org.beetl.sql.core.mapping.handler.ScalarHandler;
+import org.beetl.sql.core.orm.LazyMappingEntity;
 import org.beetl.sql.core.orm.MappingEntity;
+import org.beetl.sql.core.orm.OrmCondition;
+import org.beetl.sql.core.orm.OrmQuery;
 
 public class SQLScript {
 
@@ -61,35 +62,19 @@ public class SQLScript {
 	}
 
 	protected SQLResult run(Map<String, Object> paras) {
-		GroupTemplate gt = sm.beetl.getGroupTemplate();
-		Template t = gt.getTemplate(sqlSource.getId());
-		List<Object> jdbcPara = new LinkedList<Object>();
-
-		if (paras != null) {
-			for (Entry<String, Object> entry : paras.entrySet()) {
-				t.binding(entry.getKey(), entry.getValue());
-			}
-		}
-
-		t.binding("_paras", jdbcPara);
-		t.binding("_manager", this.sm);
-		t.binding("_id", id);
-
-		String jdbcSql = t.render();
-		SQLResult result = new SQLResult();
-		result.jdbcSql = jdbcSql;
-		result.jdbcPara = jdbcPara;
-		
-		result.mapingEntrys= (List<MappingEntity>)t.getCtx().getGlobal("_mapping");
-		
-		return result;
+		return this.run(paras, null);
 	}
 
 	protected SQLResult run(Map<String, Object> paras, String parentId) {
 		GroupTemplate gt = sm.beetl.getGroupTemplate();
-		Template t = gt.getTemplate(sqlSource.getId(), parentId);
+		Template t = null;
+		if(parentId!=null){
+			t = gt.getTemplate(sqlSource.getId(), parentId);
+		}else{
+			t = gt.getTemplate(sqlSource.getId());
+		}
+		
 		List<Object> jdbcPara = new LinkedList<Object>();
-
 		if (paras != null) {
 			for (Entry<String, Object> entry : paras.entrySet()) {
 				t.binding(entry.getKey(), entry.getValue());
@@ -106,6 +91,60 @@ public class SQLScript {
 		result.jdbcPara = jdbcPara;
 		result.mapingEntrys= (List<MappingEntity>)t.getCtx().getGlobal("_mapping");
 		return result;
+	}
+	/**
+	 * 检查目标类是否有申明ormquery,如果有，改写result.mapingEntrys
+	 * @param target
+	 */
+	private void addOrmQuery(Class target,SQLResult result){
+		if(target==null){
+			return ;
+		}
+		
+		OrmQuery ormQuery = (OrmQuery)target.getAnnotation(OrmQuery.class);
+		if(ormQuery==null){
+			return ;
+		}
+		
+		OrmCondition[] condtions = ormQuery.value();
+		
+		Map<String,MappingEntity> map = new HashMap<String,MappingEntity>();
+		
+		for(OrmCondition cond:condtions){
+			//类配合的orm查询总是
+			MappingEntity mappingEntity = new LazyMappingEntity();
+			mappingEntity.setSingle(cond.type()==OrmQuery.Type.ONE);
+			mappingEntity.setTarget(cond.target().getName());
+			
+			mappingEntity.setSqlId(cond.sqlId().length()!=0?cond.sqlId():null);
+			Map<String,String> mapKey = new HashMap<String,String>();
+			mapKey.put(cond.attr(), cond.targetAttr());
+			mappingEntity.setMapkey(mapKey);
+			map.put(mappingEntity.getTarget(), mappingEntity);
+			
+		
+		}
+		
+		if(result.mapingEntrys!=null){
+			//需要合并，以sql模板为主,要求sql模板使用全类名，否则无法覆盖
+			for(MappingEntity entity:result.mapingEntrys){
+				String mapTarget = entity.getTarget();
+				if(mapTarget.indexOf('.')==-1){
+					mapTarget = target.getPackage().getName().concat(".").concat(mapTarget);
+					entity.setTarget(mapTarget);
+				}
+				if(map.keySet().contains(mapTarget)){
+					//以模板里的查询为准
+					map.remove(mapTarget);
+				}
+			}
+			result.mapingEntrys.addAll(map.values());
+			
+		}else{
+			result.mapingEntrys = new ArrayList<MappingEntity>(map.values());
+		}
+		
+		
 	}
 
 	public int insert(Object paras) {
@@ -281,6 +320,7 @@ public class SQLScript {
 
 	public <T> List<T> select(Class<T> clazz, Map<String, Object> paras, RowMapper<T> mapper) {
 		SQLResult result = run(paras);
+		addOrmQuery(clazz,result);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
 		ResultSet rs = null;
@@ -560,6 +600,7 @@ public class SQLScript {
 		Map<String, Object> paras = new HashMap<String, Object>();
 		this.setIdsParas(classDesc, objId, paras);
 		SQLResult result = run(paras);
+		addOrmQuery(clazz,result);
 		String sql = result.jdbcSql;
 		List<Object> objs = result.jdbcPara;
 		ResultSet rs = null;
@@ -788,7 +829,6 @@ public class SQLScript {
 			paras.put(idAttrs.get(0), obj);
 		}else{
 			//来自对象id的属性.
-			List<String> idClos = desc.getIdCols();
 			
 			Map<String,Object> map = desc.getIdMethods();
 			for(int i=0;i<idAttrs.size();i++){

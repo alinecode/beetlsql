@@ -14,7 +14,7 @@ BeetlSQL User Guide
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan,woate
 * 社区 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.6.8 (216K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
+* 当前版本 2.7.0 (222K), 另外还需要beetl(http://git.oschina.net/xiandafu/beetl2.0/attach_files) 包
 
 **********************************************************************
 
@@ -36,7 +36,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 * 维护性
 ** SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试。
 ** 可以自动将sql文件映射为dao接口类
-** 简单支持支持一对一，一对多，多对多关系映射而不引入复杂的OR Mapping概念和技术。
+** 灵活直观的支持支持一对一，一对多，多对多关系映射而不引入复杂的OR Mapping概念和技术。
 ** 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 
 
@@ -930,7 +930,14 @@ minDate,maxDate 是俩个额外的变量,需要定义到pojo类里，DateTemplat
 		
 === Mapper相关注解
 
-* Mapper中的注解，包括常用的	SqlStatement ，SqlStatementType ，Sql,Param 还有不常用的 RowSize ，RowStart，具体参考Mapper
+Mapper 是将sql模板文件映射成一个具体的Dao方法类,这样方位代码开发和维护
+
+Mapper中的注解，包括常用的	SqlStatement ，SqlStatementType ，Sql,Param 还有不常用的 RowSize ，RowStart，具体参考Mapper
+
+=== ORMQuery
+
+beetlsql 支持在实体类上增加ORMQuery注解,这样对于实体的查询,会触发懒加载,从而实现ORM 查询功能,具体参考ORM 查询一章
+
 
 == BeetlSQL 数据模型
 
@@ -1860,9 +1867,11 @@ http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。
 * BeetlSql的Pojo类与数据库表对应，没有关系映射相关特性，除非Pojo实现@Tail 或者继承TailBean（或者实现Tail接口），额外的关系映射才会放到tail属性里供查询的时候调用。
 
 * 要注意的是，beetlsql的orm 仅仅限于查询结果集，而不包括新增，更新，删除。这些需要调用sqlManager的api直接操作就行了而不像JPA那样还需要成为容器管理对象才能更新
+
+* 无论是sql语句里配置orm查询,还是通过注解来配置orm查询,都不强求数据库一定有此映射关系,只要当运行调用的时候才会触发orm查询.对于eager查询,当调用beetlsql的时候,会触发ORM查询,对于lazy查询,并不会触发,只会在获取关系属性的时候的,再触发.
 **********************************************************************
   
-
+=== sql语句里的ORM查询
 beetlsql 关系映射是在sql语句里通过orm.single和 orm.many,orm.lazySingle,orm.lazyMany 函数进行申明。beetlsql会根据这些申明来完成关系映射
 
 orm.single,orm.many ,orm.lazySingle,orm.lazyMany函数名字本身说明了是一对一，还是一对多或者多对多。以及是直接加载还是懒加载。函数可以放在sql语句任何地方，建议放到头部或者尾部，参数格式有俩种形式，
@@ -1958,6 +1967,41 @@ public class TailBean implements Tail {
 	}
 	
 ----------------------------
+
+
+=== ORM 注解
+
+不必要为每个sql语句写映射关系或者是使用一个公共的映射关系,可以在映射的实体类上注解映射关系从而实现懒加载机制,如
+
+[source,java]
+----------------------------
+
+@OrmQuery(
+{
+	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE),
+	@OrmCondition(target=ProductOrder.class,attr="id",targetAttr="userId" ,type=OrmQuery.Type.MANY),
+	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY)
+
+}
+)
+public class User   extends TailBean {
+	
+	private Integer id ;
+	private String name ;
+	private Integer departmentId;
+	
+	//忽略getter setter
+}
+
+----------------------------
+
+
+OrmQuery 标注在类上,OrmCondition 声明了一个懒加载关系.因此,在以后beetlsql的关于此实体的查询,都可以进一步使用懒加载查询.
+
+如果sql语句里也申明了ORM查询,则会和注解的里ORM注解做合并,遇到映射同一个实体,则以sql语句里的映射配置为准
+
+
+
 
 == 集成和Demo
 

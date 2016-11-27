@@ -1,41 +1,38 @@
 package org.beetl.sql.test;
-import java.util.Date;
-
 import org.beetl.sql.core.TailBean;
-import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.annotatoin.ColumnIgnore;
+import org.beetl.sql.core.orm.OrmCondition;
+import org.beetl.sql.core.orm.OrmQuery;
 
-public class User extends TailBean  {
-	private long userId ;
-	private Integer age ;
-	private Integer departmentId ;
+/*
+* 
+* gen by beetlsql 2016-08-20
+* @ orm.single({"departmentId":"id"},"Department");
+	@ orm.many({"id":"userId"},"ProductOrder");
+	@ orm.many({"id":"userId"},"user.selectRole","Role");
+* 
+*/
+@OrmQuery(
+{
+	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE),
+	@OrmCondition(target=ProductOrder.class,attr="id",targetAttr="userId" ,type=OrmQuery.Type.MANY),
+	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY)
+
+}
+)
+public class User   extends TailBean {
+	
+	private Integer id ;
 	private String name ;
-	private String userName ;
-	private Date bir ;
+	private Integer departmentId;
 	
 	public User() {
 	}
 	
-	@AssignID("simple")
-	public long getUserId(){
-		return  userId;
+	public Integer getId(){
+		return  id;
 	}
-	public void setUserId(long userid ){
-		this.userId = userid;
-	}
-	
-	public Integer getAge(){
-		return  age;
-	}
-	public void setAge(Integer age ){
-		this.age = age;
-	}
-	
-	public Integer getDepartmentId(){
-		return  departmentId;
-	}
-	public void setDepartmentId(Integer departmentId ){
-		this.departmentId = departmentId;
+	public void setId(Integer id ){
+		this.id = id;
 	}
 	
 	public String getName(){
@@ -44,20 +41,13 @@ public class User extends TailBean  {
 	public void setName(String name ){
 		this.name = name;
 	}
-	
-	public String getUserName(){
-		return  userName;
+
+	public Integer getDepartmentId() {
+		return departmentId;
 	}
-	public void setUserName(String userName ){
-		this.userName = userName;
-	}
-	
-	@ColumnIgnore(insert=true,update=false)
-	public Date getBir(){
-		return  bir;
-	}
-	public void setBir(Date bir ){
-		this.bir = bir;
+
+	public void setDepartmentId(Integer departmentId) {
+		this.departmentId = departmentId;
 	}
 	
 

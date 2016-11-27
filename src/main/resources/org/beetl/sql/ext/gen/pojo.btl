@@ -24,5 +24,7 @@ public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 	}
 	
 	@}
+	
+	
 
 }

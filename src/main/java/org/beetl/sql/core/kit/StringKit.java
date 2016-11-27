@@ -2,6 +2,7 @@ package org.beetl.sql.core.kit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class StringKit {
 	public static final String EMPTY = "";
@@ -199,4 +200,6 @@ public class StringKit {
 		}
 		return (String[]) list.toArray(new String[list.size()]);
 	}
+	
+	
 }

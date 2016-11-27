@@ -4,7 +4,7 @@
 * 开发时间:2015-07
 * 论坛 http://ibeetl.com
 * qq群 219324263
-* 当前版本 2.6.0 (208K), 另外还需要beetl 包
+* 当前版本 2.7.0 (222K), 另外还需要beetl 包
 * 文档地址: http://ibeetl.com/guide/beetlsql.html 或者 https://git.oschina.net/xiandafu/beetlsql/attach_files 下载pdf 
 * 单元测试使用  https://github.com/javamonkey/xlsunit 
 
@@ -25,7 +25,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 1. SQL 以更简洁的方式，Markdown方式集中管理，同时方便程序开发和数据库SQL调试。
 1. 可以自动将sql文件映射为dao接口类
-1. 简单支持支持一对一，一对多，多对多关系映射而不引入复杂的OR Mapping概念和技术。
+1. 直观灵活的支持支持一对一，一对多，多对多关系映射而不引入复杂的OR Mapping概念和技术。
 1. 具备Interceptor功能，可以调试，性能诊断SQL，以及扩展其他功能
 	
 * 其他

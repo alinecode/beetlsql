@@ -16,12 +16,12 @@ import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.DateTemplate;
-import org.beetl.sql.core.annotatoin.OrmCondition;
-import org.beetl.sql.core.annotatoin.OrmQuery;
-import org.beetl.sql.core.annotatoin.OrmQuery.Type;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.engine.Beetl;
+import org.beetl.sql.core.orm.OrmCondition;
+import org.beetl.sql.core.orm.OrmQuery;
+import org.beetl.sql.core.orm.OrmQuery.Type;
 
 /**
  * 按照mysql来的，oralce需要重载insert，page方法
@@ -92,8 +92,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
         String condition = appendIdCondition(cls);
-        String ormQuery = getOrmQuery(cls,true);
-        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(ormQuery).toString());
+        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
     }
 
     @Override
@@ -120,8 +119,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
             }
         }
-        String ormQuery = this.getOrmQuery(cls,true);
-        String sql = new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(appendSql).append(ormQuery).toString();
+        String sql = new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(appendSql).toString();
         return new SQLSource(sql);
     }
 
@@ -186,8 +184,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
         tableName = table.getName();
-        String ormQuery = this.getOrmQuery(cls,true);
-        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(ormQuery).toString());
+        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).toString());
     }
 
     @Override
@@ -699,45 +696,45 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public void setKeyWordHandler(KeyWordHandler keyWordHandler){
 		this.keyWordHandler = keyWordHandler;
 	}
-	/**
-	 * 
-	 * @param c
-	 * @param inner 是否是内部生成的语句
-	 * @return
-	 */
-	protected String getOrmQuery(Class c,boolean inner){
-		// 查看是否有orm查询
-		OrmQuery oq = (OrmQuery) c.getAnnotation(OrmQuery.class);
-		if(oq==null){
-			return "";
-		}
-		if(oq.applyFor()==OrmQuery.On.INNER.ALL||(inner&&oq.applyFor()==OrmQuery.On.INNER)||(!inner&&oq.applyFor()==OrmQuery.On.MD)){
-			
-			OrmCondition[] qcs = oq.value();
-			StringBuilder sb = new StringBuilder("\n");
-			for(OrmCondition qc:qcs){
-				if(qc.type()==Type.MANY){
-					sb.append(STATEMENT_START).append("orm.lazyMany(").
-						append(qc.mapping());
-					
-				}else{
-					sb.append(STATEMENT_START).append("orm.lazySingle(").
-					append(qc.mapping());
-				}
-				
-				if(qc.sqlId().length()!=0){
-					sb.append(",\"").append(qc.sqlId()).append("\"");
-				}
-				
-				sb.append(",").append("\"").append(qc.target().getName())
-				.append("\"").append(");");
-				sb.append(STATEMENT_END);
-			}
-			return sb.toString();
-		}else{
-			return "";
-		}
-		
-		
-	}
+//	/**
+//	 * 
+//	 * @param c
+//	 * @param inner 是否是内部生成的语句
+//	 * @return
+//	 */
+//	protected String getOrmQuery(Class c,boolean inner){
+//		// 查看是否有orm查询
+//		OrmQuery oq = (OrmQuery) c.getAnnotation(OrmQuery.class);
+//		if(oq==null){
+//			return "";
+//		}
+//		if(oq.applyFor()==OrmQuery.On.INNER.ALL||(inner&&oq.applyFor()==OrmQuery.On.INNER)||(!inner&&oq.applyFor()==OrmQuery.On.MD)){
+//			
+//			OrmCondition[] qcs = oq.value();
+//			StringBuilder sb = new StringBuilder("\n");
+//			for(OrmCondition qc:qcs){
+//				if(qc.type()==Type.MANY){
+//					sb.append(STATEMENT_START).append("orm.lazyMany(").
+//						append(qc.mapping());
+//					
+//				}else{
+//					sb.append(STATEMENT_START).append("orm.lazySingle(").
+//					append(qc.mapping());
+//				}
+//				
+//				if(qc.sqlId().length()!=0){
+//					sb.append(",\"").append(qc.sqlId()).append("\"");
+//				}
+//				
+//				sb.append(",").append("\"").append(qc.target().getName())
+//				.append("\"").append(");");
+//				sb.append(STATEMENT_END);
+//			}
+//			return sb.toString();
+//		}else{
+//			return "";
+//		}
+//		
+//		
+//	}
 }
