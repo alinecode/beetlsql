@@ -38,12 +38,9 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 
-		List<User> list = sql.select("user.queryUsers", User.class, null);
-		User user = list.get(0)
-;		Department dept = (Department)user.get("department");
-		System.out.println(dept.getName());
-		List<Role> roles  = (List<Role>)user.get("role");
-		System.out.println(roles.size());
+		for(int i=0;i<2;i++){
+			sql.unique(User.class, 1);
+		}
 	}
 	
 	

@@ -76,8 +76,13 @@ public class SimpleCacheInterceptor implements Interceptor {
 		Object cacheObject;
 		
 		cacheObject = this.getCacheObject(ns,cacheKey);
-		ctx.setResult(cacheObject);
-		
+		if(cacheObject==null){
+			//未找到，有sqlscript触发一次真正的查询
+			ctx.put("cache.hit", Boolean.FALSE);
+		}else{
+			ctx.put("cache.hit", Boolean.TRUE);
+			ctx.setResult(cacheObject);
+		}
 		
 		return;
 	}
@@ -98,8 +103,13 @@ public class SimpleCacheInterceptor implements Interceptor {
 			this.clearCache(ns);
 		} else {
 			// 缓存结果.
-			Object key = (Object)ctx.get("cache.key");
-			this.putCache(ns,key,ctx);
+			Boolean hit = (Boolean)ctx.get("cache.hit");
+			if(!hit){
+				//如果没有命中缓存，则需要将结果放入到缓存里
+				Object key = (Object)ctx.get("cache.key");
+				this.putCache(ns,key,ctx);
+			}
+			
 		}
 		
 	}

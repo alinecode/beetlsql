@@ -3,22 +3,14 @@ import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
-/*
-* 
-* gen by beetlsql 2016-08-20
-* @ orm.single({"departmentId":"id"},"Department");
-	@ orm.many({"id":"userId"},"ProductOrder");
-	@ orm.many({"id":"userId"},"user.selectRole","Role");
-* 
-*/
-@OrmQuery(
-{
-	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE),
-	@OrmCondition(target=ProductOrder.class,attr="id",targetAttr="userId" ,type=OrmQuery.Type.MANY),
-	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY)
-
-}
-)
+//@OrmQuery(
+//{
+//	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE),
+//	@OrmCondition(target=ProductOrder.class,attr="id",targetAttr="userId" ,type=OrmQuery.Type.MANY),
+//	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY)
+//
+//}
+//)
 public class User   extends TailBean {
 	
 	private Integer id ;
