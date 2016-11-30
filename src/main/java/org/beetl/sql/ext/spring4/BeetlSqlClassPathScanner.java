@@ -80,7 +80,7 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
             //将BeetlSqlFactoryBean的mapperInterface属性注入当前扫描到的接口
             definition.getPropertyValues().add("mapperInterface", definition.getBeanClassName());
             //根据工厂的名称创建出SqlManager
-            definition.getPropertyValues().add("sqlManager", new RuntimeBeanReference(this.sqlManagerFactoryBeanName));
+            definition.getPropertyValues().add("sqlManagerName", "sqlManagerFactoryBean");
             definition.setBeanClass(BeetlSqlFactoryBean.class);
             //设置Mapper按照接口组装
             definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);

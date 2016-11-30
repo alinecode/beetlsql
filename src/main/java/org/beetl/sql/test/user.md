@@ -5,9 +5,7 @@ queryUsers
 	@if(!isEmpty()){
 	name=#name#
 	@}
-	@ orm.single({"departmentId":"id"},"Department");
-	@ orm.many({"id":"userId"},"ProductOrder");
-	@ orm.many({"id":"userId"},"user.selectRole","Role");
+	
 
 selectRole
 ===

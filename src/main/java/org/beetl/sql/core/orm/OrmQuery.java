@@ -7,10 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-import org.beetl.sql.test.Department;
-import org.beetl.sql.test.ProductOrder;
-import org.beetl.sql.test.Role;
-import org.beetl.sql.test.User;
 /**
  * 对象映射关系,提供一个懒加载方式加载，如果模板sql文件里已经有，则会做合并
  * 并以sql模板里的优先。
