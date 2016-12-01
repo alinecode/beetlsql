@@ -1,22 +1,16 @@
 package org.beetl.sql.ext.spring4;
-import org.beetl.sql.core.SQLManager;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+
+import static org.springframework.util.Assert.notNull;
 
 /**
  * BeetlSql对工厂Bean的实现用于构建Mapper,一次只对一个接口进行扫描，构建Mapper
  * @param <T>
  * @author woate
  */
-public class BeetlSqlFactoryBean<T>  implements FactoryBean<T>,ApplicationContextAware {
+public class BeetlSqlFactoryBean<T> extends BeetlSqlDaoSupport implements FactoryBean<T> {
     private Class<T> mapperInterface;
 
-    ApplicationContext ctx  = null;
-    
-    private String sqlManagerName = null;
-    
     public BeetlSqlFactoryBean(Class<T> mapperInterface) {
         this.mapperInterface = mapperInterface;
     }
@@ -25,9 +19,14 @@ public class BeetlSqlFactoryBean<T>  implements FactoryBean<T>,ApplicationContex
     }
 
     @Override
+    protected void checkDaoConfig() throws IllegalArgumentException {
+        super.checkDaoConfig();
+        notNull(this.mapperInterface, " 'mapperInterface' 属性是必须的");
+    }
+
+    @Override
     public T getObject() throws Exception {
-    		SQLManager sqlFactory = (SQLManager)ctx.getBean(this.sqlManagerName);
-        return sqlFactory.getMapper(mapperInterface);
+        return this.sqlManager.getMapper(mapperInterface);
     }
 
     @Override
@@ -44,17 +43,4 @@ public class BeetlSqlFactoryBean<T>  implements FactoryBean<T>,ApplicationContex
         this.mapperInterface = mapperInterface;
     }
 
-    @Override
-	public void setApplicationContext(ApplicationContext arg0) throws BeansException {
-		this.ctx = arg0;
-	}
-
-	public String getSqlManagerName() {
-		return sqlManagerName;
-	}
-
-	public void setSqlManagerName(String sqlManagerName) {
-		this.sqlManagerName = sqlManagerName;
-	}
-    
 }
