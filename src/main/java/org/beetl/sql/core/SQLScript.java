@@ -402,10 +402,10 @@ public class SQLScript {
 
 	private static boolean isBaseDataType(Class<?> clazz) {
 		return (clazz.equals(String.class) || clazz.equals(Integer.class) || clazz.equals(Byte.class)
-				|| clazz.equals(Long.class) || clazz.equals(Double.class) || clazz.equals(Float.class)
+				|| clazz.equals(Long.class) ||clazz.isPrimitive())|| clazz.equals(Double.class) || clazz.equals(Float.class)
 				|| clazz.equals(Character.class) || clazz.equals(Short.class) || clazz.equals(BigDecimal.class)
-				|| clazz.equals(BigInteger.class) || clazz.equals(Boolean.class) || clazz.equals(Date.class)
-				|| clazz.isPrimitive());
+				|| clazz.equals(BigInteger.class) || clazz.equals(Boolean.class) || clazz.equals(java.util.Date.class)
+				|| clazz.equals(java.sql.Date.class);
 	}
 
 	public <T> List<T> select(Map<String, Object> paras, Class<T> mapping, RowMapper<T> mapper, long start, long size) {

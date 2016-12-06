@@ -4,6 +4,7 @@ package org.beetl.sql.core.mapping.handler;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -127,6 +128,9 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 		}
 		else if (BigDecimal.class == requiredType) {
 			return rs.getBigDecimal(columnIndex);
+		}else if(java.util.Date.class==requiredType){
+			Date simple = rs.getDate(columnIndex);
+			return new java.util.Date(simple.getTime());
 		}
 		else if (java.sql.Date.class == requiredType) {
 			return rs.getDate(columnIndex);
