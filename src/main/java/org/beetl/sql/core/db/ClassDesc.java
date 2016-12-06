@@ -51,7 +51,9 @@ public class ClassDesc {
 			if(p.getReadMethod()!=null&&p.getWriteMethod()!=null){
 				String property = p.getName();
                	String col = nc.getColName(c, property);
-               	tempMap.put(col, p);
+               	if(col!=null){
+               		tempMap.put(col, p);
+               	}
 			}
 		}
 		
