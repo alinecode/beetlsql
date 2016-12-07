@@ -223,7 +223,6 @@ public abstract class AbstractDBStyle implements DBStyle {
         ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
         StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
         String condition = appendIdCondition(cls);
-        ;
         Iterator<String> cols = classDesc.getInCols().iterator();
         Iterator<String> properties = classDesc.getAttrs().iterator();
 

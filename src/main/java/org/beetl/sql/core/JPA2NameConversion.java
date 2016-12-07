@@ -8,12 +8,13 @@ public class JPA2NameConversion extends NameConversion{
 
 	@Override
 	public String getColName(Class<?> c, String attrName) {
-		return JPAEntityHelper.getEntityTable(c).getPropsMap().get(attrName);
+		return JPAEntityHelper.getEntityTable(c).getColsMap().get(attrName);
+		
 	}
 
 	@Override
 	public String getPropertyName(Class<?> c, String colName) {
-		return JPAEntityHelper.getEntityTable(c).getColsMap().get(colName);
+		return JPAEntityHelper.getEntityTable(c).getPropsMap().get(colName);
 	}
 
 	@Override
