@@ -23,10 +23,10 @@ public class JDBCTypesUtils {
 	 private static Map<Integer, Class<?>> jdbcJavaTypes; // jdbc type to java type
 	 private static Map< Class<?>,String> defaultJavaTypes; // jdbc type to java type
 	 static {
-	  jdbcTypes = new TreeMap<>();
-	  jdbcTypeValues = new TreeMap<>();
-	  jdbcJavaTypes = new TreeMap<>();
-	  defaultJavaTypes=new HashMap<>();
+	  jdbcTypes = new HashMap();
+	  jdbcTypeValues = new HashMap();
+	  jdbcJavaTypes = new HashMap();
+	  defaultJavaTypes=new HashMap();
 	  Field[] fields = java.sql.Types.class.getFields();
 	  for (int i=0, len=fields.length; i<len; ++i) {
 	   if (Modifier.isStatic(fields[i].getModifiers())) {
