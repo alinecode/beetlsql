@@ -263,12 +263,15 @@ public class JPAEntityHelper {
      * @return
      */
     public static EntityTable getEntityTable(Class<?> entityClass) {
-        EntityTable entityTable = entityTableMap.get(entityClass);
-        if (entityTable == null) {
-            initEntityNameMap(entityClass);
-            entityTable = entityTableMap.get(entityClass);
-        }
-        if (entityTable == null) {
+    	EntityTable entityTable=null;
+    	synchronized (entityClass) {
+    		entityTable= entityTableMap.get(entityClass);
+    		if (entityTable == null) {
+                initEntityNameMap(entityClass);
+                entityTable = entityTableMap.get(entityClass);
+            }
+		}
+    	if (entityTable == null) {
             throw new RuntimeException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
         }
         return entityTable;
