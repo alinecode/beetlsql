@@ -134,6 +134,8 @@ public class ScalarHandler<T> implements ResultSetHandler<T> {
 		}
 		else if (java.sql.Date.class == requiredType) {
 			return rs.getDate(columnIndex);
+		}else if (java.util.Date.class == requiredType) {
+			return new java.util.Date(rs.getDate(columnIndex).getTime());
 		}
 		else if (java.sql.Time.class == requiredType) {
 			return rs.getTime(columnIndex);

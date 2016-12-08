@@ -1,10 +1,11 @@
 package ${package};
+import java.io.Serializable;
 ${imports}
 /*
 * ${comment}
 * gen by beetlsql ${date(),"yyyy-MM-dd"}
 */
-public class ${className} ${!isEmpty(ext)?"extends "+ext} {
+public class ${className} ${!isEmpty(ext)?"extends "+ext}  implements Serializable{
 	@for(attr in attrs){
 	@		if(!isEmpty(attr.comment)){
 	//${attr.comment}

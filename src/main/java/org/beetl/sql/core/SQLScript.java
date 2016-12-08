@@ -379,18 +379,17 @@ public class SQLScript {
 
 	public <T> List<T> mappingSelect(ResultSet rs, Class<T> clazz) throws SQLException {
 		List<T> resultList = null;
-
-		if (isBaseDataType(clazz)) { // 基本数据类型，如果有需要可以继续在isBaseDataType()添加
-			resultList = new ArrayList<T>();
+		//类型判断需要做性能优化
+		if (Map.class.isAssignableFrom(clazz)) { // 基本数据类型，如果有需要可以继续在isBaseDataType()添加
+			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm,clazz));
+				
+		} else if (isBaseDataType(clazz)) { // 如果是Map的子类或者父类，返回List<Map<String,Object>>
+			resultList = new ArrayList<T>(1);
 			
 			while(rs.next()){
 				T result = queryMapping.query(rs, new ScalarHandler<T>(clazz));
 				resultList.add(result);
 			}
-			
-			
-		} else if (Map.class.isAssignableFrom(clazz)) { // 如果是Map的子类或者父类，返回List<Map<String,Object>>
-			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm,clazz));
 		} else {
 			resultList = queryMapping.query(rs, new BeanListHandler<T>(clazz, this.sm.getNc(), this.sm));
 			
@@ -401,11 +400,20 @@ public class SQLScript {
 	}
 
 	private static boolean isBaseDataType(Class<?> clazz) {
-		return (clazz.equals(String.class) || clazz.equals(Integer.class) || clazz.equals(Byte.class)
-				|| clazz.equals(Long.class) ||clazz.isPrimitive())|| clazz.equals(Double.class) || clazz.equals(Float.class)
-				|| clazz.equals(Character.class) || clazz.equals(Short.class) || clazz.equals(BigDecimal.class)
-				|| clazz.equals(BigInteger.class) || clazz.equals(Boolean.class) || clazz.equals(java.util.Date.class)
-				|| clazz.equals(java.sql.Date.class);
+		if(clazz.isPrimitive()){
+			return true;
+		}
+	
+		if( clazz.getName().startsWith("java")){
+			return ((clazz==String.class) || clazz==Integer.class || clazz==Byte.class
+					|| clazz==Long.class|| clazz==Double.class || clazz==Float.class
+					|| clazz==Character.class|| clazz==Short.class || clazz==BigDecimal.class
+					|| clazz==BigInteger.class|| clazz==Boolean.class || clazz==java.util.Date.class
+					|| clazz==java.sql.Date.class||clazz==java.sql.Timestamp.class);
+		}else{
+			return false ;
+		}
+		
 	}
 
 	public <T> List<T> select(Map<String, Object> paras, Class<T> mapping, RowMapper<T> mapper, long start, long size) {

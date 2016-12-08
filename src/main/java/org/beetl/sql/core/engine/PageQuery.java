@@ -158,5 +158,41 @@ public class PageQuery implements Serializable{
 			this.totalPage = totalRow/this.pageSize+1;
 		}
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
+		result = prime * result + (int) (pageNumber ^ (pageNumber >>> 32));
+		result = prime * result + (int) (pageSize ^ (pageSize >>> 32));
+		result = prime * result + ((paras == null) ? 0 : paras.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PageQuery other = (PageQuery) obj;
+		if (orderBy == null) {
+			if (other.orderBy != null)
+				return false;
+		} else if (!orderBy.equals(other.orderBy))
+			return false;
+		if (pageNumber != other.pageNumber)
+			return false;
+		if (pageSize != other.pageSize)
+			return false;
+		if (paras == null) {
+			if (other.paras != null)
+				return false;
+		} else if (!paras.equals(other.paras))
+			return false;
+		return true;
+	}
 
+	
 }
