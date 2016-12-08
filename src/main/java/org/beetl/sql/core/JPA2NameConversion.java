@@ -4,7 +4,7 @@ package org.beetl.sql.core;
 import org.beetl.sql.core.NameConversion;
 
 
-public class JPA2NameConversion extends NameConversion{
+public class JPA2NameConversion extends NameConversion{ 
 
 	@Override
 	public String getColName(Class<?> c, String attrName) {
