@@ -29,6 +29,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.StringUtils;
+import org.beetl.sql.ext.gen.JavaType;
 
 /**
  * 
@@ -502,7 +503,7 @@ public class JPAEntityHelper {
 
         }
         if (StringUtils.isBlank(methodName)) {
-            methodName = JDBCTypesUtils.javaTypeToJdbcType(p.getPropertyType());
+            methodName = JavaType.javaTypeToJdbcType(p.getPropertyType());
         }
         return methodName;
     }
