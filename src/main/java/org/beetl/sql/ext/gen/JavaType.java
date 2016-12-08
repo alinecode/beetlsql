@@ -17,7 +17,7 @@ import java.util.Map;
  * @author linziguan@live.com 
  * 2016-12-08 丰富JavaType功能，可以javaType与jdbcType之间互相转换
  */
-public class JavaType {
+public class JavaType { 
 	private static Map<String, Integer> jdbcTypes; // Name to value
 	private static Map<Integer, String> jdbcTypeValues; // value to Name
 	private static Map<Integer, Class<?>> jdbcJavaTypes; // jdbc type to java
