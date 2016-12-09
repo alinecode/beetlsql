@@ -29,6 +29,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.StringUtils;
+import org.beetl.sql.ext.gen.JavaType;
 
 /**
  * 
@@ -262,12 +263,15 @@ public class JPAEntityHelper {
      * @return
      */
     public static EntityTable getEntityTable(Class<?> entityClass) {
-        EntityTable entityTable = entityTableMap.get(entityClass);
-        if (entityTable == null) {
-            initEntityNameMap(entityClass);
-            entityTable = entityTableMap.get(entityClass);
-        }
-        if (entityTable == null) {
+    	EntityTable entityTable=null;
+    	synchronized (entityClass) {
+    		entityTable= entityTableMap.get(entityClass);
+    		if (entityTable == null) {
+                initEntityNameMap(entityClass);
+                entityTable = entityTableMap.get(entityClass);
+            }
+		}
+    	if (entityTable == null) {
             throw new RuntimeException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
         }
         return entityTable;
@@ -502,7 +506,7 @@ public class JPAEntityHelper {
 
         }
         if (StringUtils.isBlank(methodName)) {
-            methodName = JDBCTypesUtils.javaTypeToJdbcType(p.getPropertyType());
+            methodName = JavaType.javaTypeToJdbcType(p.getPropertyType());
         }
         return methodName;
     }

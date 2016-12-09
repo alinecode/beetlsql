@@ -2,6 +2,7 @@ package org.beetl.sql.test.jpa;
 
 import java.util.List;
 
+import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.test.mysql.BaseMySqlTest;
 import org.junit.Before;
@@ -50,6 +51,11 @@ public class JpaEntityTest extends BaseMySqlTest {
 		TestEntity uniqueTestEntity=sqlManager.unique(TestEntity.class, testEntity.getId());
 		Assert.assertNotNull(uniqueTestEntity);
 		
+		
+		List<TestEntity> executeList= sqlManager.execute(new SQLReady("select id,login_name,age from PF_TEST where login_name like concat('%',concat(?,'%'))","mi"), TestEntity.class);
+		Assert.assertTrue(executeList.size()>0);
+		
+		
 	}
 	
 	@Test
@@ -75,4 +81,6 @@ public class JpaEntityTest extends BaseMySqlTest {
 		TestEntity updateTestEntityForCheck=sqlManager.unique(TestEntity.class, testEntity.getId());
 		Assert.assertNotNull(updateTestEntityForCheck);
 	}
+	
+	
 }
