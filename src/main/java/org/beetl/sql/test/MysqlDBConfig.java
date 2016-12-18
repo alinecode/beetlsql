@@ -5,7 +5,7 @@ public class MysqlDBConfig {
     public static String dbName = "orm";
     public static String password = "123456";
     public static String userName = "root";
-    public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"?useUnicode=true&amp;characterEncoding=UTF-8";
+    public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"";
 
 //    public static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 //    public static String dbName = "test";

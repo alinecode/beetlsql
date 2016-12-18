@@ -18,7 +18,7 @@ public class SelectMapperInvoke extends BaseMapperInvoke {
 		
 		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
 		Map<String,Object> sqlArgs = this.getSqlArgs(sm, entityClass,m, args,sqlId);
-		Class returnType = desc.renturnType==Void.class?entityClass:desc.renturnType;
+		Class returnType = desc.renturnType;
 		if(desc.paggerPos!=null){
 			long offset ,size ;
 			offset = ((Number)args[desc.paggerPos[0]]).longValue();

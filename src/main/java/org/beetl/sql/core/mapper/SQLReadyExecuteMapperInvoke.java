@@ -20,7 +20,7 @@ public class SQLReadyExecuteMapperInvoke extends BaseMapperInvoke {
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
 		if(type==2||type==3){
 			MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
-			Class returnType = desc.renturnType==Void.class?entityClass:desc.renturnType;
+			Class returnType = desc.renturnType;
 			List list = sm.execute(new SQLReady(sqlId,args),returnType);
 			if(type==2){
 				return list.size()==0?null:list.get(0);

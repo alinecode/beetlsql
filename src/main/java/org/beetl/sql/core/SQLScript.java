@@ -380,12 +380,13 @@ public class SQLScript {
 	public <T> List<T> mappingSelect(ResultSet rs, Class<T> clazz) throws SQLException {
 		List<T> resultList = null;
 		//类型判断需要做性能优化
-		if (Map.class.isAssignableFrom(clazz)) { // 基本数据类型，如果有需要可以继续在isBaseDataType()添加
+		if (Map.class.isAssignableFrom(clazz)) { 
+			// 如果是Map的子类或者父类，返回List<Map<String,Object>>
 			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm,clazz));
 				
-		} else if (isBaseDataType(clazz)) { // 如果是Map的子类或者父类，返回List<Map<String,Object>>
+		} else if (isBaseDataType(clazz)) { 
+			// 基本数据类型，如果有需要可以继续在isBaseDataType()添加
 			resultList = new ArrayList<T>(1);
-			
 			while(rs.next()){
 				T result = queryMapping.query(rs, new ScalarHandler<T>(clazz));
 				resultList.add(result);

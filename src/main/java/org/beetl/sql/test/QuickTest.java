@@ -38,11 +38,14 @@ public class QuickTest {
 		SimpleCacheInterceptor cache =new SimpleCacheInterceptor(lcs);
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor(),cache};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		PageQuery query = new PageQuery();
-//		sql.pageQuery("user.queryUsers", Map.class, query);
+		PageQuery<User> query = new PageQuery<User>();
 		UserDao dao = sql.getMapper(UserDao.class);
 		dao.queryUsers(query);
-		System.out.println(query.getList());
+		List<User> list = query.getList();
+		Department dept = (Department)list.get(0).get("department");
+		
+		System.out.println(dept.getName());
+		sql.genPojoCodeToConsole("user");
 	}
 	
 	

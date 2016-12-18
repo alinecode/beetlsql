@@ -12,13 +12,13 @@ import java.util.List;
  * @author suxj,xiandafu
  *
  */
-public class PageQuery implements Serializable{
+public class PageQuery<T> implements Serializable{
 
 	private static final long serialVersionUID = -7523359884334787081L;
 	public static String pageFlag = "_page";
 	public static Object pageObj = new Object();
 	
-	protected List list;		//分页结果List
+	protected List<T> list;		//分页结果List
 	protected Object paras ;   	//参数，pojo or map
 	protected String orderBy ;	//排序
 	
@@ -88,7 +88,7 @@ public class PageQuery implements Serializable{
 		this.pageSize = pageSize;
 	}
 	
-	public List getList() {
+	public List<T> getList() {
 		return list;
 	}
 	

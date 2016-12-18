@@ -70,13 +70,13 @@ public class MethodDesc {
 			parse(sm, entityClass, m, sqlId);
 
 		}
+		
+		
 	}
 	
 	protected void parseSqlReady(SQLManager sm, Class entityClass, Sql sql,Method m,String sqlId) {
 		
-		Class c = sql.returnType();
-		if(c!=Void.class)this.renturnType = c;
-		
+		Class stRetType = sql.returnType();
 		//确定type  2（单选），3（多选），4 更新
 		SqlStatementType sqlType = sql.type();
 		
@@ -94,11 +94,16 @@ public class MethodDesc {
 			type = 4;
 		}
 		
-		Class returnType = m.getReturnType();
-		if (type==2&&List.class.isAssignableFrom(returnType)) {
+		Class methodRetType = m.getReturnType();
+		if (type==2&&List.class.isAssignableFrom(methodRetType)) {
 			type = 3;
 		}
 	
+		
+		//确定查询返回需要映射类型
+		if(type==2||type==3||type==6){
+			this.getSelectRenturnType(methodRetType, stRetType, entityClass);
+		}
 			
 		
 		
@@ -107,6 +112,7 @@ public class MethodDesc {
 
 		SqlStatement st = (SqlStatement) m.getAnnotation(SqlStatement.class);
 		String params = null;
+		Class stRetType = Void.class;
 		// 先初步判断 sql 类型
 		type = 0;
 		if (st != null) {
@@ -123,7 +129,10 @@ public class MethodDesc {
 			}
 			
 			Class c = st.returnType();
-			if(c!=Void.class)this.renturnType = c;
+			
+			if(c!=Void.class){
+				stRetType = c;
+			}
 		} else {
 			type = getTypeBySqlId(sm, sqlId);
 
@@ -135,19 +144,25 @@ public class MethodDesc {
 			this.parseAnnotation(sqlId, m);
 		}
 
-		Class returnType = m.getReturnType();
+		Class methodRetType = m.getReturnType();
 		if (type == 0) {
-			if (KeyHolder.class.isAssignableFrom(returnType)) {
+			if (KeyHolder.class.isAssignableFrom(methodRetType)) {
 				type = 1;
 				keyHolderPos = -1;
 			}
 			return;
 		} else if (type == 2) {
-			if (List.class.isAssignableFrom(returnType)) {
+			if (List.class.isAssignableFrom(methodRetType)) {
 				type = 3;
 			}
 		}
-
+		
+		//确定查询返回需要映射类型
+		if(type==2||type==3||type==6){
+			this.getSelectRenturnType(methodRetType, stRetType, entityClass);
+		}
+		
+		
 	}
 
 	private void parseAnnotation(String sqlId, Method m) {
@@ -382,6 +397,22 @@ public class MethodDesc {
 			throw new IllegalArgumentException("unknow type:" + type);
 		}
 		}
+	}
+	
+	private void getSelectRenturnType(Class methodRetType,Class annotationType,Class entity){
+		if(annotationType!=Void.class){
+			//注解总是优先
+			this.renturnType = annotationType;
+			return ;
+		}
+		
+		if(this.type==3||type==6){
+			this.renturnType = entity;
+		}else if(this.type==2){
+			this.renturnType = methodRetType;
+		}
+		
+
 	}
 
 }

@@ -1,13 +1,16 @@
 package org.beetl.sql.test;
 
-import java.util.Map;
 
-import org.beetl.sql.core.annotatoin.SqlStatement;
+import java.sql.Timestamp;
+
+import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.BaseMapper;
 
 
 public interface UserDao extends BaseMapper<User> {
-	@SqlStatement()
-	public void queryUsers(PageQuery query);
+	public void queryUsers(PageQuery<User> query);
+	
+	@Sql(value="select max(create_time) from user")
+	public Timestamp getMax();
 }

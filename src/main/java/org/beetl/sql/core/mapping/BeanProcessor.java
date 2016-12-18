@@ -200,6 +200,7 @@ public class BeanProcessor {
 					Tail  bean2 = (Tail)bean;
 					Object value = rs.getObject(i);
 					key = this.nc.getPropertyName(type, key);
+					
 					bean2.set(key, value);
 				}else{
 					Method m = BeanKit.getTailMethod(type);

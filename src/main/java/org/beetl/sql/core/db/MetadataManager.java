@@ -162,7 +162,8 @@ public class MetadataManager {
 			DatabaseMetaData dbmd =  conn.getMetaData();
 			String catalog = this.getDbCatalog(this.defaultSchema);
 			String schema = this.getDbSchema(this.defaultSchema);
-			ResultSet rs = dbmd.getTables(catalog,schema, null,
+			String namePattern = this.getTableNamePattern(dbmd);
+			ResultSet rs = dbmd.getTables(catalog,schema, namePattern,
 					new String[] { "TABLE","VIEW" });
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
@@ -282,6 +283,18 @@ public class MetadataManager {
 		}else{
 			return namespace;
 		}
+	}
+	private String getTableNamePattern(DatabaseMetaData meta) throws SQLException{
+		//mysql 6 是个在开发版本，有问题，不支持	
+		String p=meta.getDatabaseProductName();
+		if(p.equalsIgnoreCase("mysql")){
+			int c = meta.getDriverMajorVersion();
+			if(c==6){
+				throw new UnsupportedOperationException("mysql  Connector/J 6.0.5 do not support for beetlsql2.7 ");
+			}
+		}
+	
+		return null;
 	}
 	
 	private String getDbCatalog(String schema){

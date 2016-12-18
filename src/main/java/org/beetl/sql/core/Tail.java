@@ -5,7 +5,7 @@ package org.beetl.sql.core;
  * @author xiandafu
  *
  */
-public interface Tail {
+public interface Tail extends java.io.Serializable {
 	public Object get(String key);
 	public void set(String key,Object value);
 }

@@ -18,7 +18,7 @@ public class PageQueryMapperInvoke extends BaseMapperInvoke {
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
 		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
-		Class returnType = desc.renturnType==Void.class?entityClass:desc.renturnType;
+		Class returnType = desc.renturnType;
 		sm.pageQuery(sqlId, returnType, (PageQuery)args[0]);
 		
 		return null;
