@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class CaseInsensitiveHashMap<K,V> extends LinkedHashMap<String, Object> {
 
@@ -21,6 +22,11 @@ public class CaseInsensitiveHashMap<K,V> extends LinkedHashMap<String, Object> {
     public Object get(Object key) {
         Object realKey = lowerCaseMap.get(key.toString().toLowerCase(Locale.ENGLISH));
         return super.get(realKey);
+    }
+    
+    @Override
+    public Set keySet() {
+    		return lowerCaseMap.keySet();
     }
 
     @Override

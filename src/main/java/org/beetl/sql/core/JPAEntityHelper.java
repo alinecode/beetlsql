@@ -27,8 +27,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.collections.map.CaseInsensitiveMap;
-import org.apache.commons.lang3.StringUtils;
+import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.ext.gen.JavaType;
 
 /**
@@ -385,8 +385,8 @@ public class JPAEntityHelper {
         List<Field> fieldList = getAllField(entityClass, null);
         Set<EntityColumn> columnSet = new HashSet<EntityColumn>();
         Set<EntityColumn> pkColumnSet = new HashSet<EntityColumn>();
-        Map<String, String> cols = new CaseInsensitiveMap();
-        Map<String, String> props= new CaseInsensitiveMap();
+        Map<String, String> cols = new CaseInsensitiveHashMap();
+        Map<String, String> props= new CaseInsensitiveHashMap();
         
         EntityColumn perIdEntityColumn=null;
         for (Field field : fieldList) {
@@ -418,11 +418,11 @@ public class JPAEntityHelper {
                     columnName = column.name();
                     jdbcType = column.columnDefinition();
                 }
-                if (StringUtils.isBlank(columnName)) {
+                if (StringKit.isBlank(columnName)) {
                     columnName = field.getName();
                 }
                 
-                if(StringUtils.isBlank(jdbcType)){
+                if(StringKit.isBlank(jdbcType)){
                     jdbcType=getPropertyJdbcType(p);
                 }
                 
@@ -499,13 +499,13 @@ public class JPAEntityHelper {
             if (null != columnAnnotation) {
                 Column column = (Column) columnAnnotation;
                 String columnDefine = column.columnDefinition();
-                if (StringUtils.isNotBlank(columnDefine)) {
+                if (StringKit.isNotBlank(columnDefine)) {
                     methodName = columnDefine;
                 }
             }
 
         }
-        if (StringUtils.isBlank(methodName)) {
+        if (StringKit.isBlank(methodName)) {
             methodName = JavaType.javaTypeToJdbcType(p.getPropertyType());
         }
         return methodName;
