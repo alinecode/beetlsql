@@ -4,7 +4,6 @@ package org.beetl.sql.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.Interceptor;
@@ -40,12 +39,14 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		PageQuery<User> query = new PageQuery<User>();
 		UserDao dao = sql.getMapper(UserDao.class);
+//		User user = dao.single(1);
+		
 		dao.queryUsers(query);
-		List<User> list = query.getList();
-		Department dept = (Department)list.get(0).get("department");
+		User user = query.getList().get(0);
+		Department dept = (Department)user.get("myDept");
 		
 		System.out.println(dept.getName());
-		sql.genPojoCodeToConsole("user");
+//		sql.genPojoCodeToConsole("user");
 	}
 	
 	

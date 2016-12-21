@@ -115,6 +115,9 @@ public class SQLScript {
 			MappingEntity mappingEntity = new LazyMappingEntity();
 			mappingEntity.setSingle(cond.type()==OrmQuery.Type.ONE);
 			mappingEntity.setTarget(cond.target().getName());
+			if(cond.alias().length()!=0){
+				mappingEntity.setTailName(cond.alias());
+			}
 			
 			mappingEntity.setSqlId(cond.sqlId().length()!=0?cond.sqlId():null);
 			Map<String,String> mapKey = new HashMap<String,String>();
@@ -630,7 +633,7 @@ public class SQLScript {
 			rs = ps.executeQuery();
 			try{
 				model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm,throwException));
-				if(result.mapingEntrys!=null){
+				if(model!=null&&result.mapingEntrys!=null){
 					for(MappingEntity mapConf:result.mapingEntrys){
 						mapConf.map(model, sm);
 					}

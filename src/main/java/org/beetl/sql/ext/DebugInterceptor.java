@@ -31,12 +31,10 @@ public class DebugInterceptor implements Interceptor {
 		if(this.isDebugEanble(sqlId)){
 			ctx.put("debug.time", System.currentTimeMillis());
 		}
-	
-
 		StringBuilder sb = new StringBuilder();
 		String lineSeparator = System.getProperty("line.separator", "\n");
 		sb.append("┏━━━━━ Debug [").append(this.getSqlId(sqlId)).append("] ━━━").append(lineSeparator)
-		.append("┣ SQL：\t " + ctx.getSql().replaceAll("\\s+", " ")).append(lineSeparator)
+		.append("┣ SQL：\t " + ctx.getSql().replaceAll("--.*", "").replaceAll("\\s+", " ")).append(lineSeparator)
 		.append("┣ 参数：\t " + formatParas(ctx.getParas())).append(lineSeparator);
 		RuntimeException ex = new  RuntimeException();
 		StackTraceElement[] traces = ex.getStackTrace();
@@ -46,16 +44,14 @@ public class DebugInterceptor implements Interceptor {
 				found = true ;	
 			}
 			if(found&&!tr.getClassName().startsWith("org.beetl.sql.core")&&!tr.getClassName().startsWith("com.sun")){
-				//startwith("com.sun"),proxy call,please refer to MapperJava Proxy since beetlsql 2.0
-				//found 
 				String className = tr.getClassName();
 				String mehodName = tr.getMethodName();
 				int line = tr.getLineNumber();
-				sb.append("┣ 位置：\t "+className+"."+mehodName+"("+tr.getFileName()+":"+line+")");
+				sb.append("┣ 位置：\t "+className+"."+mehodName+"("+tr.getFileName()+":"+line+")"+lineSeparator);
 				break ;
 			}
 		}
-		println(sb.toString());
+		ctx.put("logs", sb);
 	}
 
 	@Override
@@ -63,9 +59,8 @@ public class DebugInterceptor implements Interceptor {
 		long time = System.currentTimeMillis();
 		long start = (Long)ctx.get("debug.time");
 		String lineSeparator = System.getProperty("line.separator", "\n");
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb =(StringBuilder) ctx.get("logs");
 		sb.append("┣ 时间：\t "+(time-start)+"ms").append(lineSeparator);
-		
 		if(ctx.isUpdate()){
 			sb.append("┣ 更新：\t [");
 			if(ctx.getResult().getClass().isArray()){
@@ -136,10 +131,6 @@ public class DebugInterceptor implements Interceptor {
 			sqlId= sqlId+"...";
 		}
 		return sqlId;
-		
-		
 	}
-	
-
 
 }

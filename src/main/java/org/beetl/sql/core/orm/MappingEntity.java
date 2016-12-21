@@ -10,9 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.beetl.core.om.MethodInvoker;
-import org.beetl.core.om.ObjectUtil;
-import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.Tail;
@@ -33,6 +30,8 @@ public class MappingEntity {
 	protected boolean isSingle = false;
 	protected Map<String, String> mapkey;
 	protected String sqlId = null;
+	//暂时不支持
+	protected Map<String,Object> queryParas = null;
 
 	//
 	protected String tailName;
@@ -75,7 +74,8 @@ public class MappingEntity {
 	}
 	
 	private void allInOneQuery(List list,TableDesc tableDesc,ClassDesc classDesc,SQLManager sm){
-		String idAttr= classDesc.getIdCols().get(0);
+		String idAttr= classDesc.getIdAttrs().get(0);
+		
 		String idCol = ((CaseInsensitiveOrderSet)tableDesc.getIdNames()).getFirst();
 		StringBuilder sb = new StringBuilder();
 		sb.append("select * from ").append(tableDesc.getSchema()==null?"":tableDesc.getSchema()+".")
@@ -124,16 +124,21 @@ public class MappingEntity {
 
 	protected void init(Object obj) {
 		if (target.indexOf(".") == -1) {
-			// 参数不带包名
-			this.tailName = StringKit.toLowerCaseFirstOne(target);
 			absentPackage = true;
-		} else {
-			int index = target.lastIndexOf(".");
-			String className = target.substring(index+1);
-			this.tailName = StringKit.toLowerCaseFirstOne(className);
-
-		}
 		
+			
+		} 
+		
+		if(this.tailName==null){
+			if (target.indexOf(".") == -1) {
+				this.tailName = StringKit.toLowerCaseFirstOne(target);
+			}else{
+				int index = target.lastIndexOf(".");
+				String className = target.substring(index+1);
+				this.tailName = StringKit.toLowerCaseFirstOne(className);
+			}
+		}
+		//缺少包名,则认为是跟关系对象同一个包名
 		String fullName = absentPackage ? obj.getClass().getPackage().getName() + "." + target : target;
 		targetClass = getCls(fullName);
 	}
@@ -175,6 +180,8 @@ public class MappingEntity {
 				key.append(value).append("_");
 
 			}
+		
+			
 			String cacheKey = key.toString();
 			if(cache.containsKey(cacheKey)){
 				ret = cache.get(cacheKey);
@@ -283,6 +290,18 @@ public class MappingEntity {
 
 	public void setSqlId(String sqlId) {
 		this.sqlId = sqlId;
+	}
+	public String getTailName() {
+		return tailName;
+	}
+	public void setTailName(String tailName) {
+		this.tailName = tailName;
+	}
+	public Map<String, Object> getQueryParas() {
+		return queryParas;
+	}
+	public void setQueryParas(Map<String, Object> queryParas) {
+		this.queryParas = queryParas;
 	}
 
 }
