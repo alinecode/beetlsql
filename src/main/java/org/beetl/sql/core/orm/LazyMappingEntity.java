@@ -71,6 +71,29 @@ public class LazyMappingEntity extends MappingEntity {
 			setTailAttr(obj, lazy);
 			
 		} else {
+			if(mapkey.size()==1){
+				String tableName = sm.getNc().getTableName(targetClass);
+				TableDesc tableDesc = sm.getMetaDataManager().getTable(tableName);
+				ClassDesc classDesc = tableDesc.getClassDesc(targetClass, sm.getNc());
+				if(classDesc.getIdAttrs().size()==1&&classDesc.getIdAttrs().containsAll(mapkey.values())){
+					//主键查询
+					String foreignAttr = this.mapkey.keySet().iterator().next();
+					final Object value = BeanKit.getBeanProperty(obj, foreignAttr);
+					LazyEntity lazy = new LazyEntity(){
+
+						@Override
+						public Object get() {
+							// TODO Auto-generated method stub
+							Object ret = sm.single(targetClass, value);
+							return ret;
+						}
+						
+					};
+					setTailAttr(obj, lazy);
+					return ;
+					
+				}
+			}
 			
 			final Object ins = getIns(targetClass);
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {

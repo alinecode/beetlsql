@@ -5,7 +5,7 @@ queryUsers
 	@if(!isEmpty()){
 	name=#name#
 	@}
-	@orm.single({"departmentId":"id"},"Department",{"alias":"myDept"});
+	
 	
 	
 
