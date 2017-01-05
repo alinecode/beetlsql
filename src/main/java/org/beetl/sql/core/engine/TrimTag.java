@@ -35,10 +35,10 @@ public class TrimTag extends Tag {
 	public static final String PREFIX = "prefix";
 
 	/** The prefix. */
-	private String prefix = "";
+	protected String prefix = "";
 
 	/** The prefix overrides. */
-	private String[] prefixOverrides;
+	protected String[] prefixOverrides;
 
 	/** The suffix overrides. */
 	private String[] suffixOverrides;
