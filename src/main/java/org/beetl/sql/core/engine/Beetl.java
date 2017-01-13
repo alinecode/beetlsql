@@ -61,12 +61,15 @@ public class Beetl {
 		Properties ps  = new Properties();
 		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(
 				"btsql-ext.properties");
-		if(ins==null) return ps;
+		if(ins==null){
+			return ps;
+		}
+		
 		try {
 			ps.load(ins);
 			ins.close();
 		} catch (IOException e) {
-			throw new RuntimeException("默认配置文件加载错:/btsql.properties");
+			throw new RuntimeException("默认配置文件加载错:/btsql-ext.properties");
 		}
 		
 		return ps;	

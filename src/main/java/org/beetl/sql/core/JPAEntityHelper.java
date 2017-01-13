@@ -511,13 +511,7 @@ public class JPAEntityHelper {
         return methodName;
     }
 
-    public static void main(String[] args) {
-        System.out.println(camelhumpToUnderline("userName"));
-        System.out.println(camelhumpToUnderline("userPassWord"));
-        System.out.println(camelhumpToUnderline("ISO9001"));
-        System.out.println(camelhumpToUnderline("hello_world"));
-    }
-
+    
     /**
      * 将驼峰风格替换为下划线风格
      */

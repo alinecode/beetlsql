@@ -57,12 +57,5 @@ public class CaseInsensitiveHashMap<K,V> extends LinkedHashMap<String, Object> {
         return super.remove(realKey);
     }
     
-    public static void main(String[] args){
-    		CaseInsensitiveHashMap map = new CaseInsensitiveHashMap();
-    		map.put("m", 1);
-    		map.put("a", 1);
-    		map.put("z", 1);
-    		
-    		System.out.println(map.keySet());
-	}
+ 
 }

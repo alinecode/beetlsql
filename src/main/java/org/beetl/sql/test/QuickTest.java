@@ -3,6 +3,7 @@ package org.beetl.sql.test;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -41,11 +42,11 @@ public class QuickTest {
 		UserDao dao = sql.getMapper(UserDao.class);
 //		User user = dao.single(1);
 		
-		dao.queryUsers(query);
-		User user = query.getList().get(0);
-		Department dept = (Department)user.get("myDept");
+		List<User> list = dao.queryUsers(new HashMap());
+//		User user = query.getList().get(0);
+//		Department dept = (Department)user.get("myDept");
 		
-		System.out.println(dept.getName());
+		System.out.println(list.size());
 //		sql.genPojoCodeToConsole("user");
 	}
 	

@@ -11,6 +11,7 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 	boolean autoCheck = true ;
 	public StringSqlTemplateLoader (SQLLoader sqlLoader,boolean autoCheck){
 		this.sqlLoader = sqlLoader;
+		this.autoCheck = autoCheck;
 	}
 	@Override
 	public Resource getResource(String key) {
@@ -20,21 +21,22 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 
 	@Override
 	public boolean isModified(Resource key) {
-		if( autoCheck) return  key.isModified() ;
+		if( autoCheck){
+			return  key.isModified() ;
+		}
 		else return false ;
 
 	}
 
 	@Override
 	public boolean exist(String key) {
-		// TODO Auto-generated method stub
+		//never use
 		return true;
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-
+		//never use
 	}
 
 	@Override
@@ -54,7 +56,6 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 	}
 	@Override
 	public String getInfo() {
-		// TODO Auto-generated method stub
 		return sqlLoader.toString();
 	}
 

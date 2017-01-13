@@ -49,13 +49,5 @@ public class CaseInsensitiveOrderSet<T> extends LinkedHashSet<String> {
 		return first;
 	}
 	
-	public static void main(String[] args){
-		CaseInsensitiveOrderSet set = new CaseInsensitiveOrderSet();
-		set.add("m");
-		set.add("a");
-		set.add("z");
-		System.out.println(set);
-	}
-
 	
 }
