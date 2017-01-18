@@ -41,13 +41,11 @@ public class QuickTest {
 		PageQuery<User> query = new PageQuery<User>();
 		UserDao dao = sql.getMapper(UserDao.class);
 //		User user = dao.single(1);
-		
-		List<User> list = dao.queryUsers(new HashMap());
-//		User user = query.getList().get(0);
-//		Department dept = (Department)user.get("myDept");
-		
-		System.out.println(list.size());
-//		sql.genPojoCodeToConsole("user");
+		for(int i=0;i<2;i++){
+			List<User> list = dao.queryUsers(new HashMap());
+			System.out.println(list.size());
+		}
+	
 	}
 	
 	

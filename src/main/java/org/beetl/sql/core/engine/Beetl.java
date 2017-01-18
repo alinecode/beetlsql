@@ -21,7 +21,7 @@ public class Beetl {
 			ps.putAll(ext);
 			ps.putAll(other);
 			boolean product = Boolean.parseBoolean(ps.getProperty("PRODUCT_MODE"));
-			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader,product);
+			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader,!product);
 			Configuration cfg =new Configuration(ps);			
 			gt = new GroupTemplate(resourceLoader, cfg);		
 			loader.setAutoCheck(!product);

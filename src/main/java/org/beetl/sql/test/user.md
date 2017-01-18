@@ -1,7 +1,7 @@
 queryUsers
 ===
 
-	select #page("*")# from user where 1=1
+	select #page("*")# from user where 1=11
 	@if(!isEmpty()){
 	name=#name#
 	@}
