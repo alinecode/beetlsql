@@ -40,11 +40,13 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		PageQuery<User> query = new PageQuery<User>();
 		UserDao dao = sql.getMapper(UserDao.class);
+		dao.queryUsers(query);
+		System.out.println(query.getList().size());
 //		User user = dao.single(1);
-		for(int i=0;i<2;i++){
-			List<User> list = dao.queryUsers(new HashMap());
-			System.out.println(list.size());
-		}
+//		for(int i=0;i<2;i++){
+//			List<User> list = dao.queryUsers(new HashMap());
+//			System.out.println(list.size());
+//		}
 	
 	}
 	

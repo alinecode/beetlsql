@@ -92,7 +92,7 @@ public class TrimTag extends Tag {
 			if (this.prefixOverrides != null && this.prefixOverrides.length > 0) {
 				for (String prefixOverride : this.prefixOverrides) {
 					if (StringKit.startsWith(trimSql, prefixOverride,true)) {
-						trimSql = StringKit.substringAfter(trimSql, prefixOverride);
+						trimSql = trimSql.substring(prefixOverride.length());
 					}
 				}
 			}
@@ -100,7 +100,7 @@ public class TrimTag extends Tag {
 			if (this.suffixOverrides != null && this.suffixOverrides.length > 0) {
 				for (String suffixOverride : this.suffixOverrides) {
 					if (StringKit.endsWith(trimSql, suffixOverride,true)) {
-						trimSql = StringKit.substringBeforeLast(trimSql, suffixOverride);
+						trimSql = trimSql.substring(0,trimSql.length()-suffixOverride.length());
 					}
 				}
 			}
@@ -167,6 +167,9 @@ public class TrimTag extends Tag {
 		}
 		return StringKit.trim(sql).isEmpty();
 	}
+	
+	
+
 	
 	
 }

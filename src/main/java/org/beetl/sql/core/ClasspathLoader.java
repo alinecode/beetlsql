@@ -1,17 +1,18 @@
 
 package org.beetl.sql.core;
 
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.MySqlStyle;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.UnexpectedException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.MySqlStyle;
 
 /**
  * 从classpath系统加载sql模板，id应该格式是"xx.yyy",xx代表了文件名，yyy代表了sql标识 sql 模板格式如下：
@@ -193,9 +194,8 @@ public class ClasspathLoader implements SQLLoader {
                         String tempKey = list.pollLast();// 取出下一句sql的key先存着
                         sql = new StringBuilder();
                         key = list.pollFirst();
-                        while (!list.isEmpty()) {// 拼装成一句sql
-                            sql.append(list.pollFirst() + lineSeparator);
-                        }
+                        buildSql(list,sql);
+                       
                         SQLSource source = new SQLSource(modelName + key,sql.toString().trim());
                         source.setLine(findLineNum);
                         sqlSourceMap.put(modelName + key, source);// 放入map
@@ -209,9 +209,10 @@ public class ClasspathLoader implements SQLLoader {
                         lineNum++;
                         if (tempNext.startsWith("*")) {//读到注释行，不做任何处理
                             continue;
-                        }else if(!sqlStart&&tempNext.trim().length()==0){
+                        }
+                        else if(!sqlStart&&tempNext.trim().length()==0){
                         	//注释的空格
-                           continue;
+                            continue;
                         }else{
                         	 sqlStart = true;
                         	 list.addLast(tempNext);//===下面不是*号的情况，是一条sql
@@ -225,9 +226,8 @@ public class ClasspathLoader implements SQLLoader {
             // 最后一句sql
             sql = new StringBuilder();
             key = list.pollFirst();
-            while (!list.isEmpty()) {
-                sql.append(list.pollFirst()+lineSeparator);
-            }
+            buildSql(list,sql);
+           
             SQLSource source = new SQLSource(modelName + key,sql.toString().trim());
             source.setLine(findLineNum);
             sqlSourceMap.put(modelName + key,source);
@@ -244,6 +244,18 @@ public class ClasspathLoader implements SQLLoader {
             }
         }
         return true;
+    }
+    
+    
+    private void buildSql(LinkedList<String> list,StringBuilder sql){
+    	 while (!list.isEmpty()) {
+    		 String s = list.pollFirst();
+    		 if(s.startsWith("```")){
+    			 //since 2.7.10,认为是beetlsql的块状符号
+    			 continue ;
+    		 }
+             sql.append(s+lineSeparator);
+         }
     }
 
 	public Map<String, SQLSource> getSqlSourceMap() {

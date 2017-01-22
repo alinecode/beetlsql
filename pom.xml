@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.7.9</version>
+	<version>2.7.10</version>
 
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
@@ -36,6 +36,11 @@
 			<name>woate</name>
 			<email>woate@qq.com</email>
 		</developer>
+		
+		<developer>
+			<name>darren</name>
+			<email>10176523@qq.com</email>
+		</developer>
 	</developers>
 
 	<scm>
@@ -57,7 +62,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-			<version>2.7.0</version>
+			<version>2.7.5</version>
 		</dependency>
 
 		<!-- junit -->
