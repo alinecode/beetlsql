@@ -133,4 +133,13 @@ public class DebugInterceptor implements Interceptor {
 		return sqlId;
 	}
 
+	@Override
+	public void exception(InterceptorContext ctx, Exception ex) {
+		String lineSeparator = System.getProperty("line.separator", "\n");
+		StringBuilder sb =(StringBuilder) ctx.get("logs");
+		sb.append("┗━━━━━ Debug [ ERROR:").append(ex.getMessage()).append("] ━━━").append(lineSeparator);
+		println(sb.toString());
+		
+	}
+
 }

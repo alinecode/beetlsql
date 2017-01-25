@@ -44,5 +44,9 @@ public class TimeStatInterceptor implements Interceptor {
 		System.out.println(sql);
 		
 	}
+	@Override
+	public void exception(InterceptorContext ctx, Exception ex) {
+		
+	}
 
 }

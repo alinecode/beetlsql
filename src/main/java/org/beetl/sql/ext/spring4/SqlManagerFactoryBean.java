@@ -52,6 +52,8 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
 
     private Map<String, TagFactory> tagFactorys = Collections.emptyMap();
 
+    private Map<String,IDAutoGen> idAutoGens = Collections.emptyMap();
+    
     /**
      * 配置文件地址
      */
@@ -111,6 +113,10 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
 
         for (Map.Entry<String, TagFactory> entry : tagFactorys.entrySet()) {
             sqlManager.getBeetl().getGroupTemplate().registerTagFactory(entry.getKey(), entry.getValue());
+        }
+        
+        for (Map.Entry<String, IDAutoGen> entry : this.idAutoGens.entrySet()) {
+            sqlManager.addIdAutonGen(entry.getKey(), entry.getValue());
         }
         return sqlManager;
     }
@@ -182,6 +188,30 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
 
 	public void setSqlLoader(SQLLoader sqlLoader) {
 		this.sqlLoader = sqlLoader;
+	}
+
+	public Map<String, Function> getFunctions() {
+		return functions;
+	}
+
+	public void setFunctions(Map<String, Function> functions) {
+		this.functions = functions;
+	}
+
+	public Map<String, TagFactory> getTagFactorys() {
+		return tagFactorys;
+	}
+
+	public void setTagFactorys(Map<String, TagFactory> tagFactorys) {
+		this.tagFactorys = tagFactorys;
+	}
+
+	public Map<String, IDAutoGen> getIdAutoGens() {
+		return idAutoGens;
+	}
+
+	public void setIdAutoGens(Map<String, IDAutoGen> idAutoGens) {
+		this.idAutoGens = idAutoGens;
 	}
     
     

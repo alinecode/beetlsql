@@ -2,12 +2,20 @@ queryUsers
 ===
 
 
-	select #page("*")# from user where 1=11
+	select #page("*")# from user where 1=1
+	#use("condition")#
 	@if(!isEmpty()){
 	name=#name#
 	@}
+	
+	
 
 	
+condition
+===
+
+1=11
+
 
 selectRole
 ===

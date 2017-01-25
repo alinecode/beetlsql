@@ -241,6 +241,13 @@ public class SimpleCacheInterceptor implements Interceptor {
 		}
 		
 	}
+
+
+	@Override
+	public void exception(InterceptorContext ctx, Exception ex) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

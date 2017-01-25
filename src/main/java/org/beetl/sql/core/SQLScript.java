@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -175,6 +174,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, ret);
 			return ret;
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -188,6 +188,7 @@ public class SQLScript {
 		
 		PreparedStatement ps = null;
 		Connection conn = null;
+		InterceptorContext ctx = null;
 		try {
 
 
@@ -195,7 +196,7 @@ public class SQLScript {
 			SQLResult result = this.run(map);
 			String sql = result.jdbcSql;
 			List<Object> objs = result.jdbcPara;
-			InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
+			ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 			sql = ctx.getSql();
 			objs = ctx.getParas();
 
@@ -232,6 +233,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, ret);
 			return ret;
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -244,12 +246,13 @@ public class SQLScript {
 		
 		PreparedStatement ps = null;
 		Connection conn = null;
+		InterceptorContext ctx = null;
 		try {
 
 			SQLResult result = this.run(map);
 			String sql = result.jdbcSql;
 			List<Object> objs = result.jdbcPara;
-			InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
+			ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 			sql = ctx.getSql();
 			objs = ctx.getParas();
 
@@ -280,6 +283,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, ret);
 			return ret;
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -369,6 +373,7 @@ public class SQLScript {
 			
 			return resultList;
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(false, conn, ps, rs);
@@ -463,7 +468,7 @@ public class SQLScript {
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, rs);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -504,7 +509,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, rs);
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -548,6 +553,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, rs);
 
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -588,6 +594,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, rs);
 
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -648,6 +655,7 @@ public class SQLScript {
 			}
 			this.callInterceptorAsAfter(ctx, model);
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(false, conn, ps, rs);
@@ -682,6 +690,7 @@ public class SQLScript {
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, rs);
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -709,6 +718,7 @@ public class SQLScript {
 			this.callInterceptorAsAfter(ctx, resultList);
 			return resultList;
 		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(false, conn, ps, rs);
@@ -734,7 +744,7 @@ public class SQLScript {
 			rs = ps.executeUpdate();
 			this.callInterceptorAsAfter(ctx, rs);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
 			clean(true, conn, ps);
@@ -815,6 +825,19 @@ public class SQLScript {
 		}
 		for (Interceptor in : sm.inters) {
 			in.after(ctx);
+		}
+		return;
+	}
+	
+	private void callInterceptorAsException(InterceptorContext ctx, Exception ex) {
+		if(ctx==null){
+			return ;
+		}
+		if (sm.inters == null)
+			return;
+		
+		for (Interceptor in : sm.inters) {
+			in.exception(ctx, ex);
 		}
 		return;
 	}
