@@ -2,19 +2,28 @@ queryUsers
 ===
 
 
-	select #page("*")# from user where 1=1
-	#use("condition")#
-	@if(!isEmpty()){
-	name=#name#
+	select 
+	@select(groupFilter.op){
+		@case 2:{
+			like CONCAT(CONCAT('%',#groupFilter.value#),'%')
+		@}
 	@}
 	
-	
-
 	
 condition
 ===
 
-1=11
+	#text(groupFilter.field)#
+	@select(groupFilter.op){
+		@case 2:{
+			like CONCAT(CONCAT('%',#groupFilter.value#),'%')
+			@}
+	@}
+	
+condition2
+===
+
+	#text(groupFilter.field)# like CONCAT(CONCAT('%',#groupFilter.value#),'%')
 
 
 selectRole
