@@ -49,7 +49,7 @@ public class SQLScript {
 	final SQLSource sqlSource;
 	final String dbName ;
 
-	final QueryMapping queryMapping = QueryMapping.getInstance();
+//	final QueryMapping queryMapping = QueryMapping.getInstance();
 
 	public SQLScript(SQLSource sqlSource, SQLManager sm) {
 		this.sqlSource = sqlSource;

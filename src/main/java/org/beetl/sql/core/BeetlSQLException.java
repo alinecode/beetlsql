@@ -71,6 +71,12 @@ public class BeetlSQLException extends RuntimeException {
 		super(msg);
 		this.code = code;
 	}
+
+	public int getCode() {
+		return code;
+	}
+	
+	
 	
 //	public String toString(){
 //		super.toString()

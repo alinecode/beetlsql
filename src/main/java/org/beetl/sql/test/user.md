@@ -2,12 +2,10 @@ queryUsers
 ===
 
 
-	select 
-	@select(groupFilter.op){
-		@case 2:{
-			like CONCAT(CONCAT('%',#groupFilter.value#),'%')
-		@}
-	@}
+	select #page("*")# from user where 1=1
+	#use("condition",{"title":123})#
+	
+	#use("condition2",{"title":123})#
 	
 	
 condition

@@ -121,7 +121,6 @@ public class JPAEntityHelper {
         private String property;
         private String column;
         private Class<?> javaType;
-        private String jdbcType;
         private String sequenceName;
         private boolean id = false;
         private boolean uuid = false;
@@ -236,19 +235,7 @@ public class JPAEntityHelper {
             return result;
         }
 
-        /**
-         * @return the jdbcType
-         */
-        public String getJdbcType() {
-            return jdbcType;
-        }
-
-        /**
-         * @param jdbcType the jdbcType to set
-         */
-        public void setJdbcType(String jdbcType) {
-            this.jdbcType = jdbcType;
-        }
+       
     }
 
     /**
@@ -405,7 +392,6 @@ public class JPAEntityHelper {
                 	perIdEntityColumn=entityColumn;
                 }
                 String columnName = null;
-                String jdbcType=null;
                 
                 Column column=null;
                 if (field.isAnnotationPresent(Column.class)) {
@@ -416,21 +402,15 @@ public class JPAEntityHelper {
                 
                 if(column!=null){
                     columnName = column.name();
-                    jdbcType = column.columnDefinition();
                 }
                 if (StringKit.isBlank(columnName)) {
                     columnName = field.getName();
-                }
-                
-                if(StringKit.isBlank(jdbcType)){
-                    jdbcType=getPropertyJdbcType(p);
                 }
                 
                 
                 entityColumn.setProperty(field.getName());
                 entityColumn.setColumn(columnName.toUpperCase());
                 entityColumn.setJavaType(field.getType());
-                entityColumn.setJdbcType(jdbcType);
                 //order by
                 if (field.isAnnotationPresent(OrderBy.class)) {
                     OrderBy orderBy = field.getAnnotation(OrderBy.class);
@@ -491,26 +471,7 @@ public class JPAEntityHelper {
         entityTableMap.put(entityClass, entityTable);
     }
     
-    public static String getPropertyJdbcType(PropertyDescriptor p) {
-        String methodName = null;
-        Method method = p.getReadMethod();
-        if (method.isAnnotationPresent(Column.class)) {
-            Annotation columnAnnotation = method.getAnnotation(Column.class);
-            if (null != columnAnnotation) {
-                Column column = (Column) columnAnnotation;
-                String columnDefine = column.columnDefinition();
-                if (StringKit.isNotBlank(columnDefine)) {
-                    methodName = columnDefine;
-                }
-            }
-
-        }
-        if (StringKit.isBlank(methodName)) {
-            methodName = JavaType.javaTypeToJdbcType(p.getPropertyType());
-        }
-        return methodName;
-    }
-
+   
     
     /**
      * 将驼峰风格替换为下划线风格
