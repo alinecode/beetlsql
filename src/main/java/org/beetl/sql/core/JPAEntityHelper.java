@@ -29,7 +29,6 @@ import javax.persistence.Transient;
 
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.StringKit;
-import org.beetl.sql.ext.gen.JavaType;
 
 /**
  * 

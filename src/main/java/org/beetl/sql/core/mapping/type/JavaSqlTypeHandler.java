@@ -9,7 +9,7 @@ import java.sql.SQLException;
  *
  */
 public class JavaSqlTypeHandler {
-	public Object getValue(TypeParameter typ) throws SQLException{
+	public Object getValue(TypeParameter typePara) throws SQLException{
 		return null;
 	}
 }

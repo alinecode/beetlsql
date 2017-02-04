@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.gen;
+package org.beetl.sql.core;
 
 import java.math.BigDecimal;
 import java.sql.SQLXML;
@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class JavaType { 
 	
-	private static Map<Integer, Class<?>> jdbcJavaTypes; // jdbc type to java
+	public static Map<Integer, Class<?>> jdbcJavaTypes; // jdbc type to java
 															// type
 	
 	static int majorJavaVersion = 15;

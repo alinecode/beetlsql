@@ -15,6 +15,7 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.ColDesc;
 import org.beetl.sql.core.db.MetadataManager;

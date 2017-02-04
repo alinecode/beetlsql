@@ -30,7 +30,6 @@ import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
-import org.beetl.sql.core.mapping.QueryMapping;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
 import org.beetl.sql.core.mapping.handler.BeanHandler;
 import org.beetl.sql.core.mapping.handler.BeanListHandler;
@@ -385,27 +384,53 @@ public class SQLScript {
 		return this.select(clazz, paras, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> List<T> mappingSelect(ResultSet rs, Class<T> clazz) throws SQLException {
 		List<T> resultList = null;
+		BeanProcessor beanProcessor = this.getBeanProcessor();
 		//类型判断需要做性能优化
 		if (Map.class.isAssignableFrom(clazz)) { 
 			// 如果是Map的子类或者父类，返回List<Map<String,Object>>
-			resultList = (List<T>) queryMapping.query(rs, new MapListHandler(this.sm.getNc(), this.sm,clazz));
-				
+			resultList = new ArrayList<T>();
+			while(rs.next()){
+				Map map = beanProcessor.toMap(clazz, rs)	;
+				resultList.add((T) map);
+			}
+			return resultList;
+			
 		} else if (isBaseDataType(clazz)) { 
-			// 基本数据类型，如果有需要可以继续在isBaseDataType()添加
+			
 			resultList = new ArrayList<T>(1);
 			while(rs.next()){
-				T result = queryMapping.query(rs, new ScalarHandler<T>(clazz));
-				resultList.add(result);
+				Object result =beanProcessor.toBaseType(clazz, rs);
+				resultList.add((T) result);
 			}
 		} else {
-			resultList = queryMapping.query(rs, new BeanListHandler<T>(clazz, this.sm.getNc(), this.sm));
-			
+			resultList  = beanProcessor.toBeanList(this.sqlSource.getId(),rs, clazz);
+			return resultList;
 		}
 
 		return resultList;
 
+	}
+	
+	private BeanProcessor getBeanProcessor(){
+		String sqlId = this.sqlSource.getId();
+		BeanProcessor bp = this.sm.getProcessors().get(sqlId);
+		if(bp!=null){
+			return bp;
+		}
+		String ns = sqlId.substring(0, sqlId.indexOf("."));
+		bp = this.sm.getProcessors().get(ns);
+		if(bp!=null){
+			return bp;
+		}else{
+			return  sm.getDefaultBeanProcessors();
+		}
+		
+		
+		
+		
 	}
 
 	private static boolean isBaseDataType(Class<?> clazz) {
@@ -639,7 +664,16 @@ public class SQLScript {
 			this.setPreparedStatementPara(ps, objs);
 			rs = ps.executeQuery();
 			try{
-				model = queryMapping.query(rs, new BeanHandler<T>(clazz, this.sm.getNc(), this.sm,throwException));
+				BeanProcessor beanProcessor = this.getBeanProcessor();
+				if(rs.next()){
+					model = beanProcessor.toBean(rs, clazz);
+				}else{
+					if(throwException){
+						throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集");
+					}else{
+						return null;
+					}
+				}
 				if(model!=null&&result.mapingEntrys!=null){
 					for(MappingEntity mapConf:result.mapingEntrys){
 						mapConf.map(model, sm);

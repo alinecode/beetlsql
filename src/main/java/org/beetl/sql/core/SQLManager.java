@@ -40,6 +40,7 @@ import org.beetl.sql.core.kit.GenKit;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
+import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.handler.ScalarHandler;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
@@ -65,7 +66,10 @@ public class SQLManager {
 	
 	MapperBuilder mapperBuilder = new DefaultMapperBuilder(this);
 	boolean offsetStartZero = false;
-	
+	//映射jdbc Result到java对象的工具类，跟sqlId相关
+	Map<String,BeanProcessor> processors = new HashMap<String,BeanProcessor>();
+	//默认的映射工具类
+	BeanProcessor defaultBeanProcessors =  null;
 	Map<String,IDAutoGen> idAutonGenMap = new HashMap<String,IDAutoGen>();
 	{
 		//添加一个id简单实现
@@ -157,6 +161,7 @@ public class SQLManager {
 		this.dbStyle.init(beetl);
 		
 		offsetStartZero = Boolean.parseBoolean(beetl.getPs().getProperty("OFFSET_START_ZERO").trim());
+		defaultBeanProcessors = new BeanProcessor(this.nc, this);
 	}
 	
 	/**
@@ -1377,6 +1382,22 @@ public class SQLManager {
 		}
 		return idGen.nextID(param);
 		
+	}
+
+	public Map<String, BeanProcessor> getProcessors() {
+		return processors;
+	}
+
+	public void setProcessors(Map<String, BeanProcessor> processors) {
+		this.processors = processors;
+	}
+
+	public BeanProcessor getDefaultBeanProcessors() {
+		return defaultBeanProcessors;
+	}
+
+	public void setDefaultBeanProcessors(BeanProcessor defaultBeanProcessors) {
+		this.defaultBeanProcessors = defaultBeanProcessors;
 	}
 	
 

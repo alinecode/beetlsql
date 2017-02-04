@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
-import org.beetl.sql.ext.gen.JavaType;
 
 /**
  * 找到bean定义和数据库定义共有的部分，作为实际操作的sql语句

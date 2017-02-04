@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 public class TypeParameter {
 	String dbName;
@@ -19,6 +20,13 @@ public class TypeParameter {
 		this.meta = meta;
 		this.index = index;
 		this.sqlId = sqlId;
+	}
+	
+	public int getColumnType() throws SQLException{
+		return meta.getColumnType(index);
+	}
+	public Object getObject() throws SQLException{
+		return rs.getObject(index);
 	}
 	public String getDbName() {
 		return dbName;
@@ -56,5 +64,7 @@ public class TypeParameter {
 	public void setSqlId(String sqlId) {
 		this.sqlId = sqlId;
 	}
+	
+	
 	
 }

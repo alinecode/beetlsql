@@ -15,68 +15,65 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.HumpNameConversion;
+import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.kit.LobKit;
+import org.beetl.sql.core.mapping.type.BigDecimalTypeHandler;
+import org.beetl.sql.core.mapping.type.DefaultTypeHandler;
+import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
+import org.beetl.sql.core.mapping.type.TypeParameter;
 
 /**
- * Pojo处理器，负责转换
- * @author: suxj
+ * ResultSet处理类，负责转换到Bean或者Map
+ * @author: suxj,xiandafu
  */
 public class BeanProcessor {
 
-	private static final Map<Class<?>, Object> primitiveDefaults = new HashMap<Class<?>, Object>();
-	private final Map<String, String> columnToPropertyOverrides;
-	protected static final int PROPERTY_NOT_FOUND = -1;
-	private NameConversion nc = new HumpNameConversion();
-
-	//基本类型
-	static {
-		primitiveDefaults.put(Integer.TYPE, Integer.valueOf(0));
-		primitiveDefaults.put(Short.TYPE, Short.valueOf((short) 0));
-		primitiveDefaults.put(Byte.TYPE, Byte.valueOf((byte) 0));
-		primitiveDefaults.put(Float.TYPE, Float.valueOf(0f));
-		primitiveDefaults.put(Double.TYPE, Double.valueOf(0d));
-		primitiveDefaults.put(Long.TYPE, Long.valueOf(0L));
-		primitiveDefaults.put(Boolean.TYPE, Boolean.FALSE);
-		primitiveDefaults.put(Character.TYPE, Character.valueOf((char) 0));
-	}
-
-	
-	
-	
+	protected static final int PROPERTY_NOT_FOUND = 0;
+	private NameConversion nc = null;
 	SQLManager sm ;
 	String dbName;
-	protected BeanProcessor() {
-		this(new HashMap<String, String>());//为{} 非null
-	}
+	Map<Class,JavaSqlTypeHandler> handlers = new HashMap<Class,JavaSqlTypeHandler>();
+	JavaSqlTypeHandler defaultHandler = new DefaultTypeHandler();
 	
 	public BeanProcessor(NameConversion nc,SQLManager sm) {
-		this();
 		this.nc = nc;
 		this.sm = sm;
 		this.dbName = sm.getDbStyle().getName();
+		
+	}
+	private void initHandlers(){
+		handlers.put(BigDecimal.class, new BigDecimalTypeHandler());
 	}
 
-	protected BeanProcessor(Map<String, String> columnToPropertyOverrides) {
-		super();
-		if (columnToPropertyOverrides == null) {
-			throw new IllegalArgumentException("columnToPropertyOverrides map cannot be null");
-		}
-		this.columnToPropertyOverrides = columnToPropertyOverrides;
-	}
+	
 
+	
+	/**
+	 * 将ResultSet映射为一个POJO对象 
+	 * @param rs
+	 * @param type
+	 * @return
+	 * @throws SQLException
+	 */
+	public <T> T toBean(String sqlId,ResultSet rs, Class<T> type) throws SQLException {
+
+		PropertyDescriptor[] props = this.propertyDescriptors(type);
+
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int[] columnToProperty = this.mapColumnsToProperties(type,rsmd, props);
+
+		return this.createBean(sqlId,rs, type, props, columnToProperty);
+		
+	}
 	
 	/**
 	 * 将ResultSet映射为一个POJO对象 
@@ -87,12 +84,7 @@ public class BeanProcessor {
 	 */
 	public <T> T toBean(ResultSet rs, Class<T> type) throws SQLException {
 
-		PropertyDescriptor[] props = this.propertyDescriptors(type);
-
-		ResultSetMetaData rsmd = rs.getMetaData();
-		int[] columnToProperty = this.mapColumnsToProperties(type,rsmd, props);
-
-		return this.createBean(rs, type, props, columnToProperty);
+		return toBean(null,rs,type);
 		
 	}
 
@@ -105,7 +97,7 @@ public class BeanProcessor {
 	 * @return
 	 * @throws SQLException
 	 */
-	public <T> List<T> toBeanList(ResultSet rs, Class<T> type) throws SQLException {
+	public <T> List<T> toBeanList(String sqlId,ResultSet rs, Class<T> type) throws SQLException {
 		
 		List<T> results = new ArrayList<T>();
 
@@ -118,7 +110,7 @@ public class BeanProcessor {
 		int[] columnToProperty = this.mapColumnsToProperties(type,rsmd, props);
 
 		do {
-			results.add(this.createBean(rs, type, props, columnToProperty));
+			results.add(this.createBean(sqlId,rs, type, props, columnToProperty));
 		} while (rs.next());
 
 		return results;
@@ -133,7 +125,7 @@ public class BeanProcessor {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Map<String, Object> toMap(Class<?> c,ResultSet rs) throws SQLException {
+	public Map<String, Object> toMap(String sqlId,Class<?> c,ResultSet rs) throws SQLException {
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Object> result = BeanKit.getMapIns(c);
@@ -144,34 +136,40 @@ public class BeanProcessor {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int cols = rsmd.getColumnCount();
 //		String tableName = nc.getTableName(c);
+		TypeParameter tp = new TypeParameter(sqlId,dbName,null,rs,rsmd,0);
 		for (int i = 1; i <= cols; i++) {
 			
 			String columnName = rsmd.getColumnLabel(i);
 			if (null == columnName || 0 == columnName.length()) {
 				columnName = rsmd.getColumnName(i);
 			}
+			int colType = rsmd.getColumnType(i);
+			Class  classType = JavaType.jdbcJavaTypes.get(colType);
+			JavaSqlTypeHandler handler = handlers.get(classType);
 			
-			// 通过ResultSetMetaData类，可判断该列数据类型
-			if (columnName.equals("BLOB")) {
-				java.sql.Blob bb = rs.getBlob(i);
-				byte[] b = bb.getBytes(1, (int) bb.length());
-
-				// 将结果放到Map中
-				//TODO 是该放String还是byte[]
-				//result.put(this.nc.getPropertyName(c,columnName), new String(b, "utf-8"));
-				//result.put(this.nc.getPropertyName(c,columnName), b);
-				
-				//rs.getObject()在取Blob的时候会是乱码~
-				result.put(this.nc.getPropertyName(c,columnName), rs.getObject(i));
-			} else {
-				// 不是则按原来逻辑运算
-				result.put(this.nc.getPropertyName(c,columnName), rs.getObject(i));
+			if(handler==null){
+				handler = this.defaultHandler;
 			}
+			tp.setIndex(i);
+			tp.setTarget(classType);
+			Object value = handler.getValue(tp);
+			result.put(this.nc.getPropertyName(c,columnName), value);
+			
 		}
 
 		return result;
 	}
 	
+	
+	public Object toBaseType(String sqlId,Class<?> c,ResultSet rs) throws SQLException {
+		TypeParameter tp = new TypeParameter(sqlId,dbName,null,rs,rs.getMetaData(),1);
+		JavaSqlTypeHandler handler = handlers.get(c);
+		
+		if(handler==null){
+			handler = this.defaultHandler;
+		}
+		return handler.getValue(tp);
+	}
 
 	
 
@@ -184,35 +182,41 @@ public class BeanProcessor {
 	 * @return
 	 * @throws SQLException
 	 */
-	private <T> T createBean(ResultSet rs, Class<T> type, PropertyDescriptor[] props, int[] columnToProperty) throws SQLException {
+	private <T> T createBean(String sqlId,ResultSet rs, Class<T> type, PropertyDescriptor[] props, int[] columnToProperty) throws SQLException {
 
 		T bean = this.newInstance(type);
-
+		ResultSetMetaData meta = rs.getMetaData();
+		TypeParameter tp = new TypeParameter(sqlId,this.dbName,type,rs,meta,1);
+		
 		for (int i = 1; i < columnToProperty.length; i++) {
 			//Array.fill数组为-1 ，-1则无对应name
+			tp.setIndex(i);
 			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
 				String key = rs.getMetaData().getColumnLabel(i);
 				if(key.equals("beetl_rn")){
 					//sql server 特殊处理，sql'server的翻页使用了额外列作为翻页参数，需要过滤
 					continue;
 				}
+				
 				if(bean instanceof Tail){
 					Tail  bean2 = (Tail)bean;
-					Object value = rs.getObject(i);
+					Object value = noMappingValue(tp);
 					key = this.nc.getPropertyName(type, key);
-					
 					bean2.set(key, value);
 				}else{
 					Method m = BeanKit.getTailMethod(type);
 					//使用指定方法赋值
 					if(m!=null){
-						Object value = rs.getObject(i);
+						
+						Object value = noMappingValue(tp);
 						key = this.nc.getPropertyName(type, key);
 						try {
 							m.invoke(bean, new Object[]{key,value});
 						} catch (Exception ex) {
 							throw new BeetlSQLException(BeetlSQLException.TAIL_CALL_ERROR,ex);
 						} 
+					}else{
+						// 忽略这个结果集
 					}
 				}
 				continue;
@@ -221,23 +225,33 @@ public class BeanProcessor {
 			//columnToProperty[i]取出对应的在PropertyDescriptor[]中的下标
 			PropertyDescriptor prop = props[columnToProperty[i]];
 			Class<?> propType = prop.getPropertyType();
-
-			Object value = null;
-			if (propType != null) {
-				value = this.processColumn(rs, i, propType);
-
-				if (value == null && propType.isPrimitive()) {
-					value = primitiveDefaults.get(propType);
-				}
+			JavaSqlTypeHandler handler = this.handlers.get(propType);
+			if(handler==null){
+				handler = this.defaultHandler;
 			}
-
-			this.callSetter(bean, prop, value);
+			Object value = handler.getValue(tp);
+			this.callSetter(bean, prop, value,propType);
 		}
 
 		return bean;
 		
 	}
 
+	private Object noMappingValue(TypeParameter tp) throws SQLException{
+		Object value =null;
+		Class expectedType =JavaType.jdbcJavaTypes.get(tp.getColumnType());
+		if(expectedType!=null){
+			JavaSqlTypeHandler handler = this.handlers.get(expectedType);
+			if(handler==null){
+				value = tp.getObject();
+			}else{
+				value = handler.getValue(tp);
+			}
+		}else{
+			value = tp.getObject();
+		}
+		return value;
+	}
 
 	/**
 	 * 根据setter方法设置值
@@ -247,44 +261,20 @@ public class BeanProcessor {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("unchecked")
-	private void callSetter(Object target, PropertyDescriptor prop, Object value) throws SQLException {
+	private void callSetter(Object target, PropertyDescriptor prop, Object value,Class type) throws SQLException {
 
 		Method setter = prop.getWriteMethod();
-
 		if (setter == null) return;
+		if (type.isEnum()) {
 
-		Class<?>[] params = setter.getParameterTypes();
+			value = EnumKit.getEnumByValue(type, value);
+			if(value==null){
+				throw new SQLException("Cannot set ENUM " + prop.getName() + ": Convert to NULL for value"+ value);
+				
+			}
+		}
 		try {
-			//一些特殊处理，对date特殊处理
-			if (value instanceof java.util.Date) {
-				final Class targetType = params[0];
-				if (java.sql.Date.class==targetType) {
-					value = new java.sql.Date(((java.util.Date) value).getTime());
-				} else if (java.sql.Time.class==targetType) {
-					value = new java.sql.Time(((java.util.Date) value).getTime());
-				} else if (java.sql.Timestamp.class==targetType) {
-					Timestamp tsValue = (Timestamp) value;
-					int nanos = tsValue.getNanos();
-					value = new java.sql.Timestamp(tsValue.getTime());
-					((Timestamp) value).setNanos(nanos);
-				}
-			} else if (params[0].isEnum()) {
-
-				value = EnumKit.getEnumByValue(params[0], value);
-				if(value==null){
-					throw new SQLException("Cannot set ENUM " + prop.getName() + ": Convert to NULL for value"+ value);
-					
-				}
-
-			}
-			//@todo BigDecimal double 互相转化
-
-			//类型是否兼容
-			if (this.isCompatibleType(value, params[0])) {
-				setter.invoke(target, new Object[] { value });
-			} else {
-				throw new SQLException("Cannot set " + prop.getName() + ": incompatible types, cannot convert " + value.getClass().getName() + " to " + params[0].getName());
-			}
+			setter.invoke(target, new Object[] { value });
 		} catch (IllegalArgumentException e) {
 			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
 		} catch (IllegalAccessException e) {
@@ -296,28 +286,7 @@ public class BeanProcessor {
 	}
 
 	
-	/**
-	 * 判断类型是否兼容
-	 * @param value
-	 * @param type
-	 * @return
-	 */
-	private boolean isCompatibleType(Object value, Class<?> type) {
-
-		//type.isInstance(value) valye是否于type类型兼容
-		if (value == null || type.isInstance(value)) return true;
-		else if (type.equals(Integer.TYPE) && value instanceof Integer) return true;
-		else if (type.equals(Long.TYPE) && value instanceof Long) return true;
-		else if (type.equals(Double.TYPE) && value instanceof Double) return true;
-		else if (type.equals(Float.TYPE) && value instanceof Float) return true;
-		else if (type.equals(Short.TYPE) && value instanceof Short) return true;
-		else if (type.equals(Byte.TYPE) && value instanceof Byte) return true;
-		else if (type.equals(Character.TYPE) && value instanceof Character) return true;
-		else if (type.equals(Boolean.TYPE) && value instanceof Boolean) return true;
-		else return false;
-
-	}
-
+	
 
 	
 	/**
@@ -370,21 +339,16 @@ public class BeanProcessor {
 
 		int cols = rsmd.getColumnCount();
 		int[] columnToProperty = new int[cols + 1];
-		Arrays.fill(columnToProperty, PROPERTY_NOT_FOUND);
-
+		//TODO 性能优化？
 		for (int col = 1; col <= cols; col++) {
 			String columnName = rsmd.getColumnLabel(col);
 			if (null == columnName || 0 == columnName.length()) {
 				columnName = rsmd.getColumnName(col);
 			}
-			String propertyName = columnToPropertyOverrides.get(columnName);
-			if (propertyName == null) {
-				propertyName = columnName;
-			}
+			
 			for (int i = 0; i < props.length; i++) {
 
-//				if (propertyName.equalsIgnoreCase(props[i].getName())) {//这里是一个扩展点，用来扩展pojo属性到数据库字段的映射
-				if(props[i].getName().equalsIgnoreCase(this.nc.getPropertyName(c,propertyName))) {
+				if(props[i].getName().equalsIgnoreCase(this.nc.getPropertyName(c,columnName))) {
 					columnToProperty[col] = i;
 					break;
 				}
@@ -396,78 +360,6 @@ public class BeanProcessor {
 	}
 
 	
-	/**
-	 * 获取字段值并转换为对应类型
-	 * @param rs
-	 * @param index
-	 * @param propType
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Object processColumn(ResultSet rs, int index, Class<?> propType) throws SQLException {
-		ResultSetMetaData meta = rs.getMetaData();
-		//propType.isPrimitive是否为8种基本类型之一
-		if (!propType.isPrimitive() && rs.getObject(index) == null) return null;
-		if (propType==String.class){
-			if(dbName.equals("oracle")){
-				int type = meta.getColumnType(index);
-				String name = meta.getColumnName(index);
-				switch(type){
-				case   java.sql.Types.CLOB:{
-					Reader r =	rs.getClob(index).getCharacterStream();
-					return LobKit.getString(r);
-					}
-				case Types.NCLOB:{
-					Reader r =	rs.getNClob(index).getCharacterStream();
-					return LobKit.getString(r);
-				}
-				
-			
-				default:
-					//不支持Long 类型（longvarchar)
-					return rs.getString(index);
-				
-				}
-			}else{
-				return rs.getString(index);
-			}
-			
-		}
-		else if (propType.equals(Integer.TYPE) || propType.equals(Integer.class)) return Integer.valueOf(rs.getInt(index));
-		else if (propType.equals(Boolean.TYPE) || propType.equals(Boolean.class)) return Boolean.valueOf(rs.getBoolean(index));
-		else if (propType.equals(Long.TYPE) || propType.equals(Long.class)) return Long.valueOf(rs.getLong(index));
-		else if (propType.equals(Double.TYPE) || propType.equals(Double.class)) return Double.valueOf(rs.getDouble(index));
-		else if (propType.equals(Float.TYPE) || propType.equals(Float.class)) return Float.valueOf(rs.getFloat(index));
-		else if (propType.equals(Short.TYPE) || propType.equals(Short.class)) return Short.valueOf(rs.getShort(index));
-		else if (propType.equals(Byte.TYPE) || propType.equals(Byte.class)) return Byte.valueOf(rs.getByte(index));
-		else if(propType.equals(BigDecimal.class)) return rs.getBigDecimal(index);
-		else if(propType.equals(char[].class)){
-			
-			if(dbName.equals("oracle")){
-				int type = meta.getColumnType(index);
-				switch(type){
-				case   java.sql.Types.CLOB:{
-					Reader r =	rs.getClob(index).getCharacterStream();
-					return LobKit.getString(r).toCharArray();
-					}
-				case Types.NCLOB:{
-				Reader r =	rs.getNClob(index).getCharacterStream();
-				return LobKit.getString(r).toCharArray();
-				}default:
-					return rs.getString(index).toCharArray();
-				
-				}
-			}else{
-				return rs.getString(index).toCharArray();
-			}
-			
-		}
-		else if(propType.equals(byte[].class)) return rs.getBytes(index);
-		
-		else if (propType.equals(Timestamp.class)) return rs.getTimestamp(index);
-		else if (propType.equals(SQLXML.class)) return rs.getSQLXML(index);
-		else return rs.getObject(index);
 
-	}
 
 }
