@@ -2,6 +2,7 @@ package org.beetl.sql.core;
 
 import java.math.BigDecimal;
 import java.sql.SQLXML;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
@@ -16,8 +17,8 @@ import java.util.Map;
  * 2016-12-08 丰富JavaType功能，可以javaType与jdbcType之间互相转换
  */
 public class JavaType { 
-	
-	public static Map<Integer, Class<?>> jdbcJavaTypes; // jdbc type to java
+	/*jdbc type 对应的java的type，参考JavaSqlTypeHandler和BeanProcessor*/
+	public static Map<Integer, Class<?>> jdbcJavaTypes = new HashMap<Integer, Class<?>>(); // jdbc type to java
 															// type
 	
 	static int majorJavaVersion = 15;
@@ -51,7 +52,7 @@ public class JavaType {
 		jdbcJavaTypes.put(new Integer(Types.NVARCHAR), String.class); // -9 字符串
 		jdbcJavaTypes.put(new Integer(Types.ROWID), String.class); // -8 字符串
 		jdbcJavaTypes.put(new Integer(Types.BIT), Boolean.class); // -7 布尔
-		jdbcJavaTypes.put(new Integer(Types.TINYINT), Byte.class); // -6 数字
+		jdbcJavaTypes.put(new Integer(Types.TINYINT), Integer.class); // -6 数字
 		jdbcJavaTypes.put(new Integer(Types.BIGINT), Long.class); // -5 数字
 		jdbcJavaTypes.put(new Integer(Types.LONGVARBINARY), byte[].class); // -4
 																			// 二进制
@@ -64,7 +65,7 @@ public class JavaType {
 		jdbcJavaTypes.put(new Integer(Types.NUMERIC), BigDecimal.class); // 2 数字
 		jdbcJavaTypes.put(new Integer(Types.DECIMAL), BigDecimal.class); // 3 数字
 		jdbcJavaTypes.put(new Integer(Types.INTEGER), Integer.class); // 4 数字
-		jdbcJavaTypes.put(new Integer(Types.SMALLINT), Short.class); // 5 数字
+		jdbcJavaTypes.put(new Integer(Types.SMALLINT), Integer.class); // 5 数字
 		jdbcJavaTypes.put(new Integer(Types.FLOAT), BigDecimal.class); // 6 数字
 		jdbcJavaTypes.put(new Integer(Types.REAL), BigDecimal.class); // 7 数字
 		jdbcJavaTypes.put(new Integer(Types.DOUBLE), BigDecimal.class); // 8 数字
@@ -72,7 +73,7 @@ public class JavaType {
 		jdbcJavaTypes.put(new Integer(Types.BOOLEAN), Boolean.class); // 16 布尔
 		// jdbcJavaTypes.put(new Integer(Types.DATALINK), String.class); // 70 /
 		jdbcJavaTypes.put(new Integer(Types.DATE), Date.class); // 91 日期
-		jdbcJavaTypes.put(new Integer(Types.TIME), Date.class); // 92 日期
+		jdbcJavaTypes.put(new Integer(Types.TIME), Time.class); // 92 日期
 		jdbcJavaTypes.put(new Integer(Types.TIMESTAMP), Timestamp.class); // 93 日期
 		jdbcJavaTypes.put(new Integer(Types.OTHER), Object.class); // 1111 其他类型？
 		// jdbcJavaTypes.put(new Integer(Types.JAVA_OBJECT), Object.class); //

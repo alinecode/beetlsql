@@ -2,18 +2,17 @@ package org.beetl.sql.core.mapping;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLXML;
+import java.sql.Time;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +22,27 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.EnumKit;
-import org.beetl.sql.core.kit.LobKit;
 import org.beetl.sql.core.mapping.type.BigDecimalTypeHandler;
+import org.beetl.sql.core.mapping.type.BooleanTypeHandler;
+import org.beetl.sql.core.mapping.type.ByteArrayTypeHandler;
+import org.beetl.sql.core.mapping.type.ByteTypeHandler;
+import org.beetl.sql.core.mapping.type.CharArrayTypeHandler;
+import org.beetl.sql.core.mapping.type.DateTypeHandler;
 import org.beetl.sql.core.mapping.type.DefaultTypeHandler;
+import org.beetl.sql.core.mapping.type.DoubleTypeHandler;
+import org.beetl.sql.core.mapping.type.FloatTypeHandler;
+import org.beetl.sql.core.mapping.type.IntegerTypeHandler;
 import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
+import org.beetl.sql.core.mapping.type.LongTypeHandler;
+import org.beetl.sql.core.mapping.type.ShortTypeHandler;
+import org.beetl.sql.core.mapping.type.SqlDateTypeHandler;
+import org.beetl.sql.core.mapping.type.SqlXMLTypeHandler;
+import org.beetl.sql.core.mapping.type.StringTypeHandler;
+import org.beetl.sql.core.mapping.type.TimeTypeHandler;
+import org.beetl.sql.core.mapping.type.TimestampTypeHandler;
 import org.beetl.sql.core.mapping.type.TypeParameter;
 
 /**
@@ -43,15 +57,55 @@ public class BeanProcessor {
 	String dbName;
 	Map<Class,JavaSqlTypeHandler> handlers = new HashMap<Class,JavaSqlTypeHandler>();
 	JavaSqlTypeHandler defaultHandler = new DefaultTypeHandler();
+	static BigDecimalTypeHandler bigDecimalHandler = new BigDecimalTypeHandler();
+	static BooleanTypeHandler booleanDecimalHandler = new BooleanTypeHandler();
+	static ByteArrayTypeHandler byteArrayTypeHandler = new ByteArrayTypeHandler();
+	static ByteTypeHandler byteTypeHandler = new ByteTypeHandler();
+	static CharArrayTypeHandler charArrayTypeHandler = new CharArrayTypeHandler();
+	static DateTypeHandler dateTypeHandler = new DateTypeHandler();
+	static  DoubleTypeHandler doubleTypeHandler = new DoubleTypeHandler();
+	static FloatTypeHandler floatTypeHandler = new FloatTypeHandler();
+	static IntegerTypeHandler integerTypeHandler = new IntegerTypeHandler();
+	static LongTypeHandler longTypeHandler = new LongTypeHandler();
+	static ShortTypeHandler shortTypeHandler = new ShortTypeHandler();
+	static SqlDateTypeHandler sqlDateTypeHandler = new SqlDateTypeHandler();
+	static SqlXMLTypeHandler sqlXMLTypeHandler = new SqlXMLTypeHandler();
+	static StringTypeHandler stringTypeHandler = new StringTypeHandler();
+	static TimestampTypeHandler timestampTypeHandler = new TimestampTypeHandler();
+	static TimeTypeHandler timeTypeHandler = new TimeTypeHandler();
+	
 	
 	public BeanProcessor(NameConversion nc,SQLManager sm) {
 		this.nc = nc;
 		this.sm = sm;
 		this.dbName = sm.getDbStyle().getName();
-		
+		initHandlers();
 	}
 	private void initHandlers(){
-		handlers.put(BigDecimal.class, new BigDecimalTypeHandler());
+		handlers.put(BigDecimal.class,bigDecimalHandler);
+		handlers.put(Boolean.class,booleanDecimalHandler);
+		handlers.put(byte[].class,byteArrayTypeHandler);
+		handlers.put(byte.class,byteTypeHandler);
+		handlers.put(Byte.class,byteTypeHandler);
+		handlers.put(char[].class,charArrayTypeHandler);
+		handlers.put(java.util.Date.class,dateTypeHandler);
+		handlers.put(Double.class,doubleTypeHandler);
+		handlers.put(double.class,doubleTypeHandler);
+		handlers.put(Float.class,floatTypeHandler);
+		handlers.put(float.class,floatTypeHandler);
+		handlers.put(Integer.class,integerTypeHandler);
+		handlers.put(int.class,integerTypeHandler);
+		handlers.put(Long.class,longTypeHandler);
+		handlers.put(long.class,longTypeHandler);
+		handlers.put(Short.class,shortTypeHandler);
+		handlers.put(short.class,shortTypeHandler);
+		handlers.put(java.sql.Date.class,sqlDateTypeHandler);
+		handlers.put(SQLXML.class,sqlXMLTypeHandler);
+		handlers.put(String.class,stringTypeHandler);
+		handlers.put(Timestamp.class,timestampTypeHandler);
+		handlers.put(Time.class,timeTypeHandler);
+		
+		
 	}
 
 	
@@ -67,10 +121,8 @@ public class BeanProcessor {
 	public <T> T toBean(String sqlId,ResultSet rs, Class<T> type) throws SQLException {
 
 		PropertyDescriptor[] props = this.propertyDescriptors(type);
-
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int[] columnToProperty = this.mapColumnsToProperties(type,rsmd, props);
-
 		return this.createBean(sqlId,rs, type, props, columnToProperty);
 		
 	}
@@ -83,9 +135,7 @@ public class BeanProcessor {
 	 * @throws SQLException
 	 */
 	public <T> T toBean(ResultSet rs, Class<T> type) throws SQLException {
-
 		return toBean(null,rs,type);
-		
 	}
 
 
@@ -99,12 +149,12 @@ public class BeanProcessor {
 	 */
 	public <T> List<T> toBeanList(String sqlId,ResultSet rs, Class<T> type) throws SQLException {
 		
-		List<T> results = new ArrayList<T>();
+		
 
 		if (!rs.next()) {
-			return results;
+			return new ArrayList<T>(0);
 		}
-
+		List<T> results = new ArrayList<T>();
 		PropertyDescriptor[] props = this.propertyDescriptors(type);
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int[] columnToProperty = this.mapColumnsToProperties(type,rsmd, props);
@@ -225,6 +275,7 @@ public class BeanProcessor {
 			//columnToProperty[i]取出对应的在PropertyDescriptor[]中的下标
 			PropertyDescriptor prop = props[columnToProperty[i]];
 			Class<?> propType = prop.getPropertyType();
+			tp.setTarget(propType);
 			JavaSqlTypeHandler handler = this.handlers.get(propType);
 			if(handler==null){
 				handler = this.defaultHandler;
@@ -357,6 +408,30 @@ public class BeanProcessor {
 
 		return columnToProperty;
 		
+	}
+	/**
+	 * 设置PreparedStatement的参数，可以根据根据sqlId做一定个性化设置
+	 * @param sqlId
+	 * @param ps
+	 * @param objs
+	 * @throws SQLException
+	 */
+	public  void setPreparedStatementPara(String sqlId,PreparedStatement ps,List<SQLParameter> objs) throws SQLException {
+		for (int i = 0; i < objs.size(); i++) {
+			SQLParameter para = objs.get(i);
+			Object o = para.value;
+			// 兼容性修改：oralce 驱动 不识别util.Date
+			if(o != null&&this.dbName.equals("oracle")){
+				Class c = o.getClass();
+				if(c== java.util.Date.class){
+					o = new Timestamp(((java.util.Date) o).getTime());
+				}else if(Enum.class.isAssignableFrom(c)){
+					o = EnumKit.getValueByEnum(o);
+				}
+			}
+			
+			ps.setObject(i + 1, o);
+		}
 	}
 
 	

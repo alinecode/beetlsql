@@ -3,10 +3,13 @@ queryUsers
 
 
 	select #page("*")# from user where 1=1
-	#use("condition",{"title":123})#
 	
-	#use("condition2",{"title":123})#
-	
+
+querySingle
+===
+
+
+	select  count(1) from user where 1=1
 	
 condition
 ===

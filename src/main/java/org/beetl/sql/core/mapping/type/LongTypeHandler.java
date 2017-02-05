@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class LongTypeHandler extends JavaSqlTypeHandler {
+public class LongTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue  {
 
 	@Override
 	public Object getValue(TypeParameter typePara) throws SQLException{
@@ -12,7 +12,7 @@ public class LongTypeHandler extends JavaSqlTypeHandler {
 		long a = rs.getLong(typePara.index);
 		if(rs.wasNull()){
 			if( typePara.target.isPrimitive()){
-				return 0L;
+				return getDefaultValue();
 			}else{
 				return null;
 			}
@@ -21,6 +21,12 @@ public class LongTypeHandler extends JavaSqlTypeHandler {
 		}
 		
 		
+	}
+
+	@Override
+	public Object getDefaultValue() {
+		// TODO Auto-generated method stub
+		return 0l;
 	}
 
 }

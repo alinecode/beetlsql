@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,15 +25,11 @@ import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
-import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
-import org.beetl.sql.core.mapping.handler.BeanHandler;
-import org.beetl.sql.core.mapping.handler.BeanListHandler;
-import org.beetl.sql.core.mapping.handler.MapListHandler;
-import org.beetl.sql.core.mapping.handler.ScalarHandler;
 import org.beetl.sql.core.orm.LazyMappingEntity;
 import org.beetl.sql.core.orm.MappingEntity;
 import org.beetl.sql.core.orm.OrmCondition;
@@ -72,7 +67,7 @@ public class SQLScript {
 			t = gt.getTemplate(sqlSource.getId());
 		}
 		
-		List<Object> jdbcPara = new LinkedList<Object>();
+		List<SQLParameter> jdbcPara = new LinkedList<SQLParameter>();
 		if (paras != null) {
 			for (Entry<String, Object> entry : paras.entrySet()) {
 				t.binding(entry.getKey(), entry.getValue());
@@ -159,7 +154,7 @@ public class SQLScript {
 
 		SQLResult result = this.run(map);
 		String sql = result.jdbcSql;
-		List<Object> objs = result.jdbcPara;
+		List<SQLParameter> objs = result.jdbcPara;
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 		sql = ctx.getSql();
 		objs = ctx.getParas();
@@ -194,7 +189,7 @@ public class SQLScript {
 
 			SQLResult result = this.run(map);
 			String sql = result.jdbcSql;
-			List<Object> objs = result.jdbcPara;
+			List<SQLParameter> objs = result.jdbcPara;
 			ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 			sql = ctx.getSql();
 			objs = ctx.getParas();
@@ -250,7 +245,7 @@ public class SQLScript {
 
 			SQLResult result = this.run(map);
 			String sql = result.jdbcSql;
-			List<Object> objs = result.jdbcPara;
+			List<SQLParameter> objs = result.jdbcPara;
 			ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,map);
 			sql = ctx.getSql();
 			objs = ctx.getParas();
@@ -328,7 +323,7 @@ public class SQLScript {
 		SQLResult result = run(paras);
 		addOrmQuery(clazz,result);
 		String sql = result.jdbcSql;
-		List<Object> objs = result.jdbcPara;
+		List<SQLParameter> objs = result.jdbcPara;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		List<T> resultList = null;
@@ -393,7 +388,7 @@ public class SQLScript {
 			// 如果是Map的子类或者父类，返回List<Map<String,Object>>
 			resultList = new ArrayList<T>();
 			while(rs.next()){
-				Map map = beanProcessor.toMap(clazz, rs)	;
+				Map map = beanProcessor.toMap(this.sqlSource.getId(),clazz, rs)	;
 				resultList.add((T) map);
 			}
 			return resultList;
@@ -402,7 +397,7 @@ public class SQLScript {
 			
 			resultList = new ArrayList<T>(1);
 			while(rs.next()){
-				Object result =beanProcessor.toBaseType(clazz, rs);
+				Object result =beanProcessor.toBaseType(this.sqlSource.getId(),clazz, rs);
 				resultList.add((T) result);
 			}
 		} else {
@@ -477,7 +472,7 @@ public class SQLScript {
 
 		SQLResult result = run(paras);
 		String sql = result.jdbcSql;
-		List<Object> objs = result.jdbcPara;
+		List<SQLParameter> objs = result.jdbcPara;
 
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,paras);
 		sql = ctx.getSql();
@@ -518,7 +513,7 @@ public class SQLScript {
 			for (int k = 0; k < maps.length; k++) {
 				Map<String, Object> paras = maps[k];
 				SQLResult result = run(paras);
-				List<Object> objs = result.jdbcPara;
+				List<SQLParameter> objs = result.jdbcPara;
 
 				if (ps == null) {
 					conn = sm.getDs().getConn(id, true, sql, objs);
@@ -561,12 +556,12 @@ public class SQLScript {
 				this.addParaIfAssignId(entity);
 				paras.put("_root",entity);
 				SQLResult result = run(paras);
-				List<Object> objs = result.jdbcPara;
+				List<SQLParameter> objs = result.jdbcPara;
 
 				if (ps == null) {
 					conn = sm.getDs().getConn(id, true, sql, objs);
 					ps = conn.prepareStatement(result.jdbcSql);
-					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.emptyList(),paras);
+					ctx = this.callInterceptorAsBefore(this.id, sql, true, new ArrayList<SQLParameter>(0),paras);
 				}
 
 				this.setPreparedStatementPara(ps, objs);
@@ -602,12 +597,12 @@ public class SQLScript {
 				Map<String, Object> paras = new HashMap<String, Object>();
 				paras.put("_root", list.get(k));
 				SQLResult result = run(paras);
-				List<Object> objs = result.jdbcPara;
+				List<SQLParameter> objs = result.jdbcPara;
 
 				if (ps == null) {
 					conn = sm.getDs().getConn(id, true, sql, objs);
 					ps = conn.prepareStatement(result.jdbcSql);
-					ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.emptyList(),paras);
+					ctx = this.callInterceptorAsBefore(this.id, sql, true, new ArrayList<SQLParameter>(0),paras);
 				}
 
 				this.setPreparedStatementPara(ps, objs);
@@ -646,7 +641,7 @@ public class SQLScript {
 		SQLResult result = run(paras);
 		addOrmQuery(clazz,result);
 		String sql = result.jdbcSql;
-		List<Object> objs = result.jdbcPara;
+		List<SQLParameter> objs = result.jdbcPara;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		T model = null;
@@ -674,6 +669,11 @@ public class SQLScript {
 						return null;
 					}
 				}
+				//row mapper
+				if(mapper!=null){
+					model = mapper.mapRow(model, rs, 1);
+				}
+				//orm 
 				if(model!=null&&result.mapingEntrys!=null){
 					for(MappingEntity mapConf:result.mapingEntrys){
 						mapConf.map(model, sm);
@@ -708,7 +708,7 @@ public class SQLScript {
 
 		SQLResult result = run(paras);
 		String sql = result.jdbcSql;
-		List<Object> objs = result.jdbcPara;
+		List<SQLParameter> objs = result.jdbcPara;
 
 		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,paras);
 		
@@ -734,11 +734,11 @@ public class SQLScript {
 
 	public <T> List<T> sqlReadySelect(Class<T> clazz, SQLReady p) {
 		String sql = this.sql;
-		List<Object> objs = Arrays.asList(p.getArgs());
+		List<SQLParameter> objs = toSQLParameters(p.getArgs());
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		List<T> resultList = null;
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs,this.getSQLReadyParas(objs));
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,this.getSQLReadyParas(Arrays.asList(p.getArgs())));
 		sql = ctx.getSql();
 		objs = ctx.getParas();
 		Connection conn = null;
@@ -762,8 +762,8 @@ public class SQLScript {
 	public int sqlReadyExecuteUpdate(SQLReady p) {
 
 		String sql = this.sql;
-		List<Object> objs = Arrays.asList(p.args);
-		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,this.getSQLReadyParas(objs));
+		List<SQLParameter> objs = toSQLParameters(p.getArgs());
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs,this.getSQLReadyParas(Arrays.asList(p.getArgs())));
 		
 		sql = ctx.getSql();
 		objs = ctx.getParas();
@@ -786,22 +786,10 @@ public class SQLScript {
 		return rs;
 	}
 
-	private void setPreparedStatementPara(PreparedStatement ps,List<Object> objs) throws SQLException {
-		for (int i = 0; i < objs.size(); i++) {
-			Object o = objs.get(i);
-			// 兼容性修改：oralce 驱动 不识别util.Date
-			if (o != null ) {
-				Class c = o.getClass();
-				if(c== java.util.Date.class){
-					o = new Timestamp(((java.util.Date) o).getTime());
-				}else if(Enum.class.isAssignableFrom(c)){
-					o = EnumKit.getValueByEnum(o);
-				}
-//				 o =new java.sql.Date(((java.util.Date)o).getTime());
-				
-			}
-			ps.setObject(i + 1, o);
-		}
+	private void setPreparedStatementPara(PreparedStatement ps,List<SQLParameter> objs) throws SQLException {
+		BeanProcessor beanProcessor = this.getBeanProcessor();
+		beanProcessor.setPreparedStatementPara(this.sqlSource.getId(), ps, objs);
+	
 	}
 	
 	
@@ -839,7 +827,7 @@ public class SQLScript {
 	}
 
 	private InterceptorContext callInterceptorAsBefore(String sqlId, String sql, 
-				boolean isUpdate, List<Object> jdbcParas,Map<String,Object> inputParas) {
+				boolean isUpdate, List<SQLParameter> jdbcParas,Map<String,Object> inputParas) {
 
 		InterceptorContext ctx = new InterceptorContext(sqlId, sql, jdbcParas,inputParas, isUpdate);
 		for (Interceptor in : sm.inters) {
@@ -939,9 +927,19 @@ public class SQLScript {
 		
 	}
 	
+	private List<SQLParameter> toSQLParameters(Object[] args){
+		List<SQLParameter> paras = new ArrayList<SQLParameter>(args.length);
+		for(Object arg:args){
+			paras.add( new SQLParameter(arg));
+			
+		}
+		return paras;
+	}
 	public String getSql() {
 		return sql;
 	}
+	
+	
 
 
 

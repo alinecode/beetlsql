@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.7.11</version>
+	<version>2.8.0</version>
 
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-			<version>2.7.8</version>
+			<version>2.7.9</version>
 		</dependency>
 
 		<!-- junit -->
@@ -159,7 +159,7 @@
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jfinal</artifactId>
-			<version>2.0</version>
+			<version>3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -200,13 +200,7 @@
 			<version>4.2.3.RELEASE</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.2</version>
-			<scope>test</scope>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
@@ -217,12 +211,12 @@
 			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath> 
 			</dependency -->
 		<!--用于进行测试 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>ormunit</artifactId>
 			<version>1.0.0</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<build>
@@ -243,9 +237,9 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
-					<excludes>
+					<!-- <excludes>
 	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes>
+	                </excludes> -->
 				</configuration>
 			</plugin>
 			<plugin>

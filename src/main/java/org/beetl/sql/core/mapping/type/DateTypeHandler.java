@@ -9,7 +9,12 @@ public class DateTypeHandler extends JavaSqlTypeHandler {
 	@Override
 	public Object getValue(TypeParameter typePara) throws SQLException{
 		java.sql.Date a = typePara.rs.getDate(typePara.index);
-		return new java.util.Date(a.getTime());
+		if(a!=null){
+			return new java.util.Date(a.getTime());
+		}else{
+			return null;
+		}
+		
 		
 	}
 

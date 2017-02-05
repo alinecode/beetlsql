@@ -4,15 +4,16 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class ShortTypeHandler extends JavaSqlTypeHandler {
+public class ShortTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
+	Short defaultValue = 0;
 	@Override
 	public Object getValue(TypeParameter typePara) throws SQLException{
 		ResultSet rs = typePara.rs;
 		short a = rs.getShort(typePara.index);
 		if(rs.wasNull()){
 			if( typePara.target.isPrimitive()){
-				return 0;
+				return defaultValue;
 			}else{
 				return null;
 			}
@@ -20,6 +21,11 @@ public class ShortTypeHandler extends JavaSqlTypeHandler {
 			return a;
 		}
 		
+	}
+
+	@Override
+	public Object getDefaultValue() {
+		return defaultValue;
 	}
 
 }

@@ -4,16 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.beetl.sql.core.engine.SQLParameter;
+
 public class InterceptorContext {
 	private String sqlId;
 	private String sql;
-	private List<Object> paras;
+	private List<SQLParameter> paras;
 	private Map<String, Object> env = null;
 	private boolean isUpdate = false;
 	private Object result;
 	private Map<String, Object> inputParas;
 
-	public InterceptorContext(String sqlId, String sql, List<Object> paras, Map<String, Object> inputParas,
+	public InterceptorContext(String sqlId, String sql, List<SQLParameter> paras, Map<String, Object> inputParas,
 			boolean isUpdate) {
 		this.sql = sql;
 		this.paras = paras;
@@ -42,7 +44,7 @@ public class InterceptorContext {
 		return sql;
 	}
 
-	public List<Object> getParas() {
+	public List<SQLParameter> getParas() {
 		return paras;
 	}
 

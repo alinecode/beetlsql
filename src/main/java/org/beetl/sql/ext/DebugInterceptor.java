@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
+import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.EnumKit;
 
 /**
@@ -96,9 +97,10 @@ public class DebugInterceptor implements Interceptor {
 		return false;
 	}
 	
-	protected List<String> formatParas(List<Object> list){
+	protected List<String> formatParas(List<SQLParameter> list){
 		List<String> data = new ArrayList<String>(list.size());
-		for(Object obj:list){
+		for( SQLParameter para:list){
+			Object obj = para.value;
 			if(obj==null){
 				data.add(null);
 			}else if(obj instanceof String){
@@ -137,7 +139,7 @@ public class DebugInterceptor implements Interceptor {
 	public void exception(InterceptorContext ctx, Exception ex) {
 		String lineSeparator = System.getProperty("line.separator", "\n");
 		StringBuilder sb =(StringBuilder) ctx.get("logs");
-		sb.append("┗━━━━━ Debug [ ERROR:").append(ex.getMessage()).append("] ━━━").append(lineSeparator);
+		sb.append("┗━━━━━ Debug [ ERROR:").append(ex!=null?ex.getMessage():"").append("] ━━━").append(lineSeparator);
 		println(sb.toString());
 		
 	}

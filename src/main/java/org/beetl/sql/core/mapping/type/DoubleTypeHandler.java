@@ -1,10 +1,9 @@
 package org.beetl.sql.core.mapping.type;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class DoubleTypeHandler extends JavaSqlTypeHandler {
+public class DoubleTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
 	@Override
 	public Object getValue(TypeParameter typePara) throws SQLException{
@@ -12,7 +11,7 @@ public class DoubleTypeHandler extends JavaSqlTypeHandler {
 		double a = rs.getDouble(typePara.index);
 		if(rs.wasNull()){
 			if( typePara.target.isPrimitive()){
-				return 0.0d;
+				return getDefaultValue();
 			}else{
 				return null;
 			}
@@ -20,6 +19,11 @@ public class DoubleTypeHandler extends JavaSqlTypeHandler {
 			return a;
 		}
 		
+	}
+
+	@Override
+	public Object getDefaultValue() {
+		return 0.0d;
 	}
 
 }

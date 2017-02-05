@@ -14,6 +14,7 @@ import org.beetl.core.statement.FunctionExpression;
 import org.beetl.core.statement.PlaceholderST;
 import org.beetl.core.statement.Statement;
 import org.beetl.core.statement.Type;
+import org.beetl.core.statement.VarRef;
 
 public class SQLPlaceholderST extends Statement
 {
@@ -61,10 +62,14 @@ public class SQLPlaceholderST extends Statement
 					return ;
 				}
 			}
-			
+			int type  = SQLParameter.NAME_EXPRESSION;
+			if(expression instanceof SQLVarRef){
+				type = SQLParameter.NAME_GENEARL;
+			}
 			ctx.byteWriter.writeString("?");
 			List list = (List)ctx.getGlobal("_paras");
-			list.add(value);
+			list.add(new SQLParameter(expression.token.text,value,type));
+			
 			
 		}
 		catch (IOException e)

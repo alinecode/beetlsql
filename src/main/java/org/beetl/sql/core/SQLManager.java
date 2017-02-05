@@ -35,13 +35,13 @@ import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.GenKit;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapping.BeanProcessor;
-import org.beetl.sql.core.mapping.handler.ScalarHandler;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
@@ -735,7 +735,7 @@ public class SQLManager {
 				try{
 					Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
 					Object value = holder.getKey();
-					value = ScalarHandler.convertValueToRequiredType(value, getterMethod.getReturnType());
+					value = BeanKit.convertValueToRequiredType(value, getterMethod.getReturnType());
 					setterMethod.invoke(paras, new Object[]{value});
 					return result;
 				}catch(Exception ex){

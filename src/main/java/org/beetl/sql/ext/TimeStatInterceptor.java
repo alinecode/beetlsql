@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
+import org.beetl.sql.core.engine.SQLParameter;
 
 /** 用来统计sql执行时间
  * @author joelli
@@ -38,7 +39,7 @@ public class TimeStatInterceptor implements Interceptor {
 
 	}
 	
-	protected void print(String sqlId,String sql,List<Object> paras,long time){
+	protected void print(String sqlId,String sql,List<SQLParameter> paras,long time){
 		System.err.println("sqlId="+sqlId+" time:"+time);
 		System.out.println("=====================");
 		System.out.println(sql);

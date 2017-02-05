@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
-import org.beetl.sql.core.kit.StringKit;
+import org.beetl.sql.core.engine.SQLParameter;
 
 /**
  * 尝试用一个Map实现简单的缓存.如果想使用其他实现，可以实现CacheManager方法
@@ -136,7 +136,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 *            the paras
 	 * @return the cache key
 	 */
-	private  Object getCacheKey(String sqlId, String sql,List<Object> paras) {
+	private  Object getCacheKey(String sqlId, String sql,List<SQLParameter> paras) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("sqlId : " + sqlId).append("\nsql:").append(sql).append("\nparas : " + paras);
 		//TODO:性能有点慢，换一种专门的Key ？

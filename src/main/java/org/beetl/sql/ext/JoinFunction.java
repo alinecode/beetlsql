@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.beetl.core.Context;
 import org.beetl.core.Function;
+import org.beetl.sql.core.engine.SQLParameter;
 /**
  * 
  * @author "Sean-[重庆]" 284771807@qq.com;
@@ -23,7 +24,7 @@ public class JoinFunction implements Function {
 			throw new RuntimeException("join.paras[0] must be a collection or an array!");
 		}
 		
-		List dbParas = (List) ctx.getGlobal("_paras");
+		List<SQLParameter> dbParas = (List<SQLParameter>) ctx.getGlobal("_paras");
 		
 		try {
 			ctx.byteWriter.writeString(join(objs,dbParas));
@@ -44,7 +45,7 @@ public class JoinFunction implements Function {
                 buf.append(',');  
             }  
             buf.append('?');  
-            dbParas.add(array[i]);
+            dbParas.add(new SQLParameter(null, array[i]));
         }  
         return buf.toString();  
     }  

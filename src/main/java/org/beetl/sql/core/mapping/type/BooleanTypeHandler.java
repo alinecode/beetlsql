@@ -1,32 +1,29 @@
 package org.beetl.sql.core.mapping.type;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class IntegerTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue  {
+public class BooleanTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
-	static Integer defaultValue = 0;
+	Boolean b = false;
 	@Override
 	public Object getValue(TypeParameter typePara) throws SQLException{
 		ResultSet rs = typePara.rs;
-		int a = rs.getInt(typePara.index);
+		boolean a = rs.getBoolean(typePara.index);
 		if(rs.wasNull()){
 			if( typePara.target.isPrimitive()){
-				return defaultValue;
+				return b;
 			}else{
 				return null;
 			}
 		}else{
 			return a;
 		}
-		
 	}
 
 	@Override
 	public Object getDefaultValue() {
-		// TODO Auto-generated method stub
-		return defaultValue;
+		return b;
 	}
 
 }
