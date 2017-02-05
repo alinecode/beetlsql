@@ -207,6 +207,13 @@
 			<version>1.0.2</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.ibeetl</groupId>
+		    <artifactId>ormunit</artifactId>
+		    <version>1.0.0</version>
+		    <scope>test</scope>
+		</dependency>
 		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId> 
 			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath> 
 			</dependency -->

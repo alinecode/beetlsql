@@ -2,7 +2,7 @@ queryUsers
 ===
 
 
-	select #page("*")# from user where 1=1
+	select #page("*")# from user where 1=1 and id=#id#
 	
 
 querySingle

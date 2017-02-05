@@ -787,6 +787,9 @@ public class SQLScript {
 	}
 
 	private void setPreparedStatementPara(PreparedStatement ps,List<SQLParameter> objs) throws SQLException {
+		if(objs.isEmpty()){
+			return ;
+		}
 		BeanProcessor beanProcessor = this.getBeanProcessor();
 		beanProcessor.setPreparedStatementPara(this.sqlSource.getId(), ps, objs);
 	

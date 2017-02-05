@@ -1,11 +1,10 @@
 package org.beetl.sql.ext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.beetl.sql.core.InterceptorContext;
-import org.beetl.sql.test.mysql.entity.User;
+import org.beetl.sql.core.engine.SQLParameter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,8 +24,8 @@ public class SimpleCacheInterceptorTest {
 		String selectSqlId = ns + ".select";
 		String selectSql = "SELECT appUser.USER_ID \"id\" ,appUser.USER_CODE \"code\" FROM app_user"
 				+ " WHERE appUser.USER_ID = ?";
-		List<Object> params = new ArrayList<Object>();
-		params.add("fitz");
+		List<SQLParameter> params = new ArrayList<SQLParameter>();
+		params.add(new SQLParameter("ftz"));
 		InterceptorContext ctx = new InterceptorContext(selectSqlId, selectSql, params, null, false);
 		String namespace = sci.getSqlIdNameSpace(selectSqlId);
 		Assert.assertEquals(ns, namespace);
