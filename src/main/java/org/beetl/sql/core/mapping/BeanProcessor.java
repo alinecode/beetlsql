@@ -427,7 +427,7 @@ public class BeanProcessor {
 			Object o = para.value;
 			if(o==null){
 				ps.setObject(i + 1, o);
-				return ;
+				continue ;
 			}
 			// 兼容性修改：oralce 驱动 不识别util.Date
 			if(this.dbName.equals("oracle")){

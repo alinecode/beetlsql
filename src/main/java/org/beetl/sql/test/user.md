@@ -3,7 +3,31 @@ queryUsers
 
 
 	select #page("*")# from user where 1=1 and id=#id#
-	
+
+insertTemplate	
+===
+
+	insert into user (
+	@trim({suffixOverrides:","}){
+		@if(!isEmpty(name)){
+			name,
+		@}
+		@if(!isEmpty(departmentId)){
+			department_id,
+		@}
+	@}
+	)
+	values(
+	@trim({suffixOverrides:","}){
+		@if(!isEmpty(name)){
+			#name#,
+		@}
+		@if(!isEmpty(departmentId)){
+			#departmentId#,
+		@}
+	@}
+	)
+
 
 querySingle
 ===

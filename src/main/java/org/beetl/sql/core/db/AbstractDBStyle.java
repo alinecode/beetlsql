@@ -286,35 +286,7 @@ public abstract class AbstractDBStyle implements DBStyle {
     	return generalInsert(cls,true);
     }
     
-//    insert into (id,
-//    		@trim(x){
-//
-//    			@if(isNotEmpty(name)){
-//    		        name,
-//    		        @}
-//
-//    			@if(isNotEmpty(name)){
-//    		        name,
-//    		        @}
-//
-//
-//    		@
-//
-//    		values (#id#,
-//
-//    		@trim(x){
-//
-//    			@if(isNotEmpty(name)){
-//    		        #name#,
-//    		        @}
-//
-//    			@if(isNotEmpty(name)){
-//    		         #name#,
-//    		        @}
-//
-//
-//    		@
-    
+
     
     private SQLSource generalInsert(Class<?> cls,boolean template){
     	  String tableName = nameConversion.getTableName(cls);
@@ -323,6 +295,13 @@ public abstract class AbstractDBStyle implements DBStyle {
           StringBuilder sql = new StringBuilder("insert into " + getTableName(table) + lineSeparator);
           StringBuilder colSql = new StringBuilder("(");
           StringBuilder valSql = new StringBuilder(" VALUES (");
+          if(template){
+        	  	//动态拼，需要使用trim去掉最后可能的空格
+        	  	colSql.append(this.lineSeparator).append(this.STATEMENT_START);
+        	  	colSql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
+        	  	valSql.append(this.lineSeparator).append(this.STATEMENT_START);
+        	  	valSql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
+          }
           int idType = DBStyle.ID_ASSIGN;
           SQLSource source = new SQLSource();
           Iterator<String> cols = classDesc.getInCols().iterator();
@@ -353,16 +332,28 @@ public abstract class AbstractDBStyle implements DBStyle {
               }
 
               if(template){
-            	  colSql.append(appendInsertTemplateColumn(cls, table,attr, col));
-                  valSql.append(appendInsertTemplateValue(cls, table, attr));
+					colSql.append(appendInsertTemplateColumn(cls, table,attr, col));
+					valSql.append(appendInsertTemplateValue(cls, table, attr));
               }else{
-            	  colSql.append(appendInsertColumn(cls, table, col));
-                  valSql.append(appendInsertValue(cls, table, attr));
+					colSql.append(appendInsertColumn(cls, table, col));
+					valSql.append(appendInsertValue(cls, table, attr));
               }
               
           }
-
-          sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
+          
+          if(template){
+        	  	//结束trim(){}
+        	  	colSql.append(this.lineSeparator).append(this.STATEMENT_START);
+      	  	colSql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
+      	  	colSql.append(")");
+      	  	valSql.append(this.lineSeparator).append(this.STATEMENT_START);
+      	  	valSql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
+      	  	valSql.append(")");
+      	  	sql.append(colSql).append(valSql);
+          }else{
+        	  	sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
+              
+          }
           source.setTemplate(sql.toString());
           source.setIdType(idType);
           source.setTableDesc(table);
@@ -600,9 +591,9 @@ public abstract class AbstractDBStyle implements DBStyle {
        
     	String col = this.getKeyWordHandler().getCol(colName);
     	if(col.startsWith("'")){
-    		return HOLDER_START + "text(!isEmpty("+fieldName+")?\""+col+"\":'_NULL')" + HOLDER_END + "," ;
+    		return HOLDER_START + "text(!isEmpty("+fieldName+")?\""+col+",\":'')" + HOLDER_END  ;
     	}else{
-    		return HOLDER_START + "text(!isEmpty("+fieldName+")?'"+col+"':'_NULL')" + HOLDER_END + "," ;
+    		return HOLDER_START + "text(!isEmpty("+fieldName+")?'"+col+",':'')" + HOLDER_END  ;
     	}
     	
     }
@@ -617,7 +608,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      */
     protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName) {
     	
-    	 return HOLDER_START + "testNull("+fieldName+",\""+fieldName+"\")" + HOLDER_END + ",";
+    	 return HOLDER_START + "db.testNull("+fieldName+",\""+fieldName+"\")" + HOLDER_END ;
 
     }
 

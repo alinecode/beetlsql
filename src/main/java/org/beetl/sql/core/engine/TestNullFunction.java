@@ -5,7 +5,11 @@ import java.util.List;
 
 import org.beetl.core.Context;
 import org.beetl.core.Function;
-
+/**
+ * 用于insertTemlate，参考AbstractDBStyle.appendInsertTemplateValue
+ * @author xiandafu
+ *
+ */
 public class TestNullFunction implements Function {
 
 	@Override
@@ -13,17 +17,18 @@ public class TestNullFunction implements Function {
 		Object arg = paras[0];
 		String paraName = (String)paras[1];
 		if(arg==null){
-			return null;
+			return "";
 		}
 		try {
-			ctx.byteWriter.writeString("?");
+			//多余的逗号将被trim去掉
+			ctx.byteWriter.writeString("?,");
 			List list = (List)ctx.getGlobal("_paras");
 			list.add(new SQLParameter(paraName,arg));
-			return null;
+			return "";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			return "";
 		}
 		
 	}

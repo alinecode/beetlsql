@@ -1,8 +1,8 @@
 package org.beetl.sql.test;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
+import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
@@ -26,6 +26,7 @@ public class User   extends TailBean {
 	public User() {
 	}
 	
+	@AssignID
 	public Integer getId(){
 		return  id;
 	}
