@@ -32,6 +32,7 @@ public class StringTypeHandler extends JavaSqlTypeHandler {
 			
 			}
 		}else{
+			//认为其他数据库都支持直接通过jdbc获取字符串，如果不是这样，需要扩展StringTypeHandler
 			return rs.getString(index);
 		}
 		

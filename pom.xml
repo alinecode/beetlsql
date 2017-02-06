@@ -126,13 +126,13 @@
 		   <systemPath>${basedir}/lib/sqljdbc4.jar</systemPath>
 		</dependency>
 
-		<!--  dependency>
+		<dependency>
 		<groupId>oracle</groupId>
 		<artifactId>oralce-express</artifactId>
 		<version>6</version>
 		<scope>system</scope>
 		<systemPath>${basedir}/build/ojdbc6-11.2.0.1.0.jar</systemPath>
-	</dependency-->
+		</dependency>
 
 
 		<dependency>
@@ -208,12 +208,12 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<dependency>
+		<!--  dependency>
 		    <groupId>com.ibeetl</groupId>
 		    <artifactId>ormunit</artifactId>
 		    <version>1.0.0</version>
 		    <scope>test</scope>
-		</dependency>
+		</dependency-->
 		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId> 
 			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath> 
 			</dependency -->

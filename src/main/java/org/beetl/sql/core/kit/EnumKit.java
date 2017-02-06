@@ -30,6 +30,7 @@ public class EnumKit {
 	public static Enum getEnumByValue(Class c, Object value) {
 		if (!c.isEnum())
 			 throw new IllegalArgumentException(c.getName());
+		
 		EnumConfig config = cache.get(c);
 		if (config == null) {
 			init(c);

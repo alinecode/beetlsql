@@ -13,6 +13,7 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ import org.beetl.sql.core.mapping.type.TypeParameter;
  */
 public class BeanProcessor {
 
-	protected static final int PROPERTY_NOT_FOUND = 0;
+	protected static final int PROPERTY_NOT_FOUND = -1;
 	private NameConversion nc = null;
 	SQLManager sm ;
 	String dbName;
@@ -317,11 +318,14 @@ public class BeanProcessor {
 		Method setter = prop.getWriteMethod();
 		if (setter == null) return;
 		if (type.isEnum()) {
-
-			value = EnumKit.getEnumByValue(type, value);
 			if(value==null){
-				throw new SQLException("Cannot set ENUM " + prop.getName() + ": Convert to NULL for value"+ value);
-				
+				return ;
+			}
+			Object numValue = EnumKit.getEnumByValue(type, value);
+			if(numValue==null){
+				throw new SQLException("Cannot set ENUM " + prop.getName() + ": Convert to NULL for value "+ value);
+			}else{
+				value = numValue;
 			}
 		}
 		try {
@@ -390,16 +394,17 @@ public class BeanProcessor {
 
 		int cols = rsmd.getColumnCount();
 		int[] columnToProperty = new int[cols + 1];
+		Arrays.fill(columnToProperty, PROPERTY_NOT_FOUND);
 		//TODO 性能优化？
 		for (int col = 1; col <= cols; col++) {
 			String columnName = rsmd.getColumnLabel(col);
 			if (null == columnName || 0 == columnName.length()) {
 				columnName = rsmd.getColumnName(col);
 			}
-			
+			String expectedProperty = this.nc.getPropertyName(c,columnName);
 			for (int i = 0; i < props.length; i++) {
 
-				if(props[i].getName().equalsIgnoreCase(this.nc.getPropertyName(c,columnName))) {
+				if(props[i].getName().equalsIgnoreCase(expectedProperty)) {
 					columnToProperty[col] = i;
 					break;
 				}
@@ -420,14 +425,25 @@ public class BeanProcessor {
 		for (int i = 0; i < objs.size(); i++) {
 			SQLParameter para = objs.get(i);
 			Object o = para.value;
+			if(o==null){
+				ps.setObject(i + 1, o);
+				return ;
+			}
 			// 兼容性修改：oralce 驱动 不识别util.Date
-			if(o != null&&this.dbName.equals("oracle")){
+			if(this.dbName.equals("oracle")){
 				Class c = o.getClass();
 				if(c== java.util.Date.class){
 					o = new Timestamp(((java.util.Date) o).getTime());
-				}else if(Enum.class.isAssignableFrom(c)){
-					o = EnumKit.getValueByEnum(o);
 				}
+			}
+			
+			if(Enum.class.isAssignableFrom(o.getClass())){
+				o = EnumKit.getValueByEnum(o);
+			}
+			
+			//clob or text
+			if(o.getClass()==char[].class){
+				o = new String((char[])o);
 			}
 			
 			ps.setObject(i + 1, o);

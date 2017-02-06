@@ -14,6 +14,10 @@ public class MysqlDBConfig {
 //    public static String url = "jdbc:sqlserver://LIJIAZHI:1433;" +  
 //    		   "databaseName=test;user=test;password=123456;";  ;
     
-    
+//    public static String driver = "oracle.jdbc.driver.OracleDriver";
+//    public static String dbName = "orm";
+//    public static String password = "DFBX_WF2";
+//    public static String userName = "DFBX_WF2";
+//    public static String url = "jdbc:oracle:thin:@172.16.86.50:1521:xddb1";
     
 }

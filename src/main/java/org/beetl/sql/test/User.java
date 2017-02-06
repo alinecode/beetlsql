@@ -1,4 +1,5 @@
 package org.beetl.sql.test;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
@@ -19,6 +20,8 @@ public class User   extends TailBean {
 	private String name ;
 	private Integer departmentId;
 	private Date createTime;
+	private char[] content ;
+	private Color color;
 	
 	public User() {
 	}
@@ -52,6 +55,24 @@ public class User   extends TailBean {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+
+	public char[] getContent() {
+		return content;
+	}
+
+	public void setContent(char[] content) {
+		this.content = content;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	
 	
 
 }

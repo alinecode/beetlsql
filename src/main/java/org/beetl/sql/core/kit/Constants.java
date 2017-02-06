@@ -12,10 +12,11 @@ public class Constants {
 	
 	//public static final int UPDATE_BY_ID_BATCH =7;
 	public static final int INSERT = 8;
+	public static final int INSERT_TEMPLATE = 9;
 	
 	public static  String[] classSQL = new String[]{"_gen_selectById","_gen_selectByTemplate",
 			"_gen_selectCountByTemplate","_gen_delById",
 			"_gen_selectAll","_gen_updateAll",
-			"_gen_updateById","_gen_updateTemplateById","_gen_insert"};
+			"_gen_updateById","_gen_updateTemplateById","_gen_insert","_gen_insertTemplate"};
 
 }

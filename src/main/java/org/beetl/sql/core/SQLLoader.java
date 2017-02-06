@@ -47,6 +47,12 @@ public interface SQLLoader {
 	public String getCharset();
 	
 	public void setCharset(String charset);
+	
+	/**
+	 * sqlId到sql文件的转化
+	 * @param sqlIdNc
+	 */
+	public void setSQLIdNameConversion(SQLIdNameConversion sqlIdNc);
 
 	
 }

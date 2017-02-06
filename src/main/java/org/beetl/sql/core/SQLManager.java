@@ -2,6 +2,7 @@ package org.beetl.sql.core;
 
 import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
 import static org.beetl.sql.core.kit.Constants.INSERT;
+import static org.beetl.sql.core.kit.Constants.INSERT_TEMPLATE;
 import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
 import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
 import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
@@ -274,6 +275,11 @@ public class SQLManager {
 			
 			case INSERT: {
 				tempSource = this.dbStyle.genInsert(cls);
+				break ;
+			}
+			
+			case INSERT_TEMPLATE: {
+				tempSource = this.dbStyle.genInsertTemplate(cls);
 				break ;
 			}
 			default: {
@@ -704,10 +710,7 @@ public class SQLManager {
 	
 	//============= 插入 ===================  //
 	
-	public int  insert(Class<?> clazz,Object paras){
-		
-		return this.insert(clazz,paras,false);
-	}
+	
 	
 	public int  insert(Object paras){
 		return this.insert(paras.getClass(),paras, false);
@@ -717,11 +720,38 @@ public class SQLManager {
 		return this.insert(paras.getClass(),paras, autoAssignKey);
 	}
 	
+	
+	public int  insertTemplate(Object paras){
+		return this.insertTemplate(paras.getClass(),paras, false);
+	}
+	
+	public int  insertTemplate(Object paras,boolean autoAssignKey){
+		return this.insertTemplate(paras.getClass(),paras, autoAssignKey);
+	}
+	
 	public int  insert(Class clazz,Object paras,boolean autoAssignKey){
+		return generalInsert(clazz,paras,autoAssignKey,false);
+	}
+	
+	
+	
+	public int  insertTemplate(Class clazz,Object paras,boolean autoAssignKey){
+		return generalInsert(clazz,paras,autoAssignKey,true);
+		
+	}
+	
+	public int  insert(Class<?> clazz,Object paras){
+		
+		return this.insert(clazz,paras,false);
+	}
+	
+	
+	private int  generalInsert(Class clazz,Object paras,boolean autoAssignKey,boolean template){
 		if(autoAssignKey){
 			KeyHolder holder = new KeyHolder();
 			Class target = clazz;
-			int result = this.insert(target, paras, holder);
+			
+			int result = template?this.insertTemplate(target, paras, holder):this.insert(target, paras, holder);
 			String table = this.nc.getTableName(target);
 			ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
 			
@@ -747,11 +777,11 @@ public class SQLManager {
 		
 			
 		}else{
-			SQLScript script = getScript(clazz,INSERT );
+			SQLScript script = getScript(clazz,template?INSERT_TEMPLATE: INSERT);
 			return script.insert(paras);
 		}
-		
 	}
+	
 	
 	/**
 	 * 批量插入
@@ -776,6 +806,13 @@ public class SQLManager {
 		SQLScript script = getScript(clazz,INSERT);
 		return script.insert(paras,holder );
 	}
+	
+	public int  insertTemplate(Class<?> clazz,Object paras,KeyHolder holder){
+		SQLScript script = getScript(clazz,INSERT_TEMPLATE);
+		return script.insert(paras,holder );
+	}
+	
+	
 	
 	
 	
@@ -1398,6 +1435,10 @@ public class SQLManager {
 
 	public void setDefaultBeanProcessors(BeanProcessor defaultBeanProcessors) {
 		this.defaultBeanProcessors = defaultBeanProcessors;
+	}
+	
+	public void setSQLIdNameConversion(SQLIdNameConversion sqlIdNc){
+		this.sqlLoader.setSQLIdNameConversion(sqlIdNc);
 	}
 	
 

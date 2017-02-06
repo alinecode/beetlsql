@@ -235,7 +235,7 @@ public class MetadataManager {
 			Connection conn = ds.getMaster();
 			
 			try {
-				setDefaultSchema(this.ds.getMaster());
+				setDefaultSchema(conn);
 				conn.close();
 			} catch (SQLException e) {
 				throw new RuntimeException(e);

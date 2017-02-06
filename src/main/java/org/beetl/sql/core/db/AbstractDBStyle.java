@@ -278,69 +278,113 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     @Override
     public SQLSource genInsert(Class<?> cls) {
-        String tableName = nameConversion.getTableName(cls);
-        TableDesc table = this.metadataManager.getTable(tableName);
-        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
-        StringBuilder sql = new StringBuilder("insert into " + getTableName(table) + lineSeparator);
-        StringBuilder colSql = new StringBuilder("(");
-        StringBuilder valSql = new StringBuilder(" VALUES (");
-        int idType = DBStyle.ID_ASSIGN;
-        SQLSource source = new SQLSource();
-        Iterator<String> cols = classDesc.getInCols().iterator();
-        Iterator<String> attrs = classDesc.getAttrs().iterator();
+    	return generalInsert(cls,false);
+    }
+    
+    
+    public SQLSource genInsertTemplate(Class<?> cls){
+    	return generalInsert(cls,true);
+    }
+    
+//    insert into (id,
+//    		@trim(x){
+//
+//    			@if(isNotEmpty(name)){
+//    		        name,
+//    		        @}
+//
+//    			@if(isNotEmpty(name)){
+//    		        name,
+//    		        @}
+//
+//
+//    		@
+//
+//    		values (#id#,
+//
+//    		@trim(x){
+//
+//    			@if(isNotEmpty(name)){
+//    		        #name#,
+//    		        @}
+//
+//    			@if(isNotEmpty(name)){
+//    		         #name#,
+//    		        @}
+//
+//
+//    		@
+    
+    
+    private SQLSource generalInsert(Class<?> cls,boolean template){
+    	  String tableName = nameConversion.getTableName(cls);
+          TableDesc table = this.metadataManager.getTable(tableName);
+          ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+          StringBuilder sql = new StringBuilder("insert into " + getTableName(table) + lineSeparator);
+          StringBuilder colSql = new StringBuilder("(");
+          StringBuilder valSql = new StringBuilder(" VALUES (");
+          int idType = DBStyle.ID_ASSIGN;
+          SQLSource source = new SQLSource();
+          Iterator<String> cols = classDesc.getInCols().iterator();
+          Iterator<String> attrs = classDesc.getAttrs().iterator();
 
-        List<String> idCols = classDesc.getIdCols();
-        while (cols.hasNext() && attrs.hasNext()) {
-            String col = cols.next();
-            String attr = attrs.next();
-            if (classDesc.isInsertIgnore(attr)) {
-                continue;
-            }
+          List<String> idCols = classDesc.getIdCols();
+          while (cols.hasNext() && attrs.hasNext()) {
+              String col = cols.next();
+              String attr = attrs.next();
+              if (classDesc.isInsertIgnore(attr)) {
+                  continue;
+              }
 
-            if (idCols.size() == 1 && idCols.contains(col)) {
+              if (idCols.size() == 1 && idCols.contains(col)) {
 
-                idType = this.getIdType((Method) classDesc.getIdMethods().get(attr));
-                if (idType == DBStyle.ID_AUTO) {
-                    continue; //忽略这个字段
-                } else if (idType == DBStyle.ID_SEQ) {
+                  idType = this.getIdType((Method) classDesc.getIdMethods().get(attr));
+                  if (idType == DBStyle.ID_AUTO) {
+                      continue; //忽略这个字段
+                  } else if (idType == DBStyle.ID_SEQ) {
 
-                    colSql.append(appendInsertColumn(cls, table, col));
-                    SeqID seqId = ((Method) classDesc.getIdMethods().get(attr)).getAnnotation(SeqID.class);
-                    valSql.append(seqId.name() + ".nextval,");
-                    continue;
-                } else if (idType == DBStyle.ID_ASSIGN) {
-                    //normal
-                }
-            }
+                      colSql.append(appendInsertColumn(cls, table, col));
+                      SeqID seqId = ((Method) classDesc.getIdMethods().get(attr)).getAnnotation(SeqID.class);
+                      valSql.append(seqId.name() + ".nextval,");
+                      continue;
+                  } else if (idType == DBStyle.ID_ASSIGN) {
+                      //normal
+                  }
+              }
+
+              if(template){
+            	  colSql.append(appendInsertTemplateColumn(cls, table,attr, col));
+                  valSql.append(appendInsertTemplateValue(cls, table, attr));
+              }else{
+            	  colSql.append(appendInsertColumn(cls, table, col));
+                  valSql.append(appendInsertValue(cls, table, attr));
+              }
+              
+          }
+
+          sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
+          source.setTemplate(sql.toString());
+          source.setIdType(idType);
+          source.setTableDesc(table);
+          if (idType == DBStyle.ID_ASSIGN) {
+              Map<String, AssignID> map = new HashMap<String, AssignID>();
 
 
-            colSql.append(appendInsertColumn(cls, table, col));
-            valSql.append(appendInsertVlaue(cls, table, attr));
-        }
+              for (String idAttr : classDesc.getIdAttrs()) {
+                  AssignID assignId = ((Method) classDesc.getIdMethods().get(idAttr)).getAnnotation(AssignID.class);
+                  if (assignId != null && assignId.value().length() != 0) {
 
-        sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
-        source.setTemplate(sql.toString());
-        source.setIdType(idType);
-        source.setTableDesc(table);
-        if (idType == DBStyle.ID_ASSIGN) {
-            Map<String, AssignID> map = new HashMap<String, AssignID>();
+                      map.put(idAttr, assignId);
+                  }
+              }
 
+              if (map.size() != 0) {
+                  source.setAssignIds(map);
+              }
 
-            for (String idAttr : classDesc.getIdAttrs()) {
-                AssignID assignId = ((Method) classDesc.getIdMethods().get(idAttr)).getAnnotation(AssignID.class);
-                if (assignId != null && assignId.value().length() != 0) {
+          }
 
-                    map.put(idAttr, assignId);
-                }
-            }
-
-            if (map.size() != 0) {
-                source.setAssignIds(map);
-            }
-
-        }
-
-        return source;
+          return source;
     }
 
     /****
@@ -537,9 +581,43 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param fieldName
      * @return
      */
-    protected String appendInsertVlaue(Class<?> c, TableDesc table, String fieldName) {
-
+    protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName) {
+    	
         return HOLDER_START + fieldName + HOLDER_END + ",";
+
+    }
+    
+    /****
+     * 生成一个追加在insert into 子句的后面sql(示例：name,)
+     * 需要判断值是否空，如果为空，则不作插入
+     * @param c
+     * @param table
+     * @param fieldName
+     * @param colName
+     * @return
+     */
+    protected String appendInsertTemplateColumn(Class<?> c, TableDesc table,String fieldName, String colName) {
+       
+    	String col = this.getKeyWordHandler().getCol(colName);
+    	if(col.startsWith("'")){
+    		return HOLDER_START + "text(!isEmpty("+fieldName+")?\""+col+"\":'_NULL')" + HOLDER_END + "," ;
+    	}else{
+    		return HOLDER_START + "text(!isEmpty("+fieldName+")?'"+col+"':'_NULL')" + HOLDER_END + "," ;
+    	}
+    	
+    }
+    
+
+    /****
+     * 生成一个追加在insert into value子句的后面sql(示例：name=${name},)
+     *需要判断值是否空，如果为空，则不作插入
+     * @param table
+     * @param fieldName
+     * @return
+     */
+    protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName) {
+    	
+    	 return HOLDER_START + "testNull("+fieldName+",\""+fieldName+"\")" + HOLDER_END + ",";
 
     }
 

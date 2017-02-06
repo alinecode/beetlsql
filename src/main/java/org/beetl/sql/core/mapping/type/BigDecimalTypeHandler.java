@@ -9,6 +9,7 @@ public class BigDecimalTypeHandler extends JavaSqlTypeHandler {
 
 	@Override
 	public Object getValue(TypeParameter typePara) throws SQLException{
+//		Object c =  typePara.rs.getObject(typePara.index);
 		BigDecimal a = typePara.rs.getBigDecimal(typePara.index);
 		return a ;
 		

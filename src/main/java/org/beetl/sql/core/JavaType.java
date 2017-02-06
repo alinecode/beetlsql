@@ -75,6 +75,9 @@ public class JavaType {
 		jdbcJavaTypes.put(new Integer(Types.DATE), Date.class); // 91 日期
 		jdbcJavaTypes.put(new Integer(Types.TIME), Time.class); // 92 日期
 		jdbcJavaTypes.put(new Integer(Types.TIMESTAMP), Timestamp.class); // 93 日期
+//		
+//		jdbcJavaTypes.put(Types.TIMESTAMP_WITH_TIMEZONE, Timestamp.class);
+//		jdbcJavaTypes.put(Types.TIME_WITH_TIMEZONE, Time.class);
 		jdbcJavaTypes.put(new Integer(Types.OTHER), Object.class); // 1111 其他类型？
 		// jdbcJavaTypes.put(new Integer(Types.JAVA_OBJECT), Object.class); //
 		// 2000
@@ -88,6 +91,7 @@ public class JavaType {
 		jdbcJavaTypes.put(new Integer(Types.NCLOB), String.class); // 2011 大文本
 	}
 
+	/*生成java代码*/
 	public static Map<Integer, String> mapping = new HashMap<Integer, String>();
 	static {
 		mapping.put(Types.BIGINT, "Long");

@@ -26,19 +26,21 @@ import org.beetl.sql.core.db.MySqlStyle;
  */
 public class ClasspathLoader implements SQLLoader {
 
-	String sqlRoot = null;
+	protected String sqlRoot = null;
 
-	private String lineSeparator = System.getProperty("line.separator", "\n");
+	protected String lineSeparator = System.getProperty("line.separator", "\n");
 
-	private  Map<String, SQLSource> sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
-	private  Map<String, Integer> sqlSourceVersion = new ConcurrentHashMap<String, Integer> ();
+	protected  Map<String, SQLSource> sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
+	protected  Map<String, Integer> sqlSourceVersion = new ConcurrentHashMap<String, Integer> ();
 
-	private DBStyle dbs = null;
+	protected DBStyle dbs = null;
 	
 	
-	private boolean autoCheck = true;
+	protected boolean autoCheck = true;
 	
-	private String charset = null;
+	protected String charset = null;
+	
+	protected SQLIdNameConversion sqlIdNameConversion = new DefaultSQLIdNameConversion();
 
 	public  ClasspathLoader() {
 		this("/sql");
@@ -278,8 +280,7 @@ public class ClasspathLoader implements SQLLoader {
 	 * @throws UnexpectedException 
 	 */
 	private InputStream getRootFile(String id){
-		String modelName = id.substring(0, id.lastIndexOf(".") );
-		String path  = modelName.replace('.', '/');
+		String path = this.sqlIdNameConversion.getPath(id);
         String filePath0 = sqlRoot + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + path + ".md";
 
@@ -288,15 +289,13 @@ public class ClasspathLoader implements SQLLoader {
 			is = this.getFile(filePath1, id);
             if(is==null){
                 return null;
-//                throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "+filePath0+" 和 "+filePath1+" 未找到[id="+id+"]相关的SQL");
             }
         }
 		return is;
 	}
 
     private InputStream getDBRootFile(String id){
-        String modelName = id.substring(0, id.lastIndexOf(".") );
-        String path  = modelName.replace('.', '/');
+    	String path = this.sqlIdNameConversion.getPath(id);
         String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
         InputStream is = this.getFile(filePath0, id);
@@ -304,7 +303,6 @@ public class ClasspathLoader implements SQLLoader {
             is = this.getFile(filePath1, id);
             if(is==null){
                 return null;
-//                throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "+filePath0+" 和 "+filePath1+" 未找到[id="+id+"]相关的SQL");
             }
         }
         return is;
@@ -365,6 +363,11 @@ public class ClasspathLoader implements SQLLoader {
 	
 	public String toString(){
 		return this.sqlRoot;
+	}
+	@Override
+	public void setSQLIdNameConversion(SQLIdNameConversion sqlIdNc) {
+		this.sqlIdNameConversion = sqlIdNc;
+		
 	}
 	
 }

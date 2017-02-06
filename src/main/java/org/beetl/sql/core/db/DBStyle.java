@@ -37,6 +37,7 @@ public interface DBStyle {
 	public SQLSource genUpdateById(Class<?> cls);
 	public SQLSource genUpdateTemplate(Class<?> cls);
 	public SQLSource genInsert(Class<?> cls);
+	public SQLSource genInsertTemplate(Class<?> cls);
     //代码片段生成方法
     public String genColumnList(String table);
     public String genCondition(String table);

@@ -3,6 +3,8 @@ package org.beetl.sql.core.mapper;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
+import org.beetl.sql.core.DefaultSQLIdNameConversion;
+import org.beetl.sql.core.SQLIdNameConversion;
 import org.beetl.sql.core.SQLManager;
 
 /**
@@ -18,7 +20,7 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	/** The sql manager. */
 	protected SQLManager sqlManager;
 	
-	protected SqlIdGenerator  idGen  = new DefaultSqlIdGenerator();
+	protected SQLIdNameConversion  idGen  = new DefaultSQLIdNameConversion();
 
 	/**
 	 * The Constructor.
@@ -65,11 +67,11 @@ public class DefaultMapperBuilder implements MapperBuilder {
 				new MapperJavaProxy(this,sqlManager, mapperInterface));
 	}
 
-	public SqlIdGenerator getIdGen() {
+	public SQLIdNameConversion getIdGen() {
 		return idGen;
 	}
 
-	public void setIdGen(SqlIdGenerator idGen) {
+	public void setIdGen(SQLIdNameConversion idGen) {
 		this.idGen = idGen;
 	}
 	
