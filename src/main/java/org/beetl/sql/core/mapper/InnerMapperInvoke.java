@@ -71,6 +71,14 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 			return null;
 		}else if(name.equals("getSQLManager")){
 			return sm;
+		}else if(name.equals("insertTemplate")){
+			if(args.length==1){
+				int ret = sm.insertTemplate(args[0]);
+				return ret;
+			}else{
+				int ret = sm.insertTemplate(entityClass,args[0], (Boolean)args[1]);
+				return ret;
+			}
 		}
 		else{
 			throw new UnsupportedOperationException(m.getName());

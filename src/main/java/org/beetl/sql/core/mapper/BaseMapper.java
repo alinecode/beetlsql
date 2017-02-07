@@ -16,6 +16,8 @@ public interface BaseMapper<T> {
 	/* insert */
 	void insert(T entity);
 	void insert(T entity,boolean assignKey);
+	void insertTemplate(T entity);
+	void insertTemplate(T entity,boolean assignKey);
 	void insertBatch(List<T> list);
 	KeyHolder insertReturnKey(T entity);
 	

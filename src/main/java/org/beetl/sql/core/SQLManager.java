@@ -213,6 +213,13 @@ public class SQLManager {
 		return script.run(map);
 	}
 	
+	
+	public SQLResult getSQLResult(SQLSource source, Map inputParas) {
+		SQLScript script = new SQLScript(source, this);
+		SQLResult result=script.run(inputParas);
+		return result;
+	}
+	
 	public SQLResult getSQLResult(String id, Map<String, Object> paras,String parentId) {
 		SQLScript script = getScript(id);
 		return script.run(paras,parentId);

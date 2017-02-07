@@ -27,12 +27,8 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		User user = new User();
-		user.setId(101);
-		user.setDepartmentId(1);
-		user.setName(null);
-		sql.insert(user);
-		System.out.println(user.getId());
-//		sql.update("user.insertTemplate",user);
+		user.setId(1);
+		sql.select("user.queryUsers", User.class, user);
 	
 	
 	}
