@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-			<version>2.7.9</version>
+			<version>2.7.10</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -119,13 +119,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>sqljdbc4</artifactId>
 			<version>4.0</version>
 			<scope>system</scope>
 		   <systemPath>${basedir}/lib/sqljdbc4.jar</systemPath>
-		</dependency>
+		</dependency>-->
 
 		<!-- <dependency>
 		<groupId>oracle</groupId>
@@ -209,12 +209,12 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<!--  dependency>
+		<dependency>
 		    <groupId>com.ibeetl</groupId>
 		    <artifactId>ormunit</artifactId>
 		    <version>1.0.0</version>
 		    <scope>test</scope>
-		</dependency-->
+		</dependency>
 		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId> 
 			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath> 
 			</dependency -->
