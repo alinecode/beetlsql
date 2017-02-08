@@ -7,7 +7,7 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.OracleStyle;
+import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
 /**
@@ -20,15 +20,15 @@ public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
 
-//		MySqlStyle style = new MySqlStyle();
-		OracleStyle style = new OracleStyle();
+		MySqlStyle style = new MySqlStyle();
+//		OracleStyle style = new OracleStyle();
 		
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		List<LijzTest> list = sql.all(LijzTest.class);
+		List<User> list = sql.all(User.class);
 		System.out.println(list.get(0).getCreateTime());
 	
 	
