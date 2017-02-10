@@ -50,6 +50,12 @@ public class SQLPlaceholderST extends Statement
 	{
 		try{
 			Object value = expression.evaluate(ctx);
+			if (format != null)
+			{
+				value = format.evaluateValue(value, ctx);
+				
+			}
+			
 			if(expression instanceof FunctionExpression){
 				//db 开头或者内置的方法直接输出
 				FunctionExpression fun = (FunctionExpression)expression;
