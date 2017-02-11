@@ -1,8 +1,7 @@
 queryUsers
 ===
 
-	@ var sql = "id=#xxx#";
-	select #page("*")# from user where 1=1 and #db.dynamicSql(sql,{xxx:1})#
+	select #page("*")# from user
 
 insertTemplate	
 ===

@@ -396,6 +396,7 @@ public class SQLScript {
 		} else if (isBaseDataType(clazz)) { 
 			
 			resultList = new ArrayList<T>(1);
+			
 			while(rs.next()){
 				Object result =beanProcessor.toBaseType(this.sqlSource.getId(),clazz, rs);
 				resultList.add((T) result);
@@ -559,9 +560,9 @@ public class SQLScript {
 				List<SQLParameter> objs = result.jdbcPara;
 
 				if (ps == null) {
-					conn = sm.getDs().getConn(id, true, sql, objs);
+					conn = sm.getDs().getConn(id, true, result.jdbcSql, objs);
 					ps = conn.prepareStatement(result.jdbcSql);
-					ctx = this.callInterceptorAsBefore(this.id, sql, true, new ArrayList<SQLParameter>(0),paras);
+					ctx = this.callInterceptorAsBefore(this.id, result.jdbcSql, true, new ArrayList<SQLParameter>(0),paras);
 				}
 
 				this.setPreparedStatementPara(ps, objs);
@@ -600,9 +601,9 @@ public class SQLScript {
 				List<SQLParameter> objs = result.jdbcPara;
 
 				if (ps == null) {
-					conn = sm.getDs().getConn(id, true, sql, objs);
+					conn = sm.getDs().getConn(id, true, result.jdbcSql, objs);
 					ps = conn.prepareStatement(result.jdbcSql);
-					ctx = this.callInterceptorAsBefore(this.id, sql, true, new ArrayList<SQLParameter>(0),paras);
+					ctx = this.callInterceptorAsBefore(this.id, result.jdbcSql, true, new ArrayList<SQLParameter>(0),paras);
 				}
 
 				this.setPreparedStatementPara(ps, objs);

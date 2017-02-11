@@ -795,9 +795,10 @@ public class SQLManager {
 	 * @param clazz
 	 * @param list
 	 */
-	public void insertBatch(Class clazz,List<?> list){
+	public int[] insertBatch(Class clazz,List<?> list){
 		SQLScript script = getScript(clazz,INSERT );
-		script.insertBatch(list);
+		int[] ret = script.insertBatch(list);
+		return ret;
 	}
 	
 	
@@ -976,6 +977,19 @@ public class SQLManager {
 		SQLScript script = getScript(sqlId);
 		return script.updateBatch(list);
 	}
+	
+	/**
+	 * 批量模板更新方式
+	 * @param clz
+	 * @param list
+	 * @return
+	 */
+	public int[] updateBatchTemplateById(Class clz,List<?> list){
+		SQLScript script = getScript(clz, UPDATE_TEMPLATE_BY_ID);
+		return script.updateBatch(list);
+	}
+	
+	
 	
 	/**批量更新
 	 * @param sqlId

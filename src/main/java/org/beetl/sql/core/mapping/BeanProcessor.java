@@ -214,6 +214,10 @@ public class BeanProcessor {
 	
 	public Object toBaseType(String sqlId,Class<?> c,ResultSet rs) throws SQLException {
 		TypeParameter tp = new TypeParameter(sqlId,dbName,null,rs,rs.getMetaData(),1);
+		int count = tp.getMeta().getColumnCount();
+		if(count!=1){
+			throw new SQLException("Beetlsql查询期望返回一列，返回类型为"+c+" 但返回了"+count+"列，"+sqlId);
+		}
 		JavaSqlTypeHandler handler = handlers.get(c);
 		
 		if(handler==null){
