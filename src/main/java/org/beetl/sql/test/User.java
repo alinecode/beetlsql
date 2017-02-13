@@ -1,5 +1,5 @@
 package org.beetl.sql.test;
-import java.util.Date;
+import java.sql.Date;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AssignID;
