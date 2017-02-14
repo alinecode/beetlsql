@@ -3,7 +3,6 @@ import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 

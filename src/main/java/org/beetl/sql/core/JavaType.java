@@ -1,5 +1,7 @@
 package org.beetl.sql.core;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.sql.SQLXML;
 import java.sql.Time;
@@ -19,7 +21,10 @@ import java.util.Map;
 public class JavaType { 
 	/*jdbc type 对应的java的type，参考JavaSqlTypeHandler和BeanProcessor*/
 	public static Map<Integer, Class<?>> jdbcJavaTypes = new HashMap<Integer, Class<?>>(); // jdbc type to java
-															// type
+															// type/*生成java代码*/
+	public static Map<Integer, String> mapping = new HashMap<Integer, String>();
+	
+	public static Map<String, Integer> jdbcTypeNames = new HashMap<String, Integer> ();
 	
 	static int majorJavaVersion = 15;
 	static {
@@ -90,9 +95,11 @@ public class JavaType {
 		 jdbcJavaTypes.put(new Integer(Types.SQLXML), SQLXML.class); // 2009
 		jdbcJavaTypes.put(new Integer(Types.NCLOB), String.class); // 2011 大文本
 	}
+	
+	
+	
 
-	/*生成java代码*/
-	public static Map<Integer, String> mapping = new HashMap<Integer, String>();
+	
 	static {
 		mapping.put(Types.BIGINT, "Long");
 		mapping.put(Types.BINARY, "byte[]");
@@ -138,6 +145,27 @@ public class JavaType {
 			mapping.put(Types.TIME_WITH_TIMEZONE, "Timestamp");
 		}
 
+	}
+	
+	
+	static {
+		Field[] fields = java.sql.Types.class.getFields();
+		for (int i = 0, len = fields.length; i < len; ++i) {
+			if (Modifier.isStatic(fields[i].getModifiers())) {
+				try {
+					String name = fields[i].getName().toLowerCase();
+					Integer value = (Integer) fields[i].get(java.sql.Types.class);
+					jdbcTypeNames.put(name, value);
+					
+				} catch (IllegalArgumentException e) {
+					//不可能发生
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					//不可能发生
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public static boolean isDateType(Integer sqlType) {

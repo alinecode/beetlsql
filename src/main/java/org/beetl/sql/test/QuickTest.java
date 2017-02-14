@@ -1,5 +1,7 @@
 package org.beetl.sql.test;
 
+import java.util.List;
+
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
@@ -28,7 +30,11 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		PageQuery query = new PageQuery();
-		sql.pageQuery("user.queryUsers", User.class, query);
+//		sql.pageQuery("user.queryUsers", User.class, query);
+		List<User> list = sql.all(User.class, 2, 2);
+		for(User user :list){
+			System.out.println(user.getId());
+		}
 		
 		
 		

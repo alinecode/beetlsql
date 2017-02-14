@@ -14,7 +14,7 @@ import org.beetl.core.statement.FunctionExpression;
 import org.beetl.core.statement.PlaceholderST;
 import org.beetl.core.statement.Statement;
 import org.beetl.core.statement.Type;
-import org.beetl.core.statement.VarRef;
+import org.beetl.sql.core.JavaType;
 
 public class SQLPlaceholderST extends Statement
 {
@@ -50,9 +50,24 @@ public class SQLPlaceholderST extends Statement
 	{
 		try{
 			Object value = expression.evaluate(ctx);
+			int jdbcType = 0;
 			if (format != null)
 			{
-				value = format.evaluateValue(value, ctx);
+				String formatName =  format.token.text;
+				if(formatName.startsWith("typeOf")){
+					//特殊的format，告诉此对象应该作为jdbc类型
+					String type = formatName.substring(6);
+					Integer expectJdbcType = JavaType.jdbcTypeNames.get(type);
+					if(expectJdbcType==null){
+						BeetlException be = new BeetlException(BeetlException.FORMAT_NOT_FOUND,formatName+"是用来指示jdbc类型，并不存在，请检查java.sql.Type");
+						be.pushToken(this.token);
+						throw be;
+					}
+					jdbcType = expectJdbcType;
+				}else{
+					value = format.evaluateValue(value, ctx);
+				}
+				
 				
 			}
 			
@@ -74,7 +89,9 @@ public class SQLPlaceholderST extends Statement
 			}
 			ctx.byteWriter.writeString("?");
 			List list = (List)ctx.getGlobal("_paras");
-			list.add(new SQLParameter(expression.token.text,value,type));
+			SQLParameter sqlPara  = new SQLParameter(expression.token.text,value,type);
+			sqlPara.setJdbcType(jdbcType);
+			list.add(sqlPara);
 			
 			
 		}

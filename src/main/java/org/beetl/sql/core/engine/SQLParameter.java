@@ -17,6 +17,9 @@ public class SQLParameter {
 	public static final 	int 	NAME_GENEARL = 1;
 	public static final 	int 	NAME_EXPRESSION = 2;
 	public static final 	int 	 NAME_UNKONW = 3;
+	//默认为0，不做处理，否则，会将目标对象转成期望的方式插入到数据库，比如long转short ？？
+	public int jdbcType = 0;
+	
 	public SQLParameter(String expression,Object value){
 		this.expression = expression;
 		this.value = value;
@@ -42,5 +45,16 @@ public class SQLParameter {
 			return "";
 		}
 	}
+
+	public int getJdbcType() {
+		return jdbcType;
+	}
+
+	public void setJdbcType(int jdbcType) {
+		this.jdbcType = jdbcType;
+	}
+	
+	
+	
 	
 }

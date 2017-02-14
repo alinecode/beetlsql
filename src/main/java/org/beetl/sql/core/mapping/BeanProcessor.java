@@ -419,7 +419,7 @@ public class BeanProcessor {
 		
 	}
 	/**
-	 * 设置PreparedStatement的参数，可以根据根据sqlId做一定个性化设置
+	 * 设置PreparedStatement的参数，beetlsql可以重载此类实现个性化设置方案，也可可以根据根据sqlId做一定个性化设置
 	 * @param sqlId
 	 * @param ps
 	 * @param objs
@@ -450,7 +450,17 @@ public class BeanProcessor {
 				o = new String((char[])o);
 			}
 			
-			ps.setObject(i + 1, o);
+			
+			int jdbcType = para.getJdbcType();
+			if(jdbcType==0){
+				ps.setObject(i + 1, o);
+			}else{
+				//通常一些特殊的处理
+				throw new UnsupportedOperationException(jdbcType+",默认处理器并未处理此jdbc类型");
+			}
+			
+			
+			
 		}
 	}
 
