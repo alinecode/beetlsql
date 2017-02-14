@@ -42,6 +42,7 @@ public class SQLPlaceholderST extends Statement
 		super(st.token);
 		this.type = st.type;
 		this.expression = st.expression;
+		this.format = st.format;
 
 	}
 
