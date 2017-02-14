@@ -1,9 +1,7 @@
 package org.beetl.sql.test;
 
-<<<<<<< HEAD
-=======
 import java.util.Date;
->>>>>>> aabd505f6f4c040c9a87d5aee3685f954938ba74
+
 import java.util.List;
 
 import org.beetl.sql.core.ClasspathLoader;
