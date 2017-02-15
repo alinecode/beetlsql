@@ -501,7 +501,14 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @return
      */
     protected StringBuilder removeComma(StringBuilder sql, String condition) {
-        return sql.deleteCharAt(sql.lastIndexOf(",")).append((condition == null ? "" : condition));
+    	int index = sql.lastIndexOf(",");
+    	if(index==-1){
+    		//这种情况发生在没有列名，通常是 insert xxx () values()
+    		return sql;
+    	}else{
+    		return sql.deleteCharAt(index).append((condition == null ? "" : condition));
+    	}
+        
     }
 
     /***

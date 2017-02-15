@@ -32,10 +32,8 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 
 		
-		User query = new User();
-		query.setCreateTime(new java.sql.Date(System.currentTimeMillis()));
-		List list = sql.select("user.queryUsers", User.class, query);
-		System.out.println(list.size());
+		Test test = new Test();
+		sql.insert(test);
 		
 		
 		

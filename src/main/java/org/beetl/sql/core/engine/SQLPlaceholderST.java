@@ -15,6 +15,7 @@ import org.beetl.core.statement.PlaceholderST;
 import org.beetl.core.statement.Statement;
 import org.beetl.core.statement.Type;
 import org.beetl.sql.core.JavaType;
+import org.beetl.sql.core.kit.StringKit;
 
 public class SQLPlaceholderST extends Statement
 {
@@ -42,7 +43,7 @@ public class SQLPlaceholderST extends Statement
 		super(st.token);
 		this.type = st.type;
 		this.expression = st.expression;
-		this.format = st.format;
+		this.format = st.getFormat();
 
 	}
 
@@ -55,10 +56,11 @@ public class SQLPlaceholderST extends Statement
 			if (format != null)
 			{
 				String formatName =  format.token.text;
-				if(formatName.startsWith("typeOf")){
+				if(formatName.startsWith("typeof")){
 					//特殊的format，告诉此对象应该作为jdbc类型
-					String type = formatName.substring(6);
-					Integer expectJdbcType = JavaType.jdbcTypeNames.get(type);
+					String str = formatName.substring(6).toLowerCase();
+					str = StringKit.toLowerCaseFirstOne(str);
+					Integer expectJdbcType = JavaType.jdbcTypeNames.get(str);
 					if(expectJdbcType==null){
 						BeetlException be = new BeetlException(BeetlException.FORMAT_NOT_FOUND,formatName+"是用来指示jdbc类型，并不存在，请检查java.sql.Type");
 						be.pushToken(this.token);
