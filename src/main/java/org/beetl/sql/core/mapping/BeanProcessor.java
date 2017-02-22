@@ -53,11 +53,11 @@ import org.beetl.sql.core.mapping.type.TypeParameter;
 public class BeanProcessor {
 
 	protected static final int PROPERTY_NOT_FOUND = -1;
-	private NameConversion nc = null;
-	SQLManager sm ;
-	String dbName;
-	Map<Class,JavaSqlTypeHandler> handlers = new HashMap<Class,JavaSqlTypeHandler>();
-	JavaSqlTypeHandler defaultHandler = new DefaultTypeHandler();
+	protected NameConversion nc = null;
+	protected SQLManager sm ;
+	protected String dbName;
+	protected Map<Class,JavaSqlTypeHandler> handlers = new HashMap<Class,JavaSqlTypeHandler>();
+	protected JavaSqlTypeHandler defaultHandler = new DefaultTypeHandler();
 	static BigDecimalTypeHandler bigDecimalHandler = new BigDecimalTypeHandler();
 	static BooleanTypeHandler booleanDecimalHandler = new BooleanTypeHandler();
 	static ByteArrayTypeHandler byteArrayTypeHandler = new ByteArrayTypeHandler();
@@ -76,8 +76,8 @@ public class BeanProcessor {
 	static TimeTypeHandler timeTypeHandler = new TimeTypeHandler();
 	
 	
-	public BeanProcessor(NameConversion nc,SQLManager sm) {
-		this.nc = nc;
+	public BeanProcessor(SQLManager sm) {
+		this.nc = sm.getNc();
 		this.sm = sm;
 		this.dbName = sm.getDbStyle().getName();
 		initHandlers();
@@ -237,7 +237,7 @@ public class BeanProcessor {
 	 * @return
 	 * @throws SQLException
 	 */
-	private <T> T createBean(String sqlId,ResultSet rs, Class<T> type, PropertyDescriptor[] props, int[] columnToProperty) throws SQLException {
+	protected <T> T createBean(String sqlId,ResultSet rs, Class<T> type, PropertyDescriptor[] props, int[] columnToProperty) throws SQLException {
 
 		T bean = this.newInstance(type);
 		ResultSetMetaData meta = rs.getMetaData();
@@ -293,7 +293,7 @@ public class BeanProcessor {
 		
 	}
 
-	private Object noMappingValue(TypeParameter tp) throws SQLException{
+	protected Object noMappingValue(TypeParameter tp) throws SQLException{
 		Object value =null;
 		Class expectedType =JavaType.jdbcJavaTypes.get(tp.getColumnType());
 		if(expectedType!=null){
@@ -317,7 +317,7 @@ public class BeanProcessor {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("unchecked")
-	private void callSetter(Object target, PropertyDescriptor prop, Object value,Class type) throws SQLException {
+	protected void callSetter(Object target, PropertyDescriptor prop, Object value,Class type) throws SQLException {
 
 		Method setter = prop.getWriteMethod();
 		if (setter == null) return;
