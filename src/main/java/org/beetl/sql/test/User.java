@@ -1,32 +1,32 @@
 package org.beetl.sql.test;
-import java.sql.Date;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
-import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.orm.OrmCondition;
-import org.beetl.sql.core.orm.OrmQuery;
+import org.beetl.sql.core.annotatoin.AutoID;
 
-@OrmQuery(
-{
-	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE,alias="myDept")
-//	@OrmCondition(target=ProductOrder.class,attr="id",targetAttr="userId" ,type=OrmQuery.Type.MANY),
-//	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY)
-
-}
-)
+//@OrmQuery(
+//{
+//	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE,alias="myDept")
+////	@OrmCondition(target=ProductOrder.class,attr="id",targetAttr="userId" ,type=OrmQuery.Type.MANY),
+////	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY)
+//
+//}
+//)
 public class User   extends TailBean {
 	
 	private Integer id ;
 	private String name ;
 	private Integer departmentId;
-	private Date createTime;
-	private char[] content ;
+	private Timestamp createTime;
+	private String content ;
 	private Color color;
 	
 	public User() {
 	}
 	
-	@AssignID
+	@AutoID
 	public Integer getId(){
 		return  id;
 	}
@@ -49,19 +49,19 @@ public class User   extends TailBean {
 		this.departmentId = departmentId;
 	}
 
-	public Date getCreateTime() {
+	public Timestamp getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(Timestamp createTime) {
 		this.createTime = createTime;
 	}
 
-	public char[] getContent() {
+	public String getContent() {
 		return content;
 	}
 
-	public void setContent(char[] content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 

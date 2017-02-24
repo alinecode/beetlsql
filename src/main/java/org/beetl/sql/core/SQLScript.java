@@ -345,7 +345,7 @@ public class SQLScript {
 			rs = ps.executeQuery();
 
 			if (mapper != null) {
-				BeanProcessor beanProcessor = new BeanProcessor(this.sm.getNc(), this.sm);
+				BeanProcessor beanProcessor = this.getBeanProcessor();
 				resultList = new RowMapperResultSetExt<T>(mapper, beanProcessor).handleResultSet(rs, clazz);
 				this.callInterceptorAsAfter(ctx, resultList);
 

@@ -1,7 +1,7 @@
 queryUsers
 ===
 
-	select #page("*")# from user where create_time = #data,typeofDate#
+	select #page("*")# from user 
 
 insertTemplate	
 ===

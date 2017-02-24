@@ -162,7 +162,7 @@ public class SQLManager {
 		this.dbStyle.init(beetl);
 		
 		offsetStartZero = Boolean.parseBoolean(beetl.getPs().getProperty("OFFSET_START_ZERO").trim());
-		defaultBeanProcessors = new BeanProcessor(this.nc, this);
+		defaultBeanProcessors = new BeanProcessor(this);
 	}
 	
 	/**

@@ -12,7 +12,7 @@ import org.beetl.sql.core.mapper.BaseMapper;
 
 
 public interface UserDao extends BaseMapper<User> {
-	public void queryUsers(PageQuery<User> query,@Param("data") String data);
+	public void queryUsers(PageQuery<User> query);
 	
 	public List<User> queryUsers(Map map);
 	

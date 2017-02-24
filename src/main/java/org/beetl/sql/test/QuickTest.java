@@ -1,15 +1,13 @@
 package org.beetl.sql.test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Timestamp;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.db.DB2SqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
 /**
@@ -22,7 +20,7 @@ public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
 
-		MySqlStyle style = new MySqlStyle();
+		DB2SqlStyle style = new DB2SqlStyle();
 //		OracleStyle style = new OracleStyle();
 		
 		MySqlConnectoinSource cs = new MySqlConnectoinSource();
@@ -32,11 +30,16 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 
 		UserDao dao = sql.getMapper(UserDao.class);
-//		Test test = new Test();
-//		sql.insert(test);
+//		dao.all();
+		User user = new User();
+		user.setName("clk");
+		user.setCreateTime(new Timestamp(System.currentTimeMillis()));
+		user.setContent("elsdfsfsfsdf");
+		dao.insert(user,true);
+		System.out.println(user.getId());
 		
-		PageQuery query = new PageQuery();
-		dao.queryUsers(query, "hello");
+//		User user = dao.unique(8);
+//		System.out.println(user.getCreateTime());
 		
 		
 		

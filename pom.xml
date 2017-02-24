@@ -132,9 +132,24 @@
 		<artifactId>oralce-express</artifactId>
 		<version>6</version>
 		<scope>system</scope>
-		<systemPath>${basedir}/build/ojdbc6-11.2.0.1.0.jar</systemPath>
+		<systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath>
 		</dependency> -->
 
+		<dependency>
+			<groupId>db2</groupId>
+			<artifactId>driver</artifactId>
+			<version>6</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/db2jcc.jar</systemPath>
+		</dependency>
+		
+		<dependency>
+		<groupId>db2</groupId>
+		<artifactId>driver-license</artifactId>
+		<version>6</version>
+		<scope>system</scope>
+		<systemPath>${basedir}/lib/db2jcc_license_cu.jar</systemPath>
+		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -246,9 +261,9 @@
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 
-					<excludes>
+					<!-- excludes>
 	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes>
+	                </excludes-->
 				</configuration>
 			</plugin>
 			<plugin>
