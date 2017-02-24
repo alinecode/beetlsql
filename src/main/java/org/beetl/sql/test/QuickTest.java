@@ -31,17 +31,18 @@ public class QuickTest {
 
 		UserDao dao = sql.getMapper(UserDao.class);
 //		dao.all();
-		User user = new User();
-		user.setName("clk");
-		user.setCreateTime(new Timestamp(System.currentTimeMillis()));
-		user.setContent("elsdfsfsfsdf");
-		dao.insert(user,true);
-		System.out.println(user.getId());
+//		User user = new User();
+//		user.setName("clk");
+//		user.setCreateTime(new Timestamp(System.currentTimeMillis()));
+//		user.setContent("elsdfsfsfsdf");
+//		dao.insert(user,true);
+//		System.out.println(user.getId());
 		
 //		User user = dao.unique(8);
 //		System.out.println(user.getCreateTime());
 		
-		
+		sql.genPojoCodeToConsole("USER");
+		sql.genSQLTemplateToConsole("USER");
 		
 		
 		
