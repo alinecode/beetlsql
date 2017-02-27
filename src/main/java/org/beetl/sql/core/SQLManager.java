@@ -363,6 +363,15 @@ public class SQLManager {
 	public <T> List<T> select(String sqlId, Class<T> clazz, Object paras) { 
 		return this.select(sqlId, clazz, paras, null);
 	}
+	/**
+	 * 根据sqlId查询目标对象
+	 * @param sqlId
+	 * @param clazz
+	 * @return
+	 */
+	public <T> List<T> select(String sqlId, Class<T> clazz) { 
+		return this.select(sqlId, clazz,null, null);
+	}
 	
 	/**
 	 * 通过sqlId进行查询:查询结果映射到clazz上，输入条件是个Bean,
@@ -616,6 +625,15 @@ public class SQLManager {
 		return (List<T>) script.select(t.getClass(), param,null);
 	}
 	
+	public <T>  T templateOne(T t) {
+		List<T> list = template(t);
+		if(list.isEmpty()){
+			return null;
+		}else{
+			return list.get(0);
+		}
+	}
+	
 	public <T> List<T> template(T t,RowMapper mapper) {
 		SQLScript script = getScript(t.getClass(), SELECT_BY_TEMPLATE);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -676,13 +694,13 @@ public class SQLManager {
 		return this.selectSingle(id, paras, BigDecimal.class);
 	}
 	
-	public <T> T selectSingle(String id,Object paras, Class<T> target) {
-		SQLScript script = getScript(id);
+	public <T> T selectSingle(String sqlId,Object paras, Class<T> target) {
+		SQLScript script = getScript(sqlId);
 		return script.singleSelect(paras, target);
 	}
 	
-	public <T> T selectSingle(String id,Map<String, Object> paras, Class<T> target) {
-		SQLScript script = getScript(id);
+	public <T> T selectSingle(String sqlId,Map<String, Object> paras, Class<T> target) {
+		SQLScript script = getScript(sqlId);
 		return script.selectSingle(paras, target);
 	}
 	
@@ -948,7 +966,7 @@ public class SQLManager {
 		return script.updateBatch(list);
 	}
 	
-	/**  执行sql更新语句
+	/**  执行sql更新（或者删除）操作
 	 * @param sqlId
 	 * @param obj
 	 * @return
@@ -956,6 +974,15 @@ public class SQLManager {
 	public int update(String sqlId, Object obj){
 		SQLScript script = getScript(sqlId);
 		return script.update(obj);
+	}
+	/**
+	 * 执行sql更新（或者删除）操作
+	 * @param sqlId
+	 * @return
+	 */
+	public int update(String sqlId){
+		SQLScript script = getScript(sqlId);
+		return script.update(null);
 	}
 	
 	/**  执行sql更新语句
