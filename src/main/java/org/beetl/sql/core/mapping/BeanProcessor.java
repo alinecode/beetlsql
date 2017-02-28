@@ -436,21 +436,22 @@ public class BeanProcessor {
 				ps.setObject(i + 1, o);
 				continue ;
 			}
+			Class c = o.getClass();
 			// 兼容性修改：oralce 驱动 不识别util.Date
 			if(dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_POSTGRES||dbType==DBStyle.DB_DB2){
 
-				Class c = o.getClass();
+				
 				if(c== java.util.Date.class){
 					o = new Timestamp(((java.util.Date) o).getTime());
 				}
 			}
 			
-			if(Enum.class.isAssignableFrom(o.getClass())){
+			if(Enum.class.isAssignableFrom(c)){
 				o = EnumKit.getValueByEnum(o);
 			}
 			
 			//clob or text
-			if(o.getClass()==char[].class){
+			if(c==char[].class){
 				o = new String((char[])o);
 			}
 			
