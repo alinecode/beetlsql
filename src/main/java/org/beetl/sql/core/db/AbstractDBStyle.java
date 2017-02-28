@@ -615,7 +615,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      */
     protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName) {
     	
-    	 return HOLDER_START + "db.testNull("+fieldName+",\""+fieldName+"\")" + HOLDER_END ;
+    	 return HOLDER_START + "db.testNull("+fieldName+"!,\""+fieldName+"\")" + HOLDER_END ;
 
     }
 

@@ -87,7 +87,6 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
 			definition = (GenericBeanDefinition) holder.getBeanDefinition();
 			String mapperClassName = definition.getBeanClassName();
 			// 必须在这里加入泛型限定，要不然在spring下会有循环引用的问题
-			System.out.println("mapperClassName:"+mapperClassName);
 			definition.getConstructorArgumentValues().addGenericArgumentValue(mapperClassName);
 			definition.getPropertyValues().add("mapperInterface", mapperClassName);
 			// 根据工厂的名称创建出SqlManager

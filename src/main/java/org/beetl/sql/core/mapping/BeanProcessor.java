@@ -438,6 +438,7 @@ public class BeanProcessor {
 			}
 			// 兼容性修改：oralce 驱动 不识别util.Date
 			if(dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_POSTGRES||dbType==DBStyle.DB_DB2){
+
 				Class c = o.getClass();
 				if(c== java.util.Date.class){
 					o = new Timestamp(((java.util.Date) o).getTime());

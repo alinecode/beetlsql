@@ -23,7 +23,6 @@ public class PostgresStyle extends AbstractDBStyle {
 
 	@Override
 	public void initPagePara(Map<String, Object> paras,long start,long size) {
-//		// TODO Auto-generated method stub
 		paras.put(DBStyle.OFFSET,start-(this.offsetStartZero?0:1));
 		paras.put(DBStyle.PAGE_SIZE,size);
 	}

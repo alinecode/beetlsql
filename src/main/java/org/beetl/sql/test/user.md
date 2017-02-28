@@ -3,6 +3,11 @@ queryUsers
 
 	select #page("*")# from user 
 
+updateUser
+===
+	
+	update user set name="a" where id = 1
+
 insertTemplate	
 ===
 

@@ -57,7 +57,11 @@ public class InnerMapperInvoke extends BaseMapperInvoke {
 				return sm.template(args[0],(Integer)args[1],(Integer)args[2]);
 			}
 			
-		}else if(name.equals("templateCount")){
+		}
+		else if(name.equals("templateOne")){
+			return sm.templateOne(args[0]);
+		}
+		else if(name.equals("templateCount")){
 			return sm.templateCount(args[0]);
 		}else if(name.equals("updateByIdBatch")){
 			return sm.updateByIdBatch((List<?>)args[0]);
