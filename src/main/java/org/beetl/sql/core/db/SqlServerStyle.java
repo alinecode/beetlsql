@@ -45,6 +45,12 @@ public class SqlServerStyle extends AbstractDBStyle {
 	public String getName() {
 		return "sqlserver";
 	}
+
+
+	@Override
+	public final int getDBType() {
+		return DB_SQLSERVER;
+	}
 	
 
 }

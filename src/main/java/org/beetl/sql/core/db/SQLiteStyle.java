@@ -52,4 +52,10 @@ public class SQLiteStyle extends AbstractDBStyle {
         return "sqlite";
     }
 
+
+	@Override
+	public  int getDBType() {
+		return DB_SQLLITE;
+	}
+
 }

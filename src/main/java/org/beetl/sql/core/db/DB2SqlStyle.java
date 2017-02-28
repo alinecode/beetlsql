@@ -19,13 +19,25 @@ public class DB2SqlStyle extends AbstractDBStyle {
 	
 	@Override
 	public String getPageSQL(String sql) {
-		return sql+this.getOrderBy()+" \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
+		//db2 9 不支持limit
+//		return sql+this.getOrderBy()+" \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
+	
+		return  " SELECT * FROM "  
+		+"("   
+		+"	SELECT inner_query_b.*, ROWNUMBER() OVER() beetl_rn  FROM   "
+		+"	(   "
+		+sql+this.getOrderBy()
+		+"	) AS inner_query_b  " 
+		+" )AS inner_query_a WHERE inner_query_a.beetl_rn BETWEEN "+HOLDER_START+OFFSET+HOLDER_END+" and "+HOLDER_START+PAGE_END+HOLDER_END;   
+		
+
 	}
 
 	@Override
-	public void initPagePara(Map<String, Object> param,long start,long size) {
-		param.put(DBStyle.OFFSET,start-(this.offsetStartZero?0:1));
-		param.put(DBStyle.PAGE_SIZE,size);
+	public void initPagePara(Map<String, Object> paras,long start,long size) {
+		long s = start+(this.offsetStartZero?1:0);
+		paras.put(DBStyle.OFFSET,s);
+		paras.put(DBStyle.PAGE_END,s+size-1);
 	}
 
 	public DB2SqlStyle() {
@@ -67,6 +79,11 @@ public class DB2SqlStyle extends AbstractDBStyle {
 	@Override
 	public String getName() {
 		return "db2";
+	}
+
+	@Override
+	public  int getDBType() {
+		return DB_DB2;
 	}
 
 }

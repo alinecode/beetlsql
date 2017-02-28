@@ -23,6 +23,7 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.EnumKit;
@@ -56,6 +57,7 @@ public class BeanProcessor {
 	protected NameConversion nc = null;
 	protected SQLManager sm ;
 	protected String dbName;
+	protected int dbType ;
 	protected Map<Class,JavaSqlTypeHandler> handlers = new HashMap<Class,JavaSqlTypeHandler>();
 	protected JavaSqlTypeHandler defaultHandler = new DefaultTypeHandler();
 	static BigDecimalTypeHandler bigDecimalHandler = new BigDecimalTypeHandler();
@@ -80,6 +82,7 @@ public class BeanProcessor {
 		this.nc = sm.getNc();
 		this.sm = sm;
 		this.dbName = sm.getDbStyle().getName();
+		dbType = sm.getDbStyle().getDBType();
 		initHandlers();
 	}
 	private void initHandlers(){
@@ -434,7 +437,7 @@ public class BeanProcessor {
 				continue ;
 			}
 			// 兼容性修改：oralce 驱动 不识别util.Date
-			if(this.dbName.equals("oracle")||this.dbName.equals("db2")){
+			if(dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_POSTGRES||dbType==DBStyle.DB_DB2){
 				Class c = o.getClass();
 				if(c== java.util.Date.class){
 					o = new Timestamp(((java.util.Date) o).getTime());

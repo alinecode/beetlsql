@@ -38,4 +38,9 @@ public class H2Style extends AbstractDBStyle {
 	public String getEscapeForKeyWord() {
 		return "\"";
 	}
+
+	@Override
+	public  int getDBType() {
+		return DB_H2;
+	}
 }

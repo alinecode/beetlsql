@@ -34,6 +34,12 @@ public class PostgresStyle extends AbstractDBStyle {
 	public String getName() {
 		return "postgres";
 	}
+
+	@Override
+	public int getDBType() {
+		
+		return DB_POSTGRES;
+	}
 	
 	
 

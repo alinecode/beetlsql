@@ -69,4 +69,9 @@ public class MySqlStyle extends AbstractDBStyle {
 		return "mysql";
 	}
 
+	@Override
+	public int getDBType() {
+		return DB_MYSQL;
+	}
+
 }

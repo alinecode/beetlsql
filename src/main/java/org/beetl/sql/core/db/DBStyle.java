@@ -19,10 +19,19 @@ public interface DBStyle {
 	public static final int ID_AUTO = 2 ;
 	public static final int ID_SEQ = 3 ;
 	
-	public static String OFFSET = "_pageOffset";
-	public static String PAGE_SIZE = "_pageSize";
-	public static String PAGE_END = "_pageEnd";
-	public static String ORDER_BY = "_orderBy";
+	public final static String OFFSET = "_pageOffset";
+	public final static String PAGE_SIZE = "_pageSize";
+	public final static String PAGE_END = "_pageEnd";
+	public final static String ORDER_BY = "_orderBy";
+	
+	
+	public final static   int DB_MYSQL = 1;
+	public final static   int DB_ORACLE = 2;
+	public final static   int DB_POSTGRES = 3;
+	public final static   int DB_SQLSERVER = 4;
+	public final static   int DB_SQLLITE = 5;
+	public final static   int DB_DB2 = 6;
+	public final static   int DB_H2 = 7;
 	
 	
 
@@ -47,6 +56,7 @@ public interface DBStyle {
     
     
 	public String getName();
+	public int getDBType();
 	
 	public String getPageSQL(String sql);
 	public void initPagePara(Map<String, Object> paras,long start,long size);

@@ -59,6 +59,11 @@ public class OracleStyle extends AbstractDBStyle {
 	public String getName() {
 		return "oracle";
 	}
+
+	@Override
+	public  int getDBType() {
+		return DB_ORACLE;
+	}
 	
 
 	
