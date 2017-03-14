@@ -11,7 +11,7 @@ public class BooleanTypeHandler extends JavaSqlTypeHandler implements PrimitiveV
 		ResultSet rs = typePara.rs;
 		boolean a = rs.getBoolean(typePara.index);
 		if(rs.wasNull()){
-			if( typePara.target.isPrimitive()){
+			if( typePara.isPrimitive()){
 				return b;
 			}else{
 				return null;

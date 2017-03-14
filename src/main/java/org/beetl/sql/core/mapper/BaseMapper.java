@@ -14,12 +14,12 @@ import org.beetl.sql.core.db.KeyHolder;
 public interface BaseMapper<T> {
 
 	/**
-	 * 插入一个实体对象到数据库，所以字段将参与操作，除非你使用ColumnIgnore注解
+	 * 通用插入，插入一个实体对象到数据库，所以字段将参与操作，除非你使用ColumnIgnore注解
 	 * @param entity
 	 */
 	void insert(T entity);
 	/**
-	 * 如果实体对应的有自增主键，插入一个实体到数据库，设置assignKey为true的时候，将会获取此主键
+	 * （数据库表有自增主键调用此方法）如果实体对应的有自增主键，插入一个实体到数据库，设置assignKey为true的时候，将会获取此主键
 	 * @param entity
 	 * @param assignKey 是否获取自增主键
 	 */
@@ -44,7 +44,7 @@ public interface BaseMapper<T> {
 	 */
 	void insertBatch(List<T> list);
 	/**
-	 * 如果实体对应的有自增主键，插入实体到数据库，自增主键值放到keyHolder里处理
+	 * （数据库表有自增主键调用此方法）如果实体对应的有自增主键，插入实体到数据库，自增主键值放到keyHolder里处理
 	 * @param entity
 	 * @return
 	 */
@@ -107,19 +107,15 @@ public interface BaseMapper<T> {
 	 * @return
 	 */
 	List<T> template(T entity);
+
+	
 	/**
-	 * 模板查询，返回一条结果
+	 * 模板查询，返回一条结果,如果没有，返回null
 	 * @param entity
 	 * @return
 	 */
-	<T> T tmeplateOne(T entity);
-	/**
-	 * 模板查询，返回指定返回的结果集
-	 * @param entity
-	 * @param start
-	 * @param size
-	 * @return
-	 */
+	<T> T templateOne(T entity);
+
 	List<T> template(T entity,int start,int size);
 	/**
 	 * 符合模板得个数

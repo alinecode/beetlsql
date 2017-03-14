@@ -10,7 +10,7 @@ public class ByteTypeHandler extends JavaSqlTypeHandler implements PrimitiveValu
 		ResultSet rs = typePara.rs;
 		short a = rs.getShort(typePara.index);
 		if(rs.wasNull()){
-			if( typePara.target.isPrimitive()){
+			if( typePara.isPrimitive()){
 				return getDefaultValue();
 			}else{
 				return null;

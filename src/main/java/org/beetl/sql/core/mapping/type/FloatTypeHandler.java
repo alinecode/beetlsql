@@ -11,7 +11,7 @@ public class FloatTypeHandler extends JavaSqlTypeHandler implements PrimitiveVal
 		ResultSet rs = typePara.rs;
 		float a = rs.getFloat(typePara.index);
 		if(rs.wasNull()){
-			if( typePara.target.isPrimitive()){
+			if( typePara.isPrimitive()){
 				return getDefaultValue();
 			}else{
 				return null;

@@ -12,7 +12,7 @@ public class IntegerTypeHandler extends JavaSqlTypeHandler implements PrimitiveV
 		ResultSet rs = typePara.rs;
 		int a = rs.getInt(typePara.index);
 		if(rs.wasNull()){
-			if( typePara.target.isPrimitive()){
+			if( typePara.isPrimitive()){
 				return defaultValue;
 			}else{
 				return null;

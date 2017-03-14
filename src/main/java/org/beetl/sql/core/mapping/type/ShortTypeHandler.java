@@ -12,7 +12,7 @@ public class ShortTypeHandler extends JavaSqlTypeHandler implements PrimitiveVal
 		ResultSet rs = typePara.rs;
 		short a = rs.getShort(typePara.index);
 		if(rs.wasNull()){
-			if( typePara.target.isPrimitive()){
+			if( typePara.isPrimitive()){
 				return defaultValue;
 			}else{
 				return null;

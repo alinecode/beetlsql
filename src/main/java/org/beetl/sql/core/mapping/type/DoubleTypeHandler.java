@@ -10,7 +10,7 @@ public class DoubleTypeHandler extends JavaSqlTypeHandler implements PrimitiveVa
 		ResultSet rs = typePara.rs;
 		double a = rs.getDouble(typePara.index);
 		if(rs.wasNull()){
-			if( typePara.target.isPrimitive()){
+			if( typePara.isPrimitive()){
 				return getDefaultValue();
 			}else{
 				return null;

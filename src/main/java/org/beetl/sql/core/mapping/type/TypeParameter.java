@@ -22,6 +22,10 @@ public class TypeParameter {
 		this.sqlId = sqlId;
 	}
 	
+	public boolean  isPrimitive(){
+		return target!=null?target.isPrimitive():false;
+	}
+	
 	public int getColumnType() throws SQLException{
 		return meta.getColumnType(index);
 	}

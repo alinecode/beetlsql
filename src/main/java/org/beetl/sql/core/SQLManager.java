@@ -346,7 +346,7 @@ public class SQLManager {
 	/**
 	 * 通过sqlId进行查询,查询结果映射到clazz上
 	 * @param sqlId sql标记
-	 * @param clazz 需要映射的Pojo类
+	 * @param clazz 需要映射的Pojo类,可以是实体类，也可以是一个Map
 	 * @param paras 参数集合
 	 * @return Pojo集合
 	 */
@@ -357,7 +357,7 @@ public class SQLManager {
 	/**
 	 * 通过sqlId进行查询,查询结果映射到clazz上，mapper类可以定制映射
 	 * @param sqlId sql标记
-	 * @param clazz 需要映射的Pojo类
+	 * @param clazz 需要映射的Pojo类,可以是实体类，也可以是一个Map
 	 * @param paras 参数集合
 	 * @param mapper 自定义结果映射方式
 	 * @return
@@ -686,40 +686,88 @@ public class SQLManager {
 	
 	//========== 取出单个值  ============== //
 	
+	/**将查询结果返回成Long类型
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
 	public Long  longValue(String id,Map<String, Object> paras) {
 		return this.selectSingle(id, paras, Long.class);
 	}
 	
+	/**将查询结果返回成Long类型
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
 	public Long  longValue(String id,Object paras) {
 		return this.selectSingle(id, paras, Long.class);
 	}
 	
+	/** 将查询结果返回成Integer类型
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
 	public Integer  intValue(String id,Object paras) {
 		return this.selectSingle(id, paras, Integer.class);
 	}
 	
+	/**将查询结果返回成Integer类型
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
 	public Integer  intValue(String id,Map<String, Object> paras) {
 		return this.selectSingle(id, paras, Integer.class);
 	}
 	
+	/**将查询结果返回成BigDecimal类型
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
 	public BigDecimal  bigDecimalValue(String id,Object paras) {
 		return this.selectSingle(id, paras, BigDecimal.class);
 	}
-	
+	/**
+	 * 将查询结果返回成BigDecimal类型
+	 * @param id
+	 * @param paras
+	 * @return
+	 */
 	public BigDecimal  bigDecimalValue(String id,Map<String, Object> paras) {
 		return this.selectSingle(id, paras, BigDecimal.class);
 	}
 	
+	/**返回查询的第一行数据，如果有未找到，返回null
+	 * @param sqlId
+	 * @param paras
+	 * @param target
+	 * @return
+	 */
 	public <T> T selectSingle(String sqlId,Object paras, Class<T> target) {
 		SQLScript script = getScript(sqlId);
 		return script.singleSelect(paras, target);
 	}
-	
+	/**
+	 * 返回查询的第一行数据，如果有未找到，返回null
+	 * @param sqlId
+	 * @param paras
+	 * @param target
+	 * @return
+	 */
 	public <T> T selectSingle(String sqlId,Map<String, Object> paras, Class<T> target) {
 		SQLScript script = getScript(sqlId);
 		return script.selectSingle(paras, target);
 	}
 	
+	/** 返回一行数据，如果有多行或者未找到，抛错
+	 * @param id
+	 * @param paras
+	 * @param target
+	 * @return
+	 */
 	public <T> T selectUnique(String id,Object paras, Class<T> target) {
 		SQLScript script = getScript(id);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -727,6 +775,13 @@ public class SQLManager {
 		return script.selectUnique(map, target);
 	}
 	
+	/**
+	 * 返回一行数据，如果有多行或者未找到，抛错
+	 * @param id
+	 * @param paras
+	 * @param target
+	 * @return
+	 */
 	public <T> T selectUnique(String id,Map<String, Object> paras, Class<T> target) {
 		SQLScript script = getScript(id);
 		return script.selectUnique(paras, target);
@@ -752,35 +807,72 @@ public class SQLManager {
 	//============= 插入 ===================  //
 	
 	
-	
+	/**
+	 * 通用插入操作
+	 * @param paras
+	 * @return
+	 */
 	public int  insert(Object paras){
 		return this.insert(paras.getClass(),paras, false);
 	}
-	
+	/**
+	 * 插入实体，且该实体对应的表有自增主键
+	 * @param paras
+	 * @param autoAssignKey 是否自动获取主键值
+	 * @return
+	 */
 	public int  insert(Object paras,boolean autoAssignKey){
 		return this.insert(paras.getClass(),paras, autoAssignKey);
 	}
 	
-	
+	/**
+	 * 通用模板插入
+	 * @param paras
+	 * @return
+	 */
 	public int  insertTemplate(Object paras){
 		return this.insertTemplate(paras.getClass(),paras, false);
 	}
 	
+	/** 模板插入，并根据autoAssignKey 自动获取自增主键值
+	 * @param paras
+	 * @param autoAssignKey
+	 * @return
+	 */
 	public int  insertTemplate(Object paras,boolean autoAssignKey){
 		return this.insertTemplate(paras.getClass(),paras, autoAssignKey);
 	}
 	
+	/**
+	 * 对于有自增主键的表，插入一行记录
+	 * @param clazz
+	 * @param paras
+	 * @param autoAssignKey，是否获取自增主键
+	 * @return
+	 */
 	public int  insert(Class clazz,Object paras,boolean autoAssignKey){
 		return generalInsert(clazz,paras,autoAssignKey,false);
 	}
 	
 	
-	
+	/**
+	 * 模板插入，非空值插入到数据库，并且获取到自增主键的值
+	 * @param clazz
+	 * @param paras
+	 * @param autoAssignKey
+	 * @return
+	 */
 	public int  insertTemplate(Class clazz,Object paras,boolean autoAssignKey){
 		return generalInsert(clazz,paras,autoAssignKey,true);
 		
 	}
-	
+	/**
+	 * 插入对象通用的方法，如果数据表有自增主键，需要获取到自增主键，参考使用 insert(Object paras,boolean autoAssignKey)，或者使用
+	 * 带有KeyHolder的方法
+	 * @param clazz
+	 * @param paras
+	 * @return
+	 */
 	public int  insert(Class<?> clazz,Object paras){
 		
 		return this.insert(clazz,paras,false);
@@ -839,7 +931,7 @@ public class SQLManager {
 	
 	
 	
-	/** 插入，并获取主键
+	/** 插入，并获取自增主键的值
 	 * @param clazz
 	 * @param paras
 	 * @param holder
@@ -849,6 +941,13 @@ public class SQLManager {
 		return script.insert(paras,holder );
 	}
 	
+	/**
+	 * 模板插入，仅仅插入非空属性，并获取自增主键
+	 * @param clazz
+	 * @param paras
+	 * @param holder
+	 * @return
+	 */
 	public int  insertTemplate(Class<?> clazz,Object paras,KeyHolder holder){
 		SQLScript script = getScript(clazz,INSERT_TEMPLATE);
 		return script.insert(paras,holder );
@@ -860,7 +959,7 @@ public class SQLManager {
 	
 	/** 插入，并获取主键
 	 * @param sqlId
-	 * @param paras
+	 * @param paras  参数
 	 * @param holder
 	 * @param keyName  主键列名称
 	 */
@@ -898,7 +997,7 @@ public class SQLManager {
 	}
 	
 	/**
-	 * 
+	 *  插入操作，数据库自增主键放到keyHolder里
 	 * @param sqlId
 	 * @param clazz
 	 * @param paras
@@ -924,7 +1023,7 @@ public class SQLManager {
 	
 	
 	
-	/** 插入，并获取主键
+	/** 插入，并获取自增主键值，因为此接口并未指定实体对象，因此需要keyName来指明数据库主键列
 	 * @param sqlId
 	 * @param paras
 	 * @param holder
@@ -938,8 +1037,7 @@ public class SQLManager {
 	
 	/**
 	 * 
-	 * 需要处理","的问题，可能会出现
-		
+	 * 更新一个对象
 	 * 
 	 * @param obj
 	 * @return
@@ -952,7 +1050,7 @@ public class SQLManager {
 	/**
 	 * 为null的值不参与更新，如果想更新null值，请使用updateById
 	 * @param obj
-	 * @return
+	 * @return 返回更新的条数
 	 */
 	public int updateTemplateById(Object obj){
 		SQLScript script = getScript(obj.getClass(), UPDATE_TEMPLATE_BY_ID);
@@ -961,8 +1059,8 @@ public class SQLManager {
 	/**
 	 * 
 	 * @param c   c对应的表名
-	 * @param paras 参数，如需要更新的值，还有id
-	 * @return
+	 * @param paras 参数，仅仅更新paras里包含的值，paras里必须带有主键的值作为更新条件
+	 * @return 返回更新的条数
 	 */
 	public int updateTemplateById(Class c ,Map paras){
 		SQLScript script = getScript(c, UPDATE_TEMPLATE_BY_ID);
@@ -985,7 +1083,7 @@ public class SQLManager {
 	/**  执行sql更新（或者删除）操作
 	 * @param sqlId
 	 * @param obj
-	 * @return
+	 * @return 返回更新的条数
 	 */
 	public int update(String sqlId, Object obj){
 		SQLScript script = getScript(sqlId);
@@ -994,27 +1092,27 @@ public class SQLManager {
 	/**
 	 * 执行sql更新（或者删除）操作
 	 * @param sqlId
-	 * @return
+	 * @return 返回更新的条数
 	 */
 	public int update(String sqlId){
 		SQLScript script = getScript(sqlId);
 		return script.update(null);
 	}
 	
-	/**  执行sql更新语句
+	/** 执行sql更新（或者删除语句)
 	 * @param sqlId
 	 * @param paras
-	 * @return
+	 * @return 返回更新的条数
 	 */
 	public int update(String sqlId, Map<String, Object> paras){
 		SQLScript script = getScript(sqlId);
 		return script.update(paras);
 	}
 	
-	/**  对pojo批量更新执行sql更新语句
+	/**  对pojo批量更新执行sql更新语句，list包含的对象是作为参数，所有属性参与更新
 	 * @param sqlId 
 	 * @param list 
-	 * @return
+	 * @return 返回更新的条数
 	 */
 	public int[] updateBatch(String sqlId,List<?> list){
 		SQLScript script = getScript(sqlId);
@@ -1022,7 +1120,7 @@ public class SQLManager {
 	}
 	
 	/**
-	 * 批量模板更新方式
+	 * 批量模板更新方式，list包含的对象是作为参数，非空属性参与更新
 	 * @param clz
 	 * @param list
 	 * @return
@@ -1099,7 +1197,7 @@ public class SQLManager {
 		return this.execute(sqlTemplate, clazz, map);
 	}
 	
-	/** 直接执行sql语句，sql是模板
+	/** 直接执行sql查询语句，sql是模板
 	 * @param sqlTemplate
 	 * @param clazz
 	 * @param paras
@@ -1140,6 +1238,14 @@ public class SQLManager {
 		return script.select(clazz, paras);
 	}
 	
+	/** 直接执行sql模板查询，并获取指定范围的结果集
+	 * @param sqlTemplate
+	 * @param clazz
+	 * @param paras
+	 * @param start
+	 * @param size
+	 * @return
+	 */
 	public <T> List<T> execute(String sqlTemplate,Class<T> clazz, Object paras,long start,long size){
 		
 		Map map = new HashMap();
@@ -1183,7 +1289,7 @@ public class SQLManager {
 		return script.update(paras);
 	}
 	/**
-	 * 直接执行sql语句，sql语句已经是准备好的，采用preparedstatment执行
+	 * 直接执行sql语句查询，sql语句已经是准备好的，采用preparedstatment执行
 	 * @param clazz
 	 * @param p
 	 * @return 返回查询结果
@@ -1194,7 +1300,7 @@ public class SQLManager {
 		return script.sqlReadySelect(clazz, p);
 	}
 	
-	/** 直接执行sql语句，sql语句已经是准备好的，采用preparedstatment执行
+	/** 直接执行sql语句，用于删除或者更新，sql语句已经是准备好的，采用preparedstatment执行
 	 * @param p
 	 * 
 	 * @return 返回更新条数
@@ -1205,6 +1311,11 @@ public class SQLManager {
 		return script.sqlReadyExecuteUpdate( p);
 	}
 	
+	/**
+	 *  自己用Connection执行jdbc，通常用于存储过程调用，或者需要自己完全控制的jdbc
+	 * @param onConnection
+	 * @return
+	 */
 	public <T> T executeOnConnection(OnConnection<T> onConnection){
 		Connection conn = null;
 		try {
@@ -1343,9 +1454,10 @@ public class SQLManager {
 		w.flush();
 	}
 	/**
-	 * 
+	 * 生成数据库的所有entity，dao，还有md文件，
 	 * @param pkg
 	 * @param config
+	 * @param filter 最好设置filter以避免覆盖已有代码
 	 */
 	public void genALL(String pkg,GenConfig config,GenFilter filter) throws Exception{
 		Set<String> tables = this.metaDataManager.allTable();
@@ -1395,6 +1507,10 @@ public class SQLManager {
 		
 	}
 	
+	/** 通过mapper接口生成dao代理
+	 * @param mapperInterface
+	 * @return
+	 */
 	public <T> T getMapper(Class<T> mapperInterface){
 		return this.mapperBuilder.getMapper(mapperInterface);
 	}
@@ -1414,27 +1530,45 @@ public class SQLManager {
 		return ds;
 	}
 
+	/** 设置ConnectionSource，参考ConnectionSourceHelper
+	 * @param ds
+	 */
 	public void setDs(ConnectionSource ds) {
 		this.ds = ds;
 	}
 	
+	/** 获取 NameConversion
+	 * @return
+	 */
 	public NameConversion getNc() {
 		return nc;
 	}
 
+	/** 设置NameConversion
+	 * @param nc
+	 */
 	public void setNc(NameConversion nc) {
 		this.nc = nc;
 		this.dbStyle.setNameConversion(nc);
 	}
 
+	/** 得到当前sqlmanager的数据库类型
+	 * @return
+	 */
 	public DBStyle getDbStyle() {
 		return dbStyle;
 	}
 
+	/** 得到beetl引擎
+	 * @return
+	 */
 	public Beetl getBeetl() {
 		return beetl;
 	}
-
+	/**
+	 * 得到MetaDataManager，用来获取数据库元数据，如表，列，主键等信息
+	 * @return
+	 */
 	public  MetadataManager getMetaDataManager() {
 		return metaDataManager;
 	}
@@ -1446,27 +1580,51 @@ public class SQLManager {
 		return defaultSchema;
 	}
 
+	/**
+	 * 设置对应的数据库的schema，一般不需要调用，因为通过jdbc能自动获取
+	 * @param defaultSchema
+	 */
 	public void setDefaultSchema(String defaultSchema) {
 		this.defaultSchema = defaultSchema;
 	}
 
+	/**
+	 * 得到MapperBuilder,默认是DefaultMapperBuilder
+	 * @return
+	 */
 	public MapperBuilder getMapperBuilder() {
 		return mapperBuilder;
 	}
 
+	/**
+	 * 设置MapperBuilder，用来生成java的dao代理类，参考getMapper
+	 * @param mapperBuilder
+	 */
 	public void setMapperBuilder(MapperBuilder mapperBuilder) {
 		this.mapperBuilder = mapperBuilder;
 	}
 
+	/**
+	 * 得到所有的Interceptor
+	 * @return
+	 */
 	public Interceptor[] getInters() {
 		return inters;
 	}
 
+	/**
+	 * 设置Interceptor
+	 * @param inters
+	 */
 	public void setInters(Interceptor[] inters) {
 		this.inters = inters;
 	}
 	
 	
+	/** 设置一种id算法用于注解AssignId("xxx"),这样，对于应用赋值主键，交给beetlsql来处理了
+	 * @param name
+	 * @param alorithm
+	 */
 	public void addIdAutonGen(String name,IDAutoGen alorithm){
 		this.idAutonGenMap.put(name, alorithm);
 	}
@@ -1485,22 +1643,40 @@ public class SQLManager {
 		
 	}
 
+	/** 获取特殊的BeanPorcessor
+	 * @return
+	 */
 	public Map<String, BeanProcessor> getProcessors() {
 		return processors;
 	}
 
+	/** 为指定的sqlId提供一个处理类，可以既可以是一个sqlId，也可以是namespace部分，所有属于namesapce的都会被此BeanProcessor
+	 * 处理
+	 * @param processors
+	 */
 	public void setProcessors(Map<String, BeanProcessor> processors) {
 		this.processors = processors;
 	}
 
+	/**
+	 * 得到默认的jdbc到bean的处理类
+	 * @return
+	 */
 	public BeanProcessor getDefaultBeanProcessors() {
 		return defaultBeanProcessors;
 	}
 
+	/**
+	 * 设置默认的jdbc 到 bean的映射处理类，用户可以自己扩展处理最新的类型
+	 * @param defaultBeanProcessors
+	 */
 	public void setDefaultBeanProcessors(BeanProcessor defaultBeanProcessors) {
 		this.defaultBeanProcessors = defaultBeanProcessors;
 	}
-	
+	/**
+	 * 设置sqlId到sql文件映射关系
+	 * @param sqlIdNc
+	 */
 	public void setSQLIdNameConversion(SQLIdNameConversion sqlIdNc){
 		this.sqlLoader.setSQLIdNameConversion(sqlIdNc);
 	}
