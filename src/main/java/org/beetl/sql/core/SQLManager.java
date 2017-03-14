@@ -184,7 +184,7 @@ public class SQLManager {
 	
 	
 	/**
-	 * 是否是生产模式:生产模式MetadataManager 不缓存table信息，不查看sql文件变化,默认是false
+	 * 是否是生产模式:生产模式MetadataManager ，不查看sql文件变化,默认是false
 	 * @return
 	 */
 	public boolean isProductMode(){
@@ -213,18 +213,34 @@ public class SQLManager {
 		return script.run(map);
 	}
 	
-	
+	/**
+	 * 内部使用，
+	 * @param source
+	 * @param inputParas
+	 * @return
+	 */
 	public SQLResult getSQLResult(SQLSource source, Map inputParas) {
 		SQLScript script = new SQLScript(source, this);
 		SQLResult result=script.run(inputParas);
 		return result;
 	}
-	
+	/**
+	 * 内部使用，用于use等函数
+	 * @param id
+	 * @param paras
+	 * @param parentId
+	 * @return
+	 */
 	public SQLResult getSQLResult(String id, Map<String, Object> paras,String parentId) {
 		SQLScript script = getScript(id);
 		return script.run(paras,parentId);
 	}
 
+	/**
+	 * 得到指定sqlId的sqlscript对象
+	 * @param id
+	 * @return
+	 */
 	public SQLScript getScript(String id) {
 		SQLSource source  = sqlLoader.getSQL(id);
 		SQLScript script = new SQLScript(source, this);	
@@ -232,9 +248,9 @@ public class SQLManager {
 	}
 
 	/**
-	 * 生成增删改查模板
+	 * 得到增删改查模板
 	 * @param cls
-	 * @param tempId
+	 * @param tempId，参考 Constants类
 	 * @return
 	 */
 	public SQLScript getScript(Class<?> cls, int tempId) {

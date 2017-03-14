@@ -1,7 +1,7 @@
 package org.beetl.sql.test;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AutoID;
@@ -19,7 +19,7 @@ public class User   extends TailBean {
 	private Integer id ;
 	private String name ;
 	private Integer departmentId;
-	private Timestamp createTime;
+	private LocalDateTime createTime;
 	private String content ;
 	private Color color;
 	
@@ -49,11 +49,11 @@ public class User   extends TailBean {
 		this.departmentId = departmentId;
 	}
 
-	public Timestamp getCreateTime() {
+	public LocalDateTime getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Timestamp createTime) {
+	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
 	}
 

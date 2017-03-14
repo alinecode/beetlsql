@@ -262,9 +262,9 @@
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 
-					<excludes>
+					<!--  excludes>
 	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes>
+	                </excludes-->
 				</configuration>
 			</plugin>
 			<plugin>
