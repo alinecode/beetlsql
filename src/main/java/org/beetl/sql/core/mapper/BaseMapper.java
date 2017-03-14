@@ -39,7 +39,7 @@ public interface BaseMapper<T> {
 	
 	
 	List<T> template(T entity);
-	<T> T tmeplateOne(T entity);
+	<T> T templateOne(T entity);
 	List<T> template(T entity,int start,int size);
 	long templateCount(T entity);
 	

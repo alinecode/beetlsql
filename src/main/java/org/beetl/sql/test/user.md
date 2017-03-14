@@ -37,7 +37,7 @@ querySingle
 ===
 
 
-	select  count(1) from user where 1=1
+	select  null from user where 1=1
 	
 condition
 ===
