@@ -7,10 +7,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.UnexpectedException;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.beetl.sql.core.db.DB2SqlStyle;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 
@@ -368,6 +368,10 @@ public class ClasspathLoader implements SQLLoader {
 	public void setSQLIdNameConversion(SQLIdNameConversion sqlIdNc) {
 		this.sqlIdNameConversion = sqlIdNc;
 		
+	}
+	
+	public void setDbStyle(DBStyle dbStyle){
+		this.dbs = dbStyle;
 	}
 	
 }

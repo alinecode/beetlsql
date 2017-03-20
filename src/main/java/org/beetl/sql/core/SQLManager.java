@@ -152,7 +152,7 @@ public class SQLManager {
 		beetl = new Beetl(sqlLoader,ps);
 		this.dbStyle = dbStyle;
 		this.sqlLoader = sqlLoader;
-		
+		this.sqlLoader.setDbStyle(dbStyle);
 		this.ds = ds;
 		this.nc = nc;
 		this.inters = inters;

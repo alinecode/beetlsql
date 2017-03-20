@@ -1,5 +1,7 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.core.db.DBStyle;
+
 public interface SQLLoader {
 	/**
 	 * 加载sql，如果未找到，抛出错误
@@ -53,6 +55,10 @@ public interface SQLLoader {
 	 * @param sqlIdNc
 	 */
 	public void setSQLIdNameConversion(SQLIdNameConversion sqlIdNc);
-
+	/**
+	 * 设置当前使用的数据库，以让sqlloder优先寻找数据库
+	 * @param dbStyle
+	 */
+	public void setDbStyle(DBStyle dbStyle);
 	
 }
