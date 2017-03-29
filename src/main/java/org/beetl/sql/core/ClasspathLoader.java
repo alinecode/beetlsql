@@ -369,7 +369,7 @@ public class ClasspathLoader implements SQLLoader {
 		this.sqlIdNameConversion = sqlIdNc;
 		
 	}
-	
+	@Override
 	public void setDbStyle(DBStyle dbStyle){
 		this.dbs = dbStyle;
 	}

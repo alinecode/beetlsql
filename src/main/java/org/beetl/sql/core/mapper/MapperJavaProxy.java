@@ -33,7 +33,7 @@ public class MapperJavaProxy implements InvocationHandler {
 
 	
 
-	DefaultMapperBuilder builder;
+	protected DefaultMapperBuilder builder;
 	/**
 	 * The Constructor.
 	 */
