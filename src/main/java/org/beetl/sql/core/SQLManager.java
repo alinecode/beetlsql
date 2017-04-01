@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.beetl.core.Configuration;
+import org.beetl.core.GroupTemplate;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -36,6 +37,7 @@ import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.engine.StringSqlTemplateLoader;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.GenKit;
@@ -188,7 +190,23 @@ public class SQLManager {
 	 * @return
 	 */
 	public boolean isProductMode(){
-		return !sqlLoader.isAutoCheck();
+		boolean productMode = !sqlLoader.isAutoCheck();
+		// 之前版本仅查看了sqlLoader是否开发模式，但忽略了若默板加载器是否开发模式
+		this.setProductMode(productMode);
+		return productMode;
+	}
+
+	/**
+	 *
+	 * @param productMode
+	 */
+	public void setProductMode(boolean productMode){
+		sqlLoader.setAutoCheck(!productMode);
+		// 若默板加载器是StringSqlTemplateLoader类型，重新设置autoCheck属性
+		GroupTemplate groupTemplate = beetl.getGroupTemplate();
+		if (groupTemplate.getResourceLoader() instanceof StringSqlTemplateLoader) {
+			((StringSqlTemplateLoader) groupTemplate.getResourceLoader()).setAutoCheck(!productMode);
+		}
 	}
 	
 	/** 不执行数据库操作，仅仅得到一个sql模板执行后的实际得sql和相应的参数
@@ -642,7 +660,9 @@ public class SQLManager {
 	}
 	
 	public <T>  T templateOne(T t) {
-		List<T> list = template(t);
+		// 改为只查询一条记录
+		int start = this.offsetStartZero ? 0 : 1;
+		List<T> list = template(t, start, start + 1);
 		if(list.isEmpty()){
 			return null;
 		}else{
