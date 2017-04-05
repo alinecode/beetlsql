@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.Set;
 
 import org.beetl.sql.core.BeetlSQLException;
@@ -20,6 +19,7 @@ public class MetadataManager {
 	TableDesc NOT_EXIST = new TableDesc("$NOT_EXIST","");
 	SQLManager sm = null;
 	String defaultSchema;
+	String defalutCatalog;
 	String dbType = null;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
@@ -112,8 +112,8 @@ public class MetadataManager {
 			Connection conn=null;
 			ResultSet rs = null;
 			try {
-				String catalog = this.getDbCatalog(desc.getSchema());
-				String schema = this.getDbSchema(desc.getSchema());
+				String catalog = this.defalutCatalog;
+				String schema = this.defaultSchema;
 				conn =  ds.getMaster();
 				DatabaseMetaData dbmd =  conn.getMetaData();
 				rs = dbmd.getPrimaryKeys(catalog,schema, desc.getName());
@@ -155,26 +155,27 @@ public class MetadataManager {
 	
 	private synchronized void initMetadata(){
 		if(map!=null) return ;
-		map = new ThreadSafeCaseInsensitiveHashMap();
+		ThreadSafeCaseInsensitiveHashMap tempMap = new ThreadSafeCaseInsensitiveHashMap();
 		Connection conn=null;
 		try {
 			conn =  ds.getMaster();
 			DatabaseMetaData dbmd =  conn.getMetaData();
-			String catalog = this.getDbCatalog(this.defaultSchema);
-			String schema = this.getDbSchema(this.defaultSchema);
+			
+			String catalog = this.defalutCatalog;
+			String schema = this.defaultSchema;
 			String namePattern = this.getTableNamePattern(dbmd);
 			ResultSet rs = dbmd.getTables(catalog,schema, namePattern,
 					new String[] { "TABLE","VIEW" });
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
 				String remarks = rs.getString("REMARKS");
-//				System.out.println("remarks="+remarks);
 				TableDesc desc = new TableDesc(name,remarks);
 				desc.setSchema(this.defaultSchema);
-				map.put(desc.getName(),desc);
+				tempMap.put(desc.getName(),desc);
 			}
 		
 			rs.close();
+			this.map = tempMap;
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		}finally{
@@ -187,8 +188,8 @@ public class MetadataManager {
 		try {
 			conn =  ds.getMaster();
 			DatabaseMetaData dbmd =  conn.getMetaData();
-			String catalog = this.getDbCatalog(sc);
-			String schema = this.getDbSchema(sc);
+			String catalog = this.defalutCatalog;
+			String schema = this.defaultSchema;
 			
 			ResultSet rs = null; rs = dbmd.getTables(catalog,schema, getDbTableName(table),
 						new String[] { "TABLE","VIEW" });
@@ -247,7 +248,8 @@ public class MetadataManager {
 	private void setDefaultSchema(Connection conn) throws SQLException{
 		
 		try{
-			defaultSchema =  conn.getSchema();
+			this.defalutCatalog = conn.getCatalog();
+			this.defaultSchema =  conn.getSchema();
 			
 		}catch(Throwable e){
 			// jdbc低版本不支持
@@ -261,6 +263,7 @@ public class MetadataManager {
 			}else{
 				defaultSchema = null;
 			}
+			this.defalutCatalog = null;
 			
 		}
 		
@@ -275,7 +278,7 @@ public class MetadataManager {
 	 * @param namespace
 	 * @return
 	 */
-	private String getDbSchema(String namespace){
+	private String getDbSchema(DatabaseMetaData dbmd,String namespace){
 		if(dbType.equals("mysql")){
 			return null;
 		}else if(dbType.equals("oracle")){
@@ -287,23 +290,31 @@ public class MetadataManager {
 	private String getTableNamePattern(DatabaseMetaData meta) throws SQLException{
 		//mysql 6 是个在开发版本，有问题，不支持	
 		String p=meta.getDatabaseProductName();
+		
 		if(p.equalsIgnoreCase("mysql")){
 			int c = meta.getDriverMajorVersion();
 			if(c==6){
-				throw new UnsupportedOperationException("mysql  Connector/J 6.0.5 do not support for beetlsql2.7 ");
+				return "%";
 			}
 		}
 	
 		return null;
 	}
 	
-	private String getDbCatalog(String schema){
-		if(dbType.equals("mysql")){
-			return schema;
-		}else{
-			return null;
-		}
-	}
+//	private String getDbCatalog(DatabaseMetaData meta,String schema) throws SQLException {
+//		if(dbType.equals("mysql")){
+//			String p=meta.getDatabaseProductName();
+//			if(p.equalsIgnoreCase("mysql")){
+//				int c = meta.getDriverMajorVersion();
+//				if(c==6){
+//					return schema;
+//				}
+//			}
+//			return schema;
+//		}else{
+//			return null;
+//		}
+//	}
 	
 	private String getDbTableName(String name){
 		if(dbType.equals("oracle")){

@@ -102,38 +102,42 @@ public class SourceGen {
 			attrs.add(attr);
 		}
 		
-		// 主键总是拍在前面，int类型也排在前面，剩下的按照字母顺序排
-		Collections.sort(attrs,new Comparator<Map>() {
+		if(config.getPropertyOrder()==config.ORDER_BY_TYPE) {
+			// 主键总是拍在前面，int类型也排在前面，剩下的按照字母顺序排
+			Collections.sort(attrs,new Comparator<Map>() {
 
-			@Override
-			public int compare(Map o1, Map o2) {
-				ColDesc desc1  = (ColDesc)o1.get("desc");
-				ColDesc desc2  = (ColDesc)o2.get("desc");
-				int score1 = score(desc1);
-				int score2 = score(desc2);
-				if(score1==score2){
-					return desc1.colName.compareTo(desc2.colName);
-				}else{
-					return score2-score1;
+				@Override
+				public int compare(Map o1, Map o2) {
+					ColDesc desc1  = (ColDesc)o1.get("desc");
+					ColDesc desc2  = (ColDesc)o2.get("desc");
+					int score1 = score(desc1);
+					int score2 = score(desc2);
+					if(score1==score2){
+						return desc1.colName.compareTo(desc2.colName);
+					}else{
+						return score2-score1;
+					}
+					
+						
 				}
 				
-					
-			}
-			
-			private int score(ColDesc desc){
-				if(tableDesc.getIdNames().contains(desc.colName)){
-					return 99;
-				}else if(JavaType.isInteger(desc.sqlType)){
-					return 9;
-				}else if(JavaType.isDateType(desc.sqlType)){
-					return  -9;
-				}else{
-					return  0;
+				private int score(ColDesc desc){
+					if(tableDesc.getIdNames().contains(desc.colName)){
+						return 99;
+					}else if(JavaType.isInteger(desc.sqlType)){
+						return 9;
+					}else if(JavaType.isDateType(desc.sqlType)){
+						return  -9;
+					}else{
+						return  0;
+					}
 				}
-			}
 
-			
-		});
+				
+			});
+		}
+		
+		
 		
 		Template template = gt.getTemplate(config.template);
 		template.binding("attrs", attrs);

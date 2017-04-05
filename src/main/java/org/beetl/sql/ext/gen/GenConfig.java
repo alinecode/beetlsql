@@ -40,6 +40,11 @@ public class GenConfig {
 	
 	public String space = "    ";
 	
+	private int propertyOrder = ORDER_BY_TYPE;
+	
+	public static final int ORDER_BY_TYPE  = 1;
+	public static final int ORDER_BY_ORIGNAL  = 2;
+	
 	public  GenConfig setBaseClass(String baseClass){
 		this.baseClass = baseClass;
 		return this ;
@@ -127,6 +132,12 @@ public class GenConfig {
 	 */
 	public static void initStringTemplate(String temp){
 		template = temp;
+	}
+	public int getPropertyOrder() {
+		return propertyOrder;
+	}
+	public void setPropertyOrder(int propertyOrder) {
+		this.propertyOrder = propertyOrder;
 	}
 	
 	

@@ -192,7 +192,7 @@ public class SQLManager {
 	public boolean isProductMode(){
 		boolean productMode = !sqlLoader.isAutoCheck();
 		// 之前版本仅查看了sqlLoader是否开发模式，但忽略了若默板加载器是否开发模式
-		this.setProductMode(productMode);
+//		this.setProductMode(productMode);
 		return productMode;
 	}
 
@@ -200,14 +200,14 @@ public class SQLManager {
 	 *
 	 * @param productMode
 	 */
-	public void setProductMode(boolean productMode){
-		sqlLoader.setAutoCheck(!productMode);
-		// 若默板加载器是StringSqlTemplateLoader类型，重新设置autoCheck属性
-		GroupTemplate groupTemplate = beetl.getGroupTemplate();
-		if (groupTemplate.getResourceLoader() instanceof StringSqlTemplateLoader) {
-			((StringSqlTemplateLoader) groupTemplate.getResourceLoader()).setAutoCheck(!productMode);
-		}
-	}
+//	public void setProductMode(boolean productMode){
+//		sqlLoader.setAutoCheck(!productMode);
+//		// 若默板加载器是StringSqlTemplateLoader类型，重新设置autoCheck属性
+//		GroupTemplate groupTemplate = beetl.getGroupTemplate();
+//		if (groupTemplate.getResourceLoader() instanceof StringSqlTemplateLoader) {
+//			((StringSqlTemplateLoader) groupTemplate.getResourceLoader()).setAutoCheck(!productMode);
+//		}
+//	}
 	
 	/** 不执行数据库操作，仅仅得到一个sql模板执行后的实际得sql和相应的参数
 	 * @param id

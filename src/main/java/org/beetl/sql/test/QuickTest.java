@@ -27,10 +27,8 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-
-		
-		Integer count = sql.selectSingle("user.querySingle", null, Integer.class);
-	
+		sql.all(User.class);
+			
 	}
 	
 	
