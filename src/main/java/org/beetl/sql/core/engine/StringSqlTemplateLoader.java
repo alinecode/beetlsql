@@ -28,10 +28,6 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 
 	}
 
-	public void setAutoCheck(boolean autoCheck){
-		this.autoCheck = autoCheck;
-	}
-
 	@Override
 	public boolean exist(String key) {
 		//never use

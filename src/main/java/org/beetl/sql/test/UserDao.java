@@ -5,18 +5,10 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
-import org.beetl.sql.core.annotatoin.Param;
 import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.engine.PageQuery;
-import org.beetl.sql.core.mapper.BaseMapper;
 
 
-public interface UserDao extends BaseMapper<User> {
-	public void queryUsers(PageQuery<User> query);
+public interface UserDao extends BaseDao<User> {
 	
-	public List<User> queryUsers(Map map);
-	
-	
-	@Sql(value="select max(create_time) from user")
-	public Timestamp getMax();
 }

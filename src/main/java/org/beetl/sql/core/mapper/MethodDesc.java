@@ -41,15 +41,47 @@ public class MethodDesc {
 	
 	public Class renturnType = Void.class;
 
-	static Map<Method, MethodDesc> cache = new HashMap<Method, MethodDesc>();
+	static Map<CallKey, MethodDesc> cache = new HashMap<CallKey, MethodDesc>();
+	
+	static class CallKey{
+		Method m;
+		Class entityClass;
+		public CallKey(Method m,Class entityClass){
+			this.m = m;
+			this.entityClass = entityClass;
+		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((entityClass == null) ? 0 : entityClass.hashCode());
+			result = prime * result + ((m == null) ? 0 : m.hashCode());
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			
+			CallKey other = (CallKey) obj;
+			if(other.entityClass==this.entityClass&&this.m.equals(other.m)){
+				return true ;
+			}else{
+				return false;
+			}
+			
+			
+			
+		}
+		
+	}
 
 	public static MethodDesc getMetodDesc(SQLManager sm, Class entityClass, Method m, String sqlId) {
-		MethodDesc desc = cache.get(m);
+		CallKey callKey = new CallKey(m,entityClass);
+		MethodDesc desc = cache.get(callKey);
 		if (desc != null)
 			return desc;
 		desc = new MethodDesc();
 		desc.doParse(sm, entityClass, m, sqlId);
-		cache.put(m, desc);
+		cache.put(callKey, desc);
 		return desc;
 
 	}
