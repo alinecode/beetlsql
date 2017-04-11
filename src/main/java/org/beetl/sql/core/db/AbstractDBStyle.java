@@ -19,6 +19,7 @@ import org.beetl.sql.core.annotatoin.DateTemplate;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.engine.Beetl;
+import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 import org.beetl.sql.core.orm.OrmQuery.Type;
@@ -101,7 +102,8 @@ public abstract class AbstractDBStyle implements DBStyle {
         TableDesc table = this.metadataManager.getTable(tableName);
         String condition = getSelectTemplate(cls);
         String appendSql = "";
-        TableTemplate t = cls.getAnnotation(TableTemplate.class);
+        TableTemplate t = (TableTemplate)BeanKit.getAnnotation(cls, TableTemplate.class);
+        
         if (t != null) {
             appendSql = t.value();
             if ((appendSql == null || appendSql.length() == 0) && table.getIdNames().size() != 0) {

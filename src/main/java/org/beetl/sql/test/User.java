@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AutoID;
+import org.beetl.sql.core.annotatoin.TableTemplate;
 
 //@OrmQuery(
 //{
@@ -13,6 +14,7 @@ import org.beetl.sql.core.annotatoin.AutoID;
 //
 //}
 //)
+
 public class User   extends TailBean {
 	
 	private Integer id ;

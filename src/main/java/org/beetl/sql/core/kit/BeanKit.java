@@ -4,18 +4,15 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.core.om.MethodInvoker;
 import org.beetl.core.om.ObjectUtil;
-import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.annotatoin.Tail;
 
 public class BeanKit {
@@ -193,6 +190,18 @@ public class BeanKit {
 		throw new IllegalArgumentException("无法转化成期望类型:"+requiredType);
 	}
 	
+	
+	public static Annotation getAnnotation(Class c,Class expect){
+		do{
+			Annotation an = c.getAnnotation(expect);
+			if(an!=null){
+				return an;
+			}
+			c= c.getSuperclass();
+		}while(c!=null);
+		return null;
+		
+	}
 	
 	
 

@@ -6,8 +6,8 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.gen.GenConfig;
 
 /**
  * 
@@ -28,14 +28,8 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		UserDao userDao = sql.getMapper(UserDao.class);
-		PageQuery query = new PageQuery();
-		sql.pageQuery("user.selectPage", User.class, query);
-		System.out.println("size="+query.getList().size());
-		query = new PageQuery();
-		sql.pageQuery("user.selectPage", User.class, query);
-		System.out.println("size="+query.getList().size());
 		
+		sql.template(new User());
 		
 			
 	}

@@ -1,6 +1,6 @@
 package ${package};
 ${imports}
-/*
+/* 看看为啥错了呢？
 * ${comment}
 * gen by beetlsql ${date(),"yyyy-MM-dd"}
 */
