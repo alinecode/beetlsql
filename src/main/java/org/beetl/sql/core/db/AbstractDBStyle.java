@@ -600,9 +600,9 @@ public abstract class AbstractDBStyle implements DBStyle {
        
     	String col = this.getKeyWordHandler().getCol(colName);
     	if(col.startsWith("'")){
-    		return HOLDER_START + "text(!isEmpty("+fieldName+")?\""+col+",\":'')" + HOLDER_END  ;
+    		return HOLDER_START + "db.testColNull("+fieldName+",\""+col+"\")" + HOLDER_END  ;
     	}else{
-    		return HOLDER_START + "text(!isEmpty("+fieldName+")?'"+col+",':'')" + HOLDER_END  ;
+    		return HOLDER_START + "db.testColNull("+fieldName+",'"+col+"')" + HOLDER_END  ;
     	}
     	
     }

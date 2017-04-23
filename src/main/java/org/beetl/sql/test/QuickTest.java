@@ -29,7 +29,10 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
-		sql.template(new User());
+		User user = new User();
+		user.setDepartmentId(1);
+		user.setName("");
+		sql.insertTemplate(user);
 		
 			
 	}

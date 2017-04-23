@@ -16,9 +16,13 @@ import org.beetl.sql.core.db.MySqlStyle;
 
 /**
  * 从classpath系统加载sql模板，id应该格式是"xx.yyy",xx代表了文件名，yyy代表了sql标识 sql 模板格式如下：
- * 
- * ==selectUser * comment select * from user where .. * ==selectAgenyUser select
- * * from agencyUser where .. *
+ *
+ * <pre>
+ selectUser 
+ ===
+
+ select * from user 
+</pre>
  * 
  * 
  * @author Administrator
@@ -252,7 +256,7 @@ public class ClasspathLoader implements SQLLoader {
     private void buildSql(LinkedList<String> list,StringBuilder sql){
     	 while (!list.isEmpty()) {
     		 String s = list.pollFirst();
-    		 if(s.startsWith("```")){
+    		 if(s.startsWith("```")||s.startsWith("~~~")){
     			 //since 2.7.10,认为是beetlsql的块状符号
     			 continue ;
     		 }
