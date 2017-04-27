@@ -1,0 +1,47 @@
+package org.beetl.sql.core.senior;
+
+import org.beetl.sql.core.mapper.MapperInvoke;
+import org.beetl.sql.core.mapper.MethodDesc;
+
+import static org.beetl.sql.core.senior.SeniorConfigBuilder.INTERNAL_AMI_METHOD;
+import static org.beetl.sql.core.senior.SeniorConfigBuilder.MAPPER_JOIN_PROXY_MAPPER_INVOKE;
+
+/**
+ * <pre>
+ * 高级的灵活配置, 实际使用中不需要理会这个配置类
+ * 满足喜欢捣腾的用户
+ * </pre>
+ * create time : 2017-04-27 15:27
+ *
+ * @author luoyizhu@gmail.com
+ */
+public final class SeniorConfig {
+    public static final SeniorConfig $ = new SeniorConfig();
+    MethodDescBuilder methodDescBuilder = new MethodDescBuilder() {
+        @Override
+        public MethodDesc create() {
+            return new MethodDesc();
+        }
+    };
+
+    private SeniorConfig() {
+    }
+
+    public static SeniorConfigBuilder newBuilder() {
+        return new SeniorConfigBuilder();
+    }
+
+    public MethodDesc createMethodDesc() {
+        return methodDescBuilder.create();
+    }
+
+    public MapperInvoke getMapperInvokeProxy(Class c) {
+        return MAPPER_JOIN_PROXY_MAPPER_INVOKE.get(c);
+    }
+
+
+    public MapperInvoke getInternalAmi(String methodName) {
+        return INTERNAL_AMI_METHOD.get(methodName);
+    }
+
+}

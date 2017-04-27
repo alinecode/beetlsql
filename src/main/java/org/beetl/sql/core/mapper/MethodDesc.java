@@ -18,6 +18,7 @@ import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.senior.SeniorConfig;
 
 /**
  * dao2 参数
@@ -79,8 +80,9 @@ public class MethodDesc {
 		MethodDesc desc = cache.get(callKey);
 		if (desc != null)
 			return desc;
-		desc = new MethodDesc();
-		desc.doParse(sm, entityClass, m, sqlId);
+//		desc = new MethodDesc();
+		desc = SeniorConfig.$.createMethodDesc();
+        desc.doParse(sm, entityClass, m, sqlId);
 		cache.put(callKey, desc);
 		return desc;
 
@@ -197,7 +199,7 @@ public class MethodDesc {
 		
 	}
 
-	private void parseAnnotation(String sqlId, Method m) {
+	protected void parseAnnotation(String sqlId, Method m) {
 		// 纪录错误位置
 		LinkedHashMap<Integer, String> errorPara = new LinkedHashMap<Integer, String>();
 		Annotation[][] parameterAnnotations = m.getParameterAnnotations();
@@ -431,7 +433,7 @@ public class MethodDesc {
 		}
 	}
 	
-	private void getSelectRenturnType(Class methodRetType,Class annotationType,Class entity){
+	protected void getSelectRenturnType(Class methodRetType,Class annotationType,Class entity){
 		if(annotationType!=Void.class){
 			//注解总是优先
 			this.renturnType = annotationType;
