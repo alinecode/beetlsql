@@ -36,6 +36,7 @@ public class AmiInnerProxyMapperInvokeTest {
     }
 
     /**
+     * <pre>
      * 可能下面说得有点乱. 如果看不懂看这里的解释!
      * 为了不必强制用户继承 BaseMapper 接口才能使用内置实现, 而是通过配置映射的方式
      * 在把内置实现代理独立出来的同时, 又提供方法实现的扩展(Ami).
@@ -43,6 +44,7 @@ public class AmiInnerProxyMapperInvokeTest {
      * 想上面举出了两个示例:
      * 原来内置的方法名是 all , 我改成了 selectAll
      * 原来内置的方法名是 allCount , 我改成了 selectCount
+     * </pre>
      */
     @Test
     public void testAmi() {

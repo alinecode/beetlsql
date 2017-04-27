@@ -24,6 +24,10 @@ public final class SeniorConfigBuilder {
      * mapper接口与代理类关联
      */
     static final Map<Class, MapperInvoke> MAPPER_JOIN_PROXY_MAPPER_INVOKE = new HashMap<Class, MapperInvoke>();
+    /**
+     * 用户扩展的方法.
+     * 映射好的方法, 是提供给: AmiInnerProxyMapperInvoke 对象使用的.
+     */
     static final Map<String, MapperInvoke> INTERNAL_AMI_METHOD = new HashMap<String, MapperInvoke>();
 
     static {
@@ -47,12 +51,12 @@ public final class SeniorConfigBuilder {
         INTERNAL_AMI_METHOD.put("getSQLManager", new GetSQLManagerAmi());
         INTERNAL_AMI_METHOD.put("insertTemplate", new InsertTemplateAmi());
 
+        // beetlsql内置的基接口, 使用 InnerMapperInvoke 处理.(为了不改变原有代码).
         MAPPER_JOIN_PROXY_MAPPER_INVOKE.put(BaseMapper.class, new InnerMapperInvoke());
 
     }
 
     private MethodDescBuilder methodDescBuilder;
-    private Class baseMapperClass;
 
     SeniorConfigBuilder() {
     }
@@ -61,7 +65,12 @@ public final class SeniorConfigBuilder {
         SeniorConfig.$.methodDescBuilder = this.getMethodDescBuilder();
     }
 
-
+    /**
+     * 添加接口与代理的映射
+     *
+     * @param c                 一般填写接口
+     * @param mapperInvokeProxy 如果是自定义基接口, 对应 {@link AmiInnerProxyMapperInvoke} 即可高度扩展
+     */
     public void putMapperInvokeProxy(Class c, MapperInvoke mapperInvokeProxy) {
         MAPPER_JOIN_PROXY_MAPPER_INVOKE.put(c, mapperInvokeProxy);
     }
@@ -69,6 +78,7 @@ public final class SeniorConfigBuilder {
     /**
      * <pre>
      * 用户扩展MapperInvoke, 后添加的 methodName 会覆盖相同的 methodName
+     * 这里添加的扩展是为了给  {@link AmiInnerProxyMapperInvoke} 服务的.
      * </pre>
      *
      * @param methodName      方法名
@@ -94,16 +104,4 @@ public final class SeniorConfigBuilder {
     public void setMethodDescBuilder(MethodDescBuilder methodDescBuilder) {
         this.methodDescBuilder = methodDescBuilder;
     }
-
-    private Class getBaseMapperClass() {
-        if (this.baseMapperClass == null) {
-            this.baseMapperClass = BaseMapper.class;
-        }
-        return baseMapperClass;
-    }
-
-    public void setBaseMapperClass(Class baseMapperClass) {
-        this.baseMapperClass = baseMapperClass;
-    }
-
 }
