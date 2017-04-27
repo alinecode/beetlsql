@@ -4,3 +4,10 @@
 /bin/
 
 .*
+
+
+# intellj file type #
+.idea/
+*.iml
+
+PrivateConfig.java
