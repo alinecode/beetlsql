@@ -33,11 +33,15 @@ public class Config {
         // 这个类是不提交的,里面做的就是改变了Config的数据库连接信息.
 //        PrivateConfig.settingConfig();
 
-        ConnectionSource source = ConnectionSourceHelper.getSimple(driver, url, userName, password);
+//        ConnectionSource source = ConnectionSourceHelper.getSimple(driver, url, userName, password);
+//
+//        SQLManagerBuilder builder = SQLManager.newBuilder(source);
+//
+//        sqlManager = builder.addInterDebug().build();
 
-        SQLManagerBuilder builder = SQLManager.newBuilder(source);
 
-        sqlManager = builder.addInterDebug().build();
+        sqlManager = SQLManager.newBuilder(driver, url, userName, password).addInterDebug().build();
+
 
 //        DBStyle mysql = new MySqlStyle();
 //        // sql语句放在classpagth的/sql 目录下
