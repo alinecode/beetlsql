@@ -166,7 +166,16 @@ public class SQLManager {
 		offsetStartZero = Boolean.parseBoolean(beetl.getPs().getProperty("OFFSET_START_ZERO").trim());
 		defaultBeanProcessors = new BeanProcessor(this);
 	}
-	
+
+	/**
+	 * 使用这个创建更加的简洁, 并且用户不需要理解更多的 构造函数
+	 * @param ds 数据源
+	 * @return SQLManager构建器
+	 */
+	public static SQLManagerBuilder newBuilder(ConnectionSource ds) {
+		return new SQLManagerBuilder(ds);
+	}
+
 	/**
 	 * 
 	 * @MethodName: getMetadataManager   
