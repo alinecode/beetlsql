@@ -88,7 +88,7 @@ public final class SeniorConfigBuilder {
         INTERNAL_AMI_METHOD.put(methodName, mapperInvokeAmi);
     }
 
-    private MethodDescBuilder getMethodDescBuilder() {
+    MethodDescBuilder getMethodDescBuilder() {
         if (this.methodDescBuilder == null) {
             this.methodDescBuilder = new MethodDescBuilder() {
                 @Override

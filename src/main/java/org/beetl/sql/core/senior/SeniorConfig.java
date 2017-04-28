@@ -17,18 +17,17 @@ import static org.beetl.sql.core.senior.SeniorConfigBuilder.MAPPER_JOIN_PROXY_MA
  */
 public final class SeniorConfig {
     public static final SeniorConfig $ = new SeniorConfig();
-    MethodDescBuilder methodDescBuilder = new MethodDescBuilder() {
-        @Override
-        public MethodDesc create() {
-            return new MethodDesc();
-        }
-    };
+    SeniorConfigBuilder seniorConfigBuilder = new SeniorConfigBuilder();
+    MethodDescBuilder methodDescBuilder = seniorConfigBuilder.getMethodDescBuilder();
 
     private SeniorConfig() {
     }
 
-    public static SeniorConfigBuilder newBuilder() {
-        return new SeniorConfigBuilder();
+    /**
+     * @return 配置构建器
+     */
+    public SeniorConfigBuilder getBuilder() {
+        return seniorConfigBuilder;
     }
 
     public MethodDesc createMethodDesc() {

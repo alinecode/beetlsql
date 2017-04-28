@@ -52,7 +52,7 @@ public class AmiInnerProxyMapperInvokeTest {
         Config.$.dbInit();
 
         // 这里开始是扩展测试用例
-        SeniorConfigBuilder builder = SeniorConfig.newBuilder();
+        SeniorConfigBuilder builder = SeniorConfig.$.getBuilder();
 
         /*
         扩展一个自定义接口不使用 BaseMapper
@@ -89,7 +89,7 @@ public class AmiInnerProxyMapperInvokeTest {
     @Test
     public void testMethodDescBuilder() {
         Config.$.dbInit();
-        SeniorConfigBuilder builder = SeniorConfig.newBuilder();
+        SeniorConfigBuilder builder = SeniorConfig.$.getBuilder();
         builder.setMethodDescBuilder(new MethodDescBuilder() {
             @Override
             public MethodDesc create() {
