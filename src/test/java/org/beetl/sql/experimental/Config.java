@@ -1,9 +1,6 @@
 package org.beetl.sql.experimental;
 
-import org.beetl.sql.core.*;
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.core.SQLManager;
 
 /**
  * <pre>
@@ -31,28 +28,9 @@ public class Config {
         init = true;
 
         // 这个类是不提交的,里面做的就是改变了Config的数据库连接信息.
-//        PrivateConfig.settingConfig();
+        PrivateConfig.settingConfig();
 
-//        ConnectionSource source = ConnectionSourceHelper.getSimple(driver, url, userName, password);
-//
-//        SQLManagerBuilder builder = SQLManager.newBuilder(source);
-//
-//        sqlManager = builder.addInterDebug().build();
-
-
+        // 使用SQLManager构建器构建 SQLManager, 并添加一个sql打印插件.
         sqlManager = SQLManager.newBuilder(driver, url, userName, password).addInterDebug().build();
-
-
-//        DBStyle mysql = new MySqlStyle();
-//        // sql语句放在classpagth的/sql 目录下
-//        SQLLoader loader = new ClasspathLoader("/sql");
-//        // 数据库命名跟java命名一样，所以采用DefaultNameConversion，还有一个是UnderlinedNameConversion，下划线风格的，
-//        NameConversion nc = new DefaultNameConversion();
-//        // 最后，创建一个SQLManager,DebugInterceptor 不是必须的，但可以通过它查看sql执行情况
-//        Interceptor[] inters = new Interceptor[]{new DebugInterceptor()};
-//
-//        sqlManager = new SQLManager(mysql, loader, source, nc, inters);
-
-
     }
 }

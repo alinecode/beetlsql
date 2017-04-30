@@ -132,21 +132,23 @@ public class MapperJavaProxy implements InvocationHandler {
 //            Object ret = invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
 //            return ret;
         } else {
-            MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass,method, sqlId);
-            if(desc.sqlReady.length()==0){
-                switch(desc.type){
-                    case 0 :invoke = new InsertMapperInvoke();break;
-                    case 1:invoke = new InsertMapperInvoke();break;
-                    case 2:invoke = new SelecSingleMapperInvoke();break;
-                    case 3:invoke = new SelectMapperInvoke();break;
-                    case 4:invoke = new UpdateMapperInvoke();break;
-                    case 5:invoke = new UpdateBatchMapperInvoke();break;
-                    case 6:invoke = new PageQueryMapperInvoke();break;
-                }
+            MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass, method, sqlId);
+            if (desc.sqlReady.length() == 0) {
+//                switch(desc.type){
+//                    case 0 :invoke = new InsertMapperInvoke();break;
+//                    case 1:invoke = new InsertMapperInvoke();break;
+//                    case 2:invoke = new SelecSingleMapperInvoke();break;
+//                    case 3:invoke = new SelectMapperInvoke();break;
+//                    case 4:invoke = new UpdateMapperInvoke();break;
+//                    case 5:invoke = new UpdateBatchMapperInvoke();break;
+//                    case 6:invoke = new PageQueryMapperInvoke();break;
+//                }
+                // 内部都是无状态的, 不必每次创建新对象, 使用数组优化.
+                invoke = SeniorConfig.$.getMethodDescProxy(desc.type);
                 //handle Void.class ?
                 Object ret = invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
                 return ret;
-            }else{
+            } else {
                 invoke = new SQLReadyExecuteMapperInvoke(desc.type);
                 Object ret = invoke.call(this.sqlManager, this.entityClass, desc.sqlReady, method, args);
                 return ret;

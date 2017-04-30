@@ -3,8 +3,7 @@ package org.beetl.sql.core.senior;
 import org.beetl.sql.core.mapper.MapperInvoke;
 import org.beetl.sql.core.mapper.MethodDesc;
 
-import static org.beetl.sql.core.senior.SeniorConfigBuilder.INTERNAL_AMI_METHOD;
-import static org.beetl.sql.core.senior.SeniorConfigBuilder.MAPPER_JOIN_PROXY_MAPPER_INVOKE;
+import static org.beetl.sql.core.senior.SeniorConfigBuilder.*;
 
 /**
  * <pre>
@@ -41,6 +40,16 @@ public final class SeniorConfig {
 
     public MapperInvoke getInternalAmi(String methodName) {
         return INTERNAL_AMI_METHOD.get(methodName);
+    }
+
+    /**
+     * 请使用 MethodDesc.type 来访问
+     *
+     * @param methodDescType 处理用户方法的下标
+     * @return 处理用户方法的代理
+     */
+    public MapperInvoke getMethodDescProxy(int methodDescType) {
+        return METHOD_DESC_PROXY_ARRAY[methodDescType];
     }
 
 }

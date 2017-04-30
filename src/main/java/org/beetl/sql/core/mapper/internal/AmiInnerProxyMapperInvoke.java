@@ -9,7 +9,17 @@ import java.lang.reflect.Method;
 /**
  * <pre>
  * 灵活的策略代理, 用户可自由添加任何接口方法实现类
- * 通过 {@link org.beetl.sql.core.senior.SeniorConfigBuilder}
+ * 通过 {@link org.beetl.sql.core.senior.SeniorConfigBuilder}.
+ * 也推荐用户自定义的基接口(Mapper)与这个关联, 使你的代码与beetlsql的耦合度达到最低.
+ *
+ * 我们为用户提供服务, 但我们不粘着你.
+ * 我们还为用户代码可移植进行考虑.
+ * 站在用户角度考虑问题, 我们是认真的.
+ * </pre>
+ *
+ * <pre>
+ *     使用示例:
+ *     SeniorConfigBuilder.putMapperInvokeProxy(MyMapper.class, new AmiInnerProxyMapperInvoke());
  * </pre>
  * create time : 2017-04-27 16:26
  *
