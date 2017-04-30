@@ -33,6 +33,9 @@ public final class SeniorConfigBuilder {
      */
     static final Map<String, MapperInvoke> INTERNAL_AMI_METHOD = new HashMap<String, MapperInvoke>();
 
+    /** 用户扩展基接口 */
+    static final AmiInnerProxyMapperInvoke AMI_PROXY = new AmiInnerProxyMapperInvoke();
+
     // 内置配置
     static {
         // 添加内置的 INTERNAL_AMI_METHOD
@@ -79,10 +82,25 @@ public final class SeniorConfigBuilder {
      * 添加接口与代理的映射
      *
      * @param c                 一般填写接口
-     * @param mapperInvokeProxy 如果是自定义基接口, 对应 {@link AmiInnerProxyMapperInvoke} 即可高度扩展
+     * @param mapperInvokeProxy 如果是自定义基接口, 一般对应 {@link AmiInnerProxyMapperInvoke} 即可高度扩展. 也可以自定义一个proxy
      */
     public static void putMapperInvokeProxy(Class c, MapperInvoke mapperInvokeProxy) {
         MAPPER_JOIN_PROXY_MAPPER_INVOKE.put(c, mapperInvokeProxy);
+    }
+
+    /**
+     * <pre>
+     *
+     * 添加基接口与代理的映射 {@link AmiInnerProxyMapperInvoke}
+     * 可以添加多个
+     * 如果想给你的基接口扩展额外的内置方法, 请使用 addAmi 方法
+     *
+     * </pre>
+     *
+     * @param c 基接口
+     */
+    public static void addBaseMapper(Class c) {
+        MAPPER_JOIN_PROXY_MAPPER_INVOKE.put(c, AMI_PROXY);
     }
 
     /**
@@ -94,7 +112,7 @@ public final class SeniorConfigBuilder {
      * @param methodName      方法名
      * @param mapperInvokeAmi MapperInvoke
      */
-    public static void putInternalAmi(String methodName, MapperInvoke mapperInvokeAmi) {
+    public static void addAmi(String methodName, MapperInvoke mapperInvokeAmi) {
         INTERNAL_AMI_METHOD.put(methodName, mapperInvokeAmi);
     }
 

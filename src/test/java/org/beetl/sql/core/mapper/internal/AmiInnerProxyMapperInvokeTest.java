@@ -12,7 +12,6 @@ import org.beetl.sql.experimental.methoddesc.MethodDescExperimental;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import javax.xml.bind.annotation.XmlElementDecl;
 import java.util.List;
 
 /**
@@ -61,15 +60,15 @@ public class AmiInnerProxyMapperInvokeTest {
          * MyMapper接口使用 AmiInnerProxyMapperInvoke 对象来处理
          * AmiInnerProxyMapperInvoke默认实现了 BaseMapper 的所有实现方法
          */
-        SeniorConfigBuilder.putMapperInvokeProxy(MyMapper.class, new AmiInnerProxyMapperInvoke());
+        SeniorConfigBuilder.addBaseMapper(MyMapper.class);
 
         /*
           这两个方法名与 MyMapper接口保持一致.
           为了告诉beetlsql, 遇见这个方法名, 帮我用对应的实现类来处理.
           这样扩展性更高, 更自由.不必等着开源作者来提供实现.
           */
-        SeniorConfigBuilder.putInternalAmi("selectAll", new AllAmi());
-        SeniorConfigBuilder.putInternalAmi("selectCount", new AllCountAmi());
+        SeniorConfigBuilder.addAmi("selectAll", new AllAmi());
+        SeniorConfigBuilder.addAmi("selectCount", new AllCountAmi());
 
         BeeBird.Dao dao = Config.$.sqlManager.getMapper(BeeBird.Dao.class);
 
