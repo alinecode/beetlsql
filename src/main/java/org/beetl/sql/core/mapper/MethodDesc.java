@@ -402,7 +402,7 @@ public class MethodDesc {
 	}
 	
 	
-	private int getTypeBySqlId(SQLManager sm, String sqlId) {
+	protected int getTypeBySqlId(SQLManager sm, String sqlId) {
 		String sql = null;
 		SQLScript script = sm.getScript(sqlId);
 		sql = script.getSql();
