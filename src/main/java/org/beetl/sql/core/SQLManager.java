@@ -1,7 +1,39 @@
 package org.beetl.sql.core;
 
+import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.INSERT;
+import static org.beetl.sql.core.kit.Constants.INSERT_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
+import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
+import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
+import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.UPDATE_TEMPLATE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.classSQL;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 import org.beetl.core.Configuration;
-import org.beetl.sql.core.db.*;
+import org.beetl.sql.core.db.ClassDesc;
+import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.db.MetadataManager;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.BeanKit;
@@ -10,20 +42,12 @@ import org.beetl.sql.core.kit.GenKit;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
+import org.beetl.sql.core.mapper.builder.MapperConfig;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
-
-import java.io.*;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
-import static org.beetl.sql.core.kit.Constants.*;
 
 /**
  * Beetsql 操作入口
@@ -48,6 +72,8 @@ public class SQLManager {
     private MetadataManager metaDataManager;
     //数据库默认的shcema，对于单个schema应用，无需指定，但多个shcema，需要指定默认的shcema
     private String defaultSchema = null;
+    
+    private MapperConfig mapperConfig = new MapperConfig();
 
     {
         //添加一个id简单实现
@@ -1817,5 +1843,14 @@ public class SQLManager {
         this.sqlLoader.setSQLIdNameConversion(sqlIdNc);
     }
 
+	public MapperConfig getMapperConfig() {
+		return mapperConfig;
+	}
 
+	public void setMapperConfig(MapperConfig mapperConfig) {
+		this.mapperConfig = mapperConfig;
+	}
+
+
+    
 }

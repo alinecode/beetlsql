@@ -25,7 +25,7 @@ import org.beetl.sql.core.kit.StringKit;
  * @author xiandafu
  *
  */
-public class MappingEntity {
+public class MappingEntity implements java.io.Serializable {
 	protected String target;
 	protected boolean isSingle = false;
 	protected Map<String, String> mapkey;

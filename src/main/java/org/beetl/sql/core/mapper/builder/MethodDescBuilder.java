@@ -1,4 +1,4 @@
-package org.beetl.sql.core.senior;
+package org.beetl.sql.core.mapper.builder;
 
 import org.beetl.sql.core.mapper.MethodDesc;
 

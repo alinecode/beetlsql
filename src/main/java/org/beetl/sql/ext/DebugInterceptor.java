@@ -39,20 +39,60 @@ public class DebugInterceptor implements Interceptor {
 		.append("┣ 参数：\t " + formatParas(ctx.getParas())).append(lineSeparator);
 		RuntimeException ex = new  RuntimeException();
 		StackTraceElement[] traces = ex.getStackTrace();
+		ex.printStackTrace();
 		boolean found = false ;
-		for(StackTraceElement tr:traces){
+		for(int i=0;i<traces.length;i++){
+			StackTraceElement tr = traces[i];
+		
 			if(!found&&tr.getClassName().indexOf("SQLManager")!=-1){
-				found = true ;	
+				//调用sqlManager的有可能是业务代码，又有可能是mapper类
+				found = true ;
+				
+				
+			}else{
+				continue ;
 			}
-			if(found&&!tr.getClassName().startsWith("org.beetl.sql.core")&&!tr.getClassName().startsWith("com.sun")){
-				String className = tr.getClassName();
-				String mehodName = tr.getMethodName();
-				int line = tr.getLineNumber();
-				sb.append("┣ 位置：\t "+className+"."+mehodName+"("+tr.getFileName()+":"+line+")"+lineSeparator);
-				break ;
+			
+			int start  = this.findLastSQLManager(i, traces);
+			//查找可能的mapper
+			int index = findMapperJavaProxy(start,traces);
+			StackTraceElement bussinessCode =null;
+			if(index==-1){
+				//业务代码直接调用SQLManager
+				bussinessCode = traces[start];
+			}else{
+				//越过com.sun.proxy.$ProxyXX的调用
+				bussinessCode = traces[index+2];
 			}
+			String className = bussinessCode.getClassName();
+			String mehodName = bussinessCode.getMethodName();
+			int line = bussinessCode.getLineNumber();
+			sb.append("┣ 位置：\t "+className+"."+mehodName+"("+bussinessCode.getFileName()+":"+line+")"+lineSeparator);
+			break ;
 		}
 		ctx.put("logs", sb);
+	}
+	
+	protected int findMapperJavaProxy(int start,StackTraceElement[] traces){
+		for(int i=start;i<traces.length;i++){
+			StackTraceElement el = traces[i];
+			if(el.getClassName().equals("org.beetl.sql.core.mapper.MapperJavaProxy")){
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	protected int findLastSQLManager(int start,StackTraceElement[] traces){
+		for(int i=start;i<traces.length;i++){
+			StackTraceElement el = traces[i];
+			if(!el.getClassName().equals("org.beetl.sql.core.SQLManager")){
+				return i;
+			}
+		}
+		//不会执行到这里，因为start就是SQLManager开始的地方
+		return -1;
 	}
 
 	@Override

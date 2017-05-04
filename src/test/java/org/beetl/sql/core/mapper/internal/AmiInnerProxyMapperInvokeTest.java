@@ -1,38 +1,32 @@
 package org.beetl.sql.core.mapper.internal;
 
+import java.util.List;
+
 import org.beetl.sql.core.mapper.BaseMapper;
 import org.beetl.sql.core.mapper.MapperInvoke;
-import org.beetl.sql.core.mapper.MethodDesc;
-import org.beetl.sql.core.senior.MethodDescBuilder;
-import org.beetl.sql.core.senior.SeniorConfig;
-import org.beetl.sql.core.senior.SeniorConfigBuilder;
-import org.beetl.sql.experimental.Config;
-import org.beetl.sql.experimental.domain.BeeBird;
-import org.beetl.sql.experimental.methoddesc.MethodDescExperimental;
+import org.beetl.sql.core.mapper.builder.MapperConfig;
+import org.beetl.sql.test.mysql.BaseMySqlTest;
+import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Test;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 /**
  * <BR>
  * create time : 2017-04-27 18:00
  *
- * @author luoyizhu@gmail.com
+ * @author luoyizhu@gmail.com,xiandafu
  */
-public class AmiInnerProxyMapperInvokeTest {
+public class AmiInnerProxyMapperInvokeTest  extends BaseMySqlTest{
 
     @Test
     public void testOriginal() {
         // 原始测试
-        MapperInvoke invoke = SeniorConfig.$.getInternalAmi("insert");
-        Assert.notNull(invoke);
-
-        invoke = SeniorConfig.$.getMapperInvokeProxy(BaseMapper.class);
-
-        Assert.notNull(invoke);
-
-        System.out.println(invoke);
+	    	MapperConfig mapperConfig = 	this.sqlManager.getMapperConfig();
+	    	MapperInvoke invoke =  	mapperConfig.getMapperInvokeProxy(BaseMapper.class, "insert");
+	   
+	    Assert.notNull(invoke);
+	
+	    Assert.isTrue(invoke instanceof InsertAmi);
     }
 
     /**
@@ -49,34 +43,26 @@ public class AmiInnerProxyMapperInvokeTest {
     @Test
     public void testAmi() {
 
-        Config.$.dbInit();
+ 
+     	MapperConfig mapperConfig = 	this.sqlManager.getMapperConfig();
 
-        // 这里开始是扩展测试用例
-//        SeniorConfigBuilder builder = SeniorConfig.$.getBuilder();
-
-        /*
-         * 扩展一个自定义接口不使用 BaseMapper.
-         * 松耦合编程. 不强制用户与beetlsql耦合, 站在用户的角度是为了让用户无伤切换到其他orm框架.
-         * MyMapper接口使用 AmiInnerProxyMapperInvoke 对象来处理
-         * AmiInnerProxyMapperInvoke默认实现了 BaseMapper 的所有实现方法
-         */
-        SeniorConfigBuilder.addBaseMapper(MyMapper.class);
 
         /*
           这两个方法名与 MyMapper接口保持一致.
           为了告诉beetlsql, 遇见这个方法名, 帮我用对应的实现类来处理.
           这样扩展性更高, 更自由.不必等着开源作者来提供实现.
           */
-        SeniorConfigBuilder.addAmi("selectAll", new AllAmi());
-        SeniorConfigBuilder.addAmi("selectCount", new AllCountAmi());
+	    	mapperConfig.getBuilder().setMapperInvokeProxy(MyMapper.class, "selectCount", new AllCountAmi() );
+	    	mapperConfig.getBuilder().setMapperInvokeProxy(MyMapper.class, "selectAll", new AllAmi() );
+	          
 
-        BeeBird.Dao dao = Config.$.sqlManager.getMapper(BeeBird.Dao.class);
+    		UserDao dao = sqlManager.getMapper(UserDao.class);
 
         long count = dao.selectCount();
 
         System.out.println("count: " + count);
 
-        List<BeeBird> birds = dao.selectAll();
+        List<User> birds = dao.selectAll();
 
         System.out.println(birds);
     }
@@ -89,16 +75,16 @@ public class AmiInnerProxyMapperInvokeTest {
      */
     @Test
     public void testMethodDescBuilder() {
-        Config.$.dbInit();
-        SeniorConfigBuilder builder = SeniorConfig.$.getBuilder();
-        builder.setMethodDescBuilder(new MethodDescBuilder() {
-            @Override
-            public MethodDesc create() {
-                return new MethodDescExperimental();
-            }
-        });
-
-        builder.build();
+//        Config.$.dbInit();
+//        MapperConfigBuilder builder = MapperConfig.$.getBuilder();
+//        builder.setMethodDescBuilder(new MethodDescBuilder() {
+//            @Override
+//            public MethodDesc create() {
+//                return new MethodDescExperimental();
+//            }
+//        });
+//
+//        builder.build();
     }
 
 

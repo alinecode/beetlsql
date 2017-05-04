@@ -18,7 +18,7 @@ import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
-import org.beetl.sql.core.senior.SeniorConfig;
+import org.beetl.sql.core.mapper.builder.MapperConfig;
 
 /**
  * dao2 参数
@@ -80,8 +80,7 @@ public class MethodDesc {
 		MethodDesc desc = cache.get(callKey);
 		if (desc != null)
 			return desc;
-//		desc = new MethodDesc();
-		desc = SeniorConfig.$.createMethodDesc();
+		desc = sm.getMapperConfig().createMethodDesc();
         desc.doParse(sm, entityClass, m, sqlId);
 		cache.put(callKey, desc);
 		return desc;

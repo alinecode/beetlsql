@@ -1,7 +1,7 @@
 package org.beetl.sql.core.mapper;
 
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.senior.SeniorConfig;
+import org.beetl.sql.core.mapper.builder.MapperConfig;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,6 +27,9 @@ public class MapperJavaProxy implements InvocationHandler {
 
 
     protected DefaultMapperBuilder builder;
+    
+    
+    protected MapperConfig mapperConfig ;
 
     /**
      * The Constructor.
@@ -121,31 +124,18 @@ public class MapperJavaProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String sqlId = this.builder.getIdGen().getId(entityClass, method);
         Class c = method.getDeclaringClass();
-        MapperInvoke invoke = SeniorConfig.$.getMapperInvokeProxy(c);
+        String methodName = method.getName();
+        MapperInvoke invoke = sqlManager.getMapperConfig().getMapperInvokeProxy(c,methodName);
         if (invoke != null) {
-            // 内部都是无状态的, 不必每次创建新对象.
+        		//内置的方法，直接调用Invoke
             return invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
-//        }
-//        if (c == BaseMapper.class) {
-//            invoke = new InnerMapperInvoke();
-////            invoke = AmiInnerProxyMapperInvoke.$;
-//            Object ret = invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
-//            return ret;
+
         } else {
+        		//解析方法以及注解，找到对应的处理类
             MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass, method, sqlId);
             if (desc.sqlReady.length() == 0) {
-//                switch(desc.type){
-//                    case 0 :invoke = new InsertMapperInvoke();break;
-//                    case 1:invoke = new InsertMapperInvoke();break;
-//                    case 2:invoke = new SelecSingleMapperInvoke();break;
-//                    case 3:invoke = new SelectMapperInvoke();break;
-//                    case 4:invoke = new UpdateMapperInvoke();break;
-//                    case 5:invoke = new UpdateBatchMapperInvoke();break;
-//                    case 6:invoke = new PageQueryMapperInvoke();break;
-//                }
-                // 内部都是无状态的, 不必每次创建新对象, 使用数组优化.
-                invoke = SeniorConfig.$.getMethodDescProxy(desc.type);
-                //handle Void.class ?
+
+                invoke =  sqlManager.getMapperConfig().getMethodDescProxy(desc.type);
                 Object ret = invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
                 return ret;
             } else {
