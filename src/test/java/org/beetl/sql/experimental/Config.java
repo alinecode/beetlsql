@@ -28,7 +28,7 @@ public class Config {
         init = true;
 
 //        // 这个类是不提交的,里面做的就是改变了Config的数据库连接信息.
-//        PrivateConfig.settingConfig();
+        PrivateConfig.settingConfig();
 
         // 使用SQLManager构建器构建 SQLManager, 并添加一个sql打印插件.
         sqlManager = SQLManager.newBuilder(driver, url, userName, password).addInterDebug().build();

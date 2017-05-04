@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapper;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
+import org.beetl.sql.core.mapper.builder.MapperInvokeDataConfig;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,9 +28,9 @@ public class MapperJavaProxy implements InvocationHandler {
 
 
     protected DefaultMapperBuilder builder;
-    
-    
-    protected MapperConfig mapperConfig ;
+
+
+    protected MapperConfig mapperConfig;
 
     /**
      * The Constructor.
@@ -125,17 +126,17 @@ public class MapperJavaProxy implements InvocationHandler {
         String sqlId = this.builder.getIdGen().getId(entityClass, method);
         Class c = method.getDeclaringClass();
         String methodName = method.getName();
-        MapperInvoke invoke = sqlManager.getMapperConfig().getMapperInvokeProxy(c,methodName);
+        MapperInvoke invoke = sqlManager.getMapperConfig().getAmi(c, methodName);
         if (invoke != null) {
-        		//内置的方法，直接调用Invoke
+            //内置的方法，直接调用Invoke
             return invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
 
         } else {
-        		//解析方法以及注解，找到对应的处理类
+            //解析方法以及注解，找到对应的处理类
             MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass, method, sqlId);
             if (desc.sqlReady.length() == 0) {
 
-                invoke =  sqlManager.getMapperConfig().getMethodDescProxy(desc.type);
+                invoke = MapperInvokeDataConfig.getMethodDescProxy(desc.type);
                 Object ret = invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
                 return ret;
             } else {

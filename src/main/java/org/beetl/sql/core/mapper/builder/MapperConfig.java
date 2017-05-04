@@ -1,9 +1,11 @@
 package org.beetl.sql.core.mapper.builder;
 
-import static org.beetl.sql.core.mapper.builder.MapperConfigBuilder.*;
-
+import org.beetl.sql.core.mapper.BaseMapper;
 import org.beetl.sql.core.mapper.MapperInvoke;
 import org.beetl.sql.core.mapper.MethodDesc;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <pre>
@@ -14,34 +16,37 @@ import org.beetl.sql.core.mapper.MethodDesc;
  * @author luoyizhu@gmail.com,xiandafu
  */
 public final class MapperConfig {
-   
-    MapperConfigBuilder seniorConfigBuilder = null;
-    MethodDescBuilder methodDescBuilder = null;
 
-    public  MapperConfig() {
-    		seniorConfigBuilder = new MapperConfigBuilder(this);
-    		methodDescBuilder = seniorConfigBuilder.getMethodDescBuilder();
+    private final MapperConfigBuilder builder = new MapperConfigBuilder();
+    private Map<Class, MapperConfigBuilder> mapperConfigBuilderMap = new HashMap<Class, MapperConfigBuilder>();
+
+    public MapperConfig(Class c) {
+        this.mapperConfigBuilderMap.put(c, builder);
+        this.mapperConfigBuilderMap.put(BaseMapper.class, MapperInvokeDataConfig.BASE_MAPPER_BUILDER);
     }
 
-    /**
-     * @return 配置构建器
-     */
-    public MapperConfigBuilder getBuilder() {
-        return seniorConfigBuilder;
+    public MapperConfig() {
+        this.mapperConfigBuilderMap.put(BaseMapper.class, MapperInvokeDataConfig.BASE_MAPPER_BUILDER);
     }
 
     public MethodDesc createMethodDesc() {
-        return methodDescBuilder.create();
+        return builder.methodDescBuilder.create();
     }
 
-    public MapperInvoke getMapperInvokeProxy(Class c,String method) {
-        return seniorConfigBuilder.getMapperInvokeProxy(c, method);
+    public MapperConfigBuilder getBuilder() {
+        return builder;
     }
 
-
-
-    public MapperInvoke getMethodDescProxy(int methodDescType) {
-        return seniorConfigBuilder.METHOD_DESC_PROXY_ARRAY[methodDescType];
+    /**
+     * 根据接口, 接口方法名, 获取对应的处理类
+     *
+     * @param c      接口
+     * @param method 接口方法名
+     * @return Ami 处理类
+     */
+    public MapperInvoke getAmi(Class c, String method) {
+        MapperConfigBuilder builder = this.mapperConfigBuilderMap.get(c);
+        return builder.getAmi(method);
     }
 
 }

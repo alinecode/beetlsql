@@ -39,7 +39,6 @@ public class DebugInterceptor implements Interceptor {
 		.append("┣ 参数：\t " + formatParas(ctx.getParas())).append(lineSeparator);
 		RuntimeException ex = new  RuntimeException();
 		StackTraceElement[] traces = ex.getStackTrace();
-		ex.printStackTrace();
 		boolean found = false ;
 		for(int i=0;i<traces.length;i++){
 			StackTraceElement tr = traces[i];

@@ -12,4 +12,6 @@ public interface MyMapper<T> {
     long selectCount();
 
     List<T> selectAll();
+
+    List<Integer> selectIds();
 }

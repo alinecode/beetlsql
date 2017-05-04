@@ -1,6 +1,7 @@
 package org.beetl.sql.experimental.domain;
 
 import org.beetl.sql.core.annotatoin.Table;
+import org.beetl.sql.core.mapper.BaseMapper;
 import org.beetl.sql.core.mapper.internal.MyMapper;
 
 /**
@@ -8,7 +9,7 @@ import org.beetl.sql.core.mapper.internal.MyMapper;
  * 表结构请到这里下载:  http://git.oschina.net/iohao/beetlsql-experimental
  * dir/sql/bird.sql
  * </pre>
- *
+ * <p>
  * create time : 2017-04-27 18:29
  *
  * @author luoyizhu@gmail.com
@@ -62,6 +63,10 @@ public class BeeBird {
     }
 
     public interface Dao extends MyMapper<BeeBird> {
+
+    }
+
+    public interface BaseDao extends BaseMapper<BeeBird> {
 
     }
 }
