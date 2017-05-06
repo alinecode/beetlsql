@@ -46,7 +46,12 @@ public final class MapperConfig {
      */
     public MapperInvoke getAmi(Class c, String method) {
         MapperConfigBuilder builder = this.mapperConfigBuilderMap.get(c);
-        return builder.getAmi(method);
+        if(builder==null){
+        		return null;
+        }else{
+        		return builder.getAmi(method);
+        }
+        
     }
 
 }
