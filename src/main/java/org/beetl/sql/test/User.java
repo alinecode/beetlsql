@@ -4,16 +4,15 @@ import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AutoID;
-import org.beetl.sql.core.annotatoin.TableTemplate;
+import org.beetl.sql.core.orm.OrmCondition;
+import org.beetl.sql.core.orm.OrmQuery;
 
-//@OrmQuery(
-//{
-//	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE,alias="myDept")
-////	@OrmCondition(target=ProductOrder.class,attr="id",targetAttr="userId" ,type=OrmQuery.Type.MANY),
-////	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY)
-//
-//}
-//)
+@OrmQuery(
+{
+	@OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE,alias="myDept"),
+	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY,alias="roles")
+}
+)
 
 public class User   extends TailBean {
 	
@@ -21,8 +20,7 @@ public class User   extends TailBean {
 	private String name ;
 	private Integer departmentId;
 	private Date createTime;
-	private String content ;
-	private Color color;
+	
 	
 	public User() {
 	}
@@ -58,22 +56,7 @@ public class User   extends TailBean {
 		this.createTime = createTime;
 	}
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
+	
 	
 	
 

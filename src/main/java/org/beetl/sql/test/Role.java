@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 * 
 * gen by beetlsql 2016-08-20
 */
-public class Role  {
+public class Role implements java.io.Serializable {
 	
 	private Integer id ;
 	private String name ;

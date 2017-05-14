@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by woate on 2016/4/29.
  * JPA命名转换器提供表名，字段名的映射
  */
+@Deprecated
 public class JPANameConversion extends NameConversion {
     static final Map<Class, Map<String, String>> PROP2COL_CACHE = new ConcurrentHashMap<Class, Map<String, String>>();
     static final Map<Class, Map<String, String>> COL2PROP_CACHE = new ConcurrentHashMap<Class, Map<String, String>>();

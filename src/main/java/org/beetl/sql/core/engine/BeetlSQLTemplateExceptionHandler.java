@@ -23,7 +23,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 		int startLine = resource.getLine();
 		
 		StringBuilder sb = new StringBuilder(">>").append(getDateTime()).append(":").append(error.getType())
-				.append(":").append(error.getErrorTokenText()).append(" 位于").append(line+startLine).append("行").append(" 资源:")
+				.append(":").append(error.getErrorTokenText()).append(" 位于").append(line+startLine-1).append("行").append(" 资源:")
 				.append(getResourceName(ex.resourceId));
 
 		System.out.println(sb.toString());
@@ -48,7 +48,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 				int lineNumber = range[0];
 				for (int i = 0; i < strs.length; i++)
 				{
-					print(writer, "" + (lineNumber+startLine));
+					print(writer, "" + (lineNumber+startLine-1));
 					print(writer, "|");
 					println(writer, strs[i]);
 					lineNumber++;

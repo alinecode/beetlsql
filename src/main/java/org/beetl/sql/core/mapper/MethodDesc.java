@@ -1,18 +1,24 @@
 package org.beetl.sql.core.mapper;
 
-import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLScript;
-import org.beetl.sql.core.annotatoin.*;
-import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.engine.PageQuery;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.beetl.sql.core.BeetlSQLException;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLScript;
+import org.beetl.sql.core.annotatoin.Param;
+import org.beetl.sql.core.annotatoin.RowSize;
+import org.beetl.sql.core.annotatoin.RowStart;
+import org.beetl.sql.core.annotatoin.Sql;
+import org.beetl.sql.core.annotatoin.SqlStatement;
+import org.beetl.sql.core.annotatoin.SqlStatementType;
+import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.engine.PageQuery;
 
 /**
  * dao2 参数
@@ -123,6 +129,9 @@ public class MethodDesc {
 		Class methodRetType = m.getReturnType();
 		if (type==2&&List.class.isAssignableFrom(methodRetType)) {
 			type = 3;
+			stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
+					.getActualTypeArguments()[0];
+
 		}
 	
 		
@@ -180,6 +189,8 @@ public class MethodDesc {
 		} else if (type == 2) {
 			if (List.class.isAssignableFrom(methodRetType)) {
 				type = 3;
+				stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
+						.getActualTypeArguments()[0];
 			}
 		}
 		

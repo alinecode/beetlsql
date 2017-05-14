@@ -48,7 +48,7 @@ public class LazyMappingEntity extends MappingEntity {
 	protected void mapClassItem(final Object obj, final SQLManager sm) {
 		
 	    
-		
+		final String sqlManagerName = sm.getSQLManagerName();
 		if (sqlId != null) {
 			final Map<String,Object> paras = new HashMap<String,Object>();
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
@@ -62,8 +62,9 @@ public class LazyMappingEntity extends MappingEntity {
 
 				@Override
 				public Object get() {
+					SQLManager sqlManager = getSQLManager(sqlManagerName);
 					// TODO Auto-generated method stub
-					List ret = sm.select(sqlId, targetClass, paras);
+					List ret = sqlManager.select(sqlId, targetClass, paras);
 					return retValue(ret);
 				}
 				
@@ -83,8 +84,8 @@ public class LazyMappingEntity extends MappingEntity {
 
 						@Override
 						public Object get() {
-							// TODO Auto-generated method stub
-							Object ret = sm.single(targetClass, value);
+							SQLManager sqlManager = getSQLManager(sqlManagerName);
+							Object ret = sqlManager.single(targetClass, value);
 							return ret;
 						}
 						
@@ -107,8 +108,8 @@ public class LazyMappingEntity extends MappingEntity {
 
 				@Override
 				public Object get() {
-					// TODO Auto-generated method stub
-					List ret = sm.template(ins);
+					SQLManager sqlManager = getSQLManager(sqlManagerName);
+					List ret = sqlManager.template(ins);
 					return retValue(ret);
 				}
 				
@@ -134,6 +135,12 @@ public class LazyMappingEntity extends MappingEntity {
 			return ret;
 		}
 	}
+	
+	private SQLManager getSQLManager(String name){
+		return SQLManager.getSQLManagerByName(name);
+	}
+	
+	
 
 
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.beetl.sql.core.db.DB2SqlStyle;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.kit.MDParser;
 
 /**
  * 从classpath系统加载sql模板，id应该格式是"xx.yyy",xx代表了文件名，yyy代表了sql标识 sql 模板格式如下：
@@ -98,15 +99,7 @@ public class ClasspathLoader implements SQLLoader {
             //db目录中没有文件，使用root下的
             is = this.getRootFile(id);
         }
-//		if(file==null) return true;
-//		long lastModify = file.lastModified();
-//		Long oldVersion = sqlSourceVersion.get(id);
-//		if(oldVersion==null) return true;
-//		if(oldVersion!=lastModify){
-//			return true;
-//		}else{
-//			return false;
-//		}
+
 		if(is != null){
 			Integer lastModify = is.hashCode();
 			Integer oldVersion = sqlSourceVersion.get(id);
@@ -171,72 +164,20 @@ public class ClasspathLoader implements SQLLoader {
     private boolean readSqlFile(String id,InputStream ins) {
         String modelName = id.substring(0, id.lastIndexOf(".") + 1);
         if(ins == null) return false ;
-//			InputStream ins  = null;
-//		try{
-//			ins = new FileInputStream(file);
-//		}catch(IOException ioe){
-//			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "未找到[id="+id+"]相关SQL"+id,ioe);
-//		}
+
         Integer lastModified = ins.hashCode();
-//		long lastModified = file.lastModified();
         sqlSourceVersion.put(id, lastModified);
-//		InputStream ins = this.getClass().getResourceAsStream(
-//				sqlRoot + File.separator + modelName + "md");
         LinkedList<String> list = new LinkedList<String>();
         BufferedReader bf = null;
         try {
        
             bf = new BufferedReader(new InputStreamReader(ins,charset));
-            String temp = null;
-            StringBuilder sql = null;
-            String key = null;
-            int lineNum = 0;
-            int findLineNum = 0;
-            while ((temp = bf.readLine()) != null) {
-                temp = temp.trim();
-                lineNum++;
-                if (temp.startsWith("===")) {// 读取到===号，说明上一行是key，下面是注释或者SQL语句
-                    if (!list.isEmpty() && list.size() > 1) {// 如果链表里面有多个，说明是上一句的sql+下一句的key
-                        String tempKey = list.pollLast();// 取出下一句sql的key先存着
-                        sql = new StringBuilder();
-                        key = list.pollFirst();
-                        buildSql(list,sql);
-                       
-                        SQLSource source = new SQLSource(modelName + key,sql.toString().trim());
-                        source.setLine(findLineNum);
-                        sqlSourceMap.put(modelName + key, source);// 放入map
-                        list.addLast(tempKey);// 把下一句的key又放进来
-                        findLineNum = lineNum;
-                    }
-                    boolean sqlStart = false ;
-                    String tempNext = null;
-                    while((tempNext = bf.readLine()) != null){//处理注释的情况
-                        tempNext = tempNext.trim();
-                        lineNum++;
-                        if (tempNext.startsWith("*")) {//读到注释行，不做任何处理
-                            continue;
-                        }
-                        else if(!sqlStart&&tempNext.trim().length()==0){
-                        	//注释的空格
-                            continue;
-                        }else{
-                        	 sqlStart = true;
-                        	 list.addLast(tempNext);//===下面不是*号的情况，是一条sql
-                             break;//读到一句sql就跳出循环
-                        }
-                    }
-                } else {
-                    list.addLast(temp);
-                }
-            }
-            // 最后一句sql
-            sql = new StringBuilder();
-            key = list.pollFirst();
-            buildSql(list,sql);
-           
-            SQLSource source = new SQLSource(modelName + key,sql.toString().trim());
-            source.setLine(findLineNum);
-            sqlSourceMap.put(modelName + key,source);
+            MDParser parser = new MDParser(modelName,bf);
+            SQLSource source = null;
+	    		while((source=parser.next())!=null){
+	    			 sqlSourceMap.put(source.getId(), source);
+	    		}
+          
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

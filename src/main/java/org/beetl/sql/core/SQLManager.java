@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.beetl.sql.core.kit.Constants.*;
 
@@ -56,8 +57,10 @@ public class SQLManager {
         //添加一个id简单实现
         idAutonGenMap.put("simple", new SnowflakeIDAutoGen());
     }
-
-
+    // 每个sqlManager都有一个标示，可以通过标识来找到对应的sqlManager，用于序列化和反序列化
+    private static Map<String,SQLManager>  sqlManagerMap = new HashMap<String,SQLManager>();
+    private String sqlMananagerName = null;
+     
     /**
      * 创建一个beetlsql需要的sqlmanager
      *
@@ -112,6 +115,10 @@ public class SQLManager {
     public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema) {
         this(dbStyle, sqlLoader, ds, nc, inters, defaultSchema, new Properties());
     }
+    
+    public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema, Properties ps){
+    		this(dbStyle, sqlLoader, ds, nc, inters, defaultSchema, ps,dbStyle.getName());
+    }
 
     /**
      * @param dbStyle
@@ -122,7 +129,7 @@ public class SQLManager {
      * @param defaultSchema
      * @param ps            额外的beetl配置
      */
-    public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema, Properties ps) {
+    public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema, Properties ps,String name) {
         this.defaultSchema = defaultSchema;
         beetl = new Beetl(sqlLoader, ps);
         this.dbStyle = dbStyle;
@@ -138,6 +145,9 @@ public class SQLManager {
 
         offsetStartZero = Boolean.parseBoolean(beetl.getPs().getProperty("OFFSET_START_ZERO").trim());
         defaultBeanProcessors = new BeanProcessor(this);
+        //目前假定每个sql都有自己的名字，目前
+        sqlMananagerName = name;
+        this.sqlManagerMap.put(name, this);
     }
 
     /**
@@ -1796,6 +1806,23 @@ public class SQLManager {
     public MapperConfig setBaseMapper(Class c) {
         this.mapperConfig = new MapperConfig(c);
         return this.mapperConfig;
+    }
+    
+    /**
+     * 每个sqlManager都有个名称，如果未指定，默认是dbStyle 返回的名称，即数据库名
+     * @param name
+     * @return
+     */
+    public static SQLManager getSQLManagerByName(String name){
+    		SQLManager sqlManager = sqlManagerMap.get(name);
+    		if(sqlManager==null){
+    			throw new NullPointerException("不能根据"+name+"获得sqlManager");
+    		}
+    		return sqlManager;
+    }
+    
+    public String getSQLManagerName(){
+    		return this.sqlMananagerName;
     }
 
 }
