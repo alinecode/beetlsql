@@ -21,9 +21,9 @@ public interface BaseMapper<T> {
 	/**
 	 * （数据库表有自增主键调用此方法）如果实体对应的有自增主键，插入一个实体到数据库，设置assignKey为true的时候，将会获取此主键
 	 * @param entity
-	 * @param assignKey 是否获取自增主键
+	 * @param autDbAssignKey 是否获取自增主键
 	 */
-	void insert(T entity,boolean assignKey);
+	void insert(T entity,boolean autDbAssignKey);
 	/**
 	 * 插入实体到数据库，对于null值不做处理
 	 * @param entity
@@ -32,9 +32,9 @@ public interface BaseMapper<T> {
 	/**
 	 * 如果实体对应的有自增主键，插入实体到数据库，对于null值不做处理,设置assignKey为true的时候，将会获取此主键
 	 * @param entity
-	 * @param assignKey
+	 * @param autDbAssignKey
 	 */
-	void insertTemplate(T entity,boolean assignKey);
+	void insertTemplate(T entity,boolean autDbAssignKey);
 	/**
 	 * 批量插入实体。此方法不会获取自增主键的值，如果需要，建议不适用批量插入，适用
 	 * <pre>

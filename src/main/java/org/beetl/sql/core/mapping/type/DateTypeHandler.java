@@ -13,7 +13,7 @@ public class DateTypeHandler extends JavaSqlTypeHandler {
         } else {
             return null;
         }
-
+        
 
     }
 

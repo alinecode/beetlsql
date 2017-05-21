@@ -1,7 +1,39 @@
 package org.beetl.sql.core;
 
+import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.INSERT;
+import static org.beetl.sql.core.kit.Constants.INSERT_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
+import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
+import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
+import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.UPDATE_TEMPLATE_BY_ID;
+import static org.beetl.sql.core.kit.Constants.classSQL;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 import org.beetl.core.Configuration;
-import org.beetl.sql.core.db.*;
+import org.beetl.sql.core.db.ClassDesc;
+import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.db.MetadataManager;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.BeanKit;
@@ -11,22 +43,11 @@ import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
-import org.beetl.sql.core.mapper.builder.MapperConfigBuilder;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
-
-import java.io.*;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.beetl.sql.core.kit.Constants.*;
 
 /**
  * Beetsql 操作入口
@@ -868,11 +889,11 @@ public class SQLManager {
      * 插入实体，且该实体对应的表有自增主键
      *
      * @param paras
-     * @param autoAssignKey 是否自动获取主键值
+     * @param autoDbAssignKey 是否自动从数据库获取主键值
      * @return
      */
-    public int insert(Object paras, boolean autoAssignKey) {
-        return this.insert(paras.getClass(), paras, autoAssignKey);
+    public int insert(Object paras, boolean autoDbAssignKey) {
+        return this.insert(paras.getClass(), paras, autoDbAssignKey);
     }
 
     /**
@@ -889,11 +910,11 @@ public class SQLManager {
      * 模板插入，并根据autoAssignKey 自动获取自增主键值
      *
      * @param paras
-     * @param autoAssignKey
+     * @param autoDbAssignKey
      * @return
      */
-    public int insertTemplate(Object paras, boolean autoAssignKey) {
-        return this.insertTemplate(paras.getClass(), paras, autoAssignKey);
+    public int insertTemplate(Object paras, boolean autoDbAssignKey) {
+        return this.insertTemplate(paras.getClass(), paras, autoDbAssignKey);
     }
 
     /**
@@ -901,11 +922,11 @@ public class SQLManager {
      *
      * @param clazz
      * @param paras
-     * @param autoAssignKey，是否获取自增主键
+     * @param autoDbAssignKey，是否获取自增主键
      * @return
      */
-    public int insert(Class clazz, Object paras, boolean autoAssignKey) {
-        return generalInsert(clazz, paras, autoAssignKey, false);
+    public int insert(Class clazz, Object paras, boolean autoDbAssignKey) {
+        return generalInsert(clazz, paras, autoDbAssignKey, false);
     }
 
     /**
@@ -913,11 +934,11 @@ public class SQLManager {
      *
      * @param clazz
      * @param paras
-     * @param autoAssignKey
+     * @param autoDbAssignKey
      * @return
      */
-    public int insertTemplate(Class clazz, Object paras, boolean autoAssignKey) {
-        return generalInsert(clazz, paras, autoAssignKey, true);
+    public int insertTemplate(Class clazz, Object paras, boolean autoDbAssignKey) {
+        return generalInsert(clazz, paras, autoDbAssignKey, true);
 
     }
 

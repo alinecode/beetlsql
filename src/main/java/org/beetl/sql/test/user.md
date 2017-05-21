@@ -1,8 +1,7 @@
 getIds3
 ===
-	select id from user  where 1=1 and a = #
+	select id from user  where 1=1 
 	and 1 = 1  
-	@ var d = 1/0;
 	
 	
 selectRole
@@ -13,3 +12,8 @@ selectRole
 	and 1 = 1 and  a=#b..c# and 1=1
 	@ var c = 1/0;
 	~~~
+
+getUsers
+===
+
+    select * from user

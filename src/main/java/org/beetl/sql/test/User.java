@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AutoID;
+import org.beetl.sql.core.annotatoin.ColumnIgnore;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
@@ -39,7 +40,6 @@ public class User   extends TailBean {
 	public void setName(String name ){
 		this.name = name;
 	}
-
 	public Integer getDepartmentId() {
 		return departmentId;
 	}

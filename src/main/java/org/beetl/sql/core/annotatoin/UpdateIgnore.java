@@ -5,16 +5,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * beetlsql 内置的插入和更新的时候使用,默认是insert:ture,update:false
- * 新版本2.8.13后建议使用@UpdateIgnore 和 @InsertIgnore
+ * beetlsql 内置的插入时候使用,忽略此字段
+ * 同@ColumnIgnore
  * @author Administrator
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ColumnIgnore {
-	public boolean insert() default true;
-	public boolean update() default false;
+public @interface UpdateIgnore {
+	
 	
 }
 

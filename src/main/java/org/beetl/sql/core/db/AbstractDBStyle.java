@@ -135,7 +135,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     }
 
-    private String getSelectTemplate(Class<?> cls) {
+    protected String getSelectTemplate(Class<?> cls) {
         String condition = " where 1=1 " + lineSeparator;
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
@@ -290,7 +290,7 @@ public abstract class AbstractDBStyle implements DBStyle {
     
 
     
-    private SQLSource generalInsert(Class<?> cls,boolean template){
+    protected SQLSource generalInsert(Class<?> cls,boolean template){
     	  String tableName = nameConversion.getTableName(cls);
           TableDesc table = this.metadataManager.getTable(tableName);
           ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
@@ -521,7 +521,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param fieldName
      * @return
      */
-    private String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
+    protected String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
         return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + fieldName + HOLDER_END + ",";
     }
 
@@ -533,7 +533,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param fieldName
      * @return
      */
-    private String appendSetColumn(Class<?> c, TableDesc table, String colName, String fieldName) {
+    protected String appendSetColumn(Class<?> c, TableDesc table, String colName, String fieldName) {
         String prefix = "";
 
         return STATEMENT_START + "if(!isEmpty(" + prefix + fieldName + ")){"
@@ -551,7 +551,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param fieldName
      * @return
      */
-    private String appendWhere(Class<?> c, TableDesc table, String colName, String fieldName) {
+    protected String appendWhere(Class<?> c, TableDesc table, String colName, String fieldName) {
         String prefix = "";
 
         String connector = " and ";
@@ -627,7 +627,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param cls
      * @return
      */
-    private String appendIdCondition(Class<?> cls) {
+    protected String appendIdCondition(Class<?> cls) {
         String tableName = nameConversion.getTableName(cls);
         StringBuilder condition = new StringBuilder(" where ");
         TableDesc table = metadataManager.getTable(tableName);
@@ -654,17 +654,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         return condition.toString();
     }
 
-    /****
-     * 生成一个循环读取Id列表
-     * @param tableName
-     * @param fieldName
-     * @return private String appendIdList(String idName) {
-    return new StringBuilder(lineSeparator).append(STATEMENT_START)
-    .append("trim(){for(obj in map){").append(STATEMENT_END)
-    .append(HOLDER_START+ "obj."+idName + HOLDER_END+",").append(lineSeparator)
-    .append(STATEMENT_START).append("}}").append(STATEMENT_END).toString();
-    }
-     */
+
 
     /****
      * 方法是否能用来生成select语句
@@ -672,7 +662,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param method
      * @return
      */
-    private boolean isLegalSelectMethod(Method method) {
+    protected boolean isLegalSelectMethod(Method method) {
 
         return method.getDeclaringClass() != Object.class
                 && (method.getName().startsWith("get") || method.getName().startsWith("is"))
@@ -686,13 +676,13 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param method
      * @return
      */
-    private boolean isLegalOtherMethod(Method method) {
+    protected boolean isLegalOtherMethod(Method method) {
         return method.getDeclaringClass() != Object.class &&
                 (method.getName().startsWith("get") || method.getName().startsWith("is"))
                 && method.getParameterTypes().length == 0;
     }
 
-    private String genDateAnnotatonSql(DateTemplate t, Class c, String col) {
+    protected String genDateAnnotatonSql(DateTemplate t, Class c, String col) {
         String accept = t.accept();
         String[] vars = null;
         if (accept == null || accept.length() == 0) {
@@ -773,45 +763,5 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public void setKeyWordHandler(KeyWordHandler keyWordHandler){
 		this.keyWordHandler = keyWordHandler;
 	}
-//	/**
-//	 * 
-//	 * @param c
-//	 * @param inner 是否是内部生成的语句
-//	 * @return
-//	 */
-//	protected String getOrmQuery(Class c,boolean inner){
-//		// 查看是否有orm查询
-//		OrmQuery oq = (OrmQuery) c.getAnnotation(OrmQuery.class);
-//		if(oq==null){
-//			return "";
-//		}
-//		if(oq.applyFor()==OrmQuery.On.INNER.ALL||(inner&&oq.applyFor()==OrmQuery.On.INNER)||(!inner&&oq.applyFor()==OrmQuery.On.MD)){
-//			
-//			OrmCondition[] qcs = oq.value();
-//			StringBuilder sb = new StringBuilder("\n");
-//			for(OrmCondition qc:qcs){
-//				if(qc.type()==Type.MANY){
-//					sb.append(STATEMENT_START).append("orm.lazyMany(").
-//						append(qc.mapping());
-//					
-//				}else{
-//					sb.append(STATEMENT_START).append("orm.lazySingle(").
-//					append(qc.mapping());
-//				}
-//				
-//				if(qc.sqlId().length()!=0){
-//					sb.append(",\"").append(qc.sqlId()).append("\"");
-//				}
-//				
-//				sb.append(",").append("\"").append(qc.target().getName())
-//				.append("\"").append(");");
-//				sb.append(STATEMENT_END);
-//			}
-//			return sb.toString();
-//		}else{
-//			return "";
-//		}
-//		
-//		
-//	}
+
 }

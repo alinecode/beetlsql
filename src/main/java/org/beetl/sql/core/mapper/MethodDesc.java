@@ -3,6 +3,7 @@ package org.beetl.sql.core.mapper;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -189,8 +190,14 @@ public class MethodDesc {
 		} else if (type == 2) {
 			if (List.class.isAssignableFrom(methodRetType)) {
 				type = 3;
-				stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
-						.getActualTypeArguments()[0];
+				Type type = m.getGenericReturnType();
+				if(type instanceof ParameterizedType ){
+					stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
+							.getActualTypeArguments()[0];
+				}else{
+					stRetType = entityClass;
+				}
+			
 			}
 		}
 		
@@ -337,7 +344,7 @@ public class MethodDesc {
 		}
 		this.parasPos.clear(); // 配置以SqlStatment为准
 		for (int i = 0; i < paraNames.length; i++) {
-			String str = paraNames[i];
+			String str = paraNames[i].trim();
 			if (str.equals("_st")) {
 				if (paggerPos == null) {
 					paggerPos = new int[2];

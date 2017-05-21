@@ -163,6 +163,7 @@ public class MetadataManager {
 			
 			String catalog = this.defalutCatalog;
 			String schema = this.defaultSchema;
+			
 			String namePattern = this.getTableNamePattern(dbmd);
 			ResultSet rs = dbmd.getTables(catalog,schema, namePattern,
 					new String[] { "TABLE","VIEW" });
@@ -247,8 +248,9 @@ public class MetadataManager {
 	}
 	private void setDefaultSchema(Connection conn) throws SQLException{
 		
+		this.defalutCatalog = conn.getCatalog();
 		try{
-			this.defalutCatalog = conn.getCatalog();
+			
 			this.defaultSchema =  conn.getSchema();
 			
 		}catch(Throwable e){
@@ -263,7 +265,6 @@ public class MetadataManager {
 			}else{
 				defaultSchema = null;
 			}
-			this.defalutCatalog = null;
 			
 		}
 		
