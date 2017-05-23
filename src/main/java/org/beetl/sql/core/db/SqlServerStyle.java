@@ -24,7 +24,7 @@ public class SqlServerStyle extends AbstractDBStyle {
 	@Override
 	public String getPageSQL(String sql) {
 		return "with query as ( select inner_query.*, row_number() over (order by current_timestamp) as beetl_rn from ( "
-				+ sql.replaceFirst("(?i)select", "select top("+HOLDER_START+PAGE_END+HOLDER_END+") ")+ this.getOrderBy()
+				+ sql.replaceFirst("(?i)select(\\s+distinct\\s+)?", "$0 top("+HOLDER_START+PAGE_END+HOLDER_END+") ")+ this.getOrderBy()
 				+" ) inner_query ) select * from query where beetl_rn between "+HOLDER_START+OFFSET+HOLDER_END+" and "+HOLDER_START+PAGE_END+HOLDER_END;
 	}
 
