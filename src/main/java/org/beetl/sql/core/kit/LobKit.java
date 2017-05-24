@@ -14,6 +14,7 @@ public class LobKit {
 			while( ( len=rs.read(cs, 0, 1024))!=-1){
 				sb.append(cs,0,len);
 			}
+			rs.close();
 		} catch (IOException e) {
 			throw new SQLException(e);
 		}

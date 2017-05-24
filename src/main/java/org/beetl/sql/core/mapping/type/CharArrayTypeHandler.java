@@ -3,6 +3,8 @@ package org.beetl.sql.core.mapping.type;
 import org.beetl.sql.core.kit.LobKit;
 
 import java.io.Reader;
+import java.sql.Clob;
+import java.sql.NClob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -17,11 +19,19 @@ public class CharArrayTypeHandler extends JavaSqlTypeHandler {
             int type = typePara.meta.getColumnType(index);
             switch (type) {
                 case java.sql.Types.CLOB: {
-                    Reader r = rs.getClob(index).getCharacterStream();
-                    return LobKit.getString(r).toCharArray();
+	                	Clob clob = rs.getClob(index);
+	            		if(clob==null){
+	            			return null;
+	            		}
+	                Reader r = clob.getCharacterStream();
+	                return LobKit.getString(r).toCharArray();
                 }
                 case Types.NCLOB: {
-                    Reader r = rs.getNClob(index).getCharacterStream();
+	                	NClob nclob =rs.getNClob(index);
+	            		if(nclob==null){
+	            			return null;
+	            		}
+	                Reader r = nclob.getCharacterStream();
                     return LobKit.getString(r).toCharArray();
                 }
 

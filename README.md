@@ -2,7 +2,7 @@
 
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan，woate,darren
 * 开发时间:2015-07
-* 论坛 http://ibeetl.com
+* 网站 http://ibeetl.com
 * qq群 219324263
 * 当前版本 2.8.10 (280K), 另外还需要beetl 包
 * 文档地址: http://ibeetl.com/guide/beetlsql.html 或者 https://git.oschina.net/xiandafu/beetlsql/attach_files 下载pdf 
@@ -40,7 +40,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 # Hibernate,MyBatis,MySQL 对比
 
-http://ibeetl.com/community/?/article/63  提供了12项对比并给与评分。在犹豫使用BeetlSQL，可以参考这个全面的对比文章
+https://my.oschina.net/xiandafu/blog/617542  提供了12项对比并给与评分。在犹豫使用BeetlSQL，可以参考这个全面的对比文章
 
 
 

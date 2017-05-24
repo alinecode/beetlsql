@@ -31,12 +31,7 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
 		UserDao dao = sql.getMapper(UserDao.class);
-		
-		User user = new User();
-		user.setName("hello,h");
-		user.setDepartmentId(1);
-		dao.insert(user, true);
-		System.out.println(user.getId());
+		dao.getIds3();
 		
 	
 			
