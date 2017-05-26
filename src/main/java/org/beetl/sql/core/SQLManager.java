@@ -1,16 +1,17 @@
 package org.beetl.sql.core;
 
-import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
-import static org.beetl.sql.core.kit.Constants.INSERT;
-import static org.beetl.sql.core.kit.Constants.INSERT_TEMPLATE;
-import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
-import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
-import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
-import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
-import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
-import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
-import static org.beetl.sql.core.kit.Constants.UPDATE_TEMPLATE_BY_ID;
-import static org.beetl.sql.core.kit.Constants.classSQL;
+//import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
+//import static org.beetl.sql.core.kit.Constants.INSERT;
+//import static org.beetl.sql.core.kit.Constants.INSERT_TEMPLATE;
+//import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
+//import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
+//import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
+//import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
+//import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
+//import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
+//import static org.beetl.sql.core.kit.Constants.UPDATE_TEMPLATE_BY_ID;
+//import static org.beetl.sql.core.kit.Constants.classSQL;
+import static org.beetl.sql.core.kit.ConstantEnum.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,12 +22,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import org.beetl.core.Configuration;
 import org.beetl.sql.core.db.ClassDesc;
@@ -36,10 +32,7 @@ import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
-import org.beetl.sql.core.kit.BeanKit;
-import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
-import org.beetl.sql.core.kit.GenKit;
-import org.beetl.sql.core.kit.StringKit;
+import org.beetl.sql.core.kit.*;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
@@ -286,20 +279,20 @@ public class SQLManager {
 
     /**
      * 得到增删改查模板
-     *
-     * @param cls
-     * @param tempId，参考 Constants类
-     * @return
+     * @param cls clz
+     * @param constantEnum ConstantEnum
+     * @return SQLScript
      */
-    public SQLScript getScript(Class<?> cls, int tempId) {
+    public SQLScript getScript(Class<?> cls, ConstantEnum constantEnum) {
         String className = cls.getSimpleName().toLowerCase();
-        String id = className + "." + classSQL[tempId];
+//        String id = className + "." + classSQL[tempId];
+        String id = className + "." + constantEnum.getClassSQL();
 
         SQLSource tempSource = this.sqlLoader.getGenSQL(id);
         if (tempSource != null) {
             return new SQLScript(tempSource, this);
         }
-        switch (tempId) {
+        switch (constantEnum) {
             case SELECT_BY_ID: {
                 tempSource = this.dbStyle.genSelectById(cls);
                 break;
@@ -343,6 +336,9 @@ public class SQLManager {
                 tempSource = this.dbStyle.genInsertTemplate(cls);
                 break;
             }
+            case DELETE_TEMPLATE_BY_ID:
+                tempSource = this.dbStyle.genDeleteById(cls);
+                break;
             default: {
                 throw new UnsupportedOperationException();
             }
@@ -873,6 +869,16 @@ public class SQLManager {
         return script.deleteById(clazz, pkValue);
     }
 
+    /**
+     * 删除对象, 通过对象的主键
+     * @param obj 对象
+     * @return
+     */
+    public int deleteTemplateById(Object obj) {
+        SQLScript script = getScript(obj.getClass(), DELETE_TEMPLATE_BY_ID);
+        return script.update(obj);
+    }
+
     //============= 插入 ===================  //
 
     /**
@@ -1137,6 +1143,7 @@ public class SQLManager {
         SQLScript script = getScript(c, UPDATE_TEMPLATE_BY_ID);
         return script.update(paras);
     }
+
 
     /****
      * 批量更新
