@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
@@ -36,7 +36,7 @@
 			<name>woate</name>
 			<email>woate@qq.com</email>
 		</developer>
-		
+
 		<developer>
 			<name>darren</name>
 			<email>10176523@qq.com</email>
@@ -113,10 +113,10 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>6.0.5</version>
-		    <scope>provided</scope>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>6.0.5</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!--dependency>
@@ -143,7 +143,7 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/db2jcc.jar</systemPath>
 		</dependency-->
-		
+
 		<!--  dependency>
 		<groupId>db2</groupId>
 		<artifactId>driver-license</artifactId>
@@ -159,11 +159,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-            <scope>provided</scope>
-        </dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -185,7 +185,7 @@
 			<version>3.0</version>
 			<scope>provided</scope>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -217,22 +217,22 @@
 			<version>4.2.3.RELEASE</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
 			<version>1.0.2</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>com.ibeetl</groupId>
-		    <artifactId>ormunit</artifactId>
-		    <version>1.0.0</version>
-		    <scope>test</scope>
+			<groupId>com.ibeetl</groupId>
+			<artifactId>ormunit</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
 		</dependency>
-		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId> 
-			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath> 
+		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId>
+			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
 			</dependency -->
 		<!--用于进行测试 -->
 		<!-- <dependency>
@@ -244,15 +244,15 @@
 	</dependencies>
 
 	<build>
-		 <resources>
-	        <resource>
-	            <directory>src/main/resources</directory>
-	            <excludes>
-	                <exclude>sql/**</exclude>
-	            </excludes>
-	        </resource>
-	       
-	    </resources>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>sql/**</exclude>
+				</excludes>
+			</resource>
+
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -263,8 +263,8 @@
 					<encoding>UTF-8</encoding>
 
 					<excludes>
-	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes>
+						<exclude>org/beetl/sql/test/**</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
