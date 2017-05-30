@@ -93,7 +93,7 @@ public interface DBStyle {
 
     void initPagePara(Map<String, Object> paras, long start, long size);
 
-    int getIdType(Method idMethod);
+    int getIdType(Class c,String idProperty);
 
     KeyWordHandler getKeyWordHandler();
 

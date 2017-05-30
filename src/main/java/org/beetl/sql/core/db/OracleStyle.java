@@ -2,9 +2,11 @@ package org.beetl.sql.core.db;
 
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.SeqID;
+import org.beetl.sql.core.kit.BeanKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 public class OracleStyle extends AbstractDBStyle {
@@ -50,8 +52,8 @@ public class OracleStyle extends AbstractDBStyle {
     }
 
     @Override
-    public int getIdType(Method idMethod) {
-        Annotation[] ans = idMethod.getAnnotations();
+    public int getIdType(Class c,String idProperty) {
+    	 	List<Annotation> ans = BeanKit.getAllAnnoation(c, idProperty);
         int idType = DBStyle.ID_ASSIGN; // 默认是自增长
 
         for (Annotation an : ans) {
