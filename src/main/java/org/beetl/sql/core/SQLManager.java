@@ -1,35 +1,7 @@
 package org.beetl.sql.core;
 
-//import static org.beetl.sql.core.kit.Constants.DELETE_BY_ID;
-//import static org.beetl.sql.core.kit.Constants.INSERT;
-//import static org.beetl.sql.core.kit.Constants.INSERT_TEMPLATE;
-//import static org.beetl.sql.core.kit.Constants.SELECT_ALL;
-//import static org.beetl.sql.core.kit.Constants.SELECT_BY_ID;
-//import static org.beetl.sql.core.kit.Constants.SELECT_BY_TEMPLATE;
-//import static org.beetl.sql.core.kit.Constants.SELECT_COUNT_BY_TEMPLATE;
-//import static org.beetl.sql.core.kit.Constants.UPDATE_ALL;
-//import static org.beetl.sql.core.kit.Constants.UPDATE_BY_ID;
-//import static org.beetl.sql.core.kit.Constants.UPDATE_TEMPLATE_BY_ID;
-//import static org.beetl.sql.core.kit.Constants.classSQL;
-import static org.beetl.sql.core.kit.ConstantEnum.*;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
 import org.beetl.core.Configuration;
-import org.beetl.sql.core.db.ClassDesc;
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.db.MetadataManager;
-import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.*;
@@ -42,6 +14,15 @@ import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
 
+import java.io.*;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+
+import static org.beetl.sql.core.kit.ConstantEnum.*;
+
 /**
  * Beetsql 操作入口
  *
@@ -49,6 +30,8 @@ import org.beetl.sql.ext.gen.SourceGen;
  */
 public class SQLManager {
 
+    // 每个sqlManager都有一个标示，可以通过标识来找到对应的sqlManager，用于序列化和反序列化
+    private static Map<String, SQLManager> sqlManagerMap = new HashMap<String, SQLManager>();
     Interceptor[] inters = {};
     Beetl beetl = null;
     MapperBuilder mapperBuilder = new DefaultMapperBuilder(this);
@@ -66,15 +49,13 @@ public class SQLManager {
     //数据库默认的shcema，对于单个schema应用，无需指定，但多个shcema，需要指定默认的shcema
     private String defaultSchema = null;
     private MapperConfig mapperConfig = new MapperConfig();
+    private String sqlMananagerName = null;
 
     {
         //添加一个id简单实现
         idAutonGenMap.put("simple", new SnowflakeIDAutoGen());
     }
-    // 每个sqlManager都有一个标示，可以通过标识来找到对应的sqlManager，用于序列化和反序列化
-    private static Map<String,SQLManager>  sqlManagerMap = new HashMap<String,SQLManager>();
-    private String sqlMananagerName = null;
-     
+
     /**
      * 创建一个beetlsql需要的sqlmanager
      *
@@ -129,9 +110,9 @@ public class SQLManager {
     public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema) {
         this(dbStyle, sqlLoader, ds, nc, inters, defaultSchema, new Properties());
     }
-    
-    public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema, Properties ps){
-    		this(dbStyle, sqlLoader, ds, nc, inters, defaultSchema, ps,dbStyle.getName());
+
+    public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema, Properties ps) {
+        this(dbStyle, sqlLoader, ds, nc, inters, defaultSchema, ps, dbStyle.getName());
     }
 
     /**
@@ -143,7 +124,7 @@ public class SQLManager {
      * @param defaultSchema
      * @param ps            额外的beetl配置
      */
-    public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema, Properties ps,String name) {
+    public SQLManager(DBStyle dbStyle, SQLLoader sqlLoader, ConnectionSource ds, NameConversion nc, Interceptor[] inters, String defaultSchema, Properties ps, String name) {
         this.defaultSchema = defaultSchema;
         beetl = new Beetl(sqlLoader, ps);
         this.dbStyle = dbStyle;
@@ -186,6 +167,24 @@ public class SQLManager {
     public static SQLManagerBuilder newBuilder(String driver, String url, String userName, String password) {
         ConnectionSource source = ConnectionSourceHelper.getSimple(driver, url, userName, password);
         return newBuilder(source);
+    }
+
+    /**
+     * 每个sqlManager都有个名称，如果未指定，默认是dbStyle 返回的名称，即数据库名
+     *
+     * @param name
+     * @return
+     */
+    public static SQLManager getSQLManagerByName(String name) {
+        SQLManager sqlManager = sqlManagerMap.get(name);
+        if (sqlManager == null) {
+            throw new NullPointerException("不能根据" + name + "获得sqlManager");
+        }
+        return sqlManager;
+    }
+
+    public boolean isOffsetStartZero() {
+        return offsetStartZero;
     }
 
     /**
@@ -279,7 +278,8 @@ public class SQLManager {
 
     /**
      * 得到增删改查模板
-     * @param cls clz
+     *
+     * @param cls          clz
      * @param constantEnum ConstantEnum
      * @return SQLScript
      */
@@ -349,6 +349,8 @@ public class SQLManager {
         return new SQLScript(tempSource, this);
     }
 
+    /* ============ 查询部分 ================== */
+
     /****
      * 获取为分页语句
      *
@@ -376,8 +378,6 @@ public class SQLManager {
         sqlLoader.addGenSQL(pageId, source);
         return new SQLScript(source, this);
     }
-
-    /* ============ 查询部分 ================== */
 
     /**
      * 通过sqlId进行查询,查询结果映射到clazz上
@@ -608,6 +608,8 @@ public class SQLManager {
         return script.unique(clazz, mapper, pk);
     }
 
+    /* =========模版查询=============== */
+
     /**
      * @param clazz
      * @param pk
@@ -617,8 +619,6 @@ public class SQLManager {
         SQLScript script = getScript(clazz, SELECT_BY_ID);
         return script.single(clazz, null, pk);
     }
-
-    /* =========模版查询=============== */
 
     /**
      * btsql自动生成查询语句，查询clazz代表的表的所有数据。
@@ -720,6 +720,8 @@ public class SQLManager {
         return (List<T>) pageScript.select(t.getClass(), param, mapper);
     }
 
+    //========== 取出单个值  ============== //
+
     /**
      * 查询总数
      *
@@ -731,8 +733,6 @@ public class SQLManager {
         Long l = script.singleSelect(t, Long.class);
         return l;
     }
-
-    //========== 取出单个值  ============== //
 
     /**
      * 将查询结果返回成Long类型
@@ -869,8 +869,11 @@ public class SQLManager {
         return script.deleteById(clazz, pkValue);
     }
 
+    //============= 插入 ===================  //
+
     /**
      * 删除对象, 通过对象的主键
+     *
      * @param obj 对象
      * @return
      */
@@ -878,8 +881,6 @@ public class SQLManager {
         SQLScript script = getScript(obj.getClass(), DELETE_TEMPLATE_BY_ID);
         return script.update(obj);
     }
-
-    //============= 插入 ===================  //
 
     /**
      * 通用插入操作
@@ -1144,7 +1145,6 @@ public class SQLManager {
         return script.update(paras);
     }
 
-
     /****
      * 批量更新
      *
@@ -1405,6 +1405,29 @@ public class SQLManager {
         return script.sqlReadySelect(clazz, p);
     }
 
+//    public <T> List<T> execute(SQLReady p, Class<T> clazz, long start, long size, Object... paras) {
+//
+//        SQLSource source = new SQLSource("native." + p.getSql(), p.getSql());
+//        SQLScript script = new SQLScript(source, this);
+////        return script.sqlReadySelect(clazz, p);
+//
+//
+////        String key = "auto._gen_" + p.getSql();
+////        SQLSource source = sqlLoader.getGenSQL(key);
+////        if (source == null) {
+////            String pageSql = this.dbStyle.getPageSQL(p.getSql());
+////            source = new SQLSource(key, pageSql);
+////            this.sqlLoader.addGenSQL(key, source);
+////        }
+////
+////        this.dbStyle.initPagePara(paras, start, size);
+////        SQLScript script = new SQLScript(source, this);
+////        return script.select(clazz, paras);
+//
+//        return script.sqlReadySelect(clazz, p);
+//
+//    }
+
     /**
      * 直接执行sql语句，用于删除或者更新，sql语句已经是准备好的，采用preparedstatment执行
      *
@@ -1416,6 +1439,8 @@ public class SQLManager {
         SQLScript script = new SQLScript(source, this);
         return script.sqlReadyExecuteUpdate(p);
     }
+
+    //========= 代码生成 =============//
 
     /**
      * 自己用Connection执行jdbc，通常用于存储过程调用，或者需要自己完全控制的jdbc
@@ -1447,8 +1472,6 @@ public class SQLManager {
             }
         }
     }
-
-    //========= 代码生成 =============//
 
     /**
      * 根据表名生成对应的pojo类
@@ -1623,6 +1646,8 @@ public class SQLManager {
 
     }
 
+    //===============get/set===============
+
     /**
      * 通过mapper接口生成dao代理
      *
@@ -1632,8 +1657,6 @@ public class SQLManager {
     public <T> T getMapper(Class<T> mapperInterface) {
         return this.mapperBuilder.getMapper(mapperInterface);
     }
-
-    //===============get/set===============
 
     public SQLLoader getSqlLoader() {
         return sqlLoader;
@@ -1835,22 +1858,9 @@ public class SQLManager {
         this.mapperConfig = new MapperConfig(c);
         return this.mapperConfig;
     }
-    
-    /**
-     * 每个sqlManager都有个名称，如果未指定，默认是dbStyle 返回的名称，即数据库名
-     * @param name
-     * @return
-     */
-    public static SQLManager getSQLManagerByName(String name){
-    		SQLManager sqlManager = sqlManagerMap.get(name);
-    		if(sqlManager==null){
-    			throw new NullPointerException("不能根据"+name+"获得sqlManager");
-    		}
-    		return sqlManager;
-    }
-    
-    public String getSQLManagerName(){
-    		return this.sqlMananagerName;
+
+    public String getSQLManagerName() {
+        return this.sqlMananagerName;
     }
 
 }

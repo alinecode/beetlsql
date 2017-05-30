@@ -71,6 +71,24 @@ public interface DBStyle {
 
     int getDBType();
 
+    /**
+     * 把正常sql转换成分页sql, 参数是 ?
+     * <pre>
+     * 正常sql: select * from tb_bee
+     *
+     * 假设 offset = 2
+     * 假设 pageSize  = 9
+     * (mysql示例) 出来的sql:
+     * select * from tb_bee limit 2 , 9
+     * </pre>
+     *
+     * @param sql      正常查询sql
+     * @param offset   offset
+     * @param pageSize pageSize
+     * @return 分页sql
+     */
+    String getPageSQLStatement(String sql, long offset, long pageSize);
+
     String getPageSQL(String sql);
 
     void initPagePara(Map<String, Object> paras, long start, long size);
