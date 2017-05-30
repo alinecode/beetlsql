@@ -1,10 +1,46 @@
 package org.beetl.sql.core;
 
+import static org.beetl.sql.core.kit.ConstantEnum.DELETE_BY_ID;
+import static org.beetl.sql.core.kit.ConstantEnum.DELETE_TEMPLATE_BY_ID;
+import static org.beetl.sql.core.kit.ConstantEnum.INSERT;
+import static org.beetl.sql.core.kit.ConstantEnum.INSERT_TEMPLATE;
+import static org.beetl.sql.core.kit.ConstantEnum.SELECT_ALL;
+import static org.beetl.sql.core.kit.ConstantEnum.SELECT_BY_ID;
+import static org.beetl.sql.core.kit.ConstantEnum.SELECT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.ConstantEnum.SELECT_COUNT_BY_TEMPLATE;
+import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_ALL;
+import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_BY_ID;
+import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_TEMPLATE_BY_ID;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 import org.beetl.core.Configuration;
-import org.beetl.sql.core.db.*;
+import org.beetl.sql.core.db.ClassDesc;
+import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.db.MetadataManager;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
-import org.beetl.sql.core.kit.*;
+import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
+import org.beetl.sql.core.kit.ConstantEnum;
+import org.beetl.sql.core.kit.GenKit;
+import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
@@ -13,15 +49,6 @@ import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.SourceGen;
-
-import java.io.*;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
-import static org.beetl.sql.core.kit.ConstantEnum.*;
 
 /**
  * Beetsql 操作入口
@@ -868,19 +895,22 @@ public class SQLManager {
         SQLScript script = getScript(clazz, DELETE_BY_ID);
         return script.deleteById(clazz, pkValue);
     }
-
-    //============= 插入 ===================  //
-
+    
     /**
      * 删除对象, 通过对象的主键
      *
-     * @param obj 对象
+     * @param obj 对象,必须包含了主键，实际上根据主键来删除
      * @return
      */
-    public int deleteTemplateById(Object obj) {
+    public int deleteObject(Object obj) {
+    		
         SQLScript script = getScript(obj.getClass(), DELETE_TEMPLATE_BY_ID);
         return script.update(obj);
     }
+
+    //============= 插入 ===================  //
+
+   
 
     /**
      * 通用插入操作
