@@ -2,19 +2,17 @@ package org.beetl.sql.core.mapper;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.core.SQLScript;
 import org.beetl.sql.core.engine.Pageable;
 import org.beetl.sql.core.kit.PageKit;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
  * 执行jdbc sql
  *
- * @author xiandafu
+ * @author xiandafu, luoyizhu
  */
 public class SQLReadyExecuteMapperInvoke extends BaseMapperInvoke {
     int type;
@@ -46,22 +44,37 @@ public class SQLReadyExecuteMapperInvoke extends BaseMapperInvoke {
 
     }
 
+    /**
+     * 分页
+     * <pre>
+     * 通过注解sql实现的分页功能, 必须传入两个参数
+     * 参数1: pageNumber
+     * 参数2: pageSize
+     * 顺序不能乱, 变量名没要求.
+     * </pre>
+     *
+     * @param sm    SQLManager
+     * @param sql   正常的sql查询语句
+     * @param clazz 需要转换的类型
+     * @param args  查询条件
+     * @param <T>   T
+     * @return 分页对象
+     */
     protected <T> Pageable<T> getPage(SQLManager sm, String sql, Class<T> clazz, Object[] args) {
 
         // 获取count语句
-        SQLScript sqlScrip = sm.getScript(sql);
-        String sqlCount = PageKit.getCountSql(sqlScrip.getSql());
+        String sqlCount = PageKit.getCountSql(sql);
 
         // 分页去除前面两个参数 (页码, 每页显示多少)
-        Object[] countArgs = null;
+        Object[] conditionArgs = null;
         if (args.length > 2) {
-            countArgs = new Object[args.length - 2];
-            for (int i = 0; i < countArgs.length; i++) {
-                countArgs[i] = args[i + 2];
+            conditionArgs = new Object[args.length - 2];
+            for (int i = 0; i < conditionArgs.length; i++) {
+                conditionArgs[i] = args[i + 2];
             }
         }
 
-        List<Long> countResultList = sm.execute(new SQLReady(sqlCount, countArgs), Long.class);
+        List<Long> countResultList = sm.execute(new SQLReady(sqlCount, conditionArgs), Long.class);
 
         int pageNumber = (Integer) args[0];
         int pageSize = (Integer) args[1];
@@ -75,26 +88,13 @@ public class SQLReadyExecuteMapperInvoke extends BaseMapperInvoke {
 
 
         if (totalRow != 0) {
-            boolean offsetStartZero = sm.isOffsetStartZero();
-            long start = (offsetStartZero ? 0 : 1) + (pageNumber - 1) * pageSize;
+            long start = (sm.isOffsetStartZero() ? 0 : 1) + (pageNumber - 1) * pageSize;
             long size = pageSize;
 
             String pageSql = sm.getDbStyle().getPageSQLStatement(sql, start, size);
 
-            // 添加条件参数
-            List<Object> pageConditionList = new LinkedList<Object>();
-            if (countArgs != null) {
-                for (int i = 0; i < countArgs.length; i++) {
-                    pageConditionList.add(countArgs[i]);
-                }
-            }
-
-            // 把分页参数添加到最后
-            pageConditionList.add(start);
-            pageConditionList.add(size);
-
             // 执行查询
-            SQLReady sqlReady = new SQLReady(pageSql, pageConditionList.toArray());
+            SQLReady sqlReady = new SQLReady(pageSql, conditionArgs);
             list = sm.execute(sqlReady, clazz);
 
             // 总页数

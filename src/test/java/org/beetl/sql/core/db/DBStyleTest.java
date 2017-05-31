@@ -16,38 +16,44 @@ public class DBStyleTest {
     AbstractDBStyle style;
     boolean offsetStartZero;
     int pageNumber = 1;
-    int pageSize = 2;
+    int pageSize = 20;
     long offset = (offsetStartZero ? 0 : 1) + (pageNumber - 1) * pageSize;
 
     String sql = "select * from tb_bee";
 
     Logger log = LoggerFactory.getLogger(DBStyleTest.class);
 
+    int sqlLen = sql.length();
+
     @Before
     public void start() {
-        log.info("sb");
+        log.info("sql.len: " + sqlLen);
     }
 
 
     @Test
     public void mySqlPageSQLStatement() throws Exception {
-        style = new MySqlStyle();
+        info(new MySqlStyle());
+    }
+
+    private void info(AbstractDBStyle style) {
 
         String pageSql = style.getPageSQLStatement(sql, offset, pageSize);
-
-        log.info(pageSql);
+        String type = style.getName();
+        log.info("~~~~~~~~~~~~~~~~~~~~" + type + "~~~~~~~~~~~~~~~~~~~~");
+        log.info(type + ".pageSql : " + pageSql);
+        log.info(type + ".pageSql.lenth : " + pageSql.length());
+        log.info(" 需要扩充:" + (pageSql.length() - sqlLen));
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println();
     }
 
 
     @Test
     public void postgresPageSQLStatement() throws Exception {
-        style = new PostgresStyle();
 
-        String pageSql = style.getPageSQLStatement(sql, offset, pageSize);
-
-        log.info(pageSql);
+        info(new PostgresStyle());
     }
-
 
 
 }
