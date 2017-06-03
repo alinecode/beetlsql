@@ -1,0 +1,144 @@
+package org.beetl.sql.core.kit;
+
+
+import org.beetl.sql.core.engine.Page;
+import org.beetl.sql.core.engine.Pageable;
+import org.beetl.sql.core.engine.PageableBuilder;
+
+import java.util.Map;
+
+/**
+ * 分页辅助工具 <BR>
+ * create time : 2017-05-28 19:09
+ *
+ * @author luoyizhu@gmail.com
+ */
+public final class PageKit {
+    static String pageNumberName = "pageNumber";
+    static String pageSizeName = "pageSize";
+
+    static int pageSizeValue = 20;
+
+    static PageableBuilder pageableBuilder = new PageableBuilder() {
+        @Override
+        public Pageable create() {
+            return new Page();
+        }
+    };
+
+    private PageKit() {
+    }
+
+    /**
+     * @param pageNumberName 设置分页名, 默认名: pageNumber
+     */
+    public static void setPageNumberName(String pageNumberName) {
+        PageKit.pageNumberName = pageNumberName;
+    }
+
+    /**
+     * @param pageSizeName 设置每页显示数量名, 默认名: pageSize
+     */
+    public static void setPageSizeName(String pageSizeName) {
+        PageKit.pageSizeName = pageSizeName;
+    }
+
+    /**
+     * @param pageSizeValue 设置每页默认显示的数目
+     */
+    public static void setPageSizeValue(int pageSizeValue) {
+        PageKit.pageSizeValue = pageSizeValue;
+    }
+
+    /**
+     * @param pageableBuilder 设置分页对象构建器
+     */
+    public static void setPageableBuilder(PageableBuilder pageableBuilder) {
+        PageKit.pageableBuilder = pageableBuilder;
+    }
+
+    /**
+     * @return 创建分页对象
+     */
+    public static Pageable createPage() {
+        return pageableBuilder.create();
+    }
+
+
+    /**
+     * sql格式化工具
+     *
+     * @param sql 正常的sql语句
+     * @return 格式化后的sql语句
+     */
+    public static String formatSql(String sql) {
+        return SqlFormatter.format(sql);
+    }
+
+    /**
+     * 获取当前页码
+     *
+     * @param paras 参数map
+     * @return 如果没有找到, 默认返回1
+     */
+    public static int getPageNumber(Map<String, Object> paras) {
+        Integer pageNumber = (Integer) paras.get(pageNumberName);
+
+        return pageNumber == null ? 1 : pageNumber.intValue();
+    }
+
+    /**
+     * 获取每页显示的数量
+     *
+     * @param paras 参数map
+     * @return 如果没有找到, 返回设置的默认大小
+     */
+    public static int getPageSize(Map<String, Object> paras) {
+        Integer pageSize = (Integer) paras.get(pageSizeName);
+
+        return pageSize == null ? pageSizeValue : pageSize.intValue();
+    }
+
+    public static String getCountSql(String selectSql) {
+
+        selectSql = PageKit.formatSql(selectSql);
+
+        String sql = selectSql.toLowerCase();
+
+        // 是否存在 order by
+        boolean hasOrderBy = sql.indexOf("    order by") != -1;
+        boolean fromIndexOver = false;
+        int fromIndex = 0;
+        int fromEnd = 0;
+
+        for (String s : sql.split("\n")) {
+            if (s.equals("    from")) {
+                fromIndexOver = true;
+                fromEnd = fromIndex + 8;
+                if (hasOrderBy == false) {
+                    break;
+                }
+            }
+
+            if (s.equals("    order by")) {
+                break;
+            }
+
+            if (fromIndexOver == false) {
+                fromIndex += s.length() + 1;
+            } else {
+                fromEnd += s.length();
+            }
+
+        }
+
+        // 存在order by 就移除
+        if (hasOrderBy) {
+            return "select count(1) \n" + selectSql.substring(fromIndex, fromEnd);
+
+        }
+
+        return "select count(1) \n" + selectSql.substring(fromIndex);
+    }
+
+}

@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public final class MapperInvokeDataConfig {
     /** 处理用户自定义方法的代理 */
-    static final MapperInvoke[] METHOD_DESC_PROXY_ARRAY;
+    static final Map<Integer, MapperInvoke> METHOD_DESC_PROXY_MAP = new HashMap<Integer, MapperInvoke>();
     /**
      * beetlsql内置映射好的方法, 是提供给: AmiInnerProxyMapperInvoke 对象使用的.
      * 或者提供给其他自定义的BaseMapper使用
@@ -30,14 +30,14 @@ public final class MapperInvokeDataConfig {
 
     static {
         // 处理用户自定义方法的代理, 提供给MethodDesc.type使用的服务.
-        METHOD_DESC_PROXY_ARRAY = new MapperInvoke[7];
-        METHOD_DESC_PROXY_ARRAY[0] = new InsertMapperInvoke();
-        METHOD_DESC_PROXY_ARRAY[1] = new InsertMapperInvoke();
-        METHOD_DESC_PROXY_ARRAY[2] = new SelecSingleMapperInvoke();
-        METHOD_DESC_PROXY_ARRAY[3] = new SelectMapperInvoke();
-        METHOD_DESC_PROXY_ARRAY[4] = new UpdateMapperInvoke();
-        METHOD_DESC_PROXY_ARRAY[5] = new UpdateBatchMapperInvoke();
-        METHOD_DESC_PROXY_ARRAY[6] = new PageQueryMapperInvoke();
+        METHOD_DESC_PROXY_MAP.put(0, new InsertMapperInvoke());
+        METHOD_DESC_PROXY_MAP.put(1, new InsertMapperInvoke());
+        METHOD_DESC_PROXY_MAP.put(2, new SelecSingleMapperInvoke());
+        METHOD_DESC_PROXY_MAP.put(3, new SelectMapperInvoke());
+        METHOD_DESC_PROXY_MAP.put(4, new UpdateMapperInvoke());
+        METHOD_DESC_PROXY_MAP.put(5, new UpdateBatchMapperInvoke());
+        METHOD_DESC_PROXY_MAP.put(6, new PageQueryMapperInvoke());
+        METHOD_DESC_PROXY_MAP.put(7, new PageableMapperInvoke());
     }
 
     static {
@@ -64,8 +64,18 @@ public final class MapperInvokeDataConfig {
         BASE_MAPPER_BUILDER = new MapperConfigBuilder();
     }
 
+    /**
+     * 如果用户要扩展, 推荐methodDescType变量使用1000以后的
+     *
+     * @param methodDescType 类型
+     * @param mapperInvoke   映射类处理.
+     */
+    public static void putMethodDescProxy(int methodDescType, MapperInvoke mapperInvoke) {
+        METHOD_DESC_PROXY_MAP.put(methodDescType, mapperInvoke);
+    }
+
     public static MapperInvoke getMethodDescProxy(int methodDescType) {
-        return METHOD_DESC_PROXY_ARRAY[methodDescType];
+        return METHOD_DESC_PROXY_MAP.get(methodDescType);
     }
 
 
