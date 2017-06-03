@@ -21,7 +21,9 @@ public class PostgresStyle extends AbstractDBStyle {
 
         offset = PageParamKit.postgresOffset(this.offsetStartZero, offset);
 
-        StringBuilder builder = new StringBuilder();
+        int capacity = sql.length() + 50;
+
+        StringBuilder builder = new StringBuilder(capacity);
         builder.append("select _a.* from ( ").append(sql).append(" ) _a ");
         builder.append("limit ").append(pageSize).append(" offset ").append(offset);
         return builder.toString();

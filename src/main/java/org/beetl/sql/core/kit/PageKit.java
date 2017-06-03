@@ -103,15 +103,42 @@ public final class PageKit {
 
         selectSql = PageKit.formatSql(selectSql);
 
+        String sql = selectSql.toLowerCase();
+
+        // 是否存在 order by
+        boolean hasOrderBy = sql.indexOf("    order by") != -1;
+        boolean fromIndexOver = false;
         int fromIndex = 0;
-        for (String s : selectSql.split("\n")) {
-            if (s.equalsIgnoreCase("    from")) {
+        int fromEnd = 0;
+
+        for (String s : sql.split("\n")) {
+            if (s.equals("    from")) {
+                fromIndexOver = true;
+                fromEnd = fromIndex + 8;
+                if (hasOrderBy == false) {
+                    break;
+                }
+            }
+
+            if (s.equals("    order by")) {
                 break;
             }
-            fromIndex += s.length() + 1;
+
+            if (fromIndexOver == false) {
+                fromIndex += s.length() + 1;
+            } else {
+                fromEnd += s.length();
+            }
+
         }
 
-        return "select count(1) " + selectSql.substring(fromIndex);
+        // 存在order by 就移除
+        if (hasOrderBy) {
+            return "select count(1) \n" + selectSql.substring(fromIndex, fromEnd);
+
+        }
+
+        return "select count(1) \n" + selectSql.substring(fromIndex);
     }
 
 }

@@ -20,7 +20,8 @@ public class H2Style extends AbstractDBStyle {
     @Override
     public String getPageSQLStatement(String sql, long offset, long pageSize) {
 
-        StringBuilder builder = new StringBuilder(sql);
+        int capacity = sql.length() + 23;
+        StringBuilder builder = new StringBuilder(capacity);
         builder.append(" limit ").append(offset).append(" , ").append(pageSize);
         return builder.toString();
     }

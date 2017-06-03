@@ -35,13 +35,14 @@ public class SqlServerStyle extends AbstractDBStyle {
 
         sql = sql.replaceFirst("(?i)select(\\s+distinct\\s+)?", "$0 top(" + pageEnd + ") ");
 
-        StringBuilder builder = new StringBuilder();
+        int capacity = sql.length() + 190;
+        StringBuilder builder = new StringBuilder(capacity);
         builder.append("with query as ( select inner_query.*, row_number() over (order by current_timestamp) as beetl_rn from ( ");
         builder.append(sql);
         builder.append(" ) inner_query ) select * from query where beetl_rn between ");
         builder.append(offset).append(" and ").append(pageEnd);
 
-        throw new RuntimeException("暂时不支持 SqlServer");
+        return builder.toString();
     }
 
     @Override

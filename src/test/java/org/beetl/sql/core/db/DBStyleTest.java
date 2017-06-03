@@ -32,7 +32,7 @@ public class DBStyleTest {
 
 
     @Test
-    public void mySqlPageSQLStatement() throws Exception {
+    public void mySqlPageSqlStatement() throws Exception {
         info(new MySqlStyle());
     }
 
@@ -50,9 +50,33 @@ public class DBStyleTest {
 
 
     @Test
-    public void postgresPageSQLStatement() throws Exception {
-
+    public void postgresPageSqlStatement() throws Exception {
         info(new PostgresStyle());
+    }
+
+    @Test
+    public void sqlServerPageSqlStatement() {
+        info(new SqlServerStyle());
+    }
+
+    @Test
+    public void oraclePageSqlStatement() {
+        info(new OracleStyle());
+    }
+
+    @Test
+    public void sqlLitePageSqlStatement() {
+        info(new SQLiteStyle());
+    }
+
+    @Test
+    public void h2PageSqlStatement() {
+        info(new H2Style());
+    }
+
+    @Test
+    public void db2SqlPageSqlStatement() {
+        info(new DB2SqlStyle());
     }
 
 

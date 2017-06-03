@@ -34,7 +34,8 @@ public class SQLiteStyle extends AbstractDBStyle {
     @Override
     public String getPageSQLStatement(String sql, long offset, long pageSize) {
         offset = PageParamKit.sqlLiteOffset(this.offsetStartZero, offset);
-        StringBuilder builder = new StringBuilder(sql);
+        int capacity = sql.length() + 28;
+        StringBuilder builder = new StringBuilder(capacity);
         builder.append(" limit ").append(pageSize).append(" offset ").append(offset);
         return builder.toString();
     }

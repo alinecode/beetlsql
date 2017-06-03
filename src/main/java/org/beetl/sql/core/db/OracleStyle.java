@@ -32,7 +32,8 @@ public class OracleStyle extends AbstractDBStyle {
         offset = PageParamKit.oracleOffset(this.offsetStartZero, offset);
         long pageEnd = PageParamKit.oraclePageEnd(offset, pageSize);
 
-        StringBuilder builder = new StringBuilder();
+        int capacity = sql.length() + 133;
+        StringBuilder builder = new StringBuilder(capacity);
         builder.append("SELECT * FROM ");
         builder.append(" ( ");
         builder.append(" SELECT beeltT.*, ROWNUM beetl_rn ");

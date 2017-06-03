@@ -6,7 +6,6 @@ import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.kit.BeanKit;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +55,8 @@ public class DB2SqlStyle extends AbstractDBStyle {
         offset = PageParamKit.db2sqlOffset(this.offsetStartZero, offset);
         long pageEnd = PageParamKit.db2sqlPageEnd(offset, pageSize);
 
-        StringBuilder builder = new StringBuilder();
+        int capacity = sql.length() + 180;
+        StringBuilder builder = new StringBuilder(capacity);
         builder.append(" SELECT * FROM ").append("(");
         builder.append("	SELECT inner_query_b.*, ROWNUMBER() OVER() beetl_rn  FROM   ");
         builder.append("	(   ").append(sql).append("	) AS inner_query_b  ");
@@ -76,8 +76,8 @@ public class DB2SqlStyle extends AbstractDBStyle {
     }
 
     @Override
-    public int getIdType(Class c,String idProperty) {
-    	 	List<Annotation> ans = BeanKit.getAllAnnoation(c, idProperty);
+    public int getIdType(Class c, String idProperty) {
+        List<Annotation> ans = BeanKit.getAllAnnoation(c, idProperty);
         int idType = DBStyle.ID_AUTO; //默认是自增长
 
         for (Annotation an : ans) {
