@@ -1,6 +1,7 @@
 package org.beetl.sql.core.db;
 
 public interface TypeHandler {
-	public Object getDbValue(Object pojoValue);
-	public Object getPojoeValue(Object dbValue);
+    Object getDbValue(Object pojoValue);
+
+    Object getPojoeValue(Object dbValue);
 }

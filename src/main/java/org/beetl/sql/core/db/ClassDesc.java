@@ -24,7 +24,7 @@ import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
  *
  */
 public class ClassDesc {
-	Class c ;
+	Class targetClass ;
 	TableDesc  table;
 	NameConversion nc;
 	Set<String> propertys = new CaseInsensitiveOrderSet<String>();
@@ -37,7 +37,7 @@ public class ClassDesc {
 	String ormQuery = null;
 	
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
-		this.c = c ;
+		this.targetClass = c ;
 		PropertyDescriptor[] ps;
 		try {
 			ps = BeanKit.propertyDescriptors(c);
@@ -67,13 +67,13 @@ public class ClassDesc {
 				PropertyDescriptor p = (PropertyDescriptor)tempMap.get(col);
 				propertys.add(p.getName());
 				Method readMethod =  p.getReadMethod();
-				ColumnIgnore sqlIgnore = readMethod.getAnnotation(ColumnIgnore.class);
+				ColumnIgnore sqlIgnore = BeanKit.getAnnoation(c, p.getName(), readMethod, ColumnIgnore.class);
 				if(sqlIgnore!=null){
 					attrIgnores.put(p.getName(), new ColumnIgnoreStatus(sqlIgnore));
 				}else{
 					//2.8.13 后新增
-					InsertIgnore ig = readMethod.getAnnotation(InsertIgnore.class);
-					UpdateIgnore ug = readMethod.getAnnotation(UpdateIgnore.class);
+					InsertIgnore ig = BeanKit.getAnnoation(c, p.getName(), readMethod, InsertIgnore.class);
+					UpdateIgnore ug = BeanKit.getAnnoation(c, p.getName(), readMethod, UpdateIgnore.class);
 					if(ig!=null||ug!=null){
 						attrIgnores.put(p.getName(), new ColumnIgnoreStatus(ig,ug));
 					}
@@ -173,6 +173,13 @@ public class ClassDesc {
 			updateIgnore = ug!=null;
 		}
 		
+	}
+
+	public Class getTargetClass() {
+		return targetClass;
+	}
+	public void setTargetClass(Class targetClass) {
+		this.targetClass = targetClass;
 	}
 	
 	

@@ -20,9 +20,6 @@ import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.annotatoin.TableTemplate;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.kit.BeanKit;
-import org.beetl.sql.core.orm.OrmCondition;
-import org.beetl.sql.core.orm.OrmQuery;
-import org.beetl.sql.core.orm.OrmQuery.Type;
 
 /**
  * 按照mysql来的，oralce需要重载insert，page方法
@@ -147,12 +144,9 @@ public abstract class AbstractDBStyle implements DBStyle {
             String col = cols.next();
             String attr = attrs.next();
             if (classDesc.isDateType(col)) {
-
-                //todo, attr属性并不完全是这么转成getter方法的
-                String getter = "get" + col.substring(0, 1).toUpperCase() + col.substring(1);
+            		
                 try {
-                    Method m = cls.getMethod(getter, new Class[]{});
-                    DateTemplate dateTemplate = m.getAnnotation(DateTemplate.class);
+                    DateTemplate dateTemplate = BeanKit.getAnnoation(classDesc.getTargetClass(), attr, DateTemplate.class);
                     if (dateTemplate == null) continue;
                     String sql = this.genDateAnnotatonSql(dateTemplate, cls, col);
                     condition = condition + sql;
@@ -319,13 +313,15 @@ public abstract class AbstractDBStyle implements DBStyle {
 
               if (idCols.size() == 1 && idCols.contains(col)) {
 
-                  idType = this.getIdType((Method) classDesc.getIdMethods().get(attr));
+                  idType = this.getIdType(classDesc.getTargetClass(),attr);
                   if (idType == DBStyle.ID_AUTO) {
                       continue; //忽略这个字段
                   } else if (idType == DBStyle.ID_SEQ) {
 
                       colSql.append(appendInsertColumn(cls, table, col));
-                      SeqID seqId = ((Method) classDesc.getIdMethods().get(attr)).getAnnotation(SeqID.class);
+                      SeqID seqId = BeanKit.getAnnoation(classDesc.getTargetClass(), attr, 
+                    		  (Method)classDesc.getIdMethods().get(attr), SeqID.class);
+                      
                       valSql.append(seqId.name() + ".nextval,");
                       continue;
                   } else if (idType == DBStyle.ID_ASSIGN) {
@@ -361,10 +357,9 @@ public abstract class AbstractDBStyle implements DBStyle {
           source.setTableDesc(table);
           if (idType == DBStyle.ID_ASSIGN) {
               Map<String, AssignID> map = new HashMap<String, AssignID>();
-
-
               for (String idAttr : classDesc.getIdAttrs()) {
-                  AssignID assignId = ((Method) classDesc.getIdMethods().get(idAttr)).getAnnotation(AssignID.class);
+                  Method getter = (Method) classDesc.getIdMethods().get(idAttr);
+                  AssignID assignId = BeanKit.getAnnoation(classDesc.getTargetClass(), idAttr, getter,AssignID.class);
                   if (assignId != null && assignId.value().length() != 0) {
 
                       map.put(idAttr, assignId);
@@ -737,8 +732,8 @@ public abstract class AbstractDBStyle implements DBStyle {
     /* 根据注解来决定主键采用哪种方式生成。在跨数据库应用中，可以为一个id指定多个注解方式，如mysql，postgres 用auto，oracle 用seq
      */
     @Override
-    public int getIdType(Method idMethod) {
-        Annotation[] ans = idMethod.getAnnotations();
+    public int getIdType(Class c,String idProperty) {
+        List<Annotation> ans = BeanKit.getAllAnnoation(c, idProperty);
         int idType = DBStyle.ID_AUTO; //默认是自增长
 
         for (Annotation an : ans) {

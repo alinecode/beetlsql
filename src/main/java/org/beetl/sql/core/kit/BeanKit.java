@@ -5,8 +5,10 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -191,6 +193,8 @@ public class BeanKit {
 	}
 	
 	
+	
+	
 	public static Annotation getAnnotation(Class c,Class expect){
 		do{
 			Annotation an = c.getAnnotation(expect);
@@ -200,6 +204,68 @@ public class BeanKit {
 			c= c.getSuperclass();
 		}while(c!=null);
 		return null;
+		
+	}
+	
+	public static  <T extends Annotation> T getAnnoation(Class c,String property,Method getter, Class<T> annotationClass){
+		T t = getter.getAnnotation(annotationClass);
+		if(t!=null){
+			return t;
+		}else{
+			try {
+				Field f = c.getField(property);
+				t = f.getAnnotation(annotationClass);
+				return t ;
+			} catch (Exception e) {
+				return null;
+			}
+			
+		}
+	}
+	public static <T extends Annotation> T getAnnoation(Class c,String property, Class<T> annotationClass){
+		MethodInvoker invoker = ObjectUtil.getInvokder(c,property);
+		if(invoker==null){
+			return null;
+		}
+		
+		Method getter = invoker.getMethod();
+		return getAnnoation(c,property,getter,annotationClass);
+		
+	}
+	
+	public static List<Annotation>  getAllAnnoation(Class c,String property){
+		MethodInvoker invoker = ObjectUtil.getInvokder(c,property);
+		if(invoker==null){
+			return null;
+		}
+		
+		Method getter = invoker.getMethod();
+		Annotation[] array1 = getter.getAnnotations();
+		Annotation[] array2 = null;
+		Field f=null;
+		try {
+			f = c.getField(property);
+		} catch (Exception e) {
+			//不做处理
+		} 
+		if(f!=null){
+			array2 = f.getAnnotations();
+		}
+		
+		return addAnnotation(array1,array2);
+		
+	}
+	
+	private static  List<Annotation> addAnnotation(Annotation[] array1,Annotation[] array2){
+		List<Annotation> list = new ArrayList<Annotation>();
+		if(array1!=null){
+			list.addAll(Arrays.asList(array1));
+		}
+		
+		if(array2!=null){
+			list.addAll(Arrays.asList(array2));
+		}
+		return list;
 		
 	}
 	

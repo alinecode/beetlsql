@@ -45,6 +45,8 @@ public class MDParser {
 		if(status==END){
 			return null;
 		}
+		//去掉可能的尾部空格
+		sqlId = sqlId.trim();
 		skipComment();
 		if(status==END){
 			return null;

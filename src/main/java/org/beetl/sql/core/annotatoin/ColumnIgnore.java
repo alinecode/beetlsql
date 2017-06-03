@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target(value={ElementType.METHOD,ElementType.FIELD})
 public @interface ColumnIgnore {
 	public boolean insert() default true;
 	public boolean update() default false;

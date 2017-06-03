@@ -130,9 +130,14 @@ public class MethodDesc {
 		Class methodRetType = m.getReturnType();
 		if (type==2&&List.class.isAssignableFrom(methodRetType)) {
 			type = 3;
-			stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
-					.getActualTypeArguments()[0];
-
+			Type type = m.getGenericReturnType();
+			if(type instanceof ParameterizedType ){
+				stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
+						.getActualTypeArguments()[0];
+			}else{
+				stRetType = entityClass;
+			}
+			
 		}
 	
 		
