@@ -31,13 +31,13 @@ public class WhereTag extends TrimTag{
 					if (params.containsKey(PREFIX_OVERRIDES)) {
 						this.prefixOverrides = StringKit.split((String) params.get(PREFIX_OVERRIDES), SEPARATOR_CHAR);
 					}else{
-						this.prefixOverrides = new String[]{"AND","OR"};
+						this.prefixOverrides = new String[]{"AND ","OR "};
 					}
 				}
 			}
 		}else{
 			this.prefix = "WHERE";
-			this.prefixOverrides = new String[]{"AND","OR"};
+			this.prefixOverrides = new String[]{"AND ","OR "};
 		}
 	}
 }

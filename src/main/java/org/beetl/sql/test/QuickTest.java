@@ -30,8 +30,13 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
-		UserDao dao = sql.getMapper(UserDao.class);
-		dao.getIds3();
+
+		Credit credit = sql.unique(Credit.class,1);
+		credit.setBalance(15);
+//		credit.setVersion();
+//		credit.setName(null);
+		int ret = sql.updateTemplateById(credit);
+		System.out.println(ret);
 		
 	
 			

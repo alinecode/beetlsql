@@ -213,7 +213,8 @@ public class BeanKit {
 			return t;
 		}else{
 			try {
-				Field f = c.getField(property);
+				
+				Field f = c.getDeclaredField(property);
 				t = f.getAnnotation(annotationClass);
 				return t ;
 			} catch (Exception e) {

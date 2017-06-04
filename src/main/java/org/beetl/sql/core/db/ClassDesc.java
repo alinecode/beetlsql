@@ -14,6 +14,7 @@ import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
 import org.beetl.sql.core.annotatoin.InsertIgnore;
 import org.beetl.sql.core.annotatoin.UpdateIgnore;
+import org.beetl.sql.core.annotatoin.Version;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -35,6 +36,8 @@ public class ClassDesc {
 	Map<String,ColumnIgnoreStatus> attrIgnores = new HashMap<String,ColumnIgnoreStatus>();
 	Map<String,Object> idMethods = new CaseInsensitiveHashMap<String,Object>();
 	String ormQuery = null;
+	String versionProperty;
+	String versionCol;
 	
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		this.targetClass = c ;
@@ -77,6 +80,12 @@ public class ClassDesc {
 					if(ig!=null||ug!=null){
 						attrIgnores.put(p.getName(), new ColumnIgnoreStatus(ig,ug));
 					}
+				}
+				
+				Version version =  BeanKit.getAnnoation(c, p.getName(), readMethod, Version.class);
+				if(version!=null){
+					this.versionProperty = p.getName();
+					this.versionCol = col;
 				}
 				if(ids.contains(col)){
 					//保持同一个顺序
@@ -158,6 +167,14 @@ public class ClassDesc {
 			return false;
 		}
 		return ignore.updateIgnore;
+	}
+	
+	public String getVersionProperty(){
+		return this.versionProperty;
+	}
+	
+	public String getVersionCol(){
+		return this.versionCol;
 	}
 	
 	static class ColumnIgnoreStatus{
