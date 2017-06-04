@@ -8,6 +8,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 /**
@@ -30,13 +31,11 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
-
-		Credit credit = sql.unique(Credit.class,1);
-		credit.setBalance(15);
-//		credit.setVersion();
-//		credit.setName(null);
-		int ret = sql.updateTemplateById(credit);
-		System.out.println(ret);
+		PageQuery<String> query = new PageQuery<String>();
+		UserDao dao = sql.getMapper(UserDao.class);
+		dao.getIds3(query);
+		List<String> list = query.getList();
+		System.out.println(list);
 		
 	
 			

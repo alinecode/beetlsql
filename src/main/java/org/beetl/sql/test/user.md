@@ -1,8 +1,7 @@
 getIds3
 ===
-	select id from user  where 1=1 
-	@ var c = 1/0
-	and 1 = 1  and name=#1#
+	select #page("id")# from user  where 1=1 
+	
 	
 	
 selectRole
