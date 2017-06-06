@@ -3,7 +3,7 @@ package org.beetl.sql.core;
 
 import java.util.Map;
 
-import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.JPAEntityHelper.EntityTable;
 
 
 public class JPA2NameConversion extends NameConversion{ 
@@ -51,7 +51,13 @@ public class JPA2NameConversion extends NameConversion{
 
 	@Override
 	public String getTableName(Class<?> c) {
-		return JPAEntityHelper.getEntityTable(c).getName();
+		EntityTable entityTable = JPAEntityHelper.getEntityTable(c);
+		String name = entityTable.getName();//如果不注解JPA@Table时可能会为null
+		if(name!=null){
+			return name;
+		}else{
+			return nc!=null?nc.getTableName(c):c.getSimpleName();
+		}
 	}
 
 }

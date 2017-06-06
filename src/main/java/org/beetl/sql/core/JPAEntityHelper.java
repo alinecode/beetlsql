@@ -2,7 +2,6 @@ package org.beetl.sql.core;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -28,7 +27,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
-import org.beetl.sql.core.kit.StringKit;
 
 /**
  * 
@@ -358,12 +356,11 @@ public class JPAEntityHelper {
         if (entityTableMap.get(entityClass) != null) {
             return;
         }
-        //表名
-        EntityTable entityTable = null;
+        //表名 用户可能想使用NameConversion而不使用JPA@Table来注解，或可能使用的BeetlSQL@Table来注解的
+        EntityTable entityTable = new EntityTable();
         if (entityClass.isAnnotationPresent(Table.class)) {
             Table table = entityClass.getAnnotation(Table.class);
             if (!table.name().equals("")) {
-                entityTable = new EntityTable();
                 entityTable.setTable(table);
             }
         }
@@ -390,7 +387,6 @@ public class JPAEntityHelper {
                 }else if(field.getName().toUpperCase().equals("ID")){
                 	perIdEntityColumn=entityColumn;
                 }
-                String columnName = null;
                 
                 Column column=null;
                 if (field.isAnnotationPresent(Column.class)) {
@@ -399,17 +395,14 @@ public class JPAEntityHelper {
                     column=method.getAnnotation(Column.class);
                 }
                 
-                if(column!=null){
-                    columnName = column.name();
-                }
-                if (StringKit.isBlank(columnName)) {
-                    columnName = field.getName();
+                if(column!=null){//当@Column注解存在的时候才往cols和props的Map中存值
+                    entityColumn.setColumn(column.name().toUpperCase());
+                    entityColumn.setProperty(field.getName());
+                    entityColumn.setJavaType(field.getType());
+                    cols.put(entityColumn.getProperty(), entityColumn.getColumn());
+                    props.put(entityColumn.getColumn(), entityColumn.getProperty());
                 }
                 
-                
-                entityColumn.setProperty(field.getName());
-                entityColumn.setColumn(columnName.toUpperCase());
-                entityColumn.setJavaType(field.getType());
                 //order by
                 if (field.isAnnotationPresent(OrderBy.class)) {
                     OrderBy orderBy = field.getAnnotation(OrderBy.class);
@@ -447,14 +440,12 @@ public class JPAEntityHelper {
                 if (entityColumn.isId()) {
                     pkColumnSet.add(entityColumn);
                 }
-                cols.put(entityColumn.getProperty(), entityColumn.getColumn());
-                props.put(entityColumn.getColumn(), entityColumn.getProperty());
             } catch (IntrospectionException ex) {
                 Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
-        if(entityTable.getIdColumn()==null){
+        if(entityTable.getIdColumn()==null&&perIdEntityColumn!=null){//当没有ID列，也没有JPA的@Id时跳过
         	perIdEntityColumn.setId(true);
         	entityTable.setIdColumn(perIdEntityColumn);
         }

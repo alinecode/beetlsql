@@ -167,7 +167,9 @@ public class BeanKit {
 	}
 	
 	public  static Object convertValueToRequiredType(Object result, Class<?> requiredType) {
-		if(result==null) return null;
+		if(result==null) {
+			return null;
+		}
 		Class type = result.getClass();
 		if(type==result){
 			//大多数情况，都是这样
@@ -179,13 +181,13 @@ public class BeanKit {
 		//判断Number对象所表示的类或接口是否与requiredType所表示的类或接口是否相同，或者是否是其超类或者超接口
 		else if(Number.class.isAssignableFrom(requiredType)){
 			if(result instanceof Number){
-				return NumberKit.convertNumberToTargetClass(((Number) result), (Class<Number>) requiredType);
+				return NumberKit.convertNumberToTargetClass((Number) result, (Class<Number>) requiredType);
 			}else{
 				return NumberKit.parseNumber(result.toString(), (Class<Number>) requiredType);
 			}
 		}else if(requiredType.isPrimitive()){
 			if(result instanceof Number){
-				return NumberKit.convertNumberToTargetClass(((Number) result), requiredType);
+				return NumberKit.convertNumberToTargetClass((Number) result, requiredType);
 			}
 		}
 		
@@ -243,18 +245,31 @@ public class BeanKit {
 		Method getter = invoker.getMethod();
 		Annotation[] array1 = getter.getAnnotations();
 		Annotation[] array2 = null;
-		Field f=null;
-		try {
-			f = c.getField(property);
-		} catch (Exception e) {
-			//不做处理
-		} 
+		Field f=getField(c, property);
 		if(f!=null){
 			array2 = f.getAnnotations();
 		}
 		
 		return addAnnotation(array1,array2);
 		
+	}
+	/**
+	 * 根据Class 和 property 获取自身或父类的 Field
+	 * @param c
+	 * @param property
+	 * @return
+	 */
+	private static Field getField(Class c,String property){
+		Field field = null;
+		if(c!=null){
+			try {
+				field = c.getDeclaredField(property);
+			} catch (Exception e) {
+				//当前Class获取不到时尝试从父类中获取
+				field = getField(c.getSuperclass(), property);
+			}
+		}
+		return field;
 	}
 	
 	private static  List<Annotation> addAnnotation(Annotation[] array1,Annotation[] array2){
