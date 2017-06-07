@@ -8,536 +8,224 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.core.kit.StringKit;
 
 /**
  * 
- * @author linziguan@live.com
+ * @author linziguan@live.com、darren
  *
  */
 public class JPAEntityHelper {
 	/**
-     * 实体对应表的配置信息
-     */
-    public static class EntityTable {
-        private String name;
-        private String catalog;
-        private String schema;
-        //实体类 => 全部列属性
-        private Set<EntityColumn> entityClassColumns;
-        //实体类 => 主键信息
-        private Set<EntityColumn> entityClassPKColumns;
-        
-        private Map<String, String> colsMap ;
-        private Map<String, String> propsMap;
-        
-        //idColumn
-        private EntityColumn idColumn;
+	 * 实体对应表的配置信息
+	 */
+	public static class EntityTable {
+		// 实体映射的数据库表名
+		private String name;
+		// Java属性映射的数据库字段集合（column -> property）
+		private Map<String, String> colsMap = new HashMap<String, String>();
+		// 数据库字段映射的Java属性集合（property -> column）
+		private Map<String, String> propsMap = new HashMap<String, String>();
 
-        public void setTable(Table table) {
-            this.name = table.name();
-            this.catalog = table.catalog();
-            this.schema = table.schema();
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getCatalog() {
-            return catalog;
-        }
-
-        public String getSchema() {
-            return schema;
-        }
-
-        public String getPrefix() {
-            if (catalog != null && catalog.length() > 0) {
-                return catalog;
-            }
-            if (schema != null && schema.length() > 0) {
-                return catalog;
-            }
-            return "";
-        }
-
-        public Set<EntityColumn> getEntityClassColumns() {
-            return entityClassColumns;
-        }
-
-        public Set<EntityColumn> getEntityClassPKColumns() {
-            return entityClassPKColumns;
-        }
-
-        /**
-         * @return the idColumn
-         */
-        public EntityColumn getIdColumn() {
-            return idColumn;
-        }
-
-        /**
-         * @param idColumn the idColumn to set
-         */
-        public void setIdColumn(EntityColumn idColumn) {
-            this.idColumn = idColumn;
-        }
-
-		public Map<String, String> getColsMap() {
-			return colsMap;
+		protected void setTable(Table table) {
+			name = table.name();
+			if (StringKit.isNotBlank(table.schema())) {
+				name = table.schema() + "." + name;
+			} else if (StringKit.isNotBlank(table.catalog())) {
+				name = table.catalog() + "." + name;
+			}
+		}
+		protected void addProp(String col, String prop) {
+			propsMap.put(col, prop);
+		}
+		protected void addCol(String prop, String col) {
+			colsMap.put(prop, col);
+		}
+		protected void setName(String name) {
+			this.name = name;
 		}
 
-		public Map<String, String> getPropsMap() {
-			return propsMap;
+		/**
+		 * 根据column获取property
+		 * 
+		 * @param col
+		 *            数据库列名
+		 * @return
+		 */
+		public String getProp(String col) {
+			return propsMap.get(col);
 		}
-    }
 
-    /**
-     * 实体字段对应数据库列的信息
-     */
-    public static class EntityColumn {
-        private String property;
-        private String column;
-        private Class<?> javaType;
-        private String sequenceName;
-        private boolean id = false;
-        private boolean uuid = false;
-        private boolean identity = false;
-        private String generator;
-        private String orderBy;
-
-        public String getProperty() {
-            return property;
-        }
-
-        public void setProperty(String property) {
-            this.property = property;
-        }
-
-        public String getColumn() {
-            return column;
-        }
-
-        public void setColumn(String column) {
-            this.column = column;
-        }
-
-        public Class<?> getJavaType() {
-            return javaType;
-        }
-
-        public void setJavaType(Class<?> javaType) {
-            this.javaType = javaType;
-        }
-
-        public String getSequenceName() {
-            return sequenceName;
-        }
-
-        public void setSequenceName(String sequenceName) {
-            this.sequenceName = sequenceName;
-        }
-
-        public boolean isId() {
-            return id;
-        }
-
-        public void setId(boolean id) {
-            this.id = id;
-        }
-
-        public boolean isUuid() {
-            return uuid;
-        }
-
-        public void setUuid(boolean uuid) {
-            this.uuid = uuid;
-        }
-
-        public boolean isIdentity() {
-            return identity;
-        }
-
-        public void setIdentity(boolean identity) {
-            this.identity = identity;
-        }
-
-        public String getGenerator() {
-            return generator;
-        }
-
-        public void setGenerator(String generator) {
-            this.generator = generator;
-        }
-
-        public String getOrderBy() {
-            return orderBy;
-        }
-
-        public void setOrderBy(String orderBy) {
-            this.orderBy = orderBy;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            EntityColumn that = (EntityColumn) o;
-
-            if (id != that.id) return false;
-            if (identity != that.identity) return false;
-            if (uuid != that.uuid) return false;
-            if (column != null ? !column.equals(that.column) : that.column != null) return false;
-            if (generator != null ? !generator.equals(that.generator) : that.generator != null) return false;
-            if (javaType != null ? !javaType.equals(that.javaType) : that.javaType != null) return false;
-            if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-            if (property != null ? !property.equals(that.property) : that.property != null) return false;
-            if (sequenceName != null ? !sequenceName.equals(that.sequenceName) : that.sequenceName != null)
-                return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = property != null ? property.hashCode() : 0;
-            result = 31 * result + (column != null ? column.hashCode() : 0);
-            result = 31 * result + (javaType != null ? javaType.hashCode() : 0);
-            result = 31 * result + (sequenceName != null ? sequenceName.hashCode() : 0);
-            result = 31 * result + (id ? 1 : 0);
-            result = 31 * result + (uuid ? 1 : 0);
-            result = 31 * result + (identity ? 1 : 0);
-            result = 31 * result + (generator != null ? generator.hashCode() : 0);
-            result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
-            return result;
-        }
-
-       
-    }
-
-    /**
-     * 实体类 => 表对象
-     */
-    private static final Map<Class<?>, EntityTable> entityTableMap = new HashMap<Class<?>, EntityTable>();
-
-    /**
-     * 获取表对象
-     *
-     * @param entityClass
-     * @return
-     */
-    public static EntityTable getEntityTable(Class<?> entityClass) {
-    	EntityTable entityTable=null;
-    	synchronized (entityClass) {
-    		entityTable= entityTableMap.get(entityClass);
-    		if (entityTable == null) {
-                initEntityNameMap(entityClass);
-                entityTable = entityTableMap.get(entityClass);
-            }
+		/**
+		 * 根据property获取column
+		 * 
+		 * @param prop
+		 *            Java属性
+		 * @return
+		 */
+		public String getCol(String prop) {
+			return colsMap.get(prop);
 		}
-    	if (entityTable == null) {
-            throw new RuntimeException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
-        }
-        return entityTable;
-    }
 
-    /**
-     * 获取全部列
-     *
-     * @param entityClass
-     * @return
-     */
-    public static Set<EntityColumn> getColumns(Class<?> entityClass) {
-        return getEntityTable(entityClass).getEntityClassColumns();
-    }
+		/**
+		 * 获取数据库表名
+		 * 
+		 * @return
+		 */
+		public String getName() {
+			return name;
+		}
 
-    /**
-     * 获取主键信息
-     *
-     * @param entityClass
-     * @return
-     */
-    public static Set<EntityColumn> getPKColumns(Class<?> entityClass) {
-        return getEntityTable(entityClass).getEntityClassPKColumns();
-    }
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (name == null ? 0 : name.hashCode());
+			return result;
+		}
 
-    /**
-     * 获取字段映射关系
-     *
-     * @param entityClass
-     * @return
-     */
-    public static Map<String, String> getColumnAlias(Class<?> entityClass) {
-        Set<EntityColumn> columnList = getColumns(entityClass);
-        Map<String, String> alias = new HashMap<String, String>(columnList.size());
-        for (EntityColumn column : columnList) {
-            alias.put(column.getColumn(), column.getProperty());
-        }
-        return alias;
-    }
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			EntityTable other = (EntityTable) obj;
+			if (name == null) {
+				if (other.name != null) {
+					return false;
+				}
+			} else if (!name.equals(other.name)) {
+				return false;
+			}
+			return true;
+		}
+	}
 
-    /**
-     * 获取查询的Select
-     *
-     * @param entityClass
-     * @return
-     */
-    public static String getSelectColumns(Class<?> entityClass) {
-        Set<EntityColumn> columnList = getColumns(entityClass);
-        StringBuilder selectBuilder = new StringBuilder();
-        boolean skipAlias = Map.class.isAssignableFrom(entityClass);
-        for (EntityColumn entityColumn : columnList) {
-            selectBuilder.append(entityColumn.getColumn());
-            if (!skipAlias && !entityColumn.getColumn().equalsIgnoreCase(entityColumn.getProperty())) {
-                selectBuilder.append(" ").append(entityColumn.getProperty().toUpperCase()).append(",");
-            } else {
-                selectBuilder.append(",");
-            }
-        }
-        return selectBuilder.substring(0, selectBuilder.length() - 1);
-    }
+	/**
+	 * 实体类 => 表对象
+	 */
+	private static final Map<Class<?>, EntityTable> entityTableMap = new HashMap<Class<?>, EntityTable>();
 
-    /**
-     * 获取查询的Select
-     *
-     * @param entityClass
-     * @return
-     */
-    public static String getAllColumns(Class<?> entityClass) {
-        Set<EntityColumn> columnList = getColumns(entityClass);
-        StringBuilder selectBuilder = new StringBuilder();
-        for (EntityColumn entityColumn : columnList) {
-            selectBuilder.append(entityColumn.getColumn()).append(",");
-        }
-        return selectBuilder.substring(0, selectBuilder.length() - 1);
-    }
+	/**
+	 * 获取表对象
+	 *
+	 * @param entityClass
+	 * @return
+	 */
+	public static EntityTable getEntityTable(Class<?> entityClass,NameConversion nc) {
+		EntityTable entityTable = null;
+		synchronized (entityClass) {
+			entityTable = entityTableMap.get(entityClass);
+			if (entityTable == null) {
+				initEntityNameMap(entityClass,nc);
+				entityTable = entityTableMap.get(entityClass);
+			}
+		}
+		if (entityTable == null) {
+			throw new RuntimeException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
+		}
+		return entityTable;
+	}
 
-    /**
-     * 获取主键的Where语句
-     *
-     * @param entityClass
-     * @return
-     */
-    public static String getPrimaryKeyWhere(Class<?> entityClass) {
-        Set<JPAEntityHelper.EntityColumn> entityColumns = JPAEntityHelper.getPKColumns(entityClass);
-        StringBuilder whereBuilder = new StringBuilder();
-        for (JPAEntityHelper.EntityColumn column : entityColumns) {
-            whereBuilder.append(column.getColumn()).append(" = ?").append(" AND ");
-        }
-        return whereBuilder.substring(0, whereBuilder.length() - 4);
-    }
+	/**
+	 * 初始化实体属性
+	 *
+	 * @param entityClass
+	 */
+	private static synchronized void initEntityNameMap(Class<?> entityClass,NameConversion nc) {
+		if (entityTableMap.get(entityClass) != null) {
+			return;
+		}
+		EntityTable entityTable = new EntityTable();
+		if (entityClass.isAnnotationPresent(Table.class)) {
+			Table table = entityClass.getAnnotation(Table.class);
+			if (StringKit.isNotBlank(table.name())) {
+				entityTable.setTable(table);
+			}
+		}else if(entityClass.isAnnotationPresent(org.beetl.sql.core.annotatoin.Table.class)){//当用户错误注解成了BeetlSQL下面的@Table时兼容处理
+			org.beetl.sql.core.annotatoin.Table table = entityClass.getAnnotation(org.beetl.sql.core.annotatoin.Table.class);
+			entityTable.setName(table.name());
+		}
+		if(StringKit.isBlank(entityTable.getName())){//当从@Table没有获取到name时采用默认NameConversion转换或直接使用Class类名
+			entityTable.setName(nc!=null?nc.getTableName(entityClass):entityClass.getSimpleName());
+		}
+		// 列
+		List<Field> fieldList = getAllField(entityClass, null);
+		for (Field field : fieldList) {
+				String propName = field.getName();
+				Method method = null;
+				try {
+					PropertyDescriptor p = new PropertyDescriptor(field.getName(), entityClass);
+					method = p.getReadMethod();
+				} catch (IntrospectionException e) {
+					Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.SEVERE, null, e);
+				}
+				Column column = null;
+				if (field.isAnnotationPresent(Column.class)) {
+					column = field.getAnnotation(Column.class);
+				} else if (method!=null&&method.isAnnotationPresent(Column.class)) {
+					column = method.getAnnotation(Column.class);
+				}
+				String columnName = null;
+				if (column != null){
+					columnName = column.name();
+				}
+				if(StringKit.isBlank(columnName)){//当没有从JPA@Column获取到列名时采用默认的NameConversion或直接使用属性名
+					columnName = nc!=null?nc.getColName(propName):propName;
+				}
+				// @Transient 排除字段 强制将映射返回null，让BeetlSQL自己跳过
+				if(field.isAnnotationPresent(Transient.class)||method!=null&&method.isAnnotationPresent(Transient.class)){
+					entityTable.addCol(propName, null);
+					entityTable.addProp(columnName, null);
+				}else{
+					entityTable.addCol(propName, columnName);
+					entityTable.addProp(columnName, propName);
+				}
+		}
+		// 缓存
+		entityTableMap.put(entityClass, entityTable);
+	}
 
-    /**
-     * 初始化实体属性
-     *
-     * @param entityClass
-     */
-    public static synchronized void initEntityNameMap(Class<?> entityClass) {
-        if (entityTableMap.get(entityClass) != null) {
-            return;
-        }
-        //表名 用户可能想使用NameConversion而不使用JPA@Table来注解，或可能使用的BeetlSQL@Table来注解的
-        EntityTable entityTable = new EntityTable();
-        if (entityClass.isAnnotationPresent(Table.class)) {
-            Table table = entityClass.getAnnotation(Table.class);
-            if (!table.name().equals("")) {
-                entityTable.setTable(table);
-            }
-        }
-        //列
-        List<Field> fieldList = getAllField(entityClass, null);
-        Set<EntityColumn> columnSet = new HashSet<EntityColumn>();
-        Set<EntityColumn> pkColumnSet = new HashSet<EntityColumn>();
-        Map<String, String> cols = new CaseInsensitiveHashMap();
-        Map<String, String> props= new CaseInsensitiveHashMap();
-        
-        EntityColumn perIdEntityColumn=null;
-        for (Field field : fieldList) {
-            try {
-                //排除字段
-                if (field.isAnnotationPresent(Transient.class)) {
-                    continue;
-                }
-                EntityColumn entityColumn = new EntityColumn();
-                PropertyDescriptor p = new PropertyDescriptor(field.getName(), entityClass);
-                Method method=p.getReadMethod();
-                if (field.isAnnotationPresent(Id.class) ||method.isAnnotationPresent(Id.class)) {
-                    entityColumn.setId(true);
-                    entityTable.setIdColumn(entityColumn);
-                }else if(field.getName().toUpperCase().equals("ID")){
-                	perIdEntityColumn=entityColumn;
-                }
-                
-                Column column=null;
-                if (field.isAnnotationPresent(Column.class)) {
-                    column = field.getAnnotation(Column.class);
-                }else if(method.isAnnotationPresent(Column.class)){
-                    column=method.getAnnotation(Column.class);
-                }
-                
-                if(column!=null){//当@Column注解存在的时候才往cols和props的Map中存值
-                    entityColumn.setColumn(column.name().toUpperCase());
-                    entityColumn.setProperty(field.getName());
-                    entityColumn.setJavaType(field.getType());
-                    cols.put(entityColumn.getProperty(), entityColumn.getColumn());
-                    props.put(entityColumn.getColumn(), entityColumn.getProperty());
-                }
-                
-                //order by
-                if (field.isAnnotationPresent(OrderBy.class)) {
-                    OrderBy orderBy = field.getAnnotation(OrderBy.class);
-                    if (orderBy.value().equals("")) {
-                        entityColumn.setOrderBy("ASC");
-                    } else {
-                        entityColumn.setOrderBy(orderBy.value());
-                    }
-                }
-                //主键策略 - Oracle序列，MySql自动增长，UUID
-                if (field.isAnnotationPresent(SequenceGenerator.class)) {
-                    SequenceGenerator sequenceGenerator = field.getAnnotation(SequenceGenerator.class);
-                    if (sequenceGenerator.sequenceName().equals("")) {
-                        throw new RuntimeException(entityClass + "字段" + field.getName() + "的注解@SequenceGenerator未指定sequenceName!");
-                    }
-                    entityColumn.setSequenceName(sequenceGenerator.sequenceName());
-                } else if (field.isAnnotationPresent(GeneratedValue.class)) {
-                    GeneratedValue generatedValue = field.getAnnotation(GeneratedValue.class);
-                    if (generatedValue.generator().equals("UUID")) {
-                        if (field.getType().equals(String.class)) {
-                            entityColumn.setUuid(true);
-                        } else {
-                            throw new RuntimeException(field.getName() + " - 该字段@GeneratedValue配置为UUID，但该字段类型不是String");
-                        }
-                    } else if (generatedValue.generator().equals("JDBC")) {
-                        if (Number.class.isAssignableFrom(field.getType())) {
-                            entityColumn.setIdentity(true);
-                            entityColumn.setGenerator("JDBC");
-                        } else {
-                            throw new RuntimeException(field.getName() + " - 该字段@GeneratedValue配置为UUID，但该字段类型不是String");
-                        }
-                    }
-                }
-                columnSet.add(entityColumn);
-                if (entityColumn.isId()) {
-                    pkColumnSet.add(entityColumn);
-                }
-            } catch (IntrospectionException ex) {
-                Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
-        if(entityTable.getIdColumn()==null&&perIdEntityColumn!=null){//当没有ID列，也没有JPA的@Id时跳过
-        	perIdEntityColumn.setId(true);
-        	entityTable.setIdColumn(perIdEntityColumn);
-        }
-        entityTable.colsMap=cols;
-        entityTable.propsMap=props;
-        entityTable.entityClassColumns = columnSet;
-        if (pkColumnSet.size() == 0) {
-            entityTable.entityClassPKColumns = columnSet;
-        } else {
-            entityTable.entityClassPKColumns = pkColumnSet;
-        }
-        //缓存
-        entityTableMap.put(entityClass, entityTable);
-    }
-    
-   
-    
-    /**
-     * 将驼峰风格替换为下划线风格
-     */
-    public static String camelhumpToUnderline(String str) {
-        final int size;
-        final char[] chars;
-        final StringBuilder sb = new StringBuilder(
-                (size = (chars = str.toCharArray()).length) * 3 / 2 + 1);
-        char c;
-        for (int i = 0; i < size; i++) {
-            c = chars[i];
-            if (isUppercaseAlpha(c)) {
-                sb.append('_').append(c);
-            } else {
-                sb.append(toUpperAscii(c));
-            }
-        }
-        return sb.charAt(0) == '_' ? sb.substring(1) : sb.toString();
-    }
-
-    /**
-     * 将下划线风格替换为驼峰风格
-     */
-    public static String underlineToCamelhump(String str) {
-        Matcher matcher = Pattern.compile("_[a-z]").matcher(str);
-        StringBuilder builder = new StringBuilder(str);
-        for (int i = 0; matcher.find(); i++) {
-            builder.replace(matcher.start() - i, matcher.end() - i, matcher.group().substring(1).toUpperCase());
-        }
-        if (Character.isUpperCase(builder.charAt(0))) {
-            builder.replace(0, 1, String.valueOf(Character.toLowerCase(builder.charAt(0))));
-        }
-        return builder.toString();
-    }
-
-    public static boolean isUppercaseAlpha(char c) {
-        return (c >= 'A') && (c <= 'Z');
-    }
-
-    public static char toUpperAscii(char c) {
-        if (isUppercaseAlpha(c)) {
-            c -= (char) 0x20;
-        }
-        return c;
-    }
-
-    /**
-     * 获取全部的Field
-     *
-     * @param entityClass
-     * @param fieldList
-     * @return
-     */
-    private static List<Field> getAllField(Class<?> entityClass, List<Field> fieldList) {
-        if (fieldList == null) {
-            fieldList = new ArrayList<Field>();
-        }
-        if (entityClass.equals(Object.class)) {
-            return fieldList;
-        }
-        Field[] fields = entityClass.getDeclaredFields();
-        for (Field field : fields) {
-            //排除静态字段，解决bug#2
-            if (!Modifier.isStatic(field.getModifiers())) {
-                fieldList.add(field);
-            }
-        }
-        Class<?> superClass = entityClass.getSuperclass();
-        if (superClass != null
-                && !superClass.equals(Object.class)
-                && (superClass.isAnnotationPresent(Entity.class)
-                || (!Map.class.isAssignableFrom(superClass)
-                && !Collection.class.isAssignableFrom(superClass)))) {
-            return getAllField(entityClass.getSuperclass(), fieldList);
-        }
-        return fieldList;
-    }
+	/**
+	 * 获取全部的Field
+	 *
+	 * @param entityClass
+	 * @param fieldList
+	 * @return
+	 */
+	private static List<Field> getAllField(Class<?> entityClass, List<Field> fieldList) {
+		if (fieldList == null) {
+			fieldList = new ArrayList<Field>();
+		}
+		if (entityClass.equals(Object.class)) {
+			return fieldList;
+		}
+		Field[] fields = entityClass.getDeclaredFields();
+		for (Field field : fields) {
+			// 排除静态字段，解决bug#2
+			if (!Modifier.isStatic(field.getModifiers())) {
+				fieldList.add(field);
+			}
+		}
+		Class<?> superClass = entityClass.getSuperclass();
+		if (superClass != null && !superClass.equals(Object.class) &&!Map.class.isAssignableFrom(superClass) && !Collection.class.isAssignableFrom(superClass)) {
+			return getAllField(entityClass.getSuperclass(), fieldList);
+		}
+		return fieldList;
+	}
 }

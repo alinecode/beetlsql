@@ -3,8 +3,6 @@ package org.beetl.sql.core;
 
 import java.util.Map;
 
-import org.beetl.sql.core.JPAEntityHelper.EntityTable;
-
 
 public class JPA2NameConversion extends NameConversion{ 
 	
@@ -24,40 +22,21 @@ public class JPA2NameConversion extends NameConversion{
 	public String getColName(Class<?> c, String attrName) {
 		if(Map.class.isAssignableFrom(c)){
 			return nc!=null?nc.getColName(attrName):attrName;
-			
 		}
-		String colName =  JPAEntityHelper.getEntityTable(c).getColsMap().get(attrName);
-		if(colName!=null){
-			return colName;
-		}else{
-			return nc!=null?nc.getColName(attrName):attrName;
-		}
-		
+		return JPAEntityHelper.getEntityTable(c,nc).getCol(attrName);
 	}
 
 	@Override
 	public String getPropertyName(Class<?> c, String colName) {
 		if(Map.class.isAssignableFrom(c)){
 			return nc!=null?nc.getPropertyName(c, colName):colName;
-			
 		}
-		String name =  JPAEntityHelper.getEntityTable(c).getPropsMap().get(colName);
-		if(name!=null){
-			return name;
-		}else{
-			return nc!=null?nc.getPropertyName(c, colName):colName;
-		}
+		return JPAEntityHelper.getEntityTable(c,nc).getProp(colName);
 	}
 
 	@Override
 	public String getTableName(Class<?> c) {
-		EntityTable entityTable = JPAEntityHelper.getEntityTable(c);
-		String name = entityTable.getName();//如果不注解JPA@Table时可能会为null
-		if(name!=null){
-			return name;
-		}else{
-			return nc!=null?nc.getTableName(c):c.getSimpleName();
-		}
+		return JPAEntityHelper.getEntityTable(c,nc).getName();
 	}
 
 }
