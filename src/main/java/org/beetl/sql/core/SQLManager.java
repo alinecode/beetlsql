@@ -40,6 +40,7 @@ import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.ConstantEnum;
 import org.beetl.sql.core.kit.GenKit;
+import org.beetl.sql.core.kit.PageKit;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
@@ -1377,7 +1378,6 @@ public class SQLManager {
      * @return
      */
     public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras, long start, long size) {
-
         Map map = new HashMap();
         map.put("_root", paras);
         return this.execute(sqlTemplate, clazz, map, start, size);
@@ -1435,13 +1435,23 @@ public class SQLManager {
         return script.sqlReadySelect(clazz, p);
     }
 
-    public <T> PageQuery<T> execute(SQLReady p, Class<T> clazz, long start, long size, Object... paras) {
-
-        SQLSource source = new SQLSource("native." + p.getSql(), p.getSql());
-        SQLScript script = new SQLScript(source, this);
-
-
-        return script.sqlReadySelect(clazz, p);
+    public <T> PageQuery<T> executePageQuery(SQLReady p, Class<T> clazz, long pageNumber, long pageSize) {
+    		String sql = p.getSql();
+    		String countSql = PageKit.getCountSql(sql);
+    		List<Long> countList = execute(new SQLReady(countSql,p.getArgs()),Long.class);
+    		Long count = countList.get(0);
+    		List<T> list = null;
+    		if(count==0){
+    			list = Collections.emptyList();
+    		}else{
+    			long offset = (pageNumber-1)*pageSize;
+    			String pageSql = this.dbStyle.getPageSQLStatement(countSql, offset, pageSize);
+    			list  = execute(new SQLReady(pageSql,p.getArgs()),clazz);
+    		}
+    		
+    		PageQuery pageQuery = new PageQuery(pageNumber,null,count);
+    		pageQuery.setList(list);
+    	    return pageQuery;
 
     }
 
