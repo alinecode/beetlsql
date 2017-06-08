@@ -1435,28 +1435,15 @@ public class SQLManager {
         return script.sqlReadySelect(clazz, p);
     }
 
-//    public <T> List<T> execute(SQLReady p, Class<T> clazz, long start, long size, Object... paras) {
-//
-//        SQLSource source = new SQLSource("native." + p.getSql(), p.getSql());
-//        SQLScript script = new SQLScript(source, this);
-////        return script.sqlReadySelect(clazz, p);
-//
-//
-////        String key = "auto._gen_" + p.getSql();
-////        SQLSource source = sqlLoader.getGenSQL(key);
-////        if (source == null) {
-////            String pageSql = this.dbStyle.getPageSQL(p.getSql());
-////            source = new SQLSource(key, pageSql);
-////            this.sqlLoader.addGenSQL(key, source);
-////        }
-////
-////        this.dbStyle.initPagePara(paras, start, size);
-////        SQLScript script = new SQLScript(source, this);
-////        return script.select(clazz, paras);
-//
-//        return script.sqlReadySelect(clazz, p);
-//
-//    }
+    public <T> PageQuery<T> execute(SQLReady p, Class<T> clazz, long start, long size, Object... paras) {
+
+        SQLSource source = new SQLSource("native." + p.getSql(), p.getSql());
+        SQLScript script = new SQLScript(source, this);
+
+
+        return script.sqlReadySelect(clazz, p);
+
+    }
 
     /**
      * 直接执行sql语句，用于删除或者更新，sql语句已经是准备好的，采用preparedstatment执行
