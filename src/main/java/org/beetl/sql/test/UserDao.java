@@ -17,5 +17,7 @@ public interface UserDao extends BaseMapper<User> {
 	void getIds3(PageQuery<String> query);
 	
 	List getUsers();
+	@Sql("select * from user ")
+	PageQuery<User> getUser4(int pageNumber,String pageSize);
 	
 }

@@ -34,8 +34,8 @@ public class DebugInterceptor implements Interceptor {
 		}
 		StringBuilder sb = new StringBuilder();
 		String lineSeparator = System.getProperty("line.separator", "\n");
-		sb.append("┏━━━━━ Debug [").append(this.getSqlId(sqlId)).append("] ━━━").append(lineSeparator)
-		.append("┣ SQL：\t " + ctx.getSql().replaceAll("--.*", "").replaceAll("\\s+", " ")).append(lineSeparator)
+		sb.append("┏━━━━━ Debug [").append(this.getSqlId(formatSql(sqlId))).append("] ━━━").append(lineSeparator)
+		.append("┣ SQL：\t " + formatSql(ctx.getSql())+lineSeparator)
 		.append("┣ 参数：\t " + formatParas(ctx.getParas())).append(lineSeparator);
 		RuntimeException ex = new  RuntimeException();
 		StackTraceElement[] traces = ex.getStackTrace();
@@ -121,7 +121,7 @@ public class DebugInterceptor implements Interceptor {
 			}
 			
 		}
-		sb.append("┗━━━━━ Debug [").append(this.getSqlId(ctx.getSqlId())).append("] ━━━").append(lineSeparator);
+		sb.append("┗━━━━━ Debug [").append(this.getSqlId(formatSql(ctx.getSqlId()))).append("] ━━━").append(lineSeparator);
 		println(sb.toString());
 
 	}
@@ -181,6 +181,10 @@ public class DebugInterceptor implements Interceptor {
 		sb.append("┗━━━━━ Debug [ ERROR:").append(ex!=null?ex.getMessage():"").append("] ━━━").append(lineSeparator);
 		println(sb.toString());
 		
+	}
+	
+	protected String formatSql(String sql){
+		return sql.replaceAll("--.*", "").replaceAll("\\s+", " ");
 	}
 
 }

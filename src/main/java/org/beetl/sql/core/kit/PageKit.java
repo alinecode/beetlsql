@@ -112,9 +112,8 @@ public final class PageKit {
         int fromEnd = 0;
 
         for (String s : sql.split("\n")) {
-            if (s.equals("    from")) {
+            if (!fromIndexOver&&s.equals("    from")) {
                 fromIndexOver = true;
-                fromEnd = fromIndex + 8;
                 if (hasOrderBy == false) {
                     break;
                 }
@@ -124,11 +123,10 @@ public final class PageKit {
                 break;
             }
 
-            if (fromIndexOver == false) {
-                fromIndex += s.length() + 1;
-            } else {
-                fromEnd += s.length();
-            }
+            if (!fromIndexOver) {
+                fromIndex += s.length()+1;
+            } 
+            fromEnd += s.length()+1;
 
         }
 
@@ -139,6 +137,12 @@ public final class PageKit {
         }
 
         return "select count(1) \n" + selectSql.substring(fromIndex);
+    }
+    
+    public static void main(String[] args){
+    		String sql = "select * from user #abcd# where 1=1 and c=#abc# order #text('acd.123/2')#";
+    		sql = PageKit.getCountSql(sql);
+    		System.out.println(sql);
     }
 
 }

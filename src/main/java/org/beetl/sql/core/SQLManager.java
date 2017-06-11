@@ -541,8 +541,8 @@ public class SQLManager {
         return script.select(paras, clazz, mapper, start, size);
     }
 
-    public <T> void pageQuery(String sqlId, Class<T> clazz, PageQuery query) {
-        pageQuery(sqlId, clazz, query, null);
+    public <T> PageQuery<T> pageQuery(String sqlId, Class<T> clazz, PageQuery<T> query) {
+        return pageQuery(sqlId, clazz, query, null);
     }
 
     /**
@@ -560,7 +560,7 @@ public class SQLManager {
      * @param sqlId
      * @param query
      */
-    public <T> void pageQuery(String sqlId, Class<T> clazz, PageQuery query, RowMapper<T> mapper) {
+    public <T> PageQuery<T>  pageQuery(String sqlId, Class<T> clazz, PageQuery query, RowMapper<T> mapper) {
         Object paras = query.getParas();
         Map<String, Object> root = null;
         Long totalRow = query.getTotalRow();
@@ -608,7 +608,7 @@ public class SQLManager {
         }
 
         query.setList(list);
-
+        return query;
     }
 
     /**
@@ -1434,8 +1434,13 @@ public class SQLManager {
         SQLScript script = new SQLScript(source, this);
         return script.sqlReadySelect(clazz, p);
     }
+    
 
-    public <T> PageQuery<T> executePageQuery(SQLReady p, Class<T> clazz, long pageNumber, long pageSize) {
+
+    public <T> PageQuery<T>  execute(SQLReady p, Class<T> clazz, PageQuery<T> pageQuery) {
+    		if(pageQuery.getParas()!=null){
+    			throw new RuntimeException("参数需要通过SQLReady传递");
+    		}
     		String sql = p.getSql();
     		String countSql = PageKit.getCountSql(sql);
     		List<Long> countList = execute(new SQLReady(countSql,p.getArgs()),Long.class);
@@ -1444,17 +1449,19 @@ public class SQLManager {
     		if(count==0){
     			list = Collections.emptyList();
     		}else{
-    			long offset = (pageNumber-1)*pageSize;
-    			String pageSql = this.dbStyle.getPageSQLStatement(countSql, offset, pageSize);
+    			long pageNumber = pageQuery.getPageNumber();
+    			long pageSize = pageQuery.getPageSize();
+    			long offset = (pageNumber-1)*pageSize+(offsetStartZero ? 0 : 1);
+    			String pageSql = this.dbStyle.getPageSQLStatement(sql, offset, pageSize);
     			list  = execute(new SQLReady(pageSql,p.getArgs()),clazz);
     		}
-    		
-    		PageQuery pageQuery = new PageQuery(pageNumber,null,count);
+    		pageQuery.setTotalRow(count);
     		pageQuery.setList(list);
-    	    return pageQuery;
-
+    		return pageQuery;
+ 
     }
 
+    
     /**
      * 直接执行sql语句，用于删除或者更新，sql语句已经是准备好的，采用preparedstatment执行
      *

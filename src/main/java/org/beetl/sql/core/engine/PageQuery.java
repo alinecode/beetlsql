@@ -35,6 +35,15 @@ public class PageQuery<T> implements Serializable{
 	public PageQuery(){
 		this(1,null);
 	}
+	
+	public PageQuery(long pageNumber){
+		this(pageNumber,null);
+	}
+	
+	public PageQuery(long pageNumber,long pageSize){
+		this(pageNumber,null);
+		this.pageSize = pageSize;
+	}
 	/** 
 	 * @param pageNumber 页数
 	 * @param paras 参数，pojo或者map

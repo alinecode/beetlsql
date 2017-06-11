@@ -31,9 +31,20 @@ public class MethodDesc {
 	public Map<String, Integer> parasPos = new HashMap<String, Integer>();
 	// 0 insert , 1 insert with key holder, 2 select single ,3 select list 4
 	// update 5 batchUpdate 6 page query
-	public int type = 0;
+	
+	/*对应到SQLManager 操作类型*/
+	public static int SM_INSERT = 0;
+	public static int SM_INSERT_KEYHOLDER = 1;
+	public static int SM_SELECT_SINGLE = 2;
+	public static int SM_SELECT_LIST = 3;
+	public static int SM_UPDATE = 4;
+	public static int SM_BATCH_UPDATE = 5;
+	public static int SM_PAGE_QUERY = 6;
+	public static int SM_SQL_READY_PAGE_QUERY = 7;
+	
+	public int type = SM_INSERT;
 	public Method method = null;
-	// 如果存在翻页，pagger［0］ ＝offet,pagger[1]= size;
+	// 如果存在范围查找，pagger［0］ ＝offet,pagger[1]= size;
 	public int[] paggerPos = null;
 	// -1 表示返回一个KeyHolder，否则，使用指定位置的参数
 	public int keyHolderPos = -1;
@@ -45,37 +56,7 @@ public class MethodDesc {
 
 	static Map<CallKey, MethodDesc> cache = new HashMap<CallKey, MethodDesc>();
 	
-	static class CallKey{
-		Method m;
-		Class entityClass;
-		public CallKey(Method m,Class entityClass){
-			this.m = m;
-			this.entityClass = entityClass;
-		}
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((entityClass == null) ? 0 : entityClass.hashCode());
-			result = prime * result + ((m == null) ? 0 : m.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			
-			CallKey other = (CallKey) obj;
-			if(other.entityClass==this.entityClass&&this.m.equals(other.m)){
-				return true ;
-			}else{
-				return false;
-			}
-			
-			
-			
-		}
-		
-	}
-
+	
 	public static MethodDesc getMetodDesc(SQLManager sm, Class entityClass, Method m, String sqlId) {
 		CallKey callKey = new CallKey(m,entityClass);
 		MethodDesc desc = cache.get(callKey);
@@ -110,43 +91,47 @@ public class MethodDesc {
 	protected void parseSqlReady(SQLManager sm, Class entityClass, Sql sql,Method m,String sqlId) {
 		
 		Class stRetType = sql.returnType();
-		//确定type  2（单选），3（多选），4 更新
+		// 初步判断类型
 		SqlStatementType sqlType = sql.type();
 		
 		if (sqlType == SqlStatementType.AUTO) {
-			type = getTypeBySql(sqlReady);
-			if(type==-1){
+			int inferType = getTypeBySql(sqlReady);
+			if(inferType==-1){
 				throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId+" 请指定Sql类型");
-			}else if(type==0){
-				type = 4;// 认为update
+			}else if(inferType==SM_INSERT){
+				type = SM_UPDATE;// 认为update
+			}else if(inferType==SM_SELECT_SINGLE){
+				type = SM_SELECT_SINGLE;
 			}
 		
 		} else if (sqlType == SqlStatementType.SELECT) {
-			type = 2;
+			type = SM_SELECT_SINGLE;
 		} else {
-			type = 4;
+			type = SM_UPDATE;
 		}
 		
+		//具体判断类型
 		Class methodRetType = m.getReturnType();
-		if (type==2&&List.class.isAssignableFrom(methodRetType)) {
-			type = 3;
-			Type type = m.getGenericReturnType();
-			if(type instanceof ParameterizedType ){
-				stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
-						.getActualTypeArguments()[0];
-			}else{
-				stRetType = entityClass;
+		if (type==SM_SELECT_SINGLE) {
+			if(List.class.isAssignableFrom(methodRetType)){
+				type = SM_SELECT_LIST;
+				stRetType = getRetType(m,entityClass);
+				
+			}else if(PageQuery.class.isAssignableFrom(methodRetType)){
+				//假设最后俩个参数是pageNumber和pageSize
+				this.type = SM_SQL_READY_PAGE_QUERY;
+				stRetType = getRetType(m,entityClass);
+				
 			}
 			
+						
 		}
-	
-		
+			
 		//确定查询返回需要映射类型
-		if(type==2||type==3||type==6){
+		if(type==SM_SELECT_SINGLE||type==SM_SELECT_LIST||type==SM_SQL_READY_PAGE_QUERY){
 			this.getSelectRenturnType(methodRetType, stRetType, entityClass);
 		}
 			
-		
 		
 	}
 	protected void parse(SQLManager sm, Class entityClass, Method m, String sqlId) {
@@ -368,22 +353,27 @@ public class MethodDesc {
 
 	}
 
+	/**
+	 * 根据sql语句判断sql类型，用于对应到SQLManager操作
+	 * @param sql
+	 * @return
+	 */
 	private int getTypeBySql(String sql) {
 		
 		String sqlType = getFirstToken(sql);
 		
 		if (sqlType.equals("select")) {
-			return 2;
+			return SM_SELECT_SINGLE;
 		} else if (sqlType.equals("insert")) {
-			return 0;
+			return SM_INSERT;
 		} else if (sqlType.equals("delete")) {
-			return 4;
+			return SM_UPDATE;
 		} else if (sqlType.equals("update")) {
-			return 4;
+			return SM_UPDATE;
 		} else if(sqlType.equals("create")){
-			return 4;
+			return SM_UPDATE;
 		}else if(sqlType.equals("drop")){
-			return 4;
+			return SM_UPDATE;
 		}
 		else {
 			return -1; //unknow
@@ -450,18 +440,57 @@ public class MethodDesc {
 	
 	protected void getSelectRenturnType(Class methodRetType,Class annotationType,Class entity){
 		if(annotationType!=Void.class){
-			//注解总是优先
+			//注解总是优先。2.8.16 后注解的returnType不是必须的，但保留在这里
 			this.renturnType = annotationType;
 			return ;
 		}
 		
-		if(this.type==3||type==6){
+		if(this.type==SM_SELECT_LIST||type==SM_PAGE_QUERY||type==SM_SQL_READY_PAGE_QUERY){
 			this.renturnType = entity;
-		}else if(this.type==2){
+		}else if(this.type==SM_SELECT_SINGLE){
 			this.renturnType = methodRetType;
 		}
 		
 
+	}
+	
+	protected Class getRetType(Method method,Class entityClass){
+		Type type = method.getGenericReturnType();
+		if(type instanceof ParameterizedType ){
+			return (Class) ((ParameterizedType) method.getGenericReturnType())
+					.getActualTypeArguments()[0];
+		}else{
+			return  entityClass;
+		}
+	}
+	static class CallKey{
+		Method m;
+		Class entityClass;
+		public CallKey(Method m,Class entityClass){
+			this.m = m;
+			this.entityClass = entityClass;
+		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((entityClass == null) ? 0 : entityClass.hashCode());
+			result = prime * result + ((m == null) ? 0 : m.hashCode());
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			
+			CallKey other = (CallKey) obj;
+			if(other.entityClass==this.entityClass&&this.m.equals(other.m)){
+				return true ;
+			}else{
+				return false;
+			}
+			
+			
+		}
+		
 	}
 
 }
