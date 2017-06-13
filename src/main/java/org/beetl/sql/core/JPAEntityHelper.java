@@ -167,35 +167,35 @@ public class JPAEntityHelper {
 		// 列
 		List<Field> fieldList = getAllField(entityClass, null);
 		for (Field field : fieldList) {
-				String propName = field.getName();
-				Method method = null;
-				try {
-					PropertyDescriptor p = new PropertyDescriptor(field.getName(), entityClass);
-					method = p.getReadMethod();
-				} catch (IntrospectionException e) {
-					Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.SEVERE, null, e);
-				}
-				Column column = null;
-				if (field.isAnnotationPresent(Column.class)) {
-					column = field.getAnnotation(Column.class);
-				} else if (method!=null&&method.isAnnotationPresent(Column.class)) {
-					column = method.getAnnotation(Column.class);
-				}
-				String columnName = null;
-				if (column != null){
-					columnName = column.name();
-				}
-				if(StringKit.isBlank(columnName)){//当没有从JPA@Column获取到列名时采用默认的NameConversion或直接使用属性名
-					columnName = nc!=null?nc.getColName(propName):propName;
-				}
-				// @Transient 排除字段 强制将映射返回null，让BeetlSQL自己跳过
-				if(field.isAnnotationPresent(Transient.class)||method!=null&&method.isAnnotationPresent(Transient.class)){
-					entityTable.addCol(propName, null);
-					entityTable.addProp(columnName, null);
-				}else{
-					entityTable.addCol(propName, columnName);
-					entityTable.addProp(columnName, propName);
-				}
+			String propName = field.getName();
+			Method method = null;
+			try {
+				PropertyDescriptor p = new PropertyDescriptor(field.getName(), entityClass);
+				method = p.getReadMethod();
+			} catch (IntrospectionException e) {
+				Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.SEVERE, null, e);
+			}
+			Column column = null;
+			if (field.isAnnotationPresent(Column.class)) {
+				column = field.getAnnotation(Column.class);
+			} else if (method!=null&&method.isAnnotationPresent(Column.class)) {
+				column = method.getAnnotation(Column.class);
+			}
+			String columnName = null;
+			if (column != null){
+				columnName = column.name();
+			}
+			if(StringKit.isBlank(columnName)){//当没有从JPA@Column获取到列名时采用默认的NameConversion或直接使用属性名
+				columnName = nc!=null?nc.getColName(propName):propName;
+			}
+			// @Transient 排除字段 强制将映射返回null，让BeetlSQL自己跳过
+			if(field.isAnnotationPresent(Transient.class)||method!=null&&method.isAnnotationPresent(Transient.class)){
+				entityTable.addCol(propName, null);
+				entityTable.addProp(columnName, null);
+			}else{
+				entityTable.addCol(propName, columnName);
+				entityTable.addProp(columnName, propName);
+			}
 		}
 		// 缓存
 		entityTableMap.put(entityClass, entityTable);

@@ -20,7 +20,7 @@ public class JPA2NameConversion extends NameConversion{
 	
 	@Override
 	public String getColName(Class<?> c, String attrName) {
-		if(Map.class.isAssignableFrom(c)){
+		if(c==null||Map.class.isAssignableFrom(c)){
 			return nc!=null?nc.getColName(attrName):attrName;
 		}
 		return JPAEntityHelper.getEntityTable(c,nc).getCol(attrName);
@@ -28,7 +28,7 @@ public class JPA2NameConversion extends NameConversion{
 
 	@Override
 	public String getPropertyName(Class<?> c, String colName) {
-		if(Map.class.isAssignableFrom(c)){
+		if(c==null||Map.class.isAssignableFrom(c)){
 			return nc!=null?nc.getPropertyName(c, colName):colName;
 		}
 		return JPAEntityHelper.getEntityTable(c,nc).getProp(colName);
