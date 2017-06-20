@@ -295,8 +295,11 @@ public class BeanKit {
 		Method writeMethod = prop.getWriteMethod();
 		//当使用lombok等链式编程方式时 有返回值的setter不被认为是writeMethod，需要自己去获取
 		if(writeMethod==null&&!"class".equals(prop.getName())){
+			String propName = prop.getName();
+			//符合JavaBean规范的set方法名称（userName=>setUserName,uName=>setuName）
+			String setMethodName = "set"+(propName.length()>1&&propName.charAt(1)>='A'&&propName.charAt(1)<='Z'?propName:StringKit.toUpperCaseFirstOne(propName));
 			try {
-				writeMethod = type.getMethod("set"+StringKit.toUpperCaseFirstOne(prop.getName()), prop.getPropertyType());
+				writeMethod = type.getMethod(setMethodName, prop.getPropertyType());
 			} catch (Exception e) {
 			}
 		}
