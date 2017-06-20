@@ -319,10 +319,9 @@ public class BeanProcessor {
 	 * @param value
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("unchecked")
-	protected void callSetter(Object target, PropertyDescriptor prop, Object value,Class type) throws SQLException {
+	protected void callSetter(Object target, PropertyDescriptor prop, Object value,Class<?> type) throws SQLException {
 
-		Method setter = prop.getWriteMethod();
+		Method setter = BeanKit.getWriteMethod(prop, type);
 		if (setter == null) return;
 		if (type.isEnum()) {
 			if(value==null){

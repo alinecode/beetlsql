@@ -99,7 +99,7 @@ public class BeanKit {
 		}
 		List<Method> list = new ArrayList<Method>();
 		for(PropertyDescriptor p:ps){
-			if(p.getReadMethod()!=null&&p.getWriteMethod()!=null){
+			if(p.getReadMethod()!=null&&BeanKit.getWriteMethod(p,c)!=null){
 				list.add(p.getReadMethod());
 			}
 		}
@@ -285,6 +285,22 @@ public class BeanKit {
 		
 	}
 	
-	
+	/**
+	 * 获取prop的setter方法
+	 * @param prop
+	 * @param type
+	 * @return
+	 */
+	public static Method getWriteMethod(PropertyDescriptor prop,Class<?> type){
+		Method writeMethod = prop.getWriteMethod();
+		//当使用lombok等链式编程方式时 有返回值的setter不被认为是writeMethod，需要自己去获取
+		if(writeMethod==null&&!"class".equals(prop.getName())){
+			try {
+				writeMethod = type.getMethod("set"+StringKit.toUpperCaseFirstOne(prop.getName()), prop.getPropertyType());
+			} catch (Exception e) {
+			}
+		}
+		return writeMethod;
+	}
 
 }

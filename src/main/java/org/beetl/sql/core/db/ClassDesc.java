@@ -53,7 +53,8 @@ public class ClassDesc {
 		
 		
 		for(PropertyDescriptor p:ps){
-			if(p.getReadMethod()!=null&&p.getWriteMethod()!=null){
+			
+			if(p.getReadMethod()!=null&&BeanKit.getWriteMethod(p, c)!=null){
 				String property = p.getName();
                	String col = nc.getColName(c, property);
                	if(col!=null){
