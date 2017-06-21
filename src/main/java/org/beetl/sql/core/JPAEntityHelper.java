@@ -1,7 +1,5 @@
 package org.beetl.sql.core;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -10,8 +8,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -170,10 +166,10 @@ public class JPAEntityHelper {
 			String propName = field.getName();
 			Method method = null;
 			try {
-				PropertyDescriptor p = new PropertyDescriptor(field.getName(), entityClass);
-				method = p.getReadMethod();
-			} catch (IntrospectionException e) {
-				Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.SEVERE, null, e);
+					//符合JavaBean规范的get方法名称（userName=>getUserName,uName=>getuName）
+					method = entityClass.getMethod("get"+(propName.length()>1&&propName.charAt(1)>='A'&&propName.charAt(1)<='Z'?propName:StringKit.toUpperCaseFirstOne(propName)));
+			} catch (Exception e) {
+//				Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.WARNING, null, e.getMessage());
 			}
 			Column column = null;
 			if (field.isAnnotationPresent(Column.class)) {
