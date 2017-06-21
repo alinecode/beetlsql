@@ -321,7 +321,7 @@ public class BeanProcessor {
 	 */
 	protected void callSetter(Object target, PropertyDescriptor prop, Object value,Class<?> type) throws SQLException {
 
-		Method setter = BeanKit.getWriteMethod(prop, type);
+		Method setter = BeanKit.getWriteMethod(prop, target.getClass());
 		if (setter == null) return;
 		if (type.isEnum()) {
 			if(value==null){
