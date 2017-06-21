@@ -34,15 +34,9 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ new DebugInterceptor()};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		UserDao dao = sql.getMapper(UserDao.class);
-		PageQuery query = dao.getUser4(1, "4");
-//		String  jdbcSql = "  select *from user order by id";
-//		PageQuery query = new PageQuery(1);
-//		sql.execute(new SQLReady(jdbcSql), User.class, query);
-		
-		System.out.println(query.getTotalPage());
-		System.out.println(query.getTotalRow());
-		System.out.println(query.getList());
+		User user = new User();
+		user.setName("lijz");
+		User use = sql.templateOne(user);
 //	
 			
 	}

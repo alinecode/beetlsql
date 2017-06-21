@@ -22,7 +22,16 @@ public class User   extends TailBean {
 	private Integer departmentId;
 	private Date createTime;
 	
+	private String cName;
 	
+	public String getcName() {
+		return cName;
+	}
+
+	public void setcName(String cName) {
+		this.cName = cName;
+	}
+
 	public User() {
 	}
 	

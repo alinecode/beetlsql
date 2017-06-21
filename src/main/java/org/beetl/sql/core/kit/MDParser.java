@@ -33,7 +33,7 @@ public class MDParser {
 			if(status==END){
 				return ;
 			}
-			if(line.equals("===")){
+			if(line.startsWith("===")){
 				return ;
 			}
 			

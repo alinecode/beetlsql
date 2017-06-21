@@ -301,6 +301,8 @@ public class BeanKit {
 			try {
 				writeMethod = type.getMethod(setMethodName, prop.getPropertyType());
 			} catch (Exception e) {
+				//不存在set方法
+				return null;
 			}
 		}
 		return writeMethod;

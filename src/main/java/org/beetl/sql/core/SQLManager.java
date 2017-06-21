@@ -719,7 +719,7 @@ public class SQLManager {
     public <T> T templateOne(T t) {
         // 改为只查询一条记录
         int start = this.offsetStartZero ? 0 : 1;
-        List<T> list = template(t, start, start + 1);
+        List<T> list = template(t, start, 1);
         if (list.isEmpty()) {
             return null;
         } else {
@@ -1436,7 +1436,7 @@ public class SQLManager {
     }
     
 
-
+    
     public <T> PageQuery<T>  execute(SQLReady p, Class<T> clazz, PageQuery<T> pageQuery) {
     		if(pageQuery.getParas()!=null){
     			throw new RuntimeException("参数需要通过SQLReady传递");
