@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.StringKit;
 
 /**
@@ -28,9 +29,9 @@ public class JPAEntityHelper {
 		// 实体映射的数据库表名
 		private String name;
 		// Java属性映射的数据库字段集合（column -> property）
-		private Map<String, String> colsMap = new HashMap<String, String>();
+		private Map<String, String> colsMap = new CaseInsensitiveHashMap();
 		// 数据库字段映射的Java属性集合（property -> column）
-		private Map<String, String> propsMap = new HashMap<String, String>();
+		private Map<String, String> propsMap = new CaseInsensitiveHashMap();
 
 		protected void setTable(Table table) {
 			name = table.name();
