@@ -154,12 +154,9 @@ public class JPAEntityHelper {
 			if (StringKit.isNotBlank(table.name())) {
 				entityTable.setTable(table);
 			}
-		}else if(entityClass.isAnnotationPresent(org.beetl.sql.core.annotatoin.Table.class)){//当用户错误注解成了BeetlSQL下面的@Table时兼容处理
-			org.beetl.sql.core.annotatoin.Table table = entityClass.getAnnotation(org.beetl.sql.core.annotatoin.Table.class);
-			entityTable.setName(table.name());
 		}
 		if(StringKit.isBlank(entityTable.getName())){//当从@Table没有获取到name时采用默认NameConversion转换或直接使用Class类名
-			entityTable.setName(nc!=null?nc.getTableName(entityClass):entityClass.getSimpleName());
+			entityTable.setName(nc.getTableName(entityClass));
 		}
 		// 列
 		List<Field> fieldList = getAllField(entityClass, null);
@@ -167,10 +164,10 @@ public class JPAEntityHelper {
 			String propName = field.getName();
 			Method method = null;
 			try {
-					//符合JavaBean规范的get方法名称（userName=>getUserName,uName=>getuName）
-					method = entityClass.getMethod("get"+(propName.length()>1&&propName.charAt(1)>='A'&&propName.charAt(1)<='Z'?propName:StringKit.toUpperCaseFirstOne(propName)));
+				//符合JavaBean规范的get方法名称（userName=>getUserName,uName=>getuName）
+				method = entityClass.getMethod("get"+(propName.length()>1&&propName.charAt(1)>='A'&&propName.charAt(1)<='Z'?propName:StringKit.toUpperCaseFirstOne(propName)));
 			} catch (Exception e) {
-//				Logger.getLogger(JPAEntityHelper.class.getName()).log(Level.WARNING, null, e.getMessage());
+				//没有找到getMethod，无需处理
 			}
 			Column column = null;
 			if (field.isAnnotationPresent(Column.class)) {
@@ -183,16 +180,13 @@ public class JPAEntityHelper {
 				columnName = column.name();
 			}
 			if(StringKit.isBlank(columnName)){//当没有从JPA@Column获取到列名时采用默认的NameConversion或直接使用属性名
-				columnName = nc!=null?nc.getColName(propName):propName;
+				columnName = nc.getColName(propName);
 			}
-			// @Transient 排除字段 强制将映射返回null，让BeetlSQL自己跳过
-			if(field.isAnnotationPresent(Transient.class)||method!=null&&method.isAnnotationPresent(Transient.class)){
-				entityTable.addCol(propName, null);
-				entityTable.addProp(columnName, null);
-			}else{
+			// 没有@Transient 注解 才储存 prop=>col 映射关系，否则不存储
+			if(!field.isAnnotationPresent(Transient.class)&&(method==null||!method.isAnnotationPresent(Transient.class))){
 				entityTable.addCol(propName, columnName);
-				entityTable.addProp(columnName, propName);
 			}
+			entityTable.addProp(columnName, propName);
 		}
 		// 缓存
 		entityTableMap.put(entityClass, entityTable);
