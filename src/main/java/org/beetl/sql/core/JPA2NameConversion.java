@@ -15,7 +15,7 @@ public class JPA2NameConversion extends NameConversion{
 	 * @param nc
 	 */
 	public JPA2NameConversion(NameConversion nc){
-		this.nc = nc ;
+		this.nc = nc !=null ? nc:new DefaultNameConversion();
 	}
 	
 	@Override
