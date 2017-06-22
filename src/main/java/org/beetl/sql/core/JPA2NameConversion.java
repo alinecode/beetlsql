@@ -8,7 +8,7 @@ public class JPA2NameConversion extends NameConversion{
 	
 	NameConversion nc = null;
 	public JPA2NameConversion(){
-		
+		nc=new DefaultNameConversion();
 	}
 	/**
 	 * 对于没有jpa注解的，采用的命名策略，包括tail的命名策略，如果nc为null，则直接返回列名
@@ -31,7 +31,14 @@ public class JPA2NameConversion extends NameConversion{
 		if(c==null||Map.class.isAssignableFrom(c)){
 			return nc!=null?nc.getPropertyName(c, colName):colName;
 		}
-		return JPAEntityHelper.getEntityTable(c,nc).getProp(colName);
+		
+		//col到property是可能有对应关系的，即使property被标注了Transient
+		String name =  JPAEntityHelper.getEntityTable(c,nc).getProp(colName);
+		if(name!=null){
+			return name;
+		}else{
+			return nc!=null?nc.getPropertyName(c, colName):colName;
+		}
 	}
 
 	@Override
