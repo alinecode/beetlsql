@@ -3,12 +3,33 @@
  */
 package org.beetl.sql.core.engine;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
 /** 用于翻页，要求sqlid必须具有page使用了page函数和pageTag,或者sqlId还有一个以$count 结尾的sqlId
+ * 此类混合了查询翻页请求参数和查询结果<p></p>
+ * 请求参数包括:
+ * <ul>
+ * 	<li>orderBy：动态传入的排序，sql形式</li> 
+ * 	<li>paras：查询参数，可以是map，或者Obj</li> 
+ * 	<li>pageNumber：第几页，从1开始</li> 
+ * </ul>
+ * <p></p>
+ * 查询结果包括
+ * <ul>
+ * 	<li>list：查询结果</li> 
+ * 	<li>totalRow：符合条件的总数</li> 
+ * 	<li>firstPage：是否是首页</li> 
+ * 	<li>lastPage：是否是尾页</li> 
+ * 	<li>totalPage：符合条件的总页数</li> 
+ * <li>totalPage：符合条件的总页数</li> 
+ * </ul>
+ * <p></p>
+ * 可以通过控制pageSize来确定每页记录条数<p></p>
+ * 也可以实现设置totalRow为一个不是-1的数字来禁止beetlsql每次重新查询总数以提高性能
  * @author suxj,xiandafu
  *
  */
@@ -31,6 +52,7 @@ public class PageQuery<T> implements Serializable{
 	protected long totalPage;		//总页数
 	protected long totalRow=-1;		//总行数,如果不为-1，则不需要再次查询
 	
+	private transient boolean  calc = false;
 	
 	public PageQuery(){
 		this(1,null);
@@ -110,6 +132,7 @@ public class PageQuery<T> implements Serializable{
 	}
 	
 	public long getTotalPage() {
+		calcTotalPage();
 		return totalPage;
 	}
 	
@@ -122,6 +145,7 @@ public class PageQuery<T> implements Serializable{
 	}
 	
 	public boolean isLastPage() {
+		calcTotalPage();
 		return pageNumber == totalPage;
 	}
 
@@ -145,9 +169,9 @@ public class PageQuery<T> implements Serializable{
 	
 	public void setList(List list) {
 		this.list = list;
-		calcTotalPage();
 	}
 
+	
 	
 	
 	public String getOrderBy() {
@@ -159,14 +183,28 @@ public class PageQuery<T> implements Serializable{
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
 	}
-	protected void calcTotalPage(){
+	
+	
+	/**
+	 * 计算页数，在取得查询结果，设置完totalRow后
+	 */
+	private void calcTotalPage(){
+		if(this.calc){
+			return ;
+		}
+		
 		if(totalRow==0) this.totalPage= 1;
 		else if(totalRow%this.pageSize==0){
 			this.totalPage = totalRow/this.pageSize;
 		}else{
 			this.totalPage = totalRow/this.pageSize+1;
 		}
+		this.calc = true;
 	}
+	
+	
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

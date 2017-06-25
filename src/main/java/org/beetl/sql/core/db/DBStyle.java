@@ -37,6 +37,8 @@ public interface DBStyle {
     void init(Beetl beetl);
 
     SQLSource genSelectById(Class<?> cls);
+    
+    SQLSource genSelectByIdForUpdate(Class<?> cls);
 
     SQLSource genSelectByTemplate(Class<?> cls);
 

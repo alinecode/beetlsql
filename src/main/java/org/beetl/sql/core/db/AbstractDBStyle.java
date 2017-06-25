@@ -92,6 +92,15 @@ public abstract class AbstractDBStyle implements DBStyle {
         String condition = appendIdCondition(cls);
         return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
     }
+    
+    @Override
+    public SQLSource genSelectByIdForUpdate(Class<?> cls){
+    		SQLSource source = genSelectById(cls);
+    		String template = source.getTemplate();
+    		template = template+" for update";
+    		source.setTemplate(template);
+    		return source;
+    }
 
     @Override
     public SQLSource genSelectByTemplate(Class<?> cls) {

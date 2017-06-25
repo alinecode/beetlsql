@@ -2,6 +2,9 @@ getIds3
 ===
 	select #page("id")# from user  where 1=1 
 	
+select
+===
+    select *  from user  where 1=1 
 	
 	
 selectRole

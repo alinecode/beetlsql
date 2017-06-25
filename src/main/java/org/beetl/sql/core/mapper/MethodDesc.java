@@ -1,9 +1,13 @@
 package org.beetl.sql.core.mapper;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -181,9 +185,16 @@ public class MethodDesc {
 			if (List.class.isAssignableFrom(methodRetType)) {
 				type = 3;
 				Type type = m.getGenericReturnType();
+				
 				if(type instanceof ParameterizedType ){
-					stRetType = (Class) ((ParameterizedType) m.getGenericReturnType())
-							.getActualTypeArguments()[0];
+					Type retType = ((ParameterizedType)type).getActualTypeArguments()[0];
+					if(retType instanceof Class){
+						stRetType = (Class)retType;
+					}else{
+						//todo ,这里处理也许有点草率，实际上为TypeVariable
+						stRetType = entityClass;
+					}
+					
 				}else{
 					stRetType = entityClass;
 				}
@@ -198,6 +209,8 @@ public class MethodDesc {
 		
 		
 	}
+	
+	
 
 	protected void parseAnnotation(String sqlId, Method m) {
 		// 纪录错误位置
