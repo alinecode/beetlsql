@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.8.23</version>
+	<version>2.8.24</version>
 
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
@@ -266,9 +266,9 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
-					<!-- excludes>
+					<excludes>
 	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes-->
+	                </excludes>
 				</configuration>
 			</plugin>
 			<plugin>
