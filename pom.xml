@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>6.0.5</version>
+			<version>6.0.6</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -164,7 +164,12 @@
 			<version>0.9.1.2</version>
 			<scope>provided</scope>
 		</dependency>
-
+        <dependency>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+          <version>2.6.1</version>
+          <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -261,9 +266,9 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
-					<excludes>
+					<!-- excludes>
 	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes>
+	                </excludes-->
 				</configuration>
 			</plugin>
 			<plugin>

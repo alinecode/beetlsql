@@ -11,6 +11,7 @@ public class ColDesc {
 	public Integer size;
 	public Integer digit;
 	public String remark ;
+	public boolean isAuto = false;
 	public ColDesc(String colName,int sqlType,Integer size,Integer digit,String remark){
 		this.colName = colName;
 		this.sqlType = sqlType;

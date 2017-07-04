@@ -8,8 +8,10 @@ import java.util.List;
 
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.EnumKit;
+import org.beetl.sql.core.mapper.MapperJavaProxy;
 
 /**
  * Debug重新美化版本
@@ -20,6 +22,9 @@ import org.beetl.sql.core.kit.EnumKit;
 public class DebugInterceptor implements Interceptor {
 
 	List<String> includes = null;
+	
+	static String mapperName = MapperJavaProxy.class.getName();
+	static String sqlManager = SQLManager.class.getName();
 	public DebugInterceptor(){
 	}
 	
@@ -39,59 +44,46 @@ public class DebugInterceptor implements Interceptor {
 		.append("┣ 参数：\t " + formatParas(ctx.getParas())).append(lineSeparator);
 		RuntimeException ex = new  RuntimeException();
 		StackTraceElement[] traces = ex.getStackTrace();
-		boolean found = false ;
-		for(int i=0;i<traces.length;i++){
-			StackTraceElement tr = traces[i];
-		
-			if(!found&&tr.getClassName().indexOf("SQLManager")!=-1){
-				//调用sqlManager的有可能是业务代码，又有可能是mapper类
-				found = true ;
-				
-				
-			}else{
-				continue ;
-			}
-			
-			int start  = this.findLastSQLManager(i, traces);
-			//查找可能的mapper
-			int index = findMapperJavaProxy(start,traces);
-			StackTraceElement bussinessCode =null;
-			if(index==-1){
-				//业务代码直接调用SQLManager
-				bussinessCode = traces[start];
-			}else{
-				//越过com.sun.proxy.$ProxyXX的调用
-				bussinessCode = traces[index+2];
-			}
-			String className = bussinessCode.getClassName();
-			String mehodName = bussinessCode.getMethodName();
-			int line = bussinessCode.getLineNumber();
-			sb.append("┣ 位置：\t "+className+"."+mehodName+"("+bussinessCode.getFileName()+":"+line+")"+lineSeparator);
-			break ;
-		}
+		int index = lookBusinessCodeInTrace(traces);
+		StackTraceElement bussinessCode = traces[index];
+		String className = bussinessCode.getClassName();
+		String mehodName = bussinessCode.getMethodName();
+		int line = bussinessCode.getLineNumber();
+		sb.append("┣ 位置：\t "+className+"."+mehodName+"("+bussinessCode.getFileName()+":"+line+")"+lineSeparator);
+
 		ctx.put("logs", sb);
 	}
 	
-	protected int findMapperJavaProxy(int start,StackTraceElement[] traces){
-		for(int i=start;i<traces.length;i++){
-			StackTraceElement el = traces[i];
-			if(el.getClassName().equals("org.beetl.sql.core.mapper.MapperJavaProxy")){
+	
+	
+	
+	protected int lookBusinessCodeInTrace(StackTraceElement[] traces){
+		
+		
+		String className = getTraceClassName();
+		for(int i=traces.length-1;i>=0;i--){
+			String name = traces[i].getClassName();
+			if(className!=null&&className.equals(name)){
 				return i;
+				
+			}else if(name.equals(mapperName)){
+				//越过2层jdk 代理
+				return i+2;
+			}else if(name.equals(sqlManager)){
+				return i+1;
 			}
 		}
+		//不可能到这里
+		throw new RuntimeException();
 		
-		return -1;
 	}
 	
-	protected int findLastSQLManager(int start,StackTraceElement[] traces){
-		for(int i=start;i<traces.length;i++){
-			StackTraceElement el = traces[i];
-			if(!el.getClassName().equals("org.beetl.sql.core.SQLManager")){
-				return i;
-			}
-		}
-		//不会执行到这里，因为start就是SQLManager开始的地方
-		return -1;
+	/**
+	 * 如果自己封装了beetlsql 有自己的util，并不想打印util类，而是业务类，可以在这里写util类
+	 * @return
+	 */
+	protected String getTraceClassName(){
+		return null;
 	}
 
 	@Override

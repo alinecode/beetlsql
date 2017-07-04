@@ -21,6 +21,8 @@ public class MetadataManager {
 	String defaultSchema;
 	String defalutCatalog;
 	String dbType = null;
+	// 是否检查列是否自增，目前通过异常判断驱动不支持
+	boolean checkAuto = true;
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
 		super();
@@ -115,6 +117,7 @@ public class MetadataManager {
 				String catalog = this.defalutCatalog;
 				String schema = this.defaultSchema;
 				conn =  ds.getMaster();
+				
 				DatabaseMetaData dbmd =  conn.getMetaData();
 				rs = dbmd.getPrimaryKeys(catalog,schema, desc.getName());
 				
@@ -123,14 +126,16 @@ public class MetadataManager {
 					desc.addIdName(idName);
 				}
 				rs.close();
-				
+			
 				
 				rs = dbmd.getColumns(catalog,schema, desc.getName(), "%");
+				
 				while(rs.next()){
 					String colName = rs.getString("COLUMN_NAME");
 					Integer sqlType = rs.getInt("DATA_TYPE");
 					Integer size = rs.getInt("COLUMN_SIZE");
 					Object o = rs.getObject("DECIMAL_DIGITS");
+				
 					Integer digit = null;
 					if(o!=null){
 						digit = ((Number)o).intValue();
@@ -138,6 +143,19 @@ public class MetadataManager {
 					
 					String remark = rs.getString("REMARKS");
 					ColDesc col = new ColDesc(colName,sqlType,size,digit,remark);
+					try{
+						if(checkAuto){
+							String  auto = rs.getString("IS_AUTOINCREMENT");
+							if(auto.equals("YES")){
+								col.isAuto = true;
+							}
+						}
+						
+					}catch(SQLException ex){
+						
+						checkAuto = false;
+					}
+					
 					desc.addCols(col);
 				}
 				rs.close();

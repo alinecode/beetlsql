@@ -1,7 +1,7 @@
 package org.beetl.sql.test;
 
 public class MysqlDBConfig {
-	public static String driver = "com.mysql.jdbc.Driver";
+	public static String driver = "com.mysql.cj.jdbc.Driver";
     public static String dbName = "orm";
     public static String password = "123456";
     public static String userName = "root";
