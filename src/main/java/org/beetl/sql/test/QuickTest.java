@@ -36,11 +36,8 @@ public class QuickTest {
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(druidSource());
 		
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
-		DebugInterceptor debug = new DebugInterceptor(){
-			protected String getTraceClassName(){
-				return QuickTest.class.getName();
-			}
-		};
+		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
+			
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);

@@ -25,12 +25,24 @@ public class DebugInterceptor implements Interceptor {
 	
 	static String mapperName = MapperJavaProxy.class.getName();
 	static String sqlManager = SQLManager.class.getName();
+	//debug 输入优先输出的类，而不是SQLManager或者是BaseMapper
+	String preferredShowClass;
 	public DebugInterceptor(){
 	}
 	
 	public DebugInterceptor(List<String> includes){
 		this.includes = includes;
 	}
+	
+	public DebugInterceptor(String preferredShowClass){
+		this.preferredShowClass = preferredShowClass;
+	}
+	
+	public DebugInterceptor(List<String> includes,String preferredShowClass){
+		this.preferredShowClass = preferredShowClass;
+		this.includes =includes;
+	}
+	
 	@Override
 	public void before(InterceptorContext ctx) {
 		String sqlId = ctx.getSqlId();
@@ -83,7 +95,7 @@ public class DebugInterceptor implements Interceptor {
 	 * @return
 	 */
 	protected String getTraceClassName(){
-		return null;
+		return preferredShowClass;
 	}
 
 	@Override
