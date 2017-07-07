@@ -84,6 +84,8 @@ public class SQLManager {
 		// 添加一个id简单实现
 		idAutonGenMap.put("simple", new SnowflakeIDAutoGen());
 	}
+	//sqlId 到路径的转化
+	private SQLIdNameConversion idNameConversion;
 
 	/**
 	 * 创建一个beetlsql需要的sqlmanager
@@ -1973,7 +1975,13 @@ public class SQLManager {
 	 * @param sqlIdNc
 	 */
 	public void setSQLIdNameConversion(SQLIdNameConversion sqlIdNc) {
+		this.idNameConversion =  sqlIdNc;
 		this.sqlLoader.setSQLIdNameConversion(sqlIdNc);
+		
+	}
+	
+	public SQLIdNameConversion  getSQLIdNameConversion(){
+		return idNameConversion;
 	}
 
 	public MapperConfig getMapperConfig() {

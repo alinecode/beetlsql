@@ -12,6 +12,7 @@ import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.PackagePathIdNameConversion;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -35,15 +36,25 @@ public class QuickTest {
 		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(druidSource());
 		
-		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+		SQLLoader loader = new ClasspathLoader("");
 		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
 			
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		sql.unique(User.class, 1);
-		UserMyBaseMapper dao = sql.getMapper(UserMyBaseMapper.class);
-		unique(sql,1);
+		sql.setSQLIdNameConversion(new PackagePathIdNameConversion());
+//		sql.unique(User.class, 1);
+		UserDao dao = sql.getMapper(UserDao.class);
+		
+		PageQuery pageQuery = new PageQuery();
+		
+//		sql.pageQuery("org.beetl.sql.test.user.getIds3", User.class,pageQuery);
+//		sql.pageQuery("user.getIds3", User.class,pageQuery);
+		
+//		unique(sql,1);
+//		dao.unique(1);
+		dao.getIds3(pageQuery);
+		
 			
 	}
 	

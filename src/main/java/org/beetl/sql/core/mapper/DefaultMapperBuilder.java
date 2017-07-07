@@ -20,7 +20,6 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	/** The sql manager. */
 	protected SQLManager sqlManager;
 	
-	protected SQLIdNameConversion  idGen  = new DefaultSQLIdNameConversion();
 
 	/**
 	 * The Constructor.
@@ -31,6 +30,7 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	public DefaultMapperBuilder(SQLManager sqlManager) {
 		super();
 		this.sqlManager = sqlManager;
+	
 	}
 
 	/*
@@ -68,12 +68,10 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	}
 
 	public SQLIdNameConversion getIdGen() {
-		return idGen;
+		return  sqlManager.getSQLIdNameConversion();
 	}
 
-	public void setIdGen(SQLIdNameConversion idGen) {
-		this.idGen = idGen;
-	}
+	
 	
 	
 }
