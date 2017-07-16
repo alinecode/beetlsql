@@ -7,17 +7,31 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.beetl.core.GroupTemplate;
 import org.beetl.core.om.MethodInvoker;
 import org.beetl.core.om.ObjectUtil;
 import org.beetl.sql.core.annotatoin.Tail;
 
 public class BeanKit {
+	//目前没有合适放的地方，忽略
+//	public static String BEETL_VERSION = "beetlsql";
+//	static{
+//		URL url = GroupTemplate.class.getResource("/org/beetl/core/beetl-default.properties");
+//		if(url.getProtocol().equals("jar")){
+//			String path = url.getPath();
+//			int index = path.indexOf(".jar!");
+//			int i = path.lastIndexOf("beetlsql-", index);
+//			
+//		}
+//	}
+	
 	private static final Map<Class, Method> tailBeans = new ConcurrentHashMap<Class, Method>();
 	private static  Method NULL = null;
 	static{

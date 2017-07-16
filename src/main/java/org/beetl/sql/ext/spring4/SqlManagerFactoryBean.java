@@ -1,14 +1,6 @@
 package org.beetl.sql.ext.spring4;
 
-import org.beetl.core.Function;
-import org.beetl.core.TagFactory;
-import org.beetl.sql.core.*;
-import org.beetl.sql.core.db.DBStyle;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.core.io.Resource;
+import static org.springframework.util.Assert.notNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +8,20 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.springframework.util.Assert.notNull;
+import org.beetl.core.Function;
+import org.beetl.core.TagFactory;
+import org.beetl.sql.core.ClasspathLoader;
+import org.beetl.sql.core.IDAutoGen;
+import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.NameConversion;
+import org.beetl.sql.core.SQLLoader;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.db.DBStyle;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.core.io.Resource;
 
 /**
  * SqlManager创建工厂
@@ -46,6 +51,8 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
     
     
     SQLLoader sqlLoader;
+    
+    Properties extProperties = new Properties();
 
 
     private Map<String, Function> functions = Collections.emptyMap();
@@ -91,6 +98,7 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
 
                 in = configLocation.getInputStream();
                 properties.load(in);
+               
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             } finally {
@@ -104,6 +112,10 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
                 }
             }
         }
+        
+        //其他扩展属性
+        properties.putAll(extProperties);
+        
         sqlManager = new SQLManager(dbStyle, sqlLoader, cs, nc, interceptors, this.defaultSchema, properties);
 
 
@@ -212,6 +224,14 @@ public class SqlManagerFactoryBean implements FactoryBean<SQLManager>, Initializ
 
 	public void setIdAutoGens(Map<String, IDAutoGen> idAutoGens) {
 		this.idAutoGens = idAutoGens;
+	}
+
+	public Properties getExtProperties() {
+		return extProperties;
+	}
+
+	public void setExtProperties(Properties extProperties) {
+		this.extProperties = extProperties;
 	}
     
     

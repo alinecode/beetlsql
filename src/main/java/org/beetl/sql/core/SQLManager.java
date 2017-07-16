@@ -85,7 +85,7 @@ public class SQLManager {
 		idAutonGenMap.put("simple", new SnowflakeIDAutoGen());
 	}
 	//sqlId 到路径的转化
-	private SQLIdNameConversion idNameConversion;
+	private SQLIdNameConversion idNameConversion = new DefaultSQLIdNameConversion();
 
 	/**
 	 * 创建一个beetlsql需要的sqlmanager
@@ -1446,12 +1446,15 @@ public class SQLManager {
 	 * @return
 	 */
 	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras, long start, long size) {
-		String key = "auto._gen_" + sqlTemplate;
+		String key = "auto._gen_page_" + sqlTemplate;
 		SQLSource source = sqlLoader.getGenSQL(key);
 		if (source == null) {
 			String pageSql = this.dbStyle.getPageSQL(sqlTemplate);
 			source = new SQLSource(key, pageSql);
 			this.sqlLoader.addGenSQL(key, source);
+		}
+		if(paras==null){
+			paras = new HashMap();
 		}
 
 		this.dbStyle.initPagePara(paras, start, size);

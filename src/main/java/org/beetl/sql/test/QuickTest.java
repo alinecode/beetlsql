@@ -1,7 +1,10 @@
 package org.beetl.sql.test;
 
+import java.net.URL;
+
 import javax.sql.DataSource;
 
+import org.beetl.core.GroupTemplate;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ConnectionSourceHelper;
@@ -12,7 +15,6 @@ import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.ext.PackagePathIdNameConversion;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -26,7 +28,15 @@ public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
 		
-		
+//		URL url = GroupTemplate.class.getResource("/org/beetl/core/beetl-default.properties");
+//		if(url.getProtocol().equals("jar")){
+//			String path = url.getPath();
+//			int index = path.indexOf(".jar!");
+//			int i = path.lastIndexOf("beetl-", index);
+//			String version = path.substring(i, index);
+//			
+//		}
+//		System.out.println(url);
 		
 //		DB2SqlStyle style = new DB2SqlStyle();
 		MySqlStyle style = new MySqlStyle();
@@ -36,23 +46,17 @@ public class QuickTest {
 		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(druidSource());
 		
-		SQLLoader loader = new ClasspathLoader("");
+		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
-			
+		
+				
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		sql.setSQLIdNameConversion(new PackagePathIdNameConversion());
 //		sql.unique(User.class, 1);
 		UserDao dao = sql.getMapper(UserDao.class);
-		
 		PageQuery pageQuery = new PageQuery();
-		
-//		sql.pageQuery("org.beetl.sql.test.user.getIds3", User.class,pageQuery);
-//		sql.pageQuery("user.getIds3", User.class,pageQuery);
-		
-//		unique(sql,1);
-//		dao.unique(1);
+//		dao.getIds3(pageQuery);
 		dao.getIds3(pageQuery);
 		
 			

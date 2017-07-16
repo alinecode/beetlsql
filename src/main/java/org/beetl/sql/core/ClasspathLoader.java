@@ -2,15 +2,16 @@
 package org.beetl.sql.core;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.rmi.UnexpectedException;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.beetl.sql.core.db.DB2SqlStyle;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.kit.MDParser;
@@ -36,7 +37,7 @@ public class ClasspathLoader implements SQLLoader {
 	protected String lineSeparator = System.getProperty("line.separator", "\n");
 
 	protected  Map<String, SQLSource> sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
-	protected  Map<String, Integer> sqlSourceVersion = new ConcurrentHashMap<String, Integer> ();
+	protected  Map<String, SQLFileVersion> sqlSourceVersion = new ConcurrentHashMap<String, SQLFileVersion> ();
 
 	protected DBStyle dbs = null;
 	
@@ -88,27 +89,34 @@ public class ClasspathLoader implements SQLLoader {
 	public boolean isModified(String id) {
 		int index = id.indexOf('.');
 		if(index!=-1){
+			//对于系统自动生成的sql，都是类名+._gen
 			String sqlName = id.substring(index);
 			if(sqlName.startsWith("._gen")){
 				return false;
 			}
 		}
         //如果db目录中有sql文件，直接使用db目录的文件判断版本（root中的文件会被db中的覆盖）
-		InputStream is = this.getDBRootFile(id);
-        if(is == null){
-            //db目录中没有文件，使用root下的
-            is = this.getRootFile(id);
-        }
-
-		if(is != null){
-			Integer lastModify = is.hashCode();
-			Integer oldVersion = sqlSourceVersion.get(id);
-			if(oldVersion != null && oldVersion.equals(lastModify)){
-				return false;
-			}
+		URL root = this.getRootFile(id);
+		URL db = this.getDBRootFile(id);
+		String filePath = sqlIdNameConversion.getPath(id);
+		SQLFileVersion oldVersion = sqlSourceVersion.get(filePath);
+		return oldVersion.isModified(root, db);
+	}
+	
+	protected static Long getURLVersion(URL url){
+		if(url==null){
+			return  0l;
 		}
 		
-		return true;
+		if(url.getProtocol().equals("file")){
+			String path = url.getFile();
+			return new File(path).lastModified();
+		}else{
+			//其他协议，比如jar。
+			return 0l;
+		}
+		
+		
 	}
 	
 	public boolean exist(String id){
@@ -117,8 +125,8 @@ public class ClasspathLoader implements SQLLoader {
 	
 	@Override
 	public void addGenSQL(String id, SQLSource source) {		
-	
-		sqlSourceVersion.put(id, 0); //never change
+		String filePath = sqlIdNameConversion.getPath(id);
+		sqlSourceVersion.put(filePath, new SQLFileVersion()); //never change
 		sqlSourceMap.put(id, source);
 		
 	}
@@ -138,11 +146,13 @@ public class ClasspathLoader implements SQLLoader {
 	 */
 	private boolean loadSql(String id) {
         //读取root目录下的sql文件
-		InputStream ins = this.getRootFile(id);
-        boolean rootResult = readSqlFile(id,ins);
+		URL ins = this.getRootFile(id);
+        boolean rootResult;
+		rootResult = readSqlFile(id,ins,true);
         //读取db目录下的sql文件，进行覆盖
         ins = this.getDBRootFile(id);
-        boolean dbResult = readSqlFile(id,ins);
+        boolean dbResult;
+        dbResult = readSqlFile(id,ins,false);
         if(rootResult || dbResult){
             return true;
         }else {
@@ -161,12 +171,31 @@ public class ClasspathLoader implements SQLLoader {
         }
 	}
 
-    private boolean readSqlFile(String id,InputStream ins) {
+    private boolean readSqlFile(String id,URL url,boolean isRoot) {
+    		if(url==null){
+    			return false;
+    		}
+    		InputStream ins;
+		try {
+			ins = url.openStream();
+		} catch (IOException e1) {
+			return false;
+		}
         String modelName = id.substring(0, id.lastIndexOf(".") + 1);
         if(ins == null) return false ;
-
-        Integer lastModified = ins.hashCode();
-        sqlSourceVersion.put(id, lastModified);
+        String filePath = sqlIdNameConversion.getPath(id);
+        SQLFileVersion version = sqlSourceVersion.get(filePath);
+        if(version==null){
+       		version = new SQLFileVersion();
+       		sqlSourceVersion.put(filePath, version);
+        }
+        long lastModified = getURLVersion(url);
+        if(isRoot){
+        		version.root = lastModified;
+        }else{
+        		version.db = lastModified;
+        }
+        
         LinkedList<String> list = new LinkedList<String>();
         BufferedReader bf = null;
         try {
@@ -224,12 +253,12 @@ public class ClasspathLoader implements SQLLoader {
 	 * @return
 	 * @throws UnexpectedException 
 	 */
-	private InputStream getRootFile(String id){
+	private URL getRootFile(String id){
 		String path = this.sqlIdNameConversion.getPath(id);
         String filePath0 = sqlRoot + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + path + ".md";
 
-		InputStream is = this.getFile(filePath0, id);
+		URL is = this.getFile(filePath0, id);
         if(is==null){
 			is = this.getFile(filePath1, id);
             if(is==null){
@@ -239,11 +268,11 @@ public class ClasspathLoader implements SQLLoader {
 		return is;
 	}
 
-    private InputStream getDBRootFile(String id){
+    private URL getDBRootFile(String id){
     	String path = this.sqlIdNameConversion.getPath(id);
         String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
-        InputStream is = this.getFile(filePath0, id);
+        URL is = this.getFile(filePath0, id);
         if(is==null){
             is = this.getFile(filePath1, id);
             if(is==null){
@@ -253,20 +282,21 @@ public class ClasspathLoader implements SQLLoader {
         return is;
     }
 
-	private InputStream getFile(String filePath, String id){
+	private URL getFile(String filePath, String id){
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		InputStream is  = null;
+		URL url = null;
+//		InputStream is  = null;
 		if(loader!=null){
-			is = loader.getResourceAsStream(filePath);
-			if(is!=null){
-				return is;
+			url = loader.getResource(filePath);
+			if(url!=null){
+				return url;
 			}else{
-				is = this.getClass().getResourceAsStream(filePath);
-				return is;
+				url = this.getClass().getResource(filePath);
+				return url;
 			}
 		}else{
-			is = this.getClass().getResourceAsStream(filePath);
-			return is;
+			url = this.getClass().getResource(filePath);
+			return url;
 		}
 		
 		
@@ -319,5 +349,22 @@ public class ClasspathLoader implements SQLLoader {
 		this.dbs = dbStyle;
 	}
 	
+	public static class SQLFileVersion{
+		//根目录下sql文件版本
+		long root=0l;
+		//具体db下的
+		long db=0l;
+		
+		
+		
+		public boolean isModified(URL r,URL d){
+			if(ClasspathLoader.getURLVersion(r)!=root||ClasspathLoader.getURLVersion(d)!=db){
+				//如果root目录和db目录只要有一个变化，都认为sql文件变化，重新加载
+				return true;
+			}else{
+				return false ;
+			}
+		}
+	}
 }
 

@@ -5,6 +5,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -31,6 +32,7 @@ import org.beetl.sql.core.mapping.type.BigDecimalTypeHandler;
 import org.beetl.sql.core.mapping.type.BooleanTypeHandler;
 import org.beetl.sql.core.mapping.type.ByteArrayTypeHandler;
 import org.beetl.sql.core.mapping.type.ByteTypeHandler;
+import org.beetl.sql.core.mapping.type.CLobJavaSqlTypeHandler;
 import org.beetl.sql.core.mapping.type.CharArrayTypeHandler;
 import org.beetl.sql.core.mapping.type.DateTypeHandler;
 import org.beetl.sql.core.mapping.type.DefaultTypeHandler;
@@ -76,6 +78,7 @@ public class BeanProcessor {
 	static StringTypeHandler stringTypeHandler = new StringTypeHandler();
 	static TimestampTypeHandler timestampTypeHandler = new TimestampTypeHandler();
 	static TimeTypeHandler timeTypeHandler = new TimeTypeHandler();
+//	static CLobJavaSqlTypeHandler clobTypeHandler = new CLobJavaSqlTypeHandler();
 	
 	
 	public BeanProcessor(SQLManager sm) {
@@ -108,6 +111,7 @@ public class BeanProcessor {
 		handlers.put(String.class,stringTypeHandler);
 		handlers.put(Timestamp.class,timestampTypeHandler);
 		handlers.put(Time.class,timeTypeHandler);
+//		handlers.put(Clob.class,clobTypeHandler);
 		
 		
 	}
@@ -464,6 +468,12 @@ public class BeanProcessor {
 			
 			
 		}
+	}
+	public JavaSqlTypeHandler getDefaultHandler() {
+		return defaultHandler;
+	}
+	public void setDefaultHandler(JavaSqlTypeHandler defaultHandler) {
+		this.defaultHandler = defaultHandler;
 	}
 
 	
