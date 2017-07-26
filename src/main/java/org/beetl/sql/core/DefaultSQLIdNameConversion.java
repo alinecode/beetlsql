@@ -13,9 +13,9 @@ import org.beetl.sql.core.kit.StringKit;
 public class DefaultSQLIdNameConversion implements SQLIdNameConversion {
 
 	@Override
-	public String getId(Class z, Method m) {
+	public String getId(Class mapper,Class entity, Method m) {
 		// TODO Auto-generated method stub
-		String ns = StringKit.toLowerCaseFirstOne(z.getSimpleName());
+		String ns = StringKit.toLowerCaseFirstOne(entity.getSimpleName());
 		String methodName = m.getName();
 		return ns+"."+methodName;
 	}

@@ -1,19 +1,13 @@
 package org.beetl.sql.core;
 
-import java.util.Map;
-
-import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.ClasspathLoader.SQLFileVersion;
 
 public class SQLSource {
 	
-	private String id;
-	private String template;
-	private int line = 0;
-	private TableDesc tableDesc;
-	//数据库插入用
-	private Map<String,AssignID> assignIds;
-	private int idType;
+	protected String id;
+	protected String template;
+	protected int line = 0;
+	SQLFileVersion version = new SQLFileVersion() ;
 	
 	public SQLSource() {
 	}
@@ -23,13 +17,18 @@ public class SQLSource {
 		this.template = template;
 	}
 
-	public SQLSource(String template) {
+	
+	
+	
 
-		this.template = template;
+
+	public SQLFileVersion getVersion() {
+		return version;
 	}
-	
-	
 
+	public void setVersion(SQLFileVersion version) {
+		this.version = version;
+	}
 
 	public String getTemplate() {
 		return template;
@@ -37,14 +36,6 @@ public class SQLSource {
 
 	public void setTemplate(String template) {
 		this.template = template;
-	}
-
-	public int getIdType() {
-		return idType;
-	}
-
-	public void setIdType(int idType) {
-		this.idType = idType;
 	}
 
 	
@@ -64,22 +55,7 @@ public class SQLSource {
 		this.line = line;
 	}
 
-	public TableDesc getTableDesc() {
-		return tableDesc;
-	}
-
-	public void setTableDesc(TableDesc tableDesc) {
-		this.tableDesc = tableDesc;
-	}
-
-	public Map<String, AssignID> getAssignIds() {
-		return assignIds;
-	}
-
-	public void setAssignIds(Map<String, AssignID> assignIds) {
-		this.assignIds = assignIds;
-	}
-
+	
 
 	
 }

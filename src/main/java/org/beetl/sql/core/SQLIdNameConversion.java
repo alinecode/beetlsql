@@ -8,6 +8,6 @@ import java.lang.reflect.Method;
  *
  */
 public interface SQLIdNameConversion {
-	public String getId(Class z,Method m);
+	public String getId(Class mapper,Class entity, Method m);
 	public String getPath(String sqlId);
 }

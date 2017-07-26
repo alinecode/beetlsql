@@ -13,6 +13,7 @@ import org.beetl.core.Configuration;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.SQLTableSource;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.DateTemplate;
@@ -90,7 +91,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
         String condition = appendIdCondition(cls);
-        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
+        return new SQLTableSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
     }
     
     @Override
@@ -128,7 +129,7 @@ public abstract class AbstractDBStyle implements DBStyle {
             }
         }
         String sql = new StringBuilder("select * from ").append(getTableName(table)).append(condition).append(appendSql).toString();
-        return new SQLSource(sql);
+        return new SQLTableSource(sql);
     }
 
     @Override
@@ -137,7 +138,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         TableDesc table = this.metadataManager.getTable(tableName);
         String condition = getSelectTemplate(cls);
 
-        return new SQLSource(new StringBuilder("select count(1) from ").append(getTableName(table)).append(condition).toString());
+        return new SQLTableSource(new StringBuilder("select count(1) from ").append(getTableName(table)).append(condition).toString());
 
     }
 
@@ -152,11 +153,13 @@ public abstract class AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && attrs.hasNext()) {
             String col = cols.next();
             String attr = attrs.next();
-            if (classDesc.isDateType(col)) {
+            if (classDesc.isDateType(attr)) {
             		
                 try {
                     DateTemplate dateTemplate = BeanKit.getAnnoation(classDesc.getTargetClass(), attr, DateTemplate.class);
-                    if (dateTemplate == null) continue;
+                    if (dateTemplate == null){
+                    		continue;
+                    }
                     String sql = this.genDateAnnotatonSql(dateTemplate, cls, col);
                     condition = condition + sql;
                     continue;
@@ -181,7 +184,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         TableDesc table = this.metadataManager.getTable(tableName);
         String condition = appendIdCondition(cls);
 
-        return new SQLSource(new StringBuilder("delete from ").append(getTableName(table)).append(condition).toString());
+        return new SQLTableSource(new StringBuilder("delete from ").append(getTableName(table)).append(condition).toString());
     }
 
     @Override
@@ -189,7 +192,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
         tableName = table.getName();
-        return new SQLSource(new StringBuilder("select * from ").append(getTableName(table)).toString());
+        return new SQLTableSource(new StringBuilder("select * from ").append(getTableName(table)).toString());
     }
 
     @Override
@@ -227,7 +230,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         String condition = appendIdCondition(cls);
         condition = appendVersion(condition,classDesc);
         sql = removeComma(sql, condition);
-        return new SQLSource(sql.toString());
+        return new SQLTableSource(sql.toString());
     }
     
     private String appendVersion(String condition,ClassDesc desc){
@@ -278,7 +281,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         if (condition == null) {
             throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR, "无法生成sql语句，缺少主键");
         }
-        return new SQLSource(sql.toString());
+        return new SQLTableSource(sql.toString());
 
     }
 
@@ -305,7 +308,7 @@ public abstract class AbstractDBStyle implements DBStyle {
             sql.append(appendSetColumn(cls, table, col, prop));
         }
         sql = removeComma(sql, null);
-        return new SQLSource(sql.toString());
+        return new SQLTableSource(sql.toString());
     }
 
     @Override
@@ -335,7 +338,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         	  	valSql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
           }
           int idType = DBStyle.ID_ASSIGN;
-          SQLSource source = new SQLSource();
+          SQLTableSource source = new SQLTableSource();
           Iterator<String> cols = classDesc.getInCols().iterator();
           Iterator<String> attrs = classDesc.getAttrs().iterator();
 
@@ -730,9 +733,8 @@ public abstract class AbstractDBStyle implements DBStyle {
             comp = new String[]{DateTemplate.LARGE_OPT, DateTemplate.LESS_OPT};
 
         } else {
-            comp = t.accept().split(",");
+            comp =  t.compare().split(",");
         }
-        t.compare().split(",");
 
         String prefix = "";
 

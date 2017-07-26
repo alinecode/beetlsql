@@ -9,12 +9,7 @@ public interface SQLLoader {
 	 * @return
 	 */
 	public SQLSource getSQL(String id);
-	/**
-	 * 加载一个自动生成的sql，如果没有找到，返回空
-	 * @param id
-	 * @return
-	 */
-	public SQLSource getGenSQL(String id);
+	
 	/**
 	 * 判断一个sql是否修改过
 	 * @param id
@@ -32,7 +27,7 @@ public interface SQLLoader {
 	 * @param id
 	 * @param msource
 	 */
-	public void addGenSQL(String id,SQLSource msource);
+	public void addSQL(String id,SQLSource msource);
 	/**
 	 * 每次都检测sql变化
 	 * @return

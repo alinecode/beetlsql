@@ -88,18 +88,18 @@ public class ClassDesc {
 					this.versionProperty = p.getName();
 					this.versionCol = col;
 				}
+				Class retType = readMethod.getReturnType();
+				if( java.util.Date.class.isAssignableFrom(retType)	
+						|| java.util.Calendar.class.isAssignableFrom(retType)){
+					dateTypes.add(p.getName());
+				}
+				
 				if(ids.contains(col)){
 					//保持同一个顺序
 					idProperties.add(p.getName());
 					idCols.add(col);
-					Class retType = readMethod.getReturnType();
 					idMethods.put(p.getName(),readMethod);
-					
-					
-					 if( java.util.Date.class.isAssignableFrom(retType)	
-								|| java.util.Calendar.class.isAssignableFrom(retType)){
-								 dateTypes.add(p.getName());
-							 }
+				
 				}
 				
 			}

@@ -87,7 +87,7 @@ public class SQLReadyExecuteMapperInvoke extends BaseMapperInvoke {
 		}
 
 		PageQuery pageQuery = new PageQuery(pageNumber, pageSize);
-		System.out.println(sql);
+//		System.out.println(sql);
 		sm.execute(new SQLReady(sql, conditionArgs), clazz, pageQuery);
 
 		return pageQuery;

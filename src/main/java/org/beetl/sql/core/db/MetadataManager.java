@@ -207,8 +207,10 @@ public class MetadataManager {
 		try {
 			conn =  ds.getMaster();
 			DatabaseMetaData dbmd =  conn.getMetaData();
-			String catalog = this.defalutCatalog;
-			String schema = this.defaultSchema;
+			
+			
+			String catalog = this.getDbCatalog(sc);
+			String schema = this.getDbSchema(sc);
 			
 			ResultSet rs = null; rs = dbmd.getTables(catalog,schema, getDbTableName(table),
 						new String[] { "TABLE","VIEW" });
@@ -268,7 +270,6 @@ public class MetadataManager {
 		
 		this.defalutCatalog = conn.getCatalog();
 		try{
-			
 			this.defaultSchema =  conn.getSchema();
 			
 		}catch(Throwable e){
@@ -319,21 +320,23 @@ public class MetadataManager {
 	
 		return null;
 	}
+	private String getDbSchema(String namespace){
+		if(dbType.equals("mysql")){
+			return null;
+		}else if(dbType.equals("oracle")){
+			return namespace.toUpperCase();
+		}else{
+			return namespace;
+		}
+	}
 	
-//	private String getDbCatalog(DatabaseMetaData meta,String schema) throws SQLException {
-//		if(dbType.equals("mysql")){
-//			String p=meta.getDatabaseProductName();
-//			if(p.equalsIgnoreCase("mysql")){
-//				int c = meta.getDriverMajorVersion();
-//				if(c==6){
-//					return schema;
-//				}
-//			}
-//			return schema;
-//		}else{
-//			return null;
-//		}
-//	}
+	private String getDbCatalog(String schema){
+		if(dbType.equals("mysql")){
+			return schema;
+		}else{
+			return null;
+		}
+	}
 	
 	private String getDbTableName(String name){
 		if(dbType.equals("oracle")){

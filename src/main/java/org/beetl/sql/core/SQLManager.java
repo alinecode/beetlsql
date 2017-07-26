@@ -322,6 +322,9 @@ public class SQLManager {
 	 */
 	public SQLScript getScript(String id) {
 		SQLSource source = sqlLoader.getSQL(id);
+		if(source==null){
+			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql");
+		}
 		SQLScript script = new SQLScript(source, this);
 		return script;
 	}
@@ -340,7 +343,7 @@ public class SQLManager {
 		// String id = className + "." + classSQL[tempId];
 		String id = className + "." + constantEnum.getClassSQL();
 
-		SQLSource tempSource = this.sqlLoader.getGenSQL(id);
+		SQLSource tempSource = this.sqlLoader.getSQL(id);
 		if (tempSource != null) {
 			return new SQLScript(tempSource, this);
 		}
@@ -401,7 +404,7 @@ public class SQLManager {
 		}
 
 		tempSource.setId(id);
-		sqlLoader.addGenSQL(id, tempSource);
+		sqlLoader.addSQL(id, tempSource);
 		return new SQLScript(tempSource, this);
 	}
 
@@ -417,7 +420,7 @@ public class SQLManager {
 		String pageId = selectId + "_page";
 		if (this.isProductMode()) {
 			// 产品模式
-			SQLSource source = sqlLoader.getGenSQL(pageId);
+			SQLSource source = sqlLoader.getSQL(pageId);
 			if (source != null) {
 				return new SQLScript(source, this);
 			}
@@ -431,8 +434,9 @@ public class SQLManager {
 		String template = script.getTemplate();
 		String pageTemplate = dbStyle.getPageSQL(template);
 		SQLSource source = new SQLSource(pageId, pageTemplate);
-		sqlLoader.addGenSQL(pageId, source);
+		sqlLoader.addSQL(pageId, source);
 		return new SQLScript(source, this);
+		
 	}
 
 	/**
@@ -1425,10 +1429,10 @@ public class SQLManager {
 	 */
 	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras) {
 		String key = "auto._gen_" + sqlTemplate;
-		SQLSource source = sqlLoader.getGenSQL(key);
+		SQLSource source = sqlLoader.getSQL(key);
 		if (source == null) {
 			source = new SQLSource(key, sqlTemplate);
-			this.sqlLoader.addGenSQL(key, source);
+			this.sqlLoader.addSQL(key, source);
 		}
 
 		SQLScript script = new SQLScript(source, this);
@@ -1447,11 +1451,11 @@ public class SQLManager {
 	 */
 	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras, long start, long size) {
 		String key = "auto._gen_page_" + sqlTemplate;
-		SQLSource source = sqlLoader.getGenSQL(key);
+		SQLSource source = sqlLoader.getSQL(key);
 		if (source == null) {
 			String pageSql = this.dbStyle.getPageSQL(sqlTemplate);
 			source = new SQLSource(key, pageSql);
-			this.sqlLoader.addGenSQL(key, source);
+			this.sqlLoader.addSQL(key, source);
 		}
 		if(paras==null){
 			paras = new HashMap();
@@ -1487,10 +1491,10 @@ public class SQLManager {
 	 */
 	public int executeUpdate(String sqlTemplate, Object paras) {
 		String key = "auto._gen_" + sqlTemplate;
-		SQLSource source = sqlLoader.getGenSQL(key);
+		SQLSource source = sqlLoader.getSQL(key);
 		if (source == null) {
 			source = new SQLSource(key, sqlTemplate);
-			this.sqlLoader.addGenSQL(key, source);
+			this.sqlLoader.addSQL(key, source);
 		}
 
 		SQLScript script = new SQLScript(source, this);
@@ -1508,10 +1512,10 @@ public class SQLManager {
 	 */
 	public int executeUpdate(String sqlTemplate, Map paras) {
 		String key = "auto._gen_" + sqlTemplate;
-		SQLSource source = sqlLoader.getGenSQL(key);
+		SQLSource source = sqlLoader.getSQL(key);
 		if (source == null) {
 			source = new SQLSource(key, sqlTemplate);
-			this.sqlLoader.addGenSQL(key, source);
+			this.sqlLoader.addSQL(key, source);
 		}
 		SQLScript script = new SQLScript(source, this);
 		return script.update(paras);

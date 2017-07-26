@@ -1,13 +1,14 @@
 package org.beetl.sql.core.mapper;
 
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.mapper.builder.MapperConfig;
-import org.beetl.sql.core.mapper.builder.MapperInvokeDataConfig;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.annotatoin.SqlResource;
+import org.beetl.sql.core.mapper.builder.MapperConfig;
+import org.beetl.sql.core.mapper.builder.MapperInvokeDataConfig;
 
 /**
  * Java代理实现.
@@ -123,10 +124,20 @@ public class MapperJavaProxy implements InvocationHandler {
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String sqlId = this.builder.getIdGen().getId(entityClass, method);
-        Class c = method.getDeclaringClass();
+        Class caller = method.getDeclaringClass();
+        SqlResource resource = (SqlResource)caller.getAnnotation(SqlResource.class);
+        String sqlId = null;
+        if(resource!=null){
+        		String preffix = resource.value();
+        		String name = method.getName();
+        		sqlId = preffix+"."+name;
+        }else{
+        		sqlId = this.builder.getIdGen().getId(method.getDeclaringClass(),entityClass, method);
+            
+        }
+        
         String methodName = method.getName();
-        MapperInvoke invoke = sqlManager.getMapperConfig().getAmi(c, methodName);
+        MapperInvoke invoke = sqlManager.getMapperConfig().getAmi(caller, methodName);
         if (invoke != null) {
             //内置的方法，直接调用Invoke
             return invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);

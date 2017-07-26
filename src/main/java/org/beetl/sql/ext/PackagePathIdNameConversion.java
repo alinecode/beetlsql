@@ -12,10 +12,10 @@ import org.beetl.sql.core.kit.StringKit;
 public class PackagePathIdNameConversion implements SQLIdNameConversion {
 
 	@Override
-	public String getId(Class z, Method m) {
+	public String getId(Class mapper,Class entity, Method m) {
 		// 有可能没有包名字，谁这么搞呢？
-		String pkg = z.getPackage().getName();
-		String cls = StringKit.toLowerCaseFirstOne(z.getSimpleName());
+		String pkg = entity.getPackage().getName();
+		String cls = StringKit.toLowerCaseFirstOne(entity.getSimpleName());
 		String ns = pkg+"."+cls;
 		String methodName = m.getName();
 		return ns+"."+methodName;

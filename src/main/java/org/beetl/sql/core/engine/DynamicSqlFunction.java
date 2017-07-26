@@ -28,10 +28,10 @@ public class DynamicSqlFunction  implements Function {
 		List list = (List)ctx.getGlobal("_paras");
 		List mapping = (List)ctx.getGlobal("_mapping");
 		
-		SQLSource source = sm.getSqlLoader().getGenSQL(key);
+		SQLSource source = sm.getSqlLoader().getSQL(key);
 		if(source==null){
 			source = new SQLSource(key,sqlTemplate);
-			sm.getSqlLoader().addGenSQL(key, source);		
+			sm.getSqlLoader().addSQL(key, source);		
 		}
 		
 		SQLResult result=sm.getSQLResult(source, inputParas);

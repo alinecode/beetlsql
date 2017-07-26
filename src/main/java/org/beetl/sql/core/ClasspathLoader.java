@@ -37,7 +37,6 @@ public class ClasspathLoader implements SQLLoader {
 	protected String lineSeparator = System.getProperty("line.separator", "\n");
 
 	protected  Map<String, SQLSource> sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
-	protected  Map<String, SQLFileVersion> sqlSourceVersion = new ConcurrentHashMap<String, SQLFileVersion> ();
 
 	protected DBStyle dbs = null;
 	
@@ -48,6 +47,7 @@ public class ClasspathLoader implements SQLLoader {
 	
 	protected SQLIdNameConversion sqlIdNameConversion = new DefaultSQLIdNameConversion();
 
+	protected SQLSource NO_EXIST = new SQLSource();
 	public  ClasspathLoader() {
 		this("/sql");
 	}
@@ -63,9 +63,6 @@ public class ClasspathLoader implements SQLLoader {
 	public SQLSource getSQL(String id) {
 		SQLSource ss = this.tryLoadSQL(id);
 		
-		if(ss==null){
-			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql");
-		}
 		return ss;
 	}
 	
@@ -82,25 +79,39 @@ public class ClasspathLoader implements SQLLoader {
 		
 		//处理完后再次获取
 		ss = sqlSourceMap.get(id);
-		return ss;
+		if(ss==null){
+			sqlSourceMap.put(id, this.NO_EXIST);
+			return null;
+		}else if(ss==this.NO_EXIST){
+			return null;
+		}else{
+			return ss;
+		}
+		
 	}
 	
 	@Override
 	public boolean isModified(String id) {
-		int index = id.indexOf('.');
-		if(index!=-1){
-			//对于系统自动生成的sql，都是类名+._gen
-			String sqlName = id.substring(index);
-			if(sqlName.startsWith("._gen")){
-				return false;
-			}
+		SQLSource source = this.sqlSourceMap.get(id);
+		if(source!=null&&source instanceof SQLTableSource){
+			return false;
 		}
+		
+		long oldRootVersion = source.getVersion().root;
+		long oldDbVersion = source.getVersion().db;
+		
+		
         //如果db目录中有sql文件，直接使用db目录的文件判断版本（root中的文件会被db中的覆盖）
 		URL root = this.getRootFile(id);
 		URL db = this.getDBRootFile(id);
-		String filePath = sqlIdNameConversion.getPath(id);
-		SQLFileVersion oldVersion = sqlSourceVersion.get(filePath);
-		return oldVersion.isModified(root, db);
+		
+		if(getURLVersion(root)!=oldRootVersion||getURLVersion(db)!=oldDbVersion){
+			//如果root目录和db目录只要有一个变化，都认为sql文件变化，重新加载
+			return true;
+		}else{
+			return false ;
+		}
+		
 	}
 	
 	protected static Long getURLVersion(URL url){
@@ -124,9 +135,7 @@ public class ClasspathLoader implements SQLLoader {
 	}
 	
 	@Override
-	public void addGenSQL(String id, SQLSource source) {		
-		String filePath = sqlIdNameConversion.getPath(id);
-		sqlSourceVersion.put(filePath, new SQLFileVersion()); //never change
+	public void addSQL(String id, SQLSource source) {		
 		sqlSourceMap.put(id, source);
 		
 	}
@@ -148,6 +157,7 @@ public class ClasspathLoader implements SQLLoader {
         //读取root目录下的sql文件
 		URL ins = this.getRootFile(id);
         boolean rootResult;
+        
 		rootResult = readSqlFile(id,ins,true);
         //读取db目录下的sql文件，进行覆盖
         ins = this.getDBRootFile(id);
@@ -184,17 +194,9 @@ public class ClasspathLoader implements SQLLoader {
         String modelName = id.substring(0, id.lastIndexOf(".") + 1);
         if(ins == null) return false ;
         String filePath = sqlIdNameConversion.getPath(id);
-        SQLFileVersion version = sqlSourceVersion.get(filePath);
-        if(version==null){
-       		version = new SQLFileVersion();
-       		sqlSourceVersion.put(filePath, version);
-        }
+      
         long lastModified = getURLVersion(url);
-        if(isRoot){
-        		version.root = lastModified;
-        }else{
-        		version.db = lastModified;
-        }
+       
         
         LinkedList<String> list = new LinkedList<String>();
         BufferedReader bf = null;
@@ -204,7 +206,15 @@ public class ClasspathLoader implements SQLLoader {
             MDParser parser = new MDParser(modelName,bf);
             SQLSource source = null;
 	    		while((source=parser.next())!=null){
-	    			 sqlSourceMap.put(source.getId(), source);
+	    			SQLFileVersion version = new SQLFileVersion();
+	    			version.url = url;
+	    			 if(isRoot){
+	    	        		version.root = lastModified;
+	    	        }else{
+	    	        		version.db = lastModified;
+	    	        }
+	    			source.setVersion(version);
+	    			sqlSourceMap.put(source.getId(), source);
 	    		}
           
         } catch (IOException e) {
@@ -315,10 +325,7 @@ public class ClasspathLoader implements SQLLoader {
 		
 	}
 	
-	@Override
-	public SQLSource getGenSQL(String id) {
-		return sqlSourceMap.get(id);
-	}
+
 	public DBStyle getDbs() {
 		return dbs;
 	}
@@ -350,21 +357,21 @@ public class ClasspathLoader implements SQLLoader {
 	}
 	
 	public static class SQLFileVersion{
+		public URL url;
 		//根目录下sql文件版本
-		long root=0l;
+		public long root=0l;
 		//具体db下的
-		long db=0l;
+		public long db=0l;
 		
 		
-		
-		public boolean isModified(URL r,URL d){
-			if(ClasspathLoader.getURLVersion(r)!=root||ClasspathLoader.getURLVersion(d)!=db){
-				//如果root目录和db目录只要有一个变化，都认为sql文件变化，重新加载
+		public boolean isModified(SQLFileVersion newVersion){
+			if(newVersion.root!=root||newVersion.db!=db){
 				return true;
 			}else{
-				return false ;
+				return false;
 			}
 		}
+		
 	}
 }
 

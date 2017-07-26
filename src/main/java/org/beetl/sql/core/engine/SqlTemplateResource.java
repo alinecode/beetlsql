@@ -10,36 +10,36 @@ import org.beetl.sql.core.SQLSource;
 
 public class SqlTemplateResource extends Resource {
 
-	String template = null;
-	int line = 0;
+
+	SQLSource source;
 	public SqlTemplateResource(String id, SQLSource source,ResourceLoader loader)
 	{
 		super(id,loader);
-		this.template = source.getTemplate() ;
-		this.line = source.getLine();
+		this.source = source;
+		
 	}
 	@Override
 	public Reader openReader() {
-		return new StringReader(template);
+		return new StringReader(source.getTemplate());
 	}
 
 	@Override
 	public boolean isModified() {
 		StringSqlTemplateLoader l = (StringSqlTemplateLoader)this.resourceLoader;
 		SQLLoader loader = l.getSqlLLoader();
-		return loader.isModified(id);
+		SQLSource newSource = loader.getSQL(source.getId());
+		if(newSource==null){
+			return true;
+		}
+		return source.getVersion().isModified(newSource.getVersion());
 	}
 	public String getTemplate() {
-		return template;
+		return source.getTemplate();
 	}
-	public void setTemplate(String template) {
-		this.template = template;
-	}
+	
 	public int getLine() {
-		return line;
+		return source.getLine();
 	}
-	public void setLine(int line) {
-		this.line = line;
-	}
+	
 
 }

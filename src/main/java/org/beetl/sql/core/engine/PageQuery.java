@@ -3,11 +3,10 @@
  */
 package org.beetl.sql.core.engine;
 
-import java.beans.Transient;
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** 用于翻页，要求sqlid必须具有page使用了page函数和pageTag,或者sqlId还有一个以$count 结尾的sqlId
  * 此类混合了查询翻页请求参数和查询结果<p></p>
@@ -153,9 +152,31 @@ public class PageQuery<T> implements Serializable{
 		return paras;
 	}
 
+	/**
+	 * 添加主参数，可以是map，pojo
+	 * @param paras
+	 */
 	public void setParas(Object paras) {
-		this.paras = paras;
+		if(this.paras!=null&&(this.paras instanceof Map)){
+			//beetlsql 找不到的属性都从_root里找
+			((Map)paras).put("_root", paras);
+		}else{
+			this.paras = paras;
+		}
+		
 	}
+	/**
+	 * 添加额外参数
+	 * @param key
+	 * @param value
+	 */
+	public void setPara(String key,Object value){
+		if(this.paras==null){
+			this.paras = new HashMap();
+		}
+		((Map)paras).put(key, value);
+	}
+	
 
 	public void setPageNumber(long pageNumber) {
 		this.pageNumber = pageNumber;

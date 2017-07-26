@@ -201,13 +201,13 @@ public class SQLScript {
             if (conn == null) {
                 conn = sm.getDs().getConn(id, true, sql, objs);
             }
-
-            if (this.sqlSource.getIdType() == DBStyle.ID_ASSIGN) {
+            int idType = ((SQLTableSource)sqlSource).getIdType();
+            if (idType== DBStyle.ID_ASSIGN) {
                 ps = conn.prepareStatement(sql);
-            } else if (this.sqlSource.getIdType() == DBStyle.ID_AUTO) {
+            } else if (idType == DBStyle.ID_AUTO) {
                 ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            } else if (this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
-                CaseInsensitiveOrderSet idCols = (CaseInsensitiveOrderSet) this.sqlSource.getTableDesc().getIdNames();
+            } else if (idType == DBStyle.ID_SEQ) {
+                CaseInsensitiveOrderSet idCols = (CaseInsensitiveOrderSet) ((SQLTableSource)sqlSource).getTableDesc().getIdNames();
                 if (idCols.size() != 1) {
                     throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR);
                 }
@@ -220,7 +220,7 @@ public class SQLScript {
 
             int ret = ps.executeUpdate();
 
-            if (this.sqlSource.getIdType() == DBStyle.ID_AUTO || this.sqlSource.getIdType() == DBStyle.ID_SEQ) {
+            if (idType == DBStyle.ID_AUTO || idType == DBStyle.ID_SEQ) {
                 ResultSet seqRs = ps.getGeneratedKeys();
                 seqRs.next();
                 Object key = seqRs.getObject(1);
@@ -898,15 +898,16 @@ public class SQLScript {
         if (obj == null) {
             return;
         }
+        SQLTableSource tableSource = (SQLTableSource)this.sqlSource;
         Class clz = obj.getClass();
-        if (this.sqlSource.getIdType() == DBStyle.ID_ASSIGN && sqlSource.getAssignIds() != null) {
-            Map<String, AssignID> ids = sqlSource.getAssignIds();
+        if (tableSource.getIdType() == DBStyle.ID_ASSIGN && tableSource.getAssignIds() != null) {
+            Map<String, AssignID> ids = tableSource.getAssignIds();
             for (Entry<String, AssignID> entry : ids.entrySet()) {
                 String attrName = entry.getKey();
                 AssignID assignId = entry.getValue();
                 String algorithm = assignId.value();
                 String param = assignId.param();
-                Object o = this.sm.getAssignIdByIdAutonGen(algorithm, param, sqlSource.getTableDesc().getName());
+                Object o = this.sm.getAssignIdByIdAutonGen(algorithm, param, tableSource.getTableDesc().getName());
                 BeanKit.setBeanProperty(obj, o, attrName);
 
             }

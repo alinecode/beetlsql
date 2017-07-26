@@ -1,6 +1,6 @@
 getIds3
 ===
-	select #page("id")# from user  where 1=1  and 1=1 and 1=1
+	select #page("id")# from user  where 1=1  
 	
 select
 ===
@@ -19,4 +19,10 @@ selectRole
 getUsers
 ===
 
-    select * from user
+    select * from user where 1=1
+    
+    
+queryUsers
+===
+
+    select * from user where 1=1 and 1=1 and 1=1

@@ -1,25 +1,22 @@
-queryName
+getIds3
 ===
-* 根据id查找用户姓名
-
-	select name from user where 1=1 
-	@if(!isEmpty(id)a){
-	and id = #id#
-	@} 
+	select #page("id")# from user  where 1=1  and 1=1 and 1=1
 	
-queryNewUser
+select
 ===
-* 用一个sql做翻页查询，page将输出 count(1) 或者 u.*
-
-	select #page("u.*")# from user u
-
-updateAge
-===
-
-	update user set age = #age# where id = #id#
-
-findUser
-===
-
-	select * from user where name=#name#  and age=#age#
+    select *  from user  where 1=1 
 	
+	
+selectRole
+===
+* hello
+	~~~sql
+	select * from role 
+	and 1 = 1 and  a=#b..c# and 1=1
+	@ var c = 1/0;
+	~~~
+
+getUsers
+===
+
+    select * from user

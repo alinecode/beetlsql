@@ -1,19 +1,20 @@
 package org.beetl.sql.test;
 
-import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.beetl.core.GroupTemplate;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ConnectionSourceHelper;
 import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.Params;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -48,16 +49,17 @@ public class QuickTest {
 		
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
-		
+	
 				
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-//		sql.unique(User.class, 1);
+		
 		UserDao dao = sql.getMapper(UserDao.class);
-		PageQuery pageQuery = new PageQuery();
-//		dao.getIds3(pageQuery);
-		dao.getIds3(pageQuery);
+		for(int i=0;i<5;i++){
+			List list = dao.queryUsers();
+			System.out.println(list);
+		}
 		
 			
 	}
