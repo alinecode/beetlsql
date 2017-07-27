@@ -30,6 +30,8 @@ public class TableDesc{
 	private CaseInsensitiveHashMap<String,ColDesc> colsDetail = new CaseInsensitiveHashMap<String,ColDesc>();
 	//table所在的schema
 	private String schema ;
+	//tables所在的catalog
+	private String catalog;
 	
 	public TableDesc(String name,String remark){
 		this.name = name;
@@ -123,6 +125,14 @@ public class TableDesc{
 
 	public void setSchema(String schema) {
 		this.schema = schema;
+	}
+
+	public String getCatalog() {
+		return catalog;
+	}
+
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
 	}
 	
 	

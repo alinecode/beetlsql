@@ -166,18 +166,20 @@ public class ClasspathLoader implements SQLLoader {
         if(rootResult || dbResult){
             return true;
         }else {
-            String modelName = id.substring(0, id.lastIndexOf(".") );
-            String path  = modelName.replace('.', '/');
-            String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
-            String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
-            String filePath2 = sqlRoot + "/" + path + ".sql";
-            String filePath3 = sqlRoot + "/" + path + ".md";
-            throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "
-                    + filePath0+" 和 "
-                    + filePath1+" 和 "
-                    + filePath2+" 和 "
-                    + filePath3+" 和 "+
-                    " 未找到[id="+id+"]相关的SQL");
+//            String modelName = id.substring(0, id.lastIndexOf(".") );
+//            String path  = modelName.replace('.', '/');
+//            String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
+//            String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
+//            String filePath2 = sqlRoot + "/" + path + ".sql";
+//            String filePath3 = sqlRoot + "/" + path + ".md";
+//            throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "
+//                    + filePath0+" 和 "
+//                    + filePath1+" 和 "
+//                    + filePath2+" 和 "
+//                    + filePath3+" 和 "+
+//                    " 未找到[id="+id+"]相关的SQL");
+        	
+        		return false;
         }
 	}
 
@@ -373,5 +375,7 @@ public class ClasspathLoader implements SQLLoader {
 		}
 		
 	}
+	
+	
 }
 

@@ -56,8 +56,10 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
 		UserDao dao = sql.getMapper(UserDao.class);
-		for(int i=0;i<5;i++){
-			List list = dao.queryUsers();
+		dao.unique(1);
+		
+		for(int i=0;i<1;i++){
+			List list = dao.queryUsers2();
 			System.out.println(list);
 		}
 		

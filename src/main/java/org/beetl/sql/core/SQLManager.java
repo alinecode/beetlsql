@@ -323,7 +323,10 @@ public class SQLManager {
 	public SQLScript getScript(String id) {
 		SQLSource source = sqlLoader.getSQL(id);
 		if(source==null){
-			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql");
+			String path = this.idNameConversion.getPath(id);
+			SQLLoader sqlLoader = this.getSqlLoader();
+			String envInfo = path+".md(sql)"+" sqlLoader:"+sqlLoader;
+			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql,搜索路径:"+envInfo);
 		}
 		SQLScript script = new SQLScript(source, this);
 		return script;

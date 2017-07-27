@@ -76,14 +76,21 @@ public class MetadataManager {
 	}
 	
 	private TableDesc getTableFromMap(String tableName){
-		
+		TableDesc desc = null;
 		if(map==null){
 			synchronized(this){
-				if(map!=null) return (TableDesc)map.get(tableName);
-				this.initMetadata();
+				if(map!=null){
+					desc =  (TableDesc)map.get(tableName);
+				}else{
+					this.initMetadata();
+					desc =  (TableDesc)map.get(tableName);
+				}
+				
 			}
+		}else{
+			 desc = (TableDesc) map.get(tableName);
 		}
-		TableDesc desc = (TableDesc) map.get(tableName);
+	   
 		if(desc==NOT_EXIST){
 			return null;
 		}else if(desc==null){
@@ -105,7 +112,6 @@ public class MetadataManager {
 	
 	private  TableDesc  initTable(TableDesc desc){
 	
-	
 		synchronized (desc){
 			
 			if(desc.getCols().size()!=0){
@@ -114,8 +120,8 @@ public class MetadataManager {
 			Connection conn=null;
 			ResultSet rs = null;
 			try {
-				String catalog = this.defalutCatalog;
-				String schema = this.defaultSchema;
+				String catalog = desc.getCatalog();
+				String schema = desc.getSchema();
 				conn =  ds.getMaster();
 				
 				DatabaseMetaData dbmd =  conn.getMetaData();
@@ -152,7 +158,7 @@ public class MetadataManager {
 						}
 						
 					}catch(SQLException ex){
-						
+						//某些驱动可能不支持
 						checkAuto = false;
 					}
 					
@@ -190,6 +196,7 @@ public class MetadataManager {
 				String remarks = rs.getString("REMARKS");
 				TableDesc desc = new TableDesc(name,remarks);
 				desc.setSchema(this.defaultSchema);
+				desc.setCatalog(catalog);
 				tempMap.put(desc.getName(),desc);
 			}
 		
@@ -221,6 +228,7 @@ public class MetadataManager {
 				String remarks = rs.getString("REMARKS");
 				desc = new TableDesc(name,remarks);
 				desc.setSchema(sc);
+				desc.setCatalog(catalog);
 				map.put(sc+"."+table,desc);
 			}
 			rs.close();
