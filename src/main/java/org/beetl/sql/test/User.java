@@ -15,7 +15,7 @@ import org.beetl.sql.core.orm.OrmQuery;
 	@OrmCondition(target=Role.class,attr="id",targetAttr="userId" ,sqlId="user.selectRole",type=OrmQuery.Type.MANY,alias="roles")
 }
 )
-@Table(name="orm.User")
+@Table(name="sss.User1")
 public class User   extends TailBean {
 	
 	private Integer id ;

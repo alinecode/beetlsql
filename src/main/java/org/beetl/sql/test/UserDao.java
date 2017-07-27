@@ -22,6 +22,6 @@ public interface UserDao extends BaseMapper<User> {
 	@Sql("select * from axeac_datasource order by updatedtm desc")
 	PageQuery<User> getUser4(int pageNumber,int pageSize);
 	
-	List<HashMap<String,Object>> queryUsers2();
+	List queryUsers();
 	
 }

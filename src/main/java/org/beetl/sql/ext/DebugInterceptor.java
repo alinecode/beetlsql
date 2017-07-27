@@ -49,6 +49,9 @@ public class DebugInterceptor implements Interceptor {
 		if(this.isDebugEanble(sqlId)){
 			ctx.put("debug.time", System.currentTimeMillis());
 		}
+		if(this.isSimple(sqlId)){
+			return ;
+		}
 		StringBuilder sb = new StringBuilder();
 		String lineSeparator = System.getProperty("line.separator", "\n");
 		sb.append("┏━━━━━ Debug [").append(this.getSqlId(formatSql(sqlId))).append("] ━━━").append(lineSeparator)
@@ -100,6 +103,11 @@ public class DebugInterceptor implements Interceptor {
 
 	@Override
 	public void after(InterceptorContext ctx) {
+		String sqlId = ctx.getSqlId();
+		if(this.isSimple(sqlId)){
+			this.simpleOut(ctx);
+			return;
+		}
 		long time = System.currentTimeMillis();
 		long start = (Long)ctx.get("debug.time");
 		String lineSeparator = System.getProperty("line.separator", "\n");
@@ -180,6 +188,11 @@ public class DebugInterceptor implements Interceptor {
 
 	@Override
 	public void exception(InterceptorContext ctx, Exception ex) {
+		String sqlId = ctx.getSqlId();
+		if(this.isSimple(sqlId)){
+			this.simpleOutException(ctx, ex);
+			return;
+		}
 		String lineSeparator = System.getProperty("line.separator", "\n");
 		StringBuilder sb =(StringBuilder) ctx.get("logs");
 		sb.append("┗━━━━━ Debug [ ERROR:").append(ex!=null?ex.getMessage():"").append("] ━━━").append(lineSeparator);
@@ -190,5 +203,29 @@ public class DebugInterceptor implements Interceptor {
 	protected String formatSql(String sql){
 		return sql.replaceAll("--.*", "").replaceAll("\\s+", " ");
 	}
+	
+	protected boolean isSimple(String sqlId){
+		return false ;
+	}
+	
+	protected void simpleOut(InterceptorContext ctx){
+		String sqlId = ctx.getSqlId();
+		StringBuilder sb = new StringBuilder();
+		sb.append("--BeetlSql:").append(sqlId).append(", paras:").append(formatParas(ctx.getParas()));
+		this.println(sb.toString());
+		return;
+	}
+	
+	protected void simpleOutException(InterceptorContext ctx,Exception ex){
+		String sqlId = ctx.getSqlId();
+		StringBuilder sb = new StringBuilder();
+		sb.append("--BeetlSql Error:");
+		sb.append(ex!=null?ex.getMessage():"");
+		sb.append(" 位于 ").append(sqlId).append(", paras:").append(formatParas(ctx.getParas()));
+		
+		this.println(sb.toString());
+		return;
+	}
+	
 
 }
