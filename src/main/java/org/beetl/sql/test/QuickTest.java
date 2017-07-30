@@ -1,8 +1,6 @@
 package org.beetl.sql.test;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -10,7 +8,6 @@ import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ConnectionSourceHelper;
 import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.Params;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
@@ -29,20 +26,11 @@ public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
 		
-//		URL url = GroupTemplate.class.getResource("/org/beetl/core/beetl-default.properties");
-//		if(url.getProtocol().equals("jar")){
-//			String path = url.getPath();
-//			int index = path.indexOf(".jar!");
-//			int i = path.lastIndexOf("beetl-", index);
-//			String version = path.substring(i, index);
-//			
-//		}
-//		System.out.println(url);
 		
-//		DB2SqlStyle style = new DB2SqlStyle();
+////		DB2SqlStyle style = new DB2SqlStyle();
 		MySqlStyle style = new MySqlStyle();
-//		OracleStyle style = new OracleStyle();
-		
+////		OracleStyle style = new OracleStyle();
+//		
 //		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(druidSource());
@@ -56,13 +44,10 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
 		UserDao dao = sql.getMapper(UserDao.class);
-//		dao.unique(1);
-		
-		for(int i=0;i<1;i++){
-			List list = dao.queryUsers();
-			System.out.println(list);
-		}
-		
+//		PageQuery<String> query = new PageQuery<String>();
+		User query = new User();
+		List<User> list = dao.getUsers(query, 1);
+		System.out.println(list);
 			
 	}
 	

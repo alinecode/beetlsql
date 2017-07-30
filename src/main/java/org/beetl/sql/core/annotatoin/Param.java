@@ -1,4 +1,3 @@
-
 package org.beetl.sql.core.annotatoin;
 
 import java.lang.annotation.ElementType;

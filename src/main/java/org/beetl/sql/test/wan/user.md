@@ -4,8 +4,7 @@ getIds3
 	
 select
 ===
-    select *  from user  where 1=1 
-	
+    select *  from user  where 1=1 	
 	
 selectRole
 ===
@@ -19,7 +18,8 @@ selectRole
 getUsers
 ===
 
-    select * from user where 1=1
+    select * from user where 1=1 and name = #name# and id=#hi#
+    
     
     
 queryUsers

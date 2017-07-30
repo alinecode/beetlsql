@@ -20,6 +20,11 @@ import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.mapper.para.InsertParamter;
+import org.beetl.sql.core.mapper.para.MapperParameter;
+import org.beetl.sql.core.mapper.para.PageQueryParamter;
+import org.beetl.sql.core.mapper.para.SelectQueryParamter;
+import org.beetl.sql.core.mapper.para.UpdateParamter;
 
 /**
  * dao2 参数
@@ -28,31 +33,29 @@ import org.beetl.sql.core.engine.PageQuery;
  *
  */
 public class MethodDesc {
-	public Map<String, Integer> parasPos = new HashMap<String, Integer>();
-	// 0 insert , 1 insert with key holder, 2 select single ,3 select list 4
-	// update 5 batchUpdate 6 page query
 	
 	/*对应到SQLManager 操作类型*/
-	public static int SM_INSERT = 0;
-	public static int SM_INSERT_KEYHOLDER = 1;
-	public static int SM_SELECT_SINGLE = 2;
-	public static int SM_SELECT_LIST = 3;
-	public static int SM_UPDATE = 4;
-	public static int SM_BATCH_UPDATE = 5;
-	public static int SM_PAGE_QUERY = 6;
-	public static int SM_SQL_READY_PAGE_QUERY = 7;
+	public final static int SM_INSERT = 0;
+	public final static int SM_INSERT_KEYHOLDER = 1;
+	public final static int SM_SELECT_SINGLE = 2;
+	public final static int SM_SELECT_LIST = 3;
+	public final static int SM_UPDATE = 4;
+	public final static int SM_BATCH_UPDATE = 5;
+	public final static int SM_PAGE_QUERY = 6;
+	public final static int SM_SQL_READY_PAGE_QUERY = 7;
 	
 	public int type = SM_INSERT;
-	public Method method = null;
-	// 如果存在范围查找，pagger［0］ ＝offet,pagger[1]= size;
-	public int[] paggerPos = null;
-	// -1 表示返回一个KeyHolder，否则，使用指定位置的参数
-	public int keyHolderPos = -1;
-	public int mapRootPos = -1;
 	
+
 	public String sqlReady = "";
 	
 	public Class renturnType = Void.class;
+	//method 调用参数转为实际参数
+	public MapperParameter parameter = null;
+	//注解申明的参数名字
+	public String paramsDeclare = null;
+	
+	private Method method = null;
 
 	static Map<CallKey, MethodDesc> cache = new HashMap<CallKey, MethodDesc>();
 	
@@ -71,306 +74,151 @@ public class MethodDesc {
 	
 	
 	protected void doParse(SQLManager sm, Class entityClass, Method m, String sqlId){
+		Class[] paras = m.getParameterTypes();
+		Class retType = m.getReturnType();
+		//假设默认类型就是Mapper的泛型类型
+		this.renturnType = entityClass;
+		this.method = m;
 		
-		SqlStatement st = (SqlStatement) m.getAnnotation(SqlStatement.class);
+		
 		Sql sql =  (Sql) m.getAnnotation(Sql.class);
-		if(sql==null&&st==null){
-			// 模板
-			parse(sm, entityClass, m, sqlId);
-		}else if(sql!=null){
-			this.sqlReady = sql.value();
-			parseSqlReady(sm, entityClass, sql,m,sqlId);
+		SqlStatementType sqlType = SqlStatementType.AUTO;
+		if(sql!=null){
+			this.sqlReady = sql.value();	
+			sqlType = sql.type();
+			
+			
 		}else{
-			parse(sm, entityClass, m, sqlId);
-
+			SqlStatement st = (SqlStatement) m.getAnnotation(SqlStatement.class);			
+			if(st!=null){
+				 sqlType = st.type();
+				 paramsDeclare = st.params();
+			}
+			
 		}
-		
-		
-	}
-	
-	protected void parseSqlReady(SQLManager sm, Class entityClass, Sql sql,Method m,String sqlId) {
-		
-		Class stRetType = sql.returnType();
-		// 初步判断类型
-		SqlStatementType sqlType = sql.type();
-		
+		//先判断调用sqlmanager类型。
+		int inferType=0;
 		if (sqlType == SqlStatementType.AUTO) {
-			int inferType = getTypeBySql(sqlReady);
+			if(sql!=null){
+				inferType = getTypeBySql(sqlReady);
+			}else{
+				inferType = getTypeBySqlId(sm, sqlId);
+			}
+			
 			if(inferType==-1){
 				throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId+" 请指定Sql类型");
-			}else if(inferType==SM_INSERT){
-				type = SM_UPDATE;// 认为update
-			}else if(inferType==SM_SELECT_SINGLE){
-				type = SM_SELECT_SINGLE;
-			}
+			}				
 		
-		} else if (sqlType == SqlStatementType.SELECT) {
-			type = SM_SELECT_SINGLE;
-		} else {
-			type = SM_UPDATE;
-		}
-		
-		//具体判断类型
-		Class methodRetType = m.getReturnType();
-		if (type==SM_SELECT_SINGLE) {
-			if(List.class.isAssignableFrom(methodRetType)){
-				type = SM_SELECT_LIST;
-				stRetType = getRetType(m,entityClass);
-				
-			}else if(PageQuery.class.isAssignableFrom(methodRetType)){
-				//假设最后俩个参数是pageNumber和pageSize
-				this.type = SM_SQL_READY_PAGE_QUERY;
-				stRetType = getRetType(m,entityClass);
-				
-			}
-			
-						
-		}
-			
-		//确定查询返回需要映射类型
-		if(type==SM_SELECT_SINGLE||type==SM_SELECT_LIST||type==SM_SQL_READY_PAGE_QUERY){
-			this.getSelectRenturnType(methodRetType, stRetType, entityClass);
-		}
-			
-		
-	}
-	protected void parse(SQLManager sm, Class entityClass, Method m, String sqlId) {
-
-		SqlStatement st = (SqlStatement) m.getAnnotation(SqlStatement.class);
-		String params = null;
-		Class stRetType = Void.class;
-		// 先初步判断 sql 类型
-		type = 0;
-		if (st != null) {
-			params = st.params();
-			SqlStatementType sqlType = st.type();
-			if (sqlType == SqlStatementType.AUTO) {
-				type = getTypeBySqlId(sm, sqlId);
-			} else if (sqlType == SqlStatementType.INSERT) {
-				type = 0;
-			} else if (sqlType == SqlStatementType.SELECT) {
-				type = 2;
-			} else {
-				type = 4;
-			}
-			
-			Class c = st.returnType();
-			
-			if(c!=Void.class){
-				stRetType = c;
-			}
-		} else {
-			type = getTypeBySqlId(sm, sqlId);
-
-		}
-		
-		if(params!=null&&params.length()!=0){
-			this.parseParams(sqlId, params, m);
 		}else{
-			this.parseAnnotation(sqlId, m);
-		}
-
-		Class methodRetType = m.getReturnType();
-		if (type == 0) {
-			if (KeyHolder.class.isAssignableFrom(methodRetType)) {
-				type = 1;
-				keyHolderPos = -1;
+			if(sqlType==SqlStatementType.SELECT){
+				inferType = SM_SELECT_LIST;
+			}else if(sqlType==SqlStatementType.INSERT){
+				inferType=SM_INSERT;
+			}else{
+				inferType = SM_UPDATE;
 			}
-			return;
-		} else if (type == 2) {
-			if (List.class.isAssignableFrom(methodRetType)) {
-				type = 3;
-				Type type = m.getGenericReturnType();
-				if(type instanceof ParameterizedType ){
-					Type retType = ((ParameterizedType)type).getActualTypeArguments()[0];
-					if(retType instanceof Class){
-						stRetType = (Class)retType;
-					}else if(retType instanceof  ParameterizedType){
-						ParameterizedType pt = (ParameterizedType)retType;
-						Type  listType = pt.getRawType();
-						if(listType== Map.class){
-							stRetType = Map.class;
-						}else if ( Map.class.isAssignableFrom(((Class)listType)) ){
-							stRetType = (Class)listType;
-						}
-						else {
-							throw new IllegalArgumentException(type.toString()+"in "+m.toString());
-						}
-						
-					}else{
-						stRetType = entityClass;
-					}
-					
-				}else{
-					stRetType = entityClass;
-				}
+		}
+		//初步判断类型，SM_UPDATE，SM_INSERT,SM_SELECT_LIST
+		this.type = inferType;
+		//进一步判断具体SQLManager 方法
+		switch(type){
+			case SM_SELECT_LIST :
+				parseSelectList(paras,retType);
+				break;
+				
+			case SM_INSERT:parseInert(paras,retType);break;
+			case SM_UPDATE:parseUpdate(paras,retType);break;
+		}
+		
 			
+	}
+	
+	protected void parseInert(Class[] paras,Class retType){
+		if(retType==KeyHolder.class){
+			this.type = SM_INSERT_KEYHOLDER;
+		}else{
+			this.type = SM_INSERT;
+		}
+		this.parameter = new InsertParamter(method,this.paramsDeclare);
+	}
+	
+	protected void parseUpdate(Class[] paras,Class retType){
+		this.type = SM_UPDATE;
+		if(paras.length==1){
+			Class first = paras[0] ;
+			if(List.class.isAssignableFrom(first)){
+				this.type = SM_BATCH_UPDATE;
+			}else if(first.isArray()){
+				Class ct= first.getComponentType();
+				if(Map.class.isAssignableFrom(ct)){
+					this.type = SM_BATCH_UPDATE;
+				}
 			}
+			
+			
 		}
 		
-		//确定查询返回需要映射类型
-		if(type==2||type==3||type==6){
-			this.getSelectRenturnType(methodRetType, stRetType, entityClass);
+		this.parameter = new UpdateParamter(method,this.paramsDeclare);
+	}
+	
+	protected void parseSelectList(Class[] paras,Class retType){
+		Class pageType  =  hasPageQuery(paras,retType);
+		boolean isJdbc = this.sqlReady.length()!=0;
+		if(pageType!=null){
+			Class type =   getType(pageType);
+			if(type!=null){
+				this.renturnType = type;
+			}
+			//else否则就默认为mapper类型
+			if(isJdbc){
+				this.type = SM_SQL_READY_PAGE_QUERY;
+				parameter =new PageQueryParamter(method,this.paramsDeclare,isJdbc);
+			}else{
+				this.type = SM_PAGE_QUERY;
+				parameter =new PageQueryParamter(method,paramsDeclare,isJdbc);
+			}
+			return ;
 		}
 		
+		if(List.class.isAssignableFrom(retType)){
+			Class type =   getType(retType);
+			if(type!=null){
+				this.renturnType = type;
+			}
+			this.type = SM_SELECT_LIST;
+			parameter =new SelectQueryParamter(method,paramsDeclare,isJdbc);
+			return ;
+		}
 		
+		//更改类型为Single
+		this.type = SM_SELECT_SINGLE;
+		parameter =new SelectQueryParamter(method,paramsDeclare,isJdbc);
+		
+		
+	}
+	protected Class getType(Type type){
+		if(type instanceof ParameterizedType ){
+			return (Class) ((ParameterizedType)type)
+					.getActualTypeArguments()[0];
+		}else{
+			
+			return null;
+		}
+	}
+	protected Class hasPageQuery(Class[] paras,Class retType){
+		
+		if(retType==PageQuery.class){
+			return retType;
+		}
+		
+		if(paras.length>=1&&paras[0]==PageQuery.class){
+			return paras[0];
+		}
+		
+		return null;
 	}
 	
 	
-
-	protected void parseAnnotation(String sqlId, Method m) {
-		// 纪录错误位置
-		LinkedHashMap<Integer, String> errorPara = new LinkedHashMap<Integer, String>();
-		Annotation[][] parameterAnnotations = m.getParameterAnnotations();
-		Class[] paraTypes = m.getParameterTypes();
-		for (int argIndex = 0; argIndex < parameterAnnotations.length; argIndex++) {
-			int length = parameterAnnotations[argIndex].length;
-			if (length == 0) {
-				Class cls = paraTypes[argIndex];
-				if (KeyHolder.class.isAssignableFrom(cls)) {
-					if (type == 0) {
-						type = 1;
-						keyHolderPos = argIndex;
-
-					} else {
-						errorPara.put(argIndex, "出现KeyHolder，但操作类型是" + getTypeDesc(type));
-					}
-					continue;
-				}
-				
-				if(PageQuery.class.isAssignableFrom(cls)){
-					type = 6 ;// page query
-					break;
-				}
-				
-
-				if (Map.class.isAssignableFrom(cls)) {
-					if (!this.parasPos.containsKey("_root")) {
-						mapRootPos = argIndex;
-
-					} else {
-						errorPara.put(argIndex, "该参数没有用@Param，但已经有一个Pojo或者Map");
-					}
-					continue;
-
-				}
-
-				if (List.class.isAssignableFrom(cls)) {
-					if (type == 4) {
-						type = 5; // batch update
-
-					} else {
-						errorPara.put(argIndex, "只有批量更新语句才允许List参数");
-					}
-					continue;
-				}
-
-				if (cls.isArray() && Map.class.isAssignableFrom(cls.getComponentType())) {
-					if (type == 4) {
-						type = 5; // batch update
-					} else {
-						errorPara.put(argIndex, "只有批量更新语句才允许Map<String,Object>参数");
-					}
-					continue;
-				}
-				
-				
-				Package pkg = cls.getPackage();
-				if (pkg == null) {
-					errorPara.put(argIndex, "没有申明params的参数");
-					continue;
-				}
-
-				String pkgName = pkg.getName();
-				if (pkgName.startsWith("java")) {
-					errorPara.put(argIndex, "没有申明params的参数");
-					continue;
-				}
-
-				if (mapRootPos != -1) {
-					// 已经有map参数了，不能与pojo并存
-					errorPara.put(argIndex, "该参数没有用@Param，但已经有一个Pojo或者Map");
-				} else {
-					// pojo
-					if (this.parasPos.containsKey("_root")) {
-						int pos = this.parasPos.get("_root");
-						errorPara.put(argIndex, "该参数没有用@Param，但已经有一个Pojo或者Map");
-					} else {
-						this.parasPos.put("_root", argIndex);
-
-					}
-				}
-
-			} else {
-				for (int annIndex = 0; annIndex < length; annIndex++) {
-					Annotation paramAnn = parameterAnnotations[argIndex][annIndex];
-					// Param注解.
-					if (paramAnn instanceof Param) {
-						Param param = (Param) paramAnn;
-						parasPos.put(param.value(), argIndex);
-
-					} else if (paramAnn instanceof RowStart) {
-						if (paggerPos == null) {
-							paggerPos = new int[2];
-						}
-						paggerPos[0] = argIndex;
-					} else if (paramAnn instanceof RowSize) {
-						if (paggerPos == null) {
-							paggerPos = new int[2];
-						}
-						paggerPos[1] = argIndex;
-					} else {
-						errorPara.put(argIndex, "不能识别的注解" + paramAnn.getClass());
-					}
-				}
-			}
-
-		}
-
-		// 错误检查
-		if (errorPara.size() != 0) {
-			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,
-					sqlId + "接口参数如下位置" + errorPara + "定义错误，无法映射");
-
-		}
-		if (type == 5 && paraTypes.length != 1) {
-			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER, sqlId + "批量更新只允许一个List<?> 或者Map[]参数");
-		}
-		
-		if(this.mapRootPos!=-1){
-			this.parasPos.put("_root", mapRootPos);
-		}
-		
-
-	}
-
-	private void parseParams(String sqlId, String params,Method m) {
-		Class[] paraTypes = m.getParameterTypes();
-		String[] paraNames = params.split(",");
-		if (paraTypes.length != paraNames.length) {
-			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER, sqlId + "接口参数申明错误，跟@params不一致");
-
-		}
-		this.parasPos.clear(); // 配置以SqlStatment为准
-		for (int i = 0; i < paraNames.length; i++) {
-			String str = paraNames[i].trim();
-			if (str.equals("_st")) {
-				if (paggerPos == null) {
-					paggerPos = new int[2];
-				}
-				paggerPos[0] = i;
-			} else if (str.equals("_sz")) {
-				if (paggerPos == null) {
-					paggerPos = new int[2];
-				}
-				paggerPos[1] = i;
-			} else  {
-				parasPos.put(str, i);
-			} 
-
-		}
-
-	}
 
 	/**
 	 * 根据sql语句判断sql类型，用于对应到SQLManager操作
@@ -382,7 +230,7 @@ public class MethodDesc {
 		String sqlType = getFirstToken(sql);
 		
 		if (sqlType.equals("select")) {
-			return SM_SELECT_SINGLE;
+			return SM_SELECT_LIST;
 		} else if (sqlType.equals("insert")) {
 			return SM_INSERT;
 		} else if (sqlType.equals("delete")) {

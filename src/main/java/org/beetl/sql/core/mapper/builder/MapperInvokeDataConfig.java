@@ -6,7 +6,6 @@ import java.util.Map;
 import org.beetl.sql.core.mapper.InsertMapperInvoke;
 import org.beetl.sql.core.mapper.MapperInvoke;
 import org.beetl.sql.core.mapper.PageQueryMapperInvoke;
-import org.beetl.sql.core.mapper.PageableMapperInvoke;
 import org.beetl.sql.core.mapper.SelecSingleMapperInvoke;
 import org.beetl.sql.core.mapper.SelectMapperInvoke;
 import org.beetl.sql.core.mapper.UpdateBatchMapperInvoke;
@@ -62,7 +61,6 @@ public final class MapperInvokeDataConfig {
         METHOD_DESC_PROXY_MAP.put(4, new UpdateMapperInvoke());
         METHOD_DESC_PROXY_MAP.put(5, new UpdateBatchMapperInvoke());
         METHOD_DESC_PROXY_MAP.put(6, new PageQueryMapperInvoke());
-        METHOD_DESC_PROXY_MAP.put(7, new PageableMapperInvoke());
     }
 
     static {

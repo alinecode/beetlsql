@@ -26,7 +26,7 @@ public class JavaType {
 	
 	public static Map<String, Integer> jdbcTypeNames = new HashMap<String, Integer> ();
 	
-	static int majorJavaVersion = 15;
+	public static int majorJavaVersion = 15;
 	static {
 		String javaVersion = System.getProperty("java.version");
 		// version String should look like "1.4.2_10"
@@ -210,6 +210,10 @@ public class JavaType {
 	public static boolean isJavaNumberType(int jdbcType) {
 		Class<?> type = jdbcJavaTypes.get(jdbcType);
 		return (type == null) ? false : (Number.class.isAssignableFrom(type));
+	}
+	
+	public static boolean isJdk8(){
+		return majorJavaVersion>=18;
 	}
 
 }

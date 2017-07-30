@@ -1,10 +1,6 @@
 package org.beetl.sql.core.kit;
 
 
-import org.beetl.sql.core.engine.Page;
-import org.beetl.sql.core.engine.Pageable;
-import org.beetl.sql.core.engine.PageableBuilder;
-
 import java.util.Map;
 
 /**
@@ -19,53 +15,7 @@ public final class PageKit {
 
     static int pageSizeValue = 20;
 
-    static PageableBuilder pageableBuilder = new PageableBuilder() {
-        @Override
-        public Pageable create() {
-            return new Page();
-        }
-    };
-
-    private PageKit() {
-    }
-
-    /**
-     * @param pageNumberName 设置分页名, 默认名: pageNumber
-     */
-    public static void setPageNumberName(String pageNumberName) {
-        PageKit.pageNumberName = pageNumberName;
-    }
-
-    /**
-     * @param pageSizeName 设置每页显示数量名, 默认名: pageSize
-     */
-    public static void setPageSizeName(String pageSizeName) {
-        PageKit.pageSizeName = pageSizeName;
-    }
-
-    /**
-     * @param pageSizeValue 设置每页默认显示的数目
-     */
-    public static void setPageSizeValue(int pageSizeValue) {
-        PageKit.pageSizeValue = pageSizeValue;
-    }
-
-    /**
-     * @param pageableBuilder 设置分页对象构建器
-     */
-    public static void setPageableBuilder(PageableBuilder pageableBuilder) {
-        PageKit.pageableBuilder = pageableBuilder;
-    }
-
-    /**
-     * @return 创建分页对象
-     */
-    public static Pageable createPage() {
-        return pageableBuilder.create();
-    }
-
-
-    /**
+   /**
      * sql格式化工具
      *
      * @param sql 正常的sql语句

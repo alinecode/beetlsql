@@ -1,12 +1,11 @@
 package org.beetl.sql.core.mapper;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.mapper.para.PageQueryParamter;
 
 /**
  *  
@@ -17,25 +16,16 @@ public class PageQueryMapperInvoke extends BaseMapperInvoke {
 
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
-		Class type = m.getReturnType();
-		
-		if(type==void.class||type==PageQuery.class){
-			if(args.length!=1){
-				throw new UnsupportedOperationException(m.getName()+" PageQuery查询方法参数智能有PageQuery一个");
-			}
-			MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
-			Class returnType = desc.renturnType;
-			sm.pageQuery(sqlId, returnType, (PageQuery)args[0]);
-			if(type==PageQuery.class){
-				return args[0];
-			}else{
-				return null;
-			}
-			
+		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
+		PageQueryParamter parameter = (PageQueryParamter)desc.parameter;
+		Class returnType = desc.renturnType;
+		PageQuery query = (PageQuery)parameter.get(args);
+		sm.pageQuery(sqlId, returnType, query);
+		if(returnType==PageQuery.class){
+			return query;
 		}else{
-			throw new UnsupportedOperationException(m.getName()+" PageQuery查询方法只能返回void或者PageQuery");
+			return null;
 		}
-		
 		
 		
 	}

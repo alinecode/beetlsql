@@ -26,6 +26,8 @@ public @interface Sql {
 
 	/**
 	 * @return  返回类型，默认是Mapper类的泛型，需要特别声明才用这个
+	 * 2.9.0 后不再以这个为准
 	 */
+	@Deprecated
 	Class returnType() default Void.class;
 }
