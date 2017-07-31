@@ -15,14 +15,23 @@ selectRole
 	@ var c = 1/0;
 	~~~
 
-getUsers
+getUser5
 ===
 
-    select * from user where 1=1 and name = #name# and id=#hi#
+    select #page("*")# from user where 1=1 and name = #name#
     
-    
-    
-queryUsers
+queryUser5
 ===
 
     select * from user where 1=1 and 1=1 and 1=1
+    
+updateUser
+===
+    
+   update user set name=#name# where id=#id#
+   
+   
+addOne    
+===
+
+   insert into User (name) values (#name#)

@@ -48,8 +48,8 @@ public class MethodDesc {
 	
 
 	public String sqlReady = "";
-	
-	public Class renturnType = Void.class;
+	//sqlmanager实际使用的的参数，非方法返回参数，而是泛型
+	public Class entityType = Void.class;
 	//method 调用参数转为实际参数
 	public MapperParameter parameter = null;
 	//注解申明的参数名字
@@ -77,7 +77,7 @@ public class MethodDesc {
 		Class[] paras = m.getParameterTypes();
 		Class retType = m.getReturnType();
 		//假设默认类型就是Mapper的泛型类型
-		this.renturnType = entityClass;
+		this.entityType = entityClass;
 		this.method = m;
 		
 		
@@ -154,8 +154,7 @@ public class MethodDesc {
 					this.type = SM_BATCH_UPDATE;
 				}
 			}
-			
-			
+
 		}
 		
 		this.parameter = new UpdateParamter(method,this.paramsDeclare);
@@ -167,7 +166,7 @@ public class MethodDesc {
 		if(pageType!=null){
 			Class type =   getType(pageType);
 			if(type!=null){
-				this.renturnType = type;
+				this.entityType = type;
 			}
 			//else否则就默认为mapper类型
 			if(isJdbc){
@@ -183,7 +182,7 @@ public class MethodDesc {
 		if(List.class.isAssignableFrom(retType)){
 			Class type =   getType(retType);
 			if(type!=null){
-				this.renturnType = type;
+				this.entityType = type;
 			}
 			this.type = SM_SELECT_LIST;
 			parameter =new SelectQueryParamter(method,paramsDeclare,isJdbc);
@@ -305,21 +304,7 @@ public class MethodDesc {
 		}
 	}
 	
-	protected void getSelectRenturnType(Class methodRetType,Class annotationType,Class entity){
-		if(annotationType!=Void.class){
-			//注解总是优先。2.8.16 后注解的returnType不是必须的，但保留在这里
-			this.renturnType = annotationType;
-			return ;
-		}
-		
-		if(this.type==SM_SELECT_LIST||type==SM_PAGE_QUERY||type==SM_SQL_READY_PAGE_QUERY){
-			this.renturnType = entity;
-		}else if(this.type==SM_SELECT_SINGLE){
-			this.renturnType = methodRetType;
-		}
-		
 
-	}
 	
 	protected Class getRetType(Method method,Class entityClass){
 		Type type = method.getGenericReturnType();

@@ -26,7 +26,7 @@ public class SQLReadyExecuteMapperInvoke extends BaseMapperInvoke {
 		MethodDesc desc = MethodDesc.getMetodDesc(sm, entityClass, m, sqlId);
 		
 		if (type == MethodDesc.SM_SELECT_SINGLE || type == MethodDesc.SM_SELECT_LIST) {
-			Class returnType = desc.renturnType;
+			Class returnType = desc.entityType;
 			List list = sm.execute(new SQLReady(sqlId, args), returnType);
 			if (type == MethodDesc.SM_SELECT_SINGLE) {
 				return list.size() == 0 ? null : list.get(0);

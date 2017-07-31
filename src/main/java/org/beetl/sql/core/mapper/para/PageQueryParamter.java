@@ -52,7 +52,12 @@ public class PageQueryParamter extends MapperParameter {
 	
 	
 	private boolean isNumber(Class c){
-		return Number.class.isAssignableFrom(c);
+		if(c.isPrimitive()){
+			return c==int.class||c==long.class||c==short.class;
+		}else{
+			return Number.class.isAssignableFrom(c);
+		}
+		
 	}
 	
 	@Override
@@ -60,7 +65,12 @@ public class PageQueryParamter extends MapperParameter {
 		if(!createPageQuery){
 			PageQuery  pq = (PageQuery)array[0];
 			for(int i=1;i<array.length;i++){
-				pq.setPara(this.paramsName[i-1], array[i]);
+				String name = this.paramsName[i-1];
+				if(name.equals("_root")){
+					pq.setParas(array[i]);
+				}else{
+					pq.setPara(this.paramsName[i-1], array[i]);
+				}
 			}
 			return pq;
 		}else{
@@ -74,7 +84,12 @@ public class PageQueryParamter extends MapperParameter {
 				return pageQuery;
 			}else{
 				for(int i=2;i<array.length;i++){
-					pageQuery.setPara(this.paramsName[i-2], array[i]);
+					String name = this.paramsName[i-2];
+					if(name.equals("_root")){
+						pageQuery.setParas(array[i]);
+					}else{
+						pageQuery.setPara(this.paramsName[i-2], array[i]);
+					}
 				}
 				return pageQuery;
 			}
@@ -83,7 +98,8 @@ public class PageQueryParamter extends MapperParameter {
 	}
 	
 	public Object[] getJdbcArgs(Object[] args){
-		Object[] real = new Object[args.length];
+		
+		Object[] real = new Object[args.length-2];
 		System.arraycopy(args, 2, real, 0, real.length);
 		return real;
 	}

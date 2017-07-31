@@ -212,8 +212,7 @@ public class PageQuery<T> implements Serializable{
 	private void calcTotalPage(){
 		if(this.calc){
 			return ;
-		}
-		
+		}		
 		if(totalRow==0) this.totalPage= 1;
 		else if(totalRow%this.pageSize==0){
 			this.totalPage = totalRow/this.pageSize;

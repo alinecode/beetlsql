@@ -18,10 +18,11 @@ public class InsertParamter extends MapperParameter {
 		if(this.annoParam!=null&&annoParam.length()!=0){
 			paramsName = annoParam.split(",");
 		}else{
-			paramsName= getParaName(0);
+			this.paramsName = checkFirst(m);
 		}
 		
 	}
+	
 	
 	@Override
 	public Object get(Object[] array) {

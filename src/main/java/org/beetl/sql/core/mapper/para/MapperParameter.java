@@ -97,4 +97,42 @@ public abstract class MapperParameter {
 		}
 		return name;
 	}
+	
+	protected String[] checkFirst(Method m){
+		Class[] paras =m.getParameterTypes();
+		String[] parameterNames = null;
+		if(paras.length>=1&&isRoot(paras[0])){
+			//第一个参数设置为root,如果没有使用@Param
+			Annotation[][] anns = m.getParameterAnnotations();
+			if(anns[0].length==0){
+				String[] names = getParaName(1);
+				String[] temp = new String[names.length+1];
+				System.arraycopy(names, 0, temp,1,names.length);
+				temp[0]="_root";
+				parameterNames=temp;
+
+			}else{
+				parameterNames  = getParaName(0);
+			}
+							
+		}else{
+			parameterNames  = getParaName(0);
+		}
+		return parameterNames;
+	}
+	
+	
+	protected boolean isRoot(Class c){
+		if(Map.class.isAssignableFrom(c)){
+			return true;
+		}
+		if(c.isPrimitive()){
+			return false;
+		}
+		String name = c.getPackage().getName();
+		if(name.startsWith("java.")||name.startsWith("javax.")){
+			return false;
+		}
+		return true;
+	}
 }

@@ -21,7 +21,7 @@ public class SelecSingleMapperInvoke extends BaseMapperInvoke {
 		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
 		SelectQueryParamter parameter = (SelectQueryParamter)desc.parameter;
 		Map map = (Map)parameter.get(args);
-		Class returnType = desc.renturnType;
+		Class returnType = desc.entityType;
 		return sm.selectSingle(sqlId, map,m.getReturnType());
 		
 	}

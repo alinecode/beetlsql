@@ -3,9 +3,10 @@ package org.beetl.sql.test;
 
 import java.util.List;
 
-import org.beetl.sql.core.annotatoin.Param;
 import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.annotatoin.SqlResource;
+import org.beetl.sql.core.annotatoin.SqlStatement;
+import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.BaseMapper;
 
@@ -18,12 +19,19 @@ public interface UserDao extends BaseMapper<User> {
 
 	void getIds3(PageQuery<String> query);
 	
-	List getUsers(User user,@Param("hi") int test);
+	List getUsers(int hi, User user);
 	
-	@Sql("select * from axeac_datasource order by updatedtm desc")
-	PageQuery<User> getUser4(int pageNumber,int pageSize);
-	PageQuery<User> getUser5();
+	@Sql("select * from user where name=? ")
+	PageQuery<User> getUser4(int pageNumber,int pageSize,String name);
+	void getUser5(PageQuery<User> query,String name);
 	
 	List queryUsers();
+	
+	@SqlStatement(params="hi,user")
+	public int updateUser(String hi,User user);
+	
+	public int[] updateUser(List<User> users);
+	
+	public KeyHolder addOne(User user);
 	
 }

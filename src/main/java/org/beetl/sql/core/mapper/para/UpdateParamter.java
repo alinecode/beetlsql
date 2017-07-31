@@ -18,7 +18,7 @@ public class UpdateParamter extends MapperParameter {
 		if(this.annoParam!=null&&annoParam.length()!=0){
 			paramsName = annoParam.split(",");
 		}else{
-			paramsName= getParaName(0);
+			this.paramsName = checkFirst(m);
 		}
 		
 	}

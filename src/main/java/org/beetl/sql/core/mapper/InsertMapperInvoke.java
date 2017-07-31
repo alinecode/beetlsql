@@ -20,13 +20,13 @@ public class InsertMapperInvoke extends BaseMapperInvoke {
 		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
 		InsertParamter parameter = (InsertParamter)desc.parameter;
 		Map map = (Map)parameter.get(args);
-		if(desc.renturnType==KeyHolder.class){
+		if(m.getReturnType()==KeyHolder.class){
 			KeyHolder holder = new KeyHolder();
 			sm.insert(sqlId,entityClass, map, holder);
 			return holder;
 		}else{
-			sm.insert(sqlId,entityClass, map,null);
-			return null;
+			int ret =  sm.insert(sqlId,entityClass, map,null);
+			return ret;
 		}
 		
 				

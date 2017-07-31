@@ -26,17 +26,7 @@ public class SelectQueryParamter extends MapperParameter {
 		if(this.annoParam!=null&&annoParam.length()!=0){
 			paramsName = annoParam.split(",");
 		}else{
-			paramsName= getParaName(0);
-			if(this.paras.length>=1&&isRoot(paras[0])){
-				//第一个参数设置为root,如果没有使用@Param
-				Annotation[][] anns = m.getParameterAnnotations();
-				if(anns[0].length==0){
-					paramsName[0]="_root";
-				}
-				
-			}else{
-				paramsName  = getParaName(0);
-			}
+			this.paramsName = checkFirst(m);
 		
 		}
 		for(int i=0;i<paramsName.length;i++){
@@ -51,16 +41,7 @@ public class SelectQueryParamter extends MapperParameter {
 		
 	}
 	
-	protected boolean isRoot(Class c){
-		if(Map.class.isAssignableFrom(c)){
-			return true;
-		}
-		String name = c.getPackage().getName();
-		if(name.startsWith("java.")||name.startsWith("javax.")){
-			return false;
-		}
-		return true;
-	}
+	
 	
 	@Override
 	public Object get(Object[] array) {

@@ -1,6 +1,6 @@
 package org.beetl.sql.core.engine;
 
-import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.beetl.core.Context;
 import org.beetl.core.exception.BeetlException;
