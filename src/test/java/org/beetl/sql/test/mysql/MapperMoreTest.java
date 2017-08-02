@@ -144,9 +144,13 @@ public class MapperMoreTest extends BaseMySqlTest {
 		int totalLucy = vars.findInteger("info.totalLucy");
 		int totalJoel = vars.findInteger("info.totalJoel");
 		int lastId = vars.findInteger("userId15");
-		User user = new User();
+		KeyHolder key = null;
+		
+		User user = null;
+		user = new User();
+		
 		user.setName("joel");
-		KeyHolder key = userTestDao.insertUser(user);
+		 key = userTestDao.insertUser(user);
 		if(key.getInt()<lastId){
 			org.junit.Assert.fail();
 		}

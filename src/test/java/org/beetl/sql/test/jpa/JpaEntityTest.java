@@ -14,16 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.junit.Assert;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:applicationContext-mysql-beetlsql.xml" })
-@Transactional
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = { "classpath:applicationContext-mysql-beetlsql.xml" })
+//@Transactional
 public class JpaEntityTest extends BaseMySqlTest {
 	@Before
 	public void init() {
 		super.init();
 	}
 	
-	@Test
+//	@Test
 	public void testSave(){
 		TestEntity testEntity=new TestEntity();
 		testEntity.setId("1234567890");
@@ -58,7 +58,7 @@ public class JpaEntityTest extends BaseMySqlTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void testUpdateTemplateById(){
 		TestEntity testEntity=new TestEntity();
 		testEntity.setId("1234567890");

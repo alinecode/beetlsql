@@ -12,7 +12,7 @@ import org.beetl.sql.core.mapper.para.PageQueryParamter;
  * @author xiandafu
  *
  */
-public class PageQueryMapperInvoke extends BaseMapperInvoke {
+public class PageQueryMapperInvoke implements MapperInvoke {
 
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
