@@ -49,7 +49,7 @@ public class MethodDesc {
 
 	public String sqlReady = "";
 	//sqlmanager实际使用的的参数，非方法返回参数，而是泛型
-	public Class entityType = Void.class;
+	public Class resultType = Void.class;
 	//method 调用参数转为实际参数
 	public MapperParameter parameter = null;
 	//注解申明的参数名字
@@ -77,7 +77,7 @@ public class MethodDesc {
 		Class[] paras = m.getParameterTypes();
 		Class retType = m.getReturnType();
 		//假设默认类型就是Mapper的泛型类型
-		this.entityType = entityClass;
+		this.resultType = entityClass;
 		this.method = m;
 		
 		
@@ -166,7 +166,7 @@ public class MethodDesc {
 		if(pageType!=null){
 			Class type =   getType(pageType);
 			if(type!=null){
-				this.entityType = type;
+				this.resultType = type;
 			}
 			//else否则就默认为mapper类型
 			if(isJdbc){
@@ -182,7 +182,7 @@ public class MethodDesc {
 		if(List.class.isAssignableFrom(retType)){
 			Class type =   getType(retType);
 			if(type!=null){
-				this.entityType = type;
+				this.resultType = type;
 			}
 			this.type = SM_SELECT_LIST;
 			parameter =new SelectQueryParamter(method,paramsDeclare,isJdbc);
@@ -287,22 +287,6 @@ public class MethodDesc {
 		
 	}
 
-	private String getTypeDesc(int type) {
-		switch (type) {
-		case 0:
-		case 1:
-			return "insert";
-		case 2:
-		case 3:
-			return "select";
-		case 4:
-		case 5:
-			return "update/delete";
-		default: {
-			throw new IllegalArgumentException("unknow type:" + type);
-		}
-		}
-	}
 	
 
 	

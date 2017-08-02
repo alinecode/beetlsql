@@ -11,7 +11,7 @@ import org.beetl.sql.core.mapper.para.UpdateParamter;
  * @author xiandafu
  *
  */
-public class UpdateMapperInvoke extends BaseMapperInvoke {
+public class UpdateMapperInvoke implements MapperInvoke {
 
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {

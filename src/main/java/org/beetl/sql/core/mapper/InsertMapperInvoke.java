@@ -12,7 +12,7 @@ import org.beetl.sql.core.mapper.para.InsertParamter;
  * @author xiandafu
  *
  */
-public class InsertMapperInvoke extends BaseMapperInvoke {
+public class InsertMapperInvoke implements MapperInvoke {
 
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {

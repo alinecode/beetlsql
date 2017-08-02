@@ -20,7 +20,7 @@ public class PageQueryMapperInvoke extends BaseMapperInvoke {
 		PageQueryParamter parameter = (PageQueryParamter)desc.parameter;
 		Class returnType = m.getReturnType();
 		PageQuery query = (PageQuery)parameter.get(args);
-		sm.pageQuery(sqlId, desc.entityType, query);
+		sm.pageQuery(sqlId, desc.resultType, query);
 		if(returnType==PageQuery.class){
 			return query;
 		}else{

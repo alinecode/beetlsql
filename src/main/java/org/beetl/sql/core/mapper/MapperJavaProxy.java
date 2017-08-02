@@ -146,12 +146,11 @@ public class MapperJavaProxy implements InvocationHandler {
             //解析方法以及注解，找到对应的处理类
             MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass, method, sqlId);
             if (desc.sqlReady.length() == 0) {
-
                 invoke = MapperInvokeDataConfig.getMethodDescProxy(desc.type);
                 Object ret = invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
                 return ret;
             } else {
-                invoke = new SQLReadyExecuteMapperInvoke(desc.type);
+                invoke = MapperInvokeDataConfig.getSQLReadyProxy();;
                 Object ret = invoke.call(this.sqlManager, this.entityClass, desc.sqlReady, method, args);
                 return ret;
             }

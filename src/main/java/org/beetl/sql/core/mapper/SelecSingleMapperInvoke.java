@@ -13,7 +13,7 @@ import org.beetl.sql.core.mapper.para.SelectQueryParamter;
  * @author xiandafu
  *
  */
-public class SelecSingleMapperInvoke extends BaseMapperInvoke {
+public class SelecSingleMapperInvoke implements MapperInvoke {
 
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
@@ -21,8 +21,8 @@ public class SelecSingleMapperInvoke extends BaseMapperInvoke {
 		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
 		SelectQueryParamter parameter = (SelectQueryParamter)desc.parameter;
 		Map map = (Map)parameter.get(args);
-		Class returnType = desc.entityType;
-		return sm.selectSingle(sqlId, map,m.getReturnType());
+		Class returnType = desc.resultType;
+		return sm.selectSingle(sqlId, map,desc.resultType);
 		
 	}
 

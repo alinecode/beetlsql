@@ -1,27 +1,24 @@
 package org.beetl.sql.test.mysql;
 
-import org.beetl.ormunit.RowHolderFacotoy;
-import org.beetl.ormunit.VariableTable;
-import org.beetl.ormunit.XLSParser;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.test.mysql.entity.Role;
 import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.coamc.xlsunit.RowHolderFacotoy;
+import com.coamc.xlsunit.VariableTable;
+import com.coamc.xlsunit.XLSParser;
+
 public class InsertTest extends BaseMySqlTest {
 	XLSParser userParser = null;
 	
-
-
 	@Before
 	public void init() {
 		super.init();
-		userParser = new XLSParser(BaseMySqlTest.loader, "user/insert.xlsx", dbAccess,
-				new RowHolderFacotoy.RowBeetlSQLHolderFactory());
-	
+		userParser = new XLSParser(loader, "user/insert.xlsx", dbAccess,
+				new RowHolderFacotoy.RowBeetlSQLHolderFactory());	
 	}
-
 
 	
 	@Test

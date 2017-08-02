@@ -1,23 +1,22 @@
 package org.beetl.sql.test.mysql;
 
-import org.beetl.ormunit.RowHolderFacotoy;
-import org.beetl.ormunit.VariableTable;
-import org.beetl.ormunit.XLSParser;
 import org.beetl.sql.test.mysql.entity.MutipleKeys;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.coamc.xlsunit.RowHolderFacotoy;
+import com.coamc.xlsunit.VariableTable;
+import com.coamc.xlsunit.XLSParser;
+
 public class KeysTest extends BaseMySqlTest {
 	XLSParser keysParser = null;
+
 	
-
-
 	@Before
 	public void init() {
 		super.init();
-		keysParser = new XLSParser(BaseMySqlTest.loader, "user/keys.xlsx", dbAccess,
-				new RowHolderFacotoy.RowBeetlSQLHolderFactory());
-	
+		keysParser = new XLSParser(loader, "user/keys.xlsx", dbAccess,
+				new RowHolderFacotoy.RowBeetlSQLHolderFactory());	
 	}
 
 

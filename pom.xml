@@ -232,7 +232,7 @@
 
 		<dependency>
 			<groupId>com.ibeetl</groupId>
-			<artifactId>ormunit</artifactId>
+			<artifactId>xlsunit</artifactId>
 			<version>1.0.0</version>
 			<scope>test</scope>
 		</dependency>

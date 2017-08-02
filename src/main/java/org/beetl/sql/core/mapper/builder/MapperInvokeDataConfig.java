@@ -6,6 +6,7 @@ import java.util.Map;
 import org.beetl.sql.core.mapper.InsertMapperInvoke;
 import org.beetl.sql.core.mapper.MapperInvoke;
 import org.beetl.sql.core.mapper.PageQueryMapperInvoke;
+import org.beetl.sql.core.mapper.SQLReadyExecuteMapperInvoke;
 import org.beetl.sql.core.mapper.SelecSingleMapperInvoke;
 import org.beetl.sql.core.mapper.SelectMapperInvoke;
 import org.beetl.sql.core.mapper.UpdateBatchMapperInvoke;
@@ -87,6 +88,8 @@ public final class MapperInvokeDataConfig {
 
         BASE_MAPPER_BUILDER = new MapperConfigBuilder();
     }
+    //处理 @Sql注解
+    public static MapperInvoke sqlReadyInvoke =  new SQLReadyExecuteMapperInvoke();
 
     /**
      * 如果用户要扩展, 推荐methodDescType变量使用1000以后的
@@ -100,6 +103,10 @@ public final class MapperInvokeDataConfig {
 
     public static MapperInvoke getMethodDescProxy(int methodDescType) {
         return METHOD_DESC_PROXY_MAP.get(methodDescType);
+    }
+    
+    public static MapperInvoke getSQLReadyProxy(){
+    		return sqlReadyInvoke;
     }
 
 

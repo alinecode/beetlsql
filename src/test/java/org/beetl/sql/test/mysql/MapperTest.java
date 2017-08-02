@@ -1,27 +1,28 @@
 package org.beetl.sql.test.mysql;
 
-import org.beetl.ormunit.RowHolderFacotoy;
-import org.beetl.ormunit.VariableTable;
-import org.beetl.ormunit.XLSParser;
 import org.beetl.sql.test.mysql.dao.UserDao;
 import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.coamc.xlsunit.RowHolderFacotoy;
+import com.coamc.xlsunit.VariableTable;
+import com.coamc.xlsunit.XLSParser;
+
 public class MapperTest extends BaseMySqlTest {
-	XLSParser userParser = null;
 	
 	@Autowired
 	UserDao userDao;
+	
+	XLSParser userParser = null;
 
-
+	
 	@Before
 	public void init() {
 		super.init();
-		userParser = new XLSParser(BaseMySqlTest.loader, "user/general.xlsx", dbAccess,
-				new RowHolderFacotoy.RowBeetlSQLHolderFactory());
-	
+		userParser = new XLSParser(loader, "user/general.xlsx", dbAccess,
+				new RowHolderFacotoy.RowBeetlSQLHolderFactory());	
 	}
 
 

@@ -11,7 +11,7 @@ import org.beetl.sql.core.SQLManager;
  * @author xiandafu
  *
  */
-public class UpdateBatchMapperInvoke extends BaseMapperInvoke {
+public class UpdateBatchMapperInvoke implements MapperInvoke {
 
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
