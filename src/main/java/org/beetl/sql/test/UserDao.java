@@ -2,6 +2,7 @@ package org.beetl.sql.test;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.annotatoin.SqlResource;
@@ -14,8 +15,14 @@ import org.beetl.sql.core.mapper.BaseMapper;
 public interface UserDao extends BaseMapper<User> {
 	
 	List<Long> getIds();
+	
+	List<Map<String,Object>> getIdNames();
+	
 	@Sql(value="select id from user")
 	List<Long> getIds2();
+	
+	@Sql(value="select id,name from user where id=?")
+	Map<String,Long> getUserInfo(Long id);
 
 	void getIds3(PageQuery<String> query);
 	
@@ -25,7 +32,7 @@ public interface UserDao extends BaseMapper<User> {
 	PageQuery<User> getUser4(int pageNumber,int pageSize,String name);
 	void getUser5(PageQuery<User> query,String name);
 	
-	List queryUsers();
+	List<User> select();
 	
 	@SqlStatement(params="hi,user")
 	public int updateUser(String hi,User user);

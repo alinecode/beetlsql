@@ -1,3 +1,11 @@
+getIds
+===
+	select id from user  where 1=1  
+	
+getIdNames
+===
+	select id,name from user
+
 getIds3
 ===
 	select #page("id")# from user  where 1=1  

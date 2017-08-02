@@ -2,6 +2,7 @@ package org.beetl.sql.test.mysql.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.beetl.sql.core.annotatoin.Param;
 import org.beetl.sql.core.annotatoin.RowSize;
@@ -78,5 +79,14 @@ public interface UserTestDao extends BaseMapper<User>{
 	
 	@SqlStatement(type=SqlStatementType.UPDATE)
 	public void updateUser3(@Param("name") String name,@Param("id") Integer id);
+	
+	@Sql(value="select id,name from user ")
+	List<Map<String,Object>> getIdNames();
+	
+	@Sql(value="select id from user")
+	List<Long> getIds2();
+	
+	@Sql(value="select id,name from user where id=?")
+	Map<String,Object> getUserInfo(Long id);
 	
 }

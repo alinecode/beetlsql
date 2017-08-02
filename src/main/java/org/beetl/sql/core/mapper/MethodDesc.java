@@ -75,7 +75,7 @@ public class MethodDesc {
 	
 	protected void doParse(SQLManager sm, Class entityClass, Method m, String sqlId){
 		Class[] paras = m.getParameterTypes();
-		Class retType = m.getReturnType();
+		Type retType = m.getGenericReturnType();
 		//假设默认类型就是Mapper的泛型类型
 		this.resultType = entityClass;
 		this.method = m;
@@ -86,6 +86,9 @@ public class MethodDesc {
 		if(sql!=null){
 			this.sqlReady = sql.value();	
 			sqlType = sql.type();
+			if(sql.returnType()!=Void.class){
+				this.resultType = sql.returnType();
+			}
 			
 			
 		}else{
@@ -93,6 +96,9 @@ public class MethodDesc {
 			if(st!=null){
 				 sqlType = st.type();
 				 paramsDeclare = st.params();
+				 if(st.returnType()!=Void.class){
+						this.resultType = st.returnType();
+				}
 			}
 			
 		}
@@ -133,7 +139,7 @@ public class MethodDesc {
 			
 	}
 	
-	protected void parseInert(Class[] paras,Class retType){
+	protected void parseInert(Class[] paras,Type retType){
 		if(retType==KeyHolder.class){
 			this.type = SM_INSERT_KEYHOLDER;
 		}else{
@@ -142,7 +148,7 @@ public class MethodDesc {
 		this.parameter = new InsertParamter(method,this.paramsDeclare);
 	}
 	
-	protected void parseUpdate(Class[] paras,Class retType){
+	protected void parseUpdate(Class[] paras,Type retType){
 		this.type = SM_UPDATE;
 		if(paras.length==1){
 			Class first = paras[0] ;
@@ -160,7 +166,7 @@ public class MethodDesc {
 		this.parameter = new UpdateParamter(method,this.paramsDeclare);
 	}
 	
-	protected void parseSelectList(Class[] paras,Class retType){
+	protected void parseSelectList(Class[] paras,Type retType){
 		Class pageType  =  hasPageQuery(paras,retType);
 		boolean isJdbc = this.sqlReady.length()!=0;
 		if(pageType!=null){
@@ -178,36 +184,57 @@ public class MethodDesc {
 			}
 			return ;
 		}
-		
-		if(List.class.isAssignableFrom(retType)){
+		parameter =new SelectQueryParamter(method,paramsDeclare,isJdbc);
+		if((retType instanceof Class && Map.class.isAssignableFrom((Class)retType))
+				||(retType instanceof ParameterizedType&&Map.class.isAssignableFrom(getParamterTypeClass(retType)  ))){
+			//如果定义返回结果为Map，无论是否泛型，都认为返回一个Map
+			this.type = SM_SELECT_SINGLE;
+			this.resultType=Map.class;
+			
+			return;
+		}else if(retType instanceof Class && List.class.isAssignableFrom((Class)retType)){
+			this.type = SM_SELECT_LIST;
+			return ;
+		}
+		else if(List.class.isAssignableFrom(getParamterTypeClass(retType))){
 			Class type =   getType(retType);
 			if(type!=null){
 				this.resultType = type;
 			}
 			this.type = SM_SELECT_LIST;
-			parameter =new SelectQueryParamter(method,paramsDeclare,isJdbc);
 			return ;
 		}
 		
 		//更改类型为Single
 		this.type = SM_SELECT_SINGLE;
-		parameter =new SelectQueryParamter(method,paramsDeclare,isJdbc);
 		
 		
 	}
 	protected Class getType(Type type){
+		if(type instanceof Class){
+			return (Class)type;
+		}else
 		if(type instanceof ParameterizedType ){
-			return (Class) ((ParameterizedType)type)
+			Type t = ((ParameterizedType)type)
 					.getActualTypeArguments()[0];
+			if(t instanceof ParameterizedType){
+				return getParamterTypeClass(t);
+			}else{
+				return (Class)t;
+			}
 		}else{
 			
 			return null;
 		}
 	}
-	protected Class hasPageQuery(Class[] paras,Class retType){
+	
+	protected Class getParamterTypeClass(Type t){
+		return (Class)((ParameterizedType)t).getRawType();
+	}
+	protected Class hasPageQuery(Class[] paras,Type retType){
 		
 		if(retType==PageQuery.class){
-			return retType;
+			return PageQuery.class;
 		}
 		
 		if(paras.length>=1&&paras[0]==PageQuery.class){

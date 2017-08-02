@@ -49,14 +49,13 @@ public class BaseMySqlTest {
 			}
 			
 		});
-		//􏲧出􏳗􏳶􏰸
 		
 		
 		
 	}
 
 
-//	@Test //用来测试配置是否正确
+	@Test //用来测试配置是否正确
 	public void testEnv() throws Exception{
 		sqlManager.genPojoCodeToConsole("user");
 	

@@ -1,6 +1,7 @@
 package org.beetl.sql.test.mysql;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.db.KeyHolder;
@@ -68,6 +69,33 @@ public class MapperMoreTest extends BaseMySqlTest {
 		realTotalJoel = userTestDao.query3("joel").size();
 		org.junit.Assert.assertEquals(totalJoel, realTotalJoel);
 		
+		
+		
+	}
+	
+	
+	@Test
+	public void mapping() {
+		VariableTable vars = new VariableTable();
+		userParser.init(vars);
+		
+		
+	
+		Object o  = userTestDao.getIds2().get(0);
+		if(!(o instanceof Long)){
+			org.junit.Assert.fail();
+		}
+		
+		o = userTestDao.getIdNames().get(0);
+		if(!(o instanceof Map)){
+			org.junit.Assert.fail();
+		}
+		
+		int lastId = vars.findInteger("userId15");
+		Map map = userTestDao.getUserInfo((long)lastId);
+		
+		
+	
 		
 		
 	}
