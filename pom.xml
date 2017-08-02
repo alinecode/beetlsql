@@ -233,19 +233,14 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>xlsunit</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.5</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId>
 			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
 			</dependency -->
-		<!--用于进行测试 -->
-		<!-- <dependency>
-			<groupId>com.ibeetl</groupId>
-			<artifactId>ormunit</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency> -->
+	
+		
 	</dependencies>
 
 	<build>
