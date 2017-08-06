@@ -6,6 +6,22 @@ getIdNames
 ===
 	select id,name from user
 
+pageQuery
+===
+
+	select #page("name")# from user  where 1=1 
+	
+getCount
+===
+
+	select count(1) from user where name = #name#
+	
+	
+getOneUser
+===
+
+	select * from user limit 1;
+
 getIds3
 ===
 	select #page("id")# from user  where 1=1  

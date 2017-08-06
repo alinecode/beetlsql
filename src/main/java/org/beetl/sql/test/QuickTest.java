@@ -50,6 +50,7 @@ public class QuickTest {
 		System.out.println(page.getTotalRow());
 		System.out.println(page.getList());
 		System.out.println(page.getTotalPage());
+
 			
 	}
 	

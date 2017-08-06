@@ -1,9 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
 	<version>2.9.3</version>
+
 
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
@@ -119,38 +120,22 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>sqljdbc4</artifactId>
-			<version>4.0</version>
-			<scope>system</scope>
-		   <systemPath>${basedir}/lib/sqljdbc4.jar</systemPath>
-		</dependency>-->
+		<!--dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> 
+			<version>4.0</version> <scope>system</scope> <systemPath>${basedir}/lib/sqljdbc4.jar</systemPath> 
+			</dependency> -->
 
-		<!-- <dependency>
-		<groupId>oracle</groupId>
-		<artifactId>oralce-express</artifactId>
-		<version>6</version>
-		<scope>system</scope>
-		<systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath>
-		</dependency> -->
+		<!-- <dependency> <groupId>oracle</groupId> <artifactId>oralce-express</artifactId> 
+			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath> 
+			</dependency> -->
 
 
-		<!--  dependency>
-			<groupId>db2</groupId>
-			<artifactId>driver</artifactId>
-			<version>6</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/db2jcc.jar</systemPath>
-		</dependency-->
+		<!-- dependency> <groupId>db2</groupId> <artifactId>driver</artifactId> 
+			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/db2jcc.jar</systemPath> 
+			</dependency -->
 
-		<!--  dependency>
-		<groupId>db2</groupId>
-		<artifactId>driver-license</artifactId>
-		<version>6</version>
-		<scope>system</scope>
-		<systemPath>${basedir}/lib/db2jcc_license_cu.jar</systemPath>
-		</dependency-->
+		<!-- dependency> <groupId>db2</groupId> <artifactId>driver-license</artifactId> 
+			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/db2jcc_license_cu.jar</systemPath> 
+			</dependency -->
 
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -164,12 +149,12 @@
 			<version>0.9.1.2</version>
 			<scope>provided</scope>
 		</dependency>
-        <dependency>
-          <groupId>com.zaxxer</groupId>
-          <artifactId>HikariCP</artifactId>
-          <version>2.6.1</version>
-          <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.6.1</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -236,11 +221,11 @@
 			<version>1.0.5</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId>
-			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath>
+		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId> 
+			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath> 
 			</dependency -->
-	
-		
+
+
 	</dependencies>
 
 	<build>
@@ -261,9 +246,11 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
-					<!-- excludes>
+					<excludes>
 	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes-->
+	                </excludes>
+
+
 				</configuration>
 			</plugin>
 			<plugin>
@@ -336,6 +323,45 @@
 					</execution>
 				</executions>
 			</plugin>
+
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>target/jacoco.exec</dataFile>
+							<outputDirectory>target/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
 
 		</plugins>
 	</build>
