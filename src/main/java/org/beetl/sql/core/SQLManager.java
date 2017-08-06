@@ -684,6 +684,9 @@ public class SQLManager {
 	
 		return query;
 	}
+	
+	
+
 
 	/**
 	 * 根据主键查询 获取唯一记录，如果纪录不存在，将会抛出异常

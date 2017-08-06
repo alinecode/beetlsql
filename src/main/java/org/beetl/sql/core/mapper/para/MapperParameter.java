@@ -126,6 +126,9 @@ public abstract class MapperParameter {
 		if(Map.class.isAssignableFrom(c)){
 			return true;
 		}
+		if(c.isArray()){
+			return false;
+		}
 		if(c.isPrimitive()){
 			return false;
 		}

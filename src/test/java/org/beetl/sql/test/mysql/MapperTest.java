@@ -1,5 +1,7 @@
 package org.beetl.sql.test.mysql;
 
+import java.util.List;
+
 import org.beetl.sql.test.mysql.dao.UserDao;
 import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Before;
@@ -44,6 +46,18 @@ public class MapperTest extends BaseMySqlTest {
 		}catch(Exception ex){
 			//should go here
 		}
+	}
+	
+	@Test
+	public void testCase1() {
+		VariableTable vars = new VariableTable();
+		userParser.init(vars);
+		String joel  = vars.findString("name.joel");
+		String lucy  = vars.findString("name.lucy");
+		String[] names = {joel,lucy};
+		List<User> list = userDao.selectUsers(names);
+		User user = list.get(0);
+		org.junit.Assert.assertEquals(joel, user.getName());
 	}
 	
 	

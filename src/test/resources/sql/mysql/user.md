@@ -46,3 +46,8 @@ getRole
 ===
 
 	select r.* from user_role ur, role r where ur.role_id=r.id and ur.user_id=#userId#
+	
+selectUsers
+===
+
+    select * from user where name in (#join(names)#)

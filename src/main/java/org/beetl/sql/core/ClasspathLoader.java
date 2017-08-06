@@ -157,7 +157,6 @@ public class ClasspathLoader implements SQLLoader {
         //读取root目录下的sql文件
 		URL ins = this.getRootFile(id);
         boolean rootResult;
-        
 		rootResult = readSqlFile(id,ins,true);
         //读取db目录下的sql文件，进行覆盖
         ins = this.getDBRootFile(id);
@@ -166,18 +165,6 @@ public class ClasspathLoader implements SQLLoader {
         if(rootResult || dbResult){
             return true;
         }else {
-//            String modelName = id.substring(0, id.lastIndexOf(".") );
-//            String path  = modelName.replace('.', '/');
-//            String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
-//            String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
-//            String filePath2 = sqlRoot + "/" + path + ".sql";
-//            String filePath3 = sqlRoot + "/" + path + ".md";
-//            throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "在 "
-//                    + filePath0+" 和 "
-//                    + filePath1+" 和 "
-//                    + filePath2+" 和 "
-//                    + filePath3+" 和 "+
-//                    " 未找到[id="+id+"]相关的SQL");
         	
         		return false;
         }

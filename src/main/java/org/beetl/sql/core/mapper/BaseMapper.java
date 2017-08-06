@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.engine.PageQuery;
 
 /**
  * BaseMapper.
@@ -126,6 +127,8 @@ public interface BaseMapper<T> {
 	<T> T templateOne(T entity);
 
 	List<T> template(T entity,int start,int size);
+	
+	void templatePage(PageQuery<T> query);
 	/**
 	 * 符合模板得个数
 	 * @param entity
@@ -149,11 +152,6 @@ public interface BaseMapper<T> {
 	 * @return
 	 */
 	int executeUpdate(String sql,Object... args );
-	
-	
 	SQLManager getSQLManager();
-
-	
-	
 
 }

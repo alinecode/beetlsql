@@ -52,6 +52,7 @@ public class PageQuery<T> implements Serializable{
 	protected long totalRow=-1;		//总行数,如果不为-1，则不需要再次查询
 	
 	private transient boolean  calc = false;
+	private transient boolean  hasPartPara = false;
 	
 	public PageQuery(){
 		this(1,null);
@@ -63,6 +64,10 @@ public class PageQuery<T> implements Serializable{
 	
 	public PageQuery(long pageNumber,long pageSize){
 		this(pageNumber,null);
+		this.pageSize = pageSize;
+	}
+	public PageQuery(long pageNumber,long pageSize,Object paras){
+		this(pageNumber,paras);
 		this.pageSize = pageSize;
 	}
 	/** 
@@ -157,22 +162,39 @@ public class PageQuery<T> implements Serializable{
 	 * @param paras
 	 */
 	public void setParas(Object paras) {
-		if(this.paras!=null&&(this.paras instanceof Map)){
-			//beetlsql 找不到的属性都从_root里找
-			((Map)paras).put("_root", paras);
+		if(paras==null){
+			this.paras = paras;
+			return ;
+		}
+		//覆盖已经设定的root对象
+		if(this.paras instanceof Map){
+			if(hasPartPara){
+				((Map)paras).put("_root", paras);
+			}else{
+				//直接覆盖
+				this.paras = paras;
+			}
+			
+			return ;
 		}else{
 			this.paras = paras;
 		}
 		
+		
 	}
 	/**
-	 * 添加额外参数
+	 * 添加额外参数，主参数变为有"_root"的Map
 	 * @param key
 	 * @param value
 	 */
 	public void setPara(String key,Object value){
+		hasPartPara = true;
 		if(this.paras==null){
 			this.paras = new HashMap();
+		}else if(!(paras instanceof Map)){
+			Object old = this.paras;
+			this.paras = new HashMap();
+			((Map)paras).put("_root", old);
 		}
 		((Map)paras).put(key, value);
 	}

@@ -1,8 +1,5 @@
 package org.beetl.sql.test;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -35,7 +32,7 @@ public class QuickTest {
 //		
 //		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		
-		ConnectionSource cs  = ConnectionSourceHelper.getSingle(druidSource());
+		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
 		
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
@@ -46,12 +43,13 @@ public class QuickTest {
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
 		UserDao dao = sql.getMapper(UserDao.class);
-		System.out.println(dao.getIds());
-		System.out.println(dao.getIdNames());
-//		
-		System.out.println(dao.getUserInfo(1l));
-//		
-		System.out.println(dao.select());
+		User user = new User();
+		PageQuery  page = new PageQuery(1,3,user);
+		dao.templatePage(page);
+		
+		System.out.println(page.getTotalRow());
+		System.out.println(page.getList());
+		System.out.println(page.getTotalPage());
 			
 	}
 	
