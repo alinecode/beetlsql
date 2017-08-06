@@ -167,13 +167,10 @@ public class MethodDesc {
 	}
 	
 	protected void parseSelectList(Class[] paras,Type retType){
-		Class pageType  =  hasPageQuery(paras,retType);
+		Type pageType  =  hasPageQuery(this.method.getGenericParameterTypes(),this.method.getGenericReturnType());
 		boolean isJdbc = this.sqlReady.length()!=0;
 		if(pageType!=null){
-			Class type =   getType(pageType);
-			if(type!=null){
-				this.resultType = type;
-			}
+			this.resultType = getPageType(pageType,this.resultType);
 			//else否则就默认为mapper类型
 			if(isJdbc){
 				this.type = SM_SQL_READY_PAGE_QUERY;
@@ -205,10 +202,25 @@ public class MethodDesc {
 			return ;
 		}
 		
+		this.resultType = method.getReturnType();
 		//更改类型为Single
 		this.type = SM_SELECT_SINGLE;
 		
 		
+	}
+	
+	protected Class getPageType(Type type,Class defaultClass){
+		if(type instanceof Class){
+			return defaultClass;
+		}else {
+			Type t = ((ParameterizedType)type)
+					.getActualTypeArguments()[0];
+			if(t instanceof ParameterizedType){
+				return getParamterTypeClass(t);
+			}else{
+				return   (Class)t;
+			}
+		}
 	}
 	protected Class getType(Type type){
 		if(type instanceof Class){
@@ -229,16 +241,22 @@ public class MethodDesc {
 	}
 	
 	protected Class getParamterTypeClass(Type t){
-		return (Class)((ParameterizedType)t).getRawType();
-	}
-	protected Class hasPageQuery(Class[] paras,Type retType){
-		
-		if(retType==PageQuery.class){
-			return PageQuery.class;
+		if(t instanceof Class){
+			return (Class)t;
+		}else{
+			return (Class)((ParameterizedType)t).getRawType();
 		}
 		
-		if(paras.length>=1&&paras[0]==PageQuery.class){
-			return paras[0];
+	}
+	
+	protected Type hasPageQuery(Type[] paras,Type retType){
+		if(getParamterTypeClass(retType)==PageQuery.class){
+			return retType;
+		}
+		
+		
+		if(paras.length>=1&&getParamterTypeClass(paras[0])==PageQuery.class){
+			return  paras[0];
 		}
 		
 		return null;

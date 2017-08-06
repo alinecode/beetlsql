@@ -16,6 +16,12 @@ public interface UserDao extends BaseMapper<User> {
 	
 	List<Long> getIds();
 	
+	void pageQuery(PageQuery<String> query);
+	
+	int getCount(String name);
+	
+	User getOneUser();
+	
 	List<Map<String,Object>> getIdNames();
 	
 	@Sql(value="select id from user")
