@@ -169,7 +169,7 @@ public class PageQuery<T> implements Serializable{
 		//覆盖已经设定的root对象
 		if(this.paras instanceof Map){
 			if(hasPartPara){
-				((Map)paras).put("_root", paras);
+				((Map)this.paras).put("_root", paras);
 			}else{
 				//直接覆盖
 				this.paras = paras;

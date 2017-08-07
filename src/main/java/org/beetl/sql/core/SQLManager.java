@@ -827,17 +827,23 @@ public class SQLManager {
 	}
 
 	public <T> List<T> template(T t, long start, long size) {
-		return this.template(t, null, start, size);
+		return this.template(t,t.getClass(),null, start, size);
+	}
+	public <T> List<T> template(T t,Class<?> cls,long start, long size) {
+		return this.template(t,cls,null, start, size);
 	}
 
 	public <T> List<T> template(T t, RowMapper mapper, long start, long size) {
-		SQLScript script = getScript(t.getClass(), SELECT_BY_TEMPLATE);
+		return template(t,t.getClass(),mapper,start,size);
+	}
+	public <T> List<T> template(T t,Class<?> cls,RowMapper mapper, long start, long size) {
+		SQLScript script = getScript(cls, SELECT_BY_TEMPLATE);
 		SQLScript pageScript = this.getPageSqlScript(script.id);
 		Map<String, Object> param = new HashMap<String, Object>();
 		this.dbStyle.initPagePara(param, start, size);
 		param.put("_root", t);
-
-		return (List<T>) pageScript.select(t.getClass(), param, mapper);
+		
+		return (List<T>) pageScript.select(cls, param, mapper);
 	}
 
 	// ========== 取出单个值 ============== //
@@ -849,8 +855,18 @@ public class SQLManager {
 	 * @return
 	 */
 	public <T> long templateCount(T t) {
-		SQLScript script = getScript(t.getClass(), SELECT_COUNT_BY_TEMPLATE);
-		Long l = script.singleSelect(t, Long.class);
+		return templateCount(t, t.getClass());
+	}
+	
+	/**
+	 * 查询总数
+	 *
+	 * @param t
+	 * @return
+	 */
+	public <T> long templateCount(Object paras,Class<?> cls) {
+		SQLScript script = getScript(cls, SELECT_COUNT_BY_TEMPLATE);
+		Long l = script.singleSelect(paras, Long.class);
 		return l;
 	}
 

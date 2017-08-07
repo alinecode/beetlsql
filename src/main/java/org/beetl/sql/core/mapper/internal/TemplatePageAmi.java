@@ -19,21 +19,14 @@ public class TemplatePageAmi implements MapperInvoke {
     public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
     		PageQuery query = (PageQuery)args[0];
     		Object obj = query.getParas();
-    		if(obj==null){
-    			throw new BeetlSQLException(BeetlSQLException.TEMPLATE_PAGE_PARAS_ERROR,"PageQuery参数为空");
-        		
-    		}else if(obj.getClass()!=entityClass){
-    			throw new BeetlSQLException(BeetlSQLException.TEMPLATE_PAGE_PARAS_ERROR,"PageQuery参数期望是Enitity类型，但是 "+obj.getClass());
-    		}
     		
     		if(query.getTotalRow()<0){
-    			query.setTotalRow(sm.templateCount(obj));
-    			
+    			query.setTotalRow(sm.templateCount(obj,entityClass));
     		}
     		
     		long start = (sm.isOffsetStartZero() ? 0 : 1) + (query.getPageNumber() - 1) * query.getPageSize();
     		long size = query.getPageSize();
-    		List<Object> list = sm.template(obj, start, size);
+    		List<Object> list = sm.template(obj,entityClass,start, size);
     		query.setList(list);
     		return query;
     		
