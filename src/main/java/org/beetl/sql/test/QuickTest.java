@@ -1,5 +1,8 @@
 package org.beetl.sql.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -44,12 +47,20 @@ public class QuickTest {
 		
 		UserDao dao = sql.getMapper(UserDao.class);
 		User user = new User();
-		PageQuery  page = new PageQuery(1,3,user);
+//		user.setName("joel");
+		PageQuery  page = new PageQuery(1,3);
+		
+		page.setParas(user);
+		page.setPara("id", 1);
 		dao.templatePage(page);
 		
-		System.out.println(page.getTotalRow());
-		System.out.println(page.getList());
-		System.out.println(page.getTotalPage());
+//		System.out.println(page.getTotalRow());
+//		System.out.println(page.getList());
+//		System.out.println(page.getTotalPage());
+		
+//		List<Integer> ids = new ArrayList<Integer>();
+//		ids.add(999);
+//		dao.deleteByUserIds(ids);
 
 			
 	}

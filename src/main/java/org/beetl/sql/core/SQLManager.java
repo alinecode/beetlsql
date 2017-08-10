@@ -839,10 +839,15 @@ public class SQLManager {
 	public <T> List<T> template(T t,Class<?> cls,RowMapper mapper, long start, long size) {
 		SQLScript script = getScript(cls, SELECT_BY_TEMPLATE);
 		SQLScript pageScript = this.getPageSqlScript(script.id);
-		Map<String, Object> param = new HashMap<String, Object>();
+		Map<String, Object> param = null;
+		if(t instanceof Map){
+			param = (Map)t;
+		}else{
+			param = new HashMap<String, Object>();
+			param.put("_root", t);
+		}
+	
 		this.dbStyle.initPagePara(param, start, size);
-		param.put("_root", t);
-		
 		return (List<T>) pageScript.select(cls, param, mapper);
 	}
 
@@ -859,15 +864,22 @@ public class SQLManager {
 	}
 	
 	/**
-	 * 查询总数
-	 *
-	 * @param t
+	 * 
+	 * @param paras
+	 * @param cls
 	 * @return
 	 */
 	public <T> long templateCount(Object paras,Class<?> cls) {
 		SQLScript script = getScript(cls, SELECT_COUNT_BY_TEMPLATE);
-		Long l = script.singleSelect(paras, Long.class);
-		return l;
+		if(paras instanceof Map){
+			Map<String,Object> map = (Map<String,Object>)paras;
+			Long l = script.selectSingle(map, Long.class);
+			return l;
+		}else{
+			Long l = script.singleSelect(paras, Long.class);
+			return l;
+		}
+		
 	}
 
 	/**

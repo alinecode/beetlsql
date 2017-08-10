@@ -54,6 +54,10 @@ updateUser
     
    update user set name=#name# where id=#id#
    
+deleteByUserIds
+===    
+
+    DELETE FROM user_role WHERE userId IN (#join(userIds)#)
    
 addOne    
 ===

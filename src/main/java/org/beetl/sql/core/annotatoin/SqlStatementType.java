@@ -7,7 +7,7 @@ package org.beetl.sql.core.annotatoin;
  */
 public enum SqlStatementType {
 
-	AUTO, INSERT, UPDATE, SELECT, DELETE;
+	AUTO, INSERT, UPDATE, SELECT, DELETE,BATCH_UPDATE;
 
 	/**
 	 * The Constructor.
