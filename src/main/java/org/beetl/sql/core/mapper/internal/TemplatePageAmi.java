@@ -21,12 +21,12 @@ public class TemplatePageAmi implements MapperInvoke {
     		Object obj = query.getParas();
     		
     		if(query.getTotalRow()<0){
-    			query.setTotalRow(sm.templateCount(obj,entityClass));
+    			query.setTotalRow(sm.templateCount(entityClass,obj));
     		}
     		
     		long start = (sm.isOffsetStartZero() ? 0 : 1) + (query.getPageNumber() - 1) * query.getPageSize();
     		long size = query.getPageSize();
-    		List<Object> list = sm.template(obj,entityClass,start, size);
+    		List<Object> list = sm.template(entityClass,obj,start, size);
     		query.setList(list);
     		return query;
     		

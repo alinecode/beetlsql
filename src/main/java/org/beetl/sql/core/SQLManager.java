@@ -827,17 +827,17 @@ public class SQLManager {
 	}
 
 	public <T> List<T> template(T t, long start, long size) {
-		return this.template(t,t.getClass(),null, start, size);
+		return (List<T>) this.template(t.getClass(),t,null, start, size);
 	}
-	public <T> List<T> template(T t,Class<?> cls,long start, long size) {
-		return this.template(t,cls,null, start, size);
+	public <T> List<T> template(Class<T> target,Object paras,long start, long size) {
+		return this.template(target,paras,null, start, size);
 	}
 
 	public <T> List<T> template(T t, RowMapper mapper, long start, long size) {
-		return template(t,t.getClass(),mapper,start,size);
+		return (List<T>) template(t.getClass(),(Object)t,mapper,start,size);
 	}
-	public <T> List<T> template(T t,Class<?> cls,RowMapper mapper, long start, long size) {
-		SQLScript script = getScript(cls, SELECT_BY_TEMPLATE);
+	public <T> List<T> template(Class<T> target,Object paras ,RowMapper mapper, long start, long size) {
+		SQLScript script = getScript(target, SELECT_BY_TEMPLATE);
 		SQLScript pageScript = this.getPageSqlScript(script.id);
 		Map<String, Object> param = null;
 		if(t instanceof Map){
@@ -848,7 +848,13 @@ public class SQLManager {
 		}
 	
 		this.dbStyle.initPagePara(param, start, size);
+<<<<<<< HEAD
 		return (List<T>) pageScript.select(cls, param, mapper);
+=======
+		param.put("_root", paras);
+		
+		return (List<T>) pageScript.select(target, param, mapper);
+>>>>>>> 14eb95f21aa71be68aa180f3dc994754ee2fdb6c
 	}
 
 	// ========== 取出单个值 ============== //
@@ -860,10 +866,11 @@ public class SQLManager {
 	 * @return
 	 */
 	public <T> long templateCount(T t) {
-		return templateCount(t, t.getClass());
+		return templateCount( t.getClass(),t);
 	}
 	
 	/**
+<<<<<<< HEAD
 	 * 
 	 * @param paras
 	 * @param cls
@@ -880,6 +887,17 @@ public class SQLManager {
 			return l;
 		}
 		
+=======
+	 * 查询总数
+	 * @param target
+	 * @param paras
+	 * @return
+	 */
+	public <T> long templateCount(Class<T> target, Object paras) {
+		SQLScript script = getScript(target, SELECT_COUNT_BY_TEMPLATE);
+		Long l = script.singleSelect(paras, Long.class);
+		return l;
+>>>>>>> 14eb95f21aa71be68aa180f3dc994754ee2fdb6c
 	}
 
 	/**
