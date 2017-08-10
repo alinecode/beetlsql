@@ -47,17 +47,13 @@ public class QuickTest {
 		
 		UserDao dao = sql.getMapper(UserDao.class);
 		User user = new User();
-<<<<<<< HEAD
+
 //		user.setName("joel");
 		PageQuery  page = new PageQuery(1,3);
 		
 		page.setParas(user);
 		page.setPara("id", 1);
-=======
-		PageQuery  page = new PageQuery(1,3,user);
-		page.setParas(user);
-		page.setPara("test", "bac");
->>>>>>> 14eb95f21aa71be68aa180f3dc994754ee2fdb6c
+
 		dao.templatePage(page);
 		
 //		System.out.println(page.getTotalRow());

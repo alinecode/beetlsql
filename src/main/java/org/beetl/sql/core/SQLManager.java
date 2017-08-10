@@ -840,21 +840,15 @@ public class SQLManager {
 		SQLScript script = getScript(target, SELECT_BY_TEMPLATE);
 		SQLScript pageScript = this.getPageSqlScript(script.id);
 		Map<String, Object> param = null;
-		if(t instanceof Map){
-			param = (Map)t;
+		if(paras instanceof Map){
+			param = (Map)paras;
 		}else{
 			param = new HashMap<String, Object>();
-			param.put("_root", t);
+			param.put("_root", paras);
 		}
-	
 		this.dbStyle.initPagePara(param, start, size);
-<<<<<<< HEAD
-		return (List<T>) pageScript.select(cls, param, mapper);
-=======
-		param.put("_root", paras);
-		
 		return (List<T>) pageScript.select(target, param, mapper);
->>>>>>> 14eb95f21aa71be68aa180f3dc994754ee2fdb6c
+
 	}
 
 	// ========== 取出单个值 ============== //
@@ -869,35 +863,17 @@ public class SQLManager {
 		return templateCount( t.getClass(),t);
 	}
 	
-	/**
-<<<<<<< HEAD
-	 * 
-	 * @param paras
-	 * @param cls
-	 * @return
-	 */
-	public <T> long templateCount(Object paras,Class<?> cls) {
-		SQLScript script = getScript(cls, SELECT_COUNT_BY_TEMPLATE);
-		if(paras instanceof Map){
-			Map<String,Object> map = (Map<String,Object>)paras;
-			Long l = script.selectSingle(map, Long.class);
-			return l;
-		}else{
-			Long l = script.singleSelect(paras, Long.class);
-			return l;
-		}
-		
-=======
-	 * 查询总数
-	 * @param target
-	 * @param paras
-	 * @return
-	 */
+
 	public <T> long templateCount(Class<T> target, Object paras) {
-		SQLScript script = getScript(target, SELECT_COUNT_BY_TEMPLATE);
+	SQLScript script = getScript(target, SELECT_COUNT_BY_TEMPLATE);
+	if(paras instanceof Map){
+		Map<String,Object> map = (Map<String,Object>)paras;
+		Long l = script.selectSingle(map, Long.class);
+		return l;
+	}else{
 		Long l = script.singleSelect(paras, Long.class);
 		return l;
->>>>>>> 14eb95f21aa71be68aa180f3dc994754ee2fdb6c
+	}
 	}
 
 	/**
