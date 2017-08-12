@@ -1,7 +1,8 @@
 package org.beetl.sql.test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -47,14 +48,17 @@ public class QuickTest {
 		
 		UserDao dao = sql.getMapper(UserDao.class);
 		User user = new User();
-
-//		user.setName("joel");
-		PageQuery  page = new PageQuery(1,3);
+		user.setId(1);
+//		user.setName("ac");
+		PageQuery query = new  PageQuery();
+	
+		query.setParas(user);
+		query.setPara("maxDate", new Date());
+		Map map = new HashMap();
+		map.put("_root", user);
 		
-		page.setParas(user);
-		page.setPara("id", 1);
-
-		dao.templatePage(page);
+		sql.templateCount(User.class, map);
+//		dao.templatePage(query);
 		
 //		System.out.println(page.getTotalRow());
 //		System.out.println(page.getList());

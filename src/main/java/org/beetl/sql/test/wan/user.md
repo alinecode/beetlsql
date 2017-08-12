@@ -51,8 +51,10 @@ queryUser5
     
 updateUser
 ===
-    
-   update user set name=#name# where id=#id#
+  
+   update 
+   @ var name = users[0].name,id=users[0].id;
+   user set name=#name# where id=#id#
    
 deleteByUserIds
 ===    

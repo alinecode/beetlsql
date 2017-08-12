@@ -43,9 +43,9 @@ public interface UserDao extends BaseMapper<User> {
 	@SqlStatement(params="name,id")
 	public int updateUser(String name,int id);
 	
-	void deleteByUserIds(List<Integer> userIds);
+	int deleteByUserIds(List<Integer> userIds);
 	
-	public int[] updateUser(List<User> users);
+	public int updateUser(List<User> users);
 	
 	public KeyHolder addOne(User user);
 	

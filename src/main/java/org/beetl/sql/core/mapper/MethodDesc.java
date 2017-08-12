@@ -147,23 +147,76 @@ public class MethodDesc {
 		}
 		this.parameter = new InsertParamter(method,this.paramsDeclare);
 	}
-	
+	/**
+	 * 根据返回参数int 或者int[] 判断是否是批处理。如果都没有，根据第一参数判断
+	 * @param paras
+	 * @param retType
+	 */
 	protected void parseUpdate(Class[] paras,Type retType){
+		this.parameter = new UpdateParamter(method,this.paramsDeclare);
 		this.type = SM_UPDATE;
+		Class ret = this.method.getReturnType();
+		if(isInt(ret)){
+			return ;
+		}
+		else if(ret.isArray()){
+			//如果更新语句返回了int[],
+			Class type = ret.getComponentType();
+			if(type==int.class||type==long.class||type==short.class||type==Integer.class||type==Short.class||type==Long.class){
+				this.type = SM_BATCH_UPDATE;
+			}
+			return ;
+		}
+		//通过输入参数判断
 		if(paras.length==1){
 			Class first = paras[0] ;
-			if(List.class.isAssignableFrom(first)){
+			if(List.class.isAssignableFrom(first)&&this.isUpdateBatchByFirstList()){
 				this.type = SM_BATCH_UPDATE;
 			}else if(first.isArray()){
 				Class ct= first.getComponentType();
-				if(Map.class.isAssignableFrom(ct)){
+				if(this.isPojo(ct)){
 					this.type = SM_BATCH_UPDATE;
 				}
 			}
-
 		}
 		
-		this.parameter = new UpdateParamter(method,this.paramsDeclare);
+	}
+	
+	private boolean isUpdateBatchByFirstList(){
+		
+		Type firstType = this.method.getGenericParameterTypes()[0];
+		Class type = this.getType(firstType);
+		if(type==null){
+			//不知道List里面是什么，认为是batchUpdate,兼容以前情况
+			return true;
+		}
+		return isPojo(type);
+		
+	}
+	
+	private boolean isPojo(Class type){
+		if(type.isPrimitive()){
+			return false;
+		}
+		if(Map.class.isAssignableFrom(type)){
+			return true;
+		}
+		
+		String pkg = type.getPackage().getName();
+		if(pkg.startsWith("java.")||pkg.startsWith("javax.")){
+			return false;
+		}else{
+			return true ;
+		}
+	}
+	
+	private boolean isInt(Class type){
+		if(type==int.class||type==long.class||type==short.class||type==Integer.class||type==Short.class||type==Long.class){
+			return true;
+		}
+		return false;
+		
+			
 	}
 	
 	protected void parseSelectList(Class[] paras,Type retType){
