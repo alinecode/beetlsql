@@ -93,7 +93,7 @@ public class ClasspathLoader implements SQLLoader {
 	@Override
 	public boolean isModified(String id) {
 		SQLSource source = this.sqlSourceMap.get(id);
-		if(source!=null&&source instanceof SQLTableSource){
+		if(source!=null&&source instanceof SQLTableSource&&source==NO_EXIST ){
 			return false;
 		}
 		

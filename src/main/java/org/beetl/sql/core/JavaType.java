@@ -35,7 +35,7 @@ public class JavaType {
 		} else if (javaVersion.contains("1.8.")) {
 			majorJavaVersion = 18;
 		} else if (javaVersion.contains("1.7.")) {
-			majorJavaVersion = 18;
+			majorJavaVersion = 17;
 		} else if (javaVersion.contains("1.6.")) {
 			majorJavaVersion = 16;
 		} else {

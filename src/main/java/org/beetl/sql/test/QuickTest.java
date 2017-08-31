@@ -49,15 +49,12 @@ public class QuickTest {
 		UserDao dao = sql.getMapper(UserDao.class);
 		User user = new User();
 		user.setId(1);
-//		user.setName("ac");
-		PageQuery query = new  PageQuery();
-	
-		query.setParas(user);
-		query.setPara("maxDate", new Date());
-		Map map = new HashMap();
-		map.put("_root", user);
+		while(true){
+			sql.pageQuery("wan.user.getIds", Long.class, new PageQuery());
+//			dao.getIds(new PageQuery());
+			int a = 1;
+		}
 		
-		sql.templateCount(User.class, map);
 //		dao.templatePage(query);
 		
 //		System.out.println(page.getTotalRow());
