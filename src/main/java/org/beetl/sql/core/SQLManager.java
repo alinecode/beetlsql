@@ -430,13 +430,10 @@ public class SQLManager {
 		}
 
 		SQLSource script = sqlLoader.getSQL(selectId);
-		if (script == null) {
-			script = sqlLoader.getSQL(selectId);
-		}
-
 		String template = script.getTemplate();
 		String pageTemplate = dbStyle.getPageSQL(template);
 		SQLSource source = new SQLSource(pageId, pageTemplate);
+		source.version = script.version;
 		sqlLoader.addSQL(pageId, source);
 		return new SQLScript(source, this);
 		
