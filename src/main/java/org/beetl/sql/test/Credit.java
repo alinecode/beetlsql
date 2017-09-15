@@ -1,6 +1,7 @@
 package org.beetl.sql.test;
 
 import java.io.Serializable;
+import java.sql.Clob;
 
 import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.UpdateIgnore;
@@ -14,6 +15,8 @@ public class Credit   implements Serializable{
 	private Integer version ;
 
 	private String name;
+	
+	private Clob text;
 	
 	public Credit() {
 	}
@@ -45,6 +48,14 @@ public class Credit   implements Serializable{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Clob getText() {
+		return text;
+	}
+
+	public void setText(Clob text) {
+		this.text = text;
 	}
 	
 	

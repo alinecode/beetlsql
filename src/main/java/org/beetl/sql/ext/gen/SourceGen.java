@@ -174,6 +174,9 @@ public class SourceGen {
 	}
 	
 	private String getMethodName(String name){
+		if(name.length()==1){
+			return name.toUpperCase();
+		}
 		char ch1 = name.charAt(0);
 		char ch2 = name.charAt(1);
 		if(Character.isLowerCase(ch1)&&Character.isUpperCase(ch2)){

@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 public class Department  {
 	private Integer id ;
 	private String name ;
+	String a;
 	
 	public Integer getId(){
 		return  id;
@@ -24,6 +25,6 @@ public class Department  {
 	public void setName(String name ){
 		this.name = name;
 	}
-	
+
 
 }

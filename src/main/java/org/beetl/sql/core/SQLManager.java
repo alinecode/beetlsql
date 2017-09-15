@@ -326,6 +326,13 @@ public class SQLManager {
 			String path = this.idNameConversion.getPath(id);
 			SQLLoader sqlLoader = this.getSqlLoader();
 			String envInfo = path+".md(sql)"+" sqlLoader:"+sqlLoader;
+			if(this.sqlLoader instanceof ClasspathLoader){
+				if( ((ClasspathLoader)sqlLoader).exsitResource(id) ){
+					envInfo = envInfo+",文件找到，但没有对应的sqlId";
+				}else{
+					envInfo = envInfo+",未找到对应的sql文件";
+				}
+			}
 			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"未能找到"+id+"对应的sql,搜索路径:"+envInfo);
 		}
 		SQLScript script = new SQLScript(source, this);

@@ -222,16 +222,7 @@ public class ClasspathLoader implements SQLLoader {
     }
     
     
-    private void buildSql(LinkedList<String> list,StringBuilder sql){
-    	 while (!list.isEmpty()) {
-    		 String s = list.pollFirst();
-    		 if(s.startsWith("```")||s.startsWith("~~~")){
-    			 //since 2.7.10,认为是beetlsql的块状符号
-    			 continue ;
-    		 }
-             sql.append(s+lineSeparator);
-         }
-    }
+
 
 	public Map<String, SQLSource> getSqlSourceMap() {
 		return sqlSourceMap;
@@ -257,9 +248,9 @@ public class ClasspathLoader implements SQLLoader {
         String filePath0 = sqlRoot + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + path + ".md";
 
-		URL is = this.getFile(filePath0, id);
+		URL is = this.getFile(filePath0);
         if(is==null){
-			is = this.getFile(filePath1, id);
+			is = this.getFile(filePath1);
             if(is==null){
                 return null;
             }
@@ -271,17 +262,25 @@ public class ClasspathLoader implements SQLLoader {
     	String path = this.sqlIdNameConversion.getPath(id);
         String filePath0 = sqlRoot + "/" + dbs.getName() + "/" + path + ".sql";
 		String filePath1 = sqlRoot + "/" + dbs.getName() + "/" + path + ".md";
-        URL is = this.getFile(filePath0, id);
+        URL is = this.getFile(filePath0);
         if(is==null){
-            is = this.getFile(filePath1, id);
+            is = this.getFile(filePath1);
             if(is==null){
                 return null;
             }
         }
         return is;
     }
+    
+    public boolean exsitResource(String id){
+    		if(getRootFile(id)==null&&getDBRootFile(id)==null){
+    			return false;
+    		}else{
+    			return true;
+    		}
+    }
 
-	private URL getFile(String filePath, String id){
+	private URL getFile(String filePath){
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		URL url = null;
 //		InputStream is  = null;

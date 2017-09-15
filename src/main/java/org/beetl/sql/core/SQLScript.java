@@ -722,7 +722,7 @@ public class SQLScript {
         ResultSet rs = null;
         PreparedStatement ps = null;
         List<T> resultList = null;
-        InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs, this.getSQLReadyParas(Arrays.asList(p.getArgs())));
+        InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs, this.getSQLReadyParas(Arrays.asList(p.getArgs())));
         sql = ctx.getSql();
         objs = ctx.getParas();
         Connection conn = null;

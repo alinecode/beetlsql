@@ -47,7 +47,8 @@ public class BeetlSqlScannerConfigurer  implements BeanDefinitionRegistryPostPro
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         //将配置中的多个基本包拆分开
-        String[] packages = StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+    		String basePackage2 = this.applicationContext.getEnvironment().resolvePlaceholders(basePackage);
+    		String[] packages = StringUtils.tokenizeToStringArray(basePackage2, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
         //创建一个扫描器
         BeetlSqlClassPathScanner scanner = new BeetlSqlClassPathScanner(registry);
         scanner.setSuffix(daoSuffix);

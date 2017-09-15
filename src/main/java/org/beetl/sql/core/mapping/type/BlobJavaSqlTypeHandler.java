@@ -5,11 +5,10 @@ import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CLobJavaSqlTypeHandler extends JavaSqlTypeHandler {
+public class BlobJavaSqlTypeHandler extends JavaSqlTypeHandler {
 	public Object getValue(TypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
-		Clob a = rs.getClob(typePara.index);
-		
+		Blob a = rs.getBlob(typePara.index);
 		return a;
 	}
 }

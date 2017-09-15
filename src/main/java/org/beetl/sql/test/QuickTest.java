@@ -1,8 +1,6 @@
 package org.beetl.sql.test;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Reader;
 
 import javax.sql.DataSource;
 
@@ -14,7 +12,6 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -46,14 +43,16 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		
-		UserDao dao = sql.getMapper(UserDao.class);
-		User user = new User();
-		user.setId(1);
-		while(true){
-			sql.pageQuery("wan.user.getIds", Long.class, new PageQuery());
-//			dao.getIds(new PageQuery());
-			int a = 1;
-		}
+//		sql.execute("select count(1) from user", Long.class, null);
+//		sql.execute(new SQLReady("select count(1) from user"), Long.class) ;
+//		sql.select("wan.user.cc", User.class);
+//		sql.genPojoCodeToConsole("user");
+		Credit credit = sql.unique(Credit.class, 1);
+		Reader rs = credit.getText().getCharacterStream();
+		char[] cc = new char[128];
+		int len = rs.read(cc);
+		String kk = new String(cc,0,len);
+		System.out.println(kk);
 		
 //		dao.templatePage(query);
 		
