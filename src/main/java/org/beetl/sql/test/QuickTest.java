@@ -1,6 +1,6 @@
 package org.beetl.sql.test;
 
-import java.io.Reader;
+import java.util.Arrays;
 
 import javax.sql.DataSource;
 
@@ -12,6 +12,8 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.mapper.builder.MapperConfig;
+import org.beetl.sql.core.mapper.internal.AllAmi;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -42,27 +44,13 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+		MapperConfig config = sql.setBaseMapper(MyBaseMapper.class);
+		config.getBuilder().addAmi("single", new SingleAmiExt());
+		config.getBuilder().addAmi("allData", new AllAmi());
 		
-//		sql.execute("select count(1) from user", Long.class, null);
-//		sql.execute(new SQLReady("select count(1) from user"), Long.class) ;
-//		sql.select("wan.user.cc", User.class);
-//		sql.genPojoCodeToConsole("user");
-		Credit credit = sql.unique(Credit.class, 1);
-		Reader rs = credit.getText().getCharacterStream();
-		char[] cc = new char[128];
-		int len = rs.read(cc);
-		String kk = new String(cc,0,len);
-		System.out.println(kk);
-		
-//		dao.templatePage(query);
-		
-//		System.out.println(page.getTotalRow());
-//		System.out.println(page.getList());
-//		System.out.println(page.getTotalPage());
-		
-//		List<Integer> ids = new ArrayList<Integer>();
-//		ids.add(999);
-//		dao.deleteByUserIds(ids);
+		MyUserMapper dao = sql.getMapper(MyUserMapper.class);
+		dao.allData();
+		dao.single(1,Arrays.asList("id","name"));
 
 			
 	}
