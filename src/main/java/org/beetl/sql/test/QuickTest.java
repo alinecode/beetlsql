@@ -1,10 +1,7 @@
 package org.beetl.sql.test;
 
-<<<<<<< HEAD
-=======
 import java.util.Arrays;
 
->>>>>>> 402d28d412a4678d67c8c8e3a6d62db76c1dbfe3
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;

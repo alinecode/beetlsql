@@ -32,7 +32,7 @@ public class SingleAmiExt implements MapperInvoke {
 		}else {
 			return list.get(0);
 		}
-
+	
 	}
 
 	/*设置主键，参考SQLScript的setIdsParas方法*/
@@ -79,47 +79,47 @@ public class SingleAmiExt implements MapperInvoke {
 		NameConversion nameConversion = sm.getNc();
 		String condition = appendIdCondition(sm, cls);
 		StringBuilder sb = new StringBuilder("select ");
-
-		for (Object o : attrs) {
-			String attr = (String) o;
-			String col = nameConversion.getColName(cls, attr);
-			sb.append(col).append(" ,");
-
-		}
-		// 去掉最后一逗号
-		sb.setLength(sb.length() - 1);
-		sb.append(" from ").append(nameConversion.getTableName(cls)).append(condition);
+	
+	for (Object o : attrs) {
+		String attr = (String) o;
+		String col = nameConversion.getColName(cls, attr);
+		sb.append(col).append(" ,");
+	
+	}
+	// 去掉最后一逗号
+	sb.setLength(sb.length() - 1);
+	sb.append(" from ").append(nameConversion.getTableName(cls)).append(condition);
 		return sb.toString();
 	}
-
+	
 	/* 参考了AbstractDBStyle的内置代码生成办法 */
 	protected String appendIdCondition(SQLManager sm, Class<?> cls) {
-
+	
 		AbstractDBStyle style = (AbstractDBStyle) sm.getDbStyle();
 		MetadataManager metadataManager = sm.getMetaDataManager();
 		NameConversion nameConversion = sm.getNc();
 		String tableName = nameConversion.getTableName(cls);
 		StringBuilder condition = new StringBuilder(" where ");
-		TableDesc table = metadataManager.getTable(tableName);
-		ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
-
-		List<String> colIds = classDesc.getIdCols();
-		List<String> propertieIds = classDesc.getIdAttrs();
-		Iterator<String> colIt = colIds.iterator();
-		Iterator<String> propertieIt = propertieIds.iterator();
-		if (colIt.hasNext() && propertieIt.hasNext()) {
-			String colId = colIt.next();
-			String properId = propertieIt.next();
-			condition.append(style.getKeyWordHandler().getCol(colId)).append(" = ").append(style.HOLDER_START)
-					.append(properId).append(style.HOLDER_END);
-			while (colIt.hasNext() && propertieIt.hasNext()) {
-				colId = colIt.next();
-				properId = propertieIt.next();
-				condition.append(" and ").append(style.getKeyWordHandler().getCol(colId)).append(" = ")
+	TableDesc table = metadataManager.getTable(tableName);
+	ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+	
+	List<String> colIds = classDesc.getIdCols();
+	List<String> propertieIds = classDesc.getIdAttrs();
+	Iterator<String> colIt = colIds.iterator();
+	Iterator<String> propertieIt = propertieIds.iterator();
+	if (colIt.hasNext() && propertieIt.hasNext()) {
+		String colId = colIt.next();
+		String properId = propertieIt.next();
+		condition.append(style.getKeyWordHandler().getCol(colId)).append(" = ").append(style.HOLDER_START)
+				.append(properId).append(style.HOLDER_END);
+		while (colIt.hasNext() && propertieIt.hasNext()) {
+			colId = colIt.next();
+			properId = propertieIt.next();
+			condition.append(" and ").append(style.getKeyWordHandler().getCol(colId)).append(" = ")
 						.append(style.HOLDER_START).append(properId).append(style.HOLDER_END);
 			}
 		}
-
+	
 		return condition.toString();
 	}
 
