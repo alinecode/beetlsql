@@ -32,6 +32,8 @@ public class MapperJavaProxy implements InvocationHandler {
 
 
     protected MapperConfig mapperConfig;
+    
+    private Class mapperInterface;
 
     /**
      * The Constructor.
@@ -50,6 +52,7 @@ public class MapperJavaProxy implements InvocationHandler {
         this.sqlManager = sqlManager;
         this.builder = builder;
         this.mapperInterface(mapperInterface);
+        this.mapperInterface = mapperInterface;
     }
 
 
@@ -125,6 +128,10 @@ public class MapperJavaProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Class caller = method.getDeclaringClass();
+        String methodName = method.getName();
+        if(methodName.equals("toString")){
+        	return "BeetlSql Mapper "+mapperInterface;
+        }
         SqlResource resource = (SqlResource)caller.getAnnotation(SqlResource.class);
         String sqlId = null;
         if(resource!=null){
@@ -136,7 +143,8 @@ public class MapperJavaProxy implements InvocationHandler {
             
         }
         
-        String methodName = method.getName();
+       
+        
         MapperInvoke invoke = sqlManager.getMapperConfig().getAmi(caller, methodName);
         if (invoke != null) {
             //内置的方法，直接调用Invoke
@@ -158,6 +166,10 @@ public class MapperJavaProxy implements InvocationHandler {
         }
 
 
+    }
+    
+    public String toString(){
+    	return " Proxy";
     }
 
 

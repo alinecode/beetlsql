@@ -22,9 +22,9 @@ public class MysqlDBConfig {
 //    		   "databaseName=test;user=test;password=123456;";  ;
     
 //    public static String driver = "oracle.jdbc.driver.OracleDriver";
-//    public static String dbName = "orm";
-//    public static String password = "DFBX_WF2";
-//    public static String userName = "DFBX_WF2";
-//    public static String url = "jdbc:oracle:thin:@172.16.86.50:1521:xddb1";
+//    public static String dbName = "risk";
+//    public static String password = "risk";
+//    public static String userName = "risk";
+//    public static String url = "jdbc:oracle:thin:@172.16.86.56:1521:dfzb";
     
 }

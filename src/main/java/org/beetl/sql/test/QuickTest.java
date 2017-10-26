@@ -1,7 +1,5 @@
 package org.beetl.sql.test;
 
-import java.io.Reader;
-
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -29,9 +27,8 @@ public class QuickTest {
 		
 ////		DB2SqlStyle style = new DB2SqlStyle();
 		MySqlStyle style = new MySqlStyle();
-////		OracleStyle style = new OracleStyle();
+//		OracleStyle style = new OracleStyle();
 //		
-//		MySqlConnectoinSource cs = new MySqlConnectoinSource();
 		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
 		
@@ -42,17 +39,9 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		
-//		sql.execute("select count(1) from user", Long.class, null);
-//		sql.execute(new SQLReady("select count(1) from user"), Long.class) ;
-//		sql.select("wan.user.cc", User.class);
-//		sql.genPojoCodeToConsole("user");
-		Credit credit = sql.unique(Credit.class, 1);
-		Reader rs = credit.getText().getCharacterStream();
-		char[] cc = new char[128];
-		int len = rs.read(cc);
-		String kk = new String(cc,0,len);
-		System.out.println(kk);
+//		sql.genPojoCodeToConsole("sys_user");
+		UserDao dao = sql.getMapper(UserDao.class);
+		System.out.println(dao.toString());
 		
 //		dao.templatePage(query);
 		

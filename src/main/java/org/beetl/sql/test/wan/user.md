@@ -1,4 +1,12 @@
 getIds
 ===
-	select #page("id")# from user where 1=1 and 1=1 and 1=1
-	
+	select 
+	@pageTag(){
+	 #use("cols")#
+	@}
+	from user  u where 1=1 and 1=1 and 1=1
+
+cols	
+===
+
+	u.*
