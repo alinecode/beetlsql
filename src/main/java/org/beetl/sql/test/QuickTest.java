@@ -1,5 +1,10 @@
 package org.beetl.sql.test;
 
+<<<<<<< HEAD
+=======
+import java.util.Arrays;
+
+>>>>>>> 402d28d412a4678d67c8c8e3a6d62db76c1dbfe3
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -10,6 +15,8 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.mapper.builder.MapperConfig;
+import org.beetl.sql.core.mapper.internal.AllAmi;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -39,19 +46,8 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-//		sql.genPojoCodeToConsole("sys_user");
-		UserDao dao = sql.getMapper(UserDao.class);
-		System.out.println(dao.toString());
-		
-//		dao.templatePage(query);
-		
-//		System.out.println(page.getTotalRow());
-//		System.out.println(page.getList());
-//		System.out.println(page.getTotalPage());
-		
-//		List<Integer> ids = new ArrayList<Integer>();
-//		ids.add(999);
-//		dao.deleteByUserIds(ids);
+
+
 
 			
 	}
