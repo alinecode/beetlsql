@@ -38,7 +38,7 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 
 
-# Hibernate,MyBatis,MySQL 对比
+# Hibernate,MyBatis,BeetlSql 对比
 
 https://my.oschina.net/xiandafu/blog/617542  提供了12项对比并给与评分。在犹豫使用BeetlSQL，可以参考这个全面的对比文章
 
