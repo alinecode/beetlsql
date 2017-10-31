@@ -43,7 +43,8 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-
+		sql.genSQLTemplateToConsole("user","user");
+//		sql.genPojoCodeToConsole("user");
 
 
 			
