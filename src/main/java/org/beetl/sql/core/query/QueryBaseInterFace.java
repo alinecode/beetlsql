@@ -41,21 +41,7 @@ public interface QueryBaseInterFace<T extends QueryBaseInterFace>{
      * @param condition
      * @return
      */
-    T having(T condition);
-
-    /**
-     * 多条件组合 and
-     * @param condition
-     * @return
-     */
-    T and(T condition);
-
-    /***
-     * 多条件组合 or
-     * @param condition
-     * @return
-     */
-    T or(T condition);
+    T having(QueryCondition condition);
 
     /***
      * groupBy 子句
@@ -71,5 +57,12 @@ public interface QueryBaseInterFace<T extends QueryBaseInterFace>{
      * @return
      */
     T orderBy(String orderBy);
+
+    /***
+     * limit 子句
+     * @param startRow
+     * @return
+     */
+    T limit(Long startRow,Long rowCount);
 
 }

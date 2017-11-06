@@ -1,6 +1,7 @@
 package org.beetl.sql.core.query;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @ClassName: QueryConditionInterFace
@@ -46,8 +47,29 @@ public interface QueryConditionInterFace<T extends QueryConditionInterFace> {
     T orNotBetween(String column, Collection<?> value);
 
     /**
+     * 多条件组合 and
+     * @param condition
+     * @return
+     */
+    T and(T condition);
+
+    /***
+     * 多条件组合 or
+     * @param condition
+     * @return
+     */
+    T or(T condition);
+
+
+    /**
      * 获取sql
      * @return
      */
-    String getSql();
+    StringBuilder getSql();
+
+    /***
+     * 获取参数
+     * @return
+     */
+    List<Object> getParams();
 }
