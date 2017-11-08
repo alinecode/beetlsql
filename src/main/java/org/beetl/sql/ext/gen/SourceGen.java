@@ -43,8 +43,8 @@ public class SourceGen {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		conf.setStatementStart("@");
-		conf.setStatementEnd(null);
+		conf.setStatementStart("<%");
+		conf.setStatementEnd("%>");
 		gt = new GroupTemplate(new StringTemplateResourceLoader(),conf);
 		srcHead+="import java.math.*;"+CR;
 		srcHead+="import java.util.Date;"+CR;

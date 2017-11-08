@@ -4,6 +4,7 @@ import static org.beetl.sql.core.kit.ConstantEnum.DELETE_BY_ID;
 import static org.beetl.sql.core.kit.ConstantEnum.DELETE_TEMPLATE_BY_ID;
 import static org.beetl.sql.core.kit.ConstantEnum.INSERT;
 import static org.beetl.sql.core.kit.ConstantEnum.INSERT_TEMPLATE;
+import static org.beetl.sql.core.kit.ConstantEnum.LOCK_BY_ID;
 import static org.beetl.sql.core.kit.ConstantEnum.SELECT_ALL;
 import static org.beetl.sql.core.kit.ConstantEnum.SELECT_BY_ID;
 import static org.beetl.sql.core.kit.ConstantEnum.SELECT_BY_TEMPLATE;
@@ -11,7 +12,6 @@ import static org.beetl.sql.core.kit.ConstantEnum.SELECT_COUNT_BY_TEMPLATE;
 import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_ALL;
 import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_BY_ID;
 import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_TEMPLATE_BY_ID;
-import static org.beetl.sql.core.kit.ConstantEnum.LOCK_BY_ID;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -50,6 +50,7 @@ import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
+import org.beetl.sql.ext.gen.MDCodeGen;
 import org.beetl.sql.ext.gen.SourceGen;
 
 /**
@@ -1714,6 +1715,10 @@ public class SQLManager {
 	 * @param table
 	 */
 	public void genSQLFile(String table) throws Exception {
+		genSQLFile(table,null);
+	}
+	
+	public void genSQLFile(String table,String alias) throws Exception {
 		String path = "/sql";
 		if (this.sqlLoader instanceof ClasspathLoader) {
 			path = ((ClasspathLoader) sqlLoader).sqlRoot;
@@ -1721,7 +1726,7 @@ public class SQLManager {
 		String fileName = StringKit.toLowerCaseFirstOne(this.nc.getClassName(table));
 		String target = GenKit.getJavaResourcePath() + "/" + path + "/" + fileName + ".md";
 		FileWriter writer = new FileWriter(new File(target));
-		genSQLTemplate(table, writer);
+		genSQLTemplate(table, writer,alias);
 		writer.close();
 		System.out.println("gen \"" + table + "\" success at " + target);
 	}
@@ -1733,34 +1738,27 @@ public class SQLManager {
 	 */
 	public void genSQLTemplateToConsole(String table) throws Exception {
 
-		genSQLTemplate(table, new OutputStreamWriter(System.out));
+		genSQLTemplate(table, new OutputStreamWriter(System.out),null);
+
+	}
+	/**
+	 * 生成md到控制台，使用别名
+	 * @param table
+	 * @param alias
+	 * @throws Exception
+	 */
+	public void genSQLTemplateToConsole(String table,String alias) throws Exception {
+
+		genSQLTemplate(table, new OutputStreamWriter(System.out),alias);
 
 	}
 
-	private void genSQLTemplate(String table, Writer w) throws IOException {
-		String template = null;
-		Configuration cf = beetl.getGroupTemplate().getConf();
+	private void genSQLTemplate(String table, Writer w,String alias) throws IOException {
+		
+		MDCodeGen mdCodeGen = new MDCodeGen();
+		TableDesc desc = this.metaDataManager.getTable(table);
+		mdCodeGen.genCode(desc, this.nc, alias,w);
 
-		String hs = cf.getPlaceholderStart();
-		String he = cf.getPlaceholderEnd();
-		StringBuilder cols = new StringBuilder();
-		String sql = "select " + hs + "use(\"cols\")" + he + " from " + table + " where " + hs + "use(\"condition\")"
-				+ he;
-		cols.append("sample").append("\n===\n").append("* 注释").append("\n\n\t").append(sql);
-		cols.append("\n");
-
-		cols.append("\ncols").append("\n===\n").append("").append("\n\t").append(this.dbStyle.genColumnList(table));
-		cols.append("\n");
-
-		cols.append("\nupdateSample").append("\n===\n").append("").append("\n\t")
-				.append(this.dbStyle.genColAssignPropertyAbsolute(table));
-		cols.append("\n");
-		String condition = this.dbStyle.genCondition(table);
-		condition = condition.replaceAll("\\n", "\n\t");
-		cols.append("\ncondition").append("\n===\n").append("").append("\n\t").append(condition);
-		cols.append("\n");
-		w.write(cols.toString());
-		w.flush();
 	}
 
 	/**

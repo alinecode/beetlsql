@@ -1,0 +1,51 @@
+<%
+
+var tableAlias = alias==null?"":(alias+".");//如果没有设置alias，则默认为t
+%>
+sample
+===
+* 注释
+
+	select #use("cols")# from ${tableName} ${alias} where #use("condition")#
+
+cols
+===
+	<%
+	print("\t");
+	for(col in cols){
+	 var colName=tableAlias+col+(colLP.last?"":","); 
+	 print(colName);
+	}%> 
+
+
+updateSample
+===
+	
+	<%
+	print("\t");
+	for(col in cols){
+	 var colName=tableAlias+col;
+	 var attr = @nc.getPropertyName(col);
+	 print(colName+"="+"#"+attr+"#");
+	 if(!colLP.last){
+	 	print(",");
+	 }
+	}%>
+
+
+condition
+===
+
+	1 = 1  
+	<%
+
+	for(col in cols){
+	 var colName=tableAlias+col;
+	 var attr = @nc.getPropertyName(col);
+	%>
+	@if(!isEmpty(${attr})){
+	 and ${colName}=#${attr}#
+	@}
+	<%}%>
+	
+	

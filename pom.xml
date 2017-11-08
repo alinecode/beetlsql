@@ -4,8 +4,6 @@
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
 	<version>2.9.13</version>
-
-
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
