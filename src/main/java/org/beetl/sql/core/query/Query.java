@@ -1,45 +1,146 @@
 package org.beetl.sql.core.query;
 
+import org.beetl.core.GroupTemplate;
+import org.beetl.core.Template;
+import org.beetl.sql.core.SQLReady;
+import org.beetl.sql.core.SQLScript;
+import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.query.interfacer.QueryExecuteI;
+import org.beetl.sql.core.query.interfacer.QueryOtherI;
+
+import java.util.List;
+
 /**
  * @author GavinKing
  * @ClassName: Query
  * @Description:查询器
  * @date 2017/11/5
  */
-public class Query<T> extends QueryCondition implements QueryBaseInterFace<Query> {
+public class Query<T> extends QueryCondition implements QueryExecuteI<T>,QueryOtherI<Query> {
 
-    private T model;
+    Class<T> clazz = null;
+
+    public Query(Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
     @Override
-    public Query select(String... columns) {
-        this.appendSql("SELECT ");
+    public List<T> select(String... columns) {
+        StringBuilder sb = new StringBuilder("SELECT ");
         for (String column : columns) {
-            this.appendSql(column).appendSql(",");
+            sb.append(column).append(",");
         }
-        getSql().deleteCharAt(getSql().length() - 1);
-        return this;
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(" FROM ").append(QueryTool.getTableName(clazz))
+                .append(" ").append(getSql());
+        this.setSql(sb);
+        List list = QueryTool.sqlManager.execute(
+                new SQLReady(getSql().toString(), getParams().toArray()),
+                clazz
+        );
+        return list;
     }
 
     @Override
-    public Query select() {
-        this.appendSql("SELECT * ");
-        return this;
+    public List<T> select() {
+        StringBuilder sb = new StringBuilder("SELECT * ");
+        sb.append("FROM ").append(QueryTool.getTableName(clazz))
+                .append(" ").append(getSql());
+        this.setSql(sb);
+        List list = QueryTool.sqlManager.execute(
+                new SQLReady(getSql().toString(), getParams().toArray()),
+                clazz
+        );
+        return list;
     }
 
     @Override
-    public Query from(String table) {
-        this.appendSql("FROM ")
-                .appendSql(table)
-                .appendSql(" ");
-        return this;
+    public int update(T t) {
+        SQLSource sqlSource = QueryTool.sqlManager.getDbStyle().genUpdateAll(t.getClass());
+        GroupTemplate gt = QueryTool.sqlManager.getBeetl().getGroupTemplate();
+        Template template = gt.getTemplate(sqlSource.getId());
+        SQLScript sqlScript = new SQLScript(sqlSource, QueryTool.sqlManager);
+        sqlScript.update(t);
+        template.binding("_params", t);
+        String sql = template.render();
+        StringBuilder sb = new StringBuilder(sql);
+        sb.append(" ").append(getSql());
+        this.setSql(sb);
+        int row = QueryTool.sqlManager.executeUpdate(
+                new SQLReady(getSql().toString(), getParams().toArray())
+        );
+        return row;
     }
 
     @Override
-    public Query from() {
-        this.appendSql("FROM ")
-                .appendSql(QueryTool.getTableName(model.getClass()))
-                .appendSql(" ");
-        return this;
+    public int updateSelective(T t) {
+        SQLSource sqlSource = QueryTool.sqlManager.getDbStyle().genUpdateTemplate(t.getClass());
+        GroupTemplate gt = QueryTool.sqlManager.getBeetl().getGroupTemplate();
+        Template template = gt.getTemplate(sqlSource.getId());
+        SQLScript sqlScript = new SQLScript(sqlSource, QueryTool.sqlManager);
+        sqlScript.update(t);
+        template.binding("_params", t);
+        String sql = template.render();
+        StringBuilder sb = new StringBuilder(sql);
+        sb.append(" ").append(getSql());
+        this.setSql(sb);
+        int row = QueryTool.sqlManager.executeUpdate(
+                new SQLReady(getSql().toString(), getParams().toArray())
+        );
+        return row;
+    }
+
+    @Override
+    public int insert(T t) {
+        SQLSource sqlSource = QueryTool.sqlManager.getDbStyle().genInsert(t.getClass());
+        GroupTemplate gt = QueryTool.sqlManager.getBeetl().getGroupTemplate();
+        Template template = gt.getTemplate(sqlSource.getId());
+        SQLScript sqlScript = new SQLScript(sqlSource, QueryTool.sqlManager);
+        sqlScript.update(t);
+        template.binding("_params", t);
+        String sql = template.render();
+        StringBuilder sb = new StringBuilder(sql);
+        sb.append(" ").append(getSql());
+        this.setSql(sb);
+        int row = QueryTool.sqlManager.executeUpdate(
+                new SQLReady(getSql().toString(), getParams().toArray())
+        );
+        return row;
+    }
+
+    @Override
+    public int insertSelective(T t) {
+        SQLSource sqlSource = QueryTool.sqlManager.getDbStyle().genInsertTemplate(t.getClass());
+        GroupTemplate gt = QueryTool.sqlManager.getBeetl().getGroupTemplate();
+        Template template = gt.getTemplate(sqlSource.getId());
+        SQLScript sqlScript = new SQLScript(sqlSource, QueryTool.sqlManager);
+        sqlScript.update(t);
+        template.binding("_params", t);
+        String sql = template.render();
+        StringBuilder sb = new StringBuilder(sql);
+        sb.append(" ").append(getSql());
+        this.setSql(sb);
+        int row = QueryTool.sqlManager.executeUpdate(
+                new SQLReady(getSql().toString(), getParams().toArray())
+        );
+        return row;
+    }
+
+    @Override
+    public int delete() {
+        StringBuilder sb = new StringBuilder("DELETE ");
+        sb.append("FROM ").append(QueryTool.getTableName(clazz))
+                .append(" ").append(getSql());
+        this.setSql(sb);
+        int row = QueryTool.sqlManager.executeUpdate(
+                new SQLReady(getSql().toString(), getParams().toArray())
+        );
+        return row;
+    }
+
+    @Override
+    public int count() {
+        return 0;
     }
 
     @Override
@@ -64,7 +165,7 @@ public class Query<T> extends QueryCondition implements QueryBaseInterFace<Query
     }
 
     @Override
-    public Query limit(Long startRow,Long rowCount) {
+    public Query limit(Long startRow, Long rowCount) {
         //TODO 兼容其他数据库
         this.appendSql("LIMIT ?,?");
         this.addParam(startRow);

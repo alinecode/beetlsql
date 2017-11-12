@@ -1,40 +1,15 @@
-package org.beetl.sql.core.query;
+package org.beetl.sql.core.query.interfacer;
+
+
+import org.beetl.sql.core.query.QueryCondition;
 
 /**
  * @author GavinKing
- * @ClassName: QueryBaseInterFace
+ * @ClassName: QueryOtherI
  * @Description: 查询器接口
  * @date 2017/11/5
  */
-public interface QueryBaseInterFace<T extends QueryBaseInterFace>{
-
-    /***
-     * 指定字段查询
-     * @param columns
-     * @return
-     */
-    T select(String... columns);
-
-    /**
-     * 查询所有字段
-     *
-     * @return
-     */
-    T select();
-
-    /***
-     * 指定表名查询
-     * @param table
-     * @return
-     */
-    T from(String table);
-
-    /**
-     * 按照泛型类对应的表查询
-     *
-     * @return
-     */
-    T from();
+public interface QueryOtherI<T extends QueryOtherI>{
 
     /**
      * having子句

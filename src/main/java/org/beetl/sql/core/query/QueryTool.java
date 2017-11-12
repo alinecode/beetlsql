@@ -14,12 +14,14 @@ public class QueryTool {
 
     private static DBStyle dbStyle;
 
+    public static SQLManager sqlManager;
     /**
      * 初始化查询工具
      * @param sqlManager
      */
     public static void init(SQLManager sqlManager) {
-        dbStyle = sqlManager.getDbStyle();
+        QueryTool.sqlManager = sqlManager;
+        QueryTool.dbStyle = sqlManager.getDbStyle();
     }
 
     /****
