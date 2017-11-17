@@ -1,6 +1,6 @@
 package org.beetl.sql.test;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -11,9 +11,8 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.mapper.builder.MapperConfig;
-import org.beetl.sql.core.mapper.internal.AllAmi;
+import org.beetl.sql.core.db.OracleStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -29,9 +28,9 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception{
 		
 		
-////		DB2SqlStyle style = new DB2SqlStyle();
-		MySqlStyle style = new MySqlStyle();
-//		OracleStyle style = new OracleStyle();
+//		DB2SqlStyle style = new DB2SqlStyle();
+//		MySqlStyle style = new MySqlStyle();
+		OracleStyle style = new OracleStyle();
 //		
 		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
@@ -43,10 +42,9 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		sql.genSQLTemplateToConsole("user","user");
-//		sql.genPojoCodeToConsole("user");
-
-
+//		sql.genPojoCodeToConsole("SHOPPING_ACCESSORY");
+		PageQuery page = sql.pageQuery("wan.user.dateTest", String.class, new PageQuery());
+		page.getList();
 			
 	}
 	
