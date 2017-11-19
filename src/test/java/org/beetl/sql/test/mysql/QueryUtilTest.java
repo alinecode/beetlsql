@@ -54,6 +54,17 @@ public class QueryUtilTest extends BaseMySqlTest {
 
         assert !list.isEmpty();
     }
+    @Test
+    public void testSelectGroup() {
+        Query<User> query = new Query<User>(User.class);
+        List<User> list = query
+                .andIn("id", Arrays.asList(1637, 1639, 1640))
+                .groupBy("name")
+                .having(Query.condition().andIsNotNull("create_time"))
+                .select();
+
+        assert !list.isEmpty();
+    }
 
     @Test
     public void testSelectColumns() {

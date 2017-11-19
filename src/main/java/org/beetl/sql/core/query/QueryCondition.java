@@ -11,9 +11,9 @@ public class QueryCondition implements QueryConditionI {
 
     private StringBuilder sql = null;
     private List<Object> params = new ArrayList<Object>();
-    private final String AND = "AND";
-    private final String OR = "OR";
-    private final String WHERE = "WHERE";
+    public final String AND = "AND";
+    public final String OR = "OR";
+    public final String WHERE = "WHERE";
     private final String IN = "IN";
     private final String NOT_IN = "NOT IN";
     private final String BETWEEN = "BETWEEN";

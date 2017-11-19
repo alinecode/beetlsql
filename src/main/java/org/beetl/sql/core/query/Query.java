@@ -81,12 +81,12 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
         template.binding(BeanKit.objectToMap(t));
         String sql = template.render();
         int i = sql.lastIndexOf(",\r\n");
-        if(i == sql.length()-3){
-            sql = sql.substring(0,i);
+        if (i == sql.length() - 3) {
+            sql = sql.substring(0, i);
         }
         List<SQLParameter> param = (List<SQLParameter>) template.getCtx().getGlobal("_paras");
         List<Object> paraLis = new ArrayList<Object>();
-        for(SQLParameter sqlParameter : param){
+        for (SQLParameter sqlParameter : param) {
             paraLis.add(sqlParameter.value);
         }
 
@@ -106,12 +106,12 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
 
     @Override
     public int insert(T t) {
-        return QueryTool.sqlManager.insert(t,true);
+        return QueryTool.sqlManager.insert(t, true);
     }
 
     @Override
     public int insertSelective(T t) {
-        return QueryTool.sqlManager.insertTemplate(t,true);
+        return QueryTool.sqlManager.insertTemplate(t, true);
     }
 
     @Override
@@ -133,14 +133,21 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
                 .append(" ").append(getSql());
         this.setSql(sb);
         List results = QueryTool.sqlManager.execute(
-                new SQLReady(getSql().toString(), getParams().toArray()),Long.class
+                new SQLReady(getSql().toString(), getParams().toArray()), Long.class
         );
         return (Long) results.get(0);
     }
 
     @Override
     public Query having(QueryCondition condition) {
-        this.appendSql("HAVING ").appendSql(condition.getSql().toString());
+        //去除叠加条件中的WHERE
+        int i = condition.getSql().indexOf(WHERE);
+        if (i > -1) {
+            condition.getSql().delete(i, i + 5);
+        }
+        this.appendSql("HAVING ")
+                .appendSql(condition.getSql().toString())
+                .appendSql(" ");
         this.addParam(condition.getParams());
         return this;
     }
@@ -155,7 +162,9 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
 
     @Override
     public Query orderBy(String orderBy) {
-        this.appendSql("ORDER BY ").appendSql(orderBy);
+        this.appendSql("ORDER BY ")
+                .appendSql(orderBy)
+                .appendSql(" ");
         return this;
     }
 
