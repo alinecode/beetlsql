@@ -1,5 +1,6 @@
 package org.beetl.sql.core.query;
 
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.query.interfacer.QueryConditionI;
 
 import java.util.ArrayList;
@@ -40,6 +41,15 @@ public class QueryCondition implements QueryConditionI {
     }
 
     /**
+     * 在头部增加参数
+     */
+    public Query addPreParam(List<Object> objects) {
+        objects.addAll(params);
+        params = objects;
+        return (Query) this;
+    }
+
+    /**
      * 增加参数
      *
      * @param object
@@ -55,8 +65,8 @@ public class QueryCondition implements QueryConditionI {
      *
      * @return
      */
-    public static QueryCondition condition() {
-        return new QueryCondition();
+    public static Query condition() {
+        return new Query(Object.class);
     }
 
     private void appendAndSql(String column, Object value, String opt) {
@@ -93,7 +103,7 @@ public class QueryCondition implements QueryConditionI {
             this.addParam(o);
         }
         this.getSql().deleteCharAt(this.getSql().length() - 1);
-        this.appendSql(")");
+        this.appendSql(") ");
     }
 
     private void appendBetweenSql(String column, String opt, String link, Object... value) {
@@ -105,7 +115,7 @@ public class QueryCondition implements QueryConditionI {
         }
 
         this.appendSql(link).appendSql(" `").appendSql(column).appendSql("` ").appendSql(opt)
-                .appendSql(" ? AND ?");
+                .appendSql(" ? AND ? ");
         this.addParam(value[0]);
         this.addParam(value[1]);
     }
@@ -148,25 +158,25 @@ public class QueryCondition implements QueryConditionI {
 
     @Override
     public Query andLike(String column, String value) {
-        appendAndSql(column, value, "LIKE");
+        appendAndSql(column, value, "LIKE ");
         return (Query) this;
     }
 
     @Override
     public Query andNotLike(String column, String value) {
-        appendAndSql(column, value, "NOT LIKE");
+        appendAndSql(column, value, "NOT LIKE ");
         return (Query) this;
     }
 
     @Override
     public Query andIsNull(String column) {
-        appendAndSql(column, null, "IS NULL");
+        appendAndSql(column, null, "IS NULL ");
         return (Query) this;
     }
 
     @Override
     public Query andIsNotNull(String column) {
-        appendAndSql(column, null, "IS NOT NULL");
+        appendAndSql(column, null, "IS NOT NULL ");
         return (Query) this;
     }
 
@@ -196,81 +206,119 @@ public class QueryCondition implements QueryConditionI {
 
     @Override
     public Query orEq(String column, Object value) {
+        appendOrSql(column, value, "=");
         return (Query) this;
     }
 
     @Override
     public Query orNotEq(String column, Object value) {
+        appendOrSql(column, value, "<>");
         return (Query) this;
     }
 
     @Override
     public Query orGreat(String column, Object value) {
+        appendOrSql(column, value, ">");
         return (Query) this;
     }
 
     @Override
     public Query orGreatEq(String column, Object value) {
+        appendOrSql(column, value, ">=");
         return (Query) this;
     }
 
     @Override
     public Query orLess(String column, Object value) {
+        appendOrSql(column, value, "<");
         return (Query) this;
     }
 
     @Override
     public Query orLessEq(String column, Object value) {
+        appendOrSql(column, value, "<=");
         return (Query) this;
     }
 
     @Override
     public Query orLike(String column, String value) {
+        appendOrSql(column, value, "LIKE");
         return (Query) this;
     }
 
     @Override
     public Query orNotLike(String column, String value) {
+        appendOrSql(column, value, "NOT LIKE");
         return (Query) this;
     }
 
     @Override
     public Query orIsNull(String column) {
+        appendOrSql(column, null, "IS NULL");
         return (Query) this;
     }
 
     @Override
     public Query orIsNotNull(String column) {
+        appendOrSql(column, null, "IS NOT NULL");
         return (Query) this;
     }
 
     @Override
     public Query orIn(String column, Collection<?> value) {
+        appendInSql(column, value, IN, OR);
         return (Query) this;
     }
 
     @Override
     public Query orNotIn(String column, Collection<?> value) {
+        appendInSql(column, value, NOT_IN, OR);
         return (Query) this;
     }
 
     @Override
     public Query orBetween(String column, Object value1, Object value2) {
+        appendBetweenSql(column, BETWEEN, OR, value1, value2);
         return (Query) this;
     }
 
     @Override
     public Query orNotBetween(String column, Object value1, Object value2) {
+        appendBetweenSql(column, NOT_BETWEEN, OR, value1, value2);
         return (Query) this;
     }
 
+
     @Override
     public Query and(QueryCondition condition) {
-        return (Query) this;
+        return manyCondition(condition, AND);
     }
 
     @Override
     public Query or(QueryCondition condition) {
+        return manyCondition(condition, OR);
+    }
+
+    private Query manyCondition(QueryCondition condition, String link) {
+        if (!(condition instanceof QueryCondition)) {
+            throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR,
+                    "连接条件必须是一个 QueryCondition 类型");
+        }
+
+        //去除叠加条件中的WHERE
+        int i = condition.getSql().indexOf(WHERE);
+        if (i > -1) {
+            condition.getSql().delete(i, i + 5);
+        }
+
+        if (getSql().indexOf(WHERE) < 0) {
+            link = WHERE;
+        }
+        appendSql(link)
+                .appendSql(" (")
+                .appendSql(condition.getSql().toString())
+                .appendSql(")");
+        addParam(condition.getParams());
         return (Query) this;
     }
 

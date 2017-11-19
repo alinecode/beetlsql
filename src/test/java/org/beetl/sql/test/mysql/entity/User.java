@@ -6,10 +6,19 @@ public class User  extends TailBean{
 	private Integer id ;
 	private Integer departmentId ;
 	private String name ;
+	private String createTime ;
 	
 	public User() {
 	}
-	
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
 	public Integer getId(){
 		return  id;
 	}

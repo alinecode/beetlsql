@@ -232,7 +232,42 @@ public abstract class AbstractDBStyle implements DBStyle {
         sql = removeComma(sql, condition);
         return new SQLTableSource(sql.toString());
     }
-    
+
+    @Override
+    public SQLSource genUpdateAbsolute(Class<?> cls) {
+        String tableName = nameConversion.getTableName(cls);
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
+        Iterator<String> cols = classDesc.getInCols().iterator();
+        Iterator<String> properties = classDesc.getAttrs().iterator();
+
+        List<String> idCols = classDesc.getIdCols();
+        while (cols.hasNext() && properties.hasNext()) {
+            String col = cols.next();
+            String prop = properties.next();
+
+            if (classDesc.isUpdateIgnore(prop)) {
+                continue;
+            }
+            if (idCols.contains(col)) {
+                //主键不更新
+                continue;
+            }
+            if(col.equals(classDesc.getVersionCol())){
+                //版本字段
+                sql.append(this.getKeyWordHandler().getCol(col)).append("=")
+                        .append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
+                continue ;
+            }
+
+            sql.append(appendSetColumnAbsolute(cls, table, col, prop));
+        }
+
+        sql = removeComma(sql, "");
+        return new SQLTableSource(sql.toString());
+    }
+
     private String appendVersion(String condition,ClassDesc desc){
     		String col = desc.getVersionCol();
     		if(col==null){

@@ -64,5 +64,5 @@ public interface QueryExecuteI<M>{
      * count
      * @return 总行数
      */
-    int count();
+    long count();
 }

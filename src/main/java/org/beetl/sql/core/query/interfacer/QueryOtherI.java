@@ -38,6 +38,6 @@ public interface QueryOtherI<T extends QueryOtherI>{
      * @param startRow
      * @return
      */
-    T limit(Long startRow,Long rowCount);
+    T limit(Integer startRow,Integer rowCount);
 
 }

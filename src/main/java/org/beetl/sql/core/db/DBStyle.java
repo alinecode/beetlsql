@@ -52,6 +52,8 @@ public interface DBStyle {
 
     SQLSource genUpdateById(Class<?> cls);
 
+    SQLSource genUpdateAbsolute(Class<?> cls);
+
     SQLSource genUpdateTemplate(Class<?> cls);
 
     SQLSource genInsert(Class<?> cls);

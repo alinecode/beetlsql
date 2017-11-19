@@ -48,6 +48,12 @@ public class BeetlSQLException extends RuntimeException {
 	public static final int 	ORM_LAZY_ERROR  = 17;
 	
 	public static final int 	TEMPLATE_PAGE_PARAS_ERROR  = 18;
+
+	//从对象中获取属性异常
+	public static final int 	GET_OBJECT_PROPERTY_ERROR  = 19;
+
+	//Query工具查询条件错误
+	public static final int 	QUERY_CONDITION_ERROR  = 20;
 		
 	int code ;
 	
