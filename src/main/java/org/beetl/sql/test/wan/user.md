@@ -10,3 +10,10 @@ cols
 ===
 
 	u.*
+	
+dateTest  
+===
+
+	select 
+	#page("id")#
+	from TB_user 

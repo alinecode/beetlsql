@@ -19,12 +19,12 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 
 		int line = error.getErrorTokenLine();
 	
-		SqlTemplateResource resource = (SqlTemplateResource)ex.gt.getResourceLoader().getResource(ex.resourceId);
+		SqlTemplateResource resource = (SqlTemplateResource)ex.gt.getResourceLoader().getResource(ex.resource.getId());
 		int startLine = resource.getLine();
 		
 		StringBuilder sb = new StringBuilder(">>").append(getDateTime()).append(":").append(error.getType())
 				.append(":").append(error.getErrorTokenText()).append(" 位于").append(line+startLine-1).append("行").append(" 资源:")
-				.append(getResourceName(ex.resourceId));
+				.append(getResourceName(ex.resource.getId()));
 
 		System.out.println(sb.toString());
 		if (ex.getMessage() != null)
@@ -38,7 +38,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 		String content = null;
 		try
 		{
-			Resource res = resLoader.getResource(ex.resourceId);
+			Resource res = resLoader.getResource(ex.resource.getId());
 			//显示前后三行的内容
 			int[] range = this.getRange(line);
 			content = res.getContent(range[0], range[1]);
@@ -69,7 +69,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 			println(writer, "  调用栈:");
 			for (int i = 0; i < error.getResourceCallStack().size(); i++)
 			{
-				String errorId = error.getResourceCallStack().get(i);
+				String errorId = error.getResourceCallStack().get(i).getId();
 				SqlTemplateResource errorResource = (SqlTemplateResource)ex.gt.getResourceLoader().getResource(errorId);
 				startLine = errorResource.getLine();
 				println(writer, "  " + errorId + " 行："

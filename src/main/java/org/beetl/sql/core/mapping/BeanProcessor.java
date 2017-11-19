@@ -223,17 +223,32 @@ public class BeanProcessor {
 	
 	
 	public Object toBaseType(String sqlId,Class<?> c,ResultSet rs) throws SQLException {
-		TypeParameter tp = new TypeParameter(sqlId,dbName,c,rs,rs.getMetaData(),1);
-		int count = tp.getMeta().getColumnCount();
-		if(count!=1){
+		ResultSetMetaData meta = rs.getMetaData();
+	
+		int count = meta.getColumnCount();
+		int index = 0;
+		if(count==1){
+			index = 1;
+			
+		}else if(count==2&&(dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_SQLSERVER)) {
+			//猜测可能有翻页beetl_rn,取出有效列
+			String name1 = meta.getColumnName(1);
+			String  name2 = meta.getColumnName(2);
+			index = name2.equalsIgnoreCase("beetl_rn")?1:2;
+			
+		}
+		
+		if(index==0) {
 			throw new SQLException("Beetlsql查询期望返回一列，返回类型为"+c+" 但返回了"+count+"列，"+sqlId);
 		}
-		JavaSqlTypeHandler handler = handlers.get(c);
 		
+		TypeParameter tp = new TypeParameter(sqlId,dbName,c,rs,meta,index);
+		JavaSqlTypeHandler handler = handlers.get(c);
 		if(handler==null){
 			handler = this.defaultHandler;
 		}
 		return handler.getValue(tp);
+		
 	}
 
 	
@@ -258,7 +273,7 @@ public class BeanProcessor {
 			tp.setIndex(i);
 			if (columnToProperty[i] == PROPERTY_NOT_FOUND) {
 				String key = rs.getMetaData().getColumnLabel(i);
-				if(key.equals("beetl_rn")){
+				if((dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_SQLSERVER) &&  key.equalsIgnoreCase("beetl_rn")){
 					//sql server 特殊处理，sql'server的翻页使用了额外列作为翻页参数，需要过滤
 					continue;
 				}

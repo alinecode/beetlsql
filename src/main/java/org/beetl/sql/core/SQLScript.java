@@ -390,6 +390,7 @@ public class SQLScript {
             // 如果是Map的子类或者父类，返回List<Map<String,Object>>
             resultList = new ArrayList<T>();
             while (rs.next()) {
+            	
                 Map map = beanProcessor.toMap(this.sqlSource.getId(), clazz, rs);
                 resultList.add((T) map);
             }
