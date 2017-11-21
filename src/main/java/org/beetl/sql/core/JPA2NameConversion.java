@@ -32,7 +32,11 @@ public class JPA2NameConversion extends NameConversion{
 			return nc!=null?nc.getPropertyName(c, colName):colName;
 		}
 		//col到property是可能有对应关系的，即使property被标注了Transient
-		return  JPAEntityHelper.getEntityTable(c,nc).getProp(colName);
+		 String prop = JPAEntityHelper.getEntityTable(c,nc).getProp(colName);
+		 if(prop!=null) {
+			 return prop;
+		 }
+		 return nc!=null?nc.getPropertyName(c, colName):colName;
 	}
 
 	@Override
