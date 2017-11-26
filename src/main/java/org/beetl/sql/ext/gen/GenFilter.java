@@ -5,8 +5,6 @@ package org.beetl.sql.ext.gen;
  * @author xiandafu
  *
  */
-public class GenFilter {
-	public boolean accept(String tableName){
-		return true;
-	}
+public interface GenFilter {
+	public boolean accept(String tableName);
 }

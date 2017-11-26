@@ -142,6 +142,7 @@ public class SourceGen {
 		Template template = gt.getTemplate(config.template);
 		template.binding("attrs", attrs);
 		template.binding("className", className);
+		template.binding("table",table);
 		template.binding("ext", ext);
 		template.binding("package", pkg);
 		template.binding("imports", srcHead);
