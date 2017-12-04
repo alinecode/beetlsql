@@ -35,9 +35,10 @@ public interface QueryOtherI<T extends QueryOtherI>{
 
     /***
      * limit 子句
-     * @param startRow
+     * @param startRow 开始行数（包含）
+     * @param pageSize
      * @return
      */
-    T limit(Integer startRow,Integer rowCount);
+    T limit(long startRow, long pageSize);
 
 }

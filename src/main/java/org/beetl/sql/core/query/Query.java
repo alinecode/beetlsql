@@ -4,6 +4,7 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.engine.SQLParameter;
@@ -24,9 +25,20 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
 
     Class<T> clazz = null;
 
-    public Query(Class<T> clazz) {
+    public Query(SQLManager sqlManager, Class<T> clazz) {
+        this.sqlManager = sqlManager;
         this.clazz = clazz;
     }
+
+    /**
+     * 获取一个新条件
+     *
+     * @return
+     */
+    public Query condition() {
+        return new Query(this.sqlManager, clazz);
+    }
+
 
     @Override
     public List<T> select(String... columns) {
@@ -35,10 +47,10 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
             sb.append(column).append(",");
         }
         sb.deleteCharAt(sb.length() - 1);
-        sb.append(" FROM ").append(QueryTool.getTableName(clazz))
+        sb.append(" FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-        List list = QueryTool.sqlManager.execute(
+        List list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
         );
@@ -48,10 +60,10 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
     @Override
     public List<T> select() {
         StringBuilder sb = new StringBuilder("SELECT * ");
-        sb.append("FROM ").append(QueryTool.getTableName(clazz))
+        sb.append("FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-        List list = QueryTool.sqlManager.execute(
+        List list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
         );
@@ -60,18 +72,18 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
 
     @Override
     public int update(T t) {
-        SQLSource sqlSource = QueryTool.sqlManager.getDbStyle().genUpdateAbsolute(t.getClass());
+        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(t.getClass());
         return handlerUpdateSql(t, sqlSource);
     }
 
     @Override
     public int updateSelective(T t) {
-        SQLSource sqlSource = QueryTool.sqlManager.getDbStyle().genUpdateAll(t.getClass());
+        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAll(t.getClass());
         return handlerUpdateSql(t, sqlSource);
     }
 
     private int handlerUpdateSql(T t, SQLSource sqlSource) {
-        GroupTemplate gt = QueryTool.sqlManager.getBeetl().getGroupTemplate();
+        GroupTemplate gt = this.sqlManager.getBeetl().getGroupTemplate();
 
         StringTemplateResourceLoader resourceLoader = new StringTemplateResourceLoader();
         Configuration cfg = gt.getConf();
@@ -98,7 +110,7 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
 
         this.setSql(sb);
 
-        int row = QueryTool.sqlManager.executeUpdate(
+        int row = this.sqlManager.executeUpdate(
                 new SQLReady(getSql().toString(), getParams().toArray())
         );
         return row;
@@ -106,21 +118,21 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
 
     @Override
     public int insert(T t) {
-        return QueryTool.sqlManager.insert(t, true);
+        return this.sqlManager.insert(t, true);
     }
 
     @Override
     public int insertSelective(T t) {
-        return QueryTool.sqlManager.insertTemplate(t, true);
+        return this.sqlManager.insertTemplate(t, true);
     }
 
     @Override
     public int delete() {
         StringBuilder sb = new StringBuilder("DELETE FROM ");
-        sb.append(QueryTool.getTableName(clazz))
+        sb.append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-        int row = QueryTool.sqlManager.executeUpdate(
+        int row = this.sqlManager.executeUpdate(
                 new SQLReady(getSql().toString(), getParams().toArray())
         );
         return row;
@@ -129,10 +141,10 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
     @Override
     public long count() {
         StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
-        sb.append(QueryTool.getTableName(clazz))
+        sb.append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-        List results = QueryTool.sqlManager.execute(
+        List results = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()), Long.class
         );
         return (Long) results.get(0);
@@ -169,11 +181,8 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
     }
 
     @Override
-    public Query limit(Integer startRow, Integer rowCount) {
-        //TODO 兼容其他数据库
-        this.appendSql("LIMIT ?,?");
-        this.addParam(startRow);
-        this.addParam(rowCount);
+    public Query limit(long startRow, long pageSize) {
+        setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
         return this;
     }
 

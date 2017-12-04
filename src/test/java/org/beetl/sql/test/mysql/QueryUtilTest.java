@@ -1,7 +1,6 @@
 package org.beetl.sql.test.mysql;
 
 import org.beetl.sql.core.query.Query;
-import org.beetl.sql.core.query.QueryTool;
 import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,12 +14,12 @@ public class QueryUtilTest extends BaseMySqlTest {
     @Before
     public void init() {
         super.init();
-        QueryTool.init(super.sqlManager);
     }
 
     @Test
     public void testSelect() {
-        Query<User> query = new Query<User>(User.class);
+
+        Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query.andBetween("id", 1, 1640)
                 .andLike("name", "%t%")
                 .andIsNotNull("create_time")
@@ -30,12 +29,12 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelect2() {
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query
-                .or(Query.condition()
+                .or(query.condition()
                         .andIn("id", Arrays.asList(1637, 1639, 1640))
                         .andLike("name", "%t%"))
-                .or(Query.condition().andEq("id", 1640))
+                .or(query.condition().andEq("id", 1640))
                 .select();
 
         assert !list.isEmpty();
@@ -43,24 +42,24 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelect3() {
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query
-                .and(Query.condition()
+                .and(query.condition()
                         .andIn("id", Arrays.asList(1637, 1639, 1640))
                         .andLike("name", "%t%"))
                 .andEq("id", 1640)
-                .or(Query.condition().andEq("name","new name2"))
+                .or(query.condition().andEq("name","new name2"))
                 .select();
 
         assert !list.isEmpty();
     }
     @Test
     public void testSelectGroup() {
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query
                 .andIn("id", Arrays.asList(1637, 1639, 1640))
                 .groupBy("name")
-                .having(Query.condition().andIsNotNull("create_time"))
+                .having(query.condition().andIsNotNull("create_time"))
                 .select();
 
         assert !list.isEmpty();
@@ -68,14 +67,14 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelectColumns() {
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query.select("name", "id");
         assert !list.isEmpty();
     }
 
     @Test
     public void testSelectCondition() {
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query.andEq("id", 1637)
                 .andLess("create_time", new Date())
                 .andEq("name", "test")
@@ -87,7 +86,7 @@ public class QueryUtilTest extends BaseMySqlTest {
     public void testUpdateAbsCondition() {
         User record = new User();
         record.setName("new name");
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         int count = query.andEq("id", 1637)
                 .andLess("create_time", new Date())
                 .andEq("name", "test")
@@ -100,7 +99,7 @@ public class QueryUtilTest extends BaseMySqlTest {
     public void testUpdateCondition() {
         User record = new User();
         record.setName("new name");
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         int count = query.andEq("id", 1637)
                 .andLess("create_time", new Date())
                 .andEq("name", "test")
@@ -113,7 +112,7 @@ public class QueryUtilTest extends BaseMySqlTest {
     public void testInsertAbsCondition() {
         User record = new User();
         record.setName("new name");
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         int count = query.insert(record);
 
         assert count != 0;
@@ -122,8 +121,9 @@ public class QueryUtilTest extends BaseMySqlTest {
     @Test
     public void testInsertCondition() {
         User record = new User();
-        record.setName("new name");
-        Query<User> query = new Query<User>(User.class);
+        record.setName("new name2");
+        record.setCreateTime(new Date());
+        Query<User> query = sqlManager.getQuery(User.class);
         int count = query.insertSelective(record);
 
         assert count != 0;
@@ -131,9 +131,7 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testDeleteCondition() {
-        User record = new User();
-        record.setName("new name");
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         int count = query.andEq("id", 1642).delete();
         assert count != 0;
     }
@@ -142,9 +140,9 @@ public class QueryUtilTest extends BaseMySqlTest {
     public void testCountCondition() {
         User record = new User();
         record.setName("new name");
-        Query<User> query = new Query<User>(User.class);
+        Query<User> query = sqlManager.getQuery(User.class);
         long count = query.andEq("name", "new name")
-                .orEq("id", 1637).limit(0, 1).count();
+                .orEq("id", 1637).limit(1, 10).count();
         assert count != 0;
     }
 

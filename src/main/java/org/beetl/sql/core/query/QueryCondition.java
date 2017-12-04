@@ -1,6 +1,7 @@
 package org.beetl.sql.core.query;
 
 import org.beetl.sql.core.BeetlSQLException;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.query.interfacer.QueryConditionI;
 
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.List;
 
 public class QueryCondition implements QueryConditionI {
 
+
+    public SQLManager sqlManager;
     private StringBuilder sql = null;
     private List<Object> params = new ArrayList<Object>();
     public final String AND = "AND";
@@ -18,6 +21,24 @@ public class QueryCondition implements QueryConditionI {
     private final String NOT_IN = "NOT IN";
     private final String BETWEEN = "BETWEEN";
     private final String NOT_BETWEEN = "NOT BETWEEN";
+
+
+    private String getCol(String colName) {
+        return " " + sqlManager.getDbStyle().getKeyWordHandler().getCol(colName) + " ";
+    }
+
+    private String getTable(String tableName) {
+        return sqlManager.getDbStyle().getKeyWordHandler().getTable(tableName);
+    }
+
+    /****
+     * 根据实体class获取表名
+     * @param c
+     * @return
+     */
+    public String getTableName(Class<?> c) {
+        return getTable(sqlManager.getDbStyle().getNameConversion().getTableName(c));
+    }
 
     /**
      * 拼接SQL
@@ -59,16 +80,6 @@ public class QueryCondition implements QueryConditionI {
         return (Query) this;
     }
 
-
-    /**
-     * 获取一个新条件
-     *
-     * @return
-     */
-    public static Query condition() {
-        return new Query(Object.class);
-    }
-
     private void appendAndSql(String column, Object value, String opt) {
         appendSqlBase(column, value, opt, AND);
     }
@@ -81,7 +92,9 @@ public class QueryCondition implements QueryConditionI {
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
         }
-        this.appendSql(link).appendSql(" `").appendSql(column).appendSql("` ").appendSql(opt);
+        this.appendSql(link)
+                .appendSql(getCol(column))
+                .appendSql(opt);
         if (value != null) {
             this.appendSql(" ? ");
             this.addParam(value);
@@ -96,7 +109,9 @@ public class QueryCondition implements QueryConditionI {
             link = WHERE;
         }
 
-        this.appendSql(link).appendSql(" `").appendSql(column).appendSql("` ").appendSql(opt)
+        this.appendSql(link)
+                .appendSql(getCol(column))
+                .appendSql(opt)
                 .appendSql("(");
         for (Object o : value) {
             this.appendSql(" ? ,");
@@ -114,7 +129,9 @@ public class QueryCondition implements QueryConditionI {
             link = WHERE;
         }
 
-        this.appendSql(link).appendSql(" `").appendSql(column).appendSql("` ").appendSql(opt)
+        this.appendSql(link)
+                .appendSql(getCol(column))
+                .appendSql(opt)
                 .appendSql(" ? AND ? ");
         this.addParam(value[0]);
         this.addParam(value[1]);
