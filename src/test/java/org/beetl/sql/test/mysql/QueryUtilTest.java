@@ -18,7 +18,6 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelect() {
-
         Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query.andBetween("id", 1, 1640)
                 .andLike("name", "%t%")
@@ -144,6 +143,13 @@ public class QueryUtilTest extends BaseMySqlTest {
         long count = query.andEq("name", "new name")
                 .orEq("id", 1637).limit(1, 10).count();
         assert count != 0;
+    }
+
+    @Test
+    public void single() {
+        Query<User> query = sqlManager.getQuery(User.class);
+        User user = (User) query.andEq("id", 1642).single();
+        assert user != null;
     }
 
 }

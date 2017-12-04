@@ -23,7 +23,7 @@ public interface QueryExecuteI<M>{
      * 查询出一条，如果没有，返回null
      * @return
      */
-    public M single();
+    M single();
 
     /**
      * 查询所有字段

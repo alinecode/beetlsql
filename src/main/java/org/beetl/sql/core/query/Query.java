@@ -35,7 +35,7 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
      *
      * @return
      */
-    public Query condition() {
+    public Query<T> condition() {
         return new Query(this.sqlManager, clazz);
     }
 
@@ -50,31 +50,30 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
         sb.append(" FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-        List list = this.sqlManager.execute(
+        List<T> list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
         );
         return list;
     }
 
+    @Override
     public T single() {
-    	List<T> list = select();
-    	int size = list.size();
-    	if(list.isEmpty()) {
-    		return null;
-    	}
-    	//同SQLManager.single 一致，只取第一条。
-    	return list.get(0);
-    	
+        List<T> list = limit(1,1).select();
+        if(list.isEmpty()){
+            return null;
+        }
+        //同SQLManager.single 一致，只取第一条。
+        return list.get(0);
     }
-    
+
     @Override
     public List<T> select() {
         StringBuilder sb = new StringBuilder("SELECT * ");
         sb.append("FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-        List list = this.sqlManager.execute(
+        List<T> list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
         );
@@ -162,7 +161,7 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
     }
 
     @Override
-    public Query having(QueryCondition condition) {
+    public Query<T> having(QueryCondition condition) {
         //去除叠加条件中的WHERE
         int i = condition.getSql().indexOf(WHERE);
         if (i > -1) {
@@ -176,7 +175,7 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
     }
 
     @Override
-    public Query groupBy(String column) {
+    public Query<T> groupBy(String column) {
         this.appendSql("GROUP BY ")
                 .appendSql(column)
                 .appendSql(" ");
@@ -184,7 +183,7 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
     }
 
     @Override
-    public Query orderBy(String orderBy) {
+    public Query<T> orderBy(String orderBy) {
         this.appendSql("ORDER BY ")
                 .appendSql(orderBy)
                 .appendSql(" ");
@@ -192,7 +191,7 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
     }
 
     @Override
-    public Query limit(long startRow, long pageSize) {
+    public Query<T> limit(long startRow, long pageSize) {
         setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
         return this;
     }
