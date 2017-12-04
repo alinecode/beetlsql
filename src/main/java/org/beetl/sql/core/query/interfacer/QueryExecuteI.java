@@ -18,6 +18,12 @@ public interface QueryExecuteI<M>{
      * @return 查询结果
      */
     List<M> select(String... columns);
+    
+    /**
+     * 查询出一条，如果没有，返回null
+     * @return
+     */
+    public M single();
 
     /**
      * 查询所有字段

@@ -57,6 +57,17 @@ public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryO
         return list;
     }
 
+    public T single() {
+    	List<T> list = select();
+    	int size = list.size();
+    	if(list.isEmpty()) {
+    		return null;
+    	}
+    	//同SQLManager.single 一致，只取第一条。
+    	return list.get(0);
+    	
+    }
+    
     @Override
     public List<T> select() {
         StringBuilder sb = new StringBuilder("SELECT * ");
