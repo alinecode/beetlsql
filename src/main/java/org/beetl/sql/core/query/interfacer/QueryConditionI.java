@@ -13,51 +13,51 @@ import java.util.List;
  * @date 2017/11/5
  *
  */
-public interface QueryConditionI {
-    Query andEq(String column, Object value);
-    Query andNotEq(String column, Object value);
-    Query andGreat(String column, Object value);
-    Query andGreatEq(String column, Object value);
-    Query andLess(String column, Object value);
-    Query andLessEq(String column, Object value);
-    Query andLike(String column, String value);
-    Query andNotLike(String column, String value);
-    Query andIsNull(String column);
-    Query andIsNotNull(String column);
-    Query andIn(String column, Collection<?> value);
-    Query andNotIn(String column, Collection<?> value);
-    Query andBetween(String column, Object value1,Object value2);
-    Query andNotBetween(String column, Object value1,Object value2);
+public interface QueryConditionI<T> {
+    Query<T> andEq(String column, Object value);
+    Query<T> andNotEq(String column, Object value);
+    Query<T> andGreat(String column, Object value);
+    Query<T> andGreatEq(String column, Object value);
+    Query<T> andLess(String column, Object value);
+    Query<T> andLessEq(String column, Object value);
+    Query<T> andLike(String column, String value);
+    Query<T> andNotLike(String column, String value);
+    Query<T> andIsNull(String column);
+    Query<T> andIsNotNull(String column);
+    Query<T> andIn(String column, Collection<?> value);
+    Query<T> andNotIn(String column, Collection<?> value);
+    Query<T> andBetween(String column, Object value1,Object value2);
+    Query<T> andNotBetween(String column, Object value1,Object value2);
 
 
-    Query orEq(String column, Object value);
-    Query orNotEq(String column, Object value);
-    Query orGreat(String column, Object value);
-    Query orGreatEq(String column, Object value);
-    Query orLess(String column, Object value);
-    Query orLessEq(String column, Object value);
-    Query orLike(String column, String value);
-    Query orNotLike(String column, String value);
-    Query orIsNull(String column);
-    Query orIsNotNull(String column);
-    Query orIn(String column, Collection<?> value);
-    Query orNotIn(String column, Collection<?> value);
-    Query orBetween(String column, Object value1,Object value2);
-    Query orNotBetween(String column, Object value1,Object value2);
+    Query<T> orEq(String column, Object value);
+    Query<T> orNotEq(String column, Object value);
+    Query<T> orGreat(String column, Object value);
+    Query<T> orGreatEq(String column, Object value);
+    Query<T> orLess(String column, Object value);
+    Query<T> orLessEq(String column, Object value);
+    Query<T> orLike(String column, String value);
+    Query<T> orNotLike(String column, String value);
+    Query<T> orIsNull(String column);
+    Query<T> orIsNotNull(String column);
+    Query<T> orIn(String column, Collection<?> value);
+    Query<T> orNotIn(String column, Collection<?> value);
+    Query<T> orBetween(String column, Object value1,Object value2);
+    Query<T> orNotBetween(String column, Object value1,Object value2);
 
     /**
      * 多条件组合 and
      * @param condition
      * @return
      */
-    Query and(QueryCondition condition);
+    Query<T> and(QueryCondition condition);
 
     /***
      * 多条件组合 or
      * @param condition
      * @return
      */
-    Query or(QueryCondition condition);
+    Query<T> or(QueryCondition condition);
 
 
     /**

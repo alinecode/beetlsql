@@ -148,7 +148,7 @@ public class QueryUtilTest extends BaseMySqlTest {
     @Test
     public void single() {
         Query<User> query = sqlManager.getQuery(User.class);
-        User user = (User) query.andEq("id", 1642).single();
+        User user = query.andEq("id", 1642).single();
         assert user != null;
     }
 

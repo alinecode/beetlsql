@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class QueryCondition implements QueryConditionI {
+public class QueryCondition<T> implements QueryConditionI<T> {
 
 
     public SQLManager sqlManager;
@@ -45,7 +45,7 @@ public class QueryCondition implements QueryConditionI {
      *
      * @param sqlPart
      */
-    public Query appendSql(String sqlPart) {
+    public Query<T> appendSql(String sqlPart) {
         if (this.sql == null) {
             this.sql = new StringBuilder();
         }
@@ -56,7 +56,7 @@ public class QueryCondition implements QueryConditionI {
     /**
      * 增加参数
      */
-    public Query addParam(Collection<?> objects) {
+    public Query<T> addParam(Collection<?> objects) {
         params.addAll(objects);
         return (Query) this;
     }
@@ -64,7 +64,7 @@ public class QueryCondition implements QueryConditionI {
     /**
      * 在头部增加参数
      */
-    public Query addPreParam(List<Object> objects) {
+    public Query<T> addPreParam(List<Object> objects) {
         objects.addAll(params);
         params = objects;
         return (Query) this;
@@ -75,7 +75,7 @@ public class QueryCondition implements QueryConditionI {
      *
      * @param object
      */
-    public Query addParam(Object object) {
+    public Query<T> addParam(Object object) {
         params.add(object);
         return (Query) this;
     }
@@ -138,185 +138,185 @@ public class QueryCondition implements QueryConditionI {
     }
 
     @Override
-    public Query andEq(String column, Object value) {
+    public Query<T> andEq(String column, Object value) {
         appendAndSql(column, value, "=");
         return (Query) this;
     }
 
     @Override
-    public Query andNotEq(String column, Object value) {
+    public Query<T> andNotEq(String column, Object value) {
         appendAndSql(column, value, "<>");
         return (Query) this;
     }
 
     @Override
-    public Query andGreat(String column, Object value) {
+    public Query<T> andGreat(String column, Object value) {
         appendAndSql(column, value, ">");
         return (Query) this;
     }
 
     @Override
-    public Query andGreatEq(String column, Object value) {
+    public Query<T> andGreatEq(String column, Object value) {
         appendAndSql(column, value, ">=");
         return (Query) this;
     }
 
     @Override
-    public Query andLess(String column, Object value) {
+    public Query<T> andLess(String column, Object value) {
         appendAndSql(column, value, "<");
         return (Query) this;
     }
 
     @Override
-    public Query andLessEq(String column, Object value) {
+    public Query<T> andLessEq(String column, Object value) {
         appendAndSql(column, value, "<=");
         return (Query) this;
     }
 
     @Override
-    public Query andLike(String column, String value) {
+    public Query<T> andLike(String column, String value) {
         appendAndSql(column, value, "LIKE ");
         return (Query) this;
     }
 
     @Override
-    public Query andNotLike(String column, String value) {
+    public Query<T> andNotLike(String column, String value) {
         appendAndSql(column, value, "NOT LIKE ");
         return (Query) this;
     }
 
     @Override
-    public Query andIsNull(String column) {
+    public Query<T> andIsNull(String column) {
         appendAndSql(column, null, "IS NULL ");
         return (Query) this;
     }
 
     @Override
-    public Query andIsNotNull(String column) {
+    public Query<T> andIsNotNull(String column) {
         appendAndSql(column, null, "IS NOT NULL ");
         return (Query) this;
     }
 
     @Override
-    public Query andIn(String column, Collection<?> value) {
+    public Query<T> andIn(String column, Collection<?> value) {
         appendInSql(column, value, IN, AND);
         return (Query) this;
     }
 
     @Override
-    public Query andNotIn(String column, Collection<?> value) {
+    public Query<T> andNotIn(String column, Collection<?> value) {
         appendInSql(column, value, NOT_IN, AND);
         return (Query) this;
     }
 
     @Override
-    public Query andBetween(String column, Object value1, Object value2) {
+    public Query<T> andBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, BETWEEN, AND, value1, value2);
         return (Query) this;
     }
 
     @Override
-    public Query andNotBetween(String column, Object value1, Object value2) {
+    public Query<T> andNotBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, NOT_BETWEEN, AND, value1, value2);
         return (Query) this;
     }
 
     @Override
-    public Query orEq(String column, Object value) {
+    public Query<T> orEq(String column, Object value) {
         appendOrSql(column, value, "=");
         return (Query) this;
     }
 
     @Override
-    public Query orNotEq(String column, Object value) {
+    public Query<T> orNotEq(String column, Object value) {
         appendOrSql(column, value, "<>");
         return (Query) this;
     }
 
     @Override
-    public Query orGreat(String column, Object value) {
+    public Query<T> orGreat(String column, Object value) {
         appendOrSql(column, value, ">");
         return (Query) this;
     }
 
     @Override
-    public Query orGreatEq(String column, Object value) {
+    public Query<T> orGreatEq(String column, Object value) {
         appendOrSql(column, value, ">=");
         return (Query) this;
     }
 
     @Override
-    public Query orLess(String column, Object value) {
+    public Query<T> orLess(String column, Object value) {
         appendOrSql(column, value, "<");
         return (Query) this;
     }
 
     @Override
-    public Query orLessEq(String column, Object value) {
+    public Query<T> orLessEq(String column, Object value) {
         appendOrSql(column, value, "<=");
         return (Query) this;
     }
 
     @Override
-    public Query orLike(String column, String value) {
+    public Query<T> orLike(String column, String value) {
         appendOrSql(column, value, "LIKE");
         return (Query) this;
     }
 
     @Override
-    public Query orNotLike(String column, String value) {
+    public Query<T> orNotLike(String column, String value) {
         appendOrSql(column, value, "NOT LIKE");
         return (Query) this;
     }
 
     @Override
-    public Query orIsNull(String column) {
+    public Query<T> orIsNull(String column) {
         appendOrSql(column, null, "IS NULL");
         return (Query) this;
     }
 
     @Override
-    public Query orIsNotNull(String column) {
+    public Query<T> orIsNotNull(String column) {
         appendOrSql(column, null, "IS NOT NULL");
         return (Query) this;
     }
 
     @Override
-    public Query orIn(String column, Collection<?> value) {
+    public Query<T> orIn(String column, Collection<?> value) {
         appendInSql(column, value, IN, OR);
         return (Query) this;
     }
 
     @Override
-    public Query orNotIn(String column, Collection<?> value) {
+    public Query<T> orNotIn(String column, Collection<?> value) {
         appendInSql(column, value, NOT_IN, OR);
         return (Query) this;
     }
 
     @Override
-    public Query orBetween(String column, Object value1, Object value2) {
+    public Query<T> orBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, BETWEEN, OR, value1, value2);
         return (Query) this;
     }
 
     @Override
-    public Query orNotBetween(String column, Object value1, Object value2) {
+    public Query<T> orNotBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, NOT_BETWEEN, OR, value1, value2);
         return (Query) this;
     }
 
 
     @Override
-    public Query and(QueryCondition condition) {
+    public Query<T> and(QueryCondition condition) {
         return manyCondition(condition, AND);
     }
 
     @Override
-    public Query or(QueryCondition condition) {
+    public Query<T> or(QueryCondition condition) {
         return manyCondition(condition, OR);
     }
 
-    private Query manyCondition(QueryCondition condition, String link) {
+    private Query<T> manyCondition(QueryCondition condition, String link) {
         if (!(condition instanceof QueryCondition)) {
             throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR,
                     "连接条件必须是一个 QueryCondition 类型");

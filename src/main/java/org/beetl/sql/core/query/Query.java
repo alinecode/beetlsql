@@ -21,7 +21,7 @@ import java.util.List;
  * @Description:查询器
  * @date 2017/11/5
  */
-public class Query<T> extends QueryCondition implements QueryExecuteI<T>, QueryOtherI<Query> {
+public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
 
     Class<T> clazz = null;
 
