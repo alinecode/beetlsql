@@ -28,6 +28,7 @@ import org.beetl.sql.core.Tail;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.type.BigDecimalTypeHandler;
 import org.beetl.sql.core.mapping.type.BlobJavaSqlTypeHandler;
@@ -381,6 +382,7 @@ public class BeanProcessor {
 	protected <T> T newInstance(Class<T> c) throws SQLException {
 		
 		try {
+			
 			return c.newInstance();
 
 		} catch (InstantiationException e) {

@@ -15,5 +15,5 @@ dateTest
 ===
 
 	select 
-	#page("id")#
-	from TB_user 
+	*
+	from user 

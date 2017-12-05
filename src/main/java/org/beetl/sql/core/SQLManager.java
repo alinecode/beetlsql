@@ -46,8 +46,8 @@ import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
 import org.beetl.sql.core.mapping.BeanProcessor;
-import org.beetl.sql.core.query.Java8Query;
 import org.beetl.sql.core.query.Query;
+import org.beetl.sql.core.query.Java6Query;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
@@ -221,13 +221,20 @@ public class SQLManager {
         return sqlManager;
     }
 
-    public <T> Query<T> getQuery(Class<T> clazz) {
-        return new Query<T>(this, clazz);
-    }
-    
-    public <T> Java8Query<T> getQuery8(Class<T> clazz) {
-        return new Java8Query<T>(this, clazz);
-    }
+	public <T> Query<T> getQuery(Class<T> clazz) {
+		if (BeanKit.queryLambdasSupport) {
+			return new Query<T>(this, clazz);
+		} else {
+			throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque");
+		}
+
+	}
+
+	public <T> Java6Query<T> getQuery6(Class<T> clazz) {
+
+		return new Java6Query<T>(this, clazz);
+
+	}
 
     public boolean isOffsetStartZero() {
         return offsetStartZero;

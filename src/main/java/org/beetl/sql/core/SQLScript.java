@@ -348,8 +348,7 @@ public class SQLScript {
 
             if (mapper != null) {
                 BeanProcessor beanProcessor = this.getBeanProcessor();
-                resultList = new RowMapperResultSetExt<T>(mapper, beanProcessor).handleResultSet(rs, clazz);
-                this.callInterceptorAsAfter(ctx, resultList);
+                resultList = new RowMapperResultSetExt<T>(mapper, beanProcessor).handleResultSet(this.id,rs, clazz);
 
             } else {
                 resultList = mappingSelect(rs, clazz);
@@ -905,6 +904,11 @@ public class SQLScript {
             Map<String, AssignID> ids = tableSource.getAssignIds();
             for (Entry<String, AssignID> entry : ids.entrySet()) {
                 String attrName = entry.getKey();
+                Object value = BeanKit.getBeanProperty(obj, attrName);
+	             // 已经有值的列尊重调用者设置的值，@lidaoguang 
+	             if (value != null) {
+	                 continue;
+	             }
                 AssignID assignId = entry.getValue();
                 String algorithm = assignId.value();
                 String param = assignId.param();
