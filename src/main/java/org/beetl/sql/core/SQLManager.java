@@ -22,9 +22,13 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
-import org.beetl.core.Configuration;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -43,6 +47,7 @@ import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.query.Query;
+import org.beetl.sql.core.query.Java6Query;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
@@ -216,9 +221,20 @@ public class SQLManager {
         return sqlManager;
     }
 
-    public <T> Query<T> getQuery(Class<T> clazz) {
-        return new Query<T>(this, clazz);
-    }
+	public <T> Query<T> getQuery(Class<T> clazz) {
+		if (BeanKit.queryLambdasSupport) {
+			return new Query<T>(this, clazz);
+		} else {
+			throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque");
+		}
+
+	}
+
+	public <T> Java6Query<T> getQuery6(Class<T> clazz) {
+
+		return new Java6Query<T>(this, clazz);
+
+	}
 
     public boolean isOffsetStartZero() {
         return offsetStartZero;
@@ -334,8 +350,9 @@ public class SQLManager {
      * @return SQLScript
      */
     public SQLScript getScript(Class<?> cls, ConstantEnum constantEnum) {
-        String className = cls.getSimpleName().toLowerCase();
-        // String id = className + "." + classSQL[tempId];
+    	//slqId 保持与DefaultSQLIdNameConversion同样命名风格
+    	String className = StringKit.toLowerCaseFirstOne(cls.getSimpleName());
+//        String className = cls.getSimpleName().toLowerCase();
         String id = className + "." + constantEnum.getClassSQL();
 
         SQLSource tempSource = this.sqlLoader.getSQL(id);
@@ -1074,8 +1091,11 @@ public class SQLManager {
                 try {
                     Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
                     Object value = holder.getKey();
-                    value = BeanKit.convertValueToRequiredType(value, getterMethod.getReturnType());
-                    setterMethod.invoke(paras, new Object[]{value});
+                    if(value!=null) {
+                    	//KeyHolder有值才设置
+						value = BeanKit.convertValueToRequiredType(value, getterMethod.getReturnType());
+						setterMethod.invoke(paras, new Object[]{value});
+                    }
                     return result;
                 } catch (Exception ex) {
 
@@ -1691,7 +1711,7 @@ public class SQLManager {
 
         MDCodeGen mdCodeGen = new MDCodeGen();
         TableDesc desc = this.metaDataManager.getTable(table);
-        mdCodeGen.genCode(desc, this.nc, alias, w);
+        mdCodeGen.genCode(beetl,desc, this.nc, alias, w);
 
     }
 

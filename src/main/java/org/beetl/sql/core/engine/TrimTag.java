@@ -68,7 +68,7 @@ public class TrimTag extends Tag {
 				}
 			}
 		} catch (IOException ie) {
-			ie.printStackTrace();
+			throw new RuntimeException(ie);
 		}
 
 	}

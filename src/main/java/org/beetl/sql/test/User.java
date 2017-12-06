@@ -7,7 +7,6 @@ public class User   extends TailBean {
 	
 	private Integer id ;
 	private String name ;
-	private Color gender;
 	public Integer getId() {
 		return id;
 	}
@@ -20,12 +19,7 @@ public class User   extends TailBean {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Color getGender() {
-		return gender;
-	}
-	public void setGender(Color gender) {
-		this.gender = gender;
-	}
+
 	
 
 

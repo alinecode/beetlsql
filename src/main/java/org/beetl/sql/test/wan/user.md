@@ -11,9 +11,9 @@ cols
 
 	u.*
 	
-dateTest  
+select  
 ===
 
 	select 
-	#page("id")#
-	from TB_user 
+	*
+	from user 

@@ -1,13 +1,13 @@
 package org.beetl.sql.test.mysql;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
+import org.beetl.sql.core.query.Java6Query;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 public class QueryUtilTest extends BaseMySqlTest {
 
@@ -18,7 +18,7 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelect() {
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query.andBetween("id", 1, 1640)
                 .andLike("name", "%t%")
                 .andIsNotNull("create_time")
@@ -28,7 +28,7 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelect2() {
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query
                 .or(query.condition()
                         .andIn("id", Arrays.asList(1637, 1639, 1640))
@@ -41,7 +41,7 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelect3() {
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query
                 .and(query.condition()
                         .andIn("id", Arrays.asList(1637, 1639, 1640))
@@ -54,7 +54,7 @@ public class QueryUtilTest extends BaseMySqlTest {
     }
     @Test
     public void testSelectGroup() {
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query
                 .andIn("id", Arrays.asList(1637, 1639, 1640))
                 .groupBy("name")
@@ -66,14 +66,14 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testSelectColumns() {
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query.select("name", "id");
         assert !list.isEmpty();
     }
 
     @Test
     public void testSelectCondition() {
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         List<User> list = query.andEq("id", 1637)
                 .andLess("create_time", new Date())
                 .andEq("name", "test")
@@ -98,7 +98,7 @@ public class QueryUtilTest extends BaseMySqlTest {
     public void testUpdateCondition() {
         User record = new User();
         record.setName("new name");
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         int count = query.andEq("id", 1637)
                 .andLess("create_time", new Date())
                 .andEq("name", "test")
@@ -111,7 +111,7 @@ public class QueryUtilTest extends BaseMySqlTest {
     public void testInsertAbsCondition() {
         User record = new User();
         record.setName("new name");
-        Query<User> query = sqlManager.getQuery(User.class);
+        Java6Query<User> query = sqlManager.getQuery(User.class);
         int count = query.insert(record);
 
         assert count != 0;
@@ -130,7 +130,7 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testDeleteCondition() {
-        Query<User> query = sqlManager.getQuery(User.class);
+    	Query<User> query = sqlManager.getQuery(User.class);
         int count = query.andEq("id", 1642).delete();
         assert count != 0;
     }
@@ -147,7 +147,7 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void single() {
-        Query<User> query = sqlManager.getQuery(User.class);
+    	Query<User> query = sqlManager.getQuery(User.class);
         User user = query.andEq("id", 1642).single();
         assert user != null;
     }

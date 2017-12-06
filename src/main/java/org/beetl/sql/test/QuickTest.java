@@ -1,5 +1,7 @@
 package org.beetl.sql.test;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -10,7 +12,8 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.query.Query;
+import org.beetl.sql.core.query.Java6Query;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -40,8 +43,26 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		User user = sql.unique(User.class, 1);
-		System.out.println(user.getName());
+		UserDao dao = sql.getMapper(UserDao.class);
+		dao.select();
+//		sql.select("wan.user.dateTest", Map.class,null,new RowMapper<Map>() {
+//
+//			@Override
+//			public Map mapRow(Object obj, ResultSet rs, int rowNum) throws SQLException {
+//				// TODO Auto-generated method stub
+//				System.out.println(obj);
+//				return (Map)obj;
+//			}
+//		});
+		sql.unique(User.class, 1);
+//		sql.genSQLTemplateToConsole("user");
+//		Java6Query<User> query = sql.getQuery6(User.class);
+//		List<User> list = query.andEq("name", "hi").orderBy("id").select();
+//		
+//		//jdk 8 允许写法
+//		Query<User> query8 = sql.getQuery(User.class);
+//		List<User> list1 = query8.andEq(User::getName, "hi").orderBy(User::getId).select();
+		
 			
 	}
 	
