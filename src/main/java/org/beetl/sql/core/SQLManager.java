@@ -46,8 +46,8 @@ import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
 import org.beetl.sql.core.mapping.BeanProcessor;
+import org.beetl.sql.core.query.LamdbaQuery;
 import org.beetl.sql.core.query.Query;
-import org.beetl.sql.core.query.Java6Query;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
@@ -221,20 +221,12 @@ public class SQLManager {
         return sqlManager;
     }
 
-	public <T> Query<T> getQuery(Class<T> clazz) {
-		if (BeanKit.queryLambdasSupport) {
-			return new Query<T>(this, clazz);
-		} else {
-			throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque");
-		}
+	public <T> Query<T> query(Class<T> clazz) {
+		return new Query<T>(this, clazz);
 
 	}
 
-	public <T> Java6Query<T> getQuery6(Class<T> clazz) {
 
-		return new Java6Query<T>(this, clazz);
-
-	}
 
     public boolean isOffsetStartZero() {
         return offsetStartZero;
@@ -587,6 +579,7 @@ public class SQLManager {
         return pageQuery(sqlId, clazz, query, null);
     }
 
+
     /**
      * 翻页查询，假设有sqlId和sqlId$count 俩个sql存在，beetlsql会通过
      * 这俩个sql来查询总数以及翻页操作，如果没有sqlId$count，则假设sqlId 包含了page函数或者标签 ，如
@@ -600,8 +593,12 @@ public class SQLManager {
      * select #page("a.*,b.name")# from user a left join role b ....
      * </pre>
      *
+     * 
      * @param sqlId
+     * @param clazz
      * @param query
+     * @param mapper
+     * @return
      */
     public <T> PageQuery<T> pageQuery(String sqlId, Class<T> clazz, PageQuery query, RowMapper<T> mapper) {
         Object paras = query.getParas();

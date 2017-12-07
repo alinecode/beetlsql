@@ -1,210 +1,218 @@
 package org.beetl.sql.core.query;
 
-import java.io.Serializable;
-import java.lang.reflect.Member;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
-
+import org.beetl.core.Configuration;
+import org.beetl.core.GroupTemplate;
+import org.beetl.core.Template;
+import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLReady;
+import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.engine.SQLParameter;
+import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.query.interfacer.QueryExecuteI;
+import org.beetl.sql.core.query.interfacer.QueryOtherI;
 
-import com.trigersoft.jaque.expression.Expression;
-import com.trigersoft.jaque.expression.InvocationExpression;
-import com.trigersoft.jaque.expression.LambdaExpression;
-import com.trigersoft.jaque.expression.MemberExpression;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Query<T> extends Java6Query<T> {
+/**
+ * @author GavinKing
 
-	public Query(SQLManager sqlManager, Class clazz) {
-		super(sqlManager, clazz);
-		// TODO Auto-generated constructor stub
-	}
+ */
+public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
 
-	public List<T> select(Property<T, ?>... cols) {
-		String[] colArray = this.getFunctionName(cols);
-		return super.select(colArray);
+    Class<T> clazz = null;
 
-	}
+    public Query(SQLManager sqlManager, Class<T> clazz) {
+        this.sqlManager = sqlManager;
+        this.clazz = clazz;
+    }
 
-	public Query<T> andEq(Property<T, ?> fun, Object value) {
-		super.andEq(getFunctionName(fun), value);
-		return this;
-	}
-
-	public Query<T> andNotEq(Property<T, ?> fun, Object value) {
-		super.andNotEq(getFunctionName(fun), value);
-		return this;
-
-	}
-
-	public Query<T> andGreat(Property<T, ?> fun, Object value) {
-		super.appendAndSql(getFunctionName(fun), value, ">");
-		return this;
-
-	}
-
-	public Query<T> andGreatEq(Property<T, ?> fun, Object value) {
-		appendAndSql(getFunctionName(fun), value, ">=");
-		return this;
-	}
-
-	public Query<T> andLess(Property<T, ?> fun, Object value) {
-		appendAndSql(getFunctionName(fun), value, "<");
-		return this;
-	}
-
-	public Query<T> andLessEq(Property<T, ?> fun, Object value) {
-		appendAndSql(getFunctionName(fun), value, "<=");
-		return this;
-	}
-
-	public Query<T> andLike(Property<T, ?> fun, String value) {
-		appendAndSql(getFunctionName(fun), value, "LIKE ");
-		return this;
-	}
-
-	public Query<T> andNotLike(Property<T, ?> fun, String value) {
-		appendAndSql(getFunctionName(fun), value, "NOT LIKE ");
-		return this;
-	}
-
-	public Query<T> andIsNull(Property<T, ?> fun) {
-		appendAndSql(getFunctionName(fun), null, "IS NULL ");
-		return this;
-	}
-
-	public Query<T> andIsNotNull(Property<T, ?> fun) {
-		appendAndSql(getFunctionName(fun), null, "IS NOT NULL ");
-		return this;
-	}
-
-	public Query<T> andIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, IN, AND);
-		return this;
-	}
-
-	public Query<T> andNotIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, NOT_IN, AND);
-		return this;
-	}
-
-	public Query<T> andBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), BETWEEN, AND, value1, value2);
-		return this;
-	}
-
-	public Query<T> andNotBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), NOT_BETWEEN, AND, value1, value2);
-		return this;
-	}
-
-	public Query<T> orEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "=");
-		return this;
-	}
-
-	public Query<T> orNotEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "<>");
-		return this;
-	}
-
-	public Query<T> orGreat(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, ">");
-		return this;
-	}
-
-	public Query<T> orGreatEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, ">=");
-		return this;
-	}
-
-	public Query<T> orLess(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "<");
-		return this;
-	}
-
-	public Query<T> orLessEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "<=");
-		return this;
-	}
-
-	public Query<T> orLike(Property<T, ?> fun, String value) {
-		appendOrSql(getFunctionName(fun), value, "LIKE");
-		return this;
-	}
-
-	public Query<T> orNotLike(Property<T, ?> fun, String value) {
-		appendOrSql(getFunctionName(fun), value, "NOT LIKE");
-		return this;
-	}
-
-	public Query<T> orIsNull(Property<T, ?> fun) {
-		appendOrSql(getFunctionName(fun), null, "IS NULL");
-		return this;
-	}
-
-	public Query<T> orIsNotNull(Property<T, ?> fun) {
-		appendOrSql(getFunctionName(fun), null, "IS NOT NULL");
-		return this;
-	}
-
-	public Query<T> orIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, IN, OR);
-		return this;
-	}
-
-	public Query<T> orNotIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, NOT_IN, OR);
-		return this;
-	}
-
-	public Query<T> orBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), BETWEEN, OR, value1, value2);
-		return this;
-	}
-
-	public Query<T> orNotBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), NOT_BETWEEN, OR, value1, value2);
-		return this;
-	}
-	
-	    public Query<T> groupBy(Property<T, ?> fun) {
-	    		super.groupBy(getFunctionName(fun));
-	      
-	        return this;
-	    }
-
-	    public Query<T> orderBy(Property<T, ?> fun) {
-	    		super.orderBy(getFunctionName(fun));
-	        return this;
-	    }
-
-	private String getFunctionName(Property<T, ?> fun) {
-		LambdaExpression<Property<T, ?>> parsed = LambdaExpression.parse(fun);
-		Expression body = parsed.getBody();
-		Member member = ((MemberExpression) ((InvocationExpression) body).getTarget()).getMember();
-		String method = member.getName();
-		String attr = null;
-		// @TODO,getter到属性
-		if (method.startsWith("get")) {
-			attr = method.substring(3);
+    /**
+     * 获取一个新条件
+     *
+     * @return
+     */
+    public Query<T> condition() {
+        return new Query(this.sqlManager, clazz);
+    }
+    
+    public LamdbaQuery<T> lambda() {
+    	if (BeanKit.queryLambdasSupport) {
+    		return new LamdbaQuery(this.sqlManager, clazz);
 		} else {
-			attr = method.substring(2);
+			throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque,请查阅官网文档");
 		}
-		return sqlManager.getNc().getColName(clazz, attr);
+    	
+    }
+
+
+    @Override
+    public List<T> select(String... columns) {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        for (String column : columns) {
+            sb.append(column).append(",");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(" FROM ").append(getTableName(clazz))
+                .append(" ").append(getSql());
+        this.setSql(sb);
+        List<T> list = this.sqlManager.execute(
+                new SQLReady(getSql().toString(), getParams().toArray()),
+                clazz
+        );
+        return list;
+    }
+
+    @Override
+    public T single() {
+        List<T> list = limit(1,1).select();
+        if(list.isEmpty()){
+            return null;
+        }
+        //同SQLManager.single 一致，只取第一条。
+        return list.get(0);
+    }
+
+    @Override
+    public List<T> select() {
+        StringBuilder sb = new StringBuilder("SELECT * ");
+        sb.append("FROM ").append(getTableName(clazz))
+                .append(" ").append(getSql());
+        this.setSql(sb);
+        List<T> list = this.sqlManager.execute(
+                new SQLReady(getSql().toString(), getParams().toArray()),
+                clazz
+        );
+        return list;
+    }
+
+    @Override
+    public int update(T t) {
+        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(t.getClass());
+        return handlerUpdateSql(t, sqlSource);
+    }
+
+    @Override
+    public int updateSelective(T t) {
+        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAll(t.getClass());
+        return handlerUpdateSql(t, sqlSource);
+    }
+
+    private int handlerUpdateSql(T t, SQLSource sqlSource) {
+        GroupTemplate gt = this.sqlManager.getBeetl().getGroupTemplate();
+
+        StringTemplateResourceLoader resourceLoader = new StringTemplateResourceLoader();
+        Configuration cfg = gt.getConf();
+        GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, cfg);
+        Template template = groupTemplate.getTemplate(sqlSource.getTemplate());
+        template.binding("_paras", new ArrayList<Object>());
+        template.binding(BeanKit.objectToMap(t));
+        String sql = template.render();
+        int i = sql.lastIndexOf(",\r\n");
+        if (i == sql.length() - 3) {
+            sql = sql.substring(0, i);
+        }
+        List<SQLParameter> param = (List<SQLParameter>) template.getCtx().getGlobal("_paras");
+        List<Object> paraLis = new ArrayList<Object>();
+        for (SQLParameter sqlParameter : param) {
+            paraLis.add(sqlParameter.value);
+        }
+
+        addPreParam(paraLis);
+
+        StringBuilder sb = new StringBuilder(sql);
+
+        sb.append(" ").append(getSql());
+
+        this.setSql(sb);
+
+        int row = this.sqlManager.executeUpdate(
+                new SQLReady(getSql().toString(), getParams().toArray())
+        );
+        return row;
+    }
+
+    @Override
+    public int insert(T t) {
+        return this.sqlManager.insert(t, true);
+    }
+
+    @Override
+    public int insertSelective(T t) {
+        return this.sqlManager.insertTemplate(t, true);
+    }
+
+    @Override
+    public int delete() {
+        StringBuilder sb = new StringBuilder("DELETE FROM ");
+        sb.append(getTableName(clazz))
+                .append(" ").append(getSql());
+        this.setSql(sb);
+        int row = this.sqlManager.executeUpdate(
+                new SQLReady(getSql().toString(), getParams().toArray())
+        );
+        return row;
+    }
+
+    @Override
+	public int delete() {
+	    StringBuilder sb = new StringBuilder("DELETE FROM ");
+	    sb.append(getTableName(clazz))
+	            .append(" ").append(getSql());
+	    this.setSql(sb);
+	    int row = this.sqlManager.executeUpdate(
+	            new SQLReady(getSql().toString(), getParams().toArray())
+	    );
+	    return row;
 	}
 
-	private String[] getFunctionName(Property<T, ?>... funs) {
-		String[] cols = new String[funs.length];
-		int i = 0;
-		for (Property<T, ?> fun : funs) {
-			cols[i++] = this.getFunctionName(fun);
-		}
-		return cols;
+	@Override
+    public long count() {
+        StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
+        sb.append(getTableName(clazz))
+                .append(" ").append(getSql());
+        this.setSql(sb);
+        List results = this.sqlManager.execute(
+                new SQLReady(getSql().toString(), getParams().toArray()), Long.class
+        );
+        return (Long) results.get(0);
+    }
 
-	}
+    @Override
+    public Query<T> having(QueryCondition condition) {
+        //去除叠加条件中的WHERE
+        int i = condition.getSql().indexOf(WHERE);
+        if (i > -1) {
+            condition.getSql().delete(i, i + 5);
+        }
+        this.appendSql("HAVING ")
+                .appendSql(condition.getSql().toString())
+                .appendSql(" ");
+        this.addParam(condition.getParams());
+        return this;
+    }
 
-	public interface Property<T, R> extends Function<T, R>, Serializable {
-	}
+    @Override
+    public Query<T> groupBy(String column) {
+        this.appendSql("GROUP BY ")
+                .appendSql(column)
+                .appendSql(" ");
+        return this;
+    }
+
+    @Override
+    public Query<T> orderBy(String orderBy) {
+        this.appendSql("ORDER BY ")
+                .appendSql(orderBy)
+                .appendSql(" ");
+        return this;
+    }
+
+    @Override
+    public Query<T> limit(long startRow, long pageSize) {
+        setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+        return this;
+    }
 
 }

@@ -4,10 +4,7 @@ package org.beetl.sql.core.query.interfacer;
 import java.util.List;
 
 /**
- * @ClassName: QueryExecuteI
- * @Description:
- * @author GavinKing
- * @date 2017/11/12
+ *@author GavinKing
  *
  */
 public interface QueryExecuteI<M>{

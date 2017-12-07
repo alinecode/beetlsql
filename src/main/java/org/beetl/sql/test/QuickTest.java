@@ -1,9 +1,13 @@
 package org.beetl.sql.test;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.sql.DataSource;
 
+import org.apache.poi.hssf.record.formula.functions.T;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ConnectionSourceHelper;
@@ -12,8 +16,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.query.Query;
-import org.beetl.sql.core.query.Java6Query;
+import org.beetl.sql.core.query.LamdbaQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -43,8 +46,8 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		UserDao dao = sql.getMapper(UserDao.class);
-		dao.select();
+//		UserDao dao = sql.getMapper(UserDao.class);
+//		dao.select();
 //		sql.select("wan.user.dateTest", Map.class,null,new RowMapper<Map>() {
 //
 //			@Override
@@ -54,16 +57,18 @@ public class QuickTest {
 //				return (Map)obj;
 //			}
 //		});
-		sql.unique(User.class, 1);
-//		sql.genSQLTemplateToConsole("user");
-//		Java6Query<User> query = sql.getQuery6(User.class);
-//		List<User> list = query.andEq("name", "hi").orderBy("id").select();
-//		
+//		sql.unique(User.class, 1);
+		
+		List<User> list  = sql.query(User.class).limit(1, 4).select();
+	
 //		//jdk 8 允许写法
-//		Query<User> query8 = sql.getQuery(User.class);
-//		List<User> list1 = query8.andEq(User::getName, "hi").orderBy(User::getId).select();
+//		List<User> list1  = sql.query(User.class).lamdba().andEq(User::getName, "hi").orderBy(User::getId).select();
 		
 			
+	}
+	
+	static void test(Function<T,?> fun) {
+		System.out.println(fun);
 	}
 	
 	

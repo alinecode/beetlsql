@@ -5,9 +5,7 @@ import org.beetl.sql.core.query.QueryCondition;
 
 /**
  * @author GavinKing
- * @ClassName: QueryOtherI
- * @Description: 查询器接口
- * @date 2017/11/5
+ *
  */
 public interface QueryOtherI<T extends QueryOtherI>{
 
