@@ -4,6 +4,7 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.SQLSource;
@@ -65,13 +66,28 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
 
     @Override
-    public T single() {
-        List<T> list = limit(1,1).select();
+    public  T single() {
+        List<T> list = limit(getFirtRowNumber(),1).select();
         if(list.isEmpty()){
             return null;
         }
         //同SQLManager.single 一致，只取第一条。
         return list.get(0);
+    }
+    
+    @Override
+    public T unique() {
+        List<T> list = limit(getFirtRowNumber(),2).select();
+        if(list.isEmpty()){
+              throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集");
+        }else if(list.size()!=1) {
+        	throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，查询出多条结果集");
+        }
+        return list.get(0);
+    }
+    
+    private int getFirtRowNumber() {
+    	return this.sqlManager.isOffsetStartZero()?0:1;
     }
 
     @Override
@@ -155,17 +171,6 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return row;
     }
 
-    @Override
-	public int delete() {
-	    StringBuilder sb = new StringBuilder("DELETE FROM ");
-	    sb.append(getTableName(clazz))
-	            .append(" ").append(getSql());
-	    this.setSql(sb);
-	    int row = this.sqlManager.executeUpdate(
-	            new SQLReady(getSql().toString(), getParams().toArray())
-	    );
-	    return row;
-	}
 
 	@Override
     public long count() {
@@ -209,6 +214,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return this;
     }
 
+    /**
+     * 默认从1开始，自动翻译成数据库的起始位置。如果配置了OFFSET_START_ZERO =true，则从0开始。
+     */
     @Override
     public Query<T> limit(long startRow, long pageSize) {
         setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));

@@ -22,6 +22,7 @@ import org.beetl.sql.core.mapper.internal.InsertBatchAmi;
 import org.beetl.sql.core.mapper.internal.InsertReturnKeyAmi;
 import org.beetl.sql.core.mapper.internal.InsertTemplateAmi;
 import org.beetl.sql.core.mapper.internal.LockAmi;
+import org.beetl.sql.core.mapper.internal.QueryAmi;
 import org.beetl.sql.core.mapper.internal.SingleAmi;
 import org.beetl.sql.core.mapper.internal.TemplateAmi;
 import org.beetl.sql.core.mapper.internal.TemplateCountAmi;
@@ -87,6 +88,7 @@ public final class MapperInvokeDataConfig {
         INTERNAL_AMI_METHOD.put("getSQLManager", new GetSQLManagerAmi());
         INTERNAL_AMI_METHOD.put("insertTemplate", new InsertTemplateAmi());
         INTERNAL_AMI_METHOD.put("templatePage", new TemplatePageAmi());
+        INTERNAL_AMI_METHOD.put("createQuery", new QueryAmi());
 
         
         BASE_MAPPER_BUILDER = new MapperConfigBuilder();

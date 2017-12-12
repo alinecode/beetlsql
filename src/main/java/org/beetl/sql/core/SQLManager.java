@@ -608,7 +608,8 @@ public class SQLManager {
         if (paras == null) {
             root = new HashMap<String, Object>();
         } else if (paras instanceof Map) {
-            root = (Map<String, Object>) paras;
+        	 root = new HashMap<String, Object>((Map<String, Object>) paras);
+//            root = (Map<String, Object>) paras;
         } else {
             root = new HashMap<String, Object>();
             root.put("_root", paras);

@@ -21,6 +21,11 @@ public interface QueryExecuteI<M>{
      * @return
      */
     <M> M single();
+    /**
+     * 查询一条，如果没有或者有多条，抛异常
+     * @return
+     */
+    <M> M unique();
 
     /**
      * 查询所有字段

@@ -1,4 +1,4 @@
-getIds
+getIds3
 ===
 	select 
 	@pageTag(){
@@ -9,7 +9,7 @@ getIds
 cols	
 ===
 
-	u.*
+	u.name
 	
 select  
 ===

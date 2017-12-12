@@ -5,6 +5,7 @@ import java.util.List;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.query.Query;
 
 /**
  * BaseMapper.
@@ -152,6 +153,13 @@ public interface BaseMapper<T> {
 	 * @return
 	 */
 	int executeUpdate(String sql,Object... args );
+	
 	SQLManager getSQLManager();
+	
+	/**
+	 * 返回一个Query对象
+	 * @return
+	 */
+	Query<T> createQuery();
 
 }
