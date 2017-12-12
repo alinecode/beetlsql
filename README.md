@@ -130,7 +130,11 @@ user.selectRole
 
 * 与hiberante，myabtis比较
 
-<img src="http://ibeetl.com/guide/beetlsqlpk.jpg" width = "100%" height = "100%"  />
+![pk.png](pk.png)
+
+
+
+说明博客：https://my.oschina.net/xiandafu/blog/617542
 
 
 # 开发人员帅照
