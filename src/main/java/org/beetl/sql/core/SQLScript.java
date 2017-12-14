@@ -7,6 +7,7 @@ import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
+import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
 import org.beetl.sql.core.orm.LazyMappingEntity;
@@ -905,8 +906,9 @@ public class SQLScript {
             for (Entry<String, AssignID> entry : ids.entrySet()) {
                 String attrName = entry.getKey();
                 Object value = BeanKit.getBeanProperty(obj, attrName);
-	             // 已经有值的列尊重调用者设置的值，@lidaoguang 
-	             if (value != null) {
+	             // 已经有值的列尊重调用者设置的值，@lidaoguang
+                 // 严格判断 null 和 empty 的 value，支持 ID 类型为 String 或者 Char 类型的情况 @larrykoo
+	             if (StringKit.isNullOrEmpty(value)) {
 	                 continue;
 	             }
                 AssignID assignId = entry.getValue();
