@@ -908,7 +908,7 @@ public class SQLScript {
                 Object value = BeanKit.getBeanProperty(obj, attrName);
 	             // 已经有值的列尊重调用者设置的值，@lidaoguang
                  // 严格判断 null 和 empty 的 value，支持 ID 类型为 String 或者 Char 类型的情况 @larrykoo
-	             if (StringKit.isNullOrEmpty(value)) {
+	             if (!StringKit.isNullOrEmpty(value)) {
 	                 continue;
 	             }
                 AssignID assignId = entry.getValue();
