@@ -49,7 +49,7 @@ public class QuickTest {
 		BloodRelationship1 s = sql.unique(BloodRelationship1.class, 1);
 		
 		BloodRelationshipVO vo = new BloodRelationshipVO();
-		vo.setId(s.getId());
+		vo.setId(5);
 		vo.setUserId(s.getUserId());
 		vo.setCreateTime(new Timestamp(System.currentTimeMillis()));
 		BloodRelationshipVO vo1 = new BloodRelationshipVO();
@@ -107,5 +107,6 @@ public class QuickTest {
 	
 	
 }
+
 
 

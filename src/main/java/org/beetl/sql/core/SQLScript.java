@@ -1,25 +1,40 @@
 package org.beetl.sql.core;
 
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.db.*;
+import org.beetl.sql.core.db.ClassDesc;
+import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.KeyHolder;
+import org.beetl.sql.core.db.MetadataManager;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
+import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
 import org.beetl.sql.core.orm.LazyMappingEntity;
 import org.beetl.sql.core.orm.MappingEntity;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
-
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.*;
-import java.util.*;
-import java.util.Map.Entry;
 
 public class SQLScript {
 
@@ -570,40 +585,64 @@ public class SQLScript {
         if (list.size() == 0) {
             return new int[0];
         }
-        int[] rs = null;
-        PreparedStatement ps = null;
         Connection conn = null;
+        InterceptorContext lastCtx = null;
+        int[] jdbcRets = new int[list.size()];
         // 执行jdbc
-        InterceptorContext ctx = null;
         try {
-
+        	//记录不同sql对应的PreparedStatement
+        	Map<String,PreparedStatement> batchPs = new HashMap<String,PreparedStatement>();
+        	//上下文
+        	Map<String,InterceptorContext> batchCtx = new HashMap<String,InterceptorContext>();
+        	//不同sql产生的批处理结果，汇总到jdbcRets
+        	Map<String,List<Integer>> batchRet = new HashMap<String,List<Integer>>();
             for (int k = 0; k < list.size(); k++) {
                 Map<String, Object> paras = new HashMap<String, Object>();
                 paras.put("_root", list.get(k));
                 SQLResult result = run(paras);
                 List<SQLParameter> objs = result.jdbcPara;
-
+                PreparedStatement ps = batchPs.get(result.jdbcSql);
+                List<Integer> rets = batchRet.get(result.jdbcSql);
+                InterceptorContext ctx = batchCtx.get(result.jdbcSql);
                 if (ps == null) {
                     conn = sm.getDs().getConn(id, true, result.jdbcSql, objs);
                     ps = conn.prepareStatement(result.jdbcSql);
-                    ctx = this.callInterceptorAsBefore(this.id, result.jdbcSql, true, new ArrayList<SQLParameter>(0), paras);
+                    ctx = new InterceptorContext(id, result.jdbcSql, new ArrayList<SQLParameter>(0), paras, true);
+                    rets = new ArrayList<Integer> ();
+                    batchCtx.put(result.jdbcSql, ctx);
+                    batchPs.put(result.jdbcSql, ps);
+                    batchRet.put(result.jdbcSql, rets);
                 }
-
+               
                 this.setPreparedStatementPara(ps, objs);
-
                 ps.addBatch();
-
+                rets.add(k);
+                ctx.getParas().add(new SQLParameter(objs));
             }
-            rs = ps.executeBatch();
-            this.callInterceptorAsAfter(ctx, rs);
+            
+            for(Entry<String,PreparedStatement> entry:batchPs.entrySet()) {
+            	PreparedStatement ps = entry.getValue();
+            	lastCtx = batchCtx.get(entry.getKey());
+            	 List<Integer> rets  = batchRet.get(entry.getKey());
+	        	 for (Interceptor in : sm.inters) {
+	                 in.before(lastCtx);
+	             }
+            	int[] rs = ps.executeBatch();
+            	for(int i=0;i<rs.length;i++) {
+            		int realIndex = rets.get(i);
+            		jdbcRets[realIndex] = rs[i];
+            	}
+            	this.callInterceptorAsAfter(lastCtx, rs);
+            }
+            
 
         } catch (SQLException e) {
-            this.callInterceptorAsException(ctx, e);
+            this.callInterceptorAsException(lastCtx, e);
             throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
         } finally {
-            clean(true, conn, ps);
+            clean(conn);
         }
-        return rs;
+        return jdbcRets;
     }
 
 
@@ -905,8 +944,9 @@ public class SQLScript {
             for (Entry<String, AssignID> entry : ids.entrySet()) {
                 String attrName = entry.getKey();
                 Object value = BeanKit.getBeanProperty(obj, attrName);
-	             // 已经有值的列尊重调用者设置的值，@lidaoguang 
-	             if (value != null) {
+	             // 已经有值的列尊重调用者设置的值，@lidaoguang
+                 // 严格判断 null 和 empty 的 value，支持 ID 类型为 String 或者 Char 类型的情况 @larrykoo
+	             if (!StringKit.isNullOrEmpty(value)) {
 	                 continue;
 	             }
                 AssignID assignId = entry.getValue();

@@ -1256,6 +1256,16 @@ public class SQLManager {
         return script.update(paras);
     }
 
+    /**
+     * 按照模板更新
+     * @param c
+     * @param obj
+     * @return
+     */
+    public int updateTemplateById(Class c, Object obj) {
+        SQLScript script = getScript(c, UPDATE_TEMPLATE_BY_ID);
+        return script.update(obj);
+    }
     /****
      * 批量更新
      *
