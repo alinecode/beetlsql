@@ -173,8 +173,7 @@ public class StringKit {
      * 判断一个 Object 是否为空，不包含集合对象的判断
      *
      * @param obj need to determine the object
-     * @author @larrykoo
-     * @date 2017-12-14 17:07
+     * @author larrykoo
      * @return
      */
     public static boolean isNullOrEmpty(Object obj) {
@@ -191,8 +190,7 @@ public class StringKit {
      * 严格判断一个 Object 是否为空，包括对象为 null，字符串长度为0，集合类，Map 为 empty 的情况
      *
      * @param obj
-     * @author @larrykoo
-     * @date 2017-12-14 17:07
+     * @author larrykoo
      * @return
      */
     public static boolean isNullOrEmptyObject(Object obj) {
