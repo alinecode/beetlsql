@@ -3,6 +3,7 @@ package org.beetl.sql.core.orm;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,10 +42,10 @@ public class MappingEntity implements java.io.Serializable {
 
 	
    Map<String,List> cache = new HashMap<String,List>();
-   public void map(Object o, SQLManager sm) {
-	   this.map(Arrays.asList(o), sm);
+   public void singleMap(Object o, SQLManager sm) {
+	   this.map(Arrays.asList(o), sm,Collections.EMPTY_MAP);
    }
-	public void map(List list, SQLManager sm) {
+	public void map(List list, SQLManager sm,Map paras) {
 		if(list.size()==0){
 			return ;
 		}
@@ -67,7 +68,7 @@ public class MappingEntity implements java.io.Serializable {
 		
 		
 		for (Object obj : list) {
-			mapClassItem(obj, sm);
+			mapClassItem(obj, sm,paras);
 
 		}
 
@@ -145,7 +146,7 @@ public class MappingEntity implements java.io.Serializable {
 
 
 
-	protected void mapClassItem(Object obj, SQLManager sm) {
+	protected void mapClassItem(Object obj, SQLManager sm,Map sqlParas) {
 		
 	    
 		List ret = null;
@@ -160,6 +161,10 @@ public class MappingEntity implements java.io.Serializable {
 				paras.put(targetAttr, value);
 				key.append(value).append("_");
 				
+			}
+			if(!sqlParas.isEmpty()) {
+				//外部参数，非映射参数
+				paras.putAll(sqlParas);
 			}
 			String cacheKey = key.toString();
 			if(cache.containsKey(cacheKey)){

@@ -17,3 +17,16 @@ select
 	select 
 	*
 	from user 
+	
+	
+selectUserAndDepartment
+===
+    select * from user where 1=1
+    @ orm.single({"departmentId":"id"},"Department");
+    @ orm.many({"id":"userId"},"wan.user.selectRole","Role");
+
+selectRole
+===
+
+    select r.* from user_role ur left join role r on ur.role_id=r.id
+    where ur.user_id=#userId# and state=#state#

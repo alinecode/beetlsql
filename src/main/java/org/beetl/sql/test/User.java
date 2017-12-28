@@ -3,7 +3,7 @@ package org.beetl.sql.test;
 import org.beetl.sql.core.TailBean;
 
 
-public class User   {
+public class User extends  TailBean {
 	
 	private Integer id ;
 	private String name ;

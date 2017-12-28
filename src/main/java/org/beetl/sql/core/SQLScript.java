@@ -375,7 +375,7 @@ public class SQLScript {
                 //1.5.0 feature
                 if (result.mapingEntrys != null) {
                     for (MappingEntity mapConf : result.mapingEntrys) {
-                        mapConf.map(resultList, sm);
+                        mapConf.map(resultList, sm,paras);
                     }
                 }
             }
@@ -699,7 +699,7 @@ public class SQLScript {
                 //orm
                 if (model != null && result.mapingEntrys != null) {
                     for (MappingEntity mapConf : result.mapingEntrys) {
-                        mapConf.map(model, sm);
+                        mapConf.singleMap(model, sm);
                     }
                 }
             } catch (BeetlSQLException ex) {

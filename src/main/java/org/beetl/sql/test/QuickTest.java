@@ -1,8 +1,8 @@
 package org.beetl.sql.test;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.sql.DataSource;
@@ -45,34 +45,12 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		
-		BloodRelationship1 s = sql.unique(BloodRelationship1.class, 1);
-		
-		BloodRelationshipVO vo = new BloodRelationshipVO();
-		vo.setId(5);
-		vo.setUserId(s.getUserId());
-		vo.setCreateTime(new Timestamp(System.currentTimeMillis()));
-		BloodRelationshipVO vo1 = new BloodRelationshipVO();
-		vo1.setId(2);
-		vo1.setUserId(s.getUserId());
-		
-	
-		List list = Arrays.asList(vo1,vo);
-		sql.updateBatchTemplateById(BloodRelationship1.class, list);
-//		sql.updateTemplateById(vo);
-		
-//		UserDao dao = sql.getMapper(UserDao.class);
-//		
-//		PageQuery query = new PageQuery();
-//		query.setPara("a", "b");
-//		dao.getIds3(query);
-//		
-////		List<User> list = dao.createQuery().andEq("name", "hi").single();
-//		User user  = dao.createQuery().andEq("name", "hi").unique();
-	
-//		//jdk 8 允许写法
-//		List<User> list1  = sql.query(User.class).lamdba().andEq(User::getName, "hi").orderBy(User::getId).select();
-		
+		Map paras = new HashMap();
+		paras.put("state", 1);
+		List<User> list  = sql.select("wan.user.selectUserAndDepartment", User.class,paras);
+		User user = list.get(0);
+		List<Role> roles = (List<Role>)user.get("role");
+		System.out.println(roles);
 			
 	}
 	
