@@ -4,7 +4,7 @@ getIds3
 	@pageTag(){
 	 #use("cols")#
 	@}
-	from user  u where 1=1 and 1=1 and 1=1
+	from test  u where 1=1 and 1=1 and 1=1
 
 cols	
 ===

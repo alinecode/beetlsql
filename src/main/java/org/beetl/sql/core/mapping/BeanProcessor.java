@@ -206,6 +206,10 @@ public class BeanProcessor {
 				columnName = rsmd.getColumnName(i);
 			}
 			int colType = rsmd.getColumnType(i);
+			if((dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_SQLSERVER) &&  columnName.equalsIgnoreCase("beetl_rn")){
+				//sql server 特殊处理，sql'server的翻页使用了额外列作为翻页参数，需要过滤
+				continue;
+			}
 			Class  classType = JavaType.jdbcJavaTypes.get(colType);
 			JavaSqlTypeHandler handler = handlers.get(classType);
 			

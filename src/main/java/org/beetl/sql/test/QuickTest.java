@@ -1,6 +1,6 @@
 package org.beetl.sql.test;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -16,6 +16,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -45,12 +46,17 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		Map paras = new HashMap();
-		paras.put("state", 1);
-		List<User> list  = sql.select("wan.user.selectUserAndDepartment", User.class,paras);
-		User user = list.get(0);
-		List<Role> roles = (List<Role>)user.get("role");
-		System.out.println(roles);
+
+		
+		List list = new ArrayList();
+		for(int i=0;i<1000;i++) {
+			User user = new User();
+			user.setName("a"+System.currentTimeMillis());
+			list.add(user);
+		}
+		Long start = System.currentTimeMillis();
+		sql.insertBatch(User.class, list);
+		System.out.println((System.currentTimeMillis()-start));
 			
 	}
 	
@@ -69,6 +75,7 @@ public class QuickTest {
 		ds.setUsername(MysqlDBConfig.userName);
 		ds.setPassword(MysqlDBConfig.password);
 		ds.setDriverClassName(MysqlDBConfig.driver);
+//		ds.setAutoCommit(false);
 		return ds;
 	}
 	

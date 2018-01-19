@@ -1,10 +1,9 @@
 package org.beetl.sql.test;
 
 import org.beetl.sql.core.TailBean;
-
+import org.beetl.sql.core.annotatoin.Table;
 
 public class User extends  TailBean {
-	
 	private Integer id ;
 	private String name ;
 	public Integer getId() {

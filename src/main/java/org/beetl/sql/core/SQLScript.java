@@ -830,8 +830,11 @@ public class SQLScript {
 
                     if (conn != null) {
                         // colse 不一定能保证能自动commit
-                        if (isUpdate && !conn.getAutoCommit())
-                            conn.commit();
+                        if (isUpdate && !conn.getAutoCommit()) {
+                        
+                        	conn.commit();
+                        }
+                            
                         conn.close();
                     }
                 } catch (SQLException e) {
