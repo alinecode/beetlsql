@@ -47,17 +47,8 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 
-		
-		List list = new ArrayList();
-		for(int i=0;i<1000;i++) {
-			User user = new User();
-			user.setName("a"+System.currentTimeMillis());
-			list.add(user);
-		}
-		Long start = System.currentTimeMillis();
-		sql.insertBatch(User.class, list);
-		System.out.println((System.currentTimeMillis()-start));
-			
+		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
+		User user = users.get(0);	
 	}
 	
 	static void test(Function<T,?> fun) {

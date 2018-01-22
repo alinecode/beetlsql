@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.beetl.core.exception.BeetlException;
+import org.beetl.core.om.MethodInvoker;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.Tail;
@@ -162,7 +164,7 @@ public class MappingEntity implements java.io.Serializable {
 				key.append(value).append("_");
 				
 			}
-			if(!sqlParas.isEmpty()) {
+			if(sqlParas!=null&&!sqlParas.isEmpty()) {
 				//外部参数，非映射参数
 				paras.putAll(sqlParas);
 			}
@@ -215,13 +217,23 @@ public class MappingEntity implements java.io.Serializable {
 	
 
 	protected void setTailAttr(Object o, Object value) {
-		if (o instanceof Tail) {
+		
+		MethodInvoker setter = BeanKit.getMethodInvokerProperty(o,tailName);
+		if(setter!= null) {
+			try {
+				setter.set(o, value);
+			}catch(BeetlException ex) {
+				throw new RuntimeException(ex);
+			}
+			
+		}
+		else if (o instanceof Tail) {
 			((Tail) o).set(tailName, value);
 		} else {
 			// annotation
 			Method m = BeanKit.getTailMethod(o.getClass());
 			if (m == null) {
-				throw new RuntimeException("must implement tail or use @tail");
+				throw new RuntimeException("OR/Mapping 找不到对应的setter方法:"+tailName+",请设置setter方法或者实现Tail接口，采用@Tail注解");
 			}
 			try {
 				m.invoke(o, tailName, value);

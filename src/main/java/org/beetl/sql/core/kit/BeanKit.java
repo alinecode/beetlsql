@@ -188,6 +188,11 @@ public class BeanKit {
             throw new RuntimeException("POJO属性访问出错:" + attrName, ex);
         }
     }
+    
+    public static MethodInvoker getMethodInvokerProperty(Object o, String attrName) {
+
+    	return ObjectUtil.getInvokder(o.getClass(), attrName);
+    }
 
     public static void setBeanProperty(Object o, Object value, String attrName) {
 

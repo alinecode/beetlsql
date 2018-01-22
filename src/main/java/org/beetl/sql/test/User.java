@@ -1,11 +1,13 @@
 package org.beetl.sql.test;
 
+import java.util.List;
+
 import org.beetl.sql.core.TailBean;
-import org.beetl.sql.core.annotatoin.Table;
 
 public class User extends  TailBean {
 	private Integer id ;
 	private String name ;
+	private List<Role> myRoles;
 	public Integer getId() {
 		return id;
 	}
@@ -18,6 +20,14 @@ public class User extends  TailBean {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public List<Role> getMyRoles() {
+		return myRoles;
+	}
+	public void setMyRoles(List<Role> myRoles) {
+		this.myRoles = myRoles;
+	}
+	
+	
 
 	
 
