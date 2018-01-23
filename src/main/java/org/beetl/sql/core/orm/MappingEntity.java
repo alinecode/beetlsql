@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.beetl.core.exception.BeetlException;
 import org.beetl.core.om.MethodInvoker;
+import org.beetl.core.om.PojoMethodInvoker;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.Tail;
@@ -219,7 +220,8 @@ public class MappingEntity implements java.io.Serializable {
 	protected void setTailAttr(Object o, Object value) {
 		
 		MethodInvoker setter = BeanKit.getMethodInvokerProperty(o,tailName);
-		if(setter!= null) {
+		
+		if(setter!= null&& setter instanceof PojoMethodInvoker) {
 			try {
 				setter.set(o, value);
 			}catch(BeetlException ex) {
@@ -255,25 +257,18 @@ public class MappingEntity implements java.io.Serializable {
 	}
 
 	protected Class getCls(String fullName) {
-		Class cls = null;
-
 		try {
-			cls = Class.forName(fullName);
-			return cls;
-		} catch (Exception ex) {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			if (loader != null) {
-				try {
-					cls = loader.loadClass(fullName);
-					return cls;
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-
-			} else {
-				throw new RuntimeException(ex);
+			if(loader!=null) {
+				return loader.loadClass(fullName);
+			}else {
+				return this.getClass().forName(fullName);
 			}
+		}catch(Exception ex) {
+			throw new RuntimeException(ex);
 		}
+		
+		
 	}
 
 	public String getTarget() {
