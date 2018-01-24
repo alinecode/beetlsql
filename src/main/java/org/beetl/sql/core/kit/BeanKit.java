@@ -345,28 +345,7 @@ public class BeanKit {
         return writeMethod;
     }
 
-    public static Map<String, Object> objectToMap(Object obj) {
-        if (obj == null) {
-            return null;
-        }
-
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        Field[] declaredFields = obj.getClass().getDeclaredFields();
-        for (Field field : declaredFields) {
-            field.setAccessible(true);
-            try {
-                map.put(field.getName(), field.get(obj));
-            } catch (IllegalAccessException e) {
-                throw new BeetlSQLException(BeetlSQLException.GET_OBJECT_PROPERTY_ERROR,
-                        "获取[" + obj.getClass().getName() + "]类的[" + field.getName() + "]属性失败"
-                        , e);
-            }
-
-        }
-
-        return map;
-    }
+   
     
     
 

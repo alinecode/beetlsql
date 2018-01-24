@@ -36,17 +36,17 @@ public interface QueryExecuteI<M>{
 
     /***
      * 全部更新，包括更新null值
-     * @param m
+     * @param t,任意对象，或者Map
      * @return 影响的行数
      */
-    int update(M m);
+    int update(Object t);
 
     /***
      * 有选择的更新
-     * @param m
+     * @param t 任意对象或者Map
      * @return 影响的行数
      */
-    int updateSelective(M m);
+    int updateSelective(Object t);
 
     /***
      * 全部插入，包括插入null值

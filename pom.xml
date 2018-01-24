@@ -124,21 +124,15 @@
             <scope>provided</scope>
         </dependency>
 
-		<!--dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> 
+		<!--  dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> 
 			<version>4.0</version> <scope>system</scope> <systemPath>${basedir}/lib/sqljdbc4.jar</systemPath> 
-			</dependency> -->
+			</dependency-->
 
 		<!-- <dependency> <groupId>oracle</groupId> <artifactId>oralce-express</artifactId> 
 			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath> 
 			</dependency> -->
 
-			<dependency>
-				<groupId>test</groupId>
-				<artifactId>mytest</artifactId>
-				<version>6</version>
-				<scope>system</scope>
-				<systemPath>${basedir}/lib/testsql.jar</systemPath>
-			</dependency> 
+			 
 		<!-- dependency> <groupId>db2</groupId> <artifactId>driver</artifactId> 
 			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/db2jcc.jar</systemPath> 
 			</dependency -->

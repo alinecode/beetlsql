@@ -30,6 +30,10 @@ public interface QueryOtherI<T extends QueryOtherI>{
      * @return
      */
     T orderBy(String orderBy);
+    
+    T asc(String column);
+    
+    T desc(String column);
 
     /***
      * limit 子句

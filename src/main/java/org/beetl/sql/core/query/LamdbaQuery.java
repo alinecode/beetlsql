@@ -12,6 +12,7 @@ import com.trigersoft.jaque.expression.Expression;
 import com.trigersoft.jaque.expression.InvocationExpression;
 import com.trigersoft.jaque.expression.LambdaExpression;
 import com.trigersoft.jaque.expression.MemberExpression;
+
 /**
  * 
  * @author xiandafu
@@ -170,17 +171,28 @@ public class LamdbaQuery<T> extends Query<T> {
 		appendBetweenSql(getFunctionName(fun), NOT_BETWEEN, OR, value1, value2);
 		return this;
 	}
-	
-	    public LamdbaQuery<T> groupBy(Property<T, ?> fun) {
-	    		super.groupBy(getFunctionName(fun));
-	      
-	        return this;
-	    }
 
-	    public LamdbaQuery<T> orderBy(Property<T, ?> fun) {
-	    		super.orderBy(getFunctionName(fun));
-	        return this;
-	    }
+	public LamdbaQuery<T> groupBy(Property<T, ?> fun) {
+		super.groupBy(getFunctionName(fun));
+
+		return this;
+	}
+
+	public LamdbaQuery<T> orderBy(Property<T, ?> fun) {
+		super.orderBy(getFunctionName(fun));
+		return this;
+	}
+
+	public Query asc(Property<T, ?> fun) {
+		super.asc(getFunctionName(fun));
+
+		return this;
+	}
+
+	public Query desc(Property<T, ?> fun) {
+		super.desc(getFunctionName(fun));
+		return this;
+	}
 
 	private String getFunctionName(Property<T, ?> fun) {
 		LambdaExpression parsed = LambdaExpression.parse(fun);

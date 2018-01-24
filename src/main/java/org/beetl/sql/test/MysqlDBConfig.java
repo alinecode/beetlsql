@@ -8,6 +8,8 @@ public class MysqlDBConfig {
     public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"?&serverTimezone=UTC";
     
     
+    
+    
 //    public static String driver = "com.ibm.db2.jcc.DB2Driver";
 //    public static String dbName = "TESTDB";
 //    public static String password = "db2inst1_1";
@@ -15,11 +17,10 @@ public class MysqlDBConfig {
 //    public static String url = "jdbc:db2://118.89.242.231:50000/TESTDB";
 
 //    public static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-//    public static String dbName = "test";
-//    public static String password = "123456";
-//    public static String userName = "test";
-//    public static String url = "jdbc:sqlserver://LIJIAZHI:1433;" +  
-//    		   "databaseName=test;user=test;password=123456;";  ;
+//    public static String dbName = "dev";
+//    public static String password = "develop";
+//    public static String userName = "dev";
+//    public static String url = "jdbc:sqlserver://175.102.10.132:1733;databaseName=dev";  ;
     
 //    public static String driver = "oracle.jdbc.driver.OracleDriver";
 //    public static String dbName = "risk";

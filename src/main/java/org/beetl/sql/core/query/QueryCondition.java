@@ -19,8 +19,12 @@ public class QueryCondition<T> implements QueryConditionI<T> {
 
 
     public SQLManager sqlManager;
-    private StringBuilder sql = null;
-    private List<Object> params = new ArrayList<Object>();
+    protected StringBuilder sql = null;
+    protected List<Object> params = new ArrayList<Object>();
+    protected long startRow=-1,pageSize=-1;
+    protected OrderBy orderBy = null;
+    protected GroupBy groupBy = null;
+    
     public final String AND = "AND";
     public final String OR = "OR";
     public final String WHERE = "WHERE";

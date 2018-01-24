@@ -1,5 +1,6 @@
 package org.beetl.sql.test;
 
+import java.util.List;
 import java.util.function.Function;
 
 import javax.sql.DataSource;
@@ -30,6 +31,7 @@ public class QuickTest {
 		
 //		DB2SqlStyle style = new DB2SqlStyle();
 //		SqlServerStyle style = new SqlServerStyle();
+//		SqlServer2012Style style = new SqlServer2012Style();
 //		OracleStyle style = new OracleStyle();
 		MySqlStyle style = new MySqlStyle();
 //		
@@ -40,12 +42,15 @@ public class QuickTest {
 		
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
-	
+		
 				
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		sql.query(User.class).andEq("id", 1).single();
+		User temp = new User();
+		temp.setName("hellogo");
+		int ret = sql.query(User.class).update(temp);
+		
 //		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
 //		User user = users.get(0);	
 	}

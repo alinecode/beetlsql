@@ -1,5 +1,8 @@
 package org.beetl.sql.core.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
@@ -13,9 +16,6 @@ import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.query.interfacer.QueryExecuteI;
 import org.beetl.sql.core.query.interfacer.QueryOtherI;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author GavinKing
 
@@ -23,7 +23,7 @@ import java.util.List;
 public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
 
     Class<T> clazz = null;
-    private long startRow=-1,pageSize=-1;
+    StringTemplateResourceLoader tempLoader = new StringTemplateResourceLoader();
 
     public Query(SQLManager sqlManager, Class<T> clazz) {
         this.sqlManager = sqlManager;
@@ -41,7 +41,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     
     public LamdbaQuery<T> lambda() {
     	if (BeanKit.queryLambdasSupport) {
-    		return new LamdbaQuery(this.sqlManager, clazz);
+    		LamdbaQuery newQuery =  new LamdbaQuery(this.sqlManager, clazz);
+    		if(this.sql!=null||this.groupBy!=null||this.orderBy!=null) {
+    			throw new UnsupportedOperationException("LamdbaQuery必须在调用其他AP前获取");
+    		}
+    		return newQuery;
 		} else {
 			throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque,请查阅官网文档");
 		}
@@ -59,10 +63,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         sb.append(" FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-       //增加翻页
-        if(this.startRow!=-1) {
-        	setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
-        }
+        makeSql();
+                
         List<T> list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
@@ -101,39 +103,52 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         sb.append("FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
-        //增加翻页
-        if(this.startRow!=-1) {
-        	setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
-        }
-        
+        makeSql();
         List<T> list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
         );
         return list;
     }
+    /**
+     * 增加分页，排序
+     */
+    private void makeSql() {
+    	 StringBuilder sb = this.getSql();
+    	 if(this.orderBy!=null) {
+         	sb.append(orderBy.getOrderBy()).append(" ");
+         }
+    	 
+    	 if(this.groupBy!=null) {
+    		 sb.append(groupBy.getGroupBy()).append(" ");
+    	 }
+         //增加翻页
+         if(this.startRow!=-1) {
+         	setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+         }
+    }
 
     @Override
-    public int update(T t) {
-        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(t.getClass());
+    public int update(Object t) {
+        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(clazz);
         return handlerUpdateSql(t, sqlSource);
     }
 
     @Override
-    public int updateSelective(T t) {
-        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAll(t.getClass());
+    public int updateSelective(Object t) {
+        SQLSource sqlSource = this.sqlManager.getDbStyle().genUpdateAll(clazz);
         return handlerUpdateSql(t, sqlSource);
     }
 
-    private int handlerUpdateSql(T t, SQLSource sqlSource) {
+    private int handlerUpdateSql(Object t, SQLSource sqlSource) {
+    	if(this.sql==null||this.sql.length()==0) {
+    		throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR,"update操作没有输入过滤条件会导致更新所有记录");
+    	}
+    	
         GroupTemplate gt = this.sqlManager.getBeetl().getGroupTemplate();
-
-        StringTemplateResourceLoader resourceLoader = new StringTemplateResourceLoader();
-        Configuration cfg = gt.getConf();
-        GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, cfg);
-        Template template = groupTemplate.getTemplate(sqlSource.getTemplate());
+        Template template = gt.getTemplate(sqlSource.getTemplate(),this.tempLoader);
         template.binding("_paras", new ArrayList<Object>());
-        template.binding(BeanKit.objectToMap(t));
+        template.binding("_root",t);
         String sql = template.render();
         int i = sql.lastIndexOf(",\r\n");
         if (i == sql.length() - 3) {
@@ -148,9 +163,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         addPreParam(paraLis);
 
         StringBuilder sb = new StringBuilder(sql);
-
+        
         sb.append(" ").append(getSql());
-
+        
         this.setSql(sb);
 
         int row = this.sqlManager.executeUpdate(
@@ -210,19 +225,48 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public Query<T> groupBy(String column) {
-        this.appendSql("GROUP BY ")
-                .appendSql(column)
-                .appendSql(" ");
+    	GroupBy groupBy =  getGroupBy();
+    	groupBy.add(column);
         return this;
     }
 
     @Override
     public Query<T> orderBy(String orderBy) {
-        this.appendSql("ORDER BY ")
-                .appendSql(orderBy)
-                .appendSql(" ");
+    	OrderBy  orderByInfo = this.getOrderBy();
+    	orderByInfo.add(orderBy);
         return this;
     }
+    
+    @Override
+	public Query asc(String column) {
+    	OrderBy  orderByInfo = this.getOrderBy();
+    	orderBy.add(column+" ASC");
+		return this;
+	}
+
+	@Override
+	public Query desc(String column) {
+		OrderBy  orderByInfo = this.getOrderBy();
+    	orderBy.add(column+" DESC");
+		return this;
+	}
+    
+	private OrderBy getOrderBy() {
+		if(this.orderBy==null) {
+			orderBy = new OrderBy();
+		}
+		return this.orderBy;
+	}
+	
+	private GroupBy getGroupBy() {
+		if(this.groupBy==null) {
+			groupBy = new GroupBy();
+		}
+		return this.groupBy;
+	}
+	
+	
+	
 
     /**
      * 默认从1开始，自动翻译成数据库的起始位置。如果配置了OFFSET_START_ZERO =true，则从0开始。
@@ -235,5 +279,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 //        setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
 //        return this;
     }
+
+	
 
 }
