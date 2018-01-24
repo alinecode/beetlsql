@@ -23,6 +23,7 @@ import java.util.List;
 public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
 
     Class<T> clazz = null;
+    private long startRow=-1,pageSize=-1;
 
     public Query(SQLManager sqlManager, Class<T> clazz) {
         this.sqlManager = sqlManager;
@@ -58,6 +59,10 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         sb.append(" FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
+       //增加翻页
+        if(this.startRow!=-1) {
+        	setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+        }
         List<T> list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
@@ -96,6 +101,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         sb.append("FROM ").append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
+        //增加翻页
+        if(this.startRow!=-1) {
+        	setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+        }
+        
         List<T> list = this.sqlManager.execute(
                 new SQLReady(getSql().toString(), getParams().toArray()),
                 clazz
@@ -219,8 +229,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      */
     @Override
     public Query<T> limit(long startRow, long pageSize) {
-        setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
-        return this;
+    	this.startRow = startRow;
+    	this.pageSize =pageSize;
+    	return this;
+//        setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+//        return this;
     }
 
 }

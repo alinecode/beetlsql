@@ -1,8 +1,5 @@
 package org.beetl.sql.test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import javax.sql.DataSource;
@@ -16,7 +13,6 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -33,9 +29,12 @@ public class QuickTest {
 		
 		
 //		DB2SqlStyle style = new DB2SqlStyle();
-		MySqlStyle style = new MySqlStyle();
+//		SqlServerStyle style = new SqlServerStyle();
 //		OracleStyle style = new OracleStyle();
+		MySqlStyle style = new MySqlStyle();
 //		
+		String aa = style.getPageSQLStatement("select * from a", 1, 1);
+		System.out.println(aa);
 		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
 		
@@ -46,9 +45,9 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-
-		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
-		User user = users.get(0);	
+		sql.query(User.class).andEq("id", 1).single();
+//		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
+//		User user = users.get(0);	
 	}
 	
 	static void test(Function<T,?> fun) {
