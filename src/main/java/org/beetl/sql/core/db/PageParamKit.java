@@ -41,6 +41,10 @@ class PageParamKit {
         return start + (offsetStartZero ? 1 : 0);
     }
 
+    static long sqlServer2012Offset(boolean offsetStartZero, long start) {
+        return start - (offsetStartZero ? 0 : 1);
+    }
+
     static long sqlServerPageEnd(long offset, long pageSize) {
         return offset + pageSize - 1;
     }

@@ -36,7 +36,7 @@ public class SqlServer2012Style extends SqlServerStyle {
         	builder.append(" order by current_timestamp");
         }
         return builder.append(" offset ")
-                .append(PageParamKit.sqlServerOffset(this.offsetStartZero, offset))
+                .append(PageParamKit.sqlServer2012Offset(this.offsetStartZero, offset))
                 .append(" rows fetch next ")
                 .append(pageSize)
                 .append(" rows only ").toString();
