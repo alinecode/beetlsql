@@ -238,14 +238,14 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
     
     @Override
-	public Query asc(String column) {
+	public Query<T> asc(String column) {
     	OrderBy  orderByInfo = this.getOrderBy();
     	orderBy.add(column+" ASC");
 		return this;
 	}
 
 	@Override
-	public Query desc(String column) {
+	public Query<T> desc(String column) {
 		OrderBy  orderByInfo = this.getOrderBy();
     	orderBy.add(column+" DESC");
 		return this;

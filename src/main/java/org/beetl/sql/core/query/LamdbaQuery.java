@@ -183,13 +183,13 @@ public class LamdbaQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public Query asc(Property<T, ?> fun) {
+	public Query<T> asc(Property<T, ?> fun) {
 		super.asc(getFunctionName(fun));
 
 		return this;
 	}
 
-	public Query desc(Property<T, ?> fun) {
+	public Query<T> desc(Property<T, ?> fun) {
 		super.desc(getFunctionName(fun));
 		return this;
 	}
