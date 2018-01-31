@@ -1,20 +1,17 @@
 package org.beetl.sql.core.mapper;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLScript;
-import org.beetl.sql.core.annotatoin.Param;
-import org.beetl.sql.core.annotatoin.RowSize;
-import org.beetl.sql.core.annotatoin.RowStart;
 import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.annotatoin.SqlStatementType;
@@ -25,6 +22,7 @@ import org.beetl.sql.core.mapper.para.MapperParameter;
 import org.beetl.sql.core.mapper.para.PageQueryParamter;
 import org.beetl.sql.core.mapper.para.SelectQueryParamter;
 import org.beetl.sql.core.mapper.para.UpdateParamter;
+
 
 /**
  * dao2 参数
@@ -270,7 +268,11 @@ public class MethodDesc {
 					.getActualTypeArguments()[0];
 			if(t instanceof ParameterizedType){
 				return getParamterTypeClass(t);
-			}else{
+			}else if(t instanceof WildcardType|| t instanceof TypeVariable ) {
+				//丢失类型，只能用返回类型来判断
+				return defaultClass;
+			}
+			else{
 				return   (Class)t;
 			}
 		}

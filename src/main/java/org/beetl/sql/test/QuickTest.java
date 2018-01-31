@@ -14,6 +14,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -47,9 +48,11 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		User temp = new User();
-		temp.setName("hellogo");
-		int ret = sql.query(User.class).update(temp);
+		UserDao dao = sql.getMapper(UserDao.class);
+		PageQuery<User> query = new PageQuery<User>();
+		dao.getIds3(query);
+		List<User> user = query.getList();
+		
 		
 //		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
 //		User user = users.get(0);	

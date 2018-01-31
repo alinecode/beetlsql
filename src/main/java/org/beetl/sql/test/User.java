@@ -2,11 +2,10 @@ package org.beetl.sql.test;
 
 import java.util.List;
 
-import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.Table;
 
 @Table(name="user")
-public class User extends  TailBean {
+public class User extends  BaseInfo {
 	private Integer id ;
 	private String name ;
 	private List<Role> myRoles;
