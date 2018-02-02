@@ -104,6 +104,18 @@ public class DB2SqlStyle extends AbstractDBStyle {
     public int getDBType() {
         return DB_DB2;
     }
+    //IBM驱动对插入null 严格遵守了jdbc规范，需要指定类型，参考BeanProcessor.setPreparedStatementPara
+    @Override
+    protected String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
+    	int type = table.getColDesc(colName).sqlType;
+        return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + fieldName+",jdbc='"+type+"'" + HOLDER_END + ",";
+    }
+    @Override
+    protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName,String col) {
+    	int type = table.getColDesc(col).sqlType;
+        return HOLDER_START + fieldName +",jdbc='"+ type+"'"+HOLDER_END + ",";
+
+    }
 
 
 }

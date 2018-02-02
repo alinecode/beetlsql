@@ -5,7 +5,6 @@ import java.util.function.Function;
 
 import javax.sql.DataSource;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ConnectionSourceHelper;
@@ -48,20 +47,16 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		UserDao dao = sql.getMapper(UserDao.class);
-		PageQuery<User> query = new PageQuery<User>();
-		dao.getIds3(query);
-		List<User> user = query.getList();
+		User user = new User();
+		user.setId(1);
+		user.setName("hee");
 		
+//		sql.insert(new User());
+		sql.updateById(user);
 		
 //		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
 //		User user = users.get(0);	
 	}
-	
-	static void test(Function<T,?> fun) {
-		System.out.println(fun);
-	}
-	
 	
 	public static User unique(SQLManager sql,Object key){
 		return sql.unique(User.class, key);

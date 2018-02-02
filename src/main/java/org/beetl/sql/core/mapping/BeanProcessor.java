@@ -459,8 +459,14 @@ public class BeanProcessor {
 		for (int i = 0; i < objs.size(); i++) {
 			SQLParameter para = objs.get(i);
 			Object o = para.value;
+			int jdbcType = para.getJdbcType();
 			if(o==null){
-				ps.setObject(i + 1, o);
+				if(jdbcType!=0) {
+					ps.setObject(i + 1, o,jdbcType);
+				}else {
+					ps.setObject(i + 1, o);
+				}
+				
 				continue ;
 			}
 			Class c = o.getClass();
@@ -481,12 +487,12 @@ public class BeanProcessor {
 			}
 			
 			
-			int jdbcType = para.getJdbcType();
+			
 			if(jdbcType==0){
 				ps.setObject(i + 1, o);
 			}else{
 				//通常一些特殊的处理
-				throw new UnsupportedOperationException(jdbcType+",默认处理器并未处理此jdbc类型");
+				ps.setObject(i + 1, o,jdbcType);
 			}
 			
 			

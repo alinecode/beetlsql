@@ -408,7 +408,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 					valSql.append(appendInsertTemplateValue(cls, table, attr));
               }else{
 					colSql.append(appendInsertColumn(cls, table, col));
-					valSql.append(appendInsertValue(cls, table, attr));
+					valSql.append(appendInsertValue(cls, table, attr,col));
               }
               
           }
@@ -650,7 +650,7 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param fieldName
      * @return
      */
-    protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName) {
+    protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName,String col) {
     	
         return HOLDER_START + fieldName + HOLDER_END + ",";
 
