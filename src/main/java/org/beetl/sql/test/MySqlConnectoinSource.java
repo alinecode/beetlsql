@@ -71,6 +71,13 @@ public class MySqlConnectoinSource implements ConnectionSource {
 		
 	}
 
+	@Override
+	public Connection getMetaData() {
+		return this.getMaster();
+	}
+	
+	
+
 	
 
 }

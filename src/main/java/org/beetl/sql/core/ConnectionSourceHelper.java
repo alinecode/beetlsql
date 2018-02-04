@@ -92,5 +92,9 @@ class SimpleConnectoinSource implements ConnectionSource {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public Connection getMetaData() {
+		return this.getMaster();
+	}
 	
 }

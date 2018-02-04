@@ -12,6 +12,10 @@ public interface ConnectionSource {
 	
 	
 	public Connection getSlave();
+	
+	public Connection getMetaData();
+	
+	
 	/**
 	 * 根据条件得到链接
 	 * @param sqlId 

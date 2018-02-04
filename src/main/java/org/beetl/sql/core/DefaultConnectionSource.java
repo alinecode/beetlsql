@@ -113,6 +113,10 @@ public class DefaultConnectionSource implements ConnectionSource{
 	public void forceEnd() {
 		forceStatus.set(0);		
 	}
+	@Override
+	public Connection getMetaData() {
+		return this.getMaster();
+	}
 
 	
 	

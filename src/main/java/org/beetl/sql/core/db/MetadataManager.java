@@ -122,7 +122,7 @@ public class MetadataManager {
 			try {
 				String catalog = desc.getCatalog();
 				String schema = desc.getSchema();
-				conn =  ds.getMaster();
+				conn =  ds.getMetaData();
 				
 				DatabaseMetaData dbmd =  conn.getMetaData();
 				rs = dbmd.getPrimaryKeys(catalog,schema, desc.getName());
@@ -182,7 +182,7 @@ public class MetadataManager {
 		ThreadSafeCaseInsensitiveHashMap tempMap = new ThreadSafeCaseInsensitiveHashMap();
 		Connection conn=null;
 		try {
-			conn =  ds.getMaster();
+			conn =  ds.getMetaData();
 			DatabaseMetaData dbmd =  conn.getMetaData();
 			
 			String catalog = this.defalutCatalog;
@@ -212,7 +212,7 @@ public class MetadataManager {
 	private TableDesc initOtherSchemaTabel(String sc,String table){
 		Connection conn=null;
 		try {
-			conn =  ds.getMaster();
+			conn =  ds.getMetaData();
 			DatabaseMetaData dbmd =  conn.getMetaData();
 			
 			
@@ -262,7 +262,7 @@ public class MetadataManager {
 	private void initDefaultSchema(){
 		this.defaultSchema = sm.getDefaultSchema();
 		if(defaultSchema==null){
-			Connection conn = ds.getMaster();
+			Connection conn = ds.getMetaData();
 			
 			try {
 				setDefaultSchema(conn);
@@ -275,8 +275,12 @@ public class MetadataManager {
 		
 	}
 	private void setDefaultSchema(Connection conn) throws SQLException{
+		try {
+			this.defalutCatalog = conn.getCatalog();
+		}catch(Throwable e) {
+			e.printStackTrace();
+		}
 		
-		this.defalutCatalog = conn.getCatalog();
 		try{
 			this.defaultSchema =  conn.getSchema();
 			
@@ -353,4 +357,6 @@ public class MetadataManager {
 			return name;
 		}
 	}
+	
+	
 }
