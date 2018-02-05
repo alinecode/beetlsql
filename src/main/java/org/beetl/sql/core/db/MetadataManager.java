@@ -278,7 +278,7 @@ public class MetadataManager {
 		try {
 			this.defalutCatalog = conn.getCatalog();
 		}catch(Throwable e) {
-			e.printStackTrace();
+			// jdbc低版本不支持
 		}
 		
 		try{
