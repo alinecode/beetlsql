@@ -1,11 +1,10 @@
 package org.beetl.sql.core.mapper;
 
-import java.lang.reflect.Proxy;
-import java.util.Map;
-
-import org.beetl.sql.core.DefaultSQLIdNameConversion;
 import org.beetl.sql.core.SQLIdNameConversion;
 import org.beetl.sql.core.SQLManager;
+
+import java.lang.reflect.Proxy;
+import java.util.Map;
 
 /**
  * 默认Java代理实现.
@@ -19,6 +18,8 @@ public class DefaultMapperBuilder implements MapperBuilder {
 
 	/** The sql manager. */
 	protected SQLManager sqlManager;
+
+	protected ClassLoader entityClassLoader;
 	
 
 	/**
@@ -30,7 +31,19 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	public DefaultMapperBuilder(SQLManager sqlManager) {
 		super();
 		this.sqlManager = sqlManager;
-	
+	}
+
+	/**
+	 * The Constructor.
+	 *
+	 * @param sqlManager
+	 *            the sql manager
+	 * @param classLoader
+	 * 			  specified class loader for loading mapped entities
+	 */
+	public DefaultMapperBuilder(SQLManager sqlManager, ClassLoader classLoader) {
+		this(sqlManager);
+		this.entityClassLoader = classLoader;
 	}
 
 	/*
@@ -61,8 +74,8 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T buildInstance(Class<T> mapperInterface) {
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		//使用ContextLoader，适合大多数框架
+		ClassLoader loader = null == entityClassLoader ? Thread.currentThread().getContextClassLoader() : entityClassLoader;
+		//当没有指定ClassLoader的情况下使用ContextLoader，适合大多数框架
 		return (T) Proxy.newProxyInstance(loader==null?this.getClass().getClassLoader():loader, new Class<?>[] { mapperInterface },
 				new MapperJavaProxy(this,sqlManager, mapperInterface));
 	}
