@@ -1,14 +1,5 @@
 package org.beetl.sql.core.mapper;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLScript;
@@ -17,11 +8,13 @@ import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
-import org.beetl.sql.core.mapper.para.InsertParamter;
-import org.beetl.sql.core.mapper.para.MapperParameter;
-import org.beetl.sql.core.mapper.para.PageQueryParamter;
-import org.beetl.sql.core.mapper.para.SelectQueryParamter;
-import org.beetl.sql.core.mapper.para.UpdateParamter;
+import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.mapper.para.*;
+
+import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -200,7 +193,7 @@ public class MethodDesc {
 			return true;
 		}
 		
-		String pkg = type.getPackage().getName();
+		String pkg = BeanKit.getPackageName(type);
 		if(pkg.startsWith("java.")||pkg.startsWith("javax.")){
 			return false;
 		}else{

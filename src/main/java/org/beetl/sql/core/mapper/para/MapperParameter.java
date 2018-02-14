@@ -13,6 +13,7 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.annotatoin.Param;
 import org.beetl.sql.core.annotatoin.RowSize;
 import org.beetl.sql.core.annotatoin.RowStart;
+import org.beetl.sql.core.kit.BeanKit;
 
 public abstract class MapperParameter {
 	String annoParam = null;
@@ -132,7 +133,7 @@ public abstract class MapperParameter {
 		if(c.isPrimitive()){
 			return false;
 		}
-		String name = c.getPackage().getName();
+		String name = BeanKit.getPackageName(c);
 		if(name.startsWith("java.")||name.startsWith("javax.")){
 			return false;
 		}
