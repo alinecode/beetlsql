@@ -1,5 +1,10 @@
 package org.beetl.sql.core.kit;
 
+import org.beetl.core.om.MethodInvoker;
+import org.beetl.core.om.ObjectUtil;
+import org.beetl.sql.core.JavaType;
+import org.beetl.sql.core.annotatoin.Tail;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -7,17 +12,11 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.beetl.core.GroupTemplate;
-import org.beetl.core.exception.BeetlException;
-import org.beetl.core.om.MethodInvoker;
-import org.beetl.core.om.ObjectUtil;
-import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.JavaType;
-import org.beetl.sql.core.annotatoin.Tail;
 
 public class BeanKit {
     //目前没有合适放的地方，忽略
@@ -346,7 +345,14 @@ public class BeanKit {
     }
 
    
-    
-    
+    public static String getPackageName(Class<?> clazz) {
+        return StringKit.beforeLast(clazz.getName(), '.');
+    }
+
+    private static class Foo {}
+
+    public static void main(String[] args) {
+        System.out.println(getPackageName(Foo.class));
+    }
 
 }

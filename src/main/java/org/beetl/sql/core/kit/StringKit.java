@@ -226,6 +226,11 @@ public class StringKit {
 	public static String[] split(String str, char separatorChar) {
 		return splitWorker(str, separatorChar, false);
 	}
+
+	public static String beforeLast(String str, char separatorChar) {
+		int pos = str.lastIndexOf((int) separatorChar);
+		return pos == -1 ? "" : str.substring(0, pos);
+	}
 	
 	private static String[] splitWorker(String str, char separatorChar, boolean preserveAllTokens) {
 		// Performance tuned for 2.0 (JDK1.4)

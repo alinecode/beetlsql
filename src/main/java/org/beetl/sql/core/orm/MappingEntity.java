@@ -1,16 +1,5 @@
 package org.beetl.sql.core.orm;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.beetl.core.exception.BeetlException;
 import org.beetl.core.om.MethodInvoker;
 import org.beetl.core.om.PojoMethodInvoker;
@@ -22,6 +11,10 @@ import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.StringKit;
+
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 
 
 /**
@@ -143,7 +136,7 @@ public class MappingEntity implements java.io.Serializable {
 			}
 		}
 		//缺少包名,则认为是跟关系对象同一个包名
-		String fullName = absentPackage ? obj.getClass().getPackage().getName() + "." + target : target;
+		String fullName = absentPackage ? BeanKit.getPackageName(obj.getClass()) + "." + target : target;
 		targetClass = getCls(fullName);
 	}
 

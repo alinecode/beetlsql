@@ -1,30 +1,9 @@
 package org.beetl.sql.core;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.db.ClassDesc;
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.db.MetadataManager;
-import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -35,6 +14,13 @@ import org.beetl.sql.core.orm.LazyMappingEntity;
 import org.beetl.sql.core.orm.MappingEntity;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
+
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class SQLScript {
 
@@ -146,7 +132,7 @@ public class SQLScript {
             for (MappingEntity entity : result.mapingEntrys) {
                 String mapTarget = entity.getTarget();
                 if (mapTarget.indexOf('.') == -1) {
-                    mapTarget = target.getPackage().getName().concat(".").concat(mapTarget);
+                    mapTarget = BeanKit.getPackageName(target).concat(".").concat(mapTarget);
                     entity.setTarget(mapTarget);
                 }
                 if (map.keySet().contains(mapTarget)) {
