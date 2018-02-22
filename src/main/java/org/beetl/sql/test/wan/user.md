@@ -22,7 +22,7 @@ select
 selectUserAndDepartment
 ===
     select * from user where 1=1
-    @ orm.many({"id":"userId"},"wan.user.selectRole","Role",{'alias':'myRoles'});
+    @ orm.lazyMany({"id":"userId"},"wan.user.selectRole","Role",{'alias':'myRoles'});
 
 selectRole
 ===

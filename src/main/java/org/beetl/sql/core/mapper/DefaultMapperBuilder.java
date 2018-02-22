@@ -31,16 +31,18 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	public DefaultMapperBuilder(SQLManager sqlManager) {
 		super();
 		this.sqlManager = sqlManager;
+		this.entityClassLoader = sqlManager.getEntityLoader();
 	}
 
 	/**
-	 * The Constructor.
+	 * The Constructor.,不推荐使用，使用SQLManager.setEntityLoader()
 	 *
 	 * @param sqlManager
 	 *            the sql manager
 	 * @param classLoader
 	 * 			  specified class loader for loading mapped entities
 	 */
+	@Deprecated
 	public DefaultMapperBuilder(SQLManager sqlManager, ClassLoader classLoader) {
 		this(sqlManager);
 		this.entityClassLoader = classLoader;

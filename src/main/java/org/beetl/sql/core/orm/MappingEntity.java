@@ -46,7 +46,7 @@ public class MappingEntity implements java.io.Serializable {
 			return ;
 		}
 		
-		init(list.get(0));
+		init(list.get(0), sm.getEntityLoader());
 		if(mapkey.size()==1){
 			//有可能是主键映射
 			String tableName = sm.getNc().getTableName(targetClass);
@@ -119,7 +119,7 @@ public class MappingEntity implements java.io.Serializable {
 		
 	}
 
-	protected void init(Object obj) {
+	protected void init(Object obj,ClassLoader loader) {
 		if (target.indexOf(".") == -1) {
 			absentPackage = true;
 		
@@ -137,17 +137,14 @@ public class MappingEntity implements java.io.Serializable {
 		}
 		//缺少包名,则认为是跟关系对象同一个包名
 		String fullName = absentPackage ? BeanKit.getPackageName(obj.getClass()) + "." + target : target;
-		targetClass = getCls(fullName);
+		targetClass = getCls(fullName,loader);
 	}
 
 
 
 	protected void mapClassItem(Object obj, SQLManager sm,Map sqlParas) {
-		
-	    
 		List ret = null;
 		StringBuilder key = new StringBuilder();
-		
 		if (sqlId != null) {
 			Map<String,Object> paras = new HashMap<String,Object>();
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
@@ -249,9 +246,12 @@ public class MappingEntity implements java.io.Serializable {
 
 	}
 
-	protected Class getCls(String fullName) {
+	protected Class getCls(String fullName,ClassLoader loader) {
 		try {
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		    if(loader!=null) {
+		        return loader.loadClass(fullName);
+		    }
+			loader = Thread.currentThread().getContextClassLoader();
 			if(loader!=null) {
 				return loader.loadClass(fullName);
 			}else {

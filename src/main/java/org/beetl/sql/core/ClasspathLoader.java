@@ -48,6 +48,9 @@ public class ClasspathLoader implements SQLLoader {
 	protected SQLIdNameConversion sqlIdNameConversion = new DefaultSQLIdNameConversion();
 
 	protected SQLSource NO_EXIST = new SQLSource();
+	
+	protected ClassLoader classLoader = null;
+	
 	public  ClasspathLoader() {
 		this("/sql");
 	}
@@ -281,8 +284,17 @@ public class ClasspathLoader implements SQLLoader {
     }
 
 	private URL getFile(String filePath){
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		URL url = null;
+	    ClassLoader loader = null;
+	    URL url = null; 
+	    if(classLoader!=null) {
+	        url = classLoader.getResource(filePath);
+	        if(url!=null) {
+	            return url;
+	        }
+	    }else {
+	        return null;
+	    }
+		loader = Thread.currentThread().getContextClassLoader();
 //		InputStream is  = null;
 		if(loader!=null){
 			url = loader.getResource(filePath);
@@ -344,7 +356,18 @@ public class ClasspathLoader implements SQLLoader {
 		this.dbs = dbStyle;
 	}
 	
-	public static class SQLFileVersion{
+	
+	
+	public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+
+
+    public static class SQLFileVersion{
 		public URL url;
 		//根目录下sql文件版本
 		public long root=0l;

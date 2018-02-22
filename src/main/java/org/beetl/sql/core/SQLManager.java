@@ -81,6 +81,9 @@ public class SQLManager {
     private String defaultSchema = null;
     private MapperConfig mapperConfig = new MapperConfig();
     private String sqlMananagerName = null;
+    
+    
+    private ClassLoader entityLoader = null;
 
     {
         // 添加一个id简单实现
@@ -1998,4 +2001,16 @@ public class SQLManager {
         return this.sqlMananagerName;
     }
 
+    public ClassLoader getEntityLoader() {
+        return entityLoader;
+    }
+
+    public void setEntityLoader(ClassLoader entityLoader) {
+        this.entityLoader = entityLoader;
+        if(this.sqlLoader instanceof ClasspathLoader) {
+            ((ClasspathLoader)sqlLoader).setClassLoader(entityLoader);
+        }
+    }
+
+    
 }
