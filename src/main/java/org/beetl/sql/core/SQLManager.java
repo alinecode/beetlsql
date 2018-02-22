@@ -81,6 +81,9 @@ public class SQLManager {
     private String defaultSchema = null;
     private MapperConfig mapperConfig = new MapperConfig();
     private String sqlMananagerName = null;
+    
+    
+    private ClassLoader entityLoader = null;
 
     {
         // 添加一个id简单实现
@@ -2005,4 +2008,20 @@ public class SQLManager {
     		this.sqlLoader.refresh();
     }
 
+    public ClassLoader getEntityLoader() {
+        return entityLoader;
+    }
+
+    /**
+     * 设置classloder，如果没有，pojo的初始化使用ContextClassLoader或者加载Beetlsql的classLoader
+     * @param entityLoader
+     */
+    public void setEntityLoader(ClassLoader entityLoader) {
+        this.entityLoader = entityLoader;
+        if(this.sqlLoader instanceof ClasspathLoader) {
+            ((ClasspathLoader)sqlLoader).setClassLoader(entityLoader);
+        }
+    }
+
+    
 }
