@@ -361,6 +361,12 @@ public class ClasspathLoader implements SQLLoader {
 		}
 		
 	}
+
+	@Override
+	public void refresh() {
+		
+		sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
+	}
 	
 	
 }

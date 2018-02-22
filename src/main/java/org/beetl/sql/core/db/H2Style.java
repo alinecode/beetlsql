@@ -17,12 +17,12 @@ public class H2Style extends AbstractDBStyle {
         return sql + this.getOrderBy() + " \nlimit " + HOLDER_START + OFFSET + HOLDER_END + " , " + HOLDER_START + PAGE_SIZE + HOLDER_END;
     }
 
-    @Override
+   
     public String getPageSQLStatement(String sql, long offset, long pageSize) {
 
         int capacity = sql.length() + 23;
         StringBuilder builder = new StringBuilder(capacity);
-        builder.append(" limit ").append(offset).append(" , ").append(pageSize);
+        builder.append(sql).append(" limit ").append(offset).append(" , ").append(pageSize);
         return builder.toString();
     }
 

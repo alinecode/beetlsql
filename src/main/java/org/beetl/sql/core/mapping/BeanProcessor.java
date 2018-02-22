@@ -456,48 +456,55 @@ public class BeanProcessor {
 	 * @throws SQLException
 	 */
 	public  void setPreparedStatementPara(String sqlId,PreparedStatement ps,List<SQLParameter> objs) throws SQLException {
-		for (int i = 0; i < objs.size(); i++) {
-			SQLParameter para = objs.get(i);
-			Object o = para.value;
-			int jdbcType = para.getJdbcType();
-			if(o==null){
-				if(jdbcType!=0) {
-					ps.setObject(i + 1, o,jdbcType);
-				}else {
-					ps.setObject(i + 1, o);
+		int i = 0;
+		SQLParameter para =null;
+		try {
+			for (; i < objs.size(); i++) {
+				para = objs.get(i);
+				Object o = para.value;
+				int jdbcType = para.getJdbcType();
+				if(o==null){
+					if(jdbcType!=0) {
+						ps.setObject(i + 1, o,jdbcType);
+					}else {
+						ps.setObject(i + 1, o);
+					}
+					
+					continue ;
+				}
+				Class c = o.getClass();
+				// 兼容性修改：oralce 驱动 不识别util.Date
+				if(dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_POSTGRES||dbType==DBStyle.DB_DB2||dbType==DBStyle.DB_SQLSERVER){
+					if(c== java.util.Date.class){
+						o = new Timestamp(((java.util.Date) o).getTime());
+					}
 				}
 				
-				continue ;
-			}
-			Class c = o.getClass();
-			// 兼容性修改：oralce 驱动 不识别util.Date
-			if(dbType==DBStyle.DB_ORACLE||dbType==DBStyle.DB_POSTGRES||dbType==DBStyle.DB_DB2||dbType==DBStyle.DB_SQLSERVER){
-				if(c== java.util.Date.class){
-					o = new Timestamp(((java.util.Date) o).getTime());
+				if(Enum.class.isAssignableFrom(c)){
+					o = EnumKit.getValueByEnum(o);
 				}
+				
+				//clob or text
+				if(c==char[].class){
+					o = new String((char[])o);
+				}
+				
+				
+				
+				if(jdbcType==0){
+					ps.setObject(i + 1, o);
+				}else{
+					//通常一些特殊的处理
+					ps.setObject(i + 1, o,jdbcType);
+				}
+				
+				
+				
 			}
-			
-			if(Enum.class.isAssignableFrom(c)){
-				o = EnumKit.getValueByEnum(o);
-			}
-			
-			//clob or text
-			if(c==char[].class){
-				o = new String((char[])o);
-			}
-			
-			
-			
-			if(jdbcType==0){
-				ps.setObject(i + 1, o);
-			}else{
-				//通常一些特殊的处理
-				ps.setObject(i + 1, o,jdbcType);
-			}
-			
-			
-			
+		}catch(SQLException ex) {
+			throw new SQLException("处理第"+i+"个参数错误:"+ex.getMessage(),ex);
 		}
+		
 	}
 	public JavaSqlTypeHandler getDefaultHandler() {
 		return defaultHandler;

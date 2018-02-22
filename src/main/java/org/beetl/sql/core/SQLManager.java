@@ -1997,5 +1997,12 @@ public class SQLManager {
     public String getSQLManagerName() {
         return this.sqlMananagerName;
     }
+    /**
+     * 清空缓存，用于动态增加修改表情况下可以
+     */
+    public void refresh() {
+    		this.metaDataManager.refresh();
+    		this.sqlLoader.refresh();
+    }
 
 }

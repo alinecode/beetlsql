@@ -56,4 +56,6 @@ public interface SQLLoader {
 	 */
 	public void setDbStyle(DBStyle dbStyle);
 	
+	public void refresh();
+	
 }

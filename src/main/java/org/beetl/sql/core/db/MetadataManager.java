@@ -75,6 +75,13 @@ public class MetadataManager {
 		return this.map.keySet();
 	}
 	
+	public void refresh() {
+		map = null;
+		this.initMetadata();
+	}
+	
+
+	
 	private TableDesc getTableFromMap(String tableName){
 		TableDesc desc = null;
 		if(map==null){
