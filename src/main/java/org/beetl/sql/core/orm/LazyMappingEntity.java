@@ -119,7 +119,7 @@ public class LazyMappingEntity extends MappingEntity {
             // annotation
             Method m = BeanKit.getTailMethod(o.getClass());
             if (m == null) {
-                throw new RuntimeException("懒加载 OR/Mapping 找不到对应的setter方法:"+tailName+",请设置setter方法或者实现Tail接口，采用@Tail注解");
+                throw new RuntimeException("懒加载 OR/Mapping 必须实现Tail接口,用于设置 "+tailName+"对象，或者不使用懒加载");
             }
             try {
                 m.invoke(o, tailName, value);

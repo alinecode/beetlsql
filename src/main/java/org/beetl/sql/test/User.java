@@ -6,12 +6,14 @@ import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 @OrmQuery(
 value={
-    @OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE,lazy=false),
+    @OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE),
 }
 )
-public class User extends  BaseInfo {
+public class User {
 	private Integer id ;
 	private String name ;
+	private Integer departmentId;
+	private Department department;
 	private List<Role> myRoles;
 	public Integer getId() {
 		return id;
@@ -30,6 +32,18 @@ public class User extends  BaseInfo {
 	}
 	public void setMyRoles(List<Role> myRoles) {
 		this.myRoles = myRoles;
+	}
+	public Integer getDepartmentId() {
+		return departmentId;
+	}
+	public void setDepartmentId(Integer departmentId) {
+		this.departmentId = departmentId;
+	}
+	public Department getDepartment() {
+		return department;
+	}
+	public void setDepartment(Department department) {
+		this.department = department;
 	}
 	
 	

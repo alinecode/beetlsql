@@ -9,9 +9,10 @@ import org.beetl.sql.core.annotatoin.SqlResource;
 import org.beetl.sql.core.annotatoin.SqlStatement;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.mapper.BaseMapper;
 
 @SqlResource("wan.user")
-public interface UserDao extends BaseDao<User> {
+public interface UserDao extends BaseMapper {
 	
 	List<Long> getIds();
 	void getIds(PageQuery<User> query);
@@ -33,7 +34,7 @@ public interface UserDao extends BaseDao<User> {
 	List getUsers(int hi, User user);
 	
 	@Sql("select * from user where name=? ")
-	PageQuery<? extends BaseInfo>  getUser4(int pageNumber,int pageSize,String name);
+	PageQuery<User>  getUser4(int pageNumber,int pageSize,String name);
 	void getUser5(PageQuery<User> query,String name);
 	
 	List<User> select();

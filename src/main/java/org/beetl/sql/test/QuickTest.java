@@ -48,7 +48,7 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		User user = sql.single(User.class, 1);
-		Department dept = (Department)user.get("department");
+//		Department dept = (Department)user.get("department");
 		
 //		User user = new User();
 //		user.setId(1);
