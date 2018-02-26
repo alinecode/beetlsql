@@ -124,8 +124,13 @@ public class SQLScript {
         Map<String, MappingEntity> map = new HashMap<String, MappingEntity>();
 
         for (OrmCondition cond : condtions) {
+            MappingEntity mappingEntity = null;
             //类配合的orm查询总是
-            MappingEntity mappingEntity = new LazyMappingEntity();
+            if(cond.lazy()) {
+                mappingEntity = new LazyMappingEntity();
+            }else {
+                mappingEntity = new MappingEntity();
+            }
             mappingEntity.setSingle(cond.type() == OrmQuery.Type.ONE);
             mappingEntity.setTarget(cond.target().getName());
             if (cond.alias().length() != 0) {

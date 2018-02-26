@@ -47,14 +47,17 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+		User user = sql.single(User.class, 1);
+		Department dept = (Department)user.get("department");
+		
 //		User user = new User();
 //		user.setId(1);
 //		user.setName("hee");
 //		PageQuery page = new PageQuery();
 //		sql.execute(new SQLReady("select * from user "), User.class, page);
 		
-		List<User> list = sql.select("wan.user.selectUserAndDepartment", User.class);
-		List<Role> roles = (List<Role>)list.get(0).get("myRoles");
+//		List<User> list = sql.select("wan.user.selectUserAndDepartment", User.class);
+//		List<Role> roles = (List<Role>)list.get(0).get("myRoles");
 //		sql.insert(new User());
 //		sql.updateById(user);
 		

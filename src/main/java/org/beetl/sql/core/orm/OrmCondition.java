@@ -18,6 +18,7 @@ public @interface OrmCondition {
 	public String sqlId() default "";
 	public String alias() default "";
 	public OrmQuery.Type type() default OrmQuery.Type.MANY;
+	public boolean lazy() default true;
 //	/*如果是多个映射的*/
 //	public String[] attrs() default null;
 //	public String[] targetAttrs() default null;
