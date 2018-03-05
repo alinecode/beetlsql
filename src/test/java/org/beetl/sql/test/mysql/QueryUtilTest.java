@@ -1,7 +1,9 @@
 package org.beetl.sql.test.mysql;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Queue;
 
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.core.query.LamdbaQuery;
@@ -31,8 +33,8 @@ public class QueryUtilTest extends BaseMySqlTest {
         Query<User> query = sqlManager.query(User.class);
         List<User> list = query
                 .or(query.condition()
-                        .andIn("id", Arrays.asList(1637, 1639, 1640))
                         .andLike("name", "%t%"))
+                .andIn("id", Arrays.asList(1637, 1639, 1640))
                 .or(query.condition().andEq("id", 1640))
                 .select();
 
@@ -47,11 +49,12 @@ public class QueryUtilTest extends BaseMySqlTest {
                         .andIn("id", Arrays.asList(1637, 1639, 1640))
                         .andLike("name", "%t%"))
                 .andEq("id", 1640)
-                .or(query.condition().andEq("name","new name2"))
+                .or(query.condition().andEq("name", "new name2"))
                 .select();
 
         assert !list.isEmpty();
     }
+
     @Test
     public void testSelectGroup() {
         Query<User> query = sqlManager.query(User.class);
@@ -130,7 +133,7 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void testDeleteCondition() {
-    	Query<User> query = sqlManager.query(User.class);
+        Query<User> query = sqlManager.query(User.class);
         int count = query.andEq("id", 1642).delete();
         assert count != 0;
     }
@@ -147,8 +150,18 @@ public class QueryUtilTest extends BaseMySqlTest {
 
     @Test
     public void single() {
-    	Query<User> query = sqlManager.query(User.class);
+        Query<User> query = sqlManager.query(User.class);
         User user = query.andEq("id", 1642).single();
+        assert user != null;
+    }
+
+    @Test
+    public void testInSql() {
+        Query<User> query = sqlManager.query(User.class);
+        List<User> user = query.andEq("id", 1642).orBetween("id",1,3)
+                .or(query.condition().andIn("id",Arrays.asList(5,6,7,8)))
+                .and(query.condition().andBetween("id",9,22))
+                .select();
         assert user != null;
     }
 

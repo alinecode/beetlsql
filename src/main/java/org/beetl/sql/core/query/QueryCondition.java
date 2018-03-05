@@ -120,13 +120,9 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     protected void appendInSql(String column, Collection<?> value, String opt, String link) {
-        if (getSql().indexOf(link) < 0) {
-            link = "";
-        }
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
         }
-
         this.appendSql(link)
                 .appendSql(getCol(column))
                 .appendSql(opt)
@@ -140,9 +136,6 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     protected void appendBetweenSql(String column, String opt, String link, Object... value) {
-        if (getSql().indexOf(link) < 0) {
-            link = "";
-        }
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
         }
