@@ -1,6 +1,7 @@
 package org.beetl.sql.test;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -10,10 +11,9 @@ import org.beetl.sql.core.ConnectionSourceHelper;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.query.Query;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -47,22 +47,25 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		User user = sql.single(User.class, 1);
-//		Department dept = (Department)user.get("department");
-		
-//		User user = new User();
-//		user.setId(1);
-//		user.setName("hee");
-//		PageQuery page = new PageQuery();
-//		sql.execute(new SQLReady("select * from user "), User.class, page);
-		
-//		List<User> list = sql.select("wan.user.selectUserAndDepartment", User.class);
-//		List<Role> roles = (List<Role>)list.get(0).get("myRoles");
-//		sql.insert(new User());
-//		sql.updateById(user);
-		
-//		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
-//		User user = users.get(0);	
+		Query<User> query = sql.query(User.class);
+		List<User> map = (List<User>)query.andEq("id", 1).orEq("name", "cc").select();
+		System.out.println(map);
+		//		User user = sql.single(User.class, 1);
+////		Department dept = (Department)user.get("department");
+//		
+////		User user = new User();
+////		user.setId(1);
+////		user.setName("hee");
+////		PageQuery page = new PageQuery();
+////		sql.execute(new SQLReady("select * from user "), User.class, page);
+//		
+////		List<User> list = sql.select("wan.user.selectUserAndDepartment", User.class);
+////		List<Role> roles = (List<Role>)list.get(0).get("myRoles");
+////		sql.insert(new User());
+////		sql.updateById(user);
+//		
+////		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
+////		User user = users.get(0);	
 	}
 	
 	public static User unique(SQLManager sql,Object key){

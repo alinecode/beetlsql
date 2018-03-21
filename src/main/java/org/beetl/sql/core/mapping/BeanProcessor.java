@@ -502,7 +502,7 @@ public class BeanProcessor {
 				
 			}
 		}catch(SQLException ex) {
-			throw new SQLException("处理第"+i+"个参数错误:"+ex.getMessage(),ex);
+			throw new SQLException("处理第"+(i+1)+"个参数错误:"+ex.getMessage(),ex);
 		}
 		
 	}
