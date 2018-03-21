@@ -18,7 +18,6 @@ import org.beetl.sql.core.query.interfacer.QueryOtherI;
 
 /**
  * @author GavinKing
-
  */
 public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
 
@@ -38,18 +37,18 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public Query<T> condition() {
         return new Query(this.sqlManager, clazz);
     }
-    
+
     public LamdbaQuery<T> lambda() {
-    	if (BeanKit.queryLambdasSupport) {
-    		LamdbaQuery newQuery =  new LamdbaQuery(this.sqlManager, clazz);
-    		if(this.sql!=null||this.groupBy!=null||this.orderBy!=null) {
-    			throw new UnsupportedOperationException("LamdbaQuery必须在调用其他AP前获取");
-    		}
-    		return newQuery;
-		} else {
-			throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque,请查阅官网文档");
-		}
-    	
+        if (BeanKit.queryLambdasSupport) {
+            LamdbaQuery newQuery = new LamdbaQuery(this.sqlManager, clazz);
+            if (this.sql != null || this.groupBy != null || this.orderBy != null) {
+                throw new UnsupportedOperationException("LamdbaQuery必须在调用其他AP前获取");
+            }
+            return newQuery;
+        } else {
+            throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque,请查阅官网文档");
+        }
+
     }
 
 
@@ -64,37 +63,37 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
                 .append(" ").append(getSql());
         this.setSql(sb);
         makeSql();
-                
+
         List<T> list = this.sqlManager.execute(
-                new SQLReady(getSql().toString(), getParams().toArray()),
+                new SQLReady(getExecutSql(), getParams().toArray()),
                 clazz
         );
         return list;
     }
 
     @Override
-    public  T single() {
-        List<T> list = limit(getFirtRowNumber(),1).select();
-        if(list.isEmpty()){
+    public T single() {
+        List<T> list = limit(getFirstRowNumber(), 1).select();
+        if (list.isEmpty()) {
             return null;
         }
         //同SQLManager.single 一致，只取第一条。
         return list.get(0);
     }
-    
+
     @Override
     public T unique() {
-        List<T> list = limit(getFirtRowNumber(),2).select();
-        if(list.isEmpty()){
-              throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集");
-        }else if(list.size()!=1) {
-        	throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，查询出多条结果集");
+        List<T> list = limit(getFirstRowNumber(), 2).select();
+        if (list.isEmpty()) {
+            throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集");
+        } else if (list.size() != 1) {
+            throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，查询出多条结果集");
         }
         return list.get(0);
     }
-    
-    private int getFirtRowNumber() {
-    	return this.sqlManager.isOffsetStartZero()?0:1;
+
+    private int getFirstRowNumber() {
+        return this.sqlManager.isOffsetStartZero() ? 0 : 1;
     }
 
     @Override
@@ -105,27 +104,28 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         this.setSql(sb);
         makeSql();
         List<T> list = this.sqlManager.execute(
-                new SQLReady(getSql().toString(), getParams().toArray()),
+                new SQLReady(getExecutSql(), getParams().toArray()),
                 clazz
         );
         return list;
     }
+
     /**
      * 增加分页，排序
      */
     private void makeSql() {
-    	 StringBuilder sb = this.getSql();
-    	 if(this.orderBy!=null) {
-         	sb.append(orderBy.getOrderBy()).append(" ");
-         }
-    	 
-    	 if(this.groupBy!=null) {
-    		 sb.append(groupBy.getGroupBy()).append(" ");
-    	 }
-         //增加翻页
-         if(this.startRow!=-1) {
-         	setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
-         }
+        StringBuilder sb = this.getSql();
+        if (this.orderBy != null) {
+            sb.append(orderBy.getOrderBy()).append(" ");
+        }
+
+        if (this.groupBy != null) {
+            sb.append(groupBy.getGroupBy()).append(" ");
+        }
+        //增加翻页
+        if (this.startRow != -1) {
+            setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+        }
     }
 
     @Override
@@ -141,16 +141,16 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
 
     private int handlerUpdateSql(Object t, SQLSource sqlSource) {
-    	if(this.sql==null||this.sql.length()==0) {
-    		throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR,"update操作没有输入过滤条件会导致更新所有记录");
-    	}
-    	
+        if (this.sql == null || this.sql.length() == 0) {
+            throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR, "update操作没有输入过滤条件会导致更新所有记录");
+        }
+
         GroupTemplate gt = this.sqlManager.getBeetl().getGroupTemplate();
-        Template template = gt.getTemplate(sqlSource.getTemplate(),this.tempLoader);
+        Template template = gt.getTemplate(sqlSource.getTemplate(), this.tempLoader);
         template.binding("_paras", new ArrayList<Object>());
-        template.binding("_root",t);
+        template.binding("_root", t);
         String sql = template.render();
-        int i = sql.lastIndexOf(",\r\n");
+        int i = sql.lastIndexOf("," + System.getProperty("line.separator"));
         if (i == sql.length() - 3) {
             sql = sql.substring(0, i);
         }
@@ -163,13 +163,13 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         addPreParam(paraLis);
 
         StringBuilder sb = new StringBuilder(sql);
-        
+
         sb.append(" ").append(getSql());
-        
+
         this.setSql(sb);
 
         int row = this.sqlManager.executeUpdate(
-                new SQLReady(getSql().toString(), getParams().toArray())
+                new SQLReady(getExecutSql(), getParams().toArray())
         );
         return row;
     }
@@ -191,20 +191,20 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
                 .append(" ").append(getSql());
         this.setSql(sb);
         int row = this.sqlManager.executeUpdate(
-                new SQLReady(getSql().toString(), getParams().toArray())
+                new SQLReady(getExecutSql(), getParams().toArray())
         );
         return row;
     }
 
 
-	@Override
+    @Override
     public long count() {
         StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
         sb.append(getTableName(clazz))
                 .append(" ").append(getSql());
         this.setSql(sb);
         List results = this.sqlManager.execute(
-                new SQLReady(getSql().toString(), getParams().toArray()), Long.class
+                new SQLReady(getExecutSql(), getParams().toArray()), Long.class
         );
         return (Long) results.get(0);
     }
@@ -225,61 +225,114 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public Query<T> groupBy(String column) {
-    	GroupBy groupBy =  getGroupBy();
-    	groupBy.add(column);
+        GroupBy groupBy = getGroupBy();
+        groupBy.add(column);
         return this;
     }
 
     @Override
     public Query<T> orderBy(String orderBy) {
-    	OrderBy  orderByInfo = this.getOrderBy();
-    	orderByInfo.add(orderBy);
+        OrderBy orderByInfo = this.getOrderBy();
+        orderByInfo.add(orderBy);
         return this;
     }
-    
-    @Override
-	public Query<T> asc(String column) {
-    	OrderBy  orderByInfo = this.getOrderBy();
-    	orderBy.add(column+" ASC");
-		return this;
-	}
 
-	@Override
-	public Query<T> desc(String column) {
-		OrderBy  orderByInfo = this.getOrderBy();
-    	orderBy.add(column+" DESC");
-		return this;
-	}
-    
-	private OrderBy getOrderBy() {
-		if(this.orderBy==null) {
-			orderBy = new OrderBy();
-		}
-		return this.orderBy;
-	}
-	
-	private GroupBy getGroupBy() {
-		if(this.groupBy==null) {
-			groupBy = new GroupBy();
-		}
-		return this.groupBy;
-	}
-	
-	
-	
+    @Override
+    public Query<T> asc(String column) {
+        OrderBy orderByInfo = this.getOrderBy();
+        orderBy.add(column + " ASC");
+        return this;
+    }
+
+    @Override
+    public Query<T> desc(String column) {
+        OrderBy orderByInfo = this.getOrderBy();
+        orderBy.add(column + " DESC");
+        return this;
+    }
+
+    private OrderBy getOrderBy() {
+        if (this.orderBy == null) {
+            orderBy = new OrderBy();
+        }
+        return this.orderBy;
+    }
+
+    private GroupBy getGroupBy() {
+        if (this.groupBy == null) {
+            groupBy = new GroupBy();
+        }
+        return this.groupBy;
+    }
+
 
     /**
      * 默认从1开始，自动翻译成数据库的起始位置。如果配置了OFFSET_START_ZERO =true，则从0开始。
      */
     @Override
     public Query<T> limit(long startRow, long pageSize) {
-    	this.startRow = startRow;
-    	this.pageSize =pageSize;
-    	return this;
+        this.startRow = startRow;
+        this.pageSize = pageSize;
+        return this;
 //        setSql(new StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
 //        return this;
     }
 
-	
+
+    private String getExecutSql() {
+        String sql = getSql().toString().toLowerCase();
+        //检查SQL是否符合语法
+        int select = sql.indexOf("select");
+        int update = sql.indexOf("update");
+        int delete = sql.indexOf("delete");
+        int insert = sql.indexOf("insert");
+        boolean bSelect = select > -1 ? true : false;
+        boolean bUpdate = update > -1 ? true : false;
+        boolean bDelete = delete > -1 ? true : false;
+        boolean bInsert = insert > -1 ? true : false;
+
+        if ((bSelect && (bUpdate || bDelete || bInsert)) ||
+                (bUpdate && (bSelect || bDelete || bInsert)) ||
+                (bDelete && (bSelect || bUpdate || bInsert)) ||
+                (bInsert && (bSelect || bUpdate || bDelete))
+                ) {
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
+                    getSqlErrorTip("SELECT,UPDATE,INSERT,DELETE 不能混用"));
+        }
+
+        int select2 = sql.lastIndexOf("select");
+        int update2 = sql.indexOf("update");
+        int delete2 = sql.indexOf("delete");
+        int insert2 = sql.indexOf("insert");
+        if(select != select2){
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
+                    getSqlErrorTip("重复调用SELECT方法"));
+        }
+        if(update != update2){
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
+                    getSqlErrorTip("重复调用UPDATE方法"));
+        }
+        if(delete != delete2){
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
+                    getSqlErrorTip("重复调用DELETE方法"));
+        }
+        if(insert != insert2){
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
+                    getSqlErrorTip("重复调用INSERT方法"));
+        }
+        return getSql().toString();
+    }
+
+    /***
+     * 获取错误提示
+     * @return
+     */
+    private String getSqlErrorTip(String couse){
+       return String.format("\n┏━━━━━ SQL语法错误:\n" +
+                "┣SQL：%s\n" +
+                "┣原因：%s\n" +
+                "┣解决办法：您可能需要重新获取一个Query\n" +
+                "┗━━━━━\n", getSql().toString(),couse);
+    }
 
 }

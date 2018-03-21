@@ -54,6 +54,9 @@ public class BeetlSQLException extends RuntimeException {
 
 	//Query工具查询条件错误
 	public static final int 	QUERY_CONDITION_ERROR  = 20;
+
+	//Query SQL 语法错误
+	public static final int 	QUERY_SQL_ERROR  = 21;
 		
 	int code ;
 	

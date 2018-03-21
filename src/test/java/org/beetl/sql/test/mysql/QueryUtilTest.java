@@ -97,6 +97,23 @@ public class QueryUtilTest extends BaseMySqlTest {
         assert count != 0;
     }
 
+
+    @Test
+    public void testUpdateMoreEqCondition() {
+        User record = new User();
+        record.setName("new name");
+        Query<User> query = sqlManager.query(User.class);
+         query.andEq("id", 1637)
+                .andEq("name", "xxxx")
+                .andEq("name", "test")
+                .select();
+
+        query.updateSelective(record);
+        int count = 1;
+        assert count != 0;
+    }
+
+
     @Test
     public void testUpdateCondition() {
         User record = new User();
