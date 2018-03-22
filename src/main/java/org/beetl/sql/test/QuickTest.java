@@ -47,25 +47,11 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-		Query<User> query = sql.query(User.class);
-		List<User> map = (List<User>)query.andEq("id", 1).orEq("name", "cc").select();
-		System.out.println(map);
-		//		User user = sql.single(User.class, 1);
-////		Department dept = (Department)user.get("department");
-//		
-////		User user = new User();
-////		user.setId(1);
-////		user.setName("hee");
-////		PageQuery page = new PageQuery();
-////		sql.execute(new SQLReady("select * from user "), User.class, page);
-//		
-////		List<User> list = sql.select("wan.user.selectUserAndDepartment", User.class);
-////		List<Role> roles = (List<Role>)list.get(0).get("myRoles");
-////		sql.insert(new User());
-////		sql.updateById(user);
-//		
-////		List<User> users = sql.select("wan.user.selectUserAndDepartment", User.class);
-////		User user = users.get(0);	
+//		Query<User> query = sql.query(User.class);
+//		List<User> map = (List<User>)query.andEq("id", 1).orEq("name", "cc").select();
+//		System.out.println(map);
+		UserDao dao = sql.getMapper(UserDao.class);
+		dao.dropTable();
 	}
 	
 	public static User unique(SQLManager sql,Object key){

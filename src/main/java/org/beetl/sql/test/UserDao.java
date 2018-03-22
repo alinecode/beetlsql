@@ -48,4 +48,7 @@ public interface UserDao extends BaseMapper {
 	
 	public KeyHolder addOne(User user);
 	
+	@SqlStatement("truncate table test immediate")
+	public void dropTable();
+	
 }
