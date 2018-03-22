@@ -333,7 +333,9 @@ public class MethodDesc {
 			return SM_UPDATE;
 		}else if(sqlType.equals("drop")){
 			return SM_UPDATE;
-		}
+		}else if(sqlType.equals("truncate")){
+    	    return SM_UPDATE;
+    	}
 		else {
 			return -1; //unknow
 		}

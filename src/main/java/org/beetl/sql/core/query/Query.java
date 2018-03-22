@@ -2,8 +2,8 @@ package org.beetl.sql.core.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
@@ -75,6 +75,15 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         // 同SQLManager.single 一致，只取第一条。
         return list.get(0);
     }
+    
+    public Map mapSingle() {
+        List<Map> list = limit(getFirstRowNumber(), 1).selectByType(Map.class);
+        if (list.isEmpty()) {
+            return null;
+        }
+        // 同SQLManager.single 一致，只取第一条
+        return list.get(0);
+    }
 
     @Override
     public T unique() {
@@ -91,13 +100,27 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return this.sqlManager.isOffsetStartZero() ? 0 : 1;
     }
 
+    
+    
     @Override
     public List<T> select() {
+        return this.selectByType(clazz);
+    }
+   
+    public <K> List<K> select(Class<K> retType) {
+        return this.selectByType(retType);
+    }
+    
+    public List<Map> mapSelect() {
+        return this.selectByType(Map.class);
+    }
+    
+    protected <K> List<K> selectByType(Class<K> retType) {
         StringBuilder sb = new StringBuilder("SELECT * ");
         sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
         makeSql();
-        List<T> list = this.sqlManager.execute(new SQLReady(getExecutSql(), getParams().toArray()), clazz);
+        List<K> list = this.sqlManager.execute(new SQLReady(getExecutSql(), getParams().toArray()), retType);
         return list;
     }
 
@@ -199,7 +222,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         if (i > -1) {
             condition.getSql().delete(i, i + 5);
         }
-        this.appendSql("HAVING ").appendSql(condition.getSql().toString()).appendSql(" ");
+        if(this.groupBy==null) {
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("haveing 需要在groupBy后调用"));
+        }
+        
+        groupBy.addHaving(condition.getSql().toString());
         this.addParam(condition.getParams());
         return this;
     }
@@ -207,7 +234,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     @Override
     public Query<T> groupBy(String column) {
         GroupBy groupBy = getGroupBy();
-        groupBy.add(column);
+        groupBy.add(getCol(column));
         return this;
     }
 
@@ -221,7 +248,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     @Override
     public Query<T> asc(String column) {
         OrderBy orderByInfo = this.getOrderBy();
-        orderBy.add(column + " ASC");
+        orderBy.add(getCol(column) + " ASC");
         return this;
     }
 

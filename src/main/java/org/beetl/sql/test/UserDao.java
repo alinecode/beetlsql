@@ -7,6 +7,7 @@ import java.util.Map;
 import org.beetl.sql.core.annotatoin.Sql;
 import org.beetl.sql.core.annotatoin.SqlResource;
 import org.beetl.sql.core.annotatoin.SqlStatement;
+import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.BaseMapper;
@@ -48,7 +49,7 @@ public interface UserDao extends BaseMapper {
 	
 	public KeyHolder addOne(User user);
 	
-	@SqlStatement("truncate table test immediate")
+	@Sql(value="truncate table test immediate",type=SqlStatementType.UPDATE)
 	public void dropTable();
 	
 }

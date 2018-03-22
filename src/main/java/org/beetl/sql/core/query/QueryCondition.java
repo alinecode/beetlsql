@@ -34,11 +34,11 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     public final String NOT_BETWEEN = "NOT BETWEEN";
 
 
-    private String getCol(String colName) {
+    protected String getCol(String colName) {
         return " " + sqlManager.getDbStyle().getKeyWordHandler().getCol(colName) + " ";
     }
 
-    private String getTable(String tableName) {
+    protected String getTable(String tableName) {
         return sqlManager.getDbStyle().getKeyWordHandler().getTable(tableName);
     }
 
@@ -126,13 +126,13 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         this.appendSql(link)
                 .appendSql(getCol(column))
                 .appendSql(opt)
-                .appendSql("(");
+                .appendSql(" ( ");
         for (Object o : value) {
             this.appendSql(" ? ,");
             this.addParam(o);
         }
         this.getSql().deleteCharAt(this.getSql().length() - 1);
-        this.appendSql(") ");
+        this.appendSql(" ) ");
     }
 
     protected void appendBetweenSql(String column, String opt, String link, Object... value) {

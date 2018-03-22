@@ -2,6 +2,7 @@ package org.beetl.sql.core.query.interfacer;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *@author GavinKing
@@ -15,6 +16,24 @@ public interface QueryExecuteI<M>{
      * @return 查询结果
      */
     List<M> select(String... columns);
+    /**
+     * 查询，并映射到指定类上
+     * @param retType
+     * @return
+     */
+    public <K> List<K> select(Class<K> retType);
+    
+    /**
+     * 查询结果集，结果集每一条并映射到map
+     * @return
+     */
+    public List<Map> mapSelect();
+    
+    /**
+     * 查询一条记录，映射到Map
+     * @return
+     */
+    public Map mapSingle();
     
     /**
      * 查询出一条，如果没有，返回null
