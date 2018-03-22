@@ -80,6 +80,11 @@ public class OracleStyle extends AbstractDBStyle {
     public int getDBType() {
         return DB_ORACLE;
     }
+    
+    @Override
+    public String getSeqValue(String seqName) {
+		return seqName+".nextval";
+	}
 
 
 }

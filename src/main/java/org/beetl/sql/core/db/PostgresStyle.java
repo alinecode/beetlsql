@@ -1,10 +1,35 @@
 package org.beetl.sql.core.db;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Map;
+
+import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.SeqID;
+import org.beetl.sql.core.kit.BeanKit;
 
 public class PostgresStyle extends AbstractDBStyle {
 
     public PostgresStyle() {
+    }
+    
+    @Override
+    public int getIdType(Class c,String idProperty) {
+    	 	List<Annotation> ans = BeanKit.getAllAnnoation(c, idProperty);
+        int idType = DBStyle.ID_ASSIGN; // 默认是自增长
+
+        for (Annotation an : ans) {
+            if (an instanceof SeqID) {
+                idType = DBStyle.ID_SEQ;
+                //seq 总是优先
+                break;
+            } else if (an instanceof AssignID) {
+                idType = DBStyle.ID_ASSIGN;
+            }
+        }
+
+        return idType;
+
     }
 
     @Override
@@ -47,5 +72,9 @@ public class PostgresStyle extends AbstractDBStyle {
         return DB_POSTGRES;
     }
 
+    @Override
+    public String getSeqValue(String seqName) {
+		return "nextval('"+seqName+"')";
+	}
 
 }

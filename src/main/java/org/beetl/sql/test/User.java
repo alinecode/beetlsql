@@ -2,14 +2,10 @@ package org.beetl.sql.test;
 
 import java.util.List;
 
-import org.beetl.sql.core.orm.OrmCondition;
-import org.beetl.sql.core.orm.OrmQuery;
-@OrmQuery(
-value={
-    @OrmCondition(target=Department.class,attr="departmentId",targetAttr="id",type=OrmQuery.Type.ONE),
-}
-)
+import org.beetl.sql.core.annotatoin.SeqID;
+
 public class User {
+	@SeqID(name = "user_seq")
 	private Integer id ;
 	private String name ;
 	private Integer departmentId;

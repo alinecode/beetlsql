@@ -13,7 +13,7 @@ import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.BaseMapper;
 
 @SqlResource("wan.user")
-public interface UserDao extends BaseMapper {
+public interface UserDao extends BaseMapper<User> {
 	
 	List<Long> getIds();
 	void getIds(PageQuery<User> query);

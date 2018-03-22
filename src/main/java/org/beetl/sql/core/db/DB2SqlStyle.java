@@ -85,9 +85,11 @@ public class DB2SqlStyle extends AbstractDBStyle {
                 idType = DBStyle.ID_AUTO;
                 break;// 优先
             } else if (an instanceof SeqID) {
-                //my sql not support
+            	 	idType = DBStyle.ID_SEQ;
+            	 	break;
             } else if (an instanceof AssignID) {
                 idType = DBStyle.ID_ASSIGN;
+                break;
             }
         }
 
@@ -116,6 +118,11 @@ public class DB2SqlStyle extends AbstractDBStyle {
         return HOLDER_START + fieldName +",jdbc='"+ type+"'"+HOLDER_END + ",";
 
     }
+    
+    @Override
+    public String getSeqValue(String seqName) {
+		return "NEXT VALUE FOR "+ seqName+" ";
+	}
 
 
 }

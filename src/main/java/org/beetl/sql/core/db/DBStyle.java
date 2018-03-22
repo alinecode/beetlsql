@@ -100,6 +100,13 @@ public interface DBStyle {
     int getIdType(Class c,String idProperty);
 
     KeyWordHandler getKeyWordHandler();
+    
+    /**
+     * 通过序列名字返回获取序列值的sql片段
+     * @param seqName
+     * @return
+     */
+    public String getSeqValue(String seqName);
 
     void setKeyWordHandler(KeyWordHandler keyWordHandler);
 
@@ -111,5 +118,7 @@ public interface DBStyle {
     MetadataManager getMetadataManager();
 
     void setMetadataManager(MetadataManager metadataManager);
+    
+    
 
 }

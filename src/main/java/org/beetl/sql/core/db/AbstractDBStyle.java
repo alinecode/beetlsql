@@ -396,7 +396,7 @@ public abstract class AbstractDBStyle implements DBStyle {
                       SeqID seqId = BeanKit.getAnnoation(classDesc.getTargetClass(), attr, 
                     		  (Method)classDesc.getIdMethods().get(attr), SeqID.class);
                       
-                      valSql.append(seqId.name() + ".nextval,");
+                      valSql.append(this.getSeqValue(seqId.name()) + ",");
                       continue;
                   } else if (idType == DBStyle.ID_ASSIGN) {
                       //normal
@@ -830,6 +830,10 @@ public abstract class AbstractDBStyle implements DBStyle {
     }
 	public void setKeyWordHandler(KeyWordHandler keyWordHandler){
 		this.keyWordHandler = keyWordHandler;
+	}
+	
+	public String getSeqValue(String seqName) {
+		throw new UnsupportedOperationException("不支持序列");
 	}
 
 }
