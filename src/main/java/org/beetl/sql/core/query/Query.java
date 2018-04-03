@@ -38,15 +38,19 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return new Query(this.sqlManager, clazz);
     }
 
-    public LamdbaQuery<T> lambda() {
+    /**
+     * 推荐直接使用 dao.createLambdaQuery()/sql.lambdaQuery()来获取
+     * @return
+     */
+    @Deprecated
+    public LambdaQuery<T> lambda() {
         if (BeanKit.queryLambdasSupport) {
-            LamdbaQuery newQuery = new LamdbaQuery(this.sqlManager, clazz);
             if (this.sql != null || this.groupBy != null || this.orderBy != null) {
                 throw new UnsupportedOperationException("LamdbaQuery必须在调用其他AP前获取");
             }
-            return newQuery;
+            return new LambdaQuery(this.sqlManager, clazz);
         } else {
-            throw new UnsupportedOperationException("需要使用Java8以上，并且依赖com.trigersoft:jaque,请查阅官网文档");
+            throw new UnsupportedOperationException("需要使用Java8以上");
         }
 
     }

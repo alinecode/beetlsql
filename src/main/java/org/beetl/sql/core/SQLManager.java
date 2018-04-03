@@ -46,7 +46,7 @@ import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
 import org.beetl.sql.core.mapping.BeanProcessor;
-import org.beetl.sql.core.query.LamdbaQuery;
+import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.gen.GenConfig;
@@ -226,9 +226,15 @@ public class SQLManager {
 
 	public <T> Query<T> query(Class<T> clazz) {
 		return new Query<T>(this, clazz);
-
 	}
 
+    public <T> LambdaQuery<T> lambdaQuery(Class<T> clazz) {
+        if (BeanKit.queryLambdasSupport) {
+            return new LambdaQuery<T>(this, clazz);
+        }else{
+            throw new UnsupportedOperationException("需要Java8以上");
+        }
+    }
 
 
     public boolean isOffsetStartZero() {

@@ -1,21 +1,27 @@
 package org.beetl.sql.test.mysql;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Queue;
-
+import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
-import org.beetl.sql.core.query.LamdbaQuery;
 import org.beetl.sql.test.mysql.entity.User;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class QueryUtilTest extends BaseMySqlTest {
 
     @Before
     public void init() {
         super.init();
+    }
+
+    @Test
+    public void testLambda(){
+        LambdaQuery<User> query = sqlManager.lambdaQuery(User.class);
+        List<User> list = query.andEq(User::getName, "user7").or(query.condition().andEq(User::getId, 1641)).select();
+        assert list.size()==2;
     }
 
     @Test

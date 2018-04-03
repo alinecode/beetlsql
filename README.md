@@ -45,9 +45,9 @@ BeetSql是一个全功能DAO工具， 同时具有Hibernate 优点 & Mybatis优�
 
 List<User> list = userDao.createQuery().andEq("name","hi").orderBy("create_date").select();
 ~~~
-如果是Java8，且引入了对jaque库依赖,则可以
+如果是Java8,则可以
 ~~~java
-List<User> list1  = userDao.createQuery().lamdba().andEq(User::getName, "hi").orderBy(User::getCreateDate).select();
+List<User> list1  = userDao.createLambdaQuery().andEq(User::getName, "hi").orderBy(User::getCreateDate).select();
 ~~~
 Query接口分为俩类：
 
