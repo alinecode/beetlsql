@@ -513,19 +513,16 @@ public class SQLScript {
         Connection conn = null;
         InterceptorContext ctx = null;
         try {
-
+            conn = sm.getDs().getMaster();
             for (int k = 0; k < maps.length; k++) {
                 Map<String, Object> paras = maps[k];
                 SQLResult result = run(paras);
                 List<SQLParameter> objs = result.jdbcPara;
-
                 if (ps == null) {
-                    conn = sm.getDs().getConn(id, true, sql, objs);
                     ps = conn.prepareStatement(result.jdbcSql);
                     ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.EMPTY_LIST, paras);
                 }
                 this.setPreparedStatementPara(ps, objs);
-
                 ps.addBatch();
 
             }
@@ -601,6 +598,7 @@ public class SQLScript {
         	Map<String,InterceptorContext> batchCtx = new HashMap<String,InterceptorContext>();
         	//不同sql产生的批处理结果，汇总到jdbcRets
         	Map<String,List<Integer>> batchRet = new HashMap<String,List<Integer>>();
+        	conn = sm.getDs().getMaster();
             for (int k = 0; k < list.size(); k++) {
                 Map<String, Object> paras = new HashMap<String, Object>();
                 paras.put("_root", list.get(k));
@@ -610,7 +608,6 @@ public class SQLScript {
                 List<Integer> rets = batchRet.get(result.jdbcSql);
                 InterceptorContext ctx = batchCtx.get(result.jdbcSql);
                 if (ps == null) {
-                    conn = sm.getDs().getConn(id, true, result.jdbcSql, objs);
                     ps = conn.prepareStatement(result.jdbcSql);
                     ctx = new InterceptorContext(id, result.jdbcSql, new ArrayList<SQLParameter>(0), paras, true);
                     rets = new ArrayList<Integer> ();
