@@ -65,8 +65,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         sb.append(" FROM ").append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
         addAdditionalPartSql();
-        List<T> list = this.sqlManager.execute(new SQLReady(this.getSql().toString(), getParams().toArray()), clazz);
+        String targetSql = this.getSql().toString();
+        Object[] paras = getParams().toArray();
+        //先清楚
         clear();
+        List<T> list = this.sqlManager.execute(new SQLReady(targetSql, paras), clazz);
         return list;
     }
 
@@ -126,8 +129,12 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
         addAdditionalPartSql();
-        List<K> list = this.sqlManager.execute(new SQLReady(this.getSql().toString(), getParams().toArray()), retType);
+        
+        String targetSql = this.getSql().toString();
+        Object[] paras = getParams().toArray();
+        //先清除，避免执行出错后无法清除
         clear();
+        List<K> list = this.sqlManager.execute(new SQLReady(targetSql, paras), retType);
         return list;
     }
 
@@ -190,8 +197,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
         this.setSql(sb);
 
-        int row = this.sqlManager.executeUpdate(new SQLReady(this.getSql().toString(), getParams().toArray()));
+        String targetSql = this.getSql().toString();
+        Object[] paras = getParams().toArray();
+        //先清除，避免执行出错后无法清除
         clear();
+        int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
         return row;
     }
 
@@ -211,8 +221,12 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder("DELETE FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        int row = this.sqlManager.executeUpdate(new SQLReady(this.getSql().toString(), getParams().toArray()));
+        
+        String targetSql = this.getSql().toString();
+        Object[] paras = getParams().toArray();
+        //先清除，避免执行出错后无法清除
         clear();
+        int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
         return row;
     }
 
@@ -221,8 +235,12 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        List results = this.sqlManager.execute(new SQLReady(this.getSql().toString(), getParams().toArray()), Long.class);
+        
+        String targetSql = this.getSql().toString();
+        Object[] paras = getParams().toArray();
+        //先清除，避免执行出错后无法清除
         clear();
+        List results = this.sqlManager.execute(new SQLReady(targetSql, paras), Long.class);
         return (Long) results.get(0);
     }
 
@@ -296,45 +314,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
     
     
-    
-  
 
-//    private String getExecutSql() {
-//        String sql = getSql().toString().toLowerCase();
-//        // 检查SQL是否符合语法
-//        int select = sql.indexOf("select");
-//        int update = sql.indexOf("update");
-//        int delete = sql.indexOf("delete");
-//        int insert = sql.indexOf("insert");
-//        boolean bSelect = select > -1 ? true : false;
-//        boolean bUpdate = update > -1 ? true : false;
-//        boolean bDelete = delete > -1 ? true : false;
-//        boolean bInsert = insert > -1 ? true : false;
-//
-//        if ((bSelect && (bUpdate || bDelete || bInsert)) || (bUpdate && (bSelect || bDelete || bInsert))
-//                || (bDelete && (bSelect || bUpdate || bInsert)) || (bInsert && (bSelect || bUpdate || bDelete))) {
-//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
-//                    getSqlErrorTip("SELECT,UPDATE,INSERT,DELETE 不能混用"));
-//        }
-//
-//        int select2 = sql.lastIndexOf("select");
-//        int update2 = sql.indexOf("update");
-//        int delete2 = sql.indexOf("delete");
-//        int insert2 = sql.indexOf("insert");
-//        if (select != select2) {
-//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用SELECT方法"));
-//        }
-//        if (update != update2) {
-//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用UPDATE方法"));
-//        }
-//        if (delete != delete2) {
-//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用DELETE方法"));
-//        }
-//        if (insert != insert2) {
-//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用INSERT方法"));
-//        }
-//        return getSql().toString();
-//    }
 
     /***
      * 获取错误提示

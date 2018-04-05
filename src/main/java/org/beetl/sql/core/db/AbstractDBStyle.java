@@ -182,10 +182,19 @@ public abstract class AbstractDBStyle implements DBStyle {
     public SQLSource genDeleteById(Class<?> cls) {
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc  classDesc = table.getClassDesc(cls,this.nameConversion);
         String condition = appendIdCondition(cls);
+        if(classDesc.getLogicDeleteAttrName()==null) {
+            return new SQLTableSource(new StringBuilder("delete from ").append(getTableName(table)).append(condition).toString());
+        }else {
+            String col = this.nameConversion.getColName(cls, classDesc.logicDeleteAttrName);
+            return new SQLTableSource(new StringBuilder("update  ")
+                    .append(getTableName(table)).append(" set ")
+                    .append(col).append(" = ").append(classDesc.getLogicDeleteAttrValue()).append(condition).toString());
+        }
+      
 
-        return new SQLTableSource(new StringBuilder("delete from ").append(getTableName(table)).append(condition).toString());
-    }
+       }
 
     @Override
     public SQLSource genSelectAll(Class<?> cls) {
@@ -784,10 +793,16 @@ public abstract class AbstractDBStyle implements DBStyle {
     }
 
     protected String getTableName(TableDesc desc) {
+        String tableName = desc.getName();
+        int index = -1;
+        if((index=tableName.indexOf(STATEMENT_START))!=-1) {
+            //表名字包含了特殊符号，比如Oracle 的@
+            tableName = tableName.substring(0,index)+"\\"+tableName.substring(index);
+        }
         if (desc.getSchema() != null) {
-            return this.getKeyWordHandler().getTable(desc.getSchema())+ "." + this.getKeyWordHandler().getTable(desc.getName()) ;
+            return this.getKeyWordHandler().getTable(desc.getSchema())+ "." + this.getKeyWordHandler().getTable(tableName) ;
         } else {
-            return this.getKeyWordHandler().getTable(desc.getName());
+            return this.getKeyWordHandler().getTable(tableName);
         }
 
     }

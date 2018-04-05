@@ -1010,10 +1010,10 @@ public class SQLManager {
     }
 
     /**
-     * 插入实体，且该实体对应的表有自增主键
+     * 插入实体
      *
      * @param paras
-     * @param autoDbAssignKey 是否自动从数据库获取主键值
+     * @param autoDbAssignKey 是否自动从数据库获取主键值, 自增或者序列
      * @return
      */
     public int insert(Object paras, boolean autoDbAssignKey) {
@@ -1099,7 +1099,7 @@ public class SQLManager {
                     Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
                     Object value = holder.getKey();
                     if(value!=null) {
-                    	//KeyHolder有值才设置
+                    	    //KeyHolder有值才设置
 						value = BeanKit.convertValueToRequiredType(value, getterMethod.getReturnType());
 						setterMethod.invoke(paras, new Object[]{value});
                     }
@@ -1133,7 +1133,7 @@ public class SQLManager {
      *
      * @param clazz
      * @param paras
-     * @param holder
+     * @param holder 自增或者序列主健放到holder对象里
      */
     public int insert(Class<?> clazz, Object paras, KeyHolder holder) {
         SQLScript script = getScript(clazz, INSERT);

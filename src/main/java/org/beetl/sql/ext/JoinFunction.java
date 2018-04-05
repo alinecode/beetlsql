@@ -6,6 +6,7 @@ import java.util.List;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.sql.core.engine.SQLParameter;
+import org.beetl.sql.core.kit.BeanKit;
 /**
  * 
  * @author "Sean-[重庆]" 284771807@qq.com;
@@ -24,6 +25,7 @@ public class JoinFunction implements Function {
 			throw new RuntimeException("join.paras[0] must be a collection or an array!");
 		}
 		
+		objs = paras.length==1?objs:getValue(objs,(String)paras[1]);
 		List<SQLParameter> dbParas = (List<SQLParameter>) ctx.getGlobal("_paras");
 		
 		try {
@@ -33,6 +35,14 @@ public class JoinFunction implements Function {
 		return null;
 	}
 
+	private Object[] getValue(Object[] objs,String attrName) {
+	    Object[] values = new Object[objs.length];
+	    int i=0;
+	    for(Object o:objs) {
+	        values[i++]=BeanKit.getBeanProperty(o, attrName);
+	    }
+	    return values;
+	}
 	private static String join(Object[] array, List dbParas) {  
         if (array == null) {  
             return null;  

@@ -13,6 +13,7 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
 import org.beetl.sql.core.annotatoin.InsertIgnore;
+import org.beetl.sql.core.annotatoin.LogicDelete;
 import org.beetl.sql.core.annotatoin.UpdateIgnore;
 import org.beetl.sql.core.annotatoin.Version;
 import org.beetl.sql.core.kit.BeanKit;
@@ -38,6 +39,8 @@ public class ClassDesc {
 	String ormQuery = null;
 	String versionProperty;
 	String versionCol;
+	String logicDeleteAttrName =null;
+	int logicDeleteAttrValue = 0;
 	
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		this.targetClass = c ;
@@ -81,6 +84,14 @@ public class ClassDesc {
 					if(ig!=null||ug!=null){
 						attrIgnores.put(p.getName(), new ColumnIgnoreStatus(ig,ug));
 					}
+				}
+				
+				
+				
+				LogicDelete logicDelete =  BeanKit.getAnnoation(c, p.getName(), readMethod, LogicDelete.class);
+				if(logicDelete!=null) {
+				    this.logicDeleteAttrName = p.getName();
+				    this.logicDeleteAttrValue =logicDelete.value();
 				}
 				
 				Version version =  BeanKit.getAnnoation(c, p.getName(), readMethod, Version.class);
@@ -199,6 +210,18 @@ public class ClassDesc {
 	public void setTargetClass(Class targetClass) {
 		this.targetClass = targetClass;
 	}
+    public String getLogicDeleteAttrName() {
+        return logicDeleteAttrName;
+    }
+    public void setLogicDeleteAttrName(String logicDeleteAttrName) {
+        this.logicDeleteAttrName = logicDeleteAttrName;
+    }
+    public int getLogicDeleteAttrValue() {
+        return logicDeleteAttrValue;
+    }
+    public void setLogicDeleteAttrValue(int logicDeleteAttrValue) {
+        this.logicDeleteAttrValue = logicDeleteAttrValue;
+    }
 	
 	
 }

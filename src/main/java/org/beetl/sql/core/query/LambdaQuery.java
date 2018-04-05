@@ -27,175 +27,175 @@ public class LambdaQuery<T> extends Query<T> {
 
 	}
 
-	public LambdaQuery<T> andEq(Property<T, ?> fun, Object value) {
-		super.andEq(getFunctionName(fun), value);
+	public LambdaQuery<T> andEq(Property<T, ?> property, Object value) {
+		super.andEq(getFunctionName(property), value);
 		return this;
 	}
 
-	public LambdaQuery<T> andNotEq(Property<T, ?> fun, Object value) {
-		super.andNotEq(getFunctionName(fun), value);
-		return this;
-
-	}
-
-	public LambdaQuery<T> andGreat(Property<T, ?> fun, Object value) {
-		super.appendAndSql(getFunctionName(fun), value, ">");
+	public LambdaQuery<T> andNotEq(Property<T, ?> property, Object value) {
+		super.andNotEq(getFunctionName(property), value);
 		return this;
 
 	}
 
-	public LambdaQuery<T> andGreatEq(Property<T, ?> fun, Object value) {
-		appendAndSql(getFunctionName(fun), value, ">=");
+	public LambdaQuery<T> andGreat(Property<T, ?> property, Object value) {
+		super.appendAndSql(getFunctionName(property), value, ">");
+		return this;
+
+	}
+
+	public LambdaQuery<T> andGreatEq(Property<T, ?> property, Object value) {
+		appendAndSql(getFunctionName(property), value, ">=");
 		return this;
 	}
 
-	public LambdaQuery<T> andLess(Property<T, ?> fun, Object value) {
-		appendAndSql(getFunctionName(fun), value, "<");
+	public LambdaQuery<T> andLess(Property<T, ?> property, Object value) {
+		appendAndSql(getFunctionName(property), value, "<");
 		return this;
 	}
 
-	public LambdaQuery<T> andLessEq(Property<T, ?> fun, Object value) {
-		appendAndSql(getFunctionName(fun), value, "<=");
+	public LambdaQuery<T> andLessEq(Property<T, ?> property, Object value) {
+		appendAndSql(getFunctionName(property), value, "<=");
 		return this;
 	}
 
-	public LambdaQuery<T> andLike(Property<T, ?> fun, String value) {
-		appendAndSql(getFunctionName(fun), value, "LIKE ");
+	public LambdaQuery<T> andLike(Property<T, ?> property, String value) {
+		appendAndSql(getFunctionName(property), value, "LIKE ");
 		return this;
 	}
 
-	public LambdaQuery<T> andNotLike(Property<T, ?> fun, String value) {
-		appendAndSql(getFunctionName(fun), value, "NOT LIKE ");
+	public LambdaQuery<T> andNotLike(Property<T, ?> property, String value) {
+		appendAndSql(getFunctionName(property), value, "NOT LIKE ");
 		return this;
 	}
 
-	public LambdaQuery<T> andIsNull(Property<T, ?> fun) {
-		appendAndSql(getFunctionName(fun), null, "IS NULL ");
+	public LambdaQuery<T> andIsNull(Property<T, ?> property) {
+		appendAndSql(getFunctionName(property), null, "IS NULL ");
 		return this;
 	}
 
-	public LambdaQuery<T> andIsNotNull(Property<T, ?> fun) {
-		appendAndSql(getFunctionName(fun), null, "IS NOT NULL ");
+	public LambdaQuery<T> andIsNotNull(Property<T, ?> property) {
+		appendAndSql(getFunctionName(property), null, "IS NOT NULL ");
 		return this;
 	}
 
-	public LambdaQuery<T> andIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, IN, AND);
+	public LambdaQuery<T> andIn(Property<T, ?> property, Collection<?> value) {
+		appendInSql(getFunctionName(property), value, IN, AND);
 		return this;
 	}
 
-	public LambdaQuery<T> andNotIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, NOT_IN, AND);
+	public LambdaQuery<T> andNotIn(Property<T, ?> property, Collection<?> value) {
+		appendInSql(getFunctionName(property), value, NOT_IN, AND);
 		return this;
 	}
 
-	public LambdaQuery<T> andBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), BETWEEN, AND, value1, value2);
+	public LambdaQuery<T> andBetween(Property<T, ?> property, Object value1, Object value2) {
+		appendBetweenSql(getFunctionName(property), BETWEEN, AND, value1, value2);
 		return this;
 	}
 
-	public LambdaQuery<T> andNotBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), NOT_BETWEEN, AND, value1, value2);
+	public LambdaQuery<T> andNotBetween(Property<T, ?> property, Object value1, Object value2) {
+		appendBetweenSql(getFunctionName(property), NOT_BETWEEN, AND, value1, value2);
 		return this;
 	}
 
-	public LambdaQuery<T> orEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "=");
+	public LambdaQuery<T> orEq(Property<T, ?> property, Object value) {
+		appendOrSql(getFunctionName(property), value, "=");
 		return this;
 	}
 
-	public LambdaQuery<T> orNotEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "<>");
+	public LambdaQuery<T> orNotEq(Property<T, ?> property, Object value) {
+		appendOrSql(getFunctionName(property), value, "<>");
 		return this;
 	}
 
-	public LambdaQuery<T> orGreat(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, ">");
+	public LambdaQuery<T> orGreat(Property<T, ?> property, Object value) {
+		appendOrSql(getFunctionName(property), value, ">");
 		return this;
 	}
 
-	public LambdaQuery<T> orGreatEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, ">=");
+	public LambdaQuery<T> orGreatEq(Property<T, ?> property, Object value) {
+		appendOrSql(getFunctionName(property), value, ">=");
 		return this;
 	}
 
-	public LambdaQuery<T> orLess(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "<");
+	public LambdaQuery<T> orLess(Property<T, ?> property, Object value) {
+		appendOrSql(getFunctionName(property), value, "<");
 		return this;
 	}
 
-	public LambdaQuery<T> orLessEq(Property<T, ?> fun, Object value) {
-		appendOrSql(getFunctionName(fun), value, "<=");
+	public LambdaQuery<T> orLessEq(Property<T, ?> property, Object value) {
+		appendOrSql(getFunctionName(property), value, "<=");
 		return this;
 	}
 
-	public LambdaQuery<T> orLike(Property<T, ?> fun, String value) {
-		appendOrSql(getFunctionName(fun), value, "LIKE");
+	public LambdaQuery<T> orLike(Property<T, ?> property, String value) {
+		appendOrSql(getFunctionName(property), value, "LIKE");
 		return this;
 	}
 
-	public LambdaQuery<T> orNotLike(Property<T, ?> fun, String value) {
-		appendOrSql(getFunctionName(fun), value, "NOT LIKE");
+	public LambdaQuery<T> orNotLike(Property<T, ?> property, String value) {
+		appendOrSql(getFunctionName(property), value, "NOT LIKE");
 		return this;
 	}
 
-	public LambdaQuery<T> orIsNull(Property<T, ?> fun) {
-		appendOrSql(getFunctionName(fun), null, "IS NULL");
+	public LambdaQuery<T> orIsNull(Property<T, ?> property) {
+		appendOrSql(getFunctionName(property), null, "IS NULL");
 		return this;
 	}
 
-	public LambdaQuery<T> orIsNotNull(Property<T, ?> fun) {
-		appendOrSql(getFunctionName(fun), null, "IS NOT NULL");
+	public LambdaQuery<T> orIsNotNull(Property<T, ?> property) {
+		appendOrSql(getFunctionName(property), null, "IS NOT NULL");
 		return this;
 	}
 
-	public LambdaQuery<T> orIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, IN, OR);
+	public LambdaQuery<T> orIn(Property<T, ?> property, Collection<?> value) {
+		appendInSql(getFunctionName(property), value, IN, OR);
 		return this;
 	}
 
-	public LambdaQuery<T> orNotIn(Property<T, ?> fun, Collection<?> value) {
-		appendInSql(getFunctionName(fun), value, NOT_IN, OR);
+	public LambdaQuery<T> orNotIn(Property<T, ?> property, Collection<?> value) {
+		appendInSql(getFunctionName(property), value, NOT_IN, OR);
 		return this;
 	}
 
-	public LambdaQuery<T> orBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), BETWEEN, OR, value1, value2);
+	public LambdaQuery<T> orBetween(Property<T, ?> property, Object value1, Object value2) {
+		appendBetweenSql(getFunctionName(property), BETWEEN, OR, value1, value2);
 		return this;
 	}
 
-	public LambdaQuery<T> orNotBetween(Property<T, ?> fun, Object value1, Object value2) {
-		appendBetweenSql(getFunctionName(fun), NOT_BETWEEN, OR, value1, value2);
+	public LambdaQuery<T> orNotBetween(Property<T, ?> property, Object value1, Object value2) {
+		appendBetweenSql(getFunctionName(property), NOT_BETWEEN, OR, value1, value2);
 		return this;
 	}
 
-	public LambdaQuery<T> groupBy(Property<T, ?> fun) {
-		super.groupBy(getFunctionName(fun));
-
-		return this;
-	}
-
-	public LambdaQuery<T> orderBy(Property<T, ?> fun) {
-		super.orderBy(getFunctionName(fun));
-		return this;
-	}
-
-	public Query<T> asc(Property<T, ?> fun) {
-		super.asc(getFunctionName(fun));
+	public LambdaQuery<T> groupBy(Property<T, ?> property) {
+		super.groupBy(getFunctionName(property));
 
 		return this;
 	}
 
-	public Query<T> desc(Property<T, ?> fun) {
-		super.desc(getFunctionName(fun));
+	public LambdaQuery<T> orderBy(Property<T, ?> property) {
+		super.orderBy(getFunctionName(property));
 		return this;
 	}
 
-	private String getFunctionName(Property<T, ?> fun) {
+	public Query<T> asc(Property<T, ?> property) {
+		super.asc(getFunctionName(property));
+
+		return this;
+	}
+
+	public Query<T> desc(Property<T, ?> property) {
+		super.desc(getFunctionName(property));
+		return this;
+	}
+
+	private String getFunctionName(Property<T, ?> property) {
         try {
-            Method declaredMethod = fun.getClass().getDeclaredMethod("writeReplace");
+            Method declaredMethod = property.getClass().getDeclaredMethod("writeReplace");
             declaredMethod.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda = (SerializedLambda) declaredMethod.invoke(fun);
+            SerializedLambda serializedLambda = (SerializedLambda) declaredMethod.invoke(property);
             String method = serializedLambda.getImplMethodName();
             String attr = null;
             if (method.startsWith("get")) {
@@ -213,8 +213,8 @@ public class LambdaQuery<T> extends Query<T> {
 	private String[] getFunctionName(Property<T, ?>... funs) {
 		String[] cols = new String[funs.length];
 		int i = 0;
-		for (Property<T, ?> fun : funs) {
-			cols[i++] = this.getFunctionName(fun);
+		for (Property<T, ?> property : funs) {
+			cols[i++] = this.getFunctionName(property);
 		}
 		return cols;
 
@@ -285,193 +285,194 @@ public class LambdaQuery<T> extends Query<T> {
 
 
     @Override
-    @Deprecated
-    public Query<T> groupBy(String column) {
-        return super.groupBy(column);
+    public LambdaQuery<T> groupBy(String column) {
+         super.groupBy(column);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orderBy(String orderBy) {
-        return super.orderBy(orderBy);
+    public LambdaQuery<T> orderBy(String orderBy) {
+         super.orderBy(orderBy);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> asc(String column) {
-        return super.asc(column);
+    public LambdaQuery<T> asc(String column) {
+         super.asc(column);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> desc(String column) {
-        return super.desc(column);
+    public LambdaQuery<T> desc(String column) {
+         super.desc(column);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andEq(String column, Object value) {
-        return super.andEq(column, value);
+    public LambdaQuery<T> andEq(String column, Object value) {
+         super.andEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andNotEq(String column, Object value) {
-        return super.andNotEq(column, value);
+    public LambdaQuery<T> andNotEq(String column, Object value) {
+         super.andNotEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andGreat(String column, Object value) {
-        return super.andGreat(column, value);
+    public LambdaQuery<T> andGreat(String column, Object value) {
+         super.andGreat(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andGreatEq(String column, Object value) {
-        return super.andGreatEq(column, value);
+    public LambdaQuery<T> andGreatEq(String column, Object value) {
+         super.andGreatEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andLess(String column, Object value) {
-        return super.andLess(column, value);
+    public LambdaQuery<T> andLess(String column, Object value) {
+         super.andLess(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andLessEq(String column, Object value) {
-        return super.andLessEq(column, value);
+    public LambdaQuery<T> andLessEq(String column, Object value) {
+         super.andLessEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andLike(String column, String value) {
-        return super.andLike(column, value);
+    public LambdaQuery<T> andLike(String column, String value) {
+         super.andLike(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andNotLike(String column, String value) {
-        return super.andNotLike(column, value);
+    public LambdaQuery<T> andNotLike(String column, String value) {
+         super.andNotLike(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andIsNull(String column) {
-        return super.andIsNull(column);
+    public LambdaQuery<T> andIsNull(String column) {
+         super.andIsNull(column);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andIsNotNull(String column) {
-        return super.andIsNotNull(column);
+    public LambdaQuery<T> andIsNotNull(String column) {
+         super.andIsNotNull(column);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andIn(String column, Collection<?> value) {
-        return super.andIn(column, value);
+    public LambdaQuery<T> andIn(String column, Collection<?> value) {
+         super.andIn(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andNotIn(String column, Collection<?> value) {
-        return super.andNotIn(column, value);
+    public LambdaQuery<T> andNotIn(String column, Collection<?> value) {
+         super.andNotIn(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andBetween(String column, Object value1, Object value2) {
-        return super.andBetween(column, value1, value2);
+    public LambdaQuery<T> andBetween(String column, Object value1, Object value2) {
+         super.andBetween(column, value1, value2);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> andNotBetween(String column, Object value1, Object value2) {
-        return super.andNotBetween(column, value1, value2);
+    public LambdaQuery<T> andNotBetween(String column, Object value1, Object value2) {
+         super.andNotBetween(column, value1, value2);
+         return this;
     }
 
     @Override
-    public Query<T> orEq(String column, Object value) {
-        return super.orEq(column, value);
+    public LambdaQuery<T> orEq(String column, Object value) {
+         super.orEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orNotEq(String column, Object value) {
-        return super.orNotEq(column, value);
+    public LambdaQuery<T> orNotEq(String column, Object value) {
+         super.orNotEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orGreat(String column, Object value) {
-        return super.orGreat(column, value);
+    public LambdaQuery<T> orGreat(String column, Object value) {
+         super.orGreat(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orGreatEq(String column, Object value) {
-        return super.orGreatEq(column, value);
+    public LambdaQuery<T> orGreatEq(String column, Object value) {
+         super.orGreatEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orLess(String column, Object value) {
-        return super.orLess(column, value);
+    public LambdaQuery<T> orLess(String column, Object value) {
+         super.orLess(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orLessEq(String column, Object value) {
-        return super.orLessEq(column, value);
+    public LambdaQuery<T> orLessEq(String column, Object value) {
+         super.orLessEq(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orLike(String column, String value) {
-        return super.orLike(column, value);
+    public LambdaQuery<T> orLike(String column, String value) {
+         super.orLike(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orNotLike(String column, String value) {
-        return super.orNotLike(column, value);
+    public LambdaQuery<T> orNotLike(String column, String value) {
+         super.orNotLike(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orIsNull(String column) {
-        return super.orIsNull(column);
+    public LambdaQuery<T> orIsNull(String column) {
+         super.orIsNull(column);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orIsNotNull(String column) {
-        return super.orIsNotNull(column);
+    public LambdaQuery<T> orIsNotNull(String column) {
+         super.orIsNotNull(column);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orIn(String column, Collection<?> value) {
-        return super.orIn(column, value);
+    public LambdaQuery<T> orIn(String column, Collection<?> value) {
+         super.orIn(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orNotIn(String column, Collection<?> value) {
-        return super.orNotIn(column, value);
+    public LambdaQuery<T> orNotIn(String column, Collection<?> value) {
+         super.orNotIn(column, value);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orBetween(String column, Object value1, Object value2) {
-        return super.orBetween(column, value1, value2);
+    public LambdaQuery<T> orBetween(String column, Object value1, Object value2) {
+         super.orBetween(column, value1, value2);
+         return this;
     }
 
     @Override
-    @Deprecated
-    public Query<T> orNotBetween(String column, Object value1, Object value2) {
-        return super.orNotBetween(column, value1, value2);
+    public LambdaQuery<T> orNotBetween(String column, Object value1, Object value2) {
+         super.orNotBetween(column, value1, value2);
+         return this;
     }
 }
