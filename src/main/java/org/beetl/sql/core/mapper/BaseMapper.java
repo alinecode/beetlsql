@@ -5,6 +5,7 @@ import java.util.List;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 
 /**
@@ -162,4 +163,10 @@ public interface BaseMapper<T> {
 	 */
 	Query<T> createQuery();
 
+
+    /**
+     * 返回一个LambdaQuery对象
+     * @return
+     */
+    LambdaQuery<T> createLambdaQuery();
 }

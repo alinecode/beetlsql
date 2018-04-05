@@ -30,21 +30,7 @@ public class BeanKit {
 //			
 //		}
 //	}
-	public static boolean  queryLambdasSupport = false;
-	static {
-		//https://github.com/TrigerSoft/jaque
-		String clsName = "com.trigersoft.jaque.expression.LambdaExpression";
-		if(JavaType.isJdk8()) {
-			queryLambdasSupport = true;
-		}
-		try {
-			Class.forName(clsName);
-		}catch(Exception ex) {
-			queryLambdasSupport=false;
-		}
-		
-		
-	}
+	public static boolean  queryLambdasSupport = JavaType.isJdk8();
 
     private static final Map<Class, Method> tailBeans = new ConcurrentHashMap<Class, Method>();
     private static Method NULL = null;

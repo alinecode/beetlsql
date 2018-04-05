@@ -11,27 +11,7 @@ import org.beetl.sql.core.mapper.SelecSingleMapperInvoke;
 import org.beetl.sql.core.mapper.SelectMapperInvoke;
 import org.beetl.sql.core.mapper.UpdateBatchMapperInvoke;
 import org.beetl.sql.core.mapper.UpdateMapperInvoke;
-import org.beetl.sql.core.mapper.internal.AllAmi;
-import org.beetl.sql.core.mapper.internal.AllCountAmi;
-import org.beetl.sql.core.mapper.internal.DeleteByIdAmi;
-import org.beetl.sql.core.mapper.internal.ExecuteAmi;
-import org.beetl.sql.core.mapper.internal.ExecuteUpdateAmi;
-import org.beetl.sql.core.mapper.internal.GetSQLManagerAmi;
-import org.beetl.sql.core.mapper.internal.InsertAmi;
-import org.beetl.sql.core.mapper.internal.InsertBatchAmi;
-import org.beetl.sql.core.mapper.internal.InsertReturnKeyAmi;
-import org.beetl.sql.core.mapper.internal.InsertTemplateAmi;
-import org.beetl.sql.core.mapper.internal.LockAmi;
-import org.beetl.sql.core.mapper.internal.QueryAmi;
-import org.beetl.sql.core.mapper.internal.SingleAmi;
-import org.beetl.sql.core.mapper.internal.TemplateAmi;
-import org.beetl.sql.core.mapper.internal.TemplateCountAmi;
-import org.beetl.sql.core.mapper.internal.TemplateOneAmi;
-import org.beetl.sql.core.mapper.internal.TemplatePageAmi;
-import org.beetl.sql.core.mapper.internal.UniqueAmi;
-import org.beetl.sql.core.mapper.internal.UpdateByIdAmi;
-import org.beetl.sql.core.mapper.internal.UpdateByIdBatchAmi;
-import org.beetl.sql.core.mapper.internal.UpdateTemplateByIdAmi;
+import org.beetl.sql.core.mapper.internal.*;
 
 /**
  * <pre>
@@ -89,6 +69,7 @@ public final class MapperInvokeDataConfig {
         INTERNAL_AMI_METHOD.put("insertTemplate", new InsertTemplateAmi());
         INTERNAL_AMI_METHOD.put("templatePage", new TemplatePageAmi());
         INTERNAL_AMI_METHOD.put("createQuery", new QueryAmi());
+        INTERNAL_AMI_METHOD.put("createLambdaQuery", new LambdaQueryAmi());
 
         
         BASE_MAPPER_BUILDER = new MapperConfigBuilder();
