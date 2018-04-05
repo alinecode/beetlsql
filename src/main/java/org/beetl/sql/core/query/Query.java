@@ -60,9 +60,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         sb.deleteCharAt(sb.length() - 1);
         sb.append(" FROM ").append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        makeSql();
-
-        List<T> list = this.sqlManager.execute(new SQLReady(getExecutSql(), getParams().toArray()), clazz);
+        addAdditionalPartSql();
+        List<T> list = this.sqlManager.execute(new SQLReady(this.getSql().toString(), getParams().toArray()), clazz);
+        clear();
         return list;
     }
 
@@ -94,6 +94,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，查询出多条结果集");
         }
         return list.get(0);
+        
+       
     }
 
     private int getFirstRowNumber() {
@@ -119,15 +121,16 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder("SELECT * ");
         sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        makeSql();
-        List<K> list = this.sqlManager.execute(new SQLReady(getExecutSql(), getParams().toArray()), retType);
+        addAdditionalPartSql();
+        List<K> list = this.sqlManager.execute(new SQLReady(this.getSql().toString(), getParams().toArray()), retType);
+        clear();
         return list;
     }
 
     /**
      * 增加分页，排序
      */
-    private void makeSql() {
+    private void addAdditionalPartSql() {
         StringBuilder sb = this.getSql();
         if (this.orderBy != null) {
             sb.append(orderBy.getOrderBy()).append(" ");
@@ -183,13 +186,15 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
         this.setSql(sb);
 
-        int row = this.sqlManager.executeUpdate(new SQLReady(getExecutSql(), getParams().toArray()));
+        int row = this.sqlManager.executeUpdate(new SQLReady(this.getSql().toString(), getParams().toArray()));
+        clear();
         return row;
     }
 
     @Override
     public int insert(T t) {
-        return this.sqlManager.insert(t, true);
+        int ret =  this.sqlManager.insert(t, true);
+        return ret;
     }
 
     @Override
@@ -202,7 +207,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder("DELETE FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        int row = this.sqlManager.executeUpdate(new SQLReady(getExecutSql(), getParams().toArray()));
+        int row = this.sqlManager.executeUpdate(new SQLReady(this.getSql().toString(), getParams().toArray()));
+        clear();
         return row;
     }
 
@@ -211,7 +217,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        List results = this.sqlManager.execute(new SQLReady(getExecutSql(), getParams().toArray()), Long.class);
+        List results = this.sqlManager.execute(new SQLReady(this.getSql().toString(), getParams().toArray()), Long.class);
+        clear();
         return (Long) results.get(0);
     }
 
@@ -281,48 +288,49 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         this.startRow = startRow;
         this.pageSize = pageSize;
         return this;
-        // setSql(new
-        // StringBuilder(sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(),
-        // startRow, pageSize)));
-        // return this;
+ 
     }
+    
+    
+    
+  
 
-    private String getExecutSql() {
-        String sql = getSql().toString().toLowerCase();
-        // 检查SQL是否符合语法
-        int select = sql.indexOf("select");
-        int update = sql.indexOf("update");
-        int delete = sql.indexOf("delete");
-        int insert = sql.indexOf("insert");
-        boolean bSelect = select > -1 ? true : false;
-        boolean bUpdate = update > -1 ? true : false;
-        boolean bDelete = delete > -1 ? true : false;
-        boolean bInsert = insert > -1 ? true : false;
-
-        if ((bSelect && (bUpdate || bDelete || bInsert)) || (bUpdate && (bSelect || bDelete || bInsert))
-                || (bDelete && (bSelect || bUpdate || bInsert)) || (bInsert && (bSelect || bUpdate || bDelete))) {
-            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
-                    getSqlErrorTip("SELECT,UPDATE,INSERT,DELETE 不能混用"));
-        }
-
-        int select2 = sql.lastIndexOf("select");
-        int update2 = sql.indexOf("update");
-        int delete2 = sql.indexOf("delete");
-        int insert2 = sql.indexOf("insert");
-        if (select != select2) {
-            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用SELECT方法"));
-        }
-        if (update != update2) {
-            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用UPDATE方法"));
-        }
-        if (delete != delete2) {
-            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用DELETE方法"));
-        }
-        if (insert != insert2) {
-            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用INSERT方法"));
-        }
-        return getSql().toString();
-    }
+//    private String getExecutSql() {
+//        String sql = getSql().toString().toLowerCase();
+//        // 检查SQL是否符合语法
+//        int select = sql.indexOf("select");
+//        int update = sql.indexOf("update");
+//        int delete = sql.indexOf("delete");
+//        int insert = sql.indexOf("insert");
+//        boolean bSelect = select > -1 ? true : false;
+//        boolean bUpdate = update > -1 ? true : false;
+//        boolean bDelete = delete > -1 ? true : false;
+//        boolean bInsert = insert > -1 ? true : false;
+//
+//        if ((bSelect && (bUpdate || bDelete || bInsert)) || (bUpdate && (bSelect || bDelete || bInsert))
+//                || (bDelete && (bSelect || bUpdate || bInsert)) || (bInsert && (bSelect || bUpdate || bDelete))) {
+//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR,
+//                    getSqlErrorTip("SELECT,UPDATE,INSERT,DELETE 不能混用"));
+//        }
+//
+//        int select2 = sql.lastIndexOf("select");
+//        int update2 = sql.indexOf("update");
+//        int delete2 = sql.indexOf("delete");
+//        int insert2 = sql.indexOf("insert");
+//        if (select != select2) {
+//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用SELECT方法"));
+//        }
+//        if (update != update2) {
+//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用UPDATE方法"));
+//        }
+//        if (delete != delete2) {
+//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用DELETE方法"));
+//        }
+//        if (insert != insert2) {
+//            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("重复调用INSERT方法"));
+//        }
+//        return getSql().toString();
+//    }
 
     /***
      * 获取错误提示

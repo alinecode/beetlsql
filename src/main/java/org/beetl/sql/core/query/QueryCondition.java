@@ -34,6 +34,14 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     public final String NOT_BETWEEN = "NOT BETWEEN";
 
 
+    protected void clear() {
+        sql = null;
+        params = new ArrayList<Object>();
+        startRow=-1;
+        pageSize=-1;
+        orderBy=null;
+        groupBy = null;
+    }
     protected String getCol(String colName) {
         return " " + sqlManager.getDbStyle().getKeyWordHandler().getCol(colName) + " ";
     }
