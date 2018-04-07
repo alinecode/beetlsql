@@ -1,5 +1,6 @@
 package org.beetl.sql.test.mysql;
 
+import org.beetl.sql.core.mapper.internal.UserDao;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.test.mysql.entity.User;
@@ -17,12 +18,12 @@ public class QueryUtilTest extends BaseMySqlTest {
         super.init();
     }
 
-    @Test
-    public void testLambda(){
-        LambdaQuery<User> query = sqlManager.lambdaQuery(User.class);
-        List<User> list = query.andEq(User::getName, "user7").or(query.condition().andEq(User::getId, 1641)).select();
-        assert list.size()==2;
-    }
+//    @Test
+//    public void testLambda(){
+//        LambdaQuery<User> query = sqlManager.lambdaQuery(User.class);
+//        List<User> list = query.andEq(User::getName, "user7").or(query.condition().andEq(User::getId, 1641)).select();
+//        assert list.size()==2;
+//    }
 
     @Test
     public void testSelect() {
@@ -187,5 +188,33 @@ public class QueryUtilTest extends BaseMySqlTest {
                 .select();
         assert user != null;
     }
+    
+    // 混合
+//    @Test
+//    public void testLambda2Query() {
+//        LambdaQuery<User> query = sqlManager.lambdaQuery(User.class);
+//        List<User> user = query.andEq("id", 1642).orBetween(User::getId,1,3)
+//                .or(query.condition().andIn("id",Arrays.asList(5,6,7,8)))
+//                .and(query.condition().andBetween("id",9,22))
+//                .select();
+//        assert user != null;
+//    }
+//    
+    // 重用Query
+//    @Test
+//    public void resueQuery() {
+//        LambdaQuery<User> query = sqlManager.lambdaQuery(User.class);
+//        User user = query.andEq(User::getId, 1641).single();
+//        user = query.andEq(User::getId, 1642).single();
+//    }
+    
+    
+//    @Test
+//    public void mapperDao() {
+//        UserDao dao = sqlManager.getMapper(UserDao.class);
+//        
+//        LambdaQuery<User> query = dao.createLambdaQuery();
+//        User user = query.andEq(User::getId, 1641).single();
+//    }
 
 }

@@ -2,6 +2,7 @@ package org.beetl.sql.test;
 
 import java.util.List;
 
+import org.beetl.sql.core.annotatoin.LogicDelete;
 import org.beetl.sql.core.annotatoin.SeqID;
 
 public class User {
@@ -11,6 +12,8 @@ public class User {
 	private Integer departmentId;
 	private Department department;
 	private List<Role> myRoles;
+	@LogicDelete(value=1)
+	private Integer delFlag;
 	public Integer getId() {
 		return id;
 	}
@@ -41,6 +44,12 @@ public class User {
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
+    }
 	
 	
 

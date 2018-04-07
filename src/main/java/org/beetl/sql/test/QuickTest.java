@@ -1,5 +1,7 @@
 package org.beetl.sql.test;
 
+import java.util.Arrays;
+
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -9,7 +11,7 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.core.db.PostgresStyle;
+import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -29,8 +31,8 @@ public class QuickTest {
 //		SqlServerStyle style = new SqlServerStyle();
 //		SqlServer2012Style style = new SqlServer2012Style();
 //		OracleStyle style = new OracleStyle();
-//		MySqlStyle style = new MySqlStyle();
-		PostgresStyle style = new PostgresStyle();
+		MySqlStyle style = new MySqlStyle();
+//		PostgresStyle style = new PostgresStyle();
 		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
 		
@@ -41,14 +43,10 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-//		Query<User> query = sql.query(User.class);
-//		List<User> map = (List<User>)query.andEq("id", 1).orEq("name", "cc").select();
-//		System.out.println(map);
+
 		UserDao dao = sql.getMapper(UserDao.class);
-		User user = new User();
-		user.setName("hello");
-		dao.insert(user);
-//		dao.single(1);
+		User user = dao.createLambdaQuery().andEq(User::getId, 1).single();
+//		dao.deleteById(199);
 
 	}
 	

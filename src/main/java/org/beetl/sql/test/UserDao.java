@@ -52,4 +52,6 @@ public interface UserDao extends BaseMapper<User> {
 	@Sql(value="truncate table test immediate",type=SqlStatementType.UPDATE)
 	public void dropTable();
 	
+	public int  batchUpdate(List<User> users);
+	
 }
