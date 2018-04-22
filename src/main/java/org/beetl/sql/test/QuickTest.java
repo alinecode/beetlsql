@@ -1,7 +1,5 @@
 package org.beetl.sql.test;
 
-import java.util.Arrays;
-
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -43,9 +41,9 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-
-		UserDao dao = sql.getMapper(UserDao.class);
-		User user = dao.createLambdaQuery().andEq(User::getId, 1).single();
+		User template = new User();
+		template.setId(1);
+		sql.template(template);
 //		dao.deleteById(199);
 
 	}

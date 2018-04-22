@@ -24,11 +24,14 @@ public class PlaceHolderListener implements Listener {
 			PlaceholderST gf = (PlaceholderST) o;
 			SQLPlaceholderST rf = new SQLPlaceholderST(gf);
 			return rf;
-		} else if (o instanceof VarRef) {
-			VarRef ref = (VarRef) o;
-			SQLVarRef sqlRef = new SQLVarRef(ref);
-			return sqlRef;
-		} else {
+		} 
+//		else if (o instanceof VarRef) {
+//			VarRef ref = (VarRef) o;
+//			SQLVarRef sqlRef = new SQLVarRef(ref);
+//			return sqlRef;
+//		} 
+		
+		else {
 			return null;
 		}
 	}

@@ -180,13 +180,13 @@ public class LambdaQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public Query<T> asc(Property<T, ?> property) {
+	public LambdaQuery<T> asc(Property<T, ?> property) {
 		super.asc(getFunctionName(property));
 
 		return this;
 	}
 
-	public Query<T> desc(Property<T, ?> property) {
+	public LambdaQuery<T> desc(Property<T, ?> property) {
 		super.desc(getFunctionName(property));
 		return this;
 	}
