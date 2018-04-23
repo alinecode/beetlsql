@@ -12,6 +12,9 @@ public class StringKit {
 	
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 	
+	
+	static  String lineSeparator = System.getProperty("line.separator", "\n");
+	
 	// 首字母转小写
 	public static String toLowerCaseFirstOne(String s) {
 		if (Character.isLowerCase(s.charAt(0)))
@@ -265,6 +268,10 @@ public class StringKit {
 		}
 		return (String[]) list.toArray(new String[list.size()]);
 	}
+	
+//	public static String removeLastToken(String str,String token) {
+//	    if()
+//	}
 	
 	
 }

@@ -42,7 +42,8 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		User template = new User();
-		template.setId(1);
+		template.setName("bac");
+		sql.lambdaQuery(User.class).andEq("id", 1).updateSelective(template);
 		sql.template(template);
 //		dao.deleteById(199);
 

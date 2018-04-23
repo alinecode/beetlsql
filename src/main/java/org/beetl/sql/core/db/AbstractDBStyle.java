@@ -337,7 +337,10 @@ public abstract class AbstractDBStyle implements DBStyle {
         StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
         Iterator<String> cols = classDesc.getInCols().iterator();
         Iterator<String> properties = classDesc.getAttrs().iterator();
-
+        
+        sql.append(this.lineSeparator).append(this.STATEMENT_START);
+        sql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
+        
         List<String> idCols = classDesc.getIdCols();
         while (cols.hasNext() && properties.hasNext()) {
             String col = cols.next();
@@ -351,7 +354,10 @@ public abstract class AbstractDBStyle implements DBStyle {
             }
             sql.append(appendSetColumn(cls, table, col, prop));
         }
-        sql = removeComma(sql, null);
+        
+        sql.append(this.lineSeparator).append(this.STATEMENT_START);
+        sql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
+        
         return new SQLTableSource(sql.toString());
     }
 

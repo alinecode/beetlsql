@@ -179,10 +179,6 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         template.binding("_paras", new ArrayList<Object>());
         template.binding("_root", t);
         String sql = template.render();
-        int i = sql.lastIndexOf("," + System.getProperty("line.separator"));
-        if (i == sql.length() - 3) {
-            sql = sql.substring(0, i);
-        }
         List<SQLParameter> param = (List<SQLParameter>) template.getCtx().getGlobal("_paras");
         List<Object> paraLis = new ArrayList<Object>();
         for (SQLParameter sqlParameter : param) {
