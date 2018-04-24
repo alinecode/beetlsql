@@ -38,7 +38,7 @@ public interface UserDao extends BaseMapper<User> {
 	PageQuery<User>  getUser4(int pageNumber,int pageSize,String name);
 	void getUser5(PageQuery<User> query,String name);
 	
-	List<User> select();
+	List<User> select(Map user);
 	
 	@SqlStatement(params="name,id")
 	public int updateUser(String name,int id);

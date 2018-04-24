@@ -1,5 +1,7 @@
 package org.beetl.sql.test;
 
+import java.util.HashMap;
+
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -41,10 +43,13 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+		UserDao dao = sql.getMapper(UserDao.class);
+		
 		User template = new User();
-		template.setName("bac");
-		sql.lambdaQuery(User.class).andEq("id", 1).updateSelective(template);
-		sql.template(template);
+//		template.setName("bac");
+		dao.select(new HashMap());
+//		sql.lambdaQuery(User.class).andEq("id", 1).updateSelective(template);
+//		sql.template(template);
 //		dao.deleteById(199);
 
 	}

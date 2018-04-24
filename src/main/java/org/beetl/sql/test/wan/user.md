@@ -16,7 +16,14 @@ select
 
 	select 
 	*
-	from user 
+	from user where 1=1 
+	@if(isNotEmpty(name)){
+	and name = #name#
+	@}
+	
+	
+	
+	
 	
 	
 selectUserAndDepartment
