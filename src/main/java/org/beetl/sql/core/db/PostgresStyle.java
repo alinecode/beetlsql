@@ -5,76 +5,77 @@ import java.util.List;
 import java.util.Map;
 
 import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.kit.BeanKit;
 
 public class PostgresStyle extends AbstractDBStyle {
 
-    public PostgresStyle() {
-    }
-    
-    @Override
-    public int getIdType(Class c,String idProperty) {
-    	 	List<Annotation> ans = BeanKit.getAllAnnoation(c, idProperty);
-        int idType = DBStyle.ID_ASSIGN; // 默认是自增长
+	public PostgresStyle() {
+	}
 
-        for (Annotation an : ans) {
-            if (an instanceof SeqID) {
-                idType = DBStyle.ID_SEQ;
-                //seq 总是优先
-                break;
-            } else if (an instanceof AssignID) {
-                idType = DBStyle.ID_ASSIGN;
-            }
-        }
+	@Override
+	public int getIdType(Class c, String idProperty) {
+		List<Annotation> ans = BeanKit.getAllAnnoation(c, idProperty);
+		int idType = DBStyle.ID_AUTO; // 默认是自增长
 
-        return idType;
+		for (Annotation an : ans) {
+			if (an instanceof SeqID) {
+				idType = DBStyle.ID_SEQ;
+				// seq 总是优先
+				break;
+			} else if (an instanceof AutoID) {
+				idType = DBStyle.ID_AUTO;
+				break;
+			} else if (an instanceof AssignID) {
+				idType = DBStyle.ID_ASSIGN;
+			}
+		}
 
-    }
+		return idType;
 
-    @Override
-    public String getPageSQL(String sql) {
-        String pageSql = "select _a.* from ( \n"
-                + sql + this.getOrderBy()
-                + " \n) _a "
-                + " limit " + HOLDER_START + this.PAGE_SIZE + HOLDER_END + " offset " + HOLDER_START + this.OFFSET + HOLDER_END;
-        return pageSql;
-    }
+	}
 
-    @Override
-    public String getPageSQLStatement(String sql, long offset, long pageSize) {
+	@Override
+	public String getPageSQL(String sql) {
+		String pageSql = "select _a.* from ( \n" + sql + this.getOrderBy() + " \n) _a " + " limit " + HOLDER_START
+				+ this.PAGE_SIZE + HOLDER_END + " offset " + HOLDER_START + this.OFFSET + HOLDER_END;
+		return pageSql;
+	}
 
-        offset = PageParamKit.postgresOffset(this.offsetStartZero, offset);
+	@Override
+	public String getPageSQLStatement(String sql, long offset, long pageSize) {
 
-        int capacity = sql.length() + 50;
+		offset = PageParamKit.postgresOffset(this.offsetStartZero, offset);
 
-        StringBuilder builder = new StringBuilder(capacity);
-        builder.append("select _a.* from ( ").append(sql).append(" ) _a ");
-        builder.append("limit ").append(pageSize).append(" offset ").append(offset);
-        return builder.toString();
-    }
+		int capacity = sql.length() + 50;
 
-    @Override
-    public void initPagePara(Map<String, Object> paras, long start, long size) {
-        paras.put(DBStyle.OFFSET, start - (this.offsetStartZero ? 0 : 1));
-        paras.put(DBStyle.PAGE_SIZE, size);
-    }
+		StringBuilder builder = new StringBuilder(capacity);
+		builder.append("select _a.* from ( ").append(sql).append(" ) _a ");
+		builder.append("limit ").append(pageSize).append(" offset ").append(offset);
+		return builder.toString();
+	}
 
+	@Override
+	public void initPagePara(Map<String, Object> paras, long start, long size) {
+		paras.put(DBStyle.OFFSET, start - (this.offsetStartZero ? 0 : 1));
+		paras.put(DBStyle.PAGE_SIZE, size);
+	}
 
-    @Override
-    public String getName() {
-        return "postgres";
-    }
+	@Override
+	public String getName() {
+		return "postgres";
+	}
 
-    @Override
-    public int getDBType() {
+	@Override
+	public int getDBType() {
 
-        return DB_POSTGRES;
-    }
+		return DB_POSTGRES;
+	}
 
-    @Override
-    public String getSeqValue(String seqName) {
-		return "nextval('"+seqName+"')";
+	@Override
+	public String getSeqValue(String seqName) {
+		return "nextval('" + seqName + "')";
 	}
 
 }
