@@ -5,12 +5,14 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.sql.core.SQLLoader;
 
 public class Beetl {
-	
+    Log log = LogFactory.getLog(Beetl.class);
 	GroupTemplate gt = null;  
 	Properties ps = null;
 	public Beetl(SQLLoader loader,Properties other) {
@@ -28,8 +30,10 @@ public class Beetl {
 			String charset = ps.getProperty("CHARSET");
 			if(charset==null||charset.length()==0){
 				charset = Charset.defaultCharset().name();
+				
 			}
 			loader.setCharset(charset);
+			log.info("BeetlSQL 运行在 product="+product+",md charset="+charset);
 			
 			
 		} catch (Exception ex) {

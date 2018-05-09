@@ -17,8 +17,8 @@ public interface UserDao extends BaseMapper<User> {
 	
 	List<Long> getIds();
 	void getIds(PageQuery<User> query);
-	void pageQuery(PageQuery<String> query);
-	
+//	void pageQuery(PageQuery<String> query);
+//	
 	int getCount(String name);
 	
 	User getOneUser();

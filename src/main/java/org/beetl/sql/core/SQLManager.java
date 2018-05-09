@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -822,6 +823,43 @@ public class SQLManager {
         }
         this.dbStyle.initPagePara(param, start, size);
         return (List<T>) pageScript.select(target, param, mapper);
+
+    }
+    
+    public <T> List<T> template(Class<T> target, Object paras,String orderBy) {
+        return this.template(target, paras, -1,-1,orderBy);
+    }
+    public <T> List<T> template(Class<T> target, Object paras, long start, long size,String orderBy) {
+        SQLScript script = getScript(target, SELECT_BY_TEMPLATE);
+        String sqlTemplate = script.getSql();
+        if(orderBy!=null&&orderBy.trim().length()!=0) {
+            if(sqlTemplate.indexOf(" order by ")==-1) {
+                //参考 AbstractDBStyle.getSelectTemplate
+                sqlTemplate = sqlTemplate+" order by "+orderBy;
+            }else {
+                sqlTemplate = sqlTemplate+","+orderBy;
+            }
+        }
+        boolean pageable = start!=-1&&size!=-1;
+       
+        if(pageable) {
+            sqlTemplate = dbStyle.getPageSQL(sqlTemplate);
+        }
+       
+        Map<String, Object> param = null;
+        if (paras instanceof Map) {
+            param = (Map) paras;
+        } else {
+            param = new HashMap<String, Object>();
+            param.put("_root", paras);
+        }
+        
+        if(pageable) {
+            this.dbStyle.initPagePara(param, start, size);
+        }
+       
+        List<T> list =  this.execute(sqlTemplate, target, param);
+        return list;
 
     }
 

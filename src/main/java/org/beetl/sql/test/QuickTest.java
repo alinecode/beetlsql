@@ -1,7 +1,5 @@
 package org.beetl.sql.test;
 
-import java.util.HashMap;
-
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -12,6 +10,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -43,11 +42,15 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+      User template = new User();
+//          template.setName("abc");
+//		sql.template(User.class, template, " id desc");
 		UserDao dao = sql.getMapper(UserDao.class);
+		PageQuery query = new PageQuery();
+		query.setOrderBy("id desc");
+		dao.templatePage(query);
 		
-		User template = new User();
-//		template.setName("bac");
-		dao.select(new HashMap());
+//		dao.select(new HashMap());
 //		sql.lambdaQuery(User.class).andEq("id", 1).updateSelective(template);
 //		sql.template(template);
 //		dao.deleteById(199);
