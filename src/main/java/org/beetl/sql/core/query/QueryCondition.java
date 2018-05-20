@@ -1,19 +1,14 @@
 package org.beetl.sql.core.query;
 
-import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.query.interfacer.QueryConditionI;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.db.AbstractDBStyle;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.query.interfacer.QueryConditionI;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class QueryCondition<T> implements QueryConditionI<T> {
 
@@ -46,9 +41,7 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return " " + sqlManager.getDbStyle().getKeyWordHandler().getCol(colName) + " ";
     }
 
-    protected String getTable(String tableName) {
-        return sqlManager.getDbStyle().getKeyWordHandler().getTable(tableName);
-    }
+  
 
     /****
      * 根据实体class获取表名
@@ -56,8 +49,23 @@ public class QueryCondition<T> implements QueryConditionI<T> {
      * @return
      */
     public String getTableName(Class<?> c) {
-        return getTable(sqlManager.getDbStyle().getNameConversion().getTableName(c));
+        String tname = sqlManager.getNc().getTableName(c);
+        TableDesc desc = sqlManager.getMetaDataManager().getTable(tname);
+        String tabeName2 = desc.getName();
+        int index = -1;
+        AbstractDBStyle style = (AbstractDBStyle)sqlManager.getDbStyle();
+        if((index=tabeName2.indexOf(style.STATEMENT_START))!=-1) {
+            //表名字包含了特殊符号，比如Oracle 的@
+            tabeName2 = tabeName2.substring(0,index)+"\\"+tabeName2.substring(index);
+        }
+        if (desc.getSchema() != null) {
+            return style.getKeyWordHandler().getTable(desc.getSchema())+ "." + style.getKeyWordHandler().getTable(tabeName2) ;
+        } else {
+            return style.getKeyWordHandler().getTable(tabeName2);
+        }
     }
+    
+  
 
     /**
      * 拼接SQL

@@ -46,9 +46,7 @@ public class QuickTest {
 //          template.setName("abc");
 //		sql.template(User.class, template, " id desc");
 		UserDao dao = sql.getMapper(UserDao.class);
-		PageQuery query = new PageQuery();
-		query.setOrderBy("id desc");
-		dao.templatePage(query);
+		User user = dao.createQuery().andEq("id", 1).single();
 		
 //		dao.select(new HashMap());
 //		sql.lambdaQuery(User.class).andEq("id", 1).updateSelective(template);

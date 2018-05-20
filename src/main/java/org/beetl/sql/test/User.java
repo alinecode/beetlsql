@@ -6,7 +6,7 @@ import org.beetl.sql.core.annotatoin.LogicDelete;
 import org.beetl.sql.core.annotatoin.SeqID;
 import org.beetl.sql.core.annotatoin.Table;
 
-@Table(name="orm.user")
+//@Table(name="user")
 public class User {
 	@SeqID(name = "user_seq")
 	private Integer id ;
