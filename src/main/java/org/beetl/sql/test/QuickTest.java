@@ -10,7 +10,6 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -46,7 +45,10 @@ public class QuickTest {
 //          template.setName("abc");
 //		sql.template(User.class, template, " id desc");
 		UserDao dao = sql.getMapper(UserDao.class);
-		User user = dao.createQuery().andEq("id", 1).single();
+		User t = new User();
+		t.setrType("a");
+		t.setId(99);
+		dao.insertTemplate(t);
 		
 //		dao.select(new HashMap());
 //		sql.lambdaQuery(User.class).andEq("id", 1).updateSelective(template);

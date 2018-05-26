@@ -30,9 +30,12 @@ public class JavaType {
 	static {
 		String javaVersion = System.getProperty("java.version");
 		// version String should look like "1.4.2_10"
-		if (javaVersion.contains("1.9.")) {
+		if (javaVersion.equals("9")) {
 			majorJavaVersion = 19;
-		} else if (javaVersion.contains("1.8.")) {
+		}else if (javaVersion.equals("10")) {
+            majorJavaVersion = 20;
+        }  
+		else if (javaVersion.contains("1.8.")) {
 			majorJavaVersion = 18;
 		} else if (javaVersion.contains("1.7.")) {
 			majorJavaVersion = 17;

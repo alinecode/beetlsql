@@ -16,7 +16,16 @@ public class User {
 	private List<Role> myRoles;
 	@LogicDelete(value=1)
 	private Integer delFlag;
-	public Integer getId() {
+	
+	private String rType;
+	
+	public String getrType() {
+        return rType;
+    }
+    public void setrType(String rType) {
+        this.rType = rType;
+    }
+    public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
