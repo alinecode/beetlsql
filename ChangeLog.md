@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 2.10.25
+
+### [feature] #IK2IH 对存储过程返回值提供映射到实体的方法
+
+### [fix] #IK0Q7 JavaType对jdk9和jdk10判断错误
+
 ## 2.10.23
 
 ### [feature] #IJV68 beetlsql starter 支持多数据源，mapper也支持

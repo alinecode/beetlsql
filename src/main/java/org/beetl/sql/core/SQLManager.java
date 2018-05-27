@@ -1624,6 +1624,7 @@ public class SQLManager {
      */
     public <T> T executeOnConnection(OnConnection<T> onConnection) {
         Connection conn = null;
+        onConnection.setSqlManagaer(this);
         try {
             conn = onConnection.getConn(getDs());
             return onConnection.call(conn);

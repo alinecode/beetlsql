@@ -1,11 +1,18 @@
 package org.beetl.sql.test;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ConnectionSourceHelper;
 import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.OnConnection;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
@@ -44,11 +51,26 @@ public class QuickTest {
       User template = new User();
 //          template.setName("abc");
 //		sql.template(User.class, template, " id desc");
-		UserDao dao = sql.getMapper(UserDao.class);
-		User t = new User();
-		t.setrType("a");
-		t.setId(99);
-		dao.insertTemplate(t);
+//		UserDao dao = sql.getMapper(UserDao.class);
+//		User t = new User();
+//		t.setrType("a");
+//		t.setId(99);
+//		dao.insertTemplate(t);
+      
+      List<User> list = sql.executeOnConnection(new OnConnection<List<User>>() {
+
+        @Override
+        public List<User> call(Connection conn) throws SQLException {
+            String call = "{call call_user()}";
+            CallableStatement callableStatement = conn.prepareCall(call); 
+            ResultSet rs = callableStatement.executeQuery();
+            return this.sqlManagaer.getDefaultBeanProcessors().toBeanList(rs,User.class);
+        }
+          
+      });
+      
+      System.out.print(list.size());
+      
 		
 //		dao.select(new HashMap());
 //		sql.lambdaQuery(User.class).andEq("id", 1).updateSelective(template);

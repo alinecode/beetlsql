@@ -150,7 +150,9 @@ public class BeanProcessor {
 		return toBean(null,rs,type);
 	}
 
-
+	public <T> List<T> toBeanList(ResultSet rs, Class<T> type) throws SQLException {
+	    return this.toBeanList(null, rs, type);
+	}
 	
 	/**
 	 * 将ResultSet映射为一个List&lt;POJO&gt;集合 
