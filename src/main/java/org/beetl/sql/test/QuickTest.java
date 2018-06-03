@@ -57,19 +57,21 @@ public class QuickTest {
 //		t.setId(99);
 //		dao.insertTemplate(t);
       
-      List<User> list = sql.executeOnConnection(new OnConnection<List<User>>() {
-
-        @Override
-        public List<User> call(Connection conn) throws SQLException {
-            String call = "{call call_user()}";
-            CallableStatement callableStatement = conn.prepareCall(call); 
-            ResultSet rs = callableStatement.executeQuery();
-            return this.sqlManagaer.getDefaultBeanProcessors().toBeanList(rs,User.class);
-        }
-          
-      });
+      sql.insert(new User());
       
-      System.out.print(list.size());
+//      List<User> list = sql.executeOnConnection(new OnConnection<List<User>>() {
+//
+//        @Override
+//        public List<User> call(Connection conn) throws SQLException {
+//            String call = "{call call_user()}";
+//            CallableStatement callableStatement = conn.prepareCall(call); 
+//            ResultSet rs = callableStatement.executeQuery();
+//            return this.sqlManagaer.getDefaultBeanProcessors().toBeanList(rs,User.class);
+//        }
+//          
+//      });
+//      
+//      System.out.print(list.size());
       
 		
 //		dao.select(new HashMap());

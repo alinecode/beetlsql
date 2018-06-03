@@ -377,7 +377,7 @@ public abstract class AbstractDBStyle implements DBStyle {
     	  String tableName = nameConversion.getTableName(cls);
           TableDesc table = this.metadataManager.getTable(tableName);
           ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
-          StringBuilder sql = new StringBuilder("insert into " + getTableName(table) + lineSeparator);
+          StringBuilder sql = new StringBuilder(getInsertBaseSql(classDesc,table) + lineSeparator);
           StringBuilder colSql = new StringBuilder("(");
           StringBuilder valSql = new StringBuilder(" VALUES (");
           if(template){
@@ -462,6 +462,15 @@ public abstract class AbstractDBStyle implements DBStyle {
           }
 
           return source;
+    }
+    /**
+     *  子类可以实现自己的特定定insert语句，比如insert ignore into，等
+     * @param classDesc
+     * @param table
+     * @return
+     */
+    protected String getInsertBaseSql(ClassDesc classDesc,TableDesc table) {
+        return "insert into " + getTableName(table);
     }
 
     /****
