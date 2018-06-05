@@ -190,7 +190,11 @@ public class SourceGen {
 	public static  void saveSourceFile(String srcPath,String pkg,String className,String content) throws IOException{
 		String file = srcPath+File.separator+pkg.replace('.',File.separatorChar);
 		File f  = new File(file);
-		f.mkdirs();
+		boolean succ=f.mkdirs();
+		if(!succ){
+			log.warn("创建文件夹{}失败",file);
+			throw  new IOException("创建文件夹失败");
+		}
 		File target = new File(file,className+".java");
 
 		FileWriter writer = new FileWriter(target);
