@@ -57,7 +57,7 @@ public class BaseMySqlTest {
 
 	@Test //用来测试配置是否正确
 	public void testEnv() throws Exception{
-		sqlManager.genPojoCodeToConsole("user");
+		sqlManager.genPojoCodeToConsole("user","com.test");
 	
 		
 	}
