@@ -177,11 +177,14 @@ public class GenConfig {
 		try {
 			//系统提供一个pojo模板
 			InputStream ins = GenConfig.class.getResourceAsStream(classPath);
-			try (InputStreamReader reader = new InputStreamReader(ins, this.encoding);) {
+			InputStreamReader reader = new InputStreamReader(ins, this.encoding);
+			try{
 				//todo, 根据长度来，不过现在模板不可能超过8k
 				char[] buffer = new char[1024 * 8];
 				int len = reader.read(buffer);
 				return new String(buffer, 0, len);
+			}finally {
+				reader.close();
 			}
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
