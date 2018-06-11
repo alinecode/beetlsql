@@ -1,10 +1,6 @@
 package org.beetl.sql.test;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.io.StringReader;
 
 import javax.sql.DataSource;
 
@@ -12,7 +8,6 @@ import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ConnectionSourceHelper;
 import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.OnConnection;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
@@ -38,7 +33,6 @@ public class QuickTest {
 //		OracleStyle style = new OracleStyle();
 		MySqlStyle style = new MySqlStyle();
 //		PostgresStyle style = new PostgresStyle();
-		
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
 		
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
@@ -47,8 +41,28 @@ public class QuickTest {
 				
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
-		SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-      User template = new User();
+		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+        User template = new User();
+        template.setId(1);
+        template.setName("abc");
+     
+        sql.updateTemplateById(template);
+        new Thread() {
+            public void run() {
+                try {
+                    Thread.currentThread().sleep(1000*5);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                System.out.println("ready refresh");
+                sql.refresh();
+            }
+        }.start();
+      
+        sql.updateTemplateById(template);
+        sql.updateTemplateById(template);
+        
 //          template.setName("abc");
 //		sql.template(User.class, template, " id desc");
 //		UserDao dao = sql.getMapper(UserDao.class);
@@ -57,7 +71,7 @@ public class QuickTest {
 //		t.setId(99);
 //		dao.insertTemplate(t);
       
-      sql.insert(new User());
+//      sql.insert(new User());
       
 //      List<User> list = sql.executeOnConnection(new OnConnection<List<User>>() {
 //
