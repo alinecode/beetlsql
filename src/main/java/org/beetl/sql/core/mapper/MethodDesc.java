@@ -298,12 +298,11 @@ public class MethodDesc {
 	}
 	
 	protected Type hasPageQuery(Type[] paras,Type retType){
-		if(getParamterTypeClass(retType)==PageQuery.class){
+		if(PageQuery.class.isAssignableFrom(getParamterTypeClass(retType))){
 			return retType;
 		}
 		
-		
-		if(paras.length>=1&&getParamterTypeClass(paras[0])==PageQuery.class){
+		if(paras.length>=1&&PageQuery.class.isAssignableFrom(getParamterTypeClass(paras[0]))){
 			return  paras[0];
 		}
 		
