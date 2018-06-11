@@ -1,5 +1,7 @@
 # ChangeLog
 
+##IKFGA sqlManager.refresh() 的bug
+
 ## 2.10.25
 
 ### [feature] #IK7M3 insert ignore 支持

@@ -354,7 +354,6 @@ public class SQLManager {
     public SQLScript getScript(Class<?> cls, ConstantEnum constantEnum) {
     	//slqId 保持与DefaultSQLIdNameConversion同样命名风格
     	String className = StringKit.toLowerCaseFirstOne(cls.getSimpleName());
-//        String className = cls.getSimpleName().toLowerCase();
         String id = className + "." + constantEnum.getClassSQL();
 
         SQLSource tempSource = this.sqlLoader.getSQL(id);
@@ -2051,6 +2050,7 @@ public class SQLManager {
     public void refresh() {
     		this.metaDataManager.refresh();
     		this.sqlLoader.refresh();
+    		this.beetl.getGroupTemplate().getProgramCache().clearAll();
     }
 
     public ClassLoader getEntityLoader() {

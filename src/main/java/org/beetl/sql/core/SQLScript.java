@@ -19,12 +19,14 @@ import java.util.Map.Entry;
 
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
+import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.engine.RefreshRuntimeException;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -79,11 +81,18 @@ public class SQLScript {
     protected SQLResult run(Map<String, Object> paras, String parentId) {
         GroupTemplate gt = sm.beetl.getGroupTemplate();
         Template t = null;
-        if (parentId != null) {
-            t = gt.getTemplate(sqlSource.getId(), parentId);
-        } else {
-            t = gt.getTemplate(sqlSource.getId());
+        try {
+            if (parentId != null) {
+                t = gt.getTemplate(sqlSource.getId(), parentId);
+            } else {
+                t = gt.getTemplate(sqlSource.getId());
+            }
+        }catch( RefreshRuntimeException  beetl) {
+            /*在执行gt.getTemplate前已经检测了模板是否存在，但并发情况下，调用SQLManager.refresh，会导致执行到这里再次运行模板，sqlId对应的
+             * 缓存已经删除了，因此临时使用模板本生构造一个，保证这次操作能完成*/
+            t = gt.getTemplate(sqlSource.getTemplate(),new StringTemplateResourceLoader());
         }
+     
 
         List<SQLParameter> jdbcPara = new LinkedList<SQLParameter>();
         if (paras != null) {

@@ -3,6 +3,7 @@ package org.beetl.sql.core.engine;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Resource;
 import org.beetl.core.ResourceLoader;
+import org.beetl.core.exception.BeetlException;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLSource;
 
@@ -16,6 +17,14 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 	@Override
 	public Resource getResource(String key) {
 		SQLSource source = sqlLoader.getSQL(key);
+		if(source==null) {
+		   /**
+		    * 这是一个并发bug修复，参考https://gitee.com/xiandafu/beetlsql/issues/IKFGA
+		    * 
+		    * sqlManager.refresh被别的线程清空了，这里得到的是空模板
+		    */
+		   throw new RefreshRuntimeException();
+		}
 		return new SqlTemplateResource(key,source,this);
 	}
 
