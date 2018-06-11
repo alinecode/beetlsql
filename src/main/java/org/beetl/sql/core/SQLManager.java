@@ -2050,6 +2050,7 @@ public class SQLManager {
     public void refresh() {
     		this.metaDataManager.refresh();
     		this.sqlLoader.refresh();
+    		this.beetl.getGroupTemplate().getProgramCache().clearAll();
     }
 
     public ClassLoader getEntityLoader() {

@@ -1,7 +1,5 @@
 package org.beetl.sql.test;
 
-import java.io.StringReader;
-
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -42,6 +40,8 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+		sql.getBeetl().
+		
         User template = new User();
         template.setId(1);
         template.setName("abc");
