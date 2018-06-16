@@ -31,7 +31,7 @@ public class SourceGen {
 	 * logger
 	 */
 	private static final Logger log = LoggerFactory.getLogger(SourceGen.class);
-	
+	public static String defaultPkg = "com.test";
 	private MetadataManager mm;
 	private SQLManager sm ;
 	private String table;

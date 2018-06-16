@@ -1703,6 +1703,17 @@ public class SQLManager {
     }
 
     /**
+     * 仅仅打印pojo类到控制台，使用默认的包,建议使用genPojoCodeToConsole(String table,String pkg)
+     *
+     * @param table
+     * @throws Exception
+     */
+    @Deprecated
+    public void genPojoCodeToConsole(String table) throws Exception {
+        String pkg = SourceGen.defaultPkg;
+        this.genPojoCodeToConsole(table, pkg);
+    }
+    /**
      * 仅仅打印pojo类到控制台
      *
      * @param table
