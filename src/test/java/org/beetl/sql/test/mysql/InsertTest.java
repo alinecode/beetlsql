@@ -40,7 +40,6 @@ public class InsertTest extends BaseMySqlTest {
 		vars.add("userId2", holder.getKey());
 		userParser.test("insertUser", vars);
 		
-		
 	}
 	
 	@Test

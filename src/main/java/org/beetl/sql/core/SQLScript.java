@@ -335,11 +335,13 @@ public class SQLScript {
     public <T> T selectUnique(Map<String, Object> map, Class<T> target) {
 
         List<T> result = select(target, map);
-
-        if (result.size() == 1) {
+        int size = result.size();
+        if (size == 1) {
             return result.get(0);
-        } else {
+        }else if(size==0) {
             throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集:参数是" + map);
+        }else {
+            throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，找到多条记录:参数是" + map);
         }
 
     }
