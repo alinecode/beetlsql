@@ -4,11 +4,14 @@ ${imports}
 * ${comment}
 * gen by beetlsql ${date(),"yyyy-MM-dd"}
 */
+@Table(name="${catalog}.${table}")
 public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 	
 	<%for(attr in attrs){
 			if(!isEmpty(attr.comment)){%>
-	//${attr.comment}
+	/*
+	${attr.comment}
+	*/
 	<%		}%>
 	private ${attr.type} ${attr.name} ;
 	<%}%>
@@ -18,7 +21,8 @@ public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 	
 	<%for(attr in attrs){
 	if(!isEmpty(attr.comment)){%>
-	/**${attr.comment}
+	/**
+	* ${attr.comment}
 	*@return 
 	*/
 	<%}%>
@@ -26,7 +30,8 @@ public class ${className} ${!isEmpty(ext)?"extends "+ext} {
 		return  ${attr.name};
 	}
 	<%if(!isEmpty(attr.comment)){%>
-	/**${attr.comment}
+	/**
+	* ${attr.comment}
 	*@param  ${attr.name}
 	*/
 	<%}%>

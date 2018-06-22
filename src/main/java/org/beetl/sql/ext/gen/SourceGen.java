@@ -20,42 +20,63 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.ColDesc;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * 代码生成器
+ */
 public class SourceGen {
-	MetadataManager mm;
-	SQLManager sm ;
-	String table;
-	String pkg;
-	String srcPath;
-	GenConfig config;
-	public static String srcHead ="";
+	/**
+	 * logger
+	 */
+	private static final Logger log = LoggerFactory.getLogger(SourceGen.class);
 	public static String defaultPkg = "com.test";
-	static String CR = System.getProperty("line.separator");
+	private MetadataManager mm;
+	private SQLManager sm ;
+	private String table;
+	private String pkg;
+	private String srcPath;
+	private GenConfig config;
+	private static String srcHead ;
+ 	public static final String CR = System.getProperty("line.separator");
 	/**
 	 * 代码生成的Beetl的GroupTemplate，与BeetSQL 不同
 	 */
-	public static GroupTemplate gt = null;
-	static {
+	private static GroupTemplate gt = null;
+	
+	static{
 		Configuration conf = null;
 		try {
 			conf = Configuration.defaultConfiguration();
+			conf.setStatementStart("<%");
+			conf.setStatementEnd("%>");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("defaultConfiguration error",e);
+			throw new RuntimeException("build defaultConfiguration error");
 		}
-		conf.setStatementStart("<%");
-		conf.setStatementEnd("%>");
+		
 		gt = new GroupTemplate(new StringTemplateResourceLoader(),conf);
-		srcHead+="import java.math.*;"+CR;
-		srcHead+="import java.util.Date;"+CR;
-		
-		srcHead+="import java.sql.Timestamp;"+CR;
-		
-
-		
+		StringBuffer t=new StringBuffer();
+		t.append("import java.math.*;");
+		t.append(CR);
+		t.append("import java.util.Date;");
+		t.append(CR);
+		t.append("import java.sql.Timestamp;");
+		t.append(CR);
+		srcHead=t.toString();
 	}
-	
-	public SourceGen(SQLManager sm,String table,String pkg,String srcPath,GenConfig config){
+
+	public static String getSrcHead() {
+		return srcHead;
+	}
+
+	public static GroupTemplate getGt() {
+		return gt;
+	}
+
+ 
+	public SourceGen(SQLManager sm, String table, String pkg, String srcPath, GenConfig config){
 		this.mm = sm.getMetaDataManager();
 		this.sm = sm;
 		this.table = table;
@@ -103,7 +124,7 @@ public class SourceGen {
 		}
 		
 		if(config.getPropertyOrder()==config.ORDER_BY_TYPE) {
-			// 主键总是拍在前面，int类型也排在前面，剩下的按照字母顺序排
+			// 主键总是排在前面，int类型也排在前面，剩下的按照字母顺序排
 			Collections.sort(attrs,new Comparator<Map>() {
 
 				@Override
@@ -139,7 +160,7 @@ public class SourceGen {
 		
 		
 		
-		Template template = gt.getTemplate(config.template);
+		Template template = gt.getTemplate(config.getTemplate());
 		template.binding("attrs", attrs);
 		template.binding("className", className);
 		template.binding("table",table);
@@ -147,9 +168,11 @@ public class SourceGen {
 		template.binding("package", pkg);
 		template.binding("imports", srcHead);
 		template.binding("comment", tableDesc.getRemark());
+		template.binding("catalog", tableDesc.getCatalog());
+		
 		String code = template.render();
 		if(config.isDisplay()){
-			System.out.println(code);
+			log.info(code);
 		}else{
 			saveSourceFile(srcPath,pkg,className,code);
 		}
@@ -167,11 +190,19 @@ public class SourceGen {
 	public static  void saveSourceFile(String srcPath,String pkg,String className,String content) throws IOException{
 		String file = srcPath+File.separator+pkg.replace('.',File.separatorChar);
 		File f  = new File(file);
-		f.mkdirs();
+		boolean succ=f.mkdirs();
+		if(!succ){
+			log.warn("创建文件夹{}失败",file);
+			throw  new IOException("创建文件夹失败");
+		}
 		File target = new File(file,className+".java");
+
 		FileWriter writer = new FileWriter(target);
-		writer.write(content);;
-		writer.close();
+		try{
+			writer.write(content);	
+		}finally {
+			writer.close();
+		}
 	}
 	
 	private String getMethodName(String name){

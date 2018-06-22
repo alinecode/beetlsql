@@ -1692,15 +1692,26 @@ public class SQLManager {
      * 仅仅打印pojo类到控制台
      *
      * @param table
+     * @param pkg   包名
      * @throws Exception
      */
-    public void genPojoCodeToConsole(String table) throws Exception {
-        String pkg = SourceGen.defaultPkg;
+    public void genPojoCodeToConsole(String table,String pkg) throws Exception {
         String srcPath = System.getProperty("user.dir");
         SourceGen gen = new SourceGen(this, table, pkg, srcPath, new GenConfig().setDisplay(true));
         gen.gen();
     }
 
+    /**
+     * 仅仅打印pojo类到控制台，使用默认的包,建议使用genPojoCodeToConsole(String table,String pkg)
+     *
+     * @param table
+     * @throws Exception
+     */
+    @Deprecated
+    public void genPojoCodeToConsole(String table) throws Exception {
+        String pkg = SourceGen.defaultPkg;
+        this.genPojoCodeToConsole(table, pkg);
+    }
     /**
      * 仅仅打印pojo类到控制台
      *
@@ -1708,10 +1719,9 @@ public class SQLManager {
      * @throws Exception
      */
     public void genPojoCodeToConsole(String table, GenConfig config) throws Exception {
-        String pkg = SourceGen.defaultPkg;
-        String srcPath = System.getProperty("user.dir");
+         String srcPath = System.getProperty("user.dir");
         config.setDisplay(true);
-        SourceGen gen = new SourceGen(this, table, pkg, srcPath, config);
+        SourceGen gen = new SourceGen(this, table, config.getOutputPackage(), srcPath, config);
         gen.gen();
     }
 
