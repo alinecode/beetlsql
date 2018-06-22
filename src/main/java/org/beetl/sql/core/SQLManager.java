@@ -1707,7 +1707,6 @@ public class SQLManager {
      * @param table
      * @throws Exception
      */
-    @Deprecated
     public void genPojoCodeToConsole(String table) throws Exception {
         String pkg = SourceGen.defaultPkg;
         this.genPojoCodeToConsole(table, pkg);

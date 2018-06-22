@@ -24,6 +24,24 @@ public class QuickTest {
 	
 	public static void main(String[] args) throws Exception{
 		
+		
+//		DB2SqlStyle style = new DB2SqlStyle();
+//		SqlServerStyle style = new SqlServerStyle();
+//		SqlServer2012Style style = new SqlServer2012Style();
+//		OracleStyle style = new OracleStyle();
+		MySqlStyle style = new MySqlStyle();
+//		PostgresStyle style = new PostgresStyle();
+		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
+		
+		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
+		
+				
+		
+		Interceptor[] inters = new Interceptor[]{ debug};
+		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+//		sql.genPojoCodeToConsole("user", "com.test.xx");
+		sql.genSQLTemplateToConsole("user");
 
 	}
 	

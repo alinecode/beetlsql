@@ -20,8 +20,6 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.ColDesc;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 代码生成器
@@ -30,7 +28,6 @@ public class SourceGen {
 	/**
 	 * logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(SourceGen.class);
 	public static String defaultPkg = "com.test";
 	private MetadataManager mm;
 	private SQLManager sm ;
@@ -52,8 +49,7 @@ public class SourceGen {
 			conf.setStatementStart("<%");
 			conf.setStatementEnd("%>");
 		} catch (IOException e) {
-			log.error("defaultConfiguration error",e);
-			throw new RuntimeException("build defaultConfiguration error");
+			throw new RuntimeException("build defaultConfiguration error",e);
 		}
 		
 		gt = new GroupTemplate(new StringTemplateResourceLoader(),conf);
@@ -172,7 +168,7 @@ public class SourceGen {
 		
 		String code = template.render();
 		if(config.isDisplay()){
-			log.info(code);
+			System.out.println(code);
 		}else{
 			saveSourceFile(srcPath,pkg,className,code);
 		}
@@ -192,8 +188,7 @@ public class SourceGen {
 		File f  = new File(file);
 		boolean succ=f.mkdirs();
 		if(!succ){
-			log.warn("创建文件夹{}失败",file);
-			throw  new IOException("创建文件夹失败");
+			throw  new IOException("创建文件夹失败 "+f);
 		}
 		File target = new File(file,className+".java");
 
