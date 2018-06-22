@@ -40,8 +40,10 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
-//		sql.genPojoCodeToConsole("user", "com.test.xx");
-		sql.genSQLTemplateToConsole("user");
+		UserDao dao = sql.getMapper(UserDao.class);
+//		dao.unique(1);
+		dao.queryUserId(1);
+		
 
 	}
 	

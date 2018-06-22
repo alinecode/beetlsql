@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapper;
 
 import org.beetl.sql.core.SQLIdNameConversion;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.kit.BeanKit;
 
 import java.lang.reflect.Proxy;
 import java.util.Map;
@@ -78,8 +79,14 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	public <T> T buildInstance(Class<T> mapperInterface) {
 		ClassLoader loader = null == entityClassLoader ? Thread.currentThread().getContextClassLoader() : entityClassLoader;
 		//当没有指定ClassLoader的情况下使用ContextLoader，适合大多数框架
-		return (T) Proxy.newProxyInstance(loader==null?this.getClass().getClassLoader():loader, new Class<?>[] { mapperInterface },
-				new MapperJavaProxy(this,sqlManager, mapperInterface));
+		if (BeanKit.queryLambdasSupport) {
+		    return (T) Proxy.newProxyInstance(loader==null?this.getClass().getClassLoader():loader, new Class<?>[] { mapperInterface },
+	                new MapperJava8Proxy(this,sqlManager, mapperInterface));
+		}else {
+		    return (T) Proxy.newProxyInstance(loader==null?this.getClass().getClassLoader():loader, new Class<?>[] { mapperInterface },
+	                new MapperJavaProxy(this,sqlManager, mapperInterface));
+		}
+	
 	}
 
 	public SQLIdNameConversion getIdGen() {

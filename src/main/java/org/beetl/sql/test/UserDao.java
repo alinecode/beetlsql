@@ -54,4 +54,9 @@ public interface UserDao extends BaseMapper<User> {
 	
 	public int  batchUpdate(List<User> users);
 	
+	
+	default User queryUserId(Integer id) {
+        return createLambdaQuery().andEq(User::getId, id).unique();
+    }
+	
 }

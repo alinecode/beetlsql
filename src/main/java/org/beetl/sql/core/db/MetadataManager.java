@@ -291,7 +291,7 @@ public class MetadataManager {
 		try{
 			this.defaultSchema =  conn.getSchema();
 			
-		}catch(Throwable e){
+		}catch(Error e){
 			// jdbc低版本不支持
 			String dbName = sm.getDbStyle().getName();
 			if(dbName.equals("postgres")){
