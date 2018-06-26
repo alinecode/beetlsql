@@ -1,8 +1,14 @@
 # ChangeLog
 
-##IKFGA sqlManager.refresh() 的bug
+## 2.10.28
 
-## 2.10.25
+###  #IKPBA mapper 接口 支持default method
+### #IKPBB 代码生成优化
+### #IKPBC selectUnique 查询多个报错提示不准确
+
+## IKFGA sqlManager.refresh() 的bug
+
+## 2.10.26
 
 ### [feature] #IK7M3 insert ignore 支持
 

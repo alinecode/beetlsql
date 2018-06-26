@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
+import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.EnumKit;
@@ -81,8 +82,9 @@ public class DebugInterceptor implements Interceptor {
 				return i;
 
 			} else if (name.equals(mapperName)) {
-				// 越过2层jdk 代理
-				return i + 2;
+				// 越过sun jdk 代理
+			    int skipLine = JavaType.isJdk8()?3:2;
+				return i + skipLine;
 			} else if (name.equals(sqlManager)) {
 				return i + 1;
 			}
