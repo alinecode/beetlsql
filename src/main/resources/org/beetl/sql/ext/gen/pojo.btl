@@ -1,11 +1,12 @@
 package ${package};
 ${imports}
+${implSerializable?"import java.io.Serializable;"}
 /* 
 * ${comment}
 * gen by beetlsql ${date(),"yyyy-MM-dd"}
 */
 @Table(name="${catalog}.${table}")
-public class ${className} ${!isEmpty(ext)?"extends "+ext} {
+public class ${className} ${!isEmpty(ext)?"extends "+ext} ${implSerializable?"implements Serializable"} {
 	
 	<%for(attr in attrs){
 			if(!isEmpty(attr.comment)){%>

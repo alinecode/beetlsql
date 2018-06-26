@@ -20,6 +20,7 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.ColDesc;
 import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.kit.StringKit;
 
 /**
  * 代码生成器
@@ -60,6 +61,8 @@ public class SourceGen {
 		t.append(CR);
 		t.append("import java.sql.Timestamp;");
 		t.append(CR);
+		t.append("import org.beetl.sql.core.annotatoin.Table;");
+		t.append(CR);
 		srcHead=t.toString();
 	}
 
@@ -87,6 +90,9 @@ public class SourceGen {
 	public void gen() throws Exception{
 		final TableDesc  tableDesc = mm.getTable(table);
 		String className = sm.getNc().getClassName(tableDesc.getName());
+		if (config.getIgnorePrefix() != null && !config.getIgnorePrefix().trim().equals("")) {
+			className = className.replaceFirst(StringKit.toUpperCaseFirstOne(config.getIgnorePrefix()), "");
+		}
 		String ext = null;
 		
 		if(config.getBaseClass()!=null){
@@ -165,7 +171,8 @@ public class SourceGen {
 		template.binding("imports", srcHead);
 		template.binding("comment", tableDesc.getRemark());
 		template.binding("catalog", tableDesc.getCatalog());
-		
+		template.binding("implSerializable", config.isImplSerializable());
+
 		String code = template.render();
 		if(config.isDisplay()){
 			System.out.println(code);
@@ -186,9 +193,11 @@ public class SourceGen {
 	public static  void saveSourceFile(String srcPath,String pkg,String className,String content) throws IOException{
 		String file = srcPath+File.separator+pkg.replace('.',File.separatorChar);
 		File f  = new File(file);
-		boolean succ=f.mkdirs();
-		if(!succ){
-			throw  new IOException("创建文件夹失败 "+f);
+		if (!f.exists()) {
+			boolean succ=f.mkdirs();
+			if(!succ){
+				throw  new IOException("创建文件夹失败 "+f);
+			}
 		}
 		File target = new File(file,className+".java");
 
