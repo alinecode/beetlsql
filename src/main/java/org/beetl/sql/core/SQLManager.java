@@ -1730,16 +1730,20 @@ public class SQLManager {
      *
      * @param table
      */
-    public void genSQLFile(String table) throws Exception {
-        genSQLFile(table, null);
+    public void genSQLFile(String table,GenConfig config) throws Exception {
+        genSQLFile(table, null,config);
     }
 
-    public void genSQLFile(String table, String alias) throws Exception {
+    public void genSQLFile(String table, String alias,GenConfig config) throws Exception {
         String path = "/sql";
         if (this.sqlLoader instanceof ClasspathLoader) {
             path = ((ClasspathLoader) sqlLoader).sqlRoot;
         }
         String fileName = StringKit.toLowerCaseFirstOne(this.nc.getClassName(table));
+        if (config.getIgnorePrefix() != null && !config.getIgnorePrefix().trim().equals("")) {
+            fileName = fileName.replaceFirst(StringKit.toLowerCaseFirstOne(config.getIgnorePrefix()), "");
+            fileName = StringKit.toLowerCaseFirstOne(fileName);
+        }
         String target = GenKit.getJavaResourcePath() + "/" + path + "/" + fileName + ".md";
         FileWriter writer = new FileWriter(new File(target));
         genSQLTemplate(table, writer, alias);
@@ -1796,7 +1800,7 @@ public class SQLManager {
                     // 生成代码
                     this.genPojoCode(table, pkg, config);
                     // 生成模板文件
-                    this.genSQLFile(table);
+                    this.genSQLFile(table,config);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     continue;

@@ -29,6 +29,14 @@ public class GenConfig {
 	 * 模板
 	 */
 	private String template = null;
+	/**
+	 * 是否实现序列化
+	 */
+	private boolean implSerializable = false;
+	/**
+	 * 忽略表名前缀
+	 */
+	private String ignorePrefix = "";
 
 	/**
 	 * 使用默认模板
@@ -199,4 +207,19 @@ public class GenConfig {
 		this.propertyOrder = propertyOrder;
 	}
 
+    public boolean isImplSerializable() {
+        return implSerializable;
+    }
+
+    public void setImplSerializable(boolean implSerializable) {
+        this.implSerializable = implSerializable;
+    }
+
+	public String getIgnorePrefix() {
+		return ignorePrefix;
+	}
+
+	public void setIgnorePrefix(String ignorePrefix) {
+		this.ignorePrefix = ignorePrefix;
+	}
 }
