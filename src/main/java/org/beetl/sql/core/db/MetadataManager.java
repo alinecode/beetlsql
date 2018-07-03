@@ -121,7 +121,7 @@ public class MetadataManager {
 	
 		synchronized (desc){
 			
-			if(desc.getCols().size()!=0){
+			if(!desc.getCols().isEmpty()){
 				return desc ;
 			}
 			Connection conn=null;
@@ -129,6 +129,7 @@ public class MetadataManager {
 			try {
 				String catalog = desc.getCatalog();
 				String schema = desc.getSchema();
+	            schema = this.getDbSchema(schema);
 				conn =  ds.getMetaData();
 				
 				DatabaseMetaData dbmd =  conn.getMetaData();
@@ -291,7 +292,7 @@ public class MetadataManager {
 		try{
 			this.defaultSchema =  conn.getSchema();
 			
-		}catch(Error e){
+		}catch(Throwable e){
 			// jdbc低版本不支持
 			String dbName = sm.getDbStyle().getName();
 			if(dbName.equals("postgres")){

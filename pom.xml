@@ -116,19 +116,19 @@
 			<version>6.0.6</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!--  dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId>
+
+		<!-- dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> 
 			<version>4.0</version> <scope>system</scope> <systemPath>${basedir}/lib/sqljdbc4.jar</systemPath> 
-			</dependency-->
+			</dependency -->
 
 		<!-- dependency> <groupId>oracle</groupId> <artifactId>oralce-express</artifactId> 
 			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath> 
-			</dependency-->
+			</dependency -->
 
-			 
-		<!--  dependency> <groupId>db2</groupId> <artifactId>driver</artifactId> 
+
+		<!-- dependency> <groupId>db2</groupId> <artifactId>driver</artifactId> 
 			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/db2jcc.jar</systemPath> 
-			</dependency-->
+			</dependency -->
 
 		<!-- dependency> <groupId>db2</groupId> <artifactId>driver-license</artifactId> 
 			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/db2jcc_license_cu.jar</systemPath> 
@@ -207,10 +207,10 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.postgresql</groupId>
-		    <artifactId>postgresql</artifactId>
-		    <version>42.2.2</version>
-		    <scope>provided</scope>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.2</version>
+			<scope>provided</scope>
 		</dependency>
 
 
@@ -220,9 +220,13 @@
 			<version>1.0.5</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- dependency> <groupId>org.apache</groupId> <artifactId>dbc-mysql-sqlserver</artifactId> 
-			<version>4.1</version> <scope>system</scope> <systemPath>${basedir}/lib/jdbc-mysql-sqlserver-4.1.jar</systemPath> 
-			</dependency -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>jdbcdriver</artifactId>
+			<version>4.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath>
+		</dependency>
 
 
 	</dependencies>
@@ -246,8 +250,8 @@
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 					<excludes>
-	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes>
+						<exclude>org/beetl/sql/test/**</exclude>
+					</excludes>
 
 
 				</configuration>
@@ -360,17 +364,12 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
+				<configuration> <source>1.8</source> <target>1.8</target> </configuration> 
+				</plugin> -->
 
 
-        </plugins>
+		</plugins>
 	</build>
 
 

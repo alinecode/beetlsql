@@ -31,7 +31,7 @@ public class QuickTest {
 //		OracleStyle style = new OracleStyle();
 		MySqlStyle style = new MySqlStyle();
 //		PostgresStyle style = new PostgresStyle();
-		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
+		ConnectionSource cs  = ConnectionSourceHelper.getSingle(druidSource());
 		
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
 		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
