@@ -616,10 +616,8 @@ public class SQLManager {
         List<T> list = null;
         if (paras == null) {
             root = new HashMap<String, Object>();
-        } else if (paras instanceof Map) {
-        	 root = new HashMap<String, Object>((Map<String, Object>) paras);
-//            root = (Map<String, Object>) paras;
-        } else {
+        }
+        else {
             root = new HashMap<String, Object>();
             root.put("_root", paras);
         }

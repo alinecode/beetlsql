@@ -16,7 +16,7 @@ import org.beetl.sql.core.mapper.BaseMapper;
 public interface UserDao extends BaseMapper<User> {
 	
 	List<Long> getIds();
-	void getIds(PageQuery<User> query);
+	void getIds3(PageQuery<User> query);
 //	void pageQuery(PageQuery<String> query);
 //	
 	int getCount(String name);
@@ -55,8 +55,8 @@ public interface UserDao extends BaseMapper<User> {
 	public int  batchUpdate(List<User> users);
 	
 	
-	default User queryUserId(Integer id) {
-        return createLambdaQuery().andEq(User::getId, id).unique();
-    }
+//	default User queryUserId(Integer id) {
+//        return createLambdaQuery().andEq(User::getId, id).unique();
+//    }
 	
 }

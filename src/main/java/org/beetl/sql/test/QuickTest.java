@@ -10,6 +10,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -41,9 +42,13 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ debug};
 		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 		UserDao dao = sql.getMapper(UserDao.class);
-		dao.unique(1);
-//		dao.queryUserId(1);
-		
+		PageQuery<User> page = new PageQuery<User>();
+		User user = new User();
+		user.setName("a");
+		page.setOrderBy("id desc");
+		page.setPara("name", "a");
+		page.setParas(user);
+		dao.getIds3(page);
 
 	}
 	

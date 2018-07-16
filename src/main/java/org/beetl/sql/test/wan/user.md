@@ -4,7 +4,13 @@ getIds3
 	@pageTag(){
 	 #use("cols")#
 	@}
-	from test  u where 1=1 and 1=1 and 1=1
+	from user  u where 1=1 and 1=1 
+	
+	
+	@if(departmentId1!=null){
+		and departmentId = #departmentId#
+	@}
+	
 
 cols	
 ===
