@@ -63,15 +63,15 @@ public class SQLPlaceholderST extends Statement
 					Integer expectJdbcType = JavaType.jdbcTypeNames.get(str);
 					if(expectJdbcType==null){
 						BeetlException be = new BeetlException(BeetlException.FORMAT_NOT_FOUND,formatName+"是用来指示jdbc类型，并不存在，请检查java.sql.Type");
-						be.pushToken(this.token);
+						be.pushToken(format.token);
 						throw be;
 					}
 					jdbcType = expectJdbcType;
 				}else if(formatName.equals("jdbc")) {
 					Integer expectJdbcType = (Integer)format.evaluateValue(value, ctx);
 					if(expectJdbcType==null){
-						BeetlException be = new BeetlException(BeetlException.FORMAT_NOT_FOUND,formatName+"是用来指示jdbc类型，并不存在，请检查java.sql.Type");
-						be.pushToken(this.token);
+						BeetlException be = new BeetlException(BeetlException.ERROR,formatName+"是用来指示jdbc类型，并不存在，请检查java.sql.Type");
+						be.pushToken( format.token);
 						throw be;
 					}
 					jdbcType = expectJdbcType;

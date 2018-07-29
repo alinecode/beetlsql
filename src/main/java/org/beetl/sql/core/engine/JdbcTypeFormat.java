@@ -11,7 +11,7 @@ public class JdbcTypeFormat implements Format {
 		if(cs=='-'||Character.isDigit(cs)) {
 			return Integer.parseInt(pattern);
 		}else {
-			Integer type = JavaType.jdbcTypeNames.get(pattern.toUpperCase());
+			Integer type = JavaType.jdbcTypeNames.get(pattern.toLowerCase());
 			
 			return type;
 			
