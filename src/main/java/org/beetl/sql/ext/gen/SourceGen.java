@@ -109,8 +109,9 @@ public class SourceGen {
 			String attrName = sm.getNc().getPropertyName(null, desc.colName);
 			attr.put("name", attrName);
 			attr.put("methodName", getMethodName(attrName));
-			
-			attr.put("type", desc.remark);
+
+			boolean isKey = tableDesc.getIdNames().contains(desc.colName);
+			attr.put("isKey", isKey);
 			
 			String type = JavaType.getType(desc.sqlType, desc.size, desc.digit);
 			if(config.isPreferBigDecimal()&&type.equals("Double")){

@@ -1522,6 +1522,25 @@ public class SQLManager {
         map.put("_root", paras);
         return this.execute(sqlTemplate, clazz, map, start, size);
     }
+    
+    /**
+     * sql 模板分页查询，记得使用page函数 
+     * @param sqlTemplate select #page(*)# from user where name=#userName# ....
+     * @param clazz
+     * @param pageQuery
+     * @return
+     */
+    public <T> PageQuery<T> executePageQuery(String sqlTemplate, Class<T> clazz, PageQuery<T> pageQuery) {
+        String key = "auto._gen_pagequery_" + sqlTemplate;
+        SQLSource source = sqlLoader.getSQL(key);
+        if (source == null) {
+          
+            source = new SQLSource(key, sqlTemplate);
+            this.sqlLoader.addSQL(key, source);
+        }
+       return this.pageQuery(key, clazz, pageQuery);
+
+    }
 
     /**
      * 直接执行sql更新，sql是模板

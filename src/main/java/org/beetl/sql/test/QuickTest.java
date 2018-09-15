@@ -1,5 +1,7 @@
 package org.beetl.sql.test;
 
+import java.util.Arrays;
+
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -43,10 +45,14 @@ public class QuickTest {
 		
 		Interceptor[] inters = new Interceptor[]{ debug};
 		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
+//		sql.genPojoCodeToConsole("user", "com.test");
 		UserDao dao = sql.getMapper(UserDao.class);
-		PageQuery query = new PageQuery();
-		query.setPara("name", "lijzhdd");
-		dao.templatePage(query);
+	      PageQuery query = new PageQuery();
+	      query.setPara("name", "lijzhdd");
+		sql.executePageQuery("select #page()# from user ", User.class, query);
+//		dao.getIds3(Arrays.asList(new Integer[] {1,2}));
+
+//		dao.templatePage(query);
 	}
 	
 	public static User unique(SQLManager sql,Object key){

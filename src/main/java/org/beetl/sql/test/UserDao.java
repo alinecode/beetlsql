@@ -16,7 +16,7 @@ import org.beetl.sql.core.mapper.BaseMapper;
 public interface UserDao extends BaseMapper<User> {
 	
 	List<Long> getIds();
-	void getIds3(PageQuery<User> query);
+	List<User> getIds3(List ids);
 //	void pageQuery(PageQuery<String> query);
 //	
 	int getCount(String name);

@@ -1,16 +1,6 @@
 getIds3
 ===
-	select 
-	@pageTag(){
-	 #use("cols")#
-	@}
-	from user  u where 1=1 and 1=1 
-	
-	
-	@if(departmentId1!=null){
-		and departmentId = #departmentId#
-	@}
-	
+	select * from user where id in (#join(ids)#)
 
 cols	
 ===

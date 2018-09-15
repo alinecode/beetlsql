@@ -3,8 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.10.33</version>
-	<name>com.ibeetl:beetlsql</name>
+	<version>2.10.34</version>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
 	<licenses>

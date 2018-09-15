@@ -43,8 +43,14 @@ public class InterceptorContext {
 	public String getSql() {
 		return sql;
 	}
+	
+	
 
-	public List<SQLParameter> getParas() {
+	public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public List<SQLParameter> getParas() {
 		return paras;
 	}
 
