@@ -11,15 +11,13 @@ import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.query.interfacer.QueryConditionI;
 
 public class QueryCondition<T> implements QueryConditionI<T> {
-
-
     public SQLManager sqlManager;
     protected StringBuilder sql = null;
     protected List<Object> params = new ArrayList<Object>();
-    protected long startRow=-1,pageSize=-1;
+    protected long startRow = -1, pageSize = -1;
     protected OrderBy orderBy = null;
     protected GroupBy groupBy = null;
-    
+
     public final String AND = "AND";
     public final String OR = "OR";
     public final String WHERE = "WHERE";
@@ -28,20 +26,22 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     public final String BETWEEN = "BETWEEN";
     public final String NOT_BETWEEN = "NOT BETWEEN";
 
+    protected QueryCondition() {
+    }
 
     protected void clear() {
         sql = null;
         params = new ArrayList<Object>();
-        startRow=-1;
-        pageSize=-1;
-        orderBy=null;
+        startRow = -1;
+        pageSize = -1;
+        orderBy = null;
         groupBy = null;
     }
+
     protected String getCol(String colName) {
         return " " + sqlManager.getDbStyle().getKeyWordHandler().getCol(colName) + " ";
     }
 
-  
 
     /****
      * 根据实体class获取表名
@@ -53,19 +53,18 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         TableDesc desc = sqlManager.getMetaDataManager().getTable(tname);
         String tabeName2 = desc.getName();
         int index = -1;
-        AbstractDBStyle style = (AbstractDBStyle)sqlManager.getDbStyle();
-        if((index=tabeName2.indexOf(style.STATEMENT_START))!=-1) {
+        AbstractDBStyle style = (AbstractDBStyle) sqlManager.getDbStyle();
+        if ((index = tabeName2.indexOf(style.STATEMENT_START)) != -1) {
             //表名字包含了特殊符号，比如Oracle 的@
-            tabeName2 = tabeName2.substring(0,index)+"\\"+tabeName2.substring(index);
+            tabeName2 = tabeName2.substring(0, index) + "\\" + tabeName2.substring(index);
         }
         if (desc.getSchema() != null) {
-            return style.getKeyWordHandler().getTable(desc.getSchema())+ "." + style.getKeyWordHandler().getTable(tabeName2) ;
+            return style.getKeyWordHandler().getTable(desc.getSchema()) + "." + style.getKeyWordHandler().getTable(tabeName2);
         } else {
             return style.getKeyWordHandler().getTable(tabeName2);
         }
     }
-    
-  
+
 
     /**
      * 拼接SQL
@@ -80,9 +79,10 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
- 
+
     /**
      * 增加参数
+     *
      * @param objects
      * @return
      */
@@ -91,9 +91,10 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    
+
     /**
      * 在头部增加参数
+     *
      * @param objects
      * @return
      */
@@ -107,7 +108,7 @@ public class QueryCondition<T> implements QueryConditionI<T> {
      * 增加参数
      *
      * @param object
-     *  @return
+     * @return
      */
     public Query<T> addParam(Object object) {
         params.add(object);
