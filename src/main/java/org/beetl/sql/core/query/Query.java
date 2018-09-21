@@ -11,6 +11,7 @@ import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.query.interfacer.QueryExecuteI;
@@ -23,6 +24,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     Class<T> clazz = null;
     StringTemplateResourceLoader tempLoader = new StringTemplateResourceLoader();
+
+    private static final String ALL_COLUMNS = "*";
 
     public Query(SQLManager sqlManager, Class<T> clazz) {
         this.sqlManager = sqlManager;
@@ -40,6 +43,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     /**
      * 推荐直接使用 dao.createLambdaQuery()/sql.lambdaQuery()来获取
+     *
      * @return
      */
     @Deprecated
@@ -57,34 +61,40 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public List<T> select(String... columns) {
-        StringBuilder sb = new StringBuilder("SELECT ");
-        for (String column : columns) {
-            sb.append(column).append(",");
+        return selectByType(clazz, columns);
+    }
+
+    /**
+     * 拼接字段，不传参数时为*
+     *
+     * @param columns
+     * @return
+     */
+    private StringBuilder splicingColumns(String[] columns) {
+        if (columns == null || columns.length < 1) {
+            return new StringBuilder(ALL_COLUMNS);
         }
-        sb.deleteCharAt(sb.length() - 1);
-        sb.append(" FROM ").append(getTableName(clazz)).append(" ").append(getSql());
-        this.setSql(sb);
-        addAdditionalPartSql();
-        String targetSql = this.getSql().toString();
-        Object[] paras = getParams().toArray();
-        //先清楚
-        clear();
-        List<T> list = this.sqlManager.execute(new SQLReady(targetSql, paras), clazz);
-        return list;
+        StringBuilder columnStr = new StringBuilder();
+        for (String column : columns) {
+            columnStr.append(column).append(",");
+        }
+        columnStr.deleteCharAt(columnStr.length() - 1);
+        return columnStr;
     }
 
     @Override
-    public T single() {
-        List<T> list = limit(getFirstRowNumber(), 1).select();
+    public T single(String... columns) {
+        List<T> list = limit(getFirstRowNumber(), 1).select(columns);
         if (list.isEmpty()) {
             return null;
         }
         // 同SQLManager.single 一致，只取第一条。
         return list.get(0);
     }
-    
-    public Map mapSingle() {
-        List<Map> list = limit(getFirstRowNumber(), 1).selectByType(Map.class);
+
+    @Override
+    public Map mapSingle(String... columns) {
+        List<Map> list = limit(getFirstRowNumber(), 1).selectByType(Map.class, columns);
         if (list.isEmpty()) {
             return null;
         }
@@ -101,35 +111,27 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，查询出多条结果集");
         }
         return list.get(0);
-        
-       
+
+
     }
 
     private int getFirstRowNumber() {
         return this.sqlManager.isOffsetStartZero() ? 0 : 1;
     }
 
-    
-    
     @Override
-    public List<T> select() {
-        return this.selectByType(clazz);
+    public <K> List<K> select(Class<K> retType, String... columns) {
+        return this.selectByType(retType, columns);
     }
-   
-    public <K> List<K> select(Class<K> retType) {
-        return this.selectByType(retType);
+
+    @Override
+    public List<Map> mapSelect(String... columns) {
+        return this.selectByType(Map.class, columns);
     }
-    
-    public List<Map> mapSelect() {
-        return this.selectByType(Map.class);
-    }
-    
-    protected <K> List<K> selectByType(Class<K> retType) {
-        StringBuilder sb = new StringBuilder("SELECT * ");
-        sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
-        this.setSql(sb);
-        addAdditionalPartSql();
-        
+
+    protected <K> List<K> selectByType(Class<K> retType, String... columns) {
+        String column = splicingColumns(columns).toString();
+        assembleSelectSql(column);
         String targetSql = this.getSql().toString();
         Object[] paras = getParams().toArray();
         //先清除，避免执行出错后无法清除
@@ -138,10 +140,33 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return list;
     }
 
+    /***
+     * 组装查询的sql语句
+     * @return
+     */
+    private void assembleSelectSql(String column) {
+        StringBuilder sb = new StringBuilder("SELECT ").append(column).append(" ");
+        sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
+        this.setSql(sb);
+        addAdditionalPartSql();
+    }
+
     /**
-     * 增加分页，排序
+     * 增加分页，分组排序
      */
     private void addAdditionalPartSql() {
+        addGroupAndOrderPartSql();
+        // 增加翻页
+        if (this.startRow != -1) {
+            setSql(new StringBuilder(
+                    sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+        }
+    }
+
+    /**
+     * 增加分组，排序
+     */
+    private void addGroupAndOrderPartSql() {
         StringBuilder sb = this.getSql();
         if (this.orderBy != null) {
             sb.append(orderBy.getOrderBy()).append(" ");
@@ -149,11 +174,6 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
         if (this.groupBy != null) {
             sb.append(groupBy.getGroupBy()).append(" ");
-        }
-        // 增加翻页
-        if (this.startRow != -1) {
-            setSql(new StringBuilder(
-                    sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
         }
     }
 
@@ -203,7 +223,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public int insert(T t) {
-        int ret =  this.sqlManager.insert(t, true);
+        int ret = this.sqlManager.insert(t, true);
         return ret;
     }
 
@@ -217,7 +237,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder("DELETE FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        
+
         String targetSql = this.getSql().toString();
         Object[] paras = getParams().toArray();
         //先清除，避免执行出错后无法清除
@@ -231,7 +251,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
         this.setSql(sb);
-        
+
         String targetSql = this.getSql().toString();
         Object[] paras = getParams().toArray();
         //先清除，避免执行出错后无法清除
@@ -247,10 +267,10 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         if (i > -1) {
             condition.getSql().delete(i, i + 5);
         }
-        if(this.groupBy==null) {
+        if (this.groupBy == null) {
             throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("haveing 需要在groupBy后调用"));
         }
-        
+
         groupBy.addHaving(condition.getSql().toString());
         this.addParam(condition.getParams());
         return this;
@@ -306,15 +326,41 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         this.startRow = startRow;
         this.pageSize = pageSize;
         return this;
- 
+
     }
-    
-    
+
+    protected <K> PageQuery<K> pageByType(long pageNumber, long pageSize, Class<K> retType, String... columns) {
+        StringBuilder columnStr = splicingColumns(columns);
+        //此处查询语句不需要设置分页
+        this.startRow = -1;
+        assembleSelectSql(columnStr.toString());
+        String targetSql = this.getSql().toString();
+        Object[] paras = getParams().toArray();
+        SQLReady sqlReady = new SQLReady(targetSql, paras);
+        PageQuery<K> pageQuery = new PageQuery<>(pageNumber, pageSize);
+        return this.sqlManager.execute(sqlReady, retType, pageQuery);
+    }
+
+
+    @Override
+    public PageQuery<T> page(long pageNumber, long pageSize, String... columns) {
+        return pageByType(pageNumber, pageSize, clazz, columns);
+    }
+
+    @Override
+    public <K> PageQuery<K> page(long pageNumber, long pageSize, Class<K> retType, String... columns) {
+        return pageByType(pageNumber, pageSize, retType, columns);
+    }
+
+    @Override
+    public PageQuery<Map> mapPage(long pageNumber, long pageSize, String... columns) {
+        return pageByType(pageNumber, pageSize, Map.class, columns);
+    }
 
 
     /***
      * 获取错误提示
-     * 
+     *
      * @return
      */
     private String getSqlErrorTip(String couse) {

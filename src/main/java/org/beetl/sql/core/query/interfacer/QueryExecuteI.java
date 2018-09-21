@@ -1,57 +1,58 @@
 package org.beetl.sql.core.query.interfacer;
 
 
+import org.beetl.sql.core.engine.PageQuery;
+
 import java.util.List;
 import java.util.Map;
 
 /**
- *@author GavinKing
- *
+ * @author GavinKing
  */
-public interface QueryExecuteI<M>{
+public interface QueryExecuteI<M> {
 
     /***
-     * 指定字段查询
+     * 指定字段查询，不传时查询所有
      * @param columns
      * @return 查询结果
      */
     List<M> select(String... columns);
+
     /**
      * 查询，并映射到指定类上
+     *
      * @param retType
      * @return
      */
-    public <K> List<K> select(Class<K> retType);
-    
+    public <K> List<K> select(Class<K> retType, String... columns);
+
     /**
      * 查询结果集，结果集每一条并映射到map
+     *
      * @return
      */
-    public List<Map> mapSelect();
-    
+    public List<Map> mapSelect(String... columns);
+
     /**
      * 查询一条记录，映射到Map
+     *
      * @return
      */
-    public Map mapSingle();
-    
+    public Map mapSingle(String... columns);
+
     /**
      * 查询出一条，如果没有，返回null
+     *
      * @return
      */
-    <M> M single();
+    <M> M single(String... columns);
+
     /**
      * 查询一条，如果没有或者有多条，抛异常
+     *
      * @return
      */
     <M> M unique();
-
-    /**
-     * 查询所有字段
-     *
-     * @return 查询结果
-     */
-    List<M> select();
 
     /***
      * 全部更新，包括更新null值
@@ -92,4 +93,28 @@ public interface QueryExecuteI<M>{
      * @return 总行数
      */
     long count();
+
+
+    /**
+     * 指定字段查询分页查询，不传入字段查询所有 SELECT *
+     *
+     * @param columns
+     * @return
+     */
+    PageQuery<M> page(long pageNumber, long pageSize, String... columns);
+
+    /**
+     * 分页查询，并映射到指定类上
+     *
+     * @param retType
+     * @return
+     */
+    <K> PageQuery<K> page(long pageNumber, long pageSize, Class<K> retType, String... columns);
+
+    /**
+     * 分页查询结果集，结果集每一条并映射到map
+     *
+     * @return
+     */
+    PageQuery<Map> mapPage(long pageNumber, long pageSize, String... columns);
 }
