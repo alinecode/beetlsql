@@ -1,5 +1,6 @@
 package org.beetl.sql.test.mysql;
 
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.mapper.internal.UserDao;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
@@ -24,6 +25,28 @@ public class QueryUtilTest extends BaseMySqlTest {
 //        List<User> list = query.andEq(User::getName, "user7").or(query.condition().andEq(User::getId, 1641)).select();
 //        assert list.size()==2;
 //    }
+    @Test
+    public void testPage() {
+        Query<User> query = sqlManager.query(User.class);
+        PageQuery<User> page = query.andBetween("id", 1, 1640)
+                .andLike("name", "%t%")
+                .andIsNotNull("create_time")
+                .orderBy("id desc").page(1,3);
+        assert !page.getList().isEmpty();
+    }
+
+    @Test
+    public void testPage2() {
+        Query<User> query = sqlManager.query(User.class);
+        PageQuery<User> page = query
+                .or(query.condition()
+                        .andLike("name", "%t%"))
+                .andIn("id", Arrays.asList(1637, 1639, 1640))
+                .or(query.condition().andEq("id", 1640))
+                .page(1,1);
+
+        assert !page.getList().isEmpty();
+    }
 
     @Test
     public void testSelect() {
