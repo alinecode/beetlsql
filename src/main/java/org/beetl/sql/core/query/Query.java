@@ -337,7 +337,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         String targetSql = this.getSql().toString();
         Object[] paras = getParams().toArray();
         SQLReady sqlReady = new SQLReady(targetSql, paras);
-        PageQuery<K> pageQuery = new PageQuery<>(pageNumber, pageSize);
+        PageQuery<K> pageQuery = new PageQuery<K>(pageNumber, pageSize);
         return this.sqlManager.execute(sqlReady, retType, pageQuery);
     }
 
