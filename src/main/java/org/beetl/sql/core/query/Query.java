@@ -300,7 +300,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     @Override
     public Query<T> desc(String column) {
         OrderBy orderByInfo = this.getOrderBy();
-        orderBy.add(column + " DESC");
+        orderBy.add(getCol(column) + " DESC");
         return this;
     }
 
