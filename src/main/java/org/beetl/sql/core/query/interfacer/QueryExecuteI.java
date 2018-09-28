@@ -18,6 +18,7 @@ public interface QueryExecuteI<M> {
      */
     List<M> select(String... columns);
 
+    List<M> select();
     /**
      * 查询，并映射到指定类上
      *

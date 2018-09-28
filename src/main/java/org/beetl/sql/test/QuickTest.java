@@ -39,7 +39,7 @@ public class QuickTest {
 		ConnectionSource cs  = ConnectionSourceHelper.getSingle(datasource());
 		
 		SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
-		DebugInterceptor debug = new DebugInterceptor(QuickTest.class.getName());
+		DebugInterceptor debug = new DebugInterceptor();
 		
 		
 		
@@ -47,12 +47,7 @@ public class QuickTest {
 		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 //		sql.genPojoCodeToConsole("user", "com.test");
 		UserDao dao = sql.getMapper(UserDao.class);
-	      PageQuery query = new PageQuery();
-	      query.setPara("name", "lijzhdd");
-		sql.executePageQuery("select #page()# from user ", User.class, query);
-//		dao.getIds3(Arrays.asList(new Integer[] {1,2}));
-
-//		dao.templatePage(query);
+		dao.getIds3(Arrays.asList(1));
 	}
 	
 	public static User unique(SQLManager sql,Object key){

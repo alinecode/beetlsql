@@ -63,6 +63,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public List<T> select(String... columns) {
         return selectByType(clazz, columns);
     }
+    
+    @Override
+    public List<T> select() {
+        return selectByType(clazz, new String[0]);
+    }
 
     /**
      * 拼接字段，不传参数时为*

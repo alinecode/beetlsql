@@ -13,6 +13,8 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapper.MapperJavaProxy;
+import org.beetl.sql.core.query.LambdaQuery;
+import org.beetl.sql.core.query.Query;
 
 /**
  * Debug重新美化版本
@@ -27,6 +29,9 @@ public class DebugInterceptor implements Interceptor {
 
 	static String mapperName = MapperJavaProxy.class.getName();
 	static String sqlManager = SQLManager.class.getName();
+	static String queryClassName = Query.class.getName();
+	static String lambdaQueryName = LambdaQuery.class.getName();
+	
 	// debug 输入优先输出的类，而不是SQLManager或者是BaseMapper
 	String preferredShowClass;
 
@@ -85,14 +90,22 @@ public class DebugInterceptor implements Interceptor {
 				// 越过sun jdk 代理
 			    int skipLine = JavaType.isJdk8()?3:2;
 				return i + skipLine;
-			} else if (name.equals(sqlManager)) {
+			} else if(name.equals(lambdaQueryName)) {
+			    return i +1;
+			}else if(name.equals(queryClassName)) {
+			    return i+1;
+			}
+			else if (name.equals(sqlManager)) {
+			    
 				return i + 1;
 			}
 		}
 		// 不可能到这里
-		throw new RuntimeException();
+		throw new IllegalStateException();
 
 	}
+	
+	
 
 	/**
 	 * 如果自己封装了beetlsql 有自己的util，并不想打印util类，而是业务类，可以在这里写util类
