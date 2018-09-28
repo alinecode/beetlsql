@@ -211,6 +211,16 @@ public class QueryUtilTest extends BaseMySqlTest {
                 .select();
         assert user != null;
     }
+
+    @Test
+    public void testInlambda() {
+        LambdaQuery<User> query = sqlManager.lambdaQuery(User.class);
+        List<User> user = query.andEq("id", 1642).orBetween("id",1,3)
+                .or(query.condition().andIn("id",Arrays.asList(5,6,7,8)))
+                .and(query.condition().andBetween("id",9,22))
+                .select();
+        assert user != null;
+    }
     
     // 混合
 //    @Test

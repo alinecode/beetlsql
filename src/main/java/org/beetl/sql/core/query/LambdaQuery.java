@@ -20,6 +20,9 @@ public class LambdaQuery<T> extends Query<T> {
         super(sqlManager, clazz);
     }
 
+    public List<T> select() {
+        return super.select();
+    }
     public List<T> select(Property<T, ?>... cols) {
         String[] colArray = this.getFunctionName(cols);
         return super.select(colArray);
