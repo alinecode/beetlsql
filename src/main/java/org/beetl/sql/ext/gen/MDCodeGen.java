@@ -29,6 +29,7 @@ public class MDCodeGen {
 
 		template.binding("tableName", tableDesc.getName());
 		template.binding("cols", tableDesc.getCols());
+		template.binding("idNames", tableDesc.getIdNames());
 		template.binding("nc", nc);
 		template.binding("alias", alias);
 		template.binding("PS", beetl.getPs().getProperty("DELIMITER_PLACEHOLDER_START"));
