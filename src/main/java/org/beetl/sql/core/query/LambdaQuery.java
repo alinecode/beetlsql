@@ -23,10 +23,15 @@ public class LambdaQuery<T> extends Query<T> {
     public List<T> select() {
         return super.select();
     }
+
     public List<T> select(Property<T, ?>... cols) {
         String[] colArray = this.getFunctionName(cols);
         return super.select(colArray);
 
+    }
+
+    public PageQuery<T> page(long pageNumber, long pageSize) {
+        return super.page(pageNumber, pageSize);
     }
 
     public PageQuery<T> page(long pageNumber, long pageSize, Property<T, ?>... cols) {
