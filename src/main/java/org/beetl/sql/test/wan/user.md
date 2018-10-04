@@ -1,6 +1,6 @@
 getIds3
 ===
-	select *a from user 
+	select *a from user  where #use("cols1")#
 
 cols	
 ===

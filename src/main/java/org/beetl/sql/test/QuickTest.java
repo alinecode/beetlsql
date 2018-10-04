@@ -10,9 +10,10 @@ import org.beetl.sql.core.ConnectionSourceHelper;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLResult;
+import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -46,8 +47,11 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{ debug};
 		final SQLManager 	sql = new SQLManager(style,loader,cs,new UnderlinedNameConversion(), inters);
 //		sql.genPojoCodeToConsole("user", "com.test");
+
+		
 		UserDao dao = sql.getMapper(UserDao.class);
 		dao.getIds3(Arrays.asList(1));
+//		dao.getIds3(Arrays.asList(1));
 	}
 	
 	public static User unique(SQLManager sql,Object key){
