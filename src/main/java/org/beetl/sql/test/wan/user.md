@@ -7,6 +7,11 @@ cols
 
 	u.name
 	
+findOne
+===
+
+	select * from user where id = #id#
+	
 select  
 ===
 
