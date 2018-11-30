@@ -32,6 +32,8 @@ public interface DBStyle {
     int DB_SQLLITE = 5;
     int DB_DB2 = 6;
     int DB_H2 = 7;
+    //国产数据库达梦
+    int DB_DAMENG = 8;
 
 
     void init(Beetl beetl);

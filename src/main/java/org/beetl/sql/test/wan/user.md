@@ -1,11 +1,11 @@
 getIds3
 ===
-	select *a from user  where #use("cols1")#
+	select #page("*")#  from user  where #use("cols")#
 
 cols	
 ===
 
-	u.name
+	name = #name#
 	
 findOne
 ===

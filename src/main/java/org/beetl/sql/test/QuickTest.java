@@ -10,6 +10,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -43,7 +44,12 @@ public class QuickTest {
         // sql.genPojoCodeToConsole("user", "com.test");
 
         UserDao dao = sql.getMapper(UserDao.class);
-        dao.findOne(1l);
+        PageQuery query = new PageQuery();
+        User user = new User();
+        user.setName("j");
+        query.setParas(user);
+        dao.getIds3(query);
+        
     }
 
     public static User unique(SQLManager sql, Object key) {
