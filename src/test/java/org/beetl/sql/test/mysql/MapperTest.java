@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.coamc.xlsunit.RowHolderFacotoy;
-import com.coamc.xlsunit.VariableTable;
-import com.coamc.xlsunit.XLSParser;
+import com.ibeetl.xlsunit.RowHolderFacotoy;
+import com.ibeetl.xlsunit.VariableTable;
+import com.ibeetl.xlsunit.XLSParser;
 
 public class MapperTest extends BaseMySqlTest {
 	

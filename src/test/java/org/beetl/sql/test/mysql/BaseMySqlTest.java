@@ -11,10 +11,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.coamc.xlsunit.BeetlSqlDBAccess;
-import com.coamc.xlsunit.DBAccess;
-import com.coamc.xlsunit.XLSFileLoader;
-import com.coamc.xlsunit.XLSLoader;
+import com.ibeetl.xlsunit.BeetlSqlDBAccess;
+import com.ibeetl.xlsunit.DBAccess;
+import com.ibeetl.xlsunit.XLSFileLoader;
+import com.ibeetl.xlsunit.XLSLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext-mysql-beetlsql.xml" })

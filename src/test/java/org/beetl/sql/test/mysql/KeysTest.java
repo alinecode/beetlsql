@@ -4,9 +4,9 @@ import org.beetl.sql.test.mysql.entity.MutipleKeys;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.coamc.xlsunit.RowHolderFacotoy;
-import com.coamc.xlsunit.VariableTable;
-import com.coamc.xlsunit.XLSParser;
+import com.ibeetl.xlsunit.RowHolderFacotoy;
+import com.ibeetl.xlsunit.VariableTable;
+import com.ibeetl.xlsunit.XLSParser;
 
 public class KeysTest extends BaseMySqlTest {
 	XLSParser keysParser = null;
