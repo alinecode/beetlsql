@@ -299,13 +299,13 @@ public class QueryCondition<T> implements QueryConditionI<T> {
 
     @Override
     public Query<T> orIsNull(String column) {
-        appendOrSql(column, null, "IS NULL");
+        appendOrSql(column, null, "IS NULL ");
         return (Query) this;
     }
 
     @Override
     public Query<T> orIsNotNull(String column) {
-        appendOrSql(column, null, "IS NOT NULL");
+        appendOrSql(column, null, "IS NOT NULL ");
         return (Query) this;
     }
 
