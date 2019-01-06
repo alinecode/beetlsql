@@ -1,5 +1,9 @@
 package org.beetl.sql.test;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -10,7 +14,6 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -43,12 +46,13 @@ public class QuickTest {
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
         // sql.genPojoCodeToConsole("user", "com.test");
 
-        UserDao dao = sql.getMapper(UserDao.class);
-        PageQuery query = new PageQuery();
-        User user = new User();
-        user.setName("j");
-        query.setParas(user);
-        dao.getIds3(query);
+//        UserDao dao = sql.getMapper(UserDao.class);
+//        List<User> users = dao.all();
+//        System.out.println(users.get(0).getDepartment().getName());
+        
+        List<Department> list =  sql.all(Department.class);
+//        System.out.println(list.get(0).getName());
+
         
     }
 

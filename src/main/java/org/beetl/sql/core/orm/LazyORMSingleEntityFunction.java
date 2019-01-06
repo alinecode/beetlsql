@@ -10,8 +10,8 @@ import org.beetl.core.Function;
  * 记录映射关系
  * <pre>
  * 
- * db.orm.single({"id":"orderId"},"com.test.OrderDetail","orderDetail");
- * db.orm.many({"id":"orderId"},"orderDetail.query","orderDetail");
+ * orm.single({"id":"orderId"},"com.test.OrderDetail","orderDetail");
+ * orm.many({"id":"orderId"},"orderDetail.query","orderDetail");
  * </pre>
  * @author xiandafu
  *

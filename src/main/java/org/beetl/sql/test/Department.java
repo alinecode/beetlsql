@@ -1,16 +1,17 @@
 package org.beetl.sql.test;
-import java.math.*;
-import java.util.Date;
-import java.sql.Timestamp;
+import java.util.List;
 
-/*
-* 
-* gen by beetlsql 2016-08-21
-*/
-public class Department  {
+import org.beetl.sql.core.TailBean;
+import org.beetl.sql.core.orm.OrmCondition;
+import org.beetl.sql.core.orm.OrmQuery;
+
+@OrmQuery({
+   @OrmCondition(target = User.class, attr="id", targetAttr = "departmentId1",type=OrmQuery.Type.MANY)
+})
+public class Department extends TailBean {
 	private Integer id ;
 	private String name ;
-	String a;
+	private List<User> user ;
 	
 	public Integer getId(){
 		return  id;
@@ -25,6 +26,13 @@ public class Department  {
 	public void setName(String name ){
 		this.name = name;
 	}
+    public List<User> getUser() {
+        return user;
+    }
+    public void setUser(List<User> user) {
+        this.user = user;
+    }
+  
 
 
 }

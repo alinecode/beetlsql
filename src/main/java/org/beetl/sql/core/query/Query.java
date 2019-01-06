@@ -173,11 +173,15 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      */
     private void addGroupAndOrderPartSql() {
         StringBuilder sb = this.getSql();
-        if (this.orderBy != null) {
+
+        if(this.orderBy != null&&this.groupBy != null){
+            //先group by 后 order by 顺序
+            sb.append(groupBy.getGroupBy()).append(" ");
+            sb.append(orderBy.getOrderBy()).append(" ");
+        }else if (this.orderBy != null) {
             sb.append(orderBy.getOrderBy()).append(" ");
         }
-
-        if (this.groupBy != null) {
+        else if  (this.groupBy != null) {
             sb.append(groupBy.getGroupBy()).append(" ");
         }
     }
