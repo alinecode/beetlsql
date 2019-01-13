@@ -24,7 +24,9 @@ import org.beetl.sql.core.mapper.internal.*;
  * @author luoyizhu
  */
 public final class MapperInvokeDataConfig {
-    /** 处理用户自定义方法的代理 */
+    /**
+     * 处理用户自定义方法的代理
+     */
     static final Map<Integer, MapperInvoke> METHOD_DESC_PROXY_MAP = new HashMap<Integer, MapperInvoke>();
     /**
      * beetlsql内置映射好的方法, 是提供给: AmiInnerProxyMapperInvoke 对象使用的.
@@ -32,7 +34,9 @@ public final class MapperInvokeDataConfig {
      */
     static final Map<String, MapperInvoke> INTERNAL_AMI_METHOD = new HashMap<String, MapperInvoke>();
 
-    /** beetlsql BaseMapper的处理构建器 */
+    /**
+     * beetlsql BaseMapper的处理构建器
+     */
     static final MapperConfigBuilder BASE_MAPPER_BUILDER;
 
     static {
@@ -48,6 +52,7 @@ public final class MapperInvokeDataConfig {
 
     static {
         // 添加内置的 INTERNAL_AMI_METHOD
+        INTERNAL_AMI_METHOD.put("upsert", new UpsertAmi());
         INTERNAL_AMI_METHOD.put("insert", new InsertAmi());
         INTERNAL_AMI_METHOD.put("insertReturnKey", new InsertReturnKeyAmi());
         INTERNAL_AMI_METHOD.put("updateById", new UpdateByIdAmi());
@@ -71,11 +76,12 @@ public final class MapperInvokeDataConfig {
         INTERNAL_AMI_METHOD.put("createQuery", new QueryAmi());
         INTERNAL_AMI_METHOD.put("createLambdaQuery", new LambdaQueryAmi());
 
-        
+
         BASE_MAPPER_BUILDER = new MapperConfigBuilder();
     }
+
     //处理 @Sql注解
-    public static MapperInvoke sqlReadyInvoke =  new SQLReadyExecuteMapperInvoke();
+    public static MapperInvoke sqlReadyInvoke = new SQLReadyExecuteMapperInvoke();
 
     /**
      * 如果用户要扩展, 推荐methodDescType变量使用1000以后的
@@ -90,10 +96,8 @@ public final class MapperInvokeDataConfig {
     public static MapperInvoke getMethodDescProxy(int methodDescType) {
         return METHOD_DESC_PROXY_MAP.get(methodDescType);
     }
-    
-    public static MapperInvoke getSQLReadyProxy(){
-    		return sqlReadyInvoke;
+
+    public static MapperInvoke getSQLReadyProxy() {
+        return sqlReadyInvoke;
     }
-
-
 }

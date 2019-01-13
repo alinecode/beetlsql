@@ -82,8 +82,8 @@ public class SQLManager {
     private String defaultSchema = null;
     private MapperConfig mapperConfig = new MapperConfig();
     private String sqlMananagerName = null;
-    
-    
+
+
     private ClassLoader entityLoader = null;
 
     {
@@ -225,14 +225,14 @@ public class SQLManager {
         return sqlManager;
     }
 
-	public <T> Query<T> query(Class<T> clazz) {
-		return new Query<T>(this, clazz);
-	}
+    public <T> Query<T> query(Class<T> clazz) {
+        return new Query<T>(this, clazz);
+    }
 
     public <T> LambdaQuery<T> lambdaQuery(Class<T> clazz) {
         if (BeanKit.queryLambdasSupport) {
             return new LambdaQuery<T>(this, clazz);
-        }else{
+        } else {
             throw new UnsupportedOperationException("需要Java8以上");
         }
     }
@@ -352,8 +352,8 @@ public class SQLManager {
      * @return SQLScript
      */
     public SQLScript getScript(Class<?> cls, ConstantEnum constantEnum) {
-    	//slqId 保持与DefaultSQLIdNameConversion同样命名风格
-    	String className = StringKit.toLowerCaseFirstOne(cls.getSimpleName());
+        //slqId 保持与DefaultSQLIdNameConversion同样命名风格
+        String className = StringKit.toLowerCaseFirstOne(cls.getSimpleName());
         String id = className + "." + constantEnum.getClassSQL();
 
         SQLSource tempSource = this.sqlLoader.getSQL(id);
@@ -421,7 +421,7 @@ public class SQLManager {
         return new SQLScript(tempSource, this);
     }
 
-	/* ============ 查询部分 ================== */
+    /* ============ 查询部分 ================== */
 
     /****
      * 获取为分页语句
@@ -594,15 +594,14 @@ public class SQLManager {
      * 这俩个sql来查询总数以及翻页操作，如果没有sqlId$count，则假设sqlId 包含了page函数或者标签 ，如
      * <p>
      * </p>
-     * <p>
-     * <p>
+     *
+     *
      * <pre>
      * queryUser
      * ===
      * select #page("a.*,b.name")# from user a left join role b ....
      * </pre>
      *
-     * 
      * @param sqlId
      * @param clazz
      * @param query
@@ -616,8 +615,7 @@ public class SQLManager {
         List<T> list = null;
         if (paras == null) {
             root = new HashMap<String, Object>();
-        }
-        else {
+        } else {
             root = new HashMap<String, Object>();
             root.put("_root", paras);
         }
@@ -686,7 +684,7 @@ public class SQLManager {
         return script.unique(clazz, mapper, pk);
     }
 
-	/* =========模版查询=============== */
+    /* =========模版查询=============== */
 
     /**
      * @param clazz
@@ -822,27 +820,28 @@ public class SQLManager {
         return (List<T>) pageScript.select(target, param, mapper);
 
     }
-    
-    public <T> List<T> template(Class<T> target, Object paras,String orderBy) {
-        return this.template(target, paras, -1,-1,orderBy);
+
+    public <T> List<T> template(Class<T> target, Object paras, String orderBy) {
+        return this.template(target, paras, -1, -1, orderBy);
     }
-    public <T> List<T> template(Class<T> target, Object paras, long start, long size,String orderBy) {
+
+    public <T> List<T> template(Class<T> target, Object paras, long start, long size, String orderBy) {
         SQLScript script = getScript(target, SELECT_BY_TEMPLATE);
         String sqlTemplate = script.getSql();
-        if(orderBy!=null&&orderBy.trim().length()!=0) {
-            if(sqlTemplate.indexOf(" order by ")==-1) {
+        if (orderBy != null && orderBy.trim().length() != 0) {
+            if (sqlTemplate.indexOf(" order by ") == -1) {
                 //参考 AbstractDBStyle.getSelectTemplate
-                sqlTemplate = sqlTemplate+" order by "+orderBy;
-            }else {
-                sqlTemplate = sqlTemplate+","+orderBy;
+                sqlTemplate = sqlTemplate + " order by " + orderBy;
+            } else {
+                sqlTemplate = sqlTemplate + "," + orderBy;
             }
         }
-        boolean pageable = start!=-1&&size!=-1;
-       
-        if(pageable) {
+        boolean pageable = start != -1 && size != -1;
+
+        if (pageable) {
             sqlTemplate = dbStyle.getPageSQL(sqlTemplate);
         }
-       
+
         Map<String, Object> param = null;
         if (paras instanceof Map) {
             param = (Map) paras;
@@ -850,12 +849,12 @@ public class SQLManager {
             param = new HashMap<String, Object>();
             param.put("_root", paras);
         }
-        
-        if(pageable) {
+
+        if (pageable) {
             this.dbStyle.initPagePara(param, start, size);
         }
-       
-        List<T> list =  this.execute(sqlTemplate, target, param);
+
+        List<T> list = this.execute(sqlTemplate, target, param);
         return list;
 
     }
@@ -1133,10 +1132,10 @@ public class SQLManager {
                 try {
                     Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
                     Object value = holder.getKey();
-                    if(value!=null) {
-                    	    //KeyHolder有值才设置
-						value = BeanKit.convertValueToRequiredType(value, getterMethod.getReturnType());
-						setterMethod.invoke(paras, new Object[]{value});
+                    if (value != null) {
+                        //KeyHolder有值才设置
+                        value = BeanKit.convertValueToRequiredType(value, getterMethod.getReturnType());
+                        setterMethod.invoke(paras, new Object[]{value});
                     }
                     return result;
                 } catch (Exception ex) {
@@ -1269,6 +1268,25 @@ public class SQLManager {
     }
 
     /**
+     * 更新或插入。不管是更新还是插入，皆不更新/插入null值。
+     * 如果是更新操作，则根据主键进行更新。
+     * 如果是插入操作，将主键返回到实体中。
+     * @param obj 待更新/插入的实体对象
+     * @return 受影响条数
+     */
+    public int upsert(Object obj) {
+        int result = 0;
+        SQLScript script = getScript(obj.getClass(), UPDATE_TEMPLATE_BY_ID);
+        result = script.update(obj);
+        if (result == 0) {
+           result = insertTemplate(obj.getClass(), obj, true);
+        }
+
+        return result;
+    }
+
+
+    /**
      * 更新一个对象
      *
      * @param obj
@@ -1302,6 +1320,7 @@ public class SQLManager {
 
     /**
      * 按照模板更新
+     *
      * @param c
      * @param obj
      * @return
@@ -1310,6 +1329,7 @@ public class SQLManager {
         SQLScript script = getScript(c, UPDATE_TEMPLATE_BY_ID);
         return script.update(obj);
     }
+
     /****
      * 批量更新
      *
@@ -1411,8 +1431,8 @@ public class SQLManager {
 
     /**
      * 只使用master执行:
-     * <p>
-     * <p>
+     *
+     *
      * <pre>
      *    sqlManager.useMaster(new DBRunner(){
      *    		public void run(SQLManager sqlManager){
@@ -1429,8 +1449,8 @@ public class SQLManager {
 
     /**
      * 只使用Slave执行:
-     * <p>
-     * <p>
+     *
+     *
      * <pre>
      *    sqlManager.useSlave(new DBRunner(){
      *    		public void run(SQLManager sqlManager){
@@ -1522,9 +1542,10 @@ public class SQLManager {
         map.put("_root", paras);
         return this.execute(sqlTemplate, clazz, map, start, size);
     }
-    
+
     /**
-     * sql 模板分页查询，记得使用page函数 
+     * sql 模板分页查询，记得使用page函数
+     *
      * @param sqlTemplate select #page(*)# from user where name=#userName# ....
      * @param clazz
      * @param pageQuery
@@ -1534,11 +1555,11 @@ public class SQLManager {
         String key = "auto._gen_pagequery_" + sqlTemplate;
         SQLSource source = sqlLoader.getSQL(key);
         if (source == null) {
-          
+
             source = new SQLSource(key, sqlTemplate);
             this.sqlLoader.addSQL(key, source);
         }
-       return this.pageQuery(key, clazz, pageQuery);
+        return this.pageQuery(key, clazz, pageQuery);
 
     }
 
@@ -1712,7 +1733,7 @@ public class SQLManager {
      * @param pkg   包名
      * @throws Exception
      */
-    public void genPojoCodeToConsole(String table,String pkg) throws Exception {
+    public void genPojoCodeToConsole(String table, String pkg) throws Exception {
         String srcPath = System.getProperty("user.dir");
         SourceGen gen = new SourceGen(this, table, pkg, srcPath, new GenConfig().setDisplay(true));
         gen.gen();
@@ -1728,6 +1749,7 @@ public class SQLManager {
         String pkg = SourceGen.defaultPkg;
         this.genPojoCodeToConsole(table, pkg);
     }
+
     /**
      * 仅仅打印pojo类到控制台
      *
@@ -1735,7 +1757,7 @@ public class SQLManager {
      * @throws Exception
      */
     public void genPojoCodeToConsole(String table, GenConfig config) throws Exception {
-         String srcPath = System.getProperty("user.dir");
+        String srcPath = System.getProperty("user.dir");
         config.setDisplay(true);
         SourceGen gen = new SourceGen(this, table, config.getOutputPackage(), srcPath, config);
         gen.gen();
@@ -1747,11 +1769,11 @@ public class SQLManager {
      *
      * @param table
      */
-    public void genSQLFile(String table,GenConfig config) throws Exception {
-        genSQLFile(table, null,config);
+    public void genSQLFile(String table, GenConfig config) throws Exception {
+        genSQLFile(table, null, config);
     }
 
-    public void genSQLFile(String table, String alias,GenConfig config) throws Exception {
+    public void genSQLFile(String table, String alias, GenConfig config) throws Exception {
         String path = "/sql";
         if (this.sqlLoader instanceof ClasspathLoader) {
             path = ((ClasspathLoader) sqlLoader).sqlRoot;
@@ -1796,7 +1818,7 @@ public class SQLManager {
 
         MDCodeGen mdCodeGen = new MDCodeGen();
         TableDesc desc = this.metaDataManager.getTable(table);
-        mdCodeGen.genCode(beetl,desc, this.nc, alias, w);
+        mdCodeGen.genCode(beetl, desc, this.nc, alias, w);
 
     }
 
@@ -1817,7 +1839,7 @@ public class SQLManager {
                     // 生成代码
                     this.genPojoCode(table, pkg, config);
                     // 生成模板文件
-                    this.genSQLFile(table,config);
+                    this.genSQLFile(table, config);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     continue;
@@ -2074,13 +2096,14 @@ public class SQLManager {
     public String getSQLManagerName() {
         return this.sqlMananagerName;
     }
+
     /**
      * 清空缓存，用于动态增加修改表情况下可以
      */
     public void refresh() {
-    		this.metaDataManager.refresh();
-    		this.sqlLoader.refresh();
-    		this.beetl.getGroupTemplate().getProgramCache().clearAll();
+        this.metaDataManager.refresh();
+        this.sqlLoader.refresh();
+        this.beetl.getGroupTemplate().getProgramCache().clearAll();
     }
 
     public ClassLoader getEntityLoader() {
@@ -2089,14 +2112,15 @@ public class SQLManager {
 
     /**
      * 设置classloder，如果没有，pojo的初始化使用ContextClassLoader或者加载Beetlsql的classLoader
+     *
      * @param entityLoader
      */
     public void setEntityLoader(ClassLoader entityLoader) {
         this.entityLoader = entityLoader;
-        if(this.sqlLoader instanceof ClasspathLoader) {
-            ((ClasspathLoader)sqlLoader).setClassLoader(entityLoader);
+        if (this.sqlLoader instanceof ClasspathLoader) {
+            ((ClasspathLoader) sqlLoader).setClassLoader(entityLoader);
         }
     }
 
-    
+
 }
