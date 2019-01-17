@@ -53,6 +53,7 @@ public final class MapperInvokeDataConfig {
     static {
         // 添加内置的 INTERNAL_AMI_METHOD
         INTERNAL_AMI_METHOD.put("upsert", new UpsertAmi());
+        INTERNAL_AMI_METHOD.put("upsertByTemplate", new UpsertByTemplateAmi());
         INTERNAL_AMI_METHOD.put("insert", new InsertAmi());
         INTERNAL_AMI_METHOD.put("insertReturnKey", new InsertReturnKeyAmi());
         INTERNAL_AMI_METHOD.put("updateById", new UpdateByIdAmi());

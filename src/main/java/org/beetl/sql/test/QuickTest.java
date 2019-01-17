@@ -46,11 +46,15 @@ public class QuickTest {
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
         // sql.genPojoCodeToConsole("user", "com.test");
 
-//        UserDao dao = sql.getMapper(UserDao.class);
+        UserDao dao = sql.getMapper(UserDao.class);
+        User user = new User();
+        user.setId(5);
+        user.setName("bacd");
+        dao.upsert(user);
 //        List<User> users = dao.all();
 //        System.out.println(users.get(0).getDepartment().getName());
         
-        List<Department> list =  sql.all(Department.class);
+        List<User> list =  sql.all(User.class);
 //        System.out.println(list.get(0).getName());
 
         

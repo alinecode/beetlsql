@@ -65,7 +65,6 @@ public interface BaseMapper<T> {
 
     /**
      * 根据主键更新对象，所以属性都参与更新。也可以使用主键ColumnIgnore来控制更新的时候忽略此字段
-     *
      * @param entity
      * @return
      */
@@ -80,13 +79,17 @@ public interface BaseMapper<T> {
     int updateTemplateById(T entity);
 
     /**
-     * 更新或插入。不管是更新还是插入，皆不更新/插入null值。
-     * 如果是更新操作，则根据主键进行更新。
-     * 如果是插入操作，将主键返回到实体中。
+     * 按照主键更新更新或插入
      * @param entity 待更新/插入的实体对象
      * @return 受影响条数
      */
     int upsert(T entity);
+
+    /**按照主键更新或插入，更新失败，会调用插入，属性为空的字段将不更新或者插入
+     * @param entity 待更新/插入的实体对象
+     * @return
+     */
+    int upsertByTemplate(T entity);
 
     /**
      * 根据主键删除对象，如果对象是复合主键，传入对象本生即可

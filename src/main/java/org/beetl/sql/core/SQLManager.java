@@ -1268,22 +1268,49 @@ public class SQLManager {
     }
 
     /**
-     * 更新或插入。不管是更新还是插入，皆不更新/插入null值。
-     * 如果是更新操作，则根据主键进行更新。
-     * 如果是插入操作，将主键返回到实体中。
-     * @param obj 待更新/插入的实体对象
+     * 更新或者插入，如果根据主键更新失败，则插入。
+     *
+     * @param obj
      * @return 受影响条数
      */
     public int upsert(Object obj) {
+        return this.upsert(obj,false);
+    }
+
+    /**
+     * 更新或者插入，如果根据主键更新失败，则插入。按照模板方式插入或者更新
+     * @param obj
+     * @return 受影响条数
+     */
+    public int upsertByTemplate(Object obj) {
+        return this.upsert(obj,true);
+    }
+
+    /**
+     *
+     * @param obj 待更新/插入的实体对象
+     * @return 受影响条数
+     */
+    /**
+     *
+     * @param obj 待更新/插入的实体对象
+     * @param template
+     * @return 受影响条数
+     */
+    protected int upsert(Object obj,boolean template) {
+    	Class c = obj.getClass();
+    	this.metaDataManager.get
         int result = 0;
-        SQLScript script = getScript(obj.getClass(), UPDATE_TEMPLATE_BY_ID);
+        SQLScript script = getScript(obj.getClass(), template?UPDATE_TEMPLATE_BY_ID:UPDATE_BY_ID);
         result = script.update(obj);
         if (result == 0) {
-           result = insertTemplate(obj.getClass(), obj, true);
+           result = template? insertTemplate(obj.getClass(), obj, true):insert(obj,true);
         }
 
         return result;
     }
+
+
 
 
     /**

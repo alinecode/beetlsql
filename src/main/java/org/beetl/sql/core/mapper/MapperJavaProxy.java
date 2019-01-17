@@ -136,6 +136,7 @@ public class MapperJavaProxy implements InvocationHandler {
         if(methodName.equals("toString")){
         	return "BeetlSql Mapper "+mapperInterface;
         }
+//        SqlResource resource  =  method.getDeclaringClass().getAnnotation(SqlResource.class);
         SqlResource resource = (SqlResource)this.mapperInterface.getAnnotation(SqlResource.class);
         String sqlId = null;
         if(resource!=null){
