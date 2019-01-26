@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.beetl.sql.core.BeetlSQLException;
@@ -23,6 +25,9 @@ public class MetadataManager {
 	String dbType = null;
 	// 是否检查列是否自增，目前通过异常判断驱动不支持
 	boolean checkAuto = true;
+
+	Map<String,String> tableViews = new HashMap<String,String>();
+
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
 		super();
@@ -79,9 +84,9 @@ public class MetadataManager {
 		map = null;
 		this.initMetadata();
 	}
-	
 
-	
+
+
 	private TableDesc getTableFromMap(String tableName){
 		TableDesc desc = null;
 		if(map==null){
@@ -207,7 +212,9 @@ public class MetadataManager {
 				desc.setCatalog(catalog);
 				tempMap.put(desc.getName(),desc);
 			}
-		
+
+//			if(!this.virtuals.isEmpty()&&this.virtuals.containsKey())
+
 			rs.close();
 			this.map = tempMap;
 		} catch (SQLException e) {

@@ -1268,7 +1268,8 @@ public class SQLManager {
     }
 
     /**
-     * 更新或者插入，如果根据主键更新失败，则插入。
+     * 先判断是否主键为空，如果为空，则插入，如果不为空，则从数据库
+     *  出一条，如果未取到，则插入一条，其他情况按照主键更新
      *
      * @param obj
      * @return 受影响条数
@@ -1278,7 +1279,8 @@ public class SQLManager {
     }
 
     /**
-     * 更新或者插入，如果根据主键更新失败，则插入。按照模板方式插入或者更新
+     * 先判断是否主键为空，如果为空，则插入，如果不为空，则从数据库
+     * 取出一条，如果未取到，则插入一条，其他情况按照主键更新
      * @param obj
      * @return 受影响条数
      */
@@ -1286,28 +1288,39 @@ public class SQLManager {
         return this.upsert(obj,true);
     }
 
+
     /**
-     *
-     * @param obj 待更新/插入的实体对象
-     * @return 受影响条数
-     */
-    /**
-     *
+     * 先判断是否主键为空，如果为空，则插入，如果不为空，则从数据库
+     * 取出一条，如果未取到，则插入一条，其他情况按照主键更新
      * @param obj 待更新/插入的实体对象
      * @param template
      * @return 受影响条数
      */
     protected int upsert(Object obj,boolean template) {
     	Class c = obj.getClass();
-    	this.metaDataManager.get
-        int result = 0;
-        SQLScript script = getScript(obj.getClass(), template?UPDATE_TEMPLATE_BY_ID:UPDATE_BY_ID);
-        result = script.update(obj);
-        if (result == 0) {
-           result = template? insertTemplate(obj.getClass(), obj, true):insert(obj,true);
+        String tableName = this.nc.getTableName(c);
+        TableDesc table = this.metaDataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(this.nc);
+        List<String> idProperties = classDesc.getIdAttrs();
+        if(idProperties.size()!=1){
+            throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR,"upsert方法期望只有一个主键");
+
+        }
+        Object pk = BeanKit.getBeanProperty(obj,idProperties.get(0));
+        if(pk==null){
+            //插入
+            return template?this.insertTemplate(obj,true):this.insert(obj,true);
+        }
+        Object dbValue = this.single(c,pk);
+        if(dbValue==null){
+            //还是插入
+            return template?this.insertTemplate(obj,true):this.insert(obj,true);
         }
 
-        return result;
+        //更新
+        return template?this.updateTemplateById(obj):this.updateById(obj);
+
+
     }
 
 
