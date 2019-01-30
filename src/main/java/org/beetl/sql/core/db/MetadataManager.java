@@ -26,7 +26,12 @@ public class MetadataManager {
 	// 是否检查列是否自增，目前通过异常判断驱动不支持
 	boolean checkAuto = true;
 
-	Map<String,String> tableViews = new HashMap<String,String>();
+	/**
+	 * 真表-假表，用于可能的分表分库，比如user表不存在，user001,user00存在
+	 * 因此user001->user
+	 */
+
+	Map<String,String> tableVirtuals = new HashMap<String,String>();
 
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
@@ -66,7 +71,7 @@ public class MetadataManager {
 		if(table==null){
 			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
 		}
-		
+
 		if(table.getCols().size()==0){
 			table = initTable(table);
 		}
@@ -131,6 +136,8 @@ public class MetadataManager {
 			}
 			Connection conn=null;
 			ResultSet rs = null;
+			String tableName = desc.getRealTableName()!=null?desc.getRealTableName():desc.getName();
+
 			try {
 				String catalog = desc.getCatalog();
 				String schema = desc.getSchema();
@@ -138,7 +145,7 @@ public class MetadataManager {
 				conn =  ds.getMetaData();
 				
 				DatabaseMetaData dbmd =  conn.getMetaData();
-				rs = dbmd.getPrimaryKeys(catalog,schema, desc.getName());
+				rs = dbmd.getPrimaryKeys(catalog,schema, tableName);
 				
 				while (rs.next()) {
 					String idName=rs.getString("COLUMN_NAME");
@@ -211,6 +218,10 @@ public class MetadataManager {
 				desc.setSchema(this.defaultSchema);
 				desc.setCatalog(catalog);
 				tempMap.put(desc.getName(),desc);
+				if(this.tableVirtuals.containsKey(name)){
+					TableDesc newDesc =copyVirutalTable(tableVirtuals.get(name),desc);
+					tempMap.put(newDesc.getName(),newDesc);
+				}
 			}
 
 //			if(!this.virtuals.isEmpty()&&this.virtuals.containsKey())
@@ -222,6 +233,12 @@ public class MetadataManager {
 		}finally{
 			close(conn);
 		}
+	}
+
+	private TableDesc copyVirutalTable(String virutalName,TableDesc desc){
+		TableDesc newDesc = new TableDesc(virutalName,desc.getRemark());
+		newDesc.setRealTableName(desc.getName());
+		return newDesc;
 	}
 	
 	private TableDesc initOtherSchemaTabel(String sc,String table){
@@ -372,6 +389,32 @@ public class MetadataManager {
 			return name;
 		}
 	}
-	
-	
+
+	/**
+	 * 真表和假表
+	 * @return
+	 */
+	public Map<String, String> getTableVirtuals() {
+		return tableVirtuals;
+	}
+
+	public void addTableVirtuals(String virtual,String realTable){
+		this.tableVirtuals.put(virtual,realTable);
+		if(!this.map.containsKey(realTable)){
+			//还未加载，加载时候会根据这个关系创建一个TableDesc
+			return;
+		}
+
+
+		TableDesc desc = (TableDesc)this.map.get(realTable);
+		TableDesc  virutalTableDesc = new TableDesc(virtual,desc.getRemark());
+		virutalTableDesc.setRealTableName(realTable);
+		return ;
+
+
+	}
+
+	public void setTableVirtuals(Map<String, String> tableVirtuals) {
+		this.tableVirtuals = tableVirtuals;
+	}
 }

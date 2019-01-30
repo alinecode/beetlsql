@@ -17,7 +17,7 @@ public class TableDesc{
 	
 	private String name;
 	private Set<String> idNames= new CaseInsensitiveOrderSet<String>();
-	
+
 	// 数据表注释
 	private String remark = null;
 	
@@ -32,6 +32,9 @@ public class TableDesc{
 	private String schema ;
 	//tables所在的catalog
 	private String catalog;
+
+	//如果不为空，则标识这个表不存在，来源于realTableName
+	private String realTableName;
 	
 	public TableDesc(String name,String remark){
 		this.name = name;
@@ -134,13 +137,12 @@ public class TableDesc{
 	public void setCatalog(String catalog) {
 		this.catalog = catalog;
 	}
-	
-	
-	
-	
-	
-	
 
-	
-	
+	public String getRealTableName() {
+		return realTableName;
+	}
+
+	public void setRealTableName(String realTableName) {
+		this.realTableName = realTableName;
+	}
 }

@@ -418,6 +418,13 @@ public abstract class AbstractDBStyle implements DBStyle {
                   }
               }
 
+              if(col.equals(classDesc.getVersionCol())){
+                  //版本字段
+                  sql.append(this.getKeyWordHandler().getCol(col)).append("=")
+                          .append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
+                  continue;
+              }
+
               if(template){
 					colSql.append(appendInsertTemplateColumn(cls, table,attr, col));
 					valSql.append(appendInsertTemplateValue(cls, table, attr));
@@ -427,6 +434,8 @@ public abstract class AbstractDBStyle implements DBStyle {
               }
               
           }
+
+
           
           if(template){
         	  	//结束trim(){}

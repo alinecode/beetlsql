@@ -39,6 +39,7 @@ public class ClassDesc {
 	String ormQuery = null;
 	String versionProperty;
 	String versionCol;
+	int initVersionValue = -1;
 	String logicDeleteAttrName =null;
 	int logicDeleteAttrValue = 0;
 	
@@ -74,6 +75,8 @@ public class ClassDesc {
 				PropertyDescriptor p = (PropertyDescriptor)tempMap.get(col);
 				propertys.add(p.getName());
 				Method readMethod =  p.getReadMethod();
+
+				//各种内置注解
 				ColumnIgnore sqlIgnore = BeanKit.getAnnoation(c, p.getName(), readMethod, ColumnIgnore.class);
 				if(sqlIgnore!=null){
 					attrIgnores.put(p.getName(), new ColumnIgnoreStatus(sqlIgnore));
@@ -98,6 +101,10 @@ public class ClassDesc {
 				if(version!=null){
 					this.versionProperty = p.getName();
 					this.versionCol = col;
+					String versionValue =  version.value();
+					if(versionValue!=null&&versionValue.trim().length()!=0){
+						this.initVersionValue = Integer.parseInt(versionValue.trim());
+					}
 				}
 				Class retType = readMethod.getReturnType();
 				if( java.util.Date.class.isAssignableFrom(retType)	
@@ -188,6 +195,8 @@ public class ClassDesc {
 	public String getVersionCol(){
 		return this.versionCol;
 	}
+
+
 	
 	static class ColumnIgnoreStatus{
 		public boolean insertIgnore;
