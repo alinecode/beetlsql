@@ -6,7 +6,7 @@ import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
 @OrmQuery({
-   @OrmCondition(target = User.class, attr="id", targetAttr = "departmentId1",type=OrmQuery.Type.MANY)
+   @OrmCondition(target = User.class, attr="id", targetAttr = "departmentId1", lazy=true,type=OrmQuery.Type.MANY)
 })
 public class Department extends TailBean {
 	private Integer id ;
