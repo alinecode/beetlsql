@@ -31,7 +31,7 @@ public class MetadataManager {
 	 * 因此user001->user
 	 */
 
-	Map<String,String> tableVirtuals = new HashMap<String,String>();
+	ThreadSafeCaseInsensitiveHashMap tableVirtuals = new ThreadSafeCaseInsensitiveHashMap();
 
 	
 	public MetadataManager(ConnectionSource ds,SQLManager sm) {
@@ -154,7 +154,7 @@ public class MetadataManager {
 				rs.close();
 			
 				
-				rs = dbmd.getColumns(catalog,schema, desc.getName(), "%");
+				rs = dbmd.getColumns(catalog,schema, tableName, "%");
 				
 				while(rs.next()){
 					String colName = rs.getString("COLUMN_NAME");
@@ -218,10 +218,10 @@ public class MetadataManager {
 				desc.setSchema(this.defaultSchema);
 				desc.setCatalog(catalog);
 				tempMap.put(desc.getName(),desc);
-				if(this.tableVirtuals.containsKey(name)){
-					TableDesc newDesc =copyVirutalTable(tableVirtuals.get(name),desc);
-					tempMap.put(newDesc.getName(),newDesc);
-				}
+				if(!tableVirtuals.isEmpty()&&tableVirtuals.containsKey(name)){
+                    TableDesc newDesc =copyVirutalTable((String)tableVirtuals.get(name),desc);
+                    tempMap.put(newDesc.getName(),newDesc);
+                }
 			}
 
 //			if(!this.virtuals.isEmpty()&&this.virtuals.containsKey())
@@ -238,6 +238,8 @@ public class MetadataManager {
 	private TableDesc copyVirutalTable(String virutalName,TableDesc desc){
 		TableDesc newDesc = new TableDesc(virutalName,desc.getRemark());
 		newDesc.setRealTableName(desc.getName());
+		newDesc.setCatalog(desc.getCatalog());
+		newDesc.setSchema(desc.getSchema());
 		return newDesc;
 	}
 	
@@ -315,7 +317,6 @@ public class MetadataManager {
 		
 		try{
 			this.defaultSchema =  conn.getSchema();
-			
 		}catch(Throwable e){
 			// jdbc低版本不支持
 			String dbName = sm.getDbStyle().getName();
@@ -398,10 +399,14 @@ public class MetadataManager {
 		return tableVirtuals;
 	}
 
-	public void addTableVirtuals(String virtual,String realTable){
-		this.tableVirtuals.put(virtual,realTable);
-		if(!this.map.containsKey(realTable)){
-			//还未加载，加载时候会根据这个关系创建一个TableDesc
+	public void addTableVirtuals(String realTable,String virtual){
+		this.tableVirtuals.put(realTable,virtual);
+		if(this.map==null){
+			return ;
+		}
+
+		if(this.map.containsKey(realTable)){
+			//所有表信息加载，但还未加载具体表信息，加载时候会根据这个关系创建一个TableDesc
 			return;
 		}
 
@@ -414,7 +419,4 @@ public class MetadataManager {
 
 	}
 
-	public void setTableVirtuals(Map<String, String> tableVirtuals) {
-		this.tableVirtuals = tableVirtuals;
-	}
 }

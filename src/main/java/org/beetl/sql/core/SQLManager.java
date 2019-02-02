@@ -2162,5 +2162,14 @@ public class SQLManager {
         }
     }
 
+    /**
+     * 为不存在的表设置一个数据库真正的表，以用于获取metadata，用于数据库分库分表
+     * @param virtualTable
+     * @param realTable
+     */
+    public void addVirtualTable(String realTable,String virtualTable){
+        this.metaDataManager.addTableVirtuals(realTable,virtualTable);
+    }
+
 
 }

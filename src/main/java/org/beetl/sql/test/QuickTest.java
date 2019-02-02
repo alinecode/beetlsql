@@ -45,7 +45,7 @@ public class QuickTest {
         Interceptor[] inters = new Interceptor[] { debug };
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
         // sql.genPojoCodeToConsole("user", "com.test");
-
+        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
         User user = dao.unique(8);
         user.setName("99999");
