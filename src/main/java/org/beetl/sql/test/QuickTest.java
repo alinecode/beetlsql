@@ -47,14 +47,14 @@ public class QuickTest {
         // sql.genPojoCodeToConsole("user", "com.test");
 
         UserDao dao = sql.getMapper(UserDao.class);
-        User user = new User();
-        user.setId(5);
-        user.setName("bacd");
-        dao.upsert(user);
+        User user = dao.unique(8);
+        user.setName("99999");
+        dao.updateById(user);
+        System.out.println(user.getId());
 //        List<User> users = dao.all();
 //        System.out.println(users.get(0).getDepartment().getName());
         
-        List<User> list =  sql.all(User.class);
+//        List<User> list =  sql.all(User.class);
 //        System.out.println(list.get(0).getName());
 
         

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.beetl.sql.core.annotatoin.LogicDelete;
 import org.beetl.sql.core.annotatoin.Table;
+import org.beetl.sql.core.annotatoin.Version;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
@@ -19,7 +20,9 @@ public class User {
 	private List<Role> myRoles;
 	@LogicDelete(value=1)
 	private Integer delFlag;
-	
+	@Version()
+	private int version;
+
 	private String rType;
 	
 	public String getrType() {
@@ -64,10 +67,12 @@ public class User {
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
     }
-	
-	
 
-	
+	public int getVersion() {
+		return version;
+	}
 
-
+	public void setVersion(int version) {
+		this.version = version;
+	}
 }

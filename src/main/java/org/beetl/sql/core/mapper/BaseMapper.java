@@ -79,13 +79,13 @@ public interface BaseMapper<T> {
     int updateTemplateById(T entity);
 
     /**
-     * 按照主键更新更新或插入
+     * 按照主键更新更新或插入,自增或者序列id自动赋值给entity
      * @param entity 待更新/插入的实体对象
      * @return 受影响条数
      */
     int upsert(T entity);
 
-    /**按照主键更新或插入，更新失败，会调用插入，属性为空的字段将不更新或者插入
+    /**按照主键更新或插入，更新失败，会调用插入，属性为空的字段将不更新或者插入。自增或者序列id自动赋值给entity
      * @param entity 待更新/插入的实体对象
      * @return
      */

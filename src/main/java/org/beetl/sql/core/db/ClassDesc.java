@@ -101,10 +101,7 @@ public class ClassDesc {
 				if(version!=null){
 					this.versionProperty = p.getName();
 					this.versionCol = col;
-					String versionValue =  version.value();
-					if(versionValue!=null&&versionValue.trim().length()!=0){
-						this.initVersionValue = Integer.parseInt(versionValue.trim());
-					}
+					this.initVersionValue =version.value();
 				}
 				Class retType = readMethod.getReturnType();
 				if( java.util.Date.class.isAssignableFrom(retType)	
@@ -231,6 +228,8 @@ public class ClassDesc {
     public void setLogicDeleteAttrValue(int logicDeleteAttrValue) {
         this.logicDeleteAttrValue = logicDeleteAttrValue;
     }
-	
-	
+
+	public int getInitVersionValue() {
+		return initVersionValue;
+	}
 }
