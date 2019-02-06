@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD,ElementType.FIELD})
 public @interface Version  {
-	/*-1 表示程序指定，否则，beetlsql使用此值作为初始值*/
+	/**
+	 * 默认表示程序指定，否则，beetlsql使用此值作为初始值*/
 	public int value() default -1;
 	public String param() default "";
 }
