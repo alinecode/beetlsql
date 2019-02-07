@@ -57,6 +57,9 @@ public class BeetlSQLException extends RuntimeException {
 
 	//Query SQL 语法错误
 	public static final int 	QUERY_SQL_ERROR  = 21;
+
+	// 注解定义错误
+	public static final int 	ANNOTATION_DEFINE_ERROR  = 23;
 		
 	int code ;
 	

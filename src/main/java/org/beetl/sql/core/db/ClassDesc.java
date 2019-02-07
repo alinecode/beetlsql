@@ -16,6 +16,7 @@ import org.beetl.sql.core.annotatoin.InsertIgnore;
 import org.beetl.sql.core.annotatoin.LogicDelete;
 import org.beetl.sql.core.annotatoin.UpdateIgnore;
 import org.beetl.sql.core.annotatoin.Version;
+import org.beetl.sql.core.handler.AttributeHanlderHolder;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -42,6 +43,7 @@ public class ClassDesc {
 	int initVersionValue = -1;
 	String logicDeleteAttrName =null;
 	int logicDeleteAttrValue = 0;
+	List<AttributeHanlderHolder>  handlers = new ArrayList<AttributeHanlderHolder>();
 	
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		this.targetClass = c ;
@@ -108,7 +110,8 @@ public class ClassDesc {
 						|| java.util.Calendar.class.isAssignableFrom(retType)){
 					dateTypes.add(p.getName());
 				}
-				
+
+
 				if(ids.contains(col)){
 					//保持同一个顺序
 					idProperties.add(p.getName());

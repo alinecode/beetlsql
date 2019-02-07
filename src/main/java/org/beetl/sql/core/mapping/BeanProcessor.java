@@ -387,16 +387,7 @@ public class BeanProcessor {
 	 */
 	protected <T> T newInstance(Class<T> c) throws SQLException {
 		
-		try {
-			
-			return c.newInstance();
-
-		} catch (InstantiationException e) {
-			throw new BeetlSQLException(BeetlSQLException.OBJECT_INSTANCE_ERROR,e);
-
-		} catch (IllegalAccessException e) {
-			throw new BeetlSQLException(BeetlSQLException.OBJECT_INSTANCE_ERROR,e);
-		}
+		return BeanKit.newInstance(c);
 		
 	}
 

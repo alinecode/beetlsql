@@ -1,8 +1,8 @@
 package org.beetl.sql.core.handler;
 
-public class BeetlScript implements GenValue {
+public class BeetlScriptGenValue implements GenValue {
     String script;
-    public BeetlScript(String script){
+    public BeetlScriptGenValue(String script){
         this.script = script;
     }
     @Override
