@@ -19,11 +19,12 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 		SQLSource source = sqlLoader.getSQL(key);
 		if(source==null) {
 		   /**
-		    * 这是一个并发bug修复，参考https://gitee.com/xiandafu/beetlsql/issues/IKFGA
+		    * 这是一个并发bug暂时修复，参考https://gitee.com/xiandafu/beetlsql/issues/IKFGA
 		    * 
-		    * sqlManager.refresh被别的线程清空了，这里得到的是空模板
+		    * sqlManager.refresh被别的线程清空了，这里得到的是空模板,现在返回一个空
 		    */
-		   throw new RefreshRuntimeException();
+			return new SqlTemplateResource(key,source,this);
+
 		}
 		return new SqlTemplateResource(key,source,this);
 	}
@@ -40,7 +41,7 @@ public class StringSqlTemplateLoader implements ResourceLoader {
 	@Override
 	public boolean exist(String key) {
 		//never use
-		return true;
+		return sqlLoader.exist(key);
 	}
 
 	@Override

@@ -12,6 +12,6 @@ public class UpdateTimePreHandler implements SQLHandler {
 
     @Override
     public GenValue genValue(SQLManager sqlManager, String filedName, String colName, Annotation an, TableDesc tableDesc) {
-        return new BeetlScriptGenValue("now()");
+        return new BeetlScriptGenValue("date()");
     }
 }
