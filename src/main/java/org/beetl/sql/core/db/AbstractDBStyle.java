@@ -24,7 +24,7 @@ import org.beetl.sql.core.kit.BeanKit;
  *
  * @author xiandafu
  */
-public abstract class AbstractDBStyle implements DBStyle {
+public abstract class  AbstractDBStyle implements DBStyle {
 
     protected static AbstractDBStyle adbs;
     protected NameConversion nameConversion;
@@ -90,14 +90,14 @@ public abstract class AbstractDBStyle implements DBStyle {
         String condition = appendIdCondition(cls);
         return new SQLTableSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
     }
-    
+
     @Override
     public SQLSource genSelectByIdForUpdate(Class<?> cls){
-    		SQLSource source = genSelectById(cls);
-    		String template = source.getTemplate();
-    		template = template+" for update";
-    		source.setTemplate(template);
-    		return source;
+        SQLSource source = genSelectById(cls);
+        String template = source.getTemplate();
+        template = template+" for update";
+        source.setTemplate(template);
+        return source;
     }
 
     @Override
@@ -107,7 +107,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         String condition = getSelectTemplate(cls);
         String appendSql = "";
         TableTemplate t = (TableTemplate)BeanKit.getAnnotation(cls, TableTemplate.class);
-        
+
         if (t != null) {
             appendSql = t.value();
             if ((appendSql == null || appendSql.length() == 0) && table.getIdNames().size() != 0) {
@@ -151,11 +151,11 @@ public abstract class AbstractDBStyle implements DBStyle {
             String col = cols.next();
             String attr = attrs.next();
             if (classDesc.isDateType(attr)) {
-            		
+
                 try {
                     DateTemplate dateTemplate = BeanKit.getAnnoation(classDesc.getTargetClass(), attr, DateTemplate.class);
                     if (dateTemplate == null){
-                    		continue;
+                        continue;
                     }
                     String sql = this.genDateAnnotatonSql(dateTemplate, cls, col);
                     condition = condition + sql;
@@ -189,9 +189,9 @@ public abstract class AbstractDBStyle implements DBStyle {
                     .append(getTableName(table)).append(" set ")
                     .append(col).append(" = ").append(classDesc.getLogicDeleteAttrValue()).append(condition).toString());
         }
-      
 
-       }
+
+    }
 
     @Override
     public SQLSource genSelectAll(Class<?> cls) {
@@ -214,7 +214,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && properties.hasNext()) {
             String col = cols.next();
             String prop = properties.next();
-            
+
             if (classDesc.isUpdateIgnore(prop)) {
                 continue;
             }
@@ -223,32 +223,18 @@ public abstract class AbstractDBStyle implements DBStyle {
                 continue;
             }
             if(col.equals(classDesc.getVersionCol())){
-            		//版本字段
-            		sql.append(this.getKeyWordHandler().getCol(col)).append("=")
-            		.append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
-            		continue ;
+                //版本字段
+                sql.append(this.getKeyWordHandler().getCol(col)).append("=")
+                        .append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
+                continue ;
             }
 
-            AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(col);
-            if(handler!=null&&handler.containSqlHandler(HandlerType.UPDATE)){
-                SQLHandler sqlHandler = handler.getSqlHanlder();
-                GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,prop,col,handler.getSqlAnnotation(),table);
-                if(genValue instanceof RawGenValue){
-                     //一个普通值，比如 col='1999-1-1'
-                     sql.append(this.getKeyWordHandler().getCol(col)).append( "=" ).append(genValue.get()).append(",");
-                }else{
-                    //BeetlScript,比如 col=${json(xxxx)}
-                    sql.append(this.getKeyWordHandler().getCol(col)).append( "=" ).append(HOLDER_START).append(genValue.get()).append(HOLDER_END).append(",");
 
-                }
 
-                continue;
-            }
-           
-
+            //普通情况
             sql.append(appendSetColumnAbsolute(cls, table, col, prop));
         }
-        
+
         String condition = appendIdCondition(cls);
         condition = appendVersion(condition,classDesc);
         sql = removeComma(sql, condition);
@@ -291,14 +277,14 @@ public abstract class AbstractDBStyle implements DBStyle {
     }
 
     private String appendVersion(String condition,ClassDesc desc){
-    		String col = desc.getVersionCol();
-    		if(col==null){
-    			return condition;
-    		}
-    		String property = desc.getVersionProperty();
-    		condition = condition+" and "+this.getKeyWordHandler().getCol(col)+" = "
-                   +HOLDER_START+property+HOLDER_END;
-    		return condition;
+        String col = desc.getVersionCol();
+        if(col==null){
+            return condition;
+        }
+        String property = desc.getVersionProperty();
+        condition = condition+" and "+this.getKeyWordHandler().getCol(col)+" = "
+                +HOLDER_START+property+HOLDER_END;
+        return condition;
     }
 
     @Override
@@ -323,10 +309,10 @@ public abstract class AbstractDBStyle implements DBStyle {
                 continue;
             }
             if(col.equals(classDesc.getVersionCol())){
-	        		//版本字段
-	        		sql.append(this.getKeyWordHandler().getCol(col)).append("=")
-	        		.append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
-	        		continue;
+                //版本字段
+                sql.append(this.getKeyWordHandler().getCol(col)).append("=")
+                        .append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
+                continue;
             }
             sql.append(appendSetColumn(cls, table, col, prop));
         }
@@ -350,10 +336,10 @@ public abstract class AbstractDBStyle implements DBStyle {
         StringBuilder sql = new StringBuilder("update ").append(getTableName(table)).append(" set ").append(lineSeparator);
         Iterator<String> cols = classDesc.getInCols().iterator();
         Iterator<String> properties = classDesc.getAttrs().iterator();
-        
+
         sql.append(this.lineSeparator).append(this.STATEMENT_START);
         sql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
-        
+
         List<String> idCols = classDesc.getIdCols();
         while (cols.hasNext() && properties.hasNext()) {
             String col = cols.next();
@@ -367,124 +353,124 @@ public abstract class AbstractDBStyle implements DBStyle {
             }
             sql.append(appendSetColumn(cls, table, col, prop));
         }
-        
+
         sql.append(this.lineSeparator).append(this.STATEMENT_START);
         sql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
-        
+
         return new SQLTableSource(sql.toString());
     }
 
     @Override
     public SQLSource genInsert(Class<?> cls) {
-    	return generalInsert(cls,false);
+        return generalInsert(cls,false);
     }
-    
-    
+
+
     public SQLSource genInsertTemplate(Class<?> cls){
-    	return generalInsert(cls,true);
+        return generalInsert(cls,true);
     }
-    
 
-    
+
+
     protected SQLSource generalInsert(Class<?> cls,boolean template){
-    	  String tableName = nameConversion.getTableName(cls);
-          TableDesc table = this.metadataManager.getTable(tableName);
-          ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
-          StringBuilder sql = new StringBuilder(getInsertBaseSql(classDesc,table) + lineSeparator);
-          StringBuilder colSql = new StringBuilder("(");
-          StringBuilder valSql = new StringBuilder(" VALUES (");
-          if(template){
-        	  	//动态拼，需要使用trim去掉最后可能的空格
-        	  	colSql.append(this.lineSeparator).append(this.STATEMENT_START);
-        	  	colSql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
-        	  	valSql.append(this.lineSeparator).append(this.STATEMENT_START);
-        	  	valSql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
-          }
-          int idType = DBStyle.ID_ASSIGN;
-          SQLTableSource source = new SQLTableSource();
-          Iterator<String> cols = classDesc.getInCols().iterator();
-          Iterator<String> attrs = classDesc.getAttrs().iterator();
+        String tableName = nameConversion.getTableName(cls);
+        TableDesc table = this.metadataManager.getTable(tableName);
+        ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
+        StringBuilder sql = new StringBuilder(getInsertBaseSql(classDesc,table) + lineSeparator);
+        StringBuilder colSql = new StringBuilder("(");
+        StringBuilder valSql = new StringBuilder(" VALUES (");
+        if(template){
+            //动态拼，需要使用trim去掉最后可能的空格
+            colSql.append(this.lineSeparator).append(this.STATEMENT_START);
+            colSql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
+            valSql.append(this.lineSeparator).append(this.STATEMENT_START);
+            valSql.append("trim({suffixOverrides:','}){").append(this.lineSeparator);
+        }
+        int idType = DBStyle.ID_ASSIGN;
+        SQLTableSource source = new SQLTableSource();
+        Iterator<String> cols = classDesc.getInCols().iterator();
+        Iterator<String> attrs = classDesc.getAttrs().iterator();
 
-          List<String> idCols = classDesc.getIdCols();
-          while (cols.hasNext() && attrs.hasNext()) {
-              String col = cols.next();
-              String attr = attrs.next();
-              if (classDesc.isInsertIgnore(attr)) {
-                  continue;
-              }
+        List<String> idCols = classDesc.getIdCols();
+        while (cols.hasNext() && attrs.hasNext()) {
+            String col = cols.next();
+            String attr = attrs.next();
+            if (classDesc.isInsertIgnore(attr)) {
+                continue;
+            }
 
-              if (idCols.size() == 1 && idCols.contains(col)) {
+            if (idCols.size() == 1 && idCols.contains(col)) {
 
-                  idType = this.getIdType(classDesc.getTargetClass(),attr);
-                  if (idType == DBStyle.ID_AUTO) {
-                      continue; //忽略这个字段
-                  } else if (idType == DBStyle.ID_SEQ) {
+                idType = this.getIdType(classDesc.getTargetClass(),attr);
+                if (idType == DBStyle.ID_AUTO) {
+                    continue; //忽略这个字段
+                } else if (idType == DBStyle.ID_SEQ) {
 
-                      colSql.append(appendInsertColumn(cls, table, col));
-                      SeqID seqId = BeanKit.getAnnoation(classDesc.getTargetClass(), attr, 
-                    		  (Method)classDesc.getIdMethods().get(attr), SeqID.class);
-                      
-                      valSql.append(this.getSeqValue(seqId.name()) + ",");
-                      continue;
-                  } else if (idType == DBStyle.ID_ASSIGN) {
-                      //normal
-                  }
-              }
+                    colSql.append(appendInsertColumn(cls, table, col));
+                    SeqID seqId = BeanKit.getAnnoation(classDesc.getTargetClass(), attr,
+                            (Method)classDesc.getIdMethods().get(attr), SeqID.class);
 
-              if(col.equals(classDesc.getVersionCol())&&classDesc.getInitVersionValue()!=-1){
-                  //版本字段
-                  colSql.append(appendInsertColumn(cls, table, col));
-                  valSql.append(classDesc.getInitVersionValue()).append(",");
-                  continue;
+                    valSql.append(this.getSeqValue(seqId.name()) + ",");
+                    continue;
+                } else if (idType == DBStyle.ID_ASSIGN) {
+                    //normal
+                }
+            }
 
-              }
+            if(col.equals(classDesc.getVersionCol())&&classDesc.getInitVersionValue()!=-1){
+                //版本字段
+                colSql.append(appendInsertColumn(cls, table, col));
+                valSql.append(classDesc.getInitVersionValue()).append(",");
+                continue;
 
-              if(template){
-					colSql.append(appendInsertTemplateColumn(cls, table,attr, col));
-					valSql.append(appendInsertTemplateValue(cls, table, attr));
-              }else{
-					colSql.append(appendInsertColumn(cls, table, col));
-					valSql.append(appendInsertValue(cls, table, attr,col));
-              }
-              
-          }
+            }
+
+            if(template){
+                colSql.append(appendInsertTemplateColumn(cls, table,attr, col));
+                valSql.append(appendInsertTemplateValue(cls, table, attr,col));
+            }else{
+                colSql.append(appendInsertColumn(cls, table, col));
+                valSql.append(appendInsertValue(cls, table, attr,col));
+            }
+
+        }
 
 
-          
-          if(template){
-        	  	//结束trim(){}
-        	  	colSql.append(this.lineSeparator).append(this.STATEMENT_START);
-      	  	colSql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
-      	  	colSql.append(")");
-      	  	valSql.append(this.lineSeparator).append(this.STATEMENT_START);
-      	  	valSql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
-      	  	valSql.append(")");
-      	  	sql.append(colSql).append(valSql);
-          }else{
-        	  	sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
-              
-          }
-          source.setTemplate(sql.toString());
-          source.setIdType(idType);
-          source.setTableDesc(table);
-          if (idType == DBStyle.ID_ASSIGN) {
-              Map<String, AssignID> map = new HashMap<String, AssignID>();
-              for (String idAttr : classDesc.getIdAttrs()) {
-                  Method getter = (Method) classDesc.getIdMethods().get(idAttr);
-                  AssignID assignId = BeanKit.getAnnoation(classDesc.getTargetClass(), idAttr, getter,AssignID.class);
-                  if (assignId != null && assignId.value().length() != 0) {
 
-                      map.put(idAttr, assignId);
-                  }
-              }
+        if(template){
+            //结束trim(){}
+            colSql.append(this.lineSeparator).append(this.STATEMENT_START);
+            colSql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
+            colSql.append(")");
+            valSql.append(this.lineSeparator).append(this.STATEMENT_START);
+            valSql.append("}").append(this.lineSeparator).append(this.STATEMENT_END);
+            valSql.append(")");
+            sql.append(colSql).append(valSql);
+        }else{
+            sql.append(removeComma(colSql, null).append(")").append(removeComma(valSql, null)).append(")").toString());
 
-              if (map.size() != 0) {
-                  source.setAssignIds(map);
-              }
+        }
+        source.setTemplate(sql.toString());
+        source.setIdType(idType);
+        source.setTableDesc(table);
+        if (idType == DBStyle.ID_ASSIGN) {
+            Map<String, AssignID> map = new HashMap<String, AssignID>();
+            for (String idAttr : classDesc.getIdAttrs()) {
+                Method getter = (Method) classDesc.getIdMethods().get(idAttr);
+                AssignID assignId = BeanKit.getAnnoation(classDesc.getTargetClass(), idAttr, getter,AssignID.class);
+                if (assignId != null && assignId.value().length() != 0) {
 
-          }
+                    map.put(idAttr, assignId);
+                }
+            }
 
-          return source;
+            if (map.size() != 0) {
+                source.setAssignIds(map);
+            }
+
+        }
+
+        return source;
     }
     /**
      *  子类可以实现自己的特定定insert语句，比如insert ignore into，等
@@ -610,7 +596,7 @@ public abstract class AbstractDBStyle implements DBStyle {
         return sql.deleteCharAt(sql.length() - 1).toString();
     }
 
- 
+
 
     /****
      * 去掉逗号后面的加上结束符和条件并换行
@@ -619,14 +605,14 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @return
      */
     protected StringBuilder removeComma(StringBuilder sql, String condition) {
-    	int index = sql.lastIndexOf(",");
-    	if(index==-1){
-    		//这种情况发生在没有列名，通常是 insert xxx () values()
-    		return sql;
-    	}else{
-    		return sql.deleteCharAt(index).append((condition == null ? "" : condition));
-    	}
-        
+        int index = sql.lastIndexOf(",");
+        if(index==-1){
+            //这种情况发生在没有列名，通常是 insert xxx () values()
+            return sql;
+        }else{
+            return sql.deleteCharAt(index).append((condition == null ? "" : condition));
+        }
+
     }
 
     /***
@@ -638,6 +624,21 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
+        ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        if(handler!=null&&handler.containSqlHandler(HandlerType.UPDATE)){
+            SQLHandler sqlHandler = handler.getSqlHanlder();
+            GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,fieldName,colName,handler.getSqlAnnotation(),table);
+            if(genValue instanceof RawGenValue){
+                //一个普通值，比如 col='1999-1-1'colName
+                return this.getKeyWordHandler().getCol(colName)+ "=" +genValue.get()+",";
+            }else{
+                //BeetlScript,比如 col=${json(xxxx)}
+                return this.getKeyWordHandler().getCol(colName)+ "=" +HOLDER_START+genValue.get()+HOLDER_END+",";
+
+            }
+
+        }
         return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + fieldName + HOLDER_END + ",";
     }
 
@@ -650,13 +651,46 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendSetColumn(Class<?> c, TableDesc table, String colName, String fieldName) {
-        String prefix = "";
 
-        return STATEMENT_START + "if(!isEmpty(" + prefix + fieldName + ")){"
-                + STATEMENT_END + "\t" + this.getKeyWordHandler().getCol(colName) + "=" + HOLDER_START + prefix + fieldName + HOLDER_END + ","
+        ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        if(handler!=null&&handler.containSqlHandler(HandlerType.UPDATE)){
+            // 注解忽略模板相关功能
+            return appendUpdateSqlHandler(handler,c,table,classDesc,colName,fieldName)+",";
+        }
+
+
+        return STATEMENT_START + "if(!isEmpty(" + fieldName + ")){"
+                + STATEMENT_END + "\t" + this.getKeyWordHandler().getCol(colName) + "=" + HOLDER_START  + fieldName + HOLDER_END + ","
                 + lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
 
 
+    }
+
+    protected String appendUpdateSqlHandler(AttributeHanlderHolder handler,Class<?> c, TableDesc table, ClassDesc classDesc,String colName, String fieldName){
+        SQLHandler sqlHandler = handler.getSqlHanlder();
+        GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,fieldName,colName,handler.getSqlAnnotation(),table);
+        if(genValue instanceof RawGenValue){
+            //一个普通值，比如 col='1999-1-1'colName
+            return this.getKeyWordHandler().getCol(colName)+ "=" +genValue.get()+",";
+        }else{
+            //BeetlScript,比如 col=${json(xxxx)}
+            return this.getKeyWordHandler().getCol(colName)+ "=" +HOLDER_START+genValue.get()+HOLDER_END+",";
+
+        }
+    }
+
+    protected String appendInsertSqlHandler(AttributeHanlderHolder handler,Class<?> c, TableDesc table, ClassDesc classDesc,String colName, String fieldName){
+        SQLHandler sqlHandler = handler.getSqlHanlder();
+        GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,fieldName,colName,handler.getSqlAnnotation(),table);
+        if(genValue instanceof RawGenValue){
+            //一个普通值，比如 col='1999-1-1'colName
+            return genValue.get()+",";
+        }else{
+            //BeetlScript,比如 ${json(xxxx)}
+            return HOLDER_START+genValue.get()+HOLDER_END+",";
+
+        }
     }
 
     /*****
@@ -697,12 +731,20 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param fieldName
      * @return
      */
-    protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName,String col) {
-    	
+    protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName,String colName) {
+
+        ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        if(handler!=null&&handler.containSqlHandler(HandlerType.INSERT)){
+
+            return appendInsertSqlHandler(handler,c,table,classDesc,colName,fieldName);
+        }
+
+
         return HOLDER_START + fieldName + HOLDER_END + ",";
 
     }
-    
+
     /****
      * 生成一个追加在insert into 子句的后面sql(示例：name,)
      * 需要判断值是否空，如果为空，则不作插入
@@ -713,16 +755,23 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendInsertTemplateColumn(Class<?> c, TableDesc table,String fieldName, String colName) {
-       
-    	String col = this.getKeyWordHandler().getCol(colName);
-    	if(col.startsWith("'")){
-    		return HOLDER_START + "db.testColNull("+fieldName+",\""+col+"\")" + HOLDER_END  ;
-    	}else{
-    		return HOLDER_START + "db.testColNull("+fieldName+",'"+col+"')" + HOLDER_END  ;
-    	}
-    	
+
+        ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        if(handler!=null&&handler.containSqlHandler(HandlerType.INSERT)){
+            //有注解情况下，忽略template功能
+            return this.getKeyWordHandler().getCol(colName);
+        }
+
+        String col = this.getKeyWordHandler().getCol(colName);
+        if(col.startsWith("'")){
+            return HOLDER_START + "db.testColNull("+fieldName+",\""+col+"\")" + HOLDER_END  ;
+        }else{
+            return HOLDER_START + "db.testColNull("+fieldName+",'"+col+"')" + HOLDER_END  ;
+        }
+
     }
-    
+
 
     /****
      * 生成一个追加在insert into value子句的后面sql(示例：name=${name},)
@@ -731,9 +780,15 @@ public abstract class AbstractDBStyle implements DBStyle {
      * @param fieldName
      * @return
      */
-    protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName) {
-    	
-    	 return HOLDER_START + "db.testNull("+fieldName+"!,\""+fieldName+"\")" + HOLDER_END ;
+    protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName,String colName) {
+
+        ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        if(handler!=null&&handler.containSqlHandler(HandlerType.INSERT)){
+
+            return appendInsertSqlHandler(handler,c,table,classDesc,colName,fieldName);
+        }
+        return HOLDER_START + "db.testNull("+fieldName+"!,\""+fieldName+"\")" + HOLDER_END ;
 
     }
 
@@ -772,31 +827,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 
 
-    /****
-     * 方法是否能用来生成select语句
-     *
-     * @param method
-     * @return
-     */
-    protected boolean isLegalSelectMethod(Method method) {
 
-        return method.getDeclaringClass() != Object.class
-                && (method.getName().startsWith("get") || method.getName().startsWith("is"))
-                && !java.util.Date.class.isAssignableFrom(method.getReturnType())
-                && !java.util.Calendar.class.isAssignableFrom(method.getReturnType());
-    }
 
-    /****
-     * 方法是否能用来生成select之外的语句，如update，insert
-     *
-     * @param method
-     * @return
-     */
-    protected boolean isLegalOtherMethod(Method method) {
-        return method.getDeclaringClass() != Object.class &&
-                (method.getName().startsWith("get") || method.getName().startsWith("is"))
-                && method.getParameterTypes().length == 0;
-    }
+
 
     protected String genDateAnnotatonSql(DateTemplate t, Class c, String col) {
         String accept = t.accept();
@@ -879,14 +912,14 @@ public abstract class AbstractDBStyle implements DBStyle {
 
     @Override
     public KeyWordHandler getKeyWordHandler(){
-    	return this.keyWordHandler;
+        return this.keyWordHandler;
     }
-	public void setKeyWordHandler(KeyWordHandler keyWordHandler){
-		this.keyWordHandler = keyWordHandler;
-	}
-	
-	public String getSeqValue(String seqName) {
-		throw new UnsupportedOperationException("不支持序列");
-	}
+    public void setKeyWordHandler(KeyWordHandler keyWordHandler){
+        this.keyWordHandler = keyWordHandler;
+    }
+
+    public String getSeqValue(String seqName) {
+        throw new UnsupportedOperationException("不支持序列");
+    }
 
 }

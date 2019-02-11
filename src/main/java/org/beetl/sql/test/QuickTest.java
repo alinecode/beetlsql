@@ -19,7 +19,7 @@ import org.beetl.sql.ext.DebugInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * 
+ *
  * @author xiandafu
  *
  */
@@ -47,17 +47,21 @@ public class QuickTest {
         // sql.genPojoCodeToConsole("user", "com.test");
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
-        User user = dao.unique(8);
-        user.setName("99999");
-        dao.updateById(user);
+        User user = new User();
+        user.setName("abcd");
+        dao.insertTemplate(user,true);
+
+//        User user = dao.unique(8);
+//        user.setName("99999");
+//        dao.updateById(user);
         System.out.println(user.getId());
 //        List<User> users = dao.all();
 //        System.out.println(users.get(0).getDepartment().getName());
-        
+
 //        List<User> list =  sql.all(User.class);
 //        System.out.println(list.get(0).getName());
 
-        
+
     }
 
     public static User unique(SQLManager sql, Object key) {

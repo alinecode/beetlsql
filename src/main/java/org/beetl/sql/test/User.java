@@ -15,10 +15,11 @@ import org.beetl.sql.core.orm.OrmQuery;
 //   @OrmCondition(target = Department.class, attr="departmentId", targetAttr = "id", type=OrmQuery.Type.ONE)
 //})
 public class User {
-	private Integer id ;
-	private String name ;
-	@UpdateTime
-	private Date createDate;
+    private Integer id ;
+    private String name ;
+
+    @UpdateTime
+    private Date createTime;
 
     public Integer getId() {
         return id;
@@ -36,11 +37,11 @@ public class User {
         this.name = name;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
