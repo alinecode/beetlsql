@@ -43,7 +43,7 @@ public class ClassDesc {
 	int initVersionValue = -1;
 	String logicDeleteAttrName =null;
 	int logicDeleteAttrValue = 0;
-	List<AttributeHanlderHolder>  handlers = new ArrayList<AttributeHanlderHolder>();
+	CaseInsensitiveHashMap<String,AttributeHanlderHolder>  colHandlers = new CaseInsensitiveHashMap<String,AttributeHanlderHolder>();
 	
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		this.targetClass = c ;
@@ -109,6 +109,12 @@ public class ClassDesc {
 				if( java.util.Date.class.isAssignableFrom(retType)	
 						|| java.util.Calendar.class.isAssignableFrom(retType)){
 					dateTypes.add(p.getName());
+				}
+
+				AttributeHanlderHolder  holder = BeanKit.getAttributeHanlderHolder(c,p.getName(),p);
+				if(holder.getSqlAnnotation()!=null){
+					//判断是否有对字段特殊处理
+					colHandlers.put(col,holder);
 				}
 
 
@@ -234,5 +240,9 @@ public class ClassDesc {
 
 	public int getInitVersionValue() {
 		return initVersionValue;
+	}
+
+	public CaseInsensitiveHashMap<String, AttributeHanlderHolder> getColHandlers() {
+		return colHandlers;
 	}
 }

@@ -14,12 +14,9 @@ import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SQLTableSource;
-import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.annotatoin.AutoID;
-import org.beetl.sql.core.annotatoin.DateTemplate;
-import org.beetl.sql.core.annotatoin.SeqID;
-import org.beetl.sql.core.annotatoin.TableTemplate;
+import org.beetl.sql.core.annotatoin.*;
 import org.beetl.sql.core.engine.Beetl;
+import org.beetl.sql.core.handler.*;
 import org.beetl.sql.core.kit.BeanKit;
 
 /**
@@ -230,6 +227,22 @@ public abstract class AbstractDBStyle implements DBStyle {
             		sql.append(this.getKeyWordHandler().getCol(col)).append("=")
             		.append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
             		continue ;
+            }
+
+            AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(col);
+            if(handler!=null&&handler.containSqlHandler(HandlerType.UPDATE)){
+                SQLHandler sqlHandler = handler.getSqlHanlder();
+                GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,prop,col,handler.getSqlAnnotation(),table);
+                if(genValue instanceof RawGenValue){
+                     //一个普通值，比如 col='1999-1-1'
+                     sql.append(this.getKeyWordHandler().getCol(col)).append( "=" ).append(genValue.get()).append(",");
+                }else{
+                    //BeetlScript,比如 col=${json(xxxx)}
+                    sql.append(this.getKeyWordHandler().getCol(col)).append( "=" ).append(HOLDER_START).append(genValue.get()).append(HOLDER_END).append(",");
+
+                }
+
+                continue;
             }
            
 

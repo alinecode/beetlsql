@@ -244,15 +244,17 @@ public class BeanKit {
             ans =  f.getDeclaredAnnotations();
             checkAttributeHanlderHolder(holder,ans);
         } catch (NoSuchFieldException e) {
-            return holder;
+            //忽略
         }
+        return holder;
 
     }
 
     private static void checkAttributeHanlderHolder(AttributeHanlderHolder holder,Annotation[] ans){
         for(Annotation an:ans){
-            Handler handler =  an.getClass().getAnnotation(Handler.class);
-           if(handler==null){
+//            Handler handler =  an.getClass().getAnnotation(Handler.class);
+            Handler handler  =an.annotationType().getAnnotation(Handler.class);
+            if(handler==null){
                continue;
            }
 
@@ -262,7 +264,7 @@ public class BeanKit {
                     throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR ,"已经定了SQLHandler"+holder.getSqlHanlder().getClass()+"，同一个属性不能有多个,不能定义 "+clz);
                 }
                 SQLHandler sqlHandler = (SQLHandler)newInstance(clz);
-                holder.setSqlAnnotation(handler);
+                holder.setSqlAnnotation(an);
                 holder.setSqlHanlder(sqlHandler);
             }
 

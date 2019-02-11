@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 public @interface Handler {
     public Class value() ;
     public int[] accept() default {HandlerType.UPDATE,HandlerType.INSERT};
+
 }
 
 
