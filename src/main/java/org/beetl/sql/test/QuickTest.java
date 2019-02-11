@@ -6,13 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.beetl.sql.core.ClasspathLoader;
-import org.beetl.sql.core.ConnectionSource;
-import org.beetl.sql.core.ConnectionSourceHelper;
-import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.SQLLoader;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.UnderlinedNameConversion;
+import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -39,25 +33,38 @@ public class QuickTest {
         // PostgresStyle style = new PostgresStyle();
         ConnectionSource cs = ConnectionSourceHelper.getSingle(datasource());
 
-        SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+        SQLLoader loader = new ClasspathLoader("/sql");
         DebugInterceptor debug = new DebugInterceptor();
 
         Interceptor[] inters = new Interceptor[] { debug };
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
         // sql.genPojoCodeToConsole("user", "com.test");
-        sql.addVirtualTable("user_1","user");
-        UserDao dao = sql.getMapper(UserDao.class);
-        User user = dao.unique(8);
-        user.setName("99999");
-        dao.updateById(user);
-        System.out.println(user.getId());
+        sql.executeUpdate("update user set create_date=#date()# where id = 9",new HashMap());
 //        List<User> users = dao.all();
 //        System.out.println(users.get(0).getDepartment().getName());
         
 //        List<User> list =  sql.all(User.class);
 //        System.out.println(list.get(0).getName());
 
-        
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(true){
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    sql.refresh();
+//                }
+//
+//            }
+//        }).start();
+//        while(true){
+//            sql.select("user.selectAll",User.class, Params.ins().add("id",1).map());
+//
+//        }
+
     }
 
     public static User unique(SQLManager sql, Object key) {

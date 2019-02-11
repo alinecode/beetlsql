@@ -62,8 +62,7 @@ import org.beetl.sql.ext.gen.SourceGen;
  */
 public class SQLManager {
 
-    // 每个sqlManager都有一个标示，可以通过标识来找到对应的sqlManager，用于序列化和反序列化
-    private static Map<String, SQLManager> sqlManagerMap = new HashMap<String, SQLManager>();
+
     Interceptor[] inters = {};
     Beetl beetl = null;
     MapperBuilder mapperBuilder = new DefaultMapperBuilder(this);
@@ -82,6 +81,11 @@ public class SQLManager {
     private String defaultSchema = null;
     private MapperConfig mapperConfig = new MapperConfig();
     private String sqlMananagerName = null;
+    //指示sqlManager 处理刷新状态，导致的数据问题可以等待sqlManager重新变为一
+    private int refreshStatus = 0;
+    // 每个sqlManager都有一个标示，可以通过标识来找到对应的sqlManager，用于序列化和反序列化
+    private static Map<String, SQLManager> sqlManagerMap = new HashMap<String, SQLManager>();
+
 
 
     private ClassLoader entityLoader = null;
@@ -172,6 +176,7 @@ public class SQLManager {
         this.dbStyle = dbStyle;
         this.sqlLoader = sqlLoader;
         this.sqlLoader.setDbStyle(dbStyle);
+        this.sqlLoader.setSQLManager(this);
         this.ds = ds;
         this.nc = nc;
         this.inters = inters;
@@ -2141,9 +2146,16 @@ public class SQLManager {
      * 清空缓存，用于动态增加修改表情况下可以
      */
     public void refresh() {
+        refreshStatus = -1;
+        //清空metadata，清空resource，清空模板缓存
         this.metaDataManager.refresh();
         this.sqlLoader.refresh();
         this.beetl.getGroupTemplate().getProgramCache().clearAll();
+        refreshStatus = 0;
+    }
+
+    public boolean isRefreshReady(){
+        return this.refreshStatus == 0;
     }
 
     public ClassLoader getEntityLoader() {

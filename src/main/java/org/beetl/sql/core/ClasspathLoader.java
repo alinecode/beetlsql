@@ -50,7 +50,10 @@ public class ClasspathLoader implements SQLLoader {
 	protected SQLSource NO_EXIST = new SQLSource();
 	
 	protected ClassLoader classLoader = null;
-	
+
+
+	protected SQLManager sqlManager = null;
+
 	public  ClasspathLoader() {
 		this("/sql");
 	}
@@ -354,9 +357,18 @@ public class ClasspathLoader implements SQLLoader {
 	public void setDbStyle(DBStyle dbStyle){
 		this.dbs = dbStyle;
 	}
-	
-	
-	
+
+	@Override
+	public void setSQLManager(SQLManager sqlManager) {
+		this.sqlManager = sqlManager;
+	}
+
+	@Override
+	public SQLManager getSQLManager() {
+		return this.sqlManager;
+	}
+
+
 	public ClassLoader getClassLoader() {
         return classLoader;
     }
@@ -389,7 +401,8 @@ public class ClasspathLoader implements SQLLoader {
 		
 		sqlSourceMap = new ConcurrentHashMap<String, SQLSource>();
 	}
-	
+
+
 	
 }
 

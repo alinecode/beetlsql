@@ -55,6 +55,10 @@ public interface SQLLoader {
 	 * @param dbStyle
 	 */
 	public void setDbStyle(DBStyle dbStyle);
+
+	public void setSQLManager(SQLManager sqlManager);
+
+	public SQLManager getSQLManager();
 	
 	public void refresh();
 	
