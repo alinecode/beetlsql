@@ -240,7 +240,7 @@ public class BeanKit {
         Annotation[] ans = m.getAnnotations();
         checkAttributeHanlderHolder(holder,ans);
         try {
-            Field f = c.getDeclaredField(property);
+            Field f =c.getField(property);
             ans =  f.getDeclaredAnnotations();
             checkAttributeHanlderHolder(holder,ans);
         } catch (NoSuchFieldException e) {
