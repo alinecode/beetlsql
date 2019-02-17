@@ -14,6 +14,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.handler.JsonHandler;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -44,13 +45,21 @@ public class QuickTest {
 
         Interceptor[] inters = new Interceptor[] { debug };
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
+        //预先注册一个，否则没有办法使用@Jackson注解
+        sql.getBeetl().getGroupTemplate().registerFunction("jackson", JsonHandler.json);
         // sql.genPojoCodeToConsole("user", "com.test");
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
-        User user = new User();
-        user.setName("abcd");
-        dao.insertTemplate(user,true);
+//        User user = new User();
+//        user.setName("abcd");
+//        Role role = new Role();
+//        role.setId(1);
+//        role.setName("whatever");
+//        user.setRole(role);
+//        dao.insert(user,true);
 
+        User user = dao.unique(22);
+        System.out.println(user.getRole().getName());
 //        User user = dao.unique(8);
 //        user.setName("99999");
 //        dao.updateById(user);

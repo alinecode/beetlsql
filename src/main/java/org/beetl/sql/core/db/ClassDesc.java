@@ -31,35 +31,33 @@ public class ClassDesc {
 	TableDesc  table;
 	NameConversion nc;
 	Set<String> propertys = new CaseInsensitiveOrderSet<String>();
-	Set<String> dateTypes =  new CaseInsensitiveOrderSet<String>();
+	//记录table和pojo的交集
 	Set<String> cols =  new CaseInsensitiveOrderSet<String>();
 	List<String> idProperties =  new ArrayList<String>(3);
 	List<String> idCols =  new ArrayList<String>(3);
-	Map<String,ColumnIgnoreStatus> attrIgnores = new HashMap<String,ColumnIgnoreStatus>();
 	Map<String,Object> idMethods = new CaseInsensitiveHashMap<String,Object>();
-	String ormQuery = null;
-	String versionProperty;
-	String versionCol;
-	int initVersionValue = -1;
-	String logicDeleteAttrName =null;
-	int logicDeleteAttrValue = 0;
-	CaseInsensitiveHashMap<String,AttributeHanlderHolder>  colHandlers = new CaseInsensitiveHashMap<String,AttributeHanlderHolder>();
+
+	Set<String> dateTypes =  new CaseInsensitiveOrderSet<String>();
+
+//	String versionProperty;
+//	String versionCol;
+//	int initVersionValue = -1;
+//	String logicDeleteAttrName =null;
+//	int logicDeleteAttrValue = 0;
+//	CaseInsensitiveHashMap<String,AttributeHanlderHolder>  colHandlers = new CaseInsensitiveHashMap<String,AttributeHanlderHolder>();
+
+	ClassAnnotation ca = null;
 	
 	public ClassDesc(Class c,TableDesc table,NameConversion nc){
 		this.targetClass = c ;
-		PropertyDescriptor[] ps;
-		try {
-			ps = BeanKit.propertyDescriptors(c);
-		} catch (IntrospectionException e) {
-			throw new RuntimeException(e);
-		}
+		ca = ClassAnnotation.getClassAnnotation(c);
+		PropertyDescriptor[] ps =ca.getPropertyDescriptor();
+
 		Set<String> ids = table.getIdNames();
-//		idCols.addAll(ids);
 		CaseInsensitiveHashMap<String,PropertyDescriptor> tempMap = new CaseInsensitiveHashMap<String,PropertyDescriptor>();
-		
-		
+
 		for(PropertyDescriptor p:ps){
-			
+			//所有属性必须有getter和setter
 			if(p.getReadMethod()!=null&&BeanKit.getWriteMethod(p, c)!=null){
 				String property = p.getName();
                	String col = nc.getColName(c, property);
@@ -70,60 +68,25 @@ public class ClassDesc {
 		}
 		
 		
-		
+		//取交集
 		for(String col :table.getCols()){
 			if(tempMap.containsKey(col)){
 				cols.add(col);
 				PropertyDescriptor p = (PropertyDescriptor)tempMap.get(col);
 				propertys.add(p.getName());
-				Method readMethod =  p.getReadMethod();
-
-				//各种内置注解
-				ColumnIgnore sqlIgnore = BeanKit.getAnnoation(c, p.getName(), readMethod, ColumnIgnore.class);
-				if(sqlIgnore!=null){
-					attrIgnores.put(p.getName(), new ColumnIgnoreStatus(sqlIgnore));
-				}else{
-					//2.8.13 后新增
-					InsertIgnore ig = BeanKit.getAnnoation(c, p.getName(), readMethod, InsertIgnore.class);
-					UpdateIgnore ug = BeanKit.getAnnoation(c, p.getName(), readMethod, UpdateIgnore.class);
-					if(ig!=null||ug!=null){
-						attrIgnores.put(p.getName(), new ColumnIgnoreStatus(ig,ug));
-					}
-				}
-				
-				
-				
-				LogicDelete logicDelete =  BeanKit.getAnnoation(c, p.getName(), readMethod, LogicDelete.class);
-				if(logicDelete!=null) {
-				    this.logicDeleteAttrName = p.getName();
-				    this.logicDeleteAttrValue =logicDelete.value();
-				}
-				
-				Version version =  BeanKit.getAnnoation(c, p.getName(), readMethod, Version.class);
-				if(version!=null){
-					this.versionProperty = p.getName();
-					this.versionCol = col;
-					this.initVersionValue =version.value();
-				}
+				Method readMethod = p.getReadMethod();
 				Class retType = readMethod.getReturnType();
-				if( java.util.Date.class.isAssignableFrom(retType)	
+				if( java.util.Date.class.isAssignableFrom(retType)
 						|| java.util.Calendar.class.isAssignableFrom(retType)){
 					dateTypes.add(p.getName());
 				}
-
-				AttributeHanlderHolder  holder = BeanKit.getAttributeHanlderHolder(c,p.getName(),p);
-				if(holder.getSqlAnnotation()!=null){
-					//判断是否有对字段特殊处理
-					colHandlers.put(col,holder);
-				}
-
 
 				if(ids.contains(col)){
 					//保持同一个顺序
 					idProperties.add(p.getName());
 					idCols.add(col);
 					idMethods.put(p.getName(),readMethod);
-				
+
 				}
 				
 			}
@@ -142,7 +105,7 @@ public class ClassDesc {
 		this.nc = nc ;
 		for(String colName:table.getCols()){
 			String prop = nc.getPropertyName(colName);
-			this.propertys.add(prop);   
+			this.propertys.add(prop);
 			ColDesc  colDes = table.getColDesc(colName);
 			if(JavaType.isDateType(colDes.sqlType)){
 				dateTypes.add(prop);
@@ -155,6 +118,12 @@ public class ClassDesc {
 		
 		
 	}
+
+
+	public boolean isDateType(String property){
+		return dateTypes.contains(property);
+	}
+
 	public List<String> getIdAttrs(){
 		return this.idProperties;
 	}
@@ -167,9 +136,7 @@ public class ClassDesc {
 		return propertys;
 	}
 	
-	public boolean isDateType(String property){
-		return dateTypes.contains(property);
-	}
+
 	
 	public  Set<String>  getInCols(){
 		return this.cols;
@@ -179,7 +146,7 @@ public class ClassDesc {
 	}
 	
 	public boolean isInsertIgnore(String attrName){
-		ColumnIgnoreStatus ignore = attrIgnores.get(attrName);
+		ColumnIgnoreStatus ignore = ca.attrIgnores.get(attrName);
 		if(ignore==null){
 			return false;
 		}
@@ -187,7 +154,7 @@ public class ClassDesc {
 	}
 	
 	public boolean isUpdateIgnore(String attrName){
-		ColumnIgnoreStatus ignore = attrIgnores.get(attrName);
+		ColumnIgnoreStatus ignore =  ca.attrIgnores.get(attrName);
 		if(ignore==null){
 			return false;
 		}
@@ -195,13 +162,9 @@ public class ClassDesc {
 	}
 	
 	public String getVersionProperty(){
-		return this.versionProperty;
+		return ca.versionProperty;
 	}
 	
-	public String getVersionCol(){
-		return this.versionCol;
-	}
-
 
 	
 	static class ColumnIgnoreStatus{
@@ -226,23 +189,17 @@ public class ClassDesc {
 		this.targetClass = targetClass;
 	}
     public String getLogicDeleteAttrName() {
-        return logicDeleteAttrName;
-    }
-    public void setLogicDeleteAttrName(String logicDeleteAttrName) {
-        this.logicDeleteAttrName = logicDeleteAttrName;
+        return ca.logicDeleteAttrName;
     }
     public int getLogicDeleteAttrValue() {
-        return logicDeleteAttrValue;
-    }
-    public void setLogicDeleteAttrValue(int logicDeleteAttrValue) {
-        this.logicDeleteAttrValue = logicDeleteAttrValue;
+        return ca.logicDeleteAttrValue;
     }
 
 	public int getInitVersionValue() {
-		return initVersionValue;
+		return ca.initVersionValue;
 	}
 
 	public CaseInsensitiveHashMap<String, AttributeHanlderHolder> getColHandlers() {
-		return colHandlers;
+		return ca.colHandlers;
 	}
 }

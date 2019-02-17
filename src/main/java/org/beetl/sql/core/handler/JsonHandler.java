@@ -21,8 +21,8 @@ import java.sql.SQLException;
  * 一个示例，序列化,
  */
 public class JsonHandler extends BeanHandler {
-    static  ObjectMapper mapper = new ObjectMapper();
-    static Jackson json = new Jackson();
+    public static  ObjectMapper mapper = new ObjectMapper();
+    public static Jackson json = new Jackson();
 
     @Override
     public Object  toObject(SQLManager sqlManager,Annotation an, String sqlId,TypeParameter typeParameter, PropertyDescriptor property) throws SQLException{
@@ -45,7 +45,7 @@ public class JsonHandler extends BeanHandler {
 
     @Override
     public String  toSql(AbstractDBStyle dbStyle, String fieldName, String colName, Annotation an, TableDesc tableDesc){
-        return this.wrapScript(dbStyle,"json("+fieldName+")");
+        return this.wrapScript(dbStyle,"jackson("+fieldName+")");
     }
 
 

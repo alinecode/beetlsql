@@ -183,7 +183,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         if(classDesc.getLogicDeleteAttrName()==null) {
             return new SQLTableSource(new StringBuilder("delete from ").append(getTableName(table)).append(condition).toString());
         }else {
-            String col = this.nameConversion.getColName(cls, classDesc.logicDeleteAttrName);
+            String col = this.nameConversion.getColName(cls, classDesc.getLogicDeleteAttrName());
             return new SQLTableSource(new StringBuilder("update  ")
                     .append(getTableName(table)).append(" set ")
                     .append(col).append(" = ").append(classDesc.getLogicDeleteAttrValue()).append(condition).toString());
@@ -221,7 +221,8 @@ public abstract class  AbstractDBStyle implements DBStyle {
                 //主键不更新
                 continue;
             }
-            if(col.equals(classDesc.getVersionCol())){
+
+            if(prop.equals(classDesc.getVersionProperty())){
                 //版本字段
                 sql.append(this.getKeyWordHandler().getCol(col)).append("=")
                         .append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
@@ -261,7 +262,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
                 //主键不更新
                 continue;
             }
-            if(col.equals(classDesc.getVersionCol())){
+            if(prop.equals(classDesc.getVersionProperty())){
                 //版本字段
                 sql.append(this.getKeyWordHandler().getCol(col)).append("=")
                         .append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
@@ -276,11 +277,11 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
     private String appendVersion(String condition,ClassDesc desc){
-        String col = desc.getVersionCol();
-        if(col==null){
+        String property = desc.getVersionProperty();
+        if(property==null){
             return condition;
         }
-        String property = desc.getVersionProperty();
+        String col = this.nameConversion.getColName(desc.targetClass,property);
         condition = condition+" and "+this.getKeyWordHandler().getCol(col)+" = "
                 +HOLDER_START+property+HOLDER_END;
         return condition;
@@ -307,7 +308,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
             if (idCols.contains(col)) {
                 continue;
             }
-            if(col.equals(classDesc.getVersionCol())){
+            if(prop.equals(classDesc.getVersionProperty())){
                 //版本字段
                 sql.append(this.getKeyWordHandler().getCol(col)).append("=")
                         .append(this.getKeyWordHandler().getCol(col)).append("+1").append(",");
@@ -416,7 +417,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
                 }
             }
 
-            if(col.equals(classDesc.getVersionCol())&&classDesc.getInitVersionValue()!=-1){
+            if(attr.equals(classDesc.getVersionProperty())&&classDesc.getInitVersionValue()!=-1){
                 //版本字段
                 colSql.append(appendInsertColumn(cls, table, col));
                 valSql.append(classDesc.getInitVersionValue()).append(",");
@@ -624,7 +625,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
      */
     protected String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
             BeanHandler beanHandler = handler.getInstance();
             return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
@@ -644,7 +645,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendSetColumn(Class<?> c, TableDesc table, String colName, String fieldName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
             // 注解忽略模板相关功能
             BeanHandler beanHandler = handler.getInstance();
@@ -704,10 +705,10 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName,String colName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
             BeanHandler beanHandler = handler.getInstance();
-            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
+            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+",";
 
         }
 
@@ -728,7 +729,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendInsertTemplateColumn(Class<?> c, TableDesc table,String fieldName, String colName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
          if(handler!=null&&handler.supportPersistGen()){
             BeanHandler beanHandler = handler.getInstance();
             //有注解情况下，忽略template功能
@@ -756,7 +757,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName,String colName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
+        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
             BeanHandler beanHandler = handler.getInstance();
             return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);

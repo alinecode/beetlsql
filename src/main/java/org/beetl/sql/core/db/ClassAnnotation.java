@@ -27,7 +27,7 @@ public class ClassAnnotation {
     String versionProperty;
     int initVersionValue = -1;
 
-    HashMap<String,AttributeHanlderHolder> colHandlers = new HashMap<String,AttributeHanlderHolder>();
+    CaseInsensitiveHashMap<String,AttributeHanlderHolder> colHandlers = new CaseInsensitiveHashMap<String,AttributeHanlderHolder>();
 
     public static ClassAnnotation getClassAnnotation(Class entity){
         ClassAnnotation ca = cache.get(entity);
@@ -97,7 +97,31 @@ public class ClassAnnotation {
         return null;
     }
 
-    public HashMap<String, AttributeHanlderHolder> getColHandlers() {
+    public CaseInsensitiveHashMap<String, AttributeHanlderHolder> getColHandlers() {
         return colHandlers;
+    }
+
+    public Class getEntity() {
+        return entity;
+    }
+
+    public Map<String, ClassDesc.ColumnIgnoreStatus> getAttrIgnores() {
+        return attrIgnores;
+    }
+
+    public String getLogicDeleteAttrName() {
+        return logicDeleteAttrName;
+    }
+
+    public int getLogicDeleteAttrValue() {
+        return logicDeleteAttrValue;
+    }
+
+    public String getVersionProperty() {
+        return versionProperty;
+    }
+
+    public int getInitVersionValue() {
+        return initVersionValue;
     }
 }

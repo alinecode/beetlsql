@@ -3,10 +3,7 @@ package org.beetl.sql.test;
 import java.util.Date;
 import java.util.List;
 
-import org.beetl.sql.core.annotatoin.LogicDelete;
-import org.beetl.sql.core.annotatoin.Table;
-import org.beetl.sql.core.annotatoin.UpdateTime;
-import org.beetl.sql.core.annotatoin.Version;
+import org.beetl.sql.core.annotatoin.*;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
@@ -20,6 +17,9 @@ public class User {
 
     @UpdateTime
     private Date createTime;
+
+    @Jackson
+    private Role role;
 
     public Integer getId() {
         return id;
@@ -43,5 +43,13 @@ public class User {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

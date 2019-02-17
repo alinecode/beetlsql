@@ -318,10 +318,11 @@ public class BeanProcessor {
 			ClassAnnotation ca = ClassAnnotation.getClassAnnotation(type);
 			Object value = null;
 			if(!ca.getColHandlers().isEmpty()){
-				AttributeHanlderHolder holder = ca.getColHandlers().get(prop.getName());
+				AttributeHanlderHolder holder = (AttributeHanlderHolder)ca.getColHandlers().get(prop.getName());
 				if(holder!=null&&holder.supportSelectMapping()){
 					value = holder.getInstance().toObject(this.sm,holder.getBeanAnnotaton(),sqlId,tp,prop);
 					this.callSetter(bean, prop, value,propType);
+					continue;
 				}
 
 			}

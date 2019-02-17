@@ -241,7 +241,7 @@ public class BeanKit {
             return holder;
         }
         try {
-            Field f =c.getField(property);
+            Field f =c.getDeclaredField(property);
             ans =  f.getDeclaredAnnotations();
             holder =  checkAttributeHanlderHolder(ans);
         } catch (NoSuchFieldException e) {
