@@ -1,39 +1,56 @@
 package org.beetl.sql.core.handler;
 
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.annotatoin.Handler;
+import org.beetl.sql.core.kit.BeanKit;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AttributeHanlderHolder {
-    Annotation sqlAnnotation;
-    SQLHandler sqlHanlder;
 
+    Annotation beanAnnotaton;
+    Handler handlerAnotation;
+    BeanHandler instance;
 
-    public Annotation getSqlAnnotation() {
-        return sqlAnnotation;
-    }
-
-    public void setSqlAnnotation(Annotation sqlAnnotation) {
-        this.sqlAnnotation = sqlAnnotation;
-    }
-
-    public SQLHandler getSqlHanlder() {
-        return sqlHanlder;
-    }
-
-    public void setSqlHanlder(SQLHandler sqlHanlder) {
-        this.sqlHanlder = sqlHanlder;
-    }
-
-    public boolean containSqlHandler(int type){
-//        Handler handlerDefine = sqlAnnotation.getClass().an.getAnnotation(Handler.class);
-        Handler handlerDefine  =sqlAnnotation.annotationType().getAnnotation(Handler.class);
-        int[] accept = handlerDefine.accept();
-        for(int t:accept){
-            if(t==type){
-                return true;
-            }
+    Map<Class, BeanHandler> propertyHandlerMap = new ConcurrentHashMap<Class, BeanHandler>();
+    public synchronized  BeanHandler newInstance(Class propertyHandlerClz){
+        if(propertyHandlerMap.containsKey(propertyHandlerClz)){
+            return  propertyHandlerMap.get(propertyHandlerClz);
         }
-        return false;
+
+        BeanHandler propertyHanlder =  (BeanHandler) BeanKit.newInstance(propertyHandlerClz);
+
+        propertyHandlerMap.put(propertyHandlerClz,propertyHanlder);
+        return propertyHanlder;
+    }
+
+
+
+    public AttributeHanlderHolder(Annotation beanAnnotaton, Handler handlerAnotation) {
+        this.beanAnnotaton = beanAnnotaton;
+        this.handlerAnotation = handlerAnotation;
+        this.instance =newInstance(handlerAnotation.value());
+    }
+
+    public Annotation getBeanAnnotaton() {
+        return beanAnnotaton;
+    }
+
+    public Handler getHandlerAnotation() {
+        return handlerAnotation;
+    }
+
+    public BeanHandler getInstance() {
+        return instance;
+    }
+
+    public boolean supportPersistGen(){
+        return this.handlerAnotation.persist();
+    }
+
+    public boolean supportSelectMapping(){
+        return this.handlerAnotation.select();
     }
 }

@@ -25,8 +25,10 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.db.ClassAnnotation;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.SQLParameter;
+import org.beetl.sql.core.handler.AttributeHanlderHolder;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.EnumKit;
@@ -313,11 +315,23 @@ public class BeanProcessor {
 			PropertyDescriptor prop = props[columnToProperty[i]];
 			Class<?> propType = prop.getPropertyType();
 			tp.setTarget(propType);
+			ClassAnnotation ca = ClassAnnotation.getClassAnnotation(type);
+			Object value = null;
+			if(!ca.getColHandlers().isEmpty()){
+				AttributeHanlderHolder holder = ca.getColHandlers().get(prop.getName());
+				if(holder!=null&&holder.supportSelectMapping()){
+					value = holder.getInstance().toObject(this.sm,holder.getBeanAnnotaton(),sqlId,tp,prop);
+					this.callSetter(bean, prop, value,propType);
+				}
+
+			}
 			JavaSqlTypeHandler handler = this.handlers.get(propType);
 			if(handler==null){
 				handler = this.defaultHandler;
 			}
-			Object value = handler.getValue(tp);
+			value = handler.getValue(tp);
+
+
 			this.callSetter(bean, prop, value,propType);
 		}
 
@@ -348,7 +362,7 @@ public class BeanProcessor {
 	 * @param value
 	 * @throws SQLException
 	 */
-	protected void callSetter(Object target, PropertyDescriptor prop, Object value,Class<?> type) throws SQLException {
+	public  void callSetter(Object target, PropertyDescriptor prop, Object value,Class<?> type) throws SQLException {
 
 		Method setter = BeanKit.getWriteMethod(prop, target.getClass());
 		if (setter == null) return;
@@ -506,7 +520,7 @@ public class BeanProcessor {
 		this.defaultHandler = defaultHandler;
 	}
 
-	
-
-
+	public Map<Class, JavaSqlTypeHandler> getHandlers() {
+		return handlers;
+	}
 }

@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD,ElementType.FIELD})
-@Handler(value = UpdateTimePreHandler.class,accept = {HandlerType.UPDATE,HandlerType.INSERT})
+@Handler(value = UpdateTimePreHandler.class,persist=true,select=false)
 public @interface UpdateTime {
 
 }

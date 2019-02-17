@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
@@ -37,6 +38,7 @@ import org.beetl.sql.core.db.MetadataManager;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.handler.BeanHandler;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.ConstantEnum;
@@ -85,8 +87,6 @@ public class SQLManager {
     private int refreshStatus = 0;
     // 每个sqlManager都有一个标示，可以通过标识来找到对应的sqlManager，用于序列化和反序列化
     private static Map<String, SQLManager> sqlManagerMap = new HashMap<String, SQLManager>();
-
-
 
     private ClassLoader entityLoader = null;
 
@@ -2182,6 +2182,7 @@ public class SQLManager {
     public void addVirtualTable(String realTable,String virtualTable){
         this.metaDataManager.addTableVirtuals(realTable,virtualTable);
     }
+
 
 
 }

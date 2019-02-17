@@ -1,8 +1,9 @@
 package org.beetl.sql.core.handler;
 
 public class HandlerType {
-    public static final  int INSERT =1 ;
-    public static final int  UPDATE = 3;
-    public static final int  SELECT =4;
+    //内置的更新或者插入
+    public static final  int SET =1 ;
+    //读取
+    public static final int  GET = 2;
 
 }

@@ -26,7 +26,6 @@ import org.beetl.sql.core.kit.BeanKit;
  */
 public abstract class  AbstractDBStyle implements DBStyle {
 
-    protected static AbstractDBStyle adbs;
     protected NameConversion nameConversion;
     protected MetadataManager metadataManager;
     public String STATEMENT_START;// 定界符开始符号
@@ -626,17 +625,9 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
-        if(handler!=null&&handler.containSqlHandler(HandlerType.UPDATE)){
-            SQLHandler sqlHandler = handler.getSqlHanlder();
-            GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,fieldName,colName,handler.getSqlAnnotation(),table);
-            if(genValue instanceof RawGenValue){
-                //一个普通值，比如 col='1999-1-1'colName
-                return this.getKeyWordHandler().getCol(colName)+ "=" +genValue.get()+",";
-            }else{
-                //BeetlScript,比如 col=${json(xxxx)}
-                return this.getKeyWordHandler().getCol(colName)+ "=" +HOLDER_START+genValue.get()+HOLDER_END+",";
-
-            }
+        if(handler!=null&&handler.supportPersistGen()){
+            BeanHandler beanHandler = handler.getInstance();
+            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
         return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + fieldName + HOLDER_END + ",";
@@ -654,11 +645,12 @@ public abstract class  AbstractDBStyle implements DBStyle {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
-        if(handler!=null&&handler.containSqlHandler(HandlerType.UPDATE)){
+        if(handler!=null&&handler.supportPersistGen()){
             // 注解忽略模板相关功能
-            return appendUpdateSqlHandler(handler,c,table,classDesc,colName,fieldName)+",";
-        }
+            BeanHandler beanHandler = handler.getInstance();
+            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
+        }
 
         return STATEMENT_START + "if(!isEmpty(" + fieldName + ")){"
                 + STATEMENT_END + "\t" + this.getKeyWordHandler().getCol(colName) + "=" + HOLDER_START  + fieldName + HOLDER_END + ","
@@ -667,31 +659,9 @@ public abstract class  AbstractDBStyle implements DBStyle {
 
     }
 
-    protected String appendUpdateSqlHandler(AttributeHanlderHolder handler,Class<?> c, TableDesc table, ClassDesc classDesc,String colName, String fieldName){
-        SQLHandler sqlHandler = handler.getSqlHanlder();
-        GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,fieldName,colName,handler.getSqlAnnotation(),table);
-        if(genValue instanceof RawGenValue){
-            //一个普通值，比如 col='1999-1-1'colName
-            return this.getKeyWordHandler().getCol(colName)+ "=" +genValue.get()+",";
-        }else{
-            //BeetlScript,比如 col=${json(xxxx)}
-            return this.getKeyWordHandler().getCol(colName)+ "=" +HOLDER_START+genValue.get()+HOLDER_END+",";
 
-        }
-    }
 
-    protected String appendInsertSqlHandler(AttributeHanlderHolder handler,Class<?> c, TableDesc table, ClassDesc classDesc,String colName, String fieldName){
-        SQLHandler sqlHandler = handler.getSqlHanlder();
-        GenValue genValue= sqlHandler.genValue(this.metadataManager.sm,fieldName,colName,handler.getSqlAnnotation(),table);
-        if(genValue instanceof RawGenValue){
-            //一个普通值，比如 col='1999-1-1'colName
-            return genValue.get()+",";
-        }else{
-            //BeetlScript,比如 ${json(xxxx)}
-            return HOLDER_START+genValue.get()+HOLDER_END+",";
 
-        }
-    }
 
     /*****
      * 生成一个追加在where子句的后面sql(示例：and name=${name} )
@@ -735,9 +705,10 @@ public abstract class  AbstractDBStyle implements DBStyle {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
-        if(handler!=null&&handler.containSqlHandler(HandlerType.INSERT)){
+        if(handler!=null&&handler.supportPersistGen()){
+            BeanHandler beanHandler = handler.getInstance();
+            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
-            return appendInsertSqlHandler(handler,c,table,classDesc,colName,fieldName);
         }
 
 
@@ -758,9 +729,11 @@ public abstract class  AbstractDBStyle implements DBStyle {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
-        if(handler!=null&&handler.containSqlHandler(HandlerType.INSERT)){
+         if(handler!=null&&handler.supportPersistGen()){
+            BeanHandler beanHandler = handler.getInstance();
             //有注解情况下，忽略template功能
-            return this.getKeyWordHandler().getCol(colName);
+            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
+
         }
 
         String col = this.getKeyWordHandler().getCol(colName);
@@ -784,9 +757,10 @@ public abstract class  AbstractDBStyle implements DBStyle {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(colName);
-        if(handler!=null&&handler.containSqlHandler(HandlerType.INSERT)){
+        if(handler!=null&&handler.supportPersistGen()){
+            BeanHandler beanHandler = handler.getInstance();
+            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
-            return appendInsertSqlHandler(handler,c,table,classDesc,colName,fieldName);
         }
         return HOLDER_START + "db.testNull("+fieldName+"!,\""+fieldName+"\")" + HOLDER_END ;
 

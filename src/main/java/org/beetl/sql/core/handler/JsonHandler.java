@@ -1,8 +1,12 @@
 package org.beetl.sql.core.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.beetl.core.Context;
+import org.beetl.core.Function;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.mapping.type.TypeParameter;
@@ -14,25 +18,52 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * 一个示例，序列化
+ * 一个示例，序列化,
  */
-public class JsonHandler implements SQLHandler,BeanHandler {
-    static ObjectMapper mapper = new ObjectMapper();
+public class JsonHandler extends BeanHandler {
+    static  ObjectMapper mapper = new ObjectMapper();
+    static Jackson json = new Jackson();
 
     @Override
-    public Object  toObject(Annotation an, TypeParameter typeParameter, PropertyDescriptor property) throws SQLException {
-        String str = typeParameter.getRs().getString(typeParameter.getIndex());
-        Class c = property.getReadMethod().getReturnType();
+    public Object  toObject(SQLManager sqlManager,Annotation an, String sqlId,TypeParameter typeParameter, PropertyDescriptor property) throws SQLException{
+        if(typeParameter.getRs().wasNull()){
+            return null;
+        }
+        String data = typeParameter.getRs().getString(typeParameter.getIndex());
         try {
-            return mapper.readValue(str,c);
+            Object o = mapper.readValue(data,typeParameter.getTarget());
+            return o;
+
         } catch (IOException e) {
-            throw new SQLException("无法反序列化 "+str,e);
+            throw new SQLException("beetlsql 无法转化为json:"+data,e);
         }
 
     }
 
+
+
+
     @Override
-    public GenValue genValue(SQLManager sqlManager, String filedName, String colName, Annotation an, TableDesc tableDesc) {
-        return new BeetlScriptGenValue("json("+filedName+")");
+    public String  toSql(AbstractDBStyle dbStyle, String fieldName, String colName, Annotation an, TableDesc tableDesc){
+        return this.wrapScript(dbStyle,"json("+fieldName+")");
     }
+
+
+    static  class Jackson implements Function{
+        @Override
+        public String call(Object[] paras, Context ctx) {
+            Object o = paras[0];
+            if(paras==null){
+                return null;
+            }
+            try {
+                return mapper.writeValueAsString(o);
+            } catch (JsonProcessingException e) {
+                throw new IllegalArgumentException("序列化失败 "+o,e);
+            }
+        }
+    }
+
+
+
 }

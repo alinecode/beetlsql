@@ -76,7 +76,7 @@ public class ClassAnnotation {
             }
 
             AttributeHanlderHolder holder = BeanKit.getAttributeHanlderHolder(entity,p.getName(),p);
-            if(holder.getSqlAnnotation()!=null){
+            if(holder!=null){
                 //判断是否有对字段特殊处理
                 colHandlers.put(p.getName(),holder);
             }
@@ -95,5 +95,9 @@ public class ClassAnnotation {
 
     public InsertIgnore getInsertIgnore(String property){
         return null;
+    }
+
+    public HashMap<String, AttributeHanlderHolder> getColHandlers() {
+        return colHandlers;
     }
 }

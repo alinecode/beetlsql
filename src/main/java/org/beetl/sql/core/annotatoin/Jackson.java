@@ -1,9 +1,7 @@
 package org.beetl.sql.core.annotatoin;
 
-import com.fasterxml.jackson.databind.JavaType;
 import org.beetl.sql.core.handler.HandlerType;
 import org.beetl.sql.core.handler.JsonHandler;
-import org.beetl.sql.core.handler.UpdateTimePreHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,9 +13,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD,ElementType.FIELD})
-@Handler(value = JsonHandler.class,accept = {HandlerType.UPDATE,HandlerType.INSERT,HandlerType.SELECT})
+@Handler(value = JsonHandler.class)
 public @interface Jackson {
-
 
 }
 

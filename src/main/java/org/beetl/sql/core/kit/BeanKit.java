@@ -7,8 +7,6 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.annotatoin.Handler;
 import org.beetl.sql.core.annotatoin.Tail;
 import org.beetl.sql.core.handler.AttributeHanlderHolder;
-import org.beetl.sql.core.handler.SQLHandler;
-import org.beetl.sql.core.query.LambdaQuery;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -17,7 +15,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +36,7 @@ public class BeanKit {
 	public static boolean  queryLambdasSupport = JavaType.isJdk8();
 
     private static final Map<Class, Method> tailBeans = new ConcurrentHashMap<Class, Method>();
+
     private static Method NULL = null;
 
     static {
@@ -236,13 +234,16 @@ public class BeanKit {
 
     public static AttributeHanlderHolder getAttributeHanlderHolder(Class c,String property,PropertyDescriptor p){
         Method m = p.getReadMethod();
-        AttributeHanlderHolder holder = new AttributeHanlderHolder();
+
         Annotation[] ans = m.getAnnotations();
-        checkAttributeHanlderHolder(holder,ans);
+        AttributeHanlderHolder holder = checkAttributeHanlderHolder(ans);
+        if(holder!=null){
+            return holder;
+        }
         try {
             Field f =c.getField(property);
             ans =  f.getDeclaredAnnotations();
-            checkAttributeHanlderHolder(holder,ans);
+            holder =  checkAttributeHanlderHolder(ans);
         } catch (NoSuchFieldException e) {
             //忽略
         }
@@ -250,25 +251,19 @@ public class BeanKit {
 
     }
 
-    private static void checkAttributeHanlderHolder(AttributeHanlderHolder holder,Annotation[] ans){
+    private static AttributeHanlderHolder checkAttributeHanlderHolder(Annotation[] ans){
         for(Annotation an:ans){
-//            Handler handler =  an.getClass().getAnnotation(Handler.class);
             Handler handler  =an.annotationType().getAnnotation(Handler.class);
             if(handler==null){
                continue;
-           }
-
-            Class clz = handler.value();
-            if(SQLHandler.class.isAssignableFrom(clz)){
-                if(holder.getSqlHanlder()!=null){
-                    throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR ,"已经定了SQLHandler"+holder.getSqlHanlder().getClass()+"，同一个属性不能有多个,不能定义 "+clz);
-                }
-                SQLHandler sqlHandler = (SQLHandler)newInstance(clz);
-                holder.setSqlAnnotation(an);
-                holder.setSqlHanlder(sqlHandler);
             }
 
+            Class clz = handler.value();
+            AttributeHanlderHolder holder = new AttributeHanlderHolder(an,handler);
+            return holder;
+
         }
+        return null;
 
     }
 
