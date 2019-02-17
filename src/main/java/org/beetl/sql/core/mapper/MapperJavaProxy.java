@@ -137,7 +137,7 @@ public class MapperJavaProxy implements InvocationHandler {
         	return "BeetlSql Mapper "+mapperInterface;
         }
 //        SqlResource resource  =  method.getDeclaringClass().getAnnotation(SqlResource.class);
-        SqlResource resource = (SqlResource)this.mapperInterface.getAnnotation(SqlResource.class);
+        SqlResource resource = getSqlResourece(method);
         String sqlId = null;
         if(resource!=null){
         		String preffix = resource.value();
@@ -171,6 +171,29 @@ public class MapperJavaProxy implements InvocationHandler {
         }
 
 
+    }
+    
+    /**
+     * 先从方法上找SqlResource，如果没有，找方法所属类（比如，可能是父类），如果没有，找basemapper定义的
+     * @param method
+     * @return
+     */
+    protected SqlResource getSqlResourece(Method method) {
+    	SqlResource sqlResource = method.getAnnotation(SqlResource.class);
+    	if(sqlResource!=null) {
+    		return sqlResource;
+    	}
+    	
+    	 sqlResource = method.getDeclaringClass().getAnnotation(SqlResource.class);
+    	 if(sqlResource!=null) {
+    		  return sqlResource;
+    	  }
+    	 
+    	  sqlResource = (SqlResource)this.mapperInterface.getAnnotation(SqlResource.class);
+    	  if(sqlResource!=null) {
+    		  return sqlResource;
+    	  }
+    	  return null; 
     }
     
     public String toString(){

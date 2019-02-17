@@ -19,6 +19,10 @@ public class MDCodeGen {
 		return mapperTemplate;
 	}
 
+	/**
+	 * 提供一个模板，否则使用默认的"/org/beetl/sql/ext/gen/md.btl"
+	 * @param mapperTemplate
+	 */
 	public void setMapperTemplate(String mapperTemplate) {
 		this.mapperTemplate = mapperTemplate;
 	}

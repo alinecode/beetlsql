@@ -166,7 +166,7 @@ public class SourceGen {
 		Template template = gt.getTemplate(config.getTemplate());
 		template.binding("attrs", attrs);
 		template.binding("className", className);
-		template.binding("table",table);
+		template.binding("table",trimCategory(table));
 		template.binding("ext", ext);
 		template.binding("package", pkg);
 		template.binding("imports", srcHead);
@@ -189,6 +189,14 @@ public class SourceGen {
 		
 	
 		
+	}
+	
+	private String trimCategory(String table) {
+		int index = -1;
+		if((index=table.indexOf("."))==-1) {
+			return table;
+		}
+		return table.substring(index+1);
 	}
 	
 	public static  void saveSourceFile(String srcPath,String pkg,String className,String content) throws IOException{

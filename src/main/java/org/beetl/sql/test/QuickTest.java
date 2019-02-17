@@ -1,9 +1,5 @@
 package org.beetl.sql.test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.beetl.sql.core.ClasspathLoader;
@@ -16,6 +12,8 @@ import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.handler.JsonHandler;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.gen.GenConfig;
+import org.beetl.sql.ext.gen.MapperCodeGen;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -50,6 +48,10 @@ public class QuickTest {
         // sql.genPojoCodeToConsole("user", "com.test");
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
+        MapperCodeGen mapper = new MapperCodeGen("com.dao");
+        GenConfig config = new GenConfig();
+        config.codeGens.add(mapper);
+        sql.genPojoCodeToConsole("user",config);
 //        User user = new User();
 //        user.setName("abcd");
 //        Role role = new Role();
@@ -58,12 +60,12 @@ public class QuickTest {
 //        user.setRole(role);
 //        dao.insert(user,true);
 
-        User user = dao.unique(22);
-        System.out.println(user.getRole().getName());
+//        User user = dao.unique(22);
+//        System.out.println(user.getRole().getName());
 //        User user = dao.unique(8);
 //        user.setName("99999");
 //        dao.updateById(user);
-        System.out.println(user.getId());
+//        System.out.println(user.getId());
 //        List<User> users = dao.all();
 //        System.out.println(users.get(0).getDepartment().getName());
 

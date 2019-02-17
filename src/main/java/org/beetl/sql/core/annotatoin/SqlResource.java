@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target(value={ElementType.METHOD,ElementType.TYPE})
 public @interface SqlResource {
 	public String value();
 }
