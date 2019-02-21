@@ -1,14 +1,20 @@
 package org.beetl.sql.core.db;
 
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.annotatoin.*;
-import org.beetl.sql.core.handler.AttributeHanlderHolder;
+import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
+import org.beetl.sql.core.annotatoin.builder.BaseObjectBuilder;
+import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,8 +33,10 @@ public class ClassAnnotation {
     String versionProperty;
     int initVersionValue = -1;
 
-    CaseInsensitiveHashMap<String,AttributeHanlderHolder> colHandlers = new CaseInsensitiveHashMap<String,AttributeHanlderHolder>();
-
+    //属性对应的处理类
+    CaseInsensitiveHashMap<String, AttributeBuilderHolder> colHandlers = new CaseInsensitiveHashMap<String, AttributeBuilderHolder>();
+    //类对应的处理类，可以多个
+    List<ObjectBuilderHolder> list = new ArrayList<ObjectBuilderHolder>();
     public static ClassAnnotation getClassAnnotation(Class entity){
         ClassAnnotation ca = cache.get(entity);
         if(ca!=null){
@@ -46,6 +54,30 @@ public class ClassAnnotation {
     }
 
     protected void init(){
+        typeCheck();
+        propertyCheck();
+
+    }
+
+    protected void typeCheck(){
+        Annotation[] ans = this.entity.getAnnotations();
+        List<ObjectBuilderHolder> list = new ArrayList<ObjectBuilderHolder>();
+        for(Annotation an:ans){
+            Builder builder = an.annotationType().getAnnotation(Builder.class);
+            if(builder==null){
+                continue;
+            }
+            Class clz = builder.value();
+            Object obj = BeanKit.newInstance(clz);
+            if(!(obj instanceof BaseObjectBuilder)){
+                throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,entity+" 的注解 "+an+"  的value值必须是 BaseObjectBuilder子类");
+            }
+            ObjectBuilderHolder holder = new ObjectBuilderHolder(an,builder);
+            list.add(holder);
+        }
+    }
+
+    protected  void propertyCheck(){
         PropertyDescriptor[] ps = this.getPropertyDescriptor();
         for(PropertyDescriptor p:ps){
             Method readMethod =  p.getReadMethod();
@@ -75,7 +107,7 @@ public class ClassAnnotation {
                 this.initVersionValue =version.value();
             }
 
-            AttributeHanlderHolder holder = BeanKit.getAttributeHanlderHolder(entity,p.getName(),p);
+            AttributeBuilderHolder holder = BeanKit.getAttributeHanlderHolder(entity,p.getName(),p);
             if(holder!=null){
                 //判断是否有对字段特殊处理
                 colHandlers.put(p.getName(),holder);
@@ -97,7 +129,7 @@ public class ClassAnnotation {
         return null;
     }
 
-    public CaseInsensitiveHashMap<String, AttributeHanlderHolder> getColHandlers() {
+    public CaseInsensitiveHashMap<String, AttributeBuilderHolder> getColHandlers() {
         return colHandlers;
     }
 
@@ -123,5 +155,9 @@ public class ClassAnnotation {
 
     public int getInitVersionValue() {
         return initVersionValue;
+    }
+
+    public List<ObjectBuilderHolder> getList() {
+        return list;
     }
 }

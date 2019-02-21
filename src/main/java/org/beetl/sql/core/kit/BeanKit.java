@@ -4,9 +4,9 @@ import org.beetl.core.om.MethodInvoker;
 import org.beetl.core.om.ObjectUtil;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.JavaType;
-import org.beetl.sql.core.annotatoin.Handler;
+import org.beetl.sql.core.annotatoin.Builder;
 import org.beetl.sql.core.annotatoin.Tail;
-import org.beetl.sql.core.handler.AttributeHanlderHolder;
+import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -232,11 +232,11 @@ public class BeanKit {
     }
 
 
-    public static AttributeHanlderHolder getAttributeHanlderHolder(Class c,String property,PropertyDescriptor p){
+    public static AttributeBuilderHolder getAttributeHanlderHolder(Class c, String property, PropertyDescriptor p){
         Method m = p.getReadMethod();
 
         Annotation[] ans = m.getAnnotations();
-        AttributeHanlderHolder holder = checkAttributeHanlderHolder(ans);
+        AttributeBuilderHolder holder = checkAttributeHanlderHolder(ans);
         if(holder!=null){
             return holder;
         }
@@ -251,15 +251,15 @@ public class BeanKit {
 
     }
 
-    private static AttributeHanlderHolder checkAttributeHanlderHolder(Annotation[] ans){
+    private static AttributeBuilderHolder checkAttributeHanlderHolder(Annotation[] ans){
         for(Annotation an:ans){
-            Handler handler  =an.annotationType().getAnnotation(Handler.class);
-            if(handler==null){
+            Builder builder =an.annotationType().getAnnotation(Builder.class);
+            if(builder ==null){
                continue;
             }
 
-            Class clz = handler.value();
-            AttributeHanlderHolder holder = new AttributeHanlderHolder(an,handler);
+            Class clz = builder.value();
+            AttributeBuilderHolder holder = new AttributeBuilderHolder(an, builder);
             return holder;
 
         }

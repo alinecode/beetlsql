@@ -1,7 +1,5 @@
 package org.beetl.sql.core.annotatoin;
 
-import org.beetl.sql.core.handler.HandlerType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.ANNOTATION_TYPE})
-public @interface Handler {
+public @interface Builder {
     public Class value() ;
     public boolean persist() default true;
     public boolean select() default true;

@@ -1,4 +1,4 @@
-package org.beetl.sql.core.handler;
+package org.beetl.sql.core.annotatoin.builder;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
@@ -9,14 +9,13 @@ import org.beetl.sql.core.mapping.type.TypeParameter;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
 /**
- * 实现特殊的转化,BeanHandler 子类应该提供一个空的构造函数，以及实现toObject或者toSql
+ * 实现特殊的转化,BaseAttributeBuilder 子类应该提供一个空的构造函数，以及实现toObject或者toSql
  */
-public class BeanHandler {
+public class BaseAttributeBuilder {
 
 
     /**

@@ -1,26 +1,23 @@
-package org.beetl.sql.core.handler;
+package org.beetl.sql.core.annotatoin.builder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.TableDesc;
-import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.mapping.type.TypeParameter;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
  * 一个示例，序列化,
  */
-public class JsonHandler extends BeanHandler {
+public class JsonAtrributeBuilder extends BaseAttributeBuilder {
     public static  ObjectMapper mapper = new ObjectMapper();
     public static Jackson json = new Jackson();
 

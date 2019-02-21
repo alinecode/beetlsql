@@ -28,9 +28,8 @@ import org.beetl.sql.core.Tail;
 import org.beetl.sql.core.db.ClassAnnotation;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.SQLParameter;
-import org.beetl.sql.core.handler.AttributeHanlderHolder;
+import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
 import org.beetl.sql.core.kit.BeanKit;
-import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.type.BigDecimalTypeHandler;
 import org.beetl.sql.core.mapping.type.BlobJavaSqlTypeHandler;
@@ -318,7 +317,7 @@ public class BeanProcessor {
 			ClassAnnotation ca = ClassAnnotation.getClassAnnotation(type);
 			Object value = null;
 			if(!ca.getColHandlers().isEmpty()){
-				AttributeHanlderHolder holder = (AttributeHanlderHolder)ca.getColHandlers().get(prop.getName());
+				AttributeBuilderHolder holder = (AttributeBuilderHolder)ca.getColHandlers().get(prop.getName());
 				if(holder!=null&&holder.supportSelectMapping()){
 					value = holder.getInstance().toObject(this.sm,holder.getBeanAnnotaton(),sqlId,tp,prop);
 					this.callSetter(bean, prop, value,propType);

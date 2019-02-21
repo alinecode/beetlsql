@@ -16,7 +16,7 @@ import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SQLTableSource;
 import org.beetl.sql.core.annotatoin.*;
 import org.beetl.sql.core.engine.Beetl;
-import org.beetl.sql.core.handler.*;
+import org.beetl.sql.core.annotatoin.builder.*;
 import org.beetl.sql.core.kit.BeanKit;
 
 /**
@@ -625,10 +625,10 @@ public abstract class  AbstractDBStyle implements DBStyle {
      */
     protected String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
+        AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
-            BeanHandler beanHandler = handler.getInstance();
-            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
+            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
         return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + fieldName + HOLDER_END + ",";
@@ -645,11 +645,11 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendSetColumn(Class<?> c, TableDesc table, String colName, String fieldName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
+        AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
             // 注解忽略模板相关功能
-            BeanHandler beanHandler = handler.getInstance();
-            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
+            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
 
@@ -705,10 +705,10 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName,String colName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
+        AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
-            BeanHandler beanHandler = handler.getInstance();
-            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+",";
+            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+",";
 
         }
 
@@ -729,11 +729,11 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendInsertTemplateColumn(Class<?> c, TableDesc table,String fieldName, String colName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
+        AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
          if(handler!=null&&handler.supportPersistGen()){
-            BeanHandler beanHandler = handler.getInstance();
+            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
             //有注解情况下，忽略template功能
-            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
+            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
 
@@ -757,10 +757,10 @@ public abstract class  AbstractDBStyle implements DBStyle {
     protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName,String colName) {
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
-        AttributeHanlderHolder handler = (AttributeHanlderHolder)classDesc.getColHandlers().get(fieldName);
+        AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
-            BeanHandler beanHandler = handler.getInstance();
-            return beanHandler.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
+            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
         return HOLDER_START + "db.testNull("+fieldName+"!,\""+fieldName+"\")" + HOLDER_END ;

@@ -1,10 +1,8 @@
 package org.beetl.sql.core.db;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,10 +11,8 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.annotatoin.ColumnIgnore;
 import org.beetl.sql.core.annotatoin.InsertIgnore;
-import org.beetl.sql.core.annotatoin.LogicDelete;
 import org.beetl.sql.core.annotatoin.UpdateIgnore;
-import org.beetl.sql.core.annotatoin.Version;
-import org.beetl.sql.core.handler.AttributeHanlderHolder;
+import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -44,7 +40,7 @@ public class ClassDesc {
 //	int initVersionValue = -1;
 //	String logicDeleteAttrName =null;
 //	int logicDeleteAttrValue = 0;
-//	CaseInsensitiveHashMap<String,AttributeHanlderHolder>  colHandlers = new CaseInsensitiveHashMap<String,AttributeHanlderHolder>();
+//	CaseInsensitiveHashMap<String,AttributeBuilderHolder>  colHandlers = new CaseInsensitiveHashMap<String,AttributeBuilderHolder>();
 
 	ClassAnnotation ca = null;
 	
@@ -199,7 +195,7 @@ public class ClassDesc {
 		return ca.initVersionValue;
 	}
 
-	public CaseInsensitiveHashMap<String, AttributeHanlderHolder> getColHandlers() {
+	public CaseInsensitiveHashMap<String, AttributeBuilderHolder> getColHandlers() {
 		return ca.colHandlers;
 	}
 }

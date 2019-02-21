@@ -1,6 +1,6 @@
-package org.beetl.sql.core.handler;
+package org.beetl.sql.core.annotatoin.builder;
 
-public class HandlerType {
+public class BuilderType {
     //内置的更新或者插入
     public static final  int SET =1 ;
     //读取

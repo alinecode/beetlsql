@@ -159,6 +159,7 @@ public class MappingEntity implements java.io.Serializable {
 				//外部参数，非映射参数
 				paras.putAll(sqlParas);
 			}
+
 			String cacheKey = key.toString();
 			if(cache.containsKey(cacheKey)){
 				ret = cache.get(cacheKey);

@@ -1,5 +1,8 @@
 package org.beetl.sql.core.orm;
 
+import org.beetl.sql.core.annotatoin.Builder;
+import org.beetl.sql.core.annotatoin.builder.UpdateTimeBuilder;
+
 import static java.lang.annotation.ElementType.TYPE;
 
 import java.lang.annotation.Retention;
@@ -38,6 +41,7 @@ value={
  */
 @Target({TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
+@Builder(value = UpdateTimeBuilder.class,persist=false,select=true)
 public @interface OrmQuery {
 	public static enum Type {
 
