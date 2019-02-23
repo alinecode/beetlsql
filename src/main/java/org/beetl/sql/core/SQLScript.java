@@ -109,7 +109,8 @@ public class SQLScript {
         SQLResult result = new SQLResult();
         result.jdbcSql = jdbcSql;
         result.jdbcPara = jdbcPara;
-        result.mapingEntrys = (List<MappingEntity>) t.getCtx().getGlobal("_mapping");
+        //sql 脚本执行后回掉
+        result.setListener((List<SQLResultListener>)t.getCtx().getGlobal("_listener"));
         return result;
     }
 
@@ -711,8 +712,9 @@ public class SQLScript {
                     model = mapper.mapRow(model, rs, 1);
                 }
                 //orm
-                if (model != null && result.mapingEntrys != null) {
-                    for (MappingEntity mapConf : result.mapingEntrys) {
+                if (model != null && result.getListener()!=null) {
+                    for (SQLResultListener listener : result.getListener()) {
+                        listener.dataSelectd(Arrays.asList(model),paras,this.sm,this.id,this.sql);
                         mapConf.singleMap(model, sm);
                     }
                 }

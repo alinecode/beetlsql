@@ -33,7 +33,7 @@ public class ClassAnnotation {
     String versionProperty;
     int initVersionValue = -1;
 
-    //属性对应的处理类
+    //属性对应的处理类,TODO优化，设置为null，否则jdk6有一定损耗
     CaseInsensitiveHashMap<String, AttributeBuilderHolder> colHandlers = new CaseInsensitiveHashMap<String, AttributeBuilderHolder>();
     //类对应的处理类，可以多个
     List<ObjectBuilderHolder> list = new ArrayList<ObjectBuilderHolder>();
