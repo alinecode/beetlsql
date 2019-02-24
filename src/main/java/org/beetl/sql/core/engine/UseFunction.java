@@ -8,6 +8,8 @@ import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLResult;
+import org.beetl.sql.core.orm.MappingEntity;
+import org.beetl.sql.core.orm.MappingFunctionHelper;
 /**
  * 用于全局#gloabUse("other.xxxx")#
  * @author xiandafu
@@ -28,19 +30,16 @@ public class UseFunction implements Function {
 		SQLManager sm = (SQLManager) ctx.getGlobal("_manager");
 		// 保留，免得被覆盖
 		List list = (List)ctx.getGlobal("_paras");
-		List mapping = (List)ctx.getGlobal("_mapping");
+		
 		String file = this.getParentId(ctx);
 		SQLResult result = sm.getSQLResult(file+"."+id, inputParas,(String)ctx.getGlobal("_id"));
 		list.addAll(result.jdbcPara);
 		ctx.set("_paras", list);
-		if(mapping!=null){
-			if(result.mapingEntrys!=null){
-				mapping.addAll(result.mapingEntrys);
-			}
-			
-		}else if(result.mapingEntrys!=null){
-			ctx.set("_mapping", result.mapingEntrys);
-		}
+		
+		//追加参数
+		list.addAll(result.jdbcPara);
+		ctx.set("_paras", list);
+		
 		try {
 			ctx.byteWriter.writeString( result.jdbcSql);
 		} catch (IOException e) {

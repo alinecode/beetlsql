@@ -21,6 +21,10 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.Builder;
+import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
+import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
+import org.beetl.sql.core.db.ClassAnnotation;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -33,10 +37,6 @@ import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
-import org.beetl.sql.core.orm.LazyMappingEntity;
-import org.beetl.sql.core.orm.MappingEntity;
-import org.beetl.sql.core.orm.OrmCondition;
-import org.beetl.sql.core.orm.OrmQuery;
 
 public class SQLScript {
 
@@ -119,64 +119,41 @@ public class SQLScript {
      *
      * @param target
      */
-    private void addOrmQuery(Class target, SQLResult result) {
-        if (target == null) {
-            return;
-        }
-
-        OrmQuery ormQuery = (OrmQuery) target.getAnnotation(OrmQuery.class);
-        if (ormQuery == null) {
-            return;
-        }
-
-        OrmCondition[] condtions = ormQuery.value();
-
-        Map<String, MappingEntity> map = new HashMap<String, MappingEntity>();
-
-        for (OrmCondition cond : condtions) {
-            MappingEntity mappingEntity = null;
-            //类配合的orm查询总是
-            if(cond.lazy()) {
-                mappingEntity = new LazyMappingEntity();
-            }else {
-                mappingEntity = new MappingEntity();
-            }
-            mappingEntity.setSingle(cond.type() == OrmQuery.Type.ONE);
-            mappingEntity.setTarget(cond.target().getName());
-            if (cond.alias().length() != 0) {
-                mappingEntity.setTailName(cond.alias());
-            }
-
-            mappingEntity.setSqlId(cond.sqlId().length() != 0 ? cond.sqlId() : null);
-            Map<String, String> mapKey = new HashMap<String, String>();
-            mapKey.put(cond.attr(), cond.targetAttr());
-            mappingEntity.setMapkey(mapKey);
-            map.put(mappingEntity.getTarget(), mappingEntity);
-
-
-        }
-
-        if (result.mapingEntrys != null) {
-            //需要合并，以sql模板为主,要求sql模板使用全类名，否则无法覆盖
-            for (MappingEntity entity : result.mapingEntrys) {
-                String mapTarget = entity.getTarget();
-                if (mapTarget.indexOf('.') == -1) {
-                    mapTarget = BeanKit.getPackageName(target).concat(".").concat(mapTarget);
-                    entity.setTarget(mapTarget);
-                }
-                if (map.keySet().contains(mapTarget)) {
-                    //以模板里的查询为准
-                    map.remove(mapTarget);
-                }
-            }
-            result.mapingEntrys.addAll(map.values());
-
-        } else {
-            result.mapingEntrys = new ArrayList<MappingEntity>(map.values());
-        }
-
+    protected void checkAnnotatonBeforeSelect(Class target,Map<String, Object> paras ) {
+       ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
+       if(an.getObjectBuilders().isEmpty()) {
+    	   return ;
+       }
+       for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
+    	   Object builder = holder.getInstance();
+    	   if(builder instanceof ObjectSelectBuilder ) {
+    		   ((ObjectSelectBuilder)builder).beforeSelect(target, sm, holder.getBeanAnnotaton(),paras);
+    	   }
+    	  
+    	 
+       }
 
     }
+    
+    protected List checkAnnotatonAfterSelect(Class target,List entitys,SQLResult sqlResult){
+    	 ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
+         if(an.getObjectBuilders().isEmpty()) {
+      	   return entitys;
+         }
+         List newList = entitys;
+         for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
+      	   Object builder = holder.getInstance();
+      	   if(builder instanceof ObjectSelectBuilder ) {
+      		 newList =  ((ObjectSelectBuilder)builder).afterSelect(target, newList,sm, holder.getBeanAnnotaton(),sqlResult);
+      	   }
+      	 
+         }
+         return newList;
+         
+        
+    }
+    
+    
 
     public int insert(Object paras) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -354,8 +331,10 @@ public class SQLScript {
     }
 
     public <T> List<T> select(Class<T> clazz, Map<String, Object> paras, RowMapper<T> mapper) {
-        SQLResult result = run(paras);
-        addOrmQuery(clazz, result);
+    	//
+        checkAnnotatonBeforeSelect(clazz, paras);
+    	//运行sql模板，获取实际的sql语句
+    	SQLResult result = run(paras);
         String sql = result.jdbcSql;
         List<SQLParameter> objs = result.jdbcPara;
         ResultSet rs = null;
@@ -388,16 +367,17 @@ public class SQLScript {
 
             }
             this.callInterceptorAsAfter(ctx, resultList);
-            if (mapper == null) {
-                //1.5.0 feature
-                if (result.mapingEntrys != null) {
-                    for (MappingEntity mapConf : result.mapingEntrys) {
-                        mapConf.map(resultList, sm,paras);
-                    }
+            //通过注解实现后处理
+            resultList = this.checkAnnotatonAfterSelect(clazz, resultList, result);
+            //sql 脚本里通过listener 实现最后处理
+            if (result.getListener() != null) {
+           	 	for (SQLResultListener listener : result.getListener()) {
+                    listener.dataSelectd(resultList,paras,this.sm,result);
                 }
-            }
-
-
+             
+           }
+           
+            
             return resultList;
         } catch (SQLException e) {
             this.callInterceptorAsException(ctx, e);
@@ -675,8 +655,8 @@ public class SQLScript {
         ClassDesc classDesc = table.getClassDesc(clazz, this.sm.getNc());
         Map<String, Object> paras = new HashMap<String, Object>();
         this.setIdsParas(classDesc, objId, paras);
+        checkAnnotatonBeforeSelect(clazz, paras);
         SQLResult result = run(paras);
-        addOrmQuery(clazz, result);
         String sql = result.jdbcSql;
         List<SQLParameter> objs = result.jdbcPara;
         ResultSet rs = null;
@@ -714,8 +694,8 @@ public class SQLScript {
                 //orm
                 if (model != null && result.getListener()!=null) {
                     for (SQLResultListener listener : result.getListener()) {
-                        listener.dataSelectd(Arrays.asList(model),paras,this.sm,this.id,this.sql);
-                        mapConf.singleMap(model, sm);
+                        listener.dataSelectd(Arrays.asList(model),paras,this.sm,result);
+                      
                     }
                 }
             } catch (BeetlSQLException ex) {

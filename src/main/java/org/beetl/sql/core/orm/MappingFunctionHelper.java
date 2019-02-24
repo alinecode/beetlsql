@@ -1,10 +1,12 @@
 package org.beetl.sql.core.orm;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.beetl.core.Context;
+import org.beetl.sql.core.SQLResultListener;
 /**
  * 记录映射关系
  *
@@ -15,11 +17,12 @@ public class MappingFunctionHelper  {
 
 	
 	
+	
 	protected void parse(boolean single,boolean lazy,Object[] paras,Context ctx){
-		if(ctx.getGlobal("_page")!=null){
-			//翻页查询
-			return ;
-		}
+//		if(ctx.getGlobal("_page")!=null){
+//			//翻页查询,为什么翻页查询不做映射？
+//			return ;
+//		}
 		Map<String,String> mapkey = (Map<String,String>)paras[0];
 		String className = null;
 		String sqlId = null;
@@ -37,7 +40,6 @@ public class MappingFunctionHelper  {
 			}
 			//TODO fitler&Order
 			len = len-1;
-			
 	
 		}
 		
@@ -51,20 +53,14 @@ public class MappingFunctionHelper  {
 			
 		}
 	
-		
-		
-	
-		List<MappingEntity> list =(List<MappingEntity>) ctx.getGlobal("_mapping");
-		if(list==null){
-			list = new LinkedList<MappingEntity>();
-		}
+			
 		MappingEntity mappingEntity = null;
 		if(lazy){
 			 mappingEntity = new LazyMappingEntity();
 		}else{
 			 mappingEntity = new MappingEntity();
 		}
-		
+			
 		mappingEntity.setSingle(single);
 		mappingEntity.setMapkey(mapkey);
 		mappingEntity.setTarget(className);
@@ -72,10 +68,35 @@ public class MappingFunctionHelper  {
 		mappingEntity.setTailName(tailName);
 		mappingEntity.setQueryParas(queryParas);
 		
-		list.add(mappingEntity);
-		ctx.globalVar.put("_mapping", list);
+		addMapping(ctx,mappingEntity);
 	}
 	
+//	public static final String MAPPING="_mapping";
+//	public static void  merge(List<MappingEntity> before,List<MappingEntity> after,Context ctx){
+//		if(before==null&&after==null) {
+//			return ;
+//		}else if(before==null) {
+//			ctx.set(MAPPING, after);
+//		}
+//		
+//	}
 	
+	public static void addMapping(Context ctx,MappingEntity mappingConfig) {
+		List<SQLResultListener> ls =  (List<SQLResultListener>)ctx.getGlobal("_listener");
+		if(ls==null) {
+			ls = new ArrayList<SQLResultListener> ();
+			ORMSQLResultListener orm = new ORMSQLResultListener();
+			orm.getMapingEntrys().add(mappingConfig);
+			ctx.set("_listener", ls);
+			return ;
+		}else {
+			for(SQLResultListener l:ls) {
+				if(l instanceof ORMSQLResultListener) {
+					((ORMSQLResultListener)l).getMapingEntrys().add(mappingConfig);
+					break;
+				}
+			}
+		}
+	}
 
 }

@@ -36,7 +36,7 @@ public class ClassAnnotation {
     //属性对应的处理类,TODO优化，设置为null，否则jdk6有一定损耗
     CaseInsensitiveHashMap<String, AttributeBuilderHolder> colHandlers = new CaseInsensitiveHashMap<String, AttributeBuilderHolder>();
     //类对应的处理类，可以多个
-    List<ObjectBuilderHolder> list = new ArrayList<ObjectBuilderHolder>();
+    List<ObjectBuilderHolder> objectBuilders = new ArrayList<ObjectBuilderHolder>();
     public static ClassAnnotation getClassAnnotation(Class entity){
         ClassAnnotation ca = cache.get(entity);
         if(ca!=null){
@@ -153,11 +153,13 @@ public class ClassAnnotation {
         return versionProperty;
     }
 
-    public int getInitVersionValue() {
-        return initVersionValue;
-    }
+	public List<ObjectBuilderHolder> getObjectBuilders() {
+		return objectBuilders;
+	}
 
-    public List<ObjectBuilderHolder> getList() {
-        return list;
-    }
+	public void setObjectBuilders(List<ObjectBuilderHolder> objectBuilders) {
+		this.objectBuilders = objectBuilders;
+	}
+
+   
 }

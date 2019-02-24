@@ -1,5 +1,6 @@
 package org.beetl.sql.core.annotatoin.builder;
 
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.annotatoin.Builder;
 import org.beetl.sql.core.kit.BeanKit;
 
@@ -10,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ObjectBuilderHolder {
     Annotation beanAnnotaton;
     Builder builderAnotation;
-    BaseObjectBuilder instance;
-    static Map<Class, BaseObjectBuilder> classHandlerMap = new ConcurrentHashMap<Class, BaseObjectBuilder>();
+    Object instance;
+    static Map<Class, Object> classHandlerMap = new ConcurrentHashMap<Class, Object>();
 
     public ObjectBuilderHolder(Annotation beanAnnotaton, Builder builderAnotation) {
         this.beanAnnotaton = beanAnnotaton;
@@ -19,14 +20,19 @@ public class ObjectBuilderHolder {
         this.instance =newInstance(builderAnotation.value());
     }
 
-    public  BaseObjectBuilder newInstance(Class objectHandlerClz){
+    public  Object newInstance(Class objectHandlerClz){
         if(classHandlerMap.containsKey(objectHandlerClz)){
             return  classHandlerMap.get(objectHandlerClz);
         }
 
-        BaseObjectBuilder objectHanlder =  (BaseObjectBuilder) BeanKit.newInstance(objectHandlerClz);
-        classHandlerMap.put(objectHandlerClz,objectHanlder);
-        return objectHanlder;
+        Object objectHanlder =  (Object) BeanKit.newInstance(objectHandlerClz);
+        if(objectHanlder instanceof ObjectPersistBuilder||objectHanlder instanceof  ObjectSelectBuilder) {
+        	 classHandlerMap.put(objectHandlerClz,objectHanlder);
+             return objectHanlder;
+        }else {
+        	throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,objectHandlerClz+" 需要实现ObjectPersistBuilder或者ObjectSelectBuilder接口");
+        }
+       
     }
 
     public Annotation getBeanAnnotaton() {
@@ -45,11 +51,11 @@ public class ObjectBuilderHolder {
         this.builderAnotation = builderAnotation;
     }
 
-    public BaseObjectBuilder getInstance() {
+    public Object getInstance() {
         return instance;
     }
 
-    public void setInstance(BaseObjectBuilder instance) {
+    public void setInstance(Object instance) {
         this.instance = instance;
     }
 }
