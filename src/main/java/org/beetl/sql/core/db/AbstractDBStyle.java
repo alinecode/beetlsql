@@ -627,7 +627,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
-            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+        	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
             return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
@@ -648,7 +648,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
             // 注解忽略模板相关功能
-            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+        	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
             return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
@@ -707,7 +707,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
-            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+        	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
             return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+",";
 
         }
@@ -731,7 +731,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
          if(handler!=null&&handler.supportPersistGen()){
-            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+        	 AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
             //有注解情况下，忽略template功能
             return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
@@ -759,7 +759,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
-            BaseAttributeBuilder baseAttributeBuilder = handler.getInstance();
+        	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
             return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }

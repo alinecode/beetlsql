@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * 实现特殊的转化,BaseAttributeBuilder 子类应该提供一个空的构造函数，以及实现toObject或者toSql
  */
-public class BaseAttributeBuilder {
+public class BaseAttributeBuilder implements AttributePersistBuilder,AttributeSelectBuilder {
 
 
     /**
@@ -27,6 +27,7 @@ public class BaseAttributeBuilder {
      * @return
      * @throws SQLException
      */
+	@Override
     public Object  toObject(SQLManager sqlManager,Annotation an, String sqlId,TypeParameter typeParameter, PropertyDescriptor property) throws SQLException{
         return getDefaultValue(sqlManager,sqlId,typeParameter,property);
     }
@@ -34,7 +35,7 @@ public class BaseAttributeBuilder {
 
 
 
-
+	@Override
     public String  toSql(AbstractDBStyle dbStyle,String fieldName, String colName, Annotation an, TableDesc tableDesc){
         return getDefaultToSql(dbStyle,fieldName);
     }
@@ -47,7 +48,7 @@ public class BaseAttributeBuilder {
      * @return
      * @throws SQLException
      */
-    protected  Object getDefaultValue(SQLManager sqlManager,String sqlId,TypeParameter typeParameter,PropertyDescriptor property) throws SQLException{
+    static protected  Object getDefaultValue(SQLManager sqlManager,String sqlId,TypeParameter typeParameter,PropertyDescriptor property) throws SQLException{
         BeanProcessor processor = getBeanProcessor(sqlManager,sqlId);
         Map<Class, JavaSqlTypeHandler> handlers =  processor.getHandlers();
         Class propType = property.getPropertyType();
@@ -59,7 +60,7 @@ public class BaseAttributeBuilder {
         return value;
     }
 
-    private BeanProcessor getBeanProcessor(SQLManager sqlManager,String sqlId) {
+    static public BeanProcessor getBeanProcessor(SQLManager sqlManager,String sqlId) {
         //这个代码与SQLScript代码重复
         BeanProcessor bp = sqlManager.getProcessors().get(sqlId);
         if (bp != null) {
@@ -77,12 +78,12 @@ public class BaseAttributeBuilder {
 
     }
 
-    protected String getDefaultToSql(AbstractDBStyle dbStyle,String fieldName){
+    static public String getDefaultToSql(AbstractDBStyle dbStyle,String fieldName){
         // #filedName#
         return wrapScript(dbStyle,fieldName);
     }
 
-    protected String wrapScript(AbstractDBStyle style,String sqlScript){
+    static public  String wrapScript(AbstractDBStyle style,String sqlScript){
         String start = style.HOLDER_START;
         String end = style.HOLDER_END;
         StringBuilder sb = new StringBuilder(sqlScript.length()+start.length()+end.length());

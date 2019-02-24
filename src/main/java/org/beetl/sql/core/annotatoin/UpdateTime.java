@@ -1,6 +1,6 @@
 package org.beetl.sql.core.annotatoin;
 
-import org.beetl.sql.core.annotatoin.builder.UpdateTimeBuilder;
+import org.beetl.sql.core.annotatoin.builder.SampleUpdateTimeBuilder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD,ElementType.FIELD})
-@Builder(value = UpdateTimeBuilder.class,persist=true,select=false)
+@Builder(value = SampleUpdateTimeBuilder.class,persist=true,select=false)
 public @interface UpdateTime {
 
 }

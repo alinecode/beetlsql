@@ -25,10 +25,11 @@ import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
+import org.beetl.sql.core.annotatoin.builder.AttributeSelectBuilder;
 import org.beetl.sql.core.db.ClassAnnotation;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.SQLParameter;
-import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.EnumKit;
 import org.beetl.sql.core.mapping.type.BigDecimalTypeHandler;
@@ -319,7 +320,7 @@ public class BeanProcessor {
 			if(!ca.getColHandlers().isEmpty()){
 				AttributeBuilderHolder holder = (AttributeBuilderHolder)ca.getColHandlers().get(prop.getName());
 				if(holder!=null&&holder.supportSelectMapping()){
-					value = holder.getInstance().toObject(this.sm,holder.getBeanAnnotaton(),sqlId,tp,prop);
+					value = ((AttributeSelectBuilder)holder.getInstance()).toObject(this.sm,holder.getBeanAnnotaton(),sqlId,tp,prop);
 					this.callSetter(bean, prop, value,propType);
 					continue;
 				}

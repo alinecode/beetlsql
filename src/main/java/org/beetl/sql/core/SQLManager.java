@@ -2180,6 +2180,7 @@ public class SQLManager {
         this.metaDataManager.addTableVirtuals(realTable,virtualTable);
     }
 
+    
 
 
 }

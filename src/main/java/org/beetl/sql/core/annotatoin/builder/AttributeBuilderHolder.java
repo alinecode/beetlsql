@@ -10,16 +10,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AttributeBuilderHolder {
 
     Annotation beanAnnotaton;
-    Builder builderAnotation;
-    BaseAttributeBuilder instance;
+    Object instance;
 
-    static  Map<Class, BaseAttributeBuilder> propertyHandlerMap = new ConcurrentHashMap<Class, BaseAttributeBuilder>();
-    public  BaseAttributeBuilder newInstance(Class propertyHandlerClz){
+    static  Map<Class, Object> propertyHandlerMap = new ConcurrentHashMap<Class, Object>();
+    public  Object newInstance(Class propertyHandlerClz){
         if(propertyHandlerMap.containsKey(propertyHandlerClz)){
             return  propertyHandlerMap.get(propertyHandlerClz);
         }
 
-        BaseAttributeBuilder propertyHanlder =  (BaseAttributeBuilder) BeanKit.newInstance(propertyHandlerClz);
+        Object propertyHanlder =  (BaseAttributeBuilder) BeanKit.newInstance(propertyHandlerClz);
 
         propertyHandlerMap.put(propertyHandlerClz,propertyHanlder);
         return propertyHanlder;
@@ -29,7 +28,6 @@ public class AttributeBuilderHolder {
 
     public AttributeBuilderHolder(Annotation beanAnnotaton, Builder builderAnotation) {
         this.beanAnnotaton = beanAnnotaton;
-        this.builderAnotation = builderAnotation;
         this.instance =newInstance(builderAnotation.value());
     }
 
@@ -37,19 +35,17 @@ public class AttributeBuilderHolder {
         return beanAnnotaton;
     }
 
-    public Builder getBuilderAnotation() {
-        return builderAnotation;
-    }
+   
 
-    public BaseAttributeBuilder getInstance() {
+    public Object getInstance() {
         return instance;
     }
 
     public boolean supportPersistGen(){
-        return this.builderAnotation.persist();
+        return this.instance instanceof AttributePersistBuilder;
     }
 
     public boolean supportSelectMapping(){
-        return this.builderAnotation.select();
+        return  this.instance instanceof AttributeSelectBuilder;
     }
 }

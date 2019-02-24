@@ -19,6 +19,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 public class SpringConnectionSource extends  DefaultConnectionSource{
 	
 	
+	
 	@Override
 	public Connection getConn(String sqlId,boolean isUpdate,String sql,List paras){
 		//只有一个数据源

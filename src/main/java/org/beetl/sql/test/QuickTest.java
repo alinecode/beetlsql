@@ -10,7 +10,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.annotatoin.builder.JsonAtrributeBuilder;
+import org.beetl.sql.core.annotatoin.builder.SampleJsonAtrributeBuilder;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.MapperCodeGen;
@@ -44,7 +44,7 @@ public class QuickTest {
         Interceptor[] inters = new Interceptor[] { debug };
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
         //预先注册一个，否则没有办法使用@Jackson注解
-        sql.getBeetl().getGroupTemplate().registerFunction("jackson", JsonAtrributeBuilder.json);
+        sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
         // sql.genPojoCodeToConsole("user", "com.test");
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);

@@ -27,13 +27,15 @@ public interface ConnectionSource {
 	public Connection getConn(String sqlId,boolean isUpdate,String sql,List<?> paras);
 	
 	/**
-	 * 强迫选择主从
+	 * 强迫选择主从，取消掉，没人用
 	 */
+	@Deprecated
 	public void forceBegin(boolean isMaster);
 	
 	/**
 	 * 强制选择主从结束，如果调用了forceBegin，则必须调用forceEnd
 	 */
+	@Deprecated
 	public void forceEnd();
 	
 	

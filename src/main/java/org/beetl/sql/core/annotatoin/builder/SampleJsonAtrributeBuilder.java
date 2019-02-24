@@ -15,9 +15,9 @@ import java.lang.annotation.Annotation;
 import java.sql.SQLException;
 
 /**
- * 一个示例，序列化,
+ * 一个示例，序列化,jackson(xxx),需要注册这个函数先
  */
-public class JsonAtrributeBuilder extends BaseAttributeBuilder {
+public class SampleJsonAtrributeBuilder extends BaseAttributeBuilder {
     public static  ObjectMapper mapper = new ObjectMapper();
     public static Jackson json = new Jackson();
 
