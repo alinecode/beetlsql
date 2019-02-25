@@ -1,13 +1,5 @@
 package org.beetl.sql.core.db;
 
-import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.annotatoin.*;
-import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
-import org.beetl.sql.core.annotatoin.builder.BaseObjectBuilder;
-import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
-import org.beetl.sql.core.kit.BeanKit;
-import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
@@ -17,6 +9,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.beetl.sql.core.BeetlSQLException;
+import org.beetl.sql.core.annotatoin.Builder;
+import org.beetl.sql.core.annotatoin.ColumnIgnore;
+import org.beetl.sql.core.annotatoin.InsertIgnore;
+import org.beetl.sql.core.annotatoin.LogicDelete;
+import org.beetl.sql.core.annotatoin.UpdateIgnore;
+import org.beetl.sql.core.annotatoin.Version;
+import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
+import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
+import org.beetl.sql.core.annotatoin.builder.ObjectPersistBuilder;
+import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
+import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
 
 /**
  * 记录了class及其属性的所有注解
@@ -69,12 +75,14 @@ public class ClassAnnotation {
             }
             Class clz = builder.value();
             Object obj = BeanKit.newInstance(clz);
-            if(!(obj instanceof BaseObjectBuilder)){
+            if(!(obj instanceof ObjectPersistBuilder || obj instanceof ObjectSelectBuilder )){
                 throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,entity+" 的注解 "+an+"  的value值必须是 BaseObjectBuilder子类");
             }
             ObjectBuilderHolder holder = new ObjectBuilderHolder(an,builder);
             list.add(holder);
+            
         }
+        objectBuilders.addAll(list);
     }
 
     protected  void propertyCheck(){

@@ -7,10 +7,10 @@ import org.beetl.sql.core.annotatoin.*;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
-//@Table(name="user")
-//@OrmQuery({
-//   @OrmCondition(target = Department.class, attr="departmentId", targetAttr = "id", type=OrmQuery.Type.ONE)
-//})
+@Table(name="user")
+@OrmQuery({
+   @OrmCondition(target = Department.class, attr="departmentId", targetAttr = "id", type=OrmQuery.Type.ONE)
+})
 public class User {
     private Integer id ;
     private String name ;
@@ -21,6 +21,8 @@ public class User {
     @Jackson
     private Role role;
 
+    Department department;
+    
     public Integer getId() {
         return id;
     }
@@ -52,4 +54,14 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+    
+    
 }

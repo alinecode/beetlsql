@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD,ElementType.FIELD})
-@Builder(value = SampleUpdateTimeBuilder.class,persist=true,select=false)
+@Builder(value = SampleUpdateTimeBuilder.class)
 public @interface UpdateTime {
 
 }

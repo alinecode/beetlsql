@@ -31,13 +31,5 @@ import org.beetl.sql.core.orm.MappingEntity;
 		}
 	}
 
-	private List<SQLResultListener> listener;
-
-	 public List<SQLResultListener> getListener() {
-		 return listener;
-	 }
-
-	 public void setListener(List<SQLResultListener> listener) {
-		 this.listener = listener;
-	 }
+	
  }

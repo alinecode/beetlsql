@@ -41,7 +41,7 @@ value={
  */
 @Target({TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
-@Builder(value = SampleUpdateTimeBuilder.class,persist=false,select=true)
+@Builder(value = ORMObjectBuilder.class)
 public @interface OrmQuery {
 	public static enum Type {
 

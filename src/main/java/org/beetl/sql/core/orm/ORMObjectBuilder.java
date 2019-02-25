@@ -6,13 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLResult;
 import org.beetl.sql.core.SQLResultListener;
-import org.beetl.sql.core.annotatoin.builder.BaseObjectBuilder;
+import org.beetl.sql.core.SQLScript;
 import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
-import org.beetl.sql.core.db.ClassAnnotation;
-import org.beetl.sql.core.kit.BeanKit;
 
 /**
  * 
@@ -23,21 +20,14 @@ public class ORMObjectBuilder implements ObjectSelectBuilder {
 
 
 	@Override
-	public void beforeSelect(Class target, SQLManager sqlManager, Annotation beanAnnotaton, Map<String, Object> paras) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<Object> afterSelect(Class target, List<Object> entitys, SQLManager sqlManager, Annotation beanAnnotaton,
-			SQLResult sqlResult) {
-		if (target == null) {
-            return entitys;
+	public void beforeSelect(Class target, SQLScript sqlScript, Annotation beanAnnotaton, Map<String, Object> paras) {
+		if (target == null||target==Map.class) {
+            return ;
         }
 
         OrmQuery ormQuery = (OrmQuery) target.getAnnotation(OrmQuery.class);
         if (ormQuery == null) {
-            return entitys;
+            return ;
         }
 
         OrmCondition[] condtions = ormQuery.value();
@@ -70,13 +60,21 @@ public class ORMObjectBuilder implements ObjectSelectBuilder {
         //增加到listener,统一后处理映射关系
         ORMSQLResultListener orm = new ORMSQLResultListener();
         orm.getMapingEntrys().addAll(map.values());
-        List<SQLResultListener>  sqlResultListeners  =sqlResult.getListener();
+        List<SQLResultListener>  sqlResultListeners  =sqlScript.getListener();
        
         if (sqlResultListeners == null) {
         	sqlResultListeners = new  ArrayList<SQLResultListener> ();
-
         } 
+        
         sqlResultListeners.add(orm);
-        return  entitys;
+        sqlScript.setListener(sqlResultListeners);
+		
+	}
+
+	@Override
+	public List<Object> afterSelect(Class target, List<Object> entitys,  SQLScript sqlScript, Annotation beanAnnotaton,
+			SQLResult sqlResult) {
+		return entitys;
+		
 	}
 }

@@ -6,26 +6,34 @@ import java.util.Map;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLResult;
+import org.beetl.sql.core.SQLScript;
 
 public class BaseObjectBuilder implements ObjectPersistBuilder,ObjectSelectBuilder {
 
-	@Override
-    public void beforePersist(Object entity,SQLManager sqlManager){
-
-    }
-	@Override
-    public void afterPersist(Object entity,SQLManager sqlManager){
-
-    }
-	
 	
 	@Override
-    public List<Object> afterSelect(Class target,List<Object> entitys,SQLManager sqlManager,Annotation beanAnnotaton,SQLResult sqlResult){
-        return entitys;
-    }
-	@Override
-	public void beforeSelect(Class target, SQLManager sqlManager, Annotation beanAnnotaton, Map<String, Object> paras) {
+	public void beforePersist(Object entity, SQLScript sqlScript) {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void afterPersist(Object entity, SQLScript sqlScript) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void beforeSelect(Class target, SQLScript sqlScript, Annotation beanAnnotaton, Map<String, Object> paras) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public List<Object> afterSelect(Class target, List<Object> entitys, SQLScript sqlScript, Annotation beanAnnotaton,
+			SQLResult sqlResult) {
+		// TODO Auto-generated method stub
+		return entitys;
+	}
+	
+	
+	
+
 }

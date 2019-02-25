@@ -12,10 +12,6 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.ANNOTATION_TYPE})
 public @interface Builder {
     public Class value() ;
-    public boolean persist() default true;
-    public boolean select() default true;
-
-
 }
 
 

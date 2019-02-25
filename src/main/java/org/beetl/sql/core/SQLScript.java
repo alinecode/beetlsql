@@ -45,6 +45,9 @@ public class SQLScript {
     final String sql;
     final SQLSource sqlSource;
     final String dbName;
+    private List<SQLResultListener> listener;
+
+	
 
 //	final QueryMapping queryMapping = QueryMapping.getInstance();
 
@@ -110,7 +113,15 @@ public class SQLScript {
         result.jdbcSql = jdbcSql;
         result.jdbcPara = jdbcPara;
         //sql 脚本执行后回掉
-        result.setListener((List<SQLResultListener>)t.getCtx().getGlobal("_listener"));
+        List<SQLResultListener> scriptListeners = (List<SQLResultListener>)t.getCtx().getGlobal("_listener");
+        if(scriptListeners==null) {
+        	return  result;
+        }
+        if(this.listener==null) {
+        	this.listener = scriptListeners;
+        	return result;
+        }
+        this.listener.addAll(scriptListeners);
         return result;
     }
 
@@ -119,7 +130,7 @@ public class SQLScript {
      *
      * @param target
      */
-    protected void checkAnnotatonBeforeSelect(Class target,Map<String, Object> paras ) {
+    protected void checkAnnotatonBeforeSelect(Class target,Map<String, Object> paras) {
        ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
        if(an.getObjectBuilders().isEmpty()) {
     	   return ;
@@ -127,7 +138,7 @@ public class SQLScript {
        for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
     	   Object builder = holder.getInstance();
     	   if(builder instanceof ObjectSelectBuilder ) {
-    		   ((ObjectSelectBuilder)builder).beforeSelect(target, sm, holder.getBeanAnnotaton(),paras);
+        		   ((ObjectSelectBuilder)builder).beforeSelect(target, this, holder.getBeanAnnotaton(),paras);
     	   }
     	  
     	 
@@ -144,7 +155,7 @@ public class SQLScript {
          for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
       	   Object builder = holder.getInstance();
       	   if(builder instanceof ObjectSelectBuilder ) {
-      		 newList =  ((ObjectSelectBuilder)builder).afterSelect(target, newList,sm, holder.getBeanAnnotaton(),sqlResult);
+      		 newList =  ((ObjectSelectBuilder)builder).afterSelect(target, newList,this, holder.getBeanAnnotaton(),sqlResult);
       	   }
       	 
          }
@@ -370,8 +381,8 @@ public class SQLScript {
             //通过注解实现后处理
             resultList = this.checkAnnotatonAfterSelect(clazz, resultList, result);
             //sql 脚本里通过listener 实现最后处理
-            if (result.getListener() != null) {
-           	 	for (SQLResultListener listener : result.getListener()) {
+            if (this.getListener() != null) {
+           	 	for (SQLResultListener listener : getListener()) {
                     listener.dataSelectd(resultList,paras,this.sm,result);
                 }
              
@@ -692,8 +703,8 @@ public class SQLScript {
                     model = mapper.mapRow(model, rs, 1);
                 }
                 //orm
-                if (model != null && result.getListener()!=null) {
-                    for (SQLResultListener listener : result.getListener()) {
+                if (model != null && this.getListener()!=null) {
+                    for (SQLResultListener listener : getListener()) {
                         listener.dataSelectd(Arrays.asList(model),paras,this.sm,result);
                       
                     }
@@ -972,6 +983,14 @@ public class SQLScript {
     public String getSql() {
         return sql;
     }
+    
+    public  List<SQLResultListener> getListener() {
+		 return listener;
+	 }
+
+    public void setListener(List<SQLResultListener> listener) {
+		 this.listener = listener;
+	 }
 
 
 }

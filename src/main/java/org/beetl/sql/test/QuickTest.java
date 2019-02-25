@@ -49,16 +49,18 @@ public class QuickTest {
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
 
-        User user = new User();
-        user.setName("abcd");
-        Role role = new Role();
-        role.setId(1);
-        role.setName("whatever");
-        user.setRole(role);
-        dao.insert(user,true);
+//        User user = new User();
+//        user.setName("abcd");
+//        Role role = new Role();
+//        role.setId(1);
+//        role.setName("whatever");
+//        user.setRole(role);
+//        dao.insert(user,true);
+//        System.out.println(user.getId());
+//        
 
-//        User user = dao.unique(22);
-//        System.out.println(user.getRole().getName());
+        User user = dao.unique(23);
+        System.out.println(user.getRole().getName());
 //        User user = dao.unique(8);
 //        user.setName("99999");
 //        dao.updateById(user);
