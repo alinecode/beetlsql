@@ -18,7 +18,7 @@ public class AttributeBuilderHolder {
             return  propertyHandlerMap.get(propertyHandlerClz);
         }
 
-        Object propertyHanlder =  (BaseAttributeBuilder) BeanKit.newInstance(propertyHandlerClz);
+        Object propertyHanlder =   BeanKit.newInstance(propertyHandlerClz);
 
         propertyHandlerMap.put(propertyHandlerClz,propertyHanlder);
         return propertyHanlder;

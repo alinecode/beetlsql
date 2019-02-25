@@ -48,17 +48,14 @@ public class QuickTest {
         // sql.genPojoCodeToConsole("user", "com.test");
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
-        MapperCodeGen mapper = new MapperCodeGen("com.dao");
-        GenConfig config = new GenConfig();
-        config.codeGens.add(mapper);
-        sql.genPojoCodeToConsole("user",config);
-//        User user = new User();
-//        user.setName("abcd");
-//        Role role = new Role();
-//        role.setId(1);
-//        role.setName("whatever");
-//        user.setRole(role);
-//        dao.insert(user,true);
+
+        User user = new User();
+        user.setName("abcd");
+        Role role = new Role();
+        role.setId(1);
+        role.setName("whatever");
+        user.setRole(role);
+        dao.insert(user,true);
 
 //        User user = dao.unique(22);
 //        System.out.println(user.getRole().getName());
