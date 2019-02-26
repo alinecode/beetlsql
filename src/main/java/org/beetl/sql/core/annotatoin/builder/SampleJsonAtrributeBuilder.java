@@ -27,6 +27,9 @@ public class SampleJsonAtrributeBuilder extends BaseAttributeBuilder {
             return null;
         }
         String data = typeParameter.getRs().getString(typeParameter.getIndex());
+        if(data==null){
+            return null;
+        }
         try {
             Object o = mapper.readValue(data,typeParameter.getTarget());
             return o;

@@ -14,6 +14,7 @@ import org.beetl.sql.core.orm.OrmQuery;
 public class User {
     private Integer id ;
     private String name ;
+    private Integer departmentId;
 
     @UpdateTime
     private Date createTime;
@@ -62,6 +63,12 @@ public class User {
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
-    
-    
+
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
 }

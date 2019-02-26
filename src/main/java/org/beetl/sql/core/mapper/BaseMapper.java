@@ -56,6 +56,13 @@ public interface BaseMapper<T> {
     void insertBatch(List<T> list);
 
     /**
+     * 批量插入，使用数据库返回自增主键
+     * @param list
+     * @param autoDbAssignKey
+     */
+    void insertBatch(List<T> list,boolean  autoDbAssignKey);
+
+    /**
      * （数据库表有自增主键调用此方法）如果实体对应的有自增主键，插入实体到数据库，自增主键值放到keyHolder里处理
      *
      * @param entity

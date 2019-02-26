@@ -22,12 +22,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
@@ -53,6 +48,7 @@ import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.MDCodeGen;
 import org.beetl.sql.ext.gen.SourceGen;
+import sun.font.CompositeGlyphMapper;
 
 /**
  * Beetsql 操作入口
@@ -1121,34 +1117,34 @@ public class SQLManager {
             Class target = clazz;
 
             int result = template ? this.insertTemplate(target, paras, holder) : this.insert(target, paras, holder);
-            String table = this.nc.getTableName(target);
-            ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
-
-            if (desc.getIdCols().isEmpty()) {
-                return result;
-            } else {
-                Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdAttrs().get(0));
-
-                String name = getterMethod.getName();
-                String setterName = name.replaceFirst("get", "set");
-                try {
-                    Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
-                    Object value = holder.getKey();
-                    if (value != null) {
-                        //KeyHolder有值才设置
-                        value = BeanKit.convertValueToRequiredType(value, getterMethod.getReturnType());
-                        setterMethod.invoke(paras, new Object[]{value});
-                    }
-                    return result;
-                } catch (Exception ex) {
-
-                    throw new UnsupportedOperationException("autoAssignKey failure " + ex.getMessage());
-                }
-            }
+            assignAutoId(paras,holder.getKey());
+            return result;
 
         } else {
             SQLScript script = getScript(clazz, template ? INSERT_TEMPLATE : INSERT);
             return script.insert(paras);
+        }
+    }
+
+    protected  void assignAutoId(Object bean,Object id){
+        Class target = bean.getClass();
+        String table = this.nc.getTableName(target);
+        ClassDesc desc = this.metaDataManager.getTable(table).getClassDesc(target, nc);
+
+        if (desc.getIdCols().isEmpty()) {
+            return ;
+        } else {
+            Method getterMethod = (Method) desc.getIdMethods().get(desc.getIdAttrs().get(0));
+
+            String name = getterMethod.getName();
+            String setterName = name.replaceFirst("get", "set");
+            try {
+                Method setterMethod = target.getMethod(setterName, new Class[]{getterMethod.getReturnType()});
+                Object value = BeanKit.convertValueToRequiredType(id, getterMethod.getReturnType());
+                setterMethod.invoke(bean, new Object[]{value});
+            } catch (Exception ex) {
+                throw new UnsupportedOperationException("autoAssignKey failure " + ex.getMessage());
+            }
         }
     }
 
@@ -1160,7 +1156,39 @@ public class SQLManager {
      */
     public int[] insertBatch(Class clazz, List<?> list) {
         SQLScript script = getScript(clazz, INSERT);
-        int[] ret = script.insertBatch(list);
+        LinkedList keys = new LinkedList();
+        int[] ret = script.insertBatch(list,null,false);
+        if(keys.isEmpty()){
+            return ret;
+        }
+        //如果有自增主键
+        Iterator it = list.iterator();
+        Iterator keyIt = keys.iterator();
+        while(it.hasNext()){
+            Object bean = it.next();
+            keyIt.hasNext();
+            Object key =  keyIt.next();
+            this.assignAutoId(bean,key);
+        }
+        return ret;
+    }
+
+    public int[] insertBatch(Class clazz, List<?> list,boolean  autoDbAssignKey) {
+        SQLScript script = getScript(clazz, INSERT);
+        LinkedList keys = new LinkedList();
+        int[] ret = script.insertBatch(list,keys,autoDbAssignKey);
+        if(!autoDbAssignKey){
+            return ret;
+        }
+        //如果有自增主键
+        Iterator it = list.iterator();
+        Iterator keyIt = keys.iterator();
+        while(it.hasNext()){
+            Object bean = it.next();
+            keyIt.hasNext();
+            Object key =  keyIt.next();
+            this.assignAutoId(bean,key);
+        }
         return ret;
     }
 

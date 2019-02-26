@@ -15,7 +15,12 @@ public class InsertBatchAmi implements MapperInvoke {
 
     @Override
     public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
-        sm.insertBatch(entityClass, (List) args[0]);
+        if(args.length==1){
+            sm.insertBatch(entityClass, (List) args[0]);
+        }else{
+            sm.insertBatch(entityClass, (List) args[0],(Boolean)args[1]);
+        }
+
         return null;
     }
 

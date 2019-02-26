@@ -1,35 +1,12 @@
 package org.beetl.sql.core;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.annotatoin.Builder;
 import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
 import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
-import org.beetl.sql.core.db.ClassAnnotation;
-import org.beetl.sql.core.db.ClassDesc;
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.db.MetadataManager;
-import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.engine.RefreshRuntimeException;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
@@ -37,6 +14,13 @@ import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.RowMapperResultSetExt;
+
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class SQLScript {
 
@@ -530,6 +514,7 @@ public class SQLScript {
 
             }
             rs = ps.executeBatch();
+
             this.callInterceptorAsAfter(ctx, rs);
 
         } catch (SQLException e) {
@@ -542,7 +527,7 @@ public class SQLScript {
     }
 
 
-    public int[] insertBatch(List<?> list) {
+    public int[] insertBatch(List<?> list,LinkedList keys,boolean autoDbAssignKey) {
         //与updateBatch区别是需要考虑到id生成
         if (list.size() == 0) {
             return new int[0];
@@ -564,7 +549,7 @@ public class SQLScript {
 
                 if (ps == null) {
                     conn = sm.getDs().getConn(id, true, result.jdbcSql, objs);
-                    ps = conn.prepareStatement(result.jdbcSql);
+                    ps = autoDbAssignKey?conn.prepareStatement(result.jdbcSql,Statement.RETURN_GENERATED_KEYS):conn.prepareStatement(result.jdbcSql);
                     ctx = this.callInterceptorAsBefore(this.id, result.jdbcSql, true, new ArrayList<SQLParameter>(0), paras);
                 }
 
@@ -573,7 +558,15 @@ public class SQLScript {
                 ps.addBatch();
 
             }
-            rs = ps.executeBatch();
+            rs = ps.executeBatch( );
+            if(autoDbAssignKey){
+                ResultSet primaryKeys = ps.getGeneratedKeys();
+                while(primaryKeys.next()) {
+                    keys.add(primaryKeys.getObject(1));
+                }
+            }
+
+
             this.callInterceptorAsAfter(ctx, rs);
 
         } catch (SQLException e) {

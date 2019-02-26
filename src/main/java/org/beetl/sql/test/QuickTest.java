@@ -17,6 +17,8 @@ import org.beetl.sql.ext.gen.MapperCodeGen;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.util.Arrays;
+
 /**
  *
  * @author xiandafu
@@ -49,8 +51,13 @@ public class QuickTest {
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
 
-//        User user = new User();
-//        user.setName("abcd");
+        User user = new User();
+        user.setName("abcd");
+        User user3 = new User();
+        user3.setName("abcd");
+        dao.insertBatch(Arrays.asList(user,user3),true);
+        System.out.println(user.getId());
+
 //        Role role = new Role();
 //        role.setId(1);
 //        role.setName("whatever");
@@ -59,8 +66,8 @@ public class QuickTest {
 //        System.out.println(user.getId());
 //        
 
-        User user = dao.unique(23);
-        System.out.println(user.getRole().getName());
+//        User user = dao.unique(1);
+//        System.out.println(user.getDepartment().getName());
 //        User user = dao.unique(8);
 //        user.setName("99999");
 //        dao.updateById(user);
