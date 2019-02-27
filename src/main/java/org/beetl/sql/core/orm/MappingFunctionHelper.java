@@ -19,10 +19,10 @@ public class MappingFunctionHelper  {
 	
 	
 	protected void parse(boolean single,boolean lazy,Object[] paras,Context ctx){
-//		if(ctx.getGlobal("_page")!=null){
-//			//翻页查询,为什么翻页查询不做映射？
-//			return ;
-//		}
+		if(ctx.getGlobal("_page")!=null){
+			//翻页求总数查询，忽略orm
+			return ;
+		}
 		Map<String,String> mapkey = (Map<String,String>)paras[0];
 		String className = null;
 		String sqlId = null;
