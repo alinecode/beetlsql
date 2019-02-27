@@ -3,14 +3,11 @@ package org.beetl.sql.test;
 import java.util.List;
 import java.util.Map;
 
-import org.beetl.sql.core.annotatoin.Sql;
-import org.beetl.sql.core.annotatoin.SqlResource;
-import org.beetl.sql.core.annotatoin.SqlStatement;
-import org.beetl.sql.core.annotatoin.SqlStatementType;
+import org.beetl.sql.core.annotatoin.*;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
 
-@SqlResource("wan.user")
+@SqlResource("user")
 public interface UserDao extends BaseDao<User> {
 
     List<Long> getIds();
@@ -22,6 +19,8 @@ public interface UserDao extends BaseDao<User> {
     int getCount(String name);
 
     User getOneUser();
+
+    User findOne( @Param("id") Integer id);
 
     List<Map<String, Object>> getIdNames();
 

@@ -8,9 +8,9 @@ import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
 
 @Table(name="user")
-@OrmQuery({
-   @OrmCondition(target = Department.class, attr="departmentId", targetAttr = "id", type=OrmQuery.Type.ONE)
-})
+//@OrmQuery({
+//   @OrmCondition(target = Department.class, attr="departmentId", targetAttr = "id", type=OrmQuery.Type.ONE)
+//})
 public class User {
     private Integer id ;
     private String name ;

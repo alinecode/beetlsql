@@ -87,6 +87,7 @@ public class MappingFunctionHelper  {
 			ls = new ArrayList<SQLResultListener> ();
 			ORMSQLResultListener orm = new ORMSQLResultListener();
 			orm.getMapingEntrys().add(mappingConfig);
+			ls.add(orm);
 			ctx.set("_listener", ls);
 			return ;
 		}else {

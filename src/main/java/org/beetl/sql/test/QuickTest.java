@@ -40,7 +40,7 @@ public class QuickTest {
         // PostgresStyle style = new PostgresStyle();
         ConnectionSource cs = ConnectionSourceHelper.getSingle(datasource());
 
-        SQLLoader loader = new ClasspathLoader("/org/beetl/sql/test");
+        SQLLoader loader = new ClasspathLoader("/sql");
         DebugInterceptor debug = new DebugInterceptor();
 
         Interceptor[] inters = new Interceptor[] { debug };
@@ -50,13 +50,13 @@ public class QuickTest {
         // sql.genPojoCodeToConsole("user", "com.test");
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
-
-        User user = new User();
-        user.setName("abcd");
-        User user3 = new User();
-        user3.setName("abcd");
-        dao.insertBatch(Arrays.asList(user,user3),true);
-        System.out.println(user.getId());
+        User user = dao.findOne(1);
+//        User user = new User();
+//        user.setName("abcd");
+//        User user3 = new User();
+//        user3.setName("abcd");
+//        dao.insertBatch(Arrays.asList(user,user3),true);
+        System.out.println(user.getDepartment().getName());
 
 //        Role role = new Role();
 //        role.setId(1);
