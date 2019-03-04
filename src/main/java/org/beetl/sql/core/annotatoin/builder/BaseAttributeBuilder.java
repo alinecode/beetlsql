@@ -80,15 +80,9 @@ public class BaseAttributeBuilder implements AttributePersistBuilder,AttributeSe
 
     static public String getDefaultToSql(AbstractDBStyle dbStyle,String fieldName){
         // #filedName#
-        return wrapScript(dbStyle,fieldName);
+        return fieldName;
     }
 
-    static public  String wrapScript(AbstractDBStyle style,String sqlScript){
-        String start = style.HOLDER_START;
-        String end = style.HOLDER_END;
-        StringBuilder sb = new StringBuilder(sqlScript.length()+start.length()+end.length());
-        sb.append(start).append(sqlScript).append(end);
-        return sb.toString();
-    }
+  
 
 }
