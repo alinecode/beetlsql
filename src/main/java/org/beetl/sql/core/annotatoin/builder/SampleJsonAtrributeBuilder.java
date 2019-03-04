@@ -45,7 +45,7 @@ public class SampleJsonAtrributeBuilder extends BaseAttributeBuilder {
 
     @Override
     public String  toSql(AbstractDBStyle dbStyle, String fieldName, String colName, Annotation an, TableDesc tableDesc){
-        return this.wrapScript(dbStyle,"jackson("+fieldName+")");
+        return "jackson("+fieldName+")";
     }
 
 
@@ -53,7 +53,7 @@ public class SampleJsonAtrributeBuilder extends BaseAttributeBuilder {
         @Override
         public String call(Object[] paras, Context ctx) {
             Object o = paras[0];
-            if(paras==null){
+            if(o==null){
                 return null;
             }
             try {

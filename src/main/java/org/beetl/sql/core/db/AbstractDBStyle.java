@@ -229,8 +229,6 @@ public abstract class  AbstractDBStyle implements DBStyle {
                 continue ;
             }
 
-
-
             //普通情况
             sql.append(appendSetColumnAbsolute(cls, table, col, prop));
         }
@@ -624,14 +622,15 @@ public abstract class  AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendSetColumnAbsolute(Class<?> c, TableDesc table, String colName, String fieldName) {
+        String sql = fieldName;
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
         	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
-            return this.getKeyWordHandler().getCol(colName)  + "="+baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+ ",";
+            sql = baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
-        return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + fieldName + HOLDER_END + ",";
+        return this.getKeyWordHandler().getCol(colName)  + "=" + HOLDER_START + sql + HOLDER_END + ",";
     }
 
     /***
@@ -643,18 +642,18 @@ public abstract class  AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendSetColumn(Class<?> c, TableDesc table, String colName, String fieldName) {
-
+        String sql = fieldName;
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
             // 注解忽略模板相关功能
         	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
 //            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
-            return this.getKeyWordHandler().getCol(colName)  + "="+baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+ ",";
+            sql =  baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
         }
 
-        return STATEMENT_START + "if(!isEmpty(" + fieldName + ")){"
-                + STATEMENT_END + "\t" + this.getKeyWordHandler().getCol(colName) + "=" + HOLDER_START  + fieldName + HOLDER_END + ","
+        return STATEMENT_START + "if(!isEmpty(" + sql + ")){"
+                + STATEMENT_END + "\t" + this.getKeyWordHandler().getCol(colName) + "=" + HOLDER_START  + sql + HOLDER_END + ","
                 + lineSeparator + STATEMENT_START + "}" + STATEMENT_END;
 
 
@@ -703,17 +702,17 @@ public abstract class  AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendInsertValue(Class<?> c, TableDesc table, String fieldName,String colName) {
-
+        String sql = fieldName;
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
         	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
-            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+",";
+            sql = baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
 
         }
 
 
-        return HOLDER_START + fieldName + HOLDER_END + ",";
+        return HOLDER_START + sql + HOLDER_END + ",";
 
     }
 
@@ -727,20 +726,20 @@ public abstract class  AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendInsertTemplateColumn(Class<?> c, TableDesc table,String fieldName, String colName) {
-
+        String col = this.getKeyWordHandler().getCol(colName);
+        String sql = fieldName;
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
-        String col = this.getKeyWordHandler().getCol(colName);
+
         if(handler!=null&&handler.supportPersistGen()){
-            //有注解忽略这种情况
-            return this.getKeyWordHandler().getCol(colName) + ",";
+            AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
+            sql =  baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
         }
 
-
         if(col.startsWith("'")){
-            return HOLDER_START + "db.testColNull("+fieldName+",\""+col+"\")" + HOLDER_END  ;
+            return HOLDER_START + "db.testColNull("+sql+",\""+col+"\")" + HOLDER_END  ;
         }else{
-            return HOLDER_START + "db.testColNull("+fieldName+",'"+col+"')" + HOLDER_END  ;
+            return HOLDER_START + "db.testColNull("+sql+",'"+col+"')" + HOLDER_END  ;
         }
 
     }
@@ -754,15 +753,15 @@ public abstract class  AbstractDBStyle implements DBStyle {
      * @return
      */
     protected String appendInsertTemplateValue(Class<?> c, TableDesc table, String fieldName,String colName) {
+        String sql = fieldName;
 
         ClassDesc classDesc = table.getClassDesc(c,this.nameConversion);
         AttributeBuilderHolder handler = (AttributeBuilderHolder)classDesc.getColHandlers().get(fieldName);
         if(handler!=null&&handler.supportPersistGen()){
-        	AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
-            return baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table)+",";
-
+            AttributePersistBuilder baseAttributeBuilder = (AttributePersistBuilder)handler.getInstance();
+            sql =  baseAttributeBuilder.toSql(this,fieldName,colName,handler.getBeanAnnotaton(),table);
         }
-        return HOLDER_START + "db.testNull("+fieldName+"!,\""+fieldName+"\")" + HOLDER_END ;
+        return HOLDER_START + "db.testNull("+sql+"!,\""+fieldName+"\")" + HOLDER_END ;
 
     }
 

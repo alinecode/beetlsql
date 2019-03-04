@@ -12,7 +12,7 @@ public class SampleUpdateTimeBuilder implements  AttributePersistBuilder {
 
     @Override
     public String  toSql(AbstractDBStyle dbStyle, String fieldName, String colName, Annotation an, TableDesc tableDesc){
-        //#date()#,返回一个当前时间
-        return BaseAttributeBuilder.wrapScript(dbStyle,"date()");
+        //返回一个当前时间
+        return "date()";
     }
 }

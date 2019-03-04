@@ -54,8 +54,8 @@ public class QuickTest {
         User user3 = new User();
         user3.setName("dkf");
         user3.setId(1);
-        dao.insert(user3);
-//        dao.updateTemplateById(user3);
+//        dao.insert(user3);
+        dao.updateById(user3);
 //        User user = dao.unique(1);
 //
 //        user.setName("abcd");
