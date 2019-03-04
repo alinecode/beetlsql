@@ -13,16 +13,18 @@ import org.beetl.sql.core.orm.OrmQuery;
 //})
 public class User {
     private Integer id ;
+
     private String name ;
     private Integer departmentId;
 
-    @UpdateTime
-    private Date createTime;
 
     @Jackson
     private Role role;
 
     Department department;
+
+    @UpdateTime
+    private Date createTime;
     
     public Integer getId() {
         return id;

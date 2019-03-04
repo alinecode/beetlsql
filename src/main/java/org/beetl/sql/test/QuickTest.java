@@ -47,16 +47,23 @@ public class QuickTest {
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
         //预先注册一个，否则没有办法使用@Jackson注解
         sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
+
         // sql.genPojoCodeToConsole("user", "com.test");
 //        sql.addVirtualTable("user_1","user");
         UserDao dao = sql.getMapper(UserDao.class);
-        User user = dao.findOne(1);
-//        User user = new User();
+        User user3 = new User();
+        user3.setName("dkf");
+        user3.setId(1);
+        dao.insert(user3);
+//        dao.updateTemplateById(user3);
+//        User user = dao.unique(1);
+//
 //        user.setName("abcd");
-//        User user3 = new User();
+//        dao.updateById(user);
+        //        User user3 = new User();
 //        user3.setName("abcd");
 //        dao.insertBatch(Arrays.asList(user,user3),true);
-        System.out.println(user.getDepartment().getName());
+//        System.out.println(user.getDepartment().getName());
 
 //        Role role = new Role();
 //        role.setId(1);
