@@ -33,8 +33,6 @@ public class UseFunction implements Function {
 		
 		String file = this.getParentId(ctx);
 		SQLResult result = sm.getSQLResult(file+"."+id, inputParas,(String)ctx.getGlobal("_id"));
-		list.addAll(result.jdbcPara);
-		ctx.set("_paras", list);
 		
 		//追加参数
 		list.addAll(result.jdbcPara);

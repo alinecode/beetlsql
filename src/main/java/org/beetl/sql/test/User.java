@@ -19,7 +19,7 @@ public class User {
 
 
     @Jackson
-    private Role role;
+    private List<Role> role;
 
     Department department;
 
@@ -50,12 +50,12 @@ public class User {
         this.createTime = createTime;
     }
 
-    public Role getRole() {
+    public List<Role> getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(List<Role> roles) {
+        this.role = roles;
     }
 
 	public Department getDepartment() {

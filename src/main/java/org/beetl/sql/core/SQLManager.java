@@ -618,7 +618,7 @@ public class SQLManager {
             root.put("_root", paras);
         }
 
-        if (query.getOrderBy() != null) {
+        if (query.getOrderBy() != null&&query.getOrderBy().length()!=0) {
             root.put(DBStyle.ORDER_BY, query.getOrderBy());
         }
 
@@ -1719,6 +1719,12 @@ public class SQLManager {
         SQLSource source = new SQLSource("native." + p.getSql(), p.getSql());
         SQLScript script = new SQLScript(source, this);
         return script.sqlReadyExecuteUpdate(p);
+    }
+    
+    public int[] executeBatchUpdate(SQLBatchReady batch) {
+        SQLSource source = new SQLSource("native.batch." + batch.getSql(), batch.getSql());
+        SQLScript script = new SQLScript(source, this);
+        return script.sqlReadyBatchExecuteUpdate(batch);
     }
 
     // ========= 代码生成 =============//

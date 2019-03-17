@@ -19,12 +19,14 @@ select
 	select 
 	*
 	from user where 1=1 
+	#use("condition")#
+	
+condition	
+===	
+
 	@if(isNotEmpty(name)){
 	and name = #name#
 	@}
-	
-	
-	
 	
 	
 	

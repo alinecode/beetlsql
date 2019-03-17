@@ -801,6 +801,46 @@ public class SQLScript {
         }
         return rs;
     }
+    
+    public int[] sqlReadyBatchExecuteUpdate(SQLBatchReady  batch) {
+
+        String sql = this.sql;
+        List<Object[] > args = batch.getArgs();
+        if(args.isEmpty()) {
+        	return new int[0];
+        }
+        InterceptorContext ctx = null;
+        Connection conn  =null;
+        PreparedStatement ps =null;
+        int[] rs = null;
+        try {
+        	
+            for(int i=0;i<args.size();i++) {
+            	Object[] jdbcArgs = args.get(i);
+            	List<SQLParameter> objs = toSQLParameters(jdbcArgs);
+            	if(i==0) {
+            		conn  = sm.getDs().getConn(id, true, sql, objs);
+            		ctx = this.callInterceptorAsBefore(this.id, sql, true, objs, this.getSQLReadyParas(Arrays.asList(jdbcArgs)));
+            		ps = conn.prepareStatement(sql);
+            	}
+            	 this.setPreparedStatementPara(ps, objs);
+            	 ps.addBatch();
+            
+            }
+            rs = ps.executeBatch();
+            this.callInterceptorAsAfter(ctx, rs);
+        } catch (SQLException e) {
+            this.callInterceptorAsException(ctx, e);
+            throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+        } finally {
+            clean(true, conn, ps);
+        }
+        return rs;
+        
+        
+        
+        
+    }
 
     private void setPreparedStatementPara(PreparedStatement ps, List<SQLParameter> objs) throws SQLException {
         if (objs.isEmpty()) {

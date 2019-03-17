@@ -238,9 +238,9 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<excludes>
+				<!-- <excludes>
 					<exclude>sql/**</exclude>
-				</excludes>
+				</excludes> -->
 			</resource>
 
 		</resources>
@@ -252,9 +252,9 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
-					<excludes>
+					<!-- <excludes>
 	                    <exclude>org/beetl/sql/test/**</exclude>
-	                </excludes>
+	                </excludes> -->
 				</configuration>
 			</plugin>
 			<plugin>
