@@ -78,10 +78,8 @@ public class QuickTest {
 
         UserDao dao = sql.getMapper(UserDao.class);
         User user = dao.unique(23);
-        List<Role> roles = user.getRole();
-        for(Role role:roles) {
-        	System.out.println(role.getName());
-        }
+        System.out.println(user.getRole().getName());
+      
 
 
     }
