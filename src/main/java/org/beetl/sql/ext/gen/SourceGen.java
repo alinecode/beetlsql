@@ -105,6 +105,7 @@ public class SourceGen {
 			
 			ColDesc desc = tableDesc.getColDesc(col);
 			Map attr = new HashMap();
+			attr.put("colName", desc.colName); // 字段（列）名称
 			attr.put("comment", desc.remark);
 			String attrName = sm.getNc().getPropertyName(null, desc.colName);
 			attr.put("name", attrName);
