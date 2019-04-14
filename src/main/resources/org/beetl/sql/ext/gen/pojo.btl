@@ -8,6 +8,11 @@ ${implSerializable?"import java.io.Serializable;"}
 @Table(name="${catalog}.${table}")
 public class ${className} ${!isEmpty(ext)?"extends "+ext} ${implSerializable?"implements Serializable"} {
 	
+	// alias
+	<%for(attr in attrs){%>
+	public static final String ALIAS_${attr.colName} = "${attr.colName}";
+	<%}%>
+	
 	<%for(attr in attrs){
 			if(!isEmpty(attr.comment)){%>
 	/*
