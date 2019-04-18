@@ -1,7 +1,8 @@
 package org.beetl.sql.core.kit;
 
-import org.beetl.core.om.MethodInvoker;
-import org.beetl.core.om.ObjectUtil;
+
+import org.beetl.core.fun.MethodInvoker;
+import org.beetl.core.fun.ObjectUtil;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.annotatoin.Builder;

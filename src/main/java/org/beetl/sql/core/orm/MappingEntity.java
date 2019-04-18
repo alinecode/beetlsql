@@ -1,8 +1,9 @@
 package org.beetl.sql.core.orm;
 
 import org.beetl.core.exception.BeetlException;
-import org.beetl.core.om.MethodInvoker;
-import org.beetl.core.om.PojoMethodInvoker;
+
+import org.beetl.core.fun.MethodInvoker;
+import org.beetl.core.fun.PojoMethodInvoker;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.Tail;

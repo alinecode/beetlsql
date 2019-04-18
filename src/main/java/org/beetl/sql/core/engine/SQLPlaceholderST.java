@@ -6,22 +6,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.beetl.core.Context;
-import org.beetl.core.InferContext;
+
 import org.beetl.core.exception.BeetlException;
-import org.beetl.core.statement.Expression;
-import org.beetl.core.statement.FormatExpression;
-import org.beetl.core.statement.FunctionExpression;
-import org.beetl.core.statement.PlaceholderST;
-import org.beetl.core.statement.Statement;
-import org.beetl.core.statement.Type;
+import org.beetl.core.statement.*;
+
 import org.beetl.sql.core.JavaType;
 import org.beetl.sql.core.kit.StringKit;
 
-public class SQLPlaceholderST extends Statement
+public class SQLPlaceholderST extends PlaceholderST
 {
-	public Expression expression;
-	public Type type = null;
-	FormatExpression format;
+
 	/**
 	 *  这些函数调用总是返回函数结果而不是一个sql占位符号“?”
 	 */
@@ -38,12 +32,10 @@ public class SQLPlaceholderST extends Statement
 		
 	}
 
-	public SQLPlaceholderST(PlaceholderST st)
+	public SQLPlaceholderST(Expression exp, FormatExpression format, GrammarToken token)
 	{
-		super(st.token);
-		this.type = st.type;
-		this.expression = st.expression;
-		this.format = st.getFormat();
+		super(exp,format,token);
+
 
 	}
 
@@ -97,9 +89,6 @@ public class SQLPlaceholderST extends Statement
 				}
 			}
 			int type  = SQLParameter.NAME_EXPRESSION;
-			if(expression instanceof SQLVarRef){
-				type = SQLParameter.NAME_GENEARL;
-			}
 			ctx.byteWriter.writeString("?");
 			List list = (List)ctx.getGlobal("_paras");
 			SQLParameter sqlPara  = new SQLParameter(expression.token.text,value,type);
@@ -117,11 +106,5 @@ public class SQLPlaceholderST extends Statement
 
 	}
 
-	@Override
-	public void infer(InferContext inferCtx)
-	{
-		expression.infer(inferCtx);
-		this.type = expression.type;
-	}
 
 }

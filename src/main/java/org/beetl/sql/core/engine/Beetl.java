@@ -38,7 +38,7 @@ public class Beetl {
 			AntlrProgramBuilder.safeParameters.add("isBlank");
 			
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new IllegalStateException(ex);
 		}
 
 	}
@@ -56,7 +56,7 @@ public class Beetl {
 		try {
 			ps.load(ins);
 		} catch (IOException e) {
-			throw new RuntimeException("默认配置文件加载错:/btsql.properties");
+			throw new IllegalStateException("默认配置文件加载错:/btsql.properties");
 		}
 		return ps;	
 	}
@@ -74,7 +74,7 @@ public class Beetl {
 			ps.load(ins);
 			ins.close();
 		} catch (IOException e) {
-			throw new RuntimeException("默认配置文件加载错:/btsql-ext.properties");
+			throw new IllegalStateException("默认配置文件加载错:/btsql-ext.properties");
 		}
 		
 		return ps;	

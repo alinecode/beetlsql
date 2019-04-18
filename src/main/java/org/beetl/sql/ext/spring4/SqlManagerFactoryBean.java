@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.beetl.core.Function;
-import org.beetl.core.TagFactory;
+import org.beetl.core.tag.TagFactory;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.IDAutoGen;
 import org.beetl.sql.core.Interceptor;

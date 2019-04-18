@@ -1,5 +1,6 @@
 package org.beetl.sql.core;
 
+import org.beetl.core.Context;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
@@ -65,11 +66,12 @@ public class SQLScript {
         return this.run(paras, null);
     }
 
-    protected SQLResult run(Map<String, Object> paras, String parentId) {
+    protected SQLResult run(Map<String, Object> paras, Context ctx) {
         GroupTemplate gt = sm.beetl.getGroupTemplate();
         Template t = null;
+        String parentId =  ctx==null?null:(String)ctx.getGlobal("_id");
         if (parentId != null) {
-            t = gt.getTemplate(sqlSource.getId(), parentId);
+            t = gt.getTemplate(sqlSource.getId(), ctx);
         } else {
             t = gt.getTemplate(sqlSource.getId());
         }

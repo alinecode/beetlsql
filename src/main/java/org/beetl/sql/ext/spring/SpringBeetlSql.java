@@ -10,7 +10,8 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 
 import org.beetl.core.Function;
-import org.beetl.core.TagFactory;
+
+import org.beetl.core.tag.TagFactory;
 import org.beetl.sql.core.ClasspathLoader;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.DefaultNameConversion;

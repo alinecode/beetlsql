@@ -49,7 +49,7 @@ import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.MDCodeGen;
 import org.beetl.sql.ext.gen.SourceGen;
 import sun.font.CompositeGlyphMapper;
-
+import org.beetl.core.Context;
 /**
  * Beetsql 操作入口
  *
@@ -309,12 +309,13 @@ public class SQLManager {
      *
      * @param id
      * @param paras
-     * @param parentId
+     * @param ctx
      * @return
      */
-    public SQLResult getSQLResult(String id, Map<String, Object> paras, String parentId) {
+    public SQLResult getSQLResult(String id, Map<String, Object> paras, Context ctx) {
+
         SQLScript script = getScript(id);
-        return script.run(paras, parentId);
+        return script.run(paras, ctx);
     }
 
     /**

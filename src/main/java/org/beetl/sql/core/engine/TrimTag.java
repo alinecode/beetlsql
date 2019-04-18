@@ -3,7 +3,7 @@ package org.beetl.sql.core.engine;
 import java.io.IOException;
 import java.util.Map;
 
-import org.beetl.core.Tag;
+import org.beetl.core.tag.Tag;
 import org.beetl.sql.core.kit.StringKit;
 
 /**
