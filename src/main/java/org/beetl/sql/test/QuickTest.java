@@ -11,6 +11,7 @@ import org.beetl.sql.core.SQLLoader;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.UnderlinedNameConversion;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.annotatoin.builder.SampleJsonAtrributeBuilder;
 import org.beetl.sql.ext.DebugInterceptor;
@@ -43,23 +44,7 @@ public class QuickTest {
 
     public static void main(String[] args) throws Exception {
 
-       
-//        PropertyDescriptor[] pds = BeanKit.propertyDescriptors(User.class);
-//        String roles =  "[{\"id\":1}]";
-//        for(PropertyDescriptor pd:pds) {
-//        	if(pd.getName().equals("role")) {
-//        		Class retType = pd.getReadMethod().getReturnType();
-//        		Type pt = pd.getReadMethod().getGenericReturnType();
-//        		JavaType jacksonType = parameterizedType(retType,pt);
-//        		List<Role> list = mapper.readValue(roles, jacksonType);
-//        		int a =1 ;
-//        		
-//        	}
-//        }
-        
-        
 
-//
         // DB2SqlStyle style = new DB2SqlStyle();
         // SqlServerStyle style = new SqlServerStyle();
         // SqlServer2012Style style = new SqlServer2012Style();
@@ -79,6 +64,20 @@ public class QuickTest {
         UserDao dao = sql.getMapper(UserDao.class);
         User user = dao.unique(23);
         System.out.println(user.getRole().getName());
+
+        Map paras = new HashMap();
+        paras.put("name","lijz");
+        PageQuery pageQuery = new PageQuery();
+
+//        pageQuery.setParas(paras);
+        pageQuery.setPara("name","lijz");
+
+        Object obj = pageQuery.getParas();
+
+        dao.getIds3(pageQuery);
+        List<User> list = pageQuery.getList();
+        System.out.println(list.size());
+
       
 
 

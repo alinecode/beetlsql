@@ -612,11 +612,11 @@ public class SQLManager {
         Long totalRow = query.getTotalRow();
         List<T> list = null;
         if (paras == null) {
-            root = new HashMap<String, Object>(8);
+            root = new HashMap<String, Object>();
         } else if(paras instanceof Map) {
             root = (Map<String, Object>) paras;
         } else {
-            root = new HashMap<String, Object>(8);
+            root = new HashMap<String, Object>(1);
             root.put("_root", paras);
         }
 

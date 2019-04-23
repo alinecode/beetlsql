@@ -52,8 +52,8 @@ public class PageQuery<T> implements Serializable {
     protected long totalPage;        //总页数
     protected long totalRow = -1;        //总行数,如果不为-1，则不需要再次查询
 
-    //    private transient boolean calc = false;
-    private transient boolean hasPartPara = false;
+    // 用于获得para
+    private transient ParasBuilder parasBuilder = new ParasBuilder();
 
     public PageQuery() {
         this(1, null);
@@ -158,7 +158,7 @@ public class PageQuery<T> implements Serializable {
     }
 
     public Object getParas() {
-        return paras;
+        return this.paras;
     }
 
     /**
@@ -167,23 +167,9 @@ public class PageQuery<T> implements Serializable {
      * @param paras
      */
     public void setParas(Object paras) {
-        if (paras == null) {
-            this.paras = paras;
-            return;
-        }
-        //覆盖已经设定的root对象
-        if (this.paras instanceof Map) {
-            if (hasPartPara) {
-                ((Map) this.paras).put("_root", paras);
-            } else {
-                //直接覆盖
-                this.paras = paras;
-            }
+        parasBuilder.setRoot(paras);
+        this.paras = parasBuilder.build();
 
-            return;
-        } else {
-            this.paras = paras;
-        }
     }
 
     /**
@@ -193,15 +179,9 @@ public class PageQuery<T> implements Serializable {
      * @param value
      */
     public void setPara(String key, Object value) {
-        hasPartPara = true;
-        if (this.paras == null) {
-            this.paras = new HashMap();
-        } else if (!(paras instanceof Map)) {
-            Object old = this.paras;
-            this.paras = new HashMap();
-            ((Map) paras).put("_root", old);
-        }
-        ((Map) paras).put(key, value);
+        parasBuilder.set(key,value);
+        this.paras = parasBuilder.build();
+
     }
 
 
@@ -293,5 +273,32 @@ public class PageQuery<T> implements Serializable {
             return false;
         }
         return true;
+    }
+
+    static class ParasBuilder{
+        private Object root ;
+        private Map map = null;
+        public Object build(){
+            if(map!=null&&root!=null){
+                map.put("_root",root);
+                return map;
+            }else if(map==null&&root!=null){
+                return root;
+            }else if(map!=null&&root==null){
+                return map;
+            }else{
+                return null;
+            }
+        }
+        public void setRoot(Object o ){
+            this.root = o;
+        }
+        public void set(String key,Object value){
+            if(map==null){
+                map = new HashMap();
+            }
+            map.put(key,value);
+        }
+
     }
 }
