@@ -12,6 +12,9 @@ public interface UserDao extends BaseDao<User> {
 
     List<Long> getIds();
 
+    @SqlProvider(provider = UserSqlProvider.class)
+    User selectAll1(@Param("id") Integer id);
+
     void getIds3(PageQuery query);
 
     // void pageQuery(PageQuery<String> query);

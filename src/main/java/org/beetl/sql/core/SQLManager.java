@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+import org.beetl.sql.core.annotatoin.SqlProvider;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -324,7 +325,15 @@ public class SQLManager {
      * @return
      */
     public SQLScript getScript(String id) {
-        SQLSource source = sqlLoader.getSQL(id);
+        SQLSource source;
+        if (id.startsWith(SqlProvider.SQL_PREFIX)){
+            source = new SQLSource();
+            int separator = id.indexOf(SqlProvider.SQL_ID_SEPARATOR);
+            source.setId(id.substring(0,separator));
+            source.setTemplate(id.substring(separator+SqlProvider.SQL_ID_SEPARATOR.length()));
+            return new SQLScript(source, this);
+        }
+        source = sqlLoader.getSQL(id);
         if (source == null) {
             String path = this.idNameConversion.getPath(id);
             SQLLoader sqlLoader = this.getSqlLoader();
@@ -338,8 +347,7 @@ public class SQLManager {
             }
             throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "未能找到" + id + "对应的sql,搜索路径:" + envInfo);
         }
-        SQLScript script = new SQLScript(source, this);
-        return script;
+        return new SQLScript(source, this);
     }
 
     /**

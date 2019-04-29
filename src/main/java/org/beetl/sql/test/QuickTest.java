@@ -62,8 +62,7 @@ public class QuickTest {
         sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
 
         UserDao dao = sql.getMapper(UserDao.class);
-        User user = dao.unique(23);
-        System.out.println(user.getRole().getName());
+        dao.selectAll1(1);
 
         Map paras = new HashMap();
         paras.put("name","lijz");
