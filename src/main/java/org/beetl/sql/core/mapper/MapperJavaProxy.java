@@ -1,13 +1,18 @@
 package org.beetl.sql.core.mapper;
 
+import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.annotatoin.SqlProvider;
 import org.beetl.sql.core.annotatoin.SqlResource;
 import org.beetl.sql.core.kit.BeanKit;
+import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
 import org.beetl.sql.core.mapper.builder.MapperInvokeDataConfig;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Java代理实现.
@@ -36,6 +41,8 @@ public class MapperJavaProxy implements InvocationHandler {
 
     /** 避免每次调用都反射创建 */
     private MethodHandles.Lookup lookup;
+
+    private static final Map<Class,Object> PROVIDERS_CACHE = new HashMap();
 
     /**
      * The Constructor.
@@ -147,15 +154,42 @@ public class MapperJavaProxy implements InvocationHandler {
         		sqlId = this.builder.getIdGen().getId(method.getDeclaringClass(),entityClass, method);
             
         }
-        
-       
-        
+
+
+        SqlProvider sqlProvider = method.getAnnotation(SqlProvider.class);
         MapperInvoke invoke = sqlManager.getMapperConfig().getAmi(caller, methodName);
         if (invoke != null) {
             //内置的方法，直接调用Invoke
             return invoke.call(this.sqlManager, this.entityClass, sqlId, method, args);
 
         } else {
+            if (sqlProvider != null){
+                Class<?> providerCls = sqlProvider.provider();
+                Object provider = PROVIDERS_CACHE.get(providerCls);
+                String providerMethodName = sqlProvider.method();
+                if (StringKit.isBlank(providerMethodName)){
+                    providerMethodName = method.getName();
+                }
+                try {
+                    if (provider == null){
+                        provider = providerCls.newInstance();
+                        PROVIDERS_CACHE.put(providerCls,provider);
+                    }
+                    Method providerMethod = providerCls.getMethod(providerMethodName, method.getParameterTypes());
+                    if (providerMethod.getReturnType() != String.class){
+                        throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"@SqlProvider类["+providerCls.getName()+"]的方法["+providerMethodName+"]返回值必须为String类型");
+                    }
+                    providerMethod.setAccessible(Boolean.TRUE);
+                    String provideSql = providerMethod.invoke(provider, args).toString();
+                    sqlId = SqlProvider.SQL_PREFIX +"("+providerCls.getSimpleName()+"."+providerMethodName+")" + SqlProvider.SQL_ID_SEPARATOR + provideSql;
+                } catch (IllegalAccessException | InstantiationException e) {
+                    throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"实例化" + providerCls.getName() +"失败，请检查是否有公有的无参构造");
+                } catch (NoSuchMethodException e) {
+                    throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"未能从"+providerCls.getName()+"获取到和"+caller.getName()+"."+method.getName()+"()相同参数的方法“"+providerMethodName+"”");
+                }
+            }
+
+
             //解析方法以及注解，找到对应的处理类
             MethodDesc desc = MethodDesc.getMetodDesc(sqlManager, this.entityClass, method, sqlId);
             if (desc.sqlReady.length() == 0) {

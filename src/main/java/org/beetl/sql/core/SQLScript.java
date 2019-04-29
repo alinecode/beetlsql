@@ -4,6 +4,7 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.SqlProvider;
 import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
 import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
 import org.beetl.sql.core.db.*;
@@ -66,12 +67,18 @@ public class SQLScript {
     }
 
     protected SQLResult run(Map<String, Object> paras, String parentId) {
-        GroupTemplate gt = sm.beetl.getGroupTemplate();
-        Template t = null;
-        if (parentId != null) {
-            t = gt.getTemplate(sqlSource.getId(), parentId);
+        GroupTemplate gt;
+        Template t;
+        if (sqlSource.getId().startsWith(SqlProvider.SQL_PREFIX)){
+            gt = sm.beetl.getStringGroupTemplate();
+            t = gt.getTemplate(sqlSource.getTemplate());
         } else {
-            t = gt.getTemplate(sqlSource.getId());
+            gt = sm.beetl.getGroupTemplate();
+            if (parentId != null) {
+            t = gt.getTemplate(sqlSource.getId(), parentId);
+            } else {
+                t = gt.getTemplate(sqlSource.getId());
+            }
         }
 
         List<SQLParameter> jdbcPara = new LinkedList<SQLParameter>();

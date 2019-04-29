@@ -9,10 +9,12 @@ import java.util.Properties;
 import org.beetl.core.AntlrProgramBuilder;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
+import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.SQLLoader;
 
 public class Beetl {
-	GroupTemplate gt = null;  
+	GroupTemplate gt = null;
+	GroupTemplate sgt = null;
 	Properties ps = null;
 	public Beetl(SQLLoader loader,Properties other) {
 		try {
@@ -25,6 +27,7 @@ public class Beetl {
 			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader,!product);
 			Configuration cfg =new Configuration(ps);			
 			gt = new GroupTemplate(resourceLoader, cfg);
+			sgt = new GroupTemplate(new StringTemplateResourceLoader(),cfg);
 
 			loader.setAutoCheck(!product);
 			String charset = ps.getProperty("CHARSET");
@@ -85,6 +88,10 @@ public class Beetl {
 
 	public GroupTemplate getGroupTemplate() {
 		return gt;
+	}
+
+	public GroupTemplate getStringGroupTemplate(){
+		return sgt;
 	}
 
 	public Properties getPs() {
