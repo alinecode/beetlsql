@@ -15,6 +15,7 @@ import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Java代理实现.
@@ -46,7 +47,7 @@ public class MapperJavaProxy implements InvocationHandler {
     protected Class mapperInterface;
 
 
-    private static final Map<Class, Object> PROVIDERS_CACHE = new HashMap();
+    private static final Map<Class, Object> PROVIDERS_CACHE = new ConcurrentHashMap<Class, Object>();
 
     /**
      * The Constructor.
