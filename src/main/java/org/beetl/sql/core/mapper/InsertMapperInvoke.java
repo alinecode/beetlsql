@@ -17,7 +17,7 @@ public class InsertMapperInvoke implements MapperInvoke {
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
 		
-		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
+		MethodDesc desc = MethodDesc.getMetodDescBySqlId(sm,entityClass,m,sqlId);
 		InsertParamter parameter = (InsertParamter)desc.parameter;
 		Map map = (Map)parameter.get(args);
 		if(m.getReturnType()==KeyHolder.class){

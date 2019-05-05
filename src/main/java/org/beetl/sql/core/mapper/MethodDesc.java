@@ -58,18 +58,53 @@ public class MethodDesc {
 
     static Map<CallKey, MethodDesc> cache = new HashMap<CallKey, MethodDesc>();
 
-    public static MethodDesc getMetodDesc(SQLManager sm, Class entityClass, Method m, String sqlId) {
+    public static MethodDesc getMetodDescBySqlId(SQLManager sm, Class entityClass, Method m, String sqlId) {
         CallKey callKey = new CallKey(m, entityClass);
         MethodDesc desc = cache.get(callKey);
         if (desc != null)
             return desc;
         desc = sm.getMapperConfig().createMethodDesc();
-        desc.doParse(sm, entityClass, m, sqlId);
+        desc.doSqlIdParse(sm, entityClass, m, sqlId);
         cache.put(callKey, desc);
         return desc;
     }
 
-    protected void doParse(SQLManager sm, Class entityClass, Method m, String sqlId) {
+    public static MethodDesc getMetodDescBySqlReadyProvider(SQLManager sm, Class entityClass, Method m, String sql) {
+        CallKey callKey = new CallKey(m, entityClass,sql);
+        MethodDesc desc = cache.get(callKey);
+        if (desc != null)
+            return desc;
+        desc = sm.getMapperConfig().createMethodDesc();
+        desc.doJdbcParseSql(sm, entityClass, m, sql);
+        cache.put(callKey, desc);
+        return desc;
+    }
+
+    public static MethodDesc getMetodDescBySqlReadyProviderWithCache(SQLManager sm, Class entityClass, Method m, String sql) {
+        CallKey callKey = new CallKey(m, entityClass);
+        MethodDesc desc = cache.get(callKey);
+        if (desc != null)
+            return desc;
+        desc = sm.getMapperConfig().createMethodDesc();
+        desc.doJdbcParseSql(sm, entityClass, m, sql);
+        cache.put(callKey, desc);
+        return desc;
+    }
+
+    public static MethodDesc getMetodDescByTemplateProvider(SQLManager sm, Class entityClass, Method m, String sql) {
+        CallKey callKey = new CallKey(m, entityClass,sql);
+        MethodDesc desc = cache.get(callKey);
+        if (desc != null)
+            return desc;
+        desc = sm.getMapperConfig().createMethodDesc();
+        desc.doParseTemplateSql(sm, entityClass, m, sql);
+        cache.put(callKey, desc);
+        return desc;
+    }
+
+
+
+    protected void doParseTemplateSql(SQLManager sm, Class entityClass, Method m, String sql) {
         Class[] paras = m.getParameterTypes();
         Type retType = m.getGenericReturnType();
         // 假设默认类型就是Mapper的泛型类型
@@ -78,35 +113,104 @@ public class MethodDesc {
         this.defaultRetType = entityClass;
         this.method = m;
 
-        Sql sql = m.getAnnotation(Sql.class);
+
         SqlStatementType sqlType = SqlStatementType.AUTO;
-        if (sql != null) {
-            this.sqlReady = sql.value();
-            sqlType = sql.type();
-            if (sql.returnType() != Void.class) {
-                this.resultType = sql.returnType();
+        SqlStatement st = m.getAnnotation(SqlStatement.class);
+        if(st!=null){
+            this.paramsDeclare = st.params();
+            sqlType = st.type();
+            if (st.returnType() != Void.class) {
+                this.resultType = st.returnType();
             }
-
-        } else {
-            SqlStatement st = m.getAnnotation(SqlStatement.class);
-            if (st != null) {
-                sqlType = st.type();
-                paramsDeclare = st.params();
-                if (st.returnType() != Void.class) {
-                    this.resultType = st.returnType();
-                }
-            }
-
         }
+
         // 先判断调用sqlmanager类型。
         int inferType = 0;
         if (sqlType == SqlStatementType.AUTO) {
-            if (sql != null) {
-                inferType = getTypeBySql(sqlReady);
-            } else {
-                inferType = getTypeBySqlId(sm, sqlId);
+            inferType = getTypeBySql(sql);
+            if (inferType == -1) {
+                throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, m + " 请指定Sql类型");
             }
 
+        } else {
+            if (sqlType == SqlStatementType.SELECT) {
+                inferType = SM_SELECT_LIST;
+            } else if (sqlType == SqlStatementType.INSERT) {
+                inferType = SM_INSERT;
+            } else {
+                inferType = SM_UPDATE;
+            }
+        }
+        // 初步判断类型，SM_UPDATE，SM_INSERT,SM_SELECT_LIST
+        this.type = inferType;
+        // 进一步判断具体SQLManager 方法
+        doParseDeatil(paras,retType);
+
+    }
+
+
+
+    protected void doJdbcParseSql(SQLManager sm, Class entityClass, Method m, String sqlReady) {
+        Class[] paras = m.getParameterTypes();
+        Type retType = m.getGenericReturnType();
+        // 假设默认类型就是Mapper的泛型类型
+        this.resultType = entityClass;
+        // 默认返回类型
+        this.defaultRetType = entityClass;
+        this.method = m;
+        this.sqlReady = sqlReady;
+
+        Sql sql = m.getAnnotation(Sql.class);
+        SqlStatementType sqlType = sql.type();
+
+        // 先判断调用sqlmanager类型。
+        int inferType = 0;
+        if (sqlType == SqlStatementType.AUTO) {
+            inferType = getTypeBySql(sqlReady);
+            if (inferType == -1) {
+                throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlReady + " 请使用 SqlStatementType 指定Sql类型");
+            }
+
+        } else {
+            if (sqlType == SqlStatementType.SELECT) {
+                inferType = SM_SELECT_LIST;
+            } else if (sqlType == SqlStatementType.INSERT) {
+                inferType = SM_INSERT;
+            } else {
+                inferType = SM_UPDATE;
+            }
+        }
+        // 初步判断类型，SM_UPDATE，SM_INSERT,SM_SELECT_LIST
+        this.type = inferType;
+        // 进一步判断具体SQLManager 方法
+        doParseDeatil(paras,retType);
+    }
+
+
+
+    protected void doSqlIdParse(SQLManager sm, Class entityClass, Method m, String sqlId) {
+        Class[] paras = m.getParameterTypes();
+        Type retType = m.getGenericReturnType();
+        // 假设默认类型就是Mapper的泛型类型
+        this.resultType = entityClass;
+        // 默认返回类型
+        this.defaultRetType = entityClass;
+        this.method = m;
+
+        SqlStatementType sqlType = SqlStatementType.AUTO;
+        SqlStatement st = m.getAnnotation(SqlStatement.class);
+        if (st != null) {
+            sqlType = st.type();
+            paramsDeclare = st.params();
+            if (st.returnType() != Void.class) {
+                this.resultType = st.returnType();
+            }
+        }
+
+        // 先判断调用sqlmanager类型。
+        int inferType = 0;
+        if (sqlType == SqlStatementType.AUTO) {
+            inferType = getTypeBySqlId(sm, sqlId);
             if (inferType == -1) {
                 throw new BeetlSQLException(BeetlSQLException.UNKNOW_MAPPER_SQL_TYPE, sqlId + " 请指定Sql类型");
             }
@@ -123,20 +227,25 @@ public class MethodDesc {
         // 初步判断类型，SM_UPDATE，SM_INSERT,SM_SELECT_LIST
         this.type = inferType;
         // 进一步判断具体SQLManager 方法
-        switch (type) {
-        case SM_SELECT_LIST:
-            parseSelectList(paras, retType);
-            break;
-
-        case SM_INSERT:
-            parseInert(paras, retType);
-            break;
-        case SM_UPDATE:
-            parseUpdate(paras, retType);
-            break;
-        }
+        doParseDeatil(paras,retType);
 
     }
+
+    protected  void doParseDeatil(Class[] paras,Type retType){
+        switch (type) {
+            case SM_SELECT_LIST:
+                parseSelectList(paras, retType);
+                break;
+
+            case SM_INSERT:
+                parseInert(paras, retType);
+                break;
+            case SM_UPDATE:
+                parseUpdate(paras, retType);
+                break;
+        }
+    }
+
 
     protected void parseInert(Class[] paras, Type retType) {
         if (retType == KeyHolder.class) {
@@ -149,7 +258,7 @@ public class MethodDesc {
 
     /**
      * 根据返回参数int 或者int[] 判断是否是批处理。如果都没有，根据第一参数判断
-     * 
+     *
      * @param paras
      * @param retType
      */
@@ -327,7 +436,7 @@ public class MethodDesc {
 
     /**
      * 根据sql语句判断sql类型，用于对应到SQLManager操作
-     * 
+     *
      * @param sql
      * @return
      */
@@ -405,33 +514,37 @@ public class MethodDesc {
     static class CallKey {
         Method m;
         Class entityClass;
+        String sql;
 
         public CallKey(Method m, Class entityClass) {
             this.m = m;
             this.entityClass = entityClass;
         }
 
+        public CallKey(Method m, Class entityClass,String sql) {
+            this.m = m;
+            this.entityClass = entityClass;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CallKey callKey = (CallKey) o;
+
+            if (!m.equals(callKey.m)) return false;
+            if (!entityClass.equals(callKey.entityClass)) return false;
+            return sql != null ? sql.equals(callKey.sql) : callKey.sql == null;
+        }
+
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((entityClass == null) ? 0 : entityClass.hashCode());
-            result = prime * result + ((m == null) ? 0 : m.hashCode());
+            int result = m.hashCode();
+            result = 31 * result + entityClass.hashCode();
+            result = 31 * result + (sql != null ? sql.hashCode() : 0);
             return result;
         }
-
-        @Override
-        public boolean equals(Object obj) {
-
-            CallKey other = (CallKey) obj;
-            if (other.entityClass == this.entityClass && this.m.equals(other.m)) {
-                return true;
-            } else {
-                return false;
-            }
-
-        }
-
     }
 
 }

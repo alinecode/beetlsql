@@ -4,7 +4,6 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.annotatoin.AssignID;
-import org.beetl.sql.core.annotatoin.SqlProvider;
 import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
 import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
 import org.beetl.sql.core.db.*;
@@ -32,7 +31,7 @@ public class SQLScript {
     final String dbName;
     private List<SQLResultListener> listener;
 
-	
+
 
 //	final QueryMapping queryMapping = QueryMapping.getInstance();
 
@@ -67,18 +66,12 @@ public class SQLScript {
     }
 
     protected SQLResult run(Map<String, Object> paras, String parentId) {
-        GroupTemplate gt;
-        Template t;
-        if (sqlSource.getId().startsWith(SqlProvider.SQL_PREFIX)){
-            gt = sm.beetl.getStringGroupTemplate();
-            t = gt.getTemplate(sqlSource.getTemplate());
-        } else {
-            gt = sm.beetl.getGroupTemplate();
-            if (parentId != null) {
+        GroupTemplate gt = sm.beetl.getGroupTemplate();
+        Template t = null;
+        if (parentId != null) {
             t = gt.getTemplate(sqlSource.getId(), parentId);
-            } else {
-                t = gt.getTemplate(sqlSource.getId());
-            }
+        } else {
+            t = gt.getTemplate(sqlSource.getId());
         }
 
         List<SQLParameter> jdbcPara = new LinkedList<SQLParameter>();
@@ -99,11 +92,11 @@ public class SQLScript {
         //sql 脚本执行后回掉
         List<SQLResultListener> scriptListeners = (List<SQLResultListener>)t.getCtx().getGlobal("_listener");
         if(scriptListeners==null) {
-        	return  result;
+            return  result;
         }
         if(this.listener==null) {
-        	this.listener = scriptListeners;
-        	return result;
+            this.listener = scriptListeners;
+            return result;
         }
         this.listener.addAll(scriptListeners);
         return result;
@@ -115,40 +108,40 @@ public class SQLScript {
      * @param target
      */
     protected void checkAnnotatonBeforeSelect(Class target,Map<String, Object> paras) {
-       ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
-       if(an.getObjectBuilders().isEmpty()) {
-    	   return ;
-       }
-       for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
-    	   Object builder = holder.getInstance();
-    	   if(builder instanceof ObjectSelectBuilder ) {
-        		   ((ObjectSelectBuilder)builder).beforeSelect(target, this, holder.getBeanAnnotaton(),paras);
-    	   }
-    	  
-    	 
-       }
+        ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
+        if(an.getObjectBuilders().isEmpty()) {
+            return ;
+        }
+        for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
+            Object builder = holder.getInstance();
+            if(builder instanceof ObjectSelectBuilder ) {
+                ((ObjectSelectBuilder)builder).beforeSelect(target, this, holder.getBeanAnnotaton(),paras);
+            }
+
+
+        }
 
     }
-    
+
     protected List checkAnnotatonAfterSelect(Class target,List entitys,SQLResult sqlResult){
-    	 ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
-         if(an.getObjectBuilders().isEmpty()) {
-      	   return entitys;
-         }
-         List newList = entitys;
-         for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
-      	   Object builder = holder.getInstance();
-      	   if(builder instanceof ObjectSelectBuilder ) {
-      		 newList =  ((ObjectSelectBuilder)builder).afterSelect(target, newList,this, holder.getBeanAnnotaton(),sqlResult);
-      	   }
-      	 
-         }
-         return newList;
-         
-        
+        ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
+        if(an.getObjectBuilders().isEmpty()) {
+            return entitys;
+        }
+        List newList = entitys;
+        for(ObjectBuilderHolder holder:an.getObjectBuilders()) {
+            Object builder = holder.getInstance();
+            if(builder instanceof ObjectSelectBuilder ) {
+                newList =  ((ObjectSelectBuilder)builder).afterSelect(target, newList,this, holder.getBeanAnnotaton(),sqlResult);
+            }
+
+        }
+        return newList;
+
+
     }
-    
-    
+
+
 
     public int insert(Object paras) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -326,10 +319,10 @@ public class SQLScript {
     }
 
     public <T> List<T> select(Class<T> clazz, Map<String, Object> paras, RowMapper<T> mapper) {
-    	//
+        //
         checkAnnotatonBeforeSelect(clazz, paras);
-    	//运行sql模板，获取实际的sql语句
-    	SQLResult result = run(paras);
+        //运行sql模板，获取实际的sql语句
+        SQLResult result = run(paras);
         String sql = result.jdbcSql;
         List<SQLParameter> objs = result.jdbcPara;
         ResultSet rs = null;
@@ -366,13 +359,13 @@ public class SQLScript {
             resultList = this.checkAnnotatonAfterSelect(clazz, resultList, result);
             //sql 脚本里通过listener 实现最后处理
             if (this.getListener() != null) {
-           	 	for (SQLResultListener listener : getListener()) {
+                for (SQLResultListener listener : getListener()) {
                     listener.dataSelectd(resultList,paras,this.sm,result);
                 }
-             
-           }
-           
-            
+
+            }
+
+
             return resultList;
         } catch (SQLException e) {
             this.callInterceptorAsException(ctx, e);
@@ -396,7 +389,7 @@ public class SQLScript {
             // 如果是Map的子类或者父类，返回List<Map<String,Object>>
             resultList = new ArrayList<T>();
             while (rs.next()) {
-            	
+
                 Map map = beanProcessor.toMap(this.sqlSource.getId(), clazz, rs);
                 resultList.add((T) map);
             }
@@ -588,13 +581,13 @@ public class SQLScript {
         int[] jdbcRets = new int[list.size()];
         // 执行jdbc
         try {
-        	//记录不同sql对应的PreparedStatement
-        	Map<String,PreparedStatement> batchPs = new HashMap<String,PreparedStatement>();
-        	//上下文
-        	Map<String,InterceptorContext> batchCtx = new HashMap<String,InterceptorContext>();
-        	//不同sql产生的批处理结果，汇总到jdbcRets
-        	Map<String,List<Integer>> batchRet = new HashMap<String,List<Integer>>();
-        	conn = sm.getDs().getMaster();
+            //记录不同sql对应的PreparedStatement
+            Map<String,PreparedStatement> batchPs = new HashMap<String,PreparedStatement>();
+            //上下文
+            Map<String,InterceptorContext> batchCtx = new HashMap<String,InterceptorContext>();
+            //不同sql产生的批处理结果，汇总到jdbcRets
+            Map<String,List<Integer>> batchRet = new HashMap<String,List<Integer>>();
+            conn = sm.getDs().getMaster();
             for (int k = 0; k < list.size(); k++) {
                 Map<String, Object> paras = new HashMap<String, Object>();
                 paras.put("_root", list.get(k));
@@ -611,28 +604,28 @@ public class SQLScript {
                     batchPs.put(result.jdbcSql, ps);
                     batchRet.put(result.jdbcSql, rets);
                 }
-               
+
                 this.setPreparedStatementPara(ps, objs);
                 ps.addBatch();
                 rets.add(k);
                 ctx.getParas().add(new SQLParameter(objs));
             }
-            
+
             for(Entry<String,PreparedStatement> entry:batchPs.entrySet()) {
-            	PreparedStatement ps = entry.getValue();
-            	lastCtx = batchCtx.get(entry.getKey());
-            	 List<Integer> rets  = batchRet.get(entry.getKey());
-	        	 for (Interceptor in : sm.inters) {
-	                 in.before(lastCtx);
-	             }
-            	int[] rs = ps.executeBatch();
-            	for(int i=0;i<rs.length;i++) {
-            		int realIndex = rets.get(i);
-            		jdbcRets[realIndex] = rs[i];
-            	}
-            	this.callInterceptorAsAfter(lastCtx, rs);
+                PreparedStatement ps = entry.getValue();
+                lastCtx = batchCtx.get(entry.getKey());
+                List<Integer> rets  = batchRet.get(entry.getKey());
+                for (Interceptor in : sm.inters) {
+                    in.before(lastCtx);
+                }
+                int[] rs = ps.executeBatch();
+                for(int i=0;i<rs.length;i++) {
+                    int realIndex = rets.get(i);
+                    jdbcRets[realIndex] = rs[i];
+                }
+                this.callInterceptorAsAfter(lastCtx, rs);
             }
-            
+
 
         } catch (SQLException e) {
             this.callInterceptorAsException(lastCtx, e);
@@ -699,7 +692,7 @@ public class SQLScript {
                 if (model != null && this.getListener()!=null) {
                     for (SQLResultListener listener : this.getListener()) {
                         listener.dataSelectd(Arrays.asList(model),paras,this.sm,result);
-                      
+
                     }
                 }
             } catch (BeetlSQLException ex) {
@@ -808,31 +801,31 @@ public class SQLScript {
         }
         return rs;
     }
-    
+
     public int[] sqlReadyBatchExecuteUpdate(SQLBatchReady  batch) {
 
         String sql = this.sql;
         List<Object[] > args = batch.getArgs();
         if(args.isEmpty()) {
-        	return new int[0];
+            return new int[0];
         }
         InterceptorContext ctx = null;
         Connection conn  =null;
         PreparedStatement ps =null;
         int[] rs = null;
         try {
-        	
+
             for(int i=0;i<args.size();i++) {
-            	Object[] jdbcArgs = args.get(i);
-            	List<SQLParameter> objs = toSQLParameters(jdbcArgs);
-            	if(i==0) {
-            		conn  = sm.getDs().getConn(id, true, sql, objs);
-            		ctx = this.callInterceptorAsBefore(this.id, sql, true, objs, this.getSQLReadyParas(Arrays.asList(jdbcArgs)));
-            		ps = conn.prepareStatement(sql);
-            	}
-            	 this.setPreparedStatementPara(ps, objs);
-            	 ps.addBatch();
-            
+                Object[] jdbcArgs = args.get(i);
+                List<SQLParameter> objs = toSQLParameters(jdbcArgs);
+                if(i==0) {
+                    conn  = sm.getDs().getConn(id, true, sql, objs);
+                    ctx = this.callInterceptorAsBefore(this.id, sql, true, objs, this.getSQLReadyParas(Arrays.asList(jdbcArgs)));
+                    ps = conn.prepareStatement(sql);
+                }
+                this.setPreparedStatementPara(ps, objs);
+                ps.addBatch();
+
             }
             rs = ps.executeBatch();
             this.callInterceptorAsAfter(ctx, rs);
@@ -843,10 +836,10 @@ public class SQLScript {
             clean(true, conn, ps);
         }
         return rs;
-        
-        
-        
-        
+
+
+
+
     }
 
     private void setPreparedStatementPara(PreparedStatement ps, List<SQLParameter> objs) throws SQLException {
@@ -871,10 +864,10 @@ public class SQLScript {
                     if (conn != null) {
                         // colse 不一定能保证能自动commit
                         if (isUpdate && !conn.getAutoCommit()) {
-                        
-                        	conn.commit();
+
+                            conn.commit();
                         }
-                            
+
                         conn.close();
                     }
                 } catch (SQLException e) {
@@ -987,11 +980,11 @@ public class SQLScript {
             for (Entry<String, AssignID> entry : ids.entrySet()) {
                 String attrName = entry.getKey();
                 Object value = BeanKit.getBeanProperty(obj, attrName);
-	             // 已经有值的列尊重调用者设置的值，@lidaoguang
-                 // 严格判断 null 和 empty 的 value，支持 ID 类型为 String 或者 Char 类型的情况 @larrykoo
-	             if (!StringKit.isNullOrEmpty(value)) {
-	                 continue;
-	             }
+                // 已经有值的列尊重调用者设置的值，@lidaoguang
+                // 严格判断 null 和 empty 的 value，支持 ID 类型为 String 或者 Char 类型的情况 @larrykoo
+                if (!StringKit.isNullOrEmpty(value)) {
+                    continue;
+                }
                 AssignID assignId = entry.getValue();
                 String algorithm = assignId.value();
                 String param = assignId.param();
@@ -1016,14 +1009,15 @@ public class SQLScript {
     public String getSql() {
         return sql;
     }
-    
+
     public  List<SQLResultListener> getListener() {
-		 return listener;
-	 }
+        return listener;
+    }
 
     public void setListener(List<SQLResultListener> listener) {
-		 this.listener = listener;
-	 }
+        this.listener = listener;
+    }
 
 
 }
+

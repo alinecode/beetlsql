@@ -62,20 +62,27 @@ public class QuickTest {
         sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
 
         UserDao dao = sql.getMapper(UserDao.class);
-        dao.selectAll1(1);
+////        User user = dao.selectAll1(1);
+//
+//        User user = dao.selectAll2(1);
+//        int count = dao.getCount("lijz");
 
-        Map paras = new HashMap();
-        paras.put("name","lijz");
-        PageQuery pageQuery = new PageQuery();
+       int count =  dao.deleteUser(24);
+       System.out.print(count);
 
-//        pageQuery.setParas(paras);
-        pageQuery.setPara("name","lijz");
 
-        Object obj = pageQuery.getParas();
-
-        dao.getIds3(pageQuery);
-        List<User> list = pageQuery.getList();
-        System.out.println(list.size());
+//        Map paras = new HashMap();
+//        paras.put("name","lijz");
+//        PageQuery pageQuery = new PageQuery();
+//
+////        pageQuery.setParas(paras);
+//        pageQuery.setPara("name","lijz");
+//
+//        Object obj = pageQuery.getParas();
+//
+//        dao.getIds3(pageQuery);
+//        List<User> list = pageQuery.getList();
+//        System.out.println(list.size());
 
       
 

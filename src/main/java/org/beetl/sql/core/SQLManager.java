@@ -24,7 +24,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
-import org.beetl.sql.core.annotatoin.SqlProvider;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -49,7 +48,7 @@ import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.MDCodeGen;
 import org.beetl.sql.ext.gen.SourceGen;
-import sun.font.CompositeGlyphMapper;
+
 
 /**
  * Beetsql 操作入口
@@ -325,15 +324,7 @@ public class SQLManager {
      * @return
      */
     public SQLScript getScript(String id) {
-        SQLSource source;
-        if (id.startsWith(SqlProvider.SQL_PREFIX)){
-            source = new SQLSource();
-            int separator = id.indexOf(SqlProvider.SQL_ID_SEPARATOR);
-            source.setId(id.substring(0,separator));
-            source.setTemplate(id.substring(separator+SqlProvider.SQL_ID_SEPARATOR.length()));
-            return new SQLScript(source, this);
-        }
-        source = sqlLoader.getSQL(id);
+        SQLSource source = sqlLoader.getSQL(id);
         if (source == null) {
             String path = this.idNameConversion.getPath(id);
             SQLLoader sqlLoader = this.getSqlLoader();
@@ -347,7 +338,8 @@ public class SQLManager {
             }
             throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "未能找到" + id + "对应的sql,搜索路径:" + envInfo);
         }
-        return new SQLScript(source, this);
+        SQLScript script = new SQLScript(source, this);
+        return script;
     }
 
     /**
@@ -620,10 +612,12 @@ public class SQLManager {
         Long totalRow = query.getTotalRow();
         List<T> list = null;
         if (paras == null) {
+            root = new HashMap<String, Object>(8);
             root = new HashMap<String, Object>();
         } else if(paras instanceof Map) {
             root = (Map<String, Object>) paras;
         } else {
+            root = new HashMap<String, Object>(8);
             root = new HashMap<String, Object>(1);
             root.put("_root", paras);
         }
@@ -1337,7 +1331,7 @@ public class SQLManager {
      * @return 受影响条数
      */
     protected int upsert(Object obj,boolean template) {
-    	Class c = obj.getClass();
+        Class c = obj.getClass();
         String tableName = this.nc.getTableName(c);
         TableDesc table = this.metaDataManager.getTable(tableName);
         ClassDesc classDesc = table.getClassDesc(this.nc);
@@ -1730,7 +1724,7 @@ public class SQLManager {
         SQLScript script = new SQLScript(source, this);
         return script.sqlReadyExecuteUpdate(p);
     }
-    
+
     public int[] executeBatchUpdate(SQLBatchReady batch) {
         SQLSource source = new SQLSource("native.batch." + batch.getSql(), batch.getSql());
         SQLScript script = new SQLScript(source, this);
@@ -2224,7 +2218,8 @@ public class SQLManager {
         this.metaDataManager.addTableVirtuals(realTable,virtualTable);
     }
 
-    
+
 
 
 }
+

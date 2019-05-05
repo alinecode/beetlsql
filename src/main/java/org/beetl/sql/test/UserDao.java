@@ -13,7 +13,15 @@ public interface UserDao extends BaseDao<User> {
     List<Long> getIds();
 
     @SqlProvider(provider = UserSqlProvider.class)
-    User selectAll1(@Param("id") Integer id);
+    User selectAll1( Integer id);
+
+    @SqlProvider(provider = UserSqlProvider.class)
+    @Sql()
+    User selectAll2( Integer id);
+
+    @SqlProvider(provider = UserSqlProvider.class,method="delete2")
+    @Sql()
+    int deleteUser(Integer id);
 
     void getIds3(PageQuery query);
 

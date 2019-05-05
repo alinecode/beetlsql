@@ -1,7 +1,6 @@
 package org.beetl.sql.core.mapper;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.PageQuery;
@@ -16,7 +15,7 @@ public class PageQueryMapperInvoke implements MapperInvoke {
 
 	@Override
 	public Object call(SQLManager sm, Class entityClass, String sqlId, Method m, Object[] args) {
-		MethodDesc desc = MethodDesc.getMetodDesc(sm,entityClass,m,sqlId);
+		MethodDesc desc = MethodDesc.getMetodDescBySqlId(sm,entityClass,m,sqlId);
 		PageQueryParamter parameter = (PageQueryParamter)desc.parameter;
 		Class returnType = m.getReturnType();
 		PageQuery query = (PageQuery)parameter.get(args);

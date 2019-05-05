@@ -19,11 +19,7 @@ public @interface DateTemplate {
 	public static String LESS_OPT = "<";
 	public static String LARGE_OPT = ">=";
 	
-	
-	/**
-	 * minDate,maxDate
-	 * @return
-	 */
+
 	String accept() default ""; //默认
 	String compare() default "";
 	

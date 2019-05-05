@@ -46,3 +46,9 @@ batchUpdate
 ===
 
 	update user set department_id = 1 where id  in ( #join(users,"id")#)
+
+
+getCount
+===
+
+    select count(1) from user where name = #name#
