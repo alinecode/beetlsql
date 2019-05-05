@@ -139,7 +139,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
     protected String getSelectTemplate(Class<?> cls) {
-        String condition = " where 1=1 " + lineSeparator;
+        StringBuilder condition = new StringBuilder(" where 1=1 " + lineSeparator);
         String tableName = nameConversion.getTableName(cls);
         TableDesc table = this.metadataManager.getTable(tableName);
         ClassDesc classDesc = table.getClassDesc(cls, nameConversion);
@@ -150,28 +150,22 @@ public abstract class  AbstractDBStyle implements DBStyle {
             String col = cols.next();
             String attr = attrs.next();
             if (classDesc.isDateType(attr)) {
-
-                try {
                     DateTemplate dateTemplate = BeanKit.getAnnoation(classDesc.getTargetClass(), attr, DateTemplate.class);
+                    String sql;
                     if (dateTemplate == null){
-                        continue;
+                        sql = this.appendWhere(cls, table, col, attr);
+                    } else {
+                        sql = this.genDateAnnotatonSql(dateTemplate, cls, col);
                     }
-                    String sql = this.genDateAnnotatonSql(dateTemplate, cls, col);
-                    condition = condition + sql;
-                    continue;
-                } catch (Exception e) {
-                    //不可能发生
-                    throw new RuntimeException("获取metod出错" + e.getMessage());
-                }
-
+                    condition.append(sql);
             } else {
-                condition = condition + appendWhere(cls, table, col, attr);
+                condition.append(appendWhere(cls, table, col, attr));
             }
 
 //			condition = condition + appendWhere(cls,table, col);
 
         }
-        return condition;
+        return condition.toString();
     }
 
     @Override
