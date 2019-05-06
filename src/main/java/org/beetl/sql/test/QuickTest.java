@@ -62,13 +62,11 @@ public class QuickTest {
         sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
 
         UserDao dao = sql.getMapper(UserDao.class);
-////        User user = dao.selectAll1(1);
-//
-//        User user = dao.selectAll2(1);
-//        int count = dao.getCount("lijz");
 
-       int count =  dao.deleteUser(24);
-       System.out.print(count);
+        User user = new User();
+        user.setName("ccc");
+
+        dao.insert(user);
 
 
 //        Map paras = new HashMap();
