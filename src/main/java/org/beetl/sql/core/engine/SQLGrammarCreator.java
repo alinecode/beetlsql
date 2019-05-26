@@ -14,6 +14,6 @@ public class SQLGrammarCreator extends GrammarCreator {
 
     public PlaceholderST createTextOutputSt2(Expression exp, FormatExpression format) {
 
-        return new SQLPlaceholderST(exp, format, null);
+        return new PlaceholderST(exp, format, null);
     }
 }

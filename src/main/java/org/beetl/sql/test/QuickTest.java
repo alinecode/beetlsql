@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * pom.xml  中过滤了跟test相关的包，sql资源文件，想要运行起来，需要暂时去掉exclude
  * @author xiandafu
  *
  */
@@ -77,8 +77,8 @@ public class QuickTest {
         sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
 
         UserDao dao = sql.getMapper(UserDao.class);
-        User user = dao.unique(23);
-        System.out.println(user.getRole().getName());
+        User user = dao.findOne(1);
+        System.out.println(user.getDepartment().getName());
       
 
 
