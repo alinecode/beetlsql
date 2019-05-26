@@ -31,7 +31,7 @@ public class DebugInterceptor implements Interceptor {
 	static String sqlManager = SQLManager.class.getName();
 	static String queryClassName = Query.class.getName();
 	static String lambdaQueryName = LambdaQuery.class.getName();
-	
+
 	// debug 输入优先输出的类，而不是SQLManager或者是BaseMapper
 	String preferredShowClass;
 
@@ -74,7 +74,6 @@ public class DebugInterceptor implements Interceptor {
 		int line = bussinessCode.getLineNumber();
 		sb.append("┣ 位置：\t " + className + "." + mehodName + "(" + bussinessCode.getFileName() + ":" + line + ")"
 				+ lineSeparator);
-
 		ctx.put("logs", sb);
 	}
 
@@ -85,18 +84,15 @@ public class DebugInterceptor implements Interceptor {
 			String name = traces[i].getClassName();
 			if (className != null && className.equals(name)) {
 				return i;
-
 			} else if (name.equals(mapperName)) {
 				// 越过sun jdk 代理
-			    int skipLine = JavaType.isJdk8()?3:2;
+				int skipLine = JavaType.isJdk8() ? 3 : 2;
 				return i + skipLine;
-			} else if(name.equals(lambdaQueryName)) {
-			    return i +1;
-			}else if(name.equals(queryClassName)) {
-			    return i+1;
-			}
-			else if (name.equals(sqlManager)) {
-			    
+			} else if (name.equals(lambdaQueryName)) {
+				return i + 1;
+			} else if (name.equals(queryClassName)) {
+				return i + 1;
+			} else if (name.equals(sqlManager)) {
 				return i + 1;
 			}
 		}
@@ -104,8 +100,6 @@ public class DebugInterceptor implements Interceptor {
 		throw new IllegalStateException();
 
 	}
-	
-	
 
 	/**
 	 * 如果自己封装了beetlsql 有自己的util，并不想打印util类，而是业务类，可以在这里写util类
@@ -147,12 +141,10 @@ public class DebugInterceptor implements Interceptor {
 			} else {
 				sb.append("┣ 结果：\t [").append(ctx.getResult()).append("]").append(lineSeparator);
 			}
-
 		}
 		sb.append("┗━━━━━ Debug [").append(this.getSqlId(formatSql(ctx.getSqlId()))).append("] ━━━")
 				.append(lineSeparator);
 		println(sb.toString());
-
 	}
 
 	protected boolean isDebugEanble(String sqlId) {
@@ -196,6 +188,10 @@ public class DebugInterceptor implements Interceptor {
 		System.out.println(str);
 	}
 
+	protected void error(String str) {
+		System.out.println(str);
+	}
+
 	protected String getSqlId(String sqlId) {
 		if (sqlId.length() > 50) {
 			sqlId = sqlId.substring(0, 50);
@@ -215,8 +211,7 @@ public class DebugInterceptor implements Interceptor {
 		StringBuilder sb = (StringBuilder) ctx.get("logs");
 		sb.append("┗━━━━━ Debug [ ERROR:").append(ex != null ? ex.getMessage().replace(lineSeparator, "") : "")
 				.append("] ━━━").append(lineSeparator);
-		println(sb.toString());
-
+		error(sb.toString());
 	}
 
 	protected String formatSql(String sql) {
@@ -242,7 +237,7 @@ public class DebugInterceptor implements Interceptor {
 		sb.append(ex != null ? ex.getMessage() : "");
 		sb.append(" 位于 ").append(sqlId).append(", paras:").append(formatParas(ctx.getParas()));
 
-		this.println(sb.toString());
+		this.error(sb.toString());
 		return;
 	}
 
