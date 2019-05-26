@@ -8,7 +8,7 @@ import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
 
 @SqlResource("user")
-public interface UserDao extends BaseDao<User> {
+public interface UserDao extends BaseDao {
 
     List<Long> getIds();
 

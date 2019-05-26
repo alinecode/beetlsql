@@ -79,6 +79,8 @@ public class QuickTest {
         UserDao dao = sql.getMapper(UserDao.class);
         User user = dao.findOne(1);
 
+        System.out.println(user.getId());
+
       
 
 

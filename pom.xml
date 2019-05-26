@@ -303,7 +303,7 @@
 				<configuration>
 					<charset>utf-8</charset>
 					<encoding>utf-8</encoding>
-
+                    <additionalparam>-Xdoclint:none</additionalparam>
 					<quiet>true</quiet>
 				</configuration>
 				<executions>

@@ -526,25 +526,26 @@ public class MethodDesc {
             this.entityClass = entityClass;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
 
-            CallKey callKey = (CallKey) o;
+			CallKey callKey = (CallKey) o;
 
-            if (!m.equals(callKey.m)) return false;
-            if (!entityClass.equals(callKey.entityClass)) return false;
-            return sql != null ? sql.equals(callKey.sql) : callKey.sql == null;
-        }
+			if (!m.equals(callKey.m))
+				return false;
+			return entityClass != null ? entityClass.equals(callKey.entityClass) : callKey.entityClass == null;
+		}
 
-        @Override
-        public int hashCode() {
-            int result = m.hashCode();
-            result = 31 * result + entityClass.hashCode();
-            result = 31 * result + (sql != null ? sql.hashCode() : 0);
-            return result;
-        }
-    }
+		@Override
+		public int hashCode() {
+			int result = m.hashCode();
+			result = 31 * result + (entityClass != null ? entityClass.hashCode() : 0);
+			return result;
+		}
+	}
 
 }
