@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Tail  {
 	/**
-	 * 方法名称，参数必须是string,object
-	 * @return
+	 *
+	 * @return 方法名称，参数必须是string,object
 	 */
 	public String set() default "set";
 }

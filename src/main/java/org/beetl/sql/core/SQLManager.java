@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+import org.beetl.core.Context;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.KeyHolder;
@@ -48,8 +49,8 @@ import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.MDCodeGen;
 import org.beetl.sql.ext.gen.SourceGen;
-import sun.font.CompositeGlyphMapper;
-import org.beetl.core.Context;
+
+
 /**
  * Beetsql 操作入口
  *
@@ -304,19 +305,11 @@ public class SQLManager {
         return result;
     }
 
-    /**
-     * 内部使用，用于use等函数
-     *
-     * @param id
-     * @param paras
-     * @param ctx
-     * @return
-     */
-    public SQLResult getSQLResult(String id, Map<String, Object> paras, Context ctx) {
 
-        SQLScript script = getScript(id);
-        return script.run(paras, ctx);
-    }
+	public SQLResult getSQLResult(String id, Map<String, Object> paras, Context ctx) {
+		SQLScript script = getScript(id);
+		return script.run(paras, ctx);
+	}
 
     /**
      * 得到指定sqlId的sqlscript对象
@@ -612,12 +605,14 @@ public class SQLManager {
         Map<String, Object> root = null;
         Long totalRow = query.getTotalRow();
         List<T> list = null;
-        if (paras == null) {
-            root = new HashMap<String, Object>();
-        } else {
-            root = new HashMap<String, Object>();
-            root.put("_root", paras);
-        }
+		if (paras == null) {
+			root = new HashMap<String, Object>();
+		} else if(paras instanceof Map) {
+			root = (Map<String, Object>) paras;
+		} else {
+			root = new HashMap<String, Object>(1);
+			root.put("_root", paras);
+		}
 
         if (query.getOrderBy() != null&&query.getOrderBy().length()!=0) {
             root.put(DBStyle.ORDER_BY, query.getOrderBy());

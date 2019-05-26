@@ -24,7 +24,7 @@ public class BaseAttributeBuilder implements AttributePersistBuilder,AttributeSe
      * @param sqlId
      * @param typeParameter
      * @param property
-     * @return
+     * @return 对象值
      * @throws SQLException
      */
 	@Override

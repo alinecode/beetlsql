@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 public @interface LogicDelete  {
     /**
      * 
-     * @return
+     * @return  设置逻辑删除值
      */
 	public int value() default 0;
 }

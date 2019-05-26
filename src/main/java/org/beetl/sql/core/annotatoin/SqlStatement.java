@@ -9,23 +9,23 @@ import java.lang.annotation.Target;
 public @interface SqlStatement {
 	
 	/**
-	 *  参数名列表，
-	 * @return
+	 *
+	 * @return 参数名列表
 	 */
 	
 	String params() default "";
 
 	/**
-	 * statement类型.
+	 *
 	 * 
-	 * @return
+	 * @return statement类型.
 	 */
 	SqlStatementType type() default SqlStatementType.AUTO;
 	
 	/**
 	 * @return 返回类型，默认是Mapper类的泛型，需要特别声明才用这个
 	 */
-	
+	@Deprecated
 	Class returnType() default Void.class;
 
 

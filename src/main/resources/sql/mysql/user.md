@@ -3,10 +3,10 @@ insert
 
 	insert user (name,age) value(#name#,#age#)
 
-selectAll1
+selectAll
 ===
 	select * from user where 1=1 and 
-	`id` = #id#
+	`id` = ${id}
 	order by id desc
 
 updateTest
