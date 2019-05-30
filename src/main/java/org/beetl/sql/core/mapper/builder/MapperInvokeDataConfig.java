@@ -76,6 +76,7 @@ public final class MapperInvokeDataConfig {
         INTERNAL_AMI_METHOD.put("templatePage", new TemplatePageAmi());
         INTERNAL_AMI_METHOD.put("createQuery", new QueryAmi());
         INTERNAL_AMI_METHOD.put("createLambdaQuery", new LambdaQueryAmi());
+        INTERNAL_AMI_METHOD.put("getTargetEntity", new GetTargetEntityAmi());
 
 
         BASE_MAPPER_BUILDER = new MapperConfigBuilder();

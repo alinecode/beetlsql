@@ -647,6 +647,59 @@ public class SQLScript {
         return single(clazz, mapper, objId, false);
     }
 
+
+    public boolean existById(Class clazz,Object objId){
+		MetadataManager mm = this.sm.getDbStyle().getMetadataManager();
+		TableDesc table = mm.getTable(this.sm.getNc().getTableName(clazz));
+		ClassDesc classDesc = table.getClassDesc(clazz, this.sm.getNc());
+		Map<String, Object> paras = new HashMap<String, Object>();
+		this.setIdsParas(classDesc, objId, paras);
+		SQLResult result = run(paras);
+		String sql = result.jdbcSql;
+		List<SQLParameter> objs = result.jdbcPara;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, false, objs, paras);
+		if (ctx.getResult() != null) {
+			this.callInterceptorAsAfter(ctx, ctx.getResult());
+			return (Boolean) ctx.getResult();
+		}
+		sql = ctx.getSql();
+		objs = ctx.getParas();
+		Connection conn = null;
+		boolean hasResult = false ;
+		try {
+			conn = sm.getDs().getConn(id, false, sql, objs);
+			ps = conn.prepareStatement(sql);
+			this.setPreparedStatementPara(ps, objs);
+			rs = ps.executeQuery();
+
+			try {
+				BeanProcessor beanProcessor = this.getBeanProcessor();
+				rs.next();
+				int count = rs.getInt(1);
+				hasResult =  count!=0;
+			} catch (BeetlSQLException ex) {
+
+				if (ex.code == BeetlSQLException.UNIQUE_EXCEPT_ERROR) {
+					throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "exsit" + table.getName() + ",但数据库未找到结果集:主键是" + objId);
+				} else {
+					throw ex;
+				}
+			}
+			this.callInterceptorAsAfter(ctx, hasResult);
+		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		} finally {
+			clean(false, conn, ps, rs);
+		}
+		return hasResult;
+
+	}
+
+
     public <T> T single(Class<T> clazz, RowMapper<T> mapper, Object objId, boolean throwException) {
 
         MetadataManager mm = this.sm.getDbStyle().getMetadataManager();

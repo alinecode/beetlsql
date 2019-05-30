@@ -1,18 +1,5 @@
 package org.beetl.sql.core;
 
-import static org.beetl.sql.core.kit.ConstantEnum.DELETE_BY_ID;
-import static org.beetl.sql.core.kit.ConstantEnum.DELETE_TEMPLATE_BY_ID;
-import static org.beetl.sql.core.kit.ConstantEnum.INSERT;
-import static org.beetl.sql.core.kit.ConstantEnum.INSERT_TEMPLATE;
-import static org.beetl.sql.core.kit.ConstantEnum.LOCK_BY_ID;
-import static org.beetl.sql.core.kit.ConstantEnum.SELECT_ALL;
-import static org.beetl.sql.core.kit.ConstantEnum.SELECT_BY_ID;
-import static org.beetl.sql.core.kit.ConstantEnum.SELECT_BY_TEMPLATE;
-import static org.beetl.sql.core.kit.ConstantEnum.SELECT_COUNT_BY_TEMPLATE;
-import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_ALL;
-import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_BY_ID;
-import static org.beetl.sql.core.kit.ConstantEnum.UPDATE_TEMPLATE_BY_ID;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -49,6 +36,8 @@ import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.MDCodeGen;
 import org.beetl.sql.ext.gen.SourceGen;
+
+import static org.beetl.sql.core.kit.ConstantEnum.*;
 
 
 /**
@@ -357,6 +346,9 @@ public class SQLManager {
                 tempSource = this.dbStyle.genSelectById(cls);
                 break;
             }
+			case EXIST_BY_ID:{
+				tempSource = this.dbStyle.genExistSql(cls);
+			}
             case SELECT_BY_TEMPLATE: {
                 tempSource = this.dbStyle.genSelectByTemplate(cls);
                 break;
@@ -911,6 +903,8 @@ public class SQLManager {
         return this.selectSingle(id, paras, Integer.class);
     }
 
+
+
     /**
      * 将查询结果返回成Integer类型
      *
@@ -1106,6 +1100,18 @@ public class SQLManager {
 
         return this.insert(clazz, paras, false);
     }
+
+	/**
+	 * 是否有此对象
+	 * @param clazz
+	 * @param pk 主健
+	 * @return
+	 */
+	public boolean exist(Class<?> clazz,Object pk){
+		SQLScript script = getScript(clazz, EXIST_BY_ID);
+		return script.existById(clazz,pk);
+
+	}
 
     private int generalInsert(Class clazz, Object paras, boolean autoAssignKey, boolean template) {
         if (autoAssignKey) {

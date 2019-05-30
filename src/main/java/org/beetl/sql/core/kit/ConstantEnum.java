@@ -20,6 +20,7 @@ public enum ConstantEnum {
     INSERT_TEMPLATE("_gen_insertTemplate"),
     DELETE_TEMPLATE_BY_ID("_gen_deleteTemplateById"),
     LOCK_BY_ID("_gen_selectByIdForUpdate"),
+	EXIST_BY_ID("_gen_existById"),
     ;
 
     private final String classSQL;

@@ -90,6 +90,15 @@ public abstract class  AbstractDBStyle implements DBStyle {
         return new SQLTableSource(new StringBuilder("select * from ").append(getTableName(table)).append(condition).toString());
     }
 
+	@Override
+	public SQLSource genExistSql(Class<?> cls){
+		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = this.metadataManager.getTable(tableName);
+		String condition = appendIdCondition(cls);
+		return new SQLTableSource(new StringBuilder("select count(1) from ").append(getTableName(table)).append(condition).toString());
+
+	}
+
     @Override
     public SQLSource genSelectByIdForUpdate(Class<?> cls){
         SQLSource source = genSelectById(cls);

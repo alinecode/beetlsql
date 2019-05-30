@@ -53,11 +53,11 @@ public class QuickTest {
 //        		JavaType jacksonType = parameterizedType(retType,pt);
 //        		List<Role> list = mapper.readValue(roles, jacksonType);
 //        		int a =1 ;
-//        		
+//
 //        	}
 //        }
-        
-        
+
+
 
 //
         // DB2SqlStyle style = new DB2SqlStyle();
@@ -77,9 +77,10 @@ public class QuickTest {
         sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
 
         UserDao dao = sql.getMapper(UserDao.class);
-        User user = dao.findOne(1);
 
-        System.out.println(user.getId());
+        boolean has = dao.exist(1);
+
+        System.out.println(has);
 
       
 

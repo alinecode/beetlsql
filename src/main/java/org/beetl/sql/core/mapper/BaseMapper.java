@@ -124,6 +124,11 @@ public interface BaseMapper<T> {
     T single(Object key);
 
 
+
+     default boolean exist(Object key){
+     	return this.getSQLManager().exist(this.getTargetEntity(),key);
+	 }
+
     /**
      * 根据主键获取对象，如果在事物中执行会添加数据库行级锁(select * from table where id = ? for update)，如果对象不存在，返回null
      *
@@ -219,4 +224,8 @@ public interface BaseMapper<T> {
      * @return
      */
     LambdaQuery<T> createLambdaQuery();
+
+
+    /*得到mapper的范型类*/
+	Class getTargetEntity();
 }
