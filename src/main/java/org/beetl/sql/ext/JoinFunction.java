@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.beetl.core.Context;
 import org.beetl.core.Function;
-import org.beetl.core.IteratorStatus;
+import org.beetl.core.GeneralLoopStatus;
+import org.beetl.core.ILoopStatus;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 /**
@@ -20,13 +21,13 @@ public class JoinFunction implements Function {
 		if(temp==null) {
 		    throw new NullPointerException("join 参数为null");
 		}
-		
-		IteratorStatus it = IteratorStatus.getIteratorStatus(temp);
+
+		ILoopStatus it = GeneralLoopStatus.getIteratorStatus(temp);
 		if(it==null) {
 		    throw new NullPointerException("join 参数为必须为集合，数组，Iterator");
 		}
 		if(paras.length==2) {
-		    //获取属性join(objs,"name");
+		    //获取对象属性join(objs,"name");
 		    it = getValue(it,(String)paras[1]);
 		}
 	
@@ -40,17 +41,17 @@ public class JoinFunction implements Function {
 		return null;
 	}
 
-	private IteratorStatus getValue(IteratorStatus it,String attrName) {
+	private ILoopStatus getValue(ILoopStatus it,String attrName) {
 	    LinkedList list = new LinkedList();
 	    while(it.hasNext()) {
 	        list.add(BeanKit.getBeanProperty(it.next(), attrName));
 	    }
 	    
-	    return IteratorStatus.getIteratorStatus(list);
+	    return GeneralLoopStatus.getIteratorStatus(list);
 	}
-	private static String join(IteratorStatus it, List dbParas) {  
+	private static String join(ILoopStatus it, List dbParas) {
        
-        StringBuilder buf = new StringBuilder(it.getSize()*2+1);  
+        StringBuilder buf = new StringBuilder();
         while(it.hasNext()) {
             Object o = it.next();
             if(!it.isFirst()) {
@@ -63,9 +64,7 @@ public class JoinFunction implements Function {
         return buf.toString();  
     }  
 	
-	
-	
-	
+
 	
 	public static void main(String[] args) {
 	    int[] a = {1,2};

@@ -25,6 +25,10 @@ public interface UserDao extends BaseDao<User> {
 
     void getIds3(PageQuery query);
 
+    default User queryById(Integer id){
+    	return this.createLambdaQuery().andEq(User::getId,id).unique();
+	}
+
     // void pageQuery(PageQuery<String> query);
     //
     int getCount(String name);

@@ -2,14 +2,10 @@ package org.beetl.sql.test;
 
 import javax.sql.DataSource;
 
-import org.beetl.sql.core.ClasspathLoader;
-import org.beetl.sql.core.ConnectionSource;
-import org.beetl.sql.core.ConnectionSourceHelper;
-import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.SQLBatchReady;
-import org.beetl.sql.core.SQLLoader;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.UnderlinedNameConversion;
+import org.beetl.core.exception.BeetlException;
+import org.beetl.core.exception.ErrorInfo;
+import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.annotatoin.builder.SampleJsonAtrributeBuilder;
@@ -74,13 +70,28 @@ public class QuickTest {
         Interceptor[] inters = new Interceptor[] { debug };
         final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
         //预先注册一个，否则没有办法使用@Jackson注解
-        sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
 
-        UserDao dao = sql.getMapper(UserDao.class);
+//		}
 
-        boolean has = dao.exist(1);
+		Map map = new HashMap();
+		map.put("retentionType","registerRetention");
+		map.put("startDate","2011-1-1");
+		{
+			SQLResult result = sql.getSQLResult("user.retentionStat",map);
+			System.out.println(result.jdbcSql);
+		}
 
-        System.out.println(has);
+		{
+			map.put("retentionType","firstRechargeRetention");
+			SQLResult result = sql.getSQLResult("user.retentionStat",map);
+			System.out.println(result.jdbcSql);
+		}
+
+//		sql.select("user.retentionStat",User.class,map);
+
+//        boolean has = dao.exist(1);
+//
+//        System.out.println(has);
 
       
 
