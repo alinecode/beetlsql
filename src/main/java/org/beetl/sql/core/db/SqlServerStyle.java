@@ -24,7 +24,7 @@ public class SqlServerStyle extends AbstractDBStyle {
     @Override
     public String getPageSQL(String sql) {
         return "with query as ( select inner_query.*, row_number() over (order by current_timestamp) as beetl_rn from ( "
-                + sql.replaceFirst("(?i)select(\\s+distinct\\s+)?", "$0 top(" + HOLDER_START + PAGE_END + HOLDER_END + ") ") + this.getOrderBy()
+                + sql.replaceFirst("(?is)select(\\s+distinct\\s+)?", "$0 top(" + HOLDER_START + PAGE_END + HOLDER_END + ") ") + this.getOrderBy()
                 + " ) inner_query ) select * from query where beetl_rn between " + HOLDER_START + OFFSET + HOLDER_END + " and " + HOLDER_START + PAGE_END + HOLDER_END;
     }
 
@@ -33,7 +33,7 @@ public class SqlServerStyle extends AbstractDBStyle {
         offset = PageParamKit.sqlServerOffset(this.offsetStartZero, offset);
         long pageEnd = PageParamKit.sqlServerPageEnd(offset, pageSize);
 
-        sql = sql.replaceFirst("(?i)select(\\s+distinct\\s+)?", "$0 top(" + pageEnd + ") ");
+        sql = sql.replaceFirst("(?is)select(\\s+distinct\\s+)?", "$0 top(" + pageEnd + ") ");
 
         int capacity = sql.length() + 190;
         StringBuilder builder = new StringBuilder(capacity);
