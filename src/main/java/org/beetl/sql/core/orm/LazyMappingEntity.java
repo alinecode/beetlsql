@@ -39,6 +39,10 @@ public class LazyMappingEntity extends MappingEntity {
 		final String sqlManagerName = sm.getSQLManagerName();
 		if (sqlId != null) {
 			final Map<String, Object> paras = new HashMap<String, Object>();
+			if(sqlParas!=null&&!sqlParas.isEmpty()) {
+                //外部参数，非映射参数
+                paras.putAll(sqlParas);
+            }
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
 				String attr = entry.getKey();
 				String targetAttr = entry.getValue();
@@ -46,10 +50,7 @@ public class LazyMappingEntity extends MappingEntity {
 				paras.put(targetAttr, value);
 
 			}
-			if(sqlParas!=null&&!sqlParas.isEmpty()) {
-                //外部参数，非映射参数
-                paras.putAll(sqlParas);
-            }
+			
 			LazyEntity lazy = new LazyEntity() {
 
 				@Override
