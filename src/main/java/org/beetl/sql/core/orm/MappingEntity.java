@@ -53,7 +53,7 @@ public class MappingEntity implements java.io.Serializable {
 			TableDesc tableDesc = sm.getMetaDataManager().getTable(tableName);
 			ClassDesc classDesc = tableDesc.getClassDesc(targetClass, sm.getNc());
 			if (classDesc.getIdAttrs().size() == 1 && classDesc.getIdAttrs().containsAll(mapkey.values())) {
-				//外键查询
+				//一次查询所有
 				allInOneQuery(list, tableDesc, classDesc, sm);
 				return;
 
@@ -144,6 +144,11 @@ public class MappingEntity implements java.io.Serializable {
 		StringBuilder key = new StringBuilder();
 		if (sqlId != null) {
 			Map<String, Object> paras = new HashMap<String, Object>();
+			if (sqlParas != null && !sqlParas.isEmpty()) {
+				//外部参数，非映射参数
+				paras.putAll(sqlParas);
+			}
+
 			for (Entry<String, String> entry : this.mapkey.entrySet()) {
 				String attr = entry.getKey();
 				String targetAttr = entry.getValue();
@@ -151,10 +156,6 @@ public class MappingEntity implements java.io.Serializable {
 				paras.put(targetAttr, value);
 				key.append(value).append("_");
 
-			}
-			if (sqlParas != null && !sqlParas.isEmpty()) {
-				//外部参数，非映射参数
-				paras.putAll(sqlParas);
 			}
 
 			String cacheKey = key.toString();
