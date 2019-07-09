@@ -10,18 +10,18 @@ import static org.springframework.util.Assert.notNull;
  * @author woate
  */
 public class BeetlSqlDaoSupport extends DaoSupport {
-    SQLManager sqlManager;
+	SQLManager sqlManager;
 
-    @Override
-    protected void checkDaoConfig() throws IllegalArgumentException {
-        notNull(this.sqlManager, " 'sqlManager' 属性是必须的");
-    }
+	@Override
+	protected void checkDaoConfig() throws IllegalArgumentException {
+		notNull(this.sqlManager, " 'sqlManager' 属性是必须的");
+	}
 
-    public SQLManager getSqlManager() {
-        return sqlManager;
-    }
+	public SQLManager getSqlManager() {
+		return sqlManager;
+	}
 
-    public void setSqlManager(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
-    }
+	public void setSqlManager(SQLManager sqlManager) {
+		this.sqlManager = sqlManager;
+	}
 }

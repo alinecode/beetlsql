@@ -1,9 +1,9 @@
 package org.beetl.sql.core.annotatoin.builder;
 
-import java.lang.annotation.Annotation;
-
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.TableDesc;
+
+import java.lang.annotation.Annotation;
 
 /**
  * 提供entity生成的内置insert/update sql语句
@@ -11,5 +11,5 @@ import org.beetl.sql.core.db.TableDesc;
  *
  */
 public interface AttributePersistBuilder {
-	  public String  toSql(AbstractDBStyle dbStyle,String fieldName, String colName, Annotation an, TableDesc tableDesc);
+	String toSql(AbstractDBStyle dbStyle, String fieldName, String colName, Annotation an, TableDesc tableDesc);
 }

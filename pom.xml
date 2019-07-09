@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql</artifactId>
-	<version>2.12.1.RELEASE</version>
+	<version>2.12.7.RELEASE</version>
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-            <version>3.0.1.RELEASE</version>
+            <version>3.0.8.RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -242,23 +242,27 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>sql/**</exclude>
-                </excludes>
+                <!--<excludes>-->
+                    <!--<exclude>sql/**</exclude>-->
+                <!--</excludes>-->
 			</resource>
 
 		</resources>
 		<plugins>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+                <version>3.6.2</version>
+
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
 					<encoding>UTF-8</encoding>
-                    <excludes>
-                        <exclude>org/beetl/sql/test/**</exclude>
-                    </excludes>
+                    <parameters>true</parameters>
+
+                    <!--<excludes>-->
+                        <!--<exclude>org/beetl/sql/test/**</exclude>-->
+                    <!--</excludes>-->
 				</configuration>
 			</plugin>
 			<plugin>

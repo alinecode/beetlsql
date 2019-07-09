@@ -1,9 +1,10 @@
 package org.beetl.sql.test;
-import java.util.List;
 
 import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.orm.OrmCondition;
 import org.beetl.sql.core.orm.OrmQuery;
+
+import java.util.List;
 
 @OrmQuery({
    @OrmCondition(target = User.class, attr="id", targetAttr = "departmentId1", lazy=true,type=OrmQuery.Type.MANY)

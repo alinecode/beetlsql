@@ -17,7 +17,7 @@ import java.util.Set;
 
 /**
  * 对指定的BeetlSql的基础包中对应的Mapper接口进行扫描
- * 
+ *
  * @author woate
  */
 public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
@@ -66,7 +66,7 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
 
 	/**
 	 * 重新父类的判断是否能够实例化的组件
-	 * 
+	 *
 	 * @param beanDefinition
 	 * @return
 	 */
@@ -77,7 +77,7 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
 
 	/**
 	 * 对扫描到的含有BeetlSqlFactoryBean的Bean描述信息进行遍历
-	 * 
+	 *
 	 * @param beanDefinitions
 	 */
 	void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions) {

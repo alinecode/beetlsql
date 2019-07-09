@@ -11,21 +11,20 @@ import java.util.Map;
 
 public class ORMSQLResultListener implements SQLResultListener {
 
-    List<MappingEntity> mapingEntrys = new ArrayList<MappingEntity>(3);
+	List<MappingEntity> mapingEntrys = new ArrayList<MappingEntity>(3);
 
-  
 
-    public List<MappingEntity> getMapingEntrys() {
-        return mapingEntrys;
-    }
+	public List<MappingEntity> getMapingEntrys() {
+		return mapingEntrys;
+	}
 
-    public void setMapingEntrys(List<MappingEntity> mapingEntrys) {
-        this.mapingEntrys = mapingEntrys;
-    }
+	public void setMapingEntrys(List<MappingEntity> mapingEntrys) {
+		this.mapingEntrys = mapingEntrys;
+	}
 
 	@Override
 	public List dataSelectd(List list, Map<String, Object> paras, SQLManager sqlManager, SQLResult sqlResult) {
-		for(MappingEntity mapConfig:mapingEntrys) {
+		for (MappingEntity mapConfig : mapingEntrys) {
 			mapConfig.map(list, sqlManager, paras);
 		}
 		return list;

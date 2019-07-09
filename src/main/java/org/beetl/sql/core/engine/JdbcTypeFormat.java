@@ -8,13 +8,13 @@ public class JdbcTypeFormat implements Format {
 	@Override
 	public Object format(Object data, String pattern) {
 		char cs = pattern.charAt(0);
-		if(cs=='-'||Character.isDigit(cs)) {
+		if (cs == '-' || Character.isDigit(cs)) {
 			return Integer.parseInt(pattern);
-		}else {
+		} else {
 			Integer type = JavaType.jdbcTypeNames.get(pattern.toLowerCase());
-			
+
 			return type;
-			
+
 		}
 	}
 

@@ -4,7 +4,6 @@ import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.engine.Beetl;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +33,7 @@ public interface DBStyle {
     int DB_H2 = 7;
     //国产数据库达梦
     int DB_DAMENG = 8;
+	int DB_SHENGTONG = 9;
 
 
     void init(Beetl beetl);

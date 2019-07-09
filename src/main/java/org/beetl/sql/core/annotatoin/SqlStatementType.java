@@ -1,8 +1,8 @@
 package org.beetl.sql.core.annotatoin;
 
 /**
- * 
- * 
+ *
+ *
  * @author zhoupan
  */
 public enum SqlStatementType {
@@ -12,6 +12,5 @@ public enum SqlStatementType {
 	/**
 	 * The Constructor.
 	 */
-	private SqlStatementType() {
-	}
-}
+	SqlStatementType() {
+	}}

@@ -3,13 +3,12 @@
  */
 package org.beetl.sql.test;
 
+import org.beetl.sql.core.ConnectionSource;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.beetl.sql.core.ConnectionSource;
-import org.beetl.sql.core.InterceptorContext;
 
 /**
  * @author suxinjie

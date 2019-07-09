@@ -1,12 +1,12 @@
 package org.beetl.sql.test;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-
 import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
 import org.beetl.sql.core.mapping.type.PrimitiveValue;
 import org.beetl.sql.core.mapping.type.TypeParameter;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 
 public class MyBooleanTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 

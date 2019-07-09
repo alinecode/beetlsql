@@ -1,20 +1,20 @@
 package org.beetl.sql.core.orm;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.Tail;
 import org.beetl.sql.core.db.ClassDesc;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.kit.BeanKit;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * 实现关系映射,放入一个Lazy
- * 
+ *
  * @author xiandafu
  *
  */
@@ -25,16 +25,16 @@ public class LazyMappingEntity extends MappingEntity {
 		if (list.size() == 0) {
 			return;
 		}
-		init(list.get(0),sm.getEntityLoader());
+		init(list.get(0), sm.getEntityLoader());
 
 		for (Object obj : list) {
-			mapClassItem(obj, sm,paras);
+			mapClassItem(obj, sm, paras);
 
 		}
 
 	}
 
-	protected void mapClassItem(final Object obj, final SQLManager sm,Map sqlParas) {
+	protected void mapClassItem(final Object obj, final SQLManager sm, Map sqlParas) {
 
 		final String sqlManagerName = sm.getSQLManagerName();
 		if (sqlId != null) {
@@ -46,10 +46,10 @@ public class LazyMappingEntity extends MappingEntity {
 				paras.put(targetAttr, value);
 
 			}
-			if(sqlParas!=null&&!sqlParas.isEmpty()) {
-                //外部参数，非映射参数
-                paras.putAll(sqlParas);
-            }
+			if (sqlParas != null && !sqlParas.isEmpty()) {
+				//外部参数，非映射参数
+				paras.putAll(sqlParas);
+			}
 			LazyEntity lazy = new LazyEntity() {
 
 				@Override
@@ -110,25 +110,26 @@ public class LazyMappingEntity extends MappingEntity {
 		}
 
 	}
+
 	@Override
 	protected void setTailAttr(Object o, Object value) {
-        //懒加载只能通过tail接口来做了
-        if (o instanceof Tail) {
-            ((Tail) o).set(tailName, value);
-        } else {
-            // annotation
-            Method m = BeanKit.getTailMethod(o.getClass());
-            if (m == null) {
-                throw new RuntimeException("懒加载 OR/Mapping 必须实现Tail接口,用于设置 "+tailName+"对象，或者不使用懒加载");
-            }
-            try {
-                m.invoke(o, tailName, value);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+		//懒加载只能通过tail接口来做了
+		if (o instanceof Tail) {
+			((Tail) o).set(tailName, value);
+		} else {
+			// annotation
+			Method m = BeanKit.getTailMethod(o.getClass());
+			if (m == null) {
+				throw new RuntimeException("懒加载 OR/Mapping 必须实现Tail接口,用于设置 " + tailName + "对象，或者不使用懒加载");
+			}
+			try {
+				m.invoke(o, tailName, value);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
 
-        }
-    }
+		}
+	}
 
 	private Object retValue(List ret) {
 		if (isSingle) {

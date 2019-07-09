@@ -3,12 +3,10 @@ package org.beetl.sql.core;
 import org.beetl.core.Context;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
-import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
 import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
 import org.beetl.sql.core.db.*;
-import org.beetl.sql.core.engine.RefreshRuntimeException;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
@@ -160,7 +158,6 @@ public class SQLScript {
         InterceptorContext ctx = this.callInterceptorAsBefore(this.id, sql, true, objs, map);
         sql = ctx.getSql();
         objs = ctx.getParas();
-
         try {
 
             conn = sm.getDs().getConn(this.id, true, sql, objs);

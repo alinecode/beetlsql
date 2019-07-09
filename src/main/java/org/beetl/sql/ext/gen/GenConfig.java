@@ -9,6 +9,15 @@ import java.util.List;
  * POJO代码生成配置
  */
 public class GenConfig {
+	public static final int ORDER_BY_TYPE = 1;
+	public static final int ORDER_BY_ORIGNAL = 2;
+	//默认模板路径
+	private final static String defaultTemplatePath = "/org/beetl/sql/ext/gen/pojo.btl";
+	/**
+	 * 同时生成其他代码，比如Mapper
+	 */
+	public List<CodeGen> codeGens = new ArrayList<CodeGen>();
+	public String space = "    ";
 	//基类，默认就是Object
 	private String baseClass;
 	//格式控制，4个隔空
@@ -19,12 +28,7 @@ public class GenConfig {
 	private boolean preferDate = true;
 	//输出包名
 	private String outputPackage = "com.test";
-
-	//默认模板路径
-	private final static String defaultTemplatePath = "/org/beetl/sql/ext/gen/pojo.btl";
-
 	private String encoding = "UTF-8";
-
 	/**
 	 * 模板
 	 */
@@ -37,6 +41,8 @@ public class GenConfig {
 	 * 忽略表名前缀
 	 */
 	private String ignorePrefix = "";
+	private boolean display = false;
+	private int propertyOrder = ORDER_BY_TYPE;
 
 	/**
 	 * 使用默认模板
@@ -62,26 +68,16 @@ public class GenConfig {
 		this.template = template;
 	}
 
-	public void setSpaceCount(int spaceCount) {
-		this.spaceCount = spaceCount;
-	}
-
 	public String getOutputPackage() {
 		return outputPackage;
 	}
 
+	//对于数字，优先使用封装类型
+	//	private boolean preferPrimitive = false ;
+
 	public void setOutputPackage(String outputPackage) {
 		this.outputPackage = outputPackage;
 	}
-
-	public void setSpace(String space) {
-		this.space = space;
-	}
-
-	/**
-	 * 同时生成其他代码，比如Mapper
-	 */
-	public List<CodeGen> codeGens = new ArrayList<CodeGen>();
 
 	public String getEncoding() {
 		return encoding;
@@ -89,33 +85,6 @@ public class GenConfig {
 
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
-	}
-
-	//对于数字，优先使用封装类型
-//	private boolean preferPrimitive = false ;
-
-	private boolean display = false;
-
-	public String space = "    ";
-
-	private int propertyOrder = ORDER_BY_TYPE;
-
-	public static final int ORDER_BY_TYPE = 1;
-	public static final int ORDER_BY_ORIGNAL = 2;
-
-	public GenConfig setBaseClass(String baseClass) {
-		this.baseClass = baseClass;
-		return this;
-	}
-
-	public GenConfig setSpace(int count) {
-		this.spaceCount = count;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < count; i++) {
-			sb.append(" ");
-		}
-		space = sb.toString();
-		return this;
 	}
 
 	public GenConfig preferBigDecimal(boolean prefer) {
@@ -132,12 +101,25 @@ public class GenConfig {
 		return baseClass;
 	}
 
+	public GenConfig setBaseClass(String baseClass) {
+		this.baseClass = baseClass;
+		return this;
+	}
+
 	public int getSpaceCount() {
 		return spaceCount;
 	}
 
+	public void setSpaceCount(int spaceCount) {
+		this.spaceCount = spaceCount;
+	}
+
 	public boolean isPreferBigDecimal() {
 		return preferBigDecimal;
+	}
+
+	public void setPreferBigDecimal(boolean preferBigDecimal) {
+		this.preferBigDecimal = preferBigDecimal;
 	}
 
 	public boolean isPreferDate() {
@@ -148,12 +130,22 @@ public class GenConfig {
 		this.preferDate = preferDate;
 	}
 
-	public void setPreferBigDecimal(boolean preferBigDecimal) {
-		this.preferBigDecimal = preferBigDecimal;
-	}
-
 	public String getSpace() {
 		return space;
+	}
+
+	public void setSpace(String space) {
+		this.space = space;
+	}
+
+	public GenConfig setSpace(int count) {
+		this.spaceCount = count;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			sb.append(" ");
+		}
+		space = sb.toString();
+		return this;
 	}
 
 	public boolean isDisplay() {
@@ -185,22 +177,22 @@ public class GenConfig {
 		try {
 			//系统提供一个pojo模板
 			InputStream ins = GenConfig.class.getResourceAsStream(classPath);
-			if(ins==null) {
-			    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			    if(loader!=null) {
-			        ins = loader.getResourceAsStream(classPath);
-			    }
+			if (ins == null) {
+				ClassLoader loader = Thread.currentThread().getContextClassLoader();
+				if (loader != null) {
+					ins = loader.getResourceAsStream(classPath);
+				}
 			}
-			if(ins==null) {
-			    throw new RuntimeException("未在classpath下找到Pojo模板文件 "+classPath);
+			if (ins == null) {
+				throw new RuntimeException("未在classpath下找到Pojo模板文件 " + classPath);
 			}
 			InputStreamReader reader = new InputStreamReader(ins, this.encoding);
-			try{
+			try {
 				//todo, 根据长度来，不过现在模板不可能超过8k
 				char[] buffer = new char[1024 * 8];
 				int len = reader.read(buffer);
 				return new String(buffer, 0, len);
-			}finally {
+			} finally {
 				reader.close();
 			}
 		} catch (Exception ex) {
@@ -216,13 +208,13 @@ public class GenConfig {
 		this.propertyOrder = propertyOrder;
 	}
 
-    public boolean isImplSerializable() {
-        return implSerializable;
-    }
+	public boolean isImplSerializable() {
+		return implSerializable;
+	}
 
-    public void setImplSerializable(boolean implSerializable) {
-        this.implSerializable = implSerializable;
-    }
+	public void setImplSerializable(boolean implSerializable) {
+		this.implSerializable = implSerializable;
+	}
 
 	public String getIgnorePrefix() {
 		return ignorePrefix;

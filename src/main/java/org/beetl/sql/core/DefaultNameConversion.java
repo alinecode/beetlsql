@@ -1,7 +1,6 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.core.annotatoin.Table;
-import org.beetl.sql.core.kit.StringKit;
 
 /** 数据库命名完全按照java风格来，比如，数据库
  *   表 SysUser,对应类SysUser,列userId,对应属性userId

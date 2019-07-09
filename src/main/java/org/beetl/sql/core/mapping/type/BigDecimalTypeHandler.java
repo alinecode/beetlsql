@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public class BigDecimalTypeHandler extends JavaSqlTypeHandler {
 
-    @Override
-    public Object getValue(TypeParameter typePara) throws SQLException {
-        BigDecimal a = typePara.rs.getBigDecimal(typePara.index);
-        return a;
-    }
+	@Override
+	public Object getValue(TypeParameter typePara) throws SQLException {
+		BigDecimal a = typePara.rs.getBigDecimal(typePara.index);
+		return a;
+	}
 
 }

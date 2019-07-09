@@ -1,14 +1,5 @@
 package org.beetl.sql.core.mapper;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLScript;
@@ -18,11 +9,12 @@ import org.beetl.sql.core.annotatoin.SqlStatementType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.BeanKit;
-import org.beetl.sql.core.mapper.para.InsertParamter;
-import org.beetl.sql.core.mapper.para.MapperParameter;
-import org.beetl.sql.core.mapper.para.PageQueryParamter;
-import org.beetl.sql.core.mapper.para.SelectQueryParamter;
-import org.beetl.sql.core.mapper.para.UpdateParamter;
+import org.beetl.sql.core.mapper.para.*;
+
+import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * dao2 参数
@@ -66,7 +58,7 @@ public class MethodDesc {
         desc = sm.getMapperConfig().createMethodDesc();
         desc.doSqlIdParse(sm, entityClass, m, sqlId);
         cache.put(callKey, desc);
-        return desc;
+		return desc;
     }
 
     public static MethodDesc getMetodDescBySqlReadyProvider(SQLManager sm, Class entityClass, Method m, String sql) {

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * 要是此注解正常是哟给你，需要在classpath添加jackson，并且，beetlsql 注解一个jackson函数
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.METHOD,ElementType.FIELD})
+@Target(value = {ElementType.METHOD, ElementType.FIELD})
 @Builder(value = SampleJsonAtrributeBuilder.class)
 public @interface Jackson {
 

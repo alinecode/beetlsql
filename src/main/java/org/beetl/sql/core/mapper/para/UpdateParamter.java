@@ -1,11 +1,8 @@
 package org.beetl.sql.core.mapper.para;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
-
-import com.jfinal.template.expr.ast.Map;
 
 public class UpdateParamter extends MapperParameter {
 	
@@ -32,6 +29,7 @@ public class UpdateParamter extends MapperParameter {
 		for(int i=0;i<array.length;i++){			
 			map.put(this.paramsName[i], array[i]);
 		}
+		this.addRoot(map, array[0]);
 		return map;
 	}
 	

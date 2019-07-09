@@ -1,20 +1,20 @@
 package org.beetl.sql.core.engine;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Properties;
-
-
 import org.beetl.core.AntlrProgramBuilder;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.sql.core.SQLLoader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Properties;
+
 public class Beetl {
 	GroupTemplate gt = null;
 	Properties ps = null;
-	public Beetl(SQLLoader loader,Properties other) {
+
+	public Beetl(SQLLoader loader, Properties other) {
 		try {
 
 			ps = loadDefaultConfig();
@@ -22,18 +22,18 @@ public class Beetl {
 			ps.putAll(ext);
 			ps.putAll(other);
 			boolean product = Boolean.parseBoolean(ps.getProperty("PRODUCT_MODE"));
-			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader,!product);
-			Configuration cfg =new Configuration(ps);
+			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader, !product);
+			Configuration cfg = new Configuration(ps);
 			gt = new GroupTemplate(resourceLoader, cfg);
 
 			loader.setAutoCheck(!product);
 			String charset = ps.getProperty("CHARSET");
-			if(charset==null||charset.length()==0){
+			if (charset == null || charset.length() == 0) {
 				charset = Charset.defaultCharset().name();
 
 			}
 			loader.setCharset(charset);
-			System.out.println("BeetlSQL 运行在 product="+product+",md charset="+charset);
+			System.out.println("BeetlSQL 运行在 product=" + product + ",md charset=" + charset);
 			//对isBlank参数增加安全输出控制，如果不存在在，为空，返回true
 			AntlrProgramBuilder.safeParameters.add("isBlank");
 
@@ -48,11 +48,11 @@ public class Beetl {
 	 *
 	 * @return
 	 */
-	public Properties loadDefaultConfig () {
-		Properties ps  = new Properties();
-		InputStream ins = this.getClass().getResourceAsStream(
-				"/btsql.properties");
-		if(ins==null) return ps;
+	public Properties loadDefaultConfig() {
+		Properties ps = new Properties();
+		InputStream ins = this.getClass().getResourceAsStream("/btsql.properties");
+		if (ins == null)
+			return ps;
 		try {
 			ps.load(ins);
 		} catch (IOException e) {
@@ -62,11 +62,10 @@ public class Beetl {
 	}
 
 
-	public Properties loadExtConfig () {
-		Properties ps  = new Properties();
-		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-				"btsql-ext.properties");
-		if(ins==null){
+	public Properties loadExtConfig() {
+		Properties ps = new Properties();
+		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream("btsql-ext.properties");
+		if (ins == null) {
 			return ps;
 		}
 
@@ -79,8 +78,6 @@ public class Beetl {
 
 		return ps;
 	}
-
-
 
 
 	public GroupTemplate getGroupTemplate() {

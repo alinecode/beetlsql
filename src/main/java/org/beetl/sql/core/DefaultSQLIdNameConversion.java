@@ -1,8 +1,8 @@
 package org.beetl.sql.core;
 
-import java.lang.reflect.Method;
-
 import org.beetl.sql.core.kit.StringKit;
+
+import java.lang.reflect.Method;
 /**
  * 类名首字母小写＋ 方法名 成为mapper对应的sqlId
  * 

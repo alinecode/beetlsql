@@ -1,39 +1,32 @@
 package org.beetl.sql.core.annotatoin;
 
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ java.lang.annotation.ElementType.METHOD })
+@Target({java.lang.annotation.ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Sql {
-	
-	
+
 
 	/**
 	 * statement类型.
-	 * 
-	 * @return  SqlStatementType
+	 *
+	 * @return SqlStatementType
 	 */
 	SqlStatementType type() default SqlStatementType.AUTO;
-	
-	
+
+
 	/**
 	 * 采用这个sql，如update xxx set a = ? where id = ?
 	 * @return sql
 	 */
-	String value()  default "";
-
-
+	String value() default "";
 
 
 	/**
-	 * @return  返回类型，默认是Mapper类的泛型，需要特别声明才用这个
+	 * @return 返回类型，默认是Mapper类的泛型，需要特别声明才用这个
 	 * 2.9.0 后不再以这个为准
 	 */
-	@Deprecated
-	Class returnType() default Void.class;
+	@Deprecated Class returnType() default Void.class;
 }

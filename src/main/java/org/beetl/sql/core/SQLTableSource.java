@@ -1,9 +1,9 @@
 package org.beetl.sql.core;
 
-import java.util.Map;
-
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.db.TableDesc;
+
+import java.util.Map;
 
 /**
  * 内置的SQLSource，如CRUD

@@ -1,10 +1,10 @@
 package org.beetl.sql.core.engine;
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.beetl.core.tag.Tag;
 import org.beetl.sql.core.kit.StringKit;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 实现mybatis trim. <code>
@@ -48,13 +48,13 @@ public class TrimTag extends Tag {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.beetl.core.Tag#render()
 	 */
 	public void render() {
 		try {
 			Object[] args = this.args;
-			if (args != null && args.length!=0) {
+			if (args != null && args.length != 0) {
 				initTrimArgs(args);
 				StringBuilder sb = buildTrimContent();
 				this.ctx.byteWriter.writeString(sb.toString());
@@ -62,7 +62,7 @@ public class TrimTag extends Tag {
 				// 兼容老版本 trim.
 				String sql = getBodyContent().getBody().trim();
 				if (sql.endsWith(",")) {
-					this.ctx.byteWriter.writeString(sql.substring(0, sql.length()-1));
+					this.ctx.byteWriter.writeString(sql.substring(0, sql.length() - 1));
 				} else {
 					this.ctx.byteWriter.writeString(sql);
 				}
@@ -91,7 +91,7 @@ public class TrimTag extends Tag {
 			String trimSql = StringKit.trim(sql);
 			if (this.prefixOverrides != null && this.prefixOverrides.length > 0) {
 				for (String prefixOverride : this.prefixOverrides) {
-					if (StringKit.startsWith(trimSql, prefixOverride,true)) {
+					if (StringKit.startsWith(trimSql, prefixOverride, true)) {
 						trimSql = trimSql.substring(prefixOverride.length());
 					}
 				}
@@ -99,8 +99,8 @@ public class TrimTag extends Tag {
 			// suffixOverrides
 			if (this.suffixOverrides != null && this.suffixOverrides.length > 0) {
 				for (String suffixOverride : this.suffixOverrides) {
-					if (StringKit.endsWith(trimSql, suffixOverride,true)) {
-						trimSql = trimSql.substring(0,trimSql.length()-suffixOverride.length());
+					if (StringKit.endsWith(trimSql, suffixOverride, true)) {
+						trimSql = trimSql.substring(0, trimSql.length() - suffixOverride.length());
 					}
 				}
 			}
@@ -167,9 +167,6 @@ public class TrimTag extends Tag {
 		}
 		return StringKit.trim(sql).isEmpty();
 	}
-	
-	
 
-	
-	
+
 }

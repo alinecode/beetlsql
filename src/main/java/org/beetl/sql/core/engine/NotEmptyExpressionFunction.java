@@ -27,12 +27,8 @@
  */
 package org.beetl.sql.core.engine;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.beetl.core.Context;
 import org.beetl.core.Function;
-import org.beetl.core.misc.PrimitiveArrayUtil;
 
 /**
  * 判断全局变量是否不为“空”，
@@ -40,16 +36,14 @@ import org.beetl.core.misc.PrimitiveArrayUtil;
  * @author joelli
  *
  */
-public class NotEmptyExpressionFunction implements Function
-{
+public class NotEmptyExpressionFunction implements Function {
 
-	public Boolean call(Object[] paras, Context ctx)
-	{
+	public Boolean call(Object[] paras, Context ctx) {
 
-		
+
 		Object result = paras[0];
-		return  result!=null;
-		
+		return result != null;
+
 
 	}
 

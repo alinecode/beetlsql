@@ -290,9 +290,18 @@ public class BeanKit {
             return t;
         } else {
             try {
+				while (c != null) {
+					Field[] fs = c.getDeclaredFields();
+					for (Field f : fs) {
+						if (!f.getName().equals(property)) {
+							continue;
+						}
+						t = f.getAnnotation(annotationClass);
+						return t;
 
-                Field f = c.getDeclaredField(property);
-                t = f.getAnnotation(annotationClass);
+					}
+					c = c.getSuperclass();
+				}
                 return t;
             } catch (Exception e) {
                 return null;

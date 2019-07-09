@@ -1,7 +1,4 @@
 package org.beetl.sql.test;
-import java.math.*;
-import java.util.Date;
-import java.sql.Timestamp;
 
 /*
 * 

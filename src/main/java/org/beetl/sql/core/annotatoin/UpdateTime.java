@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * 用于属性字段上，在插入或者更新的时候,生成一个当前时间，实现类是UpdateTimePreHandler
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.METHOD,ElementType.FIELD})
+@Target(value = {ElementType.METHOD, ElementType.FIELD})
 @Builder(value = SampleUpdateTimeBuilder.class)
 public @interface UpdateTime {
 

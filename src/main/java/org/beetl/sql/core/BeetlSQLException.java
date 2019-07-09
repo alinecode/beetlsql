@@ -60,6 +60,9 @@ public class BeetlSQLException extends RuntimeException {
 
 	// 注解定义错误
 	public static final int 	ANNOTATION_DEFINE_ERROR  = 23;
+
+	// 注解定义错误
+	public static final int PAGE_QUERY_ERROR = 24;
 		
 	int code ;
 	

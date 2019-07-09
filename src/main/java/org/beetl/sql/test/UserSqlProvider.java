@@ -1,7 +1,6 @@
 package org.beetl.sql.test;
 
 import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.core.annotatoin.Param;
 
 /**
  * sqlProvider testcase

@@ -10,22 +10,22 @@ import java.lang.annotation.Target;
  * @author darren
  * @date 2019/4/29 10:20
  */
-@Target({ java.lang.annotation.ElementType.METHOD })
+@Target({java.lang.annotation.ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SqlProvider {
 
-    /**
-     * 由哪个类来提供生成动态的SQL
-     * @return 类
-     */
-    Class<?> provider();
+	/**
+	 * 由哪个类来提供生成动态的SQL
+	 * @return 类
+	 */
+	Class<?> provider();
 
-    /**
-     * 由provider类的哪个方法来提供动态SQL
-     * 不设置则由取当前被注解方法的同名方法
-     * @return 方法名
-     */
-    String method() default "";
+	/**
+	 * 由provider类的哪个方法来提供动态SQL
+	 * 不设置则由取当前被注解方法的同名方法
+	 * @return 方法名
+	 */
+	String method() default "";
 
 
 }

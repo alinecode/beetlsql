@@ -13,7 +13,6 @@ public class TextFunction implements Function {
 	public Object call(Object[] paras, Context ctx) {
 		return paras[0];
 	}
-	
-	
+
 
 }

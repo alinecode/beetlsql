@@ -1,11 +1,10 @@
 package org.beetl.sql.core;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 /** 默认的事物管理器，可以管理单个，多个数据源事物，但并不是分布式事物管理器
  * 不能保证事务统一，只能尽量。

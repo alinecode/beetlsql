@@ -1,16 +1,17 @@
 package org.beetl.sql.test;
 
-import java.util.List;
-import java.util.Map;
-
 import org.beetl.sql.core.annotatoin.*;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.mapper.BaseMapper;
+
+import java.util.List;
+import java.util.Map;
 
 @SqlResource("user")
-public interface UserDao extends BaseDao<User> {
+public interface UserDao extends BaseMapper {
 
-    List<Long> getIds();
+	List<User> getIds(User user);
 
     @SqlProvider(provider = UserSqlProvider.class)
     User selectAll1( Integer id);
@@ -25,12 +26,7 @@ public interface UserDao extends BaseDao<User> {
 
     void getIds3(PageQuery query);
 
-    default User queryById(Integer id){
-    	return this.createLambdaQuery().andEq(User::getId,id).unique();
-	}
-
-    // void pageQuery(PageQuery<String> query);
-    //
+	 void pageQuery(PageQuery<User> query,User user);
     int getCount(String name);
 
     User getOneUser();
@@ -59,7 +55,7 @@ public interface UserDao extends BaseDao<User> {
 
     int deleteByUserIds(List<Integer> userIds);
 
-    public int updateUser(List<User> users);
+    public int updateUser(User user);
 
     public KeyHolder addOne(User user);
 

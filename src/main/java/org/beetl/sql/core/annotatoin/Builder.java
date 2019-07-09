@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
  * 用于Annotation的执行
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.ANNOTATION_TYPE})
+@Target(value = {ElementType.ANNOTATION_TYPE})
 public @interface Builder {
-    public Class value() ;
+	Class value();
 }
 
 

@@ -7,13 +7,13 @@ import org.beetl.core.statement.PlaceholderST;
 
 public class SQLGrammarCreator extends GrammarCreator {
 
-    public PlaceholderST createTextOutputSt(Expression exp, FormatExpression format) {
-        check("TextOutputSt");
-        return new SQLPlaceholderST(exp, format, null);
-    }
+	public PlaceholderST createTextOutputSt(Expression exp, FormatExpression format) {
+		check("TextOutputSt");
+		return new SQLPlaceholderST(exp, format, null);
+	}
 
-    public PlaceholderST createTextOutputSt2(Expression exp, FormatExpression format) {
+	public PlaceholderST createTextOutputSt2(Expression exp, FormatExpression format) {
 
-        return new PlaceholderST(exp, format, null);
-    }
+		return new PlaceholderST(exp, format, null);
+	}
 }

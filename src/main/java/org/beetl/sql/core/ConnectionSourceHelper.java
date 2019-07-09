@@ -1,11 +1,10 @@
 package org.beetl.sql.core;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 public class ConnectionSourceHelper {
 	public  static ConnectionSource getSingle(DataSource ds){

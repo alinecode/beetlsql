@@ -1,20 +1,15 @@
 package org.beetl.sql.core;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.core.kit.StringKit;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
-import org.beetl.sql.core.kit.StringKit;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 /**
  * 

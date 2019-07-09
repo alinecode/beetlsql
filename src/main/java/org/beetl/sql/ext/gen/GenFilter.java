@@ -6,5 +6,5 @@ package org.beetl.sql.ext.gen;
  *
  */
 public interface GenFilter {
-	public boolean accept(String tableName);
+	boolean accept(String tableName);
 }

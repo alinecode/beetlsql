@@ -1,7 +1,6 @@
 package org.beetl.sql.core.mapping.type;
 
 import java.sql.Blob;
-import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

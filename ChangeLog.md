@@ -35,3 +35,9 @@
 ### [fix] #IIXR2 LambdaQuery asc desc方法的返回类型 问题修复
 
 
+## 2.12.7-20190709
+### 识别PageQuery子类
+### 修复Mapper 方法中中的第一个参数为root的 判断 
+### 代码格式化，按照唯品会
+
+

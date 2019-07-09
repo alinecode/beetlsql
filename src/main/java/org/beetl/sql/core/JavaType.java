@@ -31,7 +31,9 @@ public class JavaType {
     static {
         String javaVersion = System.getProperty("java.version");
         // version String should look like "1.4.2_10"
-        if (javaVersion.startsWith("11")) {
+		if (javaVersion.startsWith("12")) {
+			majorJavaVersion = 22;
+		} else if (javaVersion.startsWith("11")) {
             majorJavaVersion = 21;
         } else if (javaVersion.startsWith("10")) {
             majorJavaVersion = 20;

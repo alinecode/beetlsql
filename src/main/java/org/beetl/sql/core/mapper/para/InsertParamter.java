@@ -1,12 +1,12 @@
 package org.beetl.sql.core.mapper.para;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 
-import com.jfinal.template.expr.ast.Map;
-
+/**
+ * insert 操作的时候，参数命名
+ */
 public class InsertParamter extends MapperParameter {
 	
 	public InsertParamter(Method m,String annoParam){		
@@ -34,6 +34,7 @@ public class InsertParamter extends MapperParameter {
 			
 			map.put(this.paramsName[i], array[i]);
 		}
+		this.addRoot(map, array[0]);
 		return map;
 	}
 	

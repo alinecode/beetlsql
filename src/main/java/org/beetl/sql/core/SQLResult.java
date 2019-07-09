@@ -1,9 +1,8 @@
 package org.beetl.sql.core;
 
-import java.util.List;
-
 import org.beetl.sql.core.engine.SQLParameter;
-import org.beetl.sql.core.orm.MappingEntity;
+
+import java.util.List;
 
  public class SQLResult {
 	 /**

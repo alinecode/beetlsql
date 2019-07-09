@@ -1,11 +1,10 @@
 package org.beetl.sql.core;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
-
-import javax.sql.DataSource;
 
 public class DefaultConnectionSource implements ConnectionSource{
 	protected DataSource master = null;

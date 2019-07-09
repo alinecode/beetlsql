@@ -1,20 +1,16 @@
 
 package org.beetl.sql.core;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.kit.MDParser;
+
+import java.io.*;
 import java.net.URL;
 import java.rmi.UnexpectedException;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.kit.MDParser;
 
 /**
  * 从classpath系统加载sql模板，id应该格式是"xx.yyy",xx代表了文件名，yyy代表了sql标识 sql 模板格式如下：

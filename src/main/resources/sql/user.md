@@ -1,16 +1,29 @@
-getIds3
+getIds
 ===
-	select #page("*")#  from user  where #use("cols")#
+
+	select *  
+	@var name="i";
+	from user  where name like #"%"+user.name+"%"#
 
 cols	
 ===
 
-	name = #name#
+	1=1 and #use("nameCondition")#
 	
-findOne
+nameCondition	
+===
+    name=#bkl#
+    
+    
+updateUser
 ===
 
-	select * from user where id = ${id}
+    update user set name=#user.name# where id = #id#
+	
+pageQuery
+===
+
+	select #page()# from user where id = #id#
 
 	
 select  

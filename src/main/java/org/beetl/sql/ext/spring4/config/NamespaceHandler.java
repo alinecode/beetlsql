@@ -7,9 +7,9 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author woate
  */
 public class NamespaceHandler extends NamespaceHandlerSupport {
-    @Override
-    public void init() {
-        registerBeanDefinitionParser("scan", new BeetlSqlScannerBeanDefinitionParser());
-    }
+	@Override
+	public void init() {
+		registerBeanDefinitionParser("scan", new BeetlSqlScannerBeanDefinitionParser());
+	}
 
 }

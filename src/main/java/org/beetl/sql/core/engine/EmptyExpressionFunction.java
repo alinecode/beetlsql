@@ -27,20 +27,16 @@
  */
 package org.beetl.sql.core.engine;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.beetl.core.Context;
 import org.beetl.core.Function;
-import org.beetl.core.misc.PrimitiveArrayUtil;
 
 /**
  * 判断全局变量是否为“空”，下列情况属于为空·的情况，返回true,
  * <ul>
- * 
+ *
  * <li>变量不存在</li>
  * <li>变量存在，但为null</li>
- * 
+ *
  * </ul>
  * 不同于beetl 的isEmpty
  * 参数可以一个到多个,如<p>
@@ -48,16 +44,14 @@ import org.beetl.core.misc.PrimitiveArrayUtil;
  * @author joelli
  *
  */
-public class EmptyExpressionFunction implements Function
-{
+public class EmptyExpressionFunction implements Function {
 
-	public Boolean call(Object[] paras, Context ctx)
-	{
+	public Boolean call(Object[] paras, Context ctx) {
 
-		
+
 		Object result = paras[0];
-		return  result==null;
-		
+		return result == null;
+
 
 	}
 

@@ -12,12 +12,12 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Tail  {
+public @interface Tail {
 	/**
 	 *
 	 * @return 方法名称，参数必须是string,object
 	 */
-	public String set() default "set";
+	String set() default "set";
 }
 
 

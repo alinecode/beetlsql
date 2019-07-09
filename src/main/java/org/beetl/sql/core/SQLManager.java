@@ -1,30 +1,10 @@
 package org.beetl.sql.core;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
 import org.beetl.core.Context;
-import org.beetl.sql.core.db.ClassDesc;
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.db.MetadataManager;
-import org.beetl.sql.core.db.TableDesc;
+import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
-import org.beetl.sql.core.kit.BeanKit;
-import org.beetl.sql.core.kit.CaseInsensitiveOrderSet;
-import org.beetl.sql.core.kit.ConstantEnum;
-import org.beetl.sql.core.kit.GenKit;
-import org.beetl.sql.core.kit.PageKit;
-import org.beetl.sql.core.kit.StringKit;
+import org.beetl.sql.core.kit.*;
 import org.beetl.sql.core.mapper.DefaultMapperBuilder;
 import org.beetl.sql.core.mapper.MapperBuilder;
 import org.beetl.sql.core.mapper.builder.MapperConfig;
@@ -36,6 +16,13 @@ import org.beetl.sql.ext.gen.GenConfig;
 import org.beetl.sql.ext.gen.GenFilter;
 import org.beetl.sql.ext.gen.MDCodeGen;
 import org.beetl.sql.ext.gen.SourceGen;
+
+import java.io.*;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 import static org.beetl.sql.core.kit.ConstantEnum.*;
 
@@ -281,7 +268,13 @@ public class SQLManager {
         return script.run(map);
     }
 
-    /**
+	public void getSQLMetadata(String id, Object paras) {
+		SQLResult sqlResult = this.getSQLResult(id, paras);
+		String jdbcSql = sqlResult.jdbcSql;
+		Object[] sqlParas = sqlResult.toObjectArray();
+	}
+
+	/**
      * 内部使用，
      *
      * @param source
@@ -606,7 +599,7 @@ public class SQLManager {
 			root.put("_root", paras);
 		}
 
-        if (query.getOrderBy() != null&&query.getOrderBy().length()!=0) {
+		if (query.getOrderBy() != null && StringKit.isNotBlank(query.getOrderBy())) {
             root.put(DBStyle.ORDER_BY, query.getOrderBy());
         }
 
@@ -614,13 +607,22 @@ public class SQLManager {
         boolean hasCountSQL = this.sqlLoader.exist(sqlCountId);
         if (query.getTotalRow() == -1) {
             // 需要查询行数
-            if (hasCountSQL) {
-                totalRow = this.selectSingle(sqlCountId, root, Long.class);
-            } else {
-                root.put(PageQuery.pageFlag, PageQuery.pageObj);
-                // todo: 如果sql并不包含翻页标签，没有报错，会有隐患
-                totalRow = this.selectSingle(sqlId, root, Long.class);
-            }
+			try {
+				if (hasCountSQL) {
+					totalRow = this.selectUnique(sqlCountId, root, Long.class);
+				} else {
+					root.put(PageQuery.pageFlag, PageQuery.pageObj);
+					totalRow = this.selectUnique(sqlId, root, Long.class);
+				}
+
+			} catch (BeetlSQLException ex) {
+				if (ex.code == BeetlSQLException.UNIQUE_EXCEPT_ERROR) {
+					throw new BeetlSQLException(BeetlSQLException.PAGE_QUERY_ERROR,
+							"翻页语句格式出错，期望总数查询SQL,遗漏了page函数或者sql是分组查询?");
+				} else {
+					throw ex;
+				}
+			}
 
             if (totalRow == null) {
                 totalRow = 0l;

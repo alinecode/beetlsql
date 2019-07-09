@@ -9,43 +9,40 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AttributeBuilderHolder {
 
-    Annotation beanAnnotaton;
-    Object instance;
+	static Map<Class, Object> propertyHandlerMap = new ConcurrentHashMap<Class, Object>();
+	Annotation beanAnnotaton;
+	Object instance;
 
-    static  Map<Class, Object> propertyHandlerMap = new ConcurrentHashMap<Class, Object>();
-    public  Object newInstance(Class propertyHandlerClz){
-        if(propertyHandlerMap.containsKey(propertyHandlerClz)){
-            return  propertyHandlerMap.get(propertyHandlerClz);
-        }
+	public AttributeBuilderHolder(Annotation beanAnnotaton, Builder builderAnotation) {
+		this.beanAnnotaton = beanAnnotaton;
+		this.instance = newInstance(builderAnotation.value());
+	}
 
-        Object propertyHanlder =   BeanKit.newInstance(propertyHandlerClz);
+	public Object newInstance(Class propertyHandlerClz) {
+		if (propertyHandlerMap.containsKey(propertyHandlerClz)) {
+			return propertyHandlerMap.get(propertyHandlerClz);
+		}
 
-        propertyHandlerMap.put(propertyHandlerClz,propertyHanlder);
-        return propertyHanlder;
-    }
+		Object propertyHanlder = BeanKit.newInstance(propertyHandlerClz);
+
+		propertyHandlerMap.put(propertyHandlerClz, propertyHanlder);
+		return propertyHanlder;
+	}
+
+	public Annotation getBeanAnnotaton() {
+		return beanAnnotaton;
+	}
 
 
+	public Object getInstance() {
+		return instance;
+	}
 
-    public AttributeBuilderHolder(Annotation beanAnnotaton, Builder builderAnotation) {
-        this.beanAnnotaton = beanAnnotaton;
-        this.instance =newInstance(builderAnotation.value());
-    }
+	public boolean supportPersistGen() {
+		return this.instance instanceof AttributePersistBuilder;
+	}
 
-    public Annotation getBeanAnnotaton() {
-        return beanAnnotaton;
-    }
-
-   
-
-    public Object getInstance() {
-        return instance;
-    }
-
-    public boolean supportPersistGen(){
-        return this.instance instanceof AttributePersistBuilder;
-    }
-
-    public boolean supportSelectMapping(){
-        return  this.instance instanceof AttributeSelectBuilder;
-    }
+	public boolean supportSelectMapping() {
+		return this.instance instanceof AttributeSelectBuilder;
+	}
 }

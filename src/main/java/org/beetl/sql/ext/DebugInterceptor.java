@@ -1,11 +1,5 @@
 package org.beetl.sql.ext;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
 import org.beetl.sql.core.JavaType;
@@ -16,22 +10,26 @@ import org.beetl.sql.core.mapper.MapperJavaProxy;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Debug重新美化版本
- * 
+ *
  * @author darren xiandafu
  * @version 2016年8月25日
  *
  */
 public class DebugInterceptor implements Interceptor {
 
-	List<String> includes = null;
-
 	static String mapperName = MapperJavaProxy.class.getName();
 	static String sqlManager = SQLManager.class.getName();
 	static String queryClassName = Query.class.getName();
 	static String lambdaQueryName = LambdaQuery.class.getName();
-
+	List<String> includes = null;
 	// debug 输入优先输出的类，而不是SQLManager或者是BaseMapper
 	String preferredShowClass;
 
@@ -103,7 +101,7 @@ public class DebugInterceptor implements Interceptor {
 
 	/**
 	 * 如果自己封装了beetlsql 有自己的util，并不想打印util类，而是业务类，可以在这里写util类
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getTraceClassName() {

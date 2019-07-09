@@ -8,5 +8,5 @@ import java.sql.SQLException;
  * @author xiandafu
  */
 public abstract class JavaSqlTypeHandler {
-    public abstract Object getValue(TypeParameter typePara) throws SQLException;
+	public abstract Object getValue(TypeParameter typePara) throws SQLException;
 }
