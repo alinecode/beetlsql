@@ -50,9 +50,7 @@ public class SampleJsonAtrributeBuilder extends BaseAttributeBuilder {
 	@Override
 	public Object toObject(SQLManager sqlManager, Annotation an, String sqlId, TypeParameter typeParameter,
 			PropertyDescriptor property) throws SQLException {
-		if (typeParameter.getRs().wasNull()) {
-			return null;
-		}
+
 		String data = typeParameter.getRs().getString(typeParameter.getIndex());
 		if (data == null) {
 			return null;

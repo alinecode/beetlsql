@@ -8,7 +8,7 @@ public class PageQueryFuntion implements Function {
 	@Override
 	public String call(Object[] paras, Context ctx) {
 		Object o = ctx.getGlobal(PageQuery.pageFlag);
-		if (o == PageQuery.pageObj) {
+		if(o!=null &&o==Boolean.TRUE) {
 			return "count(1)";
 
 		} else {

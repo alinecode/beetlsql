@@ -9,7 +9,7 @@ public class PageQueryTag extends Tag {
 	@Override
 	public void render() {
 		Object o = ctx.getGlobal(PageQuery.pageFlag);
-		if (o == PageQuery.pageObj) {
+		if(o!=null &&o==Boolean.TRUE) {
 			try {
 				this.bw.writeString("count(1)");
 			} catch (IOException e) {

@@ -3,6 +3,7 @@ package org.beetl.sql.test;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
+import org.beetl.core.exception.ErrorInfo;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.annotatoin.builder.SampleJsonAtrributeBuilder;
 import org.beetl.sql.core.db.MySqlStyle;
@@ -51,7 +52,10 @@ public class QuickTest {
 			}
 		});
 
-		PageQuery<User> query = new PageQuery<User>();
+		MyPageQuery<User>  query = new MyPageQuery<User>();
+
+//		PageQuery<User> query = new PageQuery<User>();
+//		System.out.println(q1.pageObj==query.pageObj);
 
 		User user = new User();
 		user.setId(20);
@@ -59,12 +63,35 @@ public class QuickTest {
 
 		User user2 = new User();
 		user2.setId(10);
+		System.out.println(sql.containSqlId("user.get3Ids5"));
+		ErrorInfo info = sql.vaidateSqlId("user.getIds");
+		if(info!=null){
+			System.out.println(info.toString());
+		}
 
 
-		UserDao dao = sql.getMapper(UserDao.class);
-		dao.pageQuery(query,user2);
 
 
+	}
+
+
+//	static class MyPageQuery extends  PageQuery{
+//
+//	}
+
+	static  class MyPageQuery<T> extends org.beetl.sql.core.engine.PageQuery {
+		private static final long serialVersionUID = 6114194234926721407L;
+
+		@Override
+		public void setParas(Object paras) {
+			super.setParas(paras);
+		}
+
+		@Override
+		public void setOrderBy(String orderBy) {
+
+			super.setOrderBy(orderBy);
+		}
 	}
 
 	static public JavaType parameterizedType(Class c, Type pt) {

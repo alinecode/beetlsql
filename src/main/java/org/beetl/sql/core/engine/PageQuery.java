@@ -36,8 +36,8 @@ import java.util.Map;
 public class PageQuery<T> implements Serializable {
 
 	private static final long serialVersionUID = -7523359884334787081L;
-	public static String pageFlag = "_page";
-	public static Object pageObj = new Object();
+	public final static String pageFlag = "_page";
+	public final static Boolean  pageObj = Boolean.TRUE;
 	/**
 	 * 默认的每页纪录总数，
 	 */

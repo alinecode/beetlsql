@@ -9,7 +9,7 @@ public class PageQueryIgnoreTag extends Tag {
 	@Override
 	public void render() {
 		Object o = ctx.getGlobal(PageQuery.pageFlag);
-		if (o == PageQuery.pageObj) {
+		if(o!=null &&o==Boolean.TRUE){
 			try {
 				this.bw.writeString(" ");
 			} catch (IOException e) {

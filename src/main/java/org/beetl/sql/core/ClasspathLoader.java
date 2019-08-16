@@ -280,6 +280,7 @@ public class ClasspathLoader implements SQLLoader {
     		}else{
     			return true;
     		}
+
     }
 
 	private URL getFile(String filePath){

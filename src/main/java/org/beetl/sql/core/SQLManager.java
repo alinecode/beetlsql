@@ -1,6 +1,10 @@
 package org.beetl.sql.core;
 
 import org.beetl.core.Context;
+import org.beetl.core.exception.BeetlException;
+import org.beetl.core.exception.ErrorInfo;
+import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.core.statement.GrammarToken;
 import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.engine.Beetl;
 import org.beetl.sql.core.engine.PageQuery;
@@ -317,6 +321,35 @@ public class SQLManager {
         SQLScript script = new SQLScript(source, this);
         return script;
     }
+
+    public boolean containSqlId(String id){
+		SQLSource source = sqlLoader.getSQL(id);
+		return source!=null;
+
+	}
+
+	public ErrorInfo vaidateSqlId(String id){
+		SQLScript script = this.getScript(id);
+		String sqlTemplate = script.getSql();
+		StringTemplateResourceLoader templateResourceLoader = new StringTemplateResourceLoader();
+		BeetlException exception = this.beetl.getGroupTemplate().validateTemplate(sqlTemplate,templateResourceLoader);
+		if(exception==null){
+			//没有问题的模板
+			return null;
+		}
+		/**
+		 * 注意，错误行数提示没有纠正到相对于markdown文件位置，而是模板本生位置,如果想得到相对于模板文件位置的错误行数
+		 * 参考
+		 * BeetlSQLTemplateExceptionHandler
+		 */
+
+
+		ErrorInfo error = new ErrorInfo(exception);
+		return error;
+
+
+
+	}
 
     /**
      * 得到增删改查模板

@@ -67,10 +67,12 @@ public class SQLScript {
     protected SQLResult run(Map<String, Object> paras, Context ctx) {
         GroupTemplate gt = sm.beetl.getGroupTemplate();
         Template t = null;
+
         String parentId =  ctx==null?null:(String)ctx.getGlobal("_id");
         if (parentId != null) {
             t = gt.getTemplate(sqlSource.getId(), ctx);
         } else {
+
             t = gt.getTemplate(sqlSource.getId());
         }
 
