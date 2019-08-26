@@ -3,7 +3,7 @@ package org.beetl.sql.core.query;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.kit.StringKit;
-import org.beetl.sql.core.query.value.StrongValue;
+import org.beetl.sql.core.query.interfacer.StrongValue;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -105,6 +105,7 @@ public class LambdaQuery<T> extends Query<T> {
 
     /**
      * 具有过滤空值功能的IN语句判断
+     *
      * @param property
      * @param value
      * @return
@@ -113,8 +114,10 @@ public class LambdaQuery<T> extends Query<T> {
         appendInSql(getFunctionName(property), value, IN, AND);
         return this;
     }
+
     /**
      * 具有过滤空值功能的NOT IN语句判断
+     *
      * @param property
      * @param value
      * @return

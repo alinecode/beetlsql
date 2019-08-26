@@ -5,7 +5,7 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.query.interfacer.QueryConditionI;
-import org.beetl.sql.core.query.value.StrongValue;
+import org.beetl.sql.core.query.interfacer.StrongValue;
 
 import java.util.ArrayList;
 import java.util.Collection;

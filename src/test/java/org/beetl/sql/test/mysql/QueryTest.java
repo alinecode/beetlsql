@@ -1,12 +1,11 @@
 package org.beetl.sql.test.mysql;
 
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.query.LambdaQuery;
-import org.beetl.sql.core.query.util.QueryUtil;
+import org.beetl.sql.core.query.Query;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.test.Blog;
 import org.beetl.sql.test.BlogDao;
@@ -14,7 +13,6 @@ import org.beetl.sql.test.MysqlDBConfig;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
 public class QueryTest {
@@ -38,12 +36,12 @@ public class QueryTest {
 
     public static void select(BlogDao dao) {
         LambdaQuery<Blog> query = dao.createLambdaQuery();
-        Blog blog = query.andEq(Blog::getTitle, QueryUtil.filterNull(null))
+        Blog blog = query.andEq(Blog::getTitle, Query.filterNull(null))
                 .andIn(Blog::getId, Arrays.asList(1,2,3,4,5,6,7))
-                .andNotIn(Blog::getId, QueryUtil.filterEmpty(Collections.EMPTY_LIST))
-                .andNotEq(Blog::getId, QueryUtil.filterEmpty(""))
-                .andLess(Blog::getId, QueryUtil.filterEmpty(2))
-                .andGreatEq(Blog::getId, QueryUtil.filterEmpty(0))
+                .andNotIn(Blog::getId, Query.filterEmpty(Collections.EMPTY_LIST))
+                .andNotEq(Blog::getId, Query.filterEmpty(""))
+                .andLess(Blog::getId, Query.filterEmpty(2))
+                .andGreatEq(Blog::getId, Query.filterEmpty(0))
                 .singleSimple();
         System.out.println(blog.getTitle() + "----------");
     }

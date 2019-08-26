@@ -14,12 +14,14 @@ import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.query.interfacer.QueryExecuteI;
 import org.beetl.sql.core.query.interfacer.QueryOtherI;
+import org.beetl.sql.core.query.interfacer.StrongValue;
 import org.beetl.sql.core.query.util.FieldsUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -431,6 +433,57 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         }
         columnStr.deleteCharAt(columnStr.length() - 1);
         return columnStr;
+    }
+
+
+    /**
+     * 过滤空和NULL的值，
+     * 如果为空或者null则不增加查询条件
+     *
+     * @param value
+     * @return
+     */
+    public static StrongValue filterEmpty(Object value) {
+        return new StrongValue() {
+            @Override
+            public boolean isEffective() {
+                //校验空值
+                if (value instanceof String) {
+                    return value != null && !"".equals(value);
+                }
+
+                if (value instanceof Collection) {
+                    return value != null && !((Collection) value).isEmpty();
+                }
+                return true;
+            }
+
+            @Override
+            public Object getValue() {
+                return value;
+            }
+        };
+    }
+
+    /**
+     * 过滤空和NULL的值，
+     * 如果为空或者null则不增加查询条件
+     *
+     * @param value
+     * @return
+     */
+    public static StrongValue filterNull(Object value) {
+        return new StrongValue() {
+            @Override
+            public boolean isEffective() {
+                return value != null;
+            }
+
+            @Override
+            public Object getValue() {
+                return value;
+            }
+        };
     }
 
 }
