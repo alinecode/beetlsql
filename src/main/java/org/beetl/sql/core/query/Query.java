@@ -1,6 +1,5 @@
 package org.beetl.sql.core.query;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
@@ -16,11 +15,9 @@ import org.beetl.sql.core.kit.StringKit;
 import org.beetl.sql.core.query.interfacer.QueryExecuteI;
 import org.beetl.sql.core.query.interfacer.QueryOtherI;
 import org.beetl.sql.core.query.util.FieldsUtil;
-import org.beetl.sql.core.query.value.StrongValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
