@@ -82,54 +82,6 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return selectByType(clazz, getSimpleColumns());
     }
 
-    private String[] getSimpleColumns() {
-        List<Field> fields = FieldsUtil.getAllFields(clazz);
-        List<String> cols = new ArrayList<>();
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
-            field.setAccessible(Boolean.TRUE);
-            //静态变量无需放入查询条件
-            if (Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
-            Annotation[] annotations = field.getAnnotations();
-            Boolean isSimple = Boolean.TRUE;
-            for (int j = 0; j < annotations.length; j++) {
-                Annotation annotation = annotations[j];
-                if (annotation instanceof QuerySimpleIgnore) {
-                    isSimple = Boolean.FALSE;
-                    break;
-                }
-            }
-            if (isSimple) {
-                String columnName = sqlManager.getNc()
-                        .getColName(clazz, StringKit.toLowerCaseFirstOne(field.getName()));
-                cols.add(columnName);
-            }
-        }
-        String[] columns = new String[cols.size()];
-        cols.toArray(columns);
-        return columns;
-    }
-
-    /**
-     * 拼接字段，不传参数时为*
-     *
-     * @param columns
-     * @return
-     */
-    private StringBuilder splicingColumns(String[] columns) {
-        if (columns == null || columns.length < 1) {
-            return new StringBuilder(ALL_COLUMNS);
-        }
-        StringBuilder columnStr = new StringBuilder();
-        for (String column : columns) {
-            columnStr.append(column).append(",");
-        }
-        columnStr.deleteCharAt(columnStr.length() - 1);
-        return columnStr;
-    }
-
     @Override
     public T single(String... columns) {
         List<T> list = limit(getFirstRowNumber(), 1).select(columns);
@@ -430,6 +382,58 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     private String getSqlErrorTip(String couse) {
         return String.format("\n┏━━━━━ SQL语法错误:\n" + "┣SQL：%s\n" + "┣原因：%s\n" + "┣解决办法：您可能需要重新获取一个Query\n" + "┗━━━━━\n",
                 getSql().toString(), couse);
+    }
+
+    /***
+     * 获取简要字段
+     * @return
+     */
+    private String[] getSimpleColumns() {
+        List<Field> fields = FieldsUtil.getAllFields(clazz);
+        List<String> cols = new ArrayList<>();
+        for (int i = 0; i < fields.size(); i++) {
+            Field field = fields.get(i);
+            field.setAccessible(Boolean.TRUE);
+            //静态变量无需放入查询条件
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            Annotation[] annotations = field.getAnnotations();
+            Boolean isSimple = Boolean.TRUE;
+            for (int j = 0; j < annotations.length; j++) {
+                Annotation annotation = annotations[j];
+                if (annotation instanceof QuerySimpleIgnore) {
+                    isSimple = Boolean.FALSE;
+                    break;
+                }
+            }
+            if (isSimple) {
+                String columnName = sqlManager.getNc()
+                        .getColName(clazz, StringKit.toLowerCaseFirstOne(field.getName()));
+                cols.add(columnName);
+            }
+        }
+        String[] columns = new String[cols.size()];
+        cols.toArray(columns);
+        return columns;
+    }
+
+    /**
+     * 拼接字段，不传参数时为*
+     *
+     * @param columns
+     * @return
+     */
+    private StringBuilder splicingColumns(String[] columns) {
+        if (columns == null || columns.length < 1) {
+            return new StringBuilder(ALL_COLUMNS);
+        }
+        StringBuilder columnStr = new StringBuilder();
+        for (String column : columns) {
+            columnStr.append(column).append(",");
+        }
+        columnStr.deleteCharAt(columnStr.length() - 1);
+        return columnStr;
     }
 
 }

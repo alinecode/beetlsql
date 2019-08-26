@@ -13,6 +13,7 @@ import org.beetl.sql.test.BlogDao;
 import org.beetl.sql.test.MysqlDBConfig;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -38,7 +39,7 @@ public class QueryTest {
     public static void select(BlogDao dao) {
         LambdaQuery<Blog> query = dao.createLambdaQuery();
         Blog blog = query.andEq(Blog::getTitle, QueryUtil.filterNull(null))
-                .andIn(Blog::getId, QueryUtil.filterEmpty(Collections.EMPTY_LIST))
+                .andIn(Blog::getId, Arrays.asList(1,2,3,4,5,6,7))
                 .andNotIn(Blog::getId, QueryUtil.filterEmpty(Collections.EMPTY_LIST))
                 .andNotEq(Blog::getId, QueryUtil.filterEmpty(""))
                 .andLess(Blog::getId, QueryUtil.filterEmpty(2))
