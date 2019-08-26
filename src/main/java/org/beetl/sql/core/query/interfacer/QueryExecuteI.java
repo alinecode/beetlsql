@@ -21,6 +21,12 @@ public interface QueryExecuteI<M> {
 	List<M> select();
 
 	/**
+	 * 查询简单字段
+	 * @return
+	 */
+	List<M> selectSimple();
+
+	/**
 	 * 查询，并映射到指定类上
 	 *
 	 * @param retType
@@ -49,12 +55,26 @@ public interface QueryExecuteI<M> {
 	 */
 	<M> M single(String... columns);
 
+	/***
+	 * 查询简单字段
+	 * @param <M>
+	 * @return
+	 */
+	<M> M singleSimple();
+
 	/**
 	 * 查询一条，如果没有或者有多条，抛异常
 	 *
 	 * @return
 	 */
-	<M> M unique();
+	<M> M unique(String... cols);
+
+	/**
+	 * 查询一条，如果没有或者有多条，抛异常
+	 *
+	 * @return
+	 */
+	<M> M uniqueSimple();
 
 	/***
 	 * 全部更新，包括更新null值
@@ -104,6 +124,13 @@ public interface QueryExecuteI<M> {
 	 * @return
 	 */
 	PageQuery<M> page(long pageNumber, long pageSize, String... columns);
+
+	/**
+	 * 简单字段分页查询
+	 *
+	 * @return
+	 */
+	PageQuery<M> pageSimple(long pageNumber, long pageSize);
 
 	/**
 	 * 分页查询，并映射到指定类上
