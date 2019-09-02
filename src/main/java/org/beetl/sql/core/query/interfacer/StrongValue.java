@@ -3,7 +3,7 @@ package org.beetl.sql.core.query.interfacer;
 /**
  * @author GavinKing
  * @ClassName: StrongValue
- * @Description:健壮的查询变量，用于空值，null等多情况判断
+ * @Description:健壮的查询变量，用于空值，null等多情况判断,用户可以自定义自己的实现
  * 如果出现空值等情况则不进行SQL语句的组装
  * @date 2019/8/26
  */
