@@ -447,13 +447,16 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return new StrongValue() {
             @Override
             public boolean isEffective() {
+                if (value == null) {
+                    return false;
+                }
                 //校验空值
                 if (value instanceof String) {
-                    return value != null && !"".equals(value);
+                    return !"".equals(value);
                 }
 
                 if (value instanceof Collection) {
-                    return value != null && !((Collection) value).isEmpty();
+                    return !((Collection) value).isEmpty();
                 }
                 return true;
             }
