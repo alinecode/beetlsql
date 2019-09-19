@@ -209,13 +209,13 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     @Override
-    public Query<T> andLike(String column, String value) {
+    public Query<T> andLike(String column, Object value) {
         appendAndSql(column, value, "LIKE ");
         return (Query) this;
     }
 
     @Override
-    public Query<T> andNotLike(String column, String value) {
+    public Query<T> andNotLike(String column, Object value) {
         appendAndSql(column, value, "NOT LIKE ");
         return (Query) this;
     }
@@ -239,7 +239,19 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     @Override
+    public Query<T> andIn(String column, StrongValue value) {
+        appendInSql(column, value, IN, AND);
+        return (Query) this;
+    }
+
+    @Override
     public Query<T> andNotIn(String column, Collection<?> value) {
+        appendInSql(column, value, NOT_IN, AND);
+        return (Query) this;
+    }
+
+    @Override
+    public Query<T> andNotIn(String column, StrongValue value) {
         appendInSql(column, value, NOT_IN, AND);
         return (Query) this;
     }
@@ -293,13 +305,13 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     @Override
-    public Query<T> orLike(String column, String value) {
+    public Query<T> orLike(String column, Object value) {
         appendOrSql(column, value, "LIKE");
         return (Query) this;
     }
 
     @Override
-    public Query<T> orNotLike(String column, String value) {
+    public Query<T> orNotLike(String column, Object value) {
         appendOrSql(column, value, "NOT LIKE");
         return (Query) this;
     }
@@ -323,7 +335,19 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     @Override
+    public Query<T> orIn(String column, StrongValue value) {
+        appendInSql(column, value, IN, OR);
+        return (Query) this;
+    }
+
+    @Override
     public Query<T> orNotIn(String column, Collection<?> value) {
+        appendInSql(column, value, NOT_IN, OR);
+        return (Query) this;
+    }
+
+    @Override
+    public Query<T> orNotIn(String column, StrongValue value) {
         appendInSql(column, value, NOT_IN, OR);
         return (Query) this;
     }

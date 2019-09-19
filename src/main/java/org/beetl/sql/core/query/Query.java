@@ -348,6 +348,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         Object[] paras = getParams().toArray();
         SQLReady sqlReady = new SQLReady(targetSql, paras);
         PageQuery<K> pageQuery = new PageQuery<K>(pageNumber, pageSize);
+        //先清除，避免执行出错后无法清除
+        clear();
         return this.sqlManager.execute(sqlReady, retType, pageQuery);
     }
 
