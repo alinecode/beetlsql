@@ -8,7 +8,7 @@ public abstract class NameConversion {
 	/****
 	 * 根据实体class获取表名
 	 * @param c
-	 * @return
+	 * @returnNameConversion
 	 */
 	public abstract String getTableName(Class<?> c);
 	

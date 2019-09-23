@@ -10,7 +10,7 @@ import org.beetl.sql.core.kit.StringKit;
  * @author Gavin
  *
  */
-public class UnderlinedNameConversion extends NameConversion {
+public class UnderlinedNameConversion extends  NameConversion {
 	@Override
 	public String getTableName(Class<?> c) {
 		Table table = (Table)c.getAnnotation(Table.class);
