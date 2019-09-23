@@ -73,12 +73,12 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
-    public LambdaQuery<T> andLike(Property<T, ?> property, String value) {
+    public LambdaQuery<T> andLike(Property<T, ?> property, Object value) {
         appendAndSql(getFunctionName(property), value, "LIKE ");
         return this;
     }
 
-    public LambdaQuery<T> andNotLike(Property<T, ?> property, String value) {
+    public LambdaQuery<T> andNotLike(Property<T, ?> property, Object value) {
         appendAndSql(getFunctionName(property), value, "NOT LIKE ");
         return this;
     }
@@ -167,12 +167,12 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
-    public LambdaQuery<T> orLike(Property<T, ?> property, String value) {
+    public LambdaQuery<T> orLike(Property<T, ?> property, Object value) {
         appendOrSql(getFunctionName(property), value, "LIKE");
         return this;
     }
 
-    public LambdaQuery<T> orNotLike(Property<T, ?> property, String value) {
+    public LambdaQuery<T> orNotLike(Property<T, ?> property, Object value) {
         appendOrSql(getFunctionName(property), value, "NOT LIKE");
         return this;
     }
@@ -192,7 +192,17 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
+    public LambdaQuery<T> orIn(Property<T, ?> property, StrongValue value) {
+        appendInSql(getFunctionName(property), value, IN, OR);
+        return this;
+    }
+
     public LambdaQuery<T> orNotIn(Property<T, ?> property, Collection<?> value) {
+        appendInSql(getFunctionName(property), value, NOT_IN, OR);
+        return this;
+    }
+
+    public LambdaQuery<T> orNotIn(Property<T, ?> property, StrongValue value) {
         appendInSql(getFunctionName(property), value, NOT_IN, OR);
         return this;
     }
@@ -377,13 +387,13 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     @Override
-    public LambdaQuery<T> andLike(String column, String value) {
+    public LambdaQuery<T> andLike(String column, Object value) {
         super.andLike(column, value);
         return this;
     }
 
     @Override
-    public LambdaQuery<T> andNotLike(String column, String value) {
+    public LambdaQuery<T> andNotLike(String column, Object value) {
         super.andNotLike(column, value);
         return this;
     }
@@ -407,7 +417,19 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     @Override
+    public LambdaQuery<T> andIn(String column, StrongValue value) {
+        super.andIn(column, value);
+        return this;
+    }
+
+    @Override
     public LambdaQuery<T> andNotIn(String column, Collection<?> value) {
+        super.andNotIn(column, value);
+        return this;
+    }
+
+    @Override
+    public LambdaQuery<T> andNotIn(String column, StrongValue value) {
         super.andNotIn(column, value);
         return this;
     }
@@ -461,13 +483,13 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     @Override
-    public LambdaQuery<T> orLike(String column, String value) {
+    public LambdaQuery<T> orLike(String column, Object value) {
         super.orLike(column, value);
         return this;
     }
 
     @Override
-    public LambdaQuery<T> orNotLike(String column, String value) {
+    public LambdaQuery<T> orNotLike(String column, Object value) {
         super.orNotLike(column, value);
         return this;
     }
@@ -491,7 +513,20 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     @Override
+    public LambdaQuery<T> orIn(String column, StrongValue value) {
+        super.orIn(column, value);
+        return this;
+    }
+
+
+    @Override
     public LambdaQuery<T> orNotIn(String column, Collection<?> value) {
+        super.orNotIn(column, value);
+        return this;
+    }
+
+    @Override
+    public LambdaQuery<T> orNotIn(String column, StrongValue value) {
         super.orNotIn(column, value);
         return this;
     }
