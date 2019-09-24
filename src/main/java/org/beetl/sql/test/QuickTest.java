@@ -52,22 +52,8 @@ public class QuickTest {
 			}
 		});
 
-		MyPageQuery<User>  query = new MyPageQuery<User>();
-
-//		PageQuery<User> query = new PageQuery<User>();
-//		System.out.println(q1.pageObj==query.pageObj);
-
-		User user = new User();
-		user.setId(20);
-		query.setParas(user);
-
-		User user2 = new User();
-		user2.setId(10);
-		System.out.println(sql.containSqlId("user.get3Ids5"));
-		ErrorInfo info = sql.vaidateSqlId("user.getIds");
-		if(info!=null){
-			System.out.println(info.toString());
-		}
+		UserDao dao = sql.getMapper(UserDao.class);
+		dao.queryAll();
 
 
 

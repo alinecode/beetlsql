@@ -65,3 +65,9 @@ getCount
 ===
 
     select count(1) from user where name = #name#
+    
+    
+queryAll
+===
+
+    select * from user;

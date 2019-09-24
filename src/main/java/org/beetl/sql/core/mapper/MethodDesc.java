@@ -48,6 +48,7 @@ public class MethodDesc {
 
     private Method method = null;
 
+
     static Map<CallKey, MethodDesc> cache = new HashMap<CallKey, MethodDesc>();
 
     public static MethodDesc getMetodDescBySqlId(SQLManager sm, Class entityClass, Method m, String sqlId) {
@@ -187,6 +188,7 @@ public class MethodDesc {
         this.resultType = entityClass;
         // 默认返回类型
         this.defaultRetType = entityClass;
+
         this.method = m;
 
         SqlStatementType sqlType = SqlStatementType.AUTO;
@@ -386,7 +388,9 @@ public class MethodDesc {
             Type t = ((ParameterizedType) type).getActualTypeArguments()[0];
             if (t instanceof ParameterizedType) {
                 return getParamterTypeClass(t);
-            } else {
+            } else  if(t instanceof TypeVariable) {
+            	return this.defaultRetType;
+			}else{
                 return (Class) t;
             }
         } else {

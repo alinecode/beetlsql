@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @SqlResource("user")
-public interface UserDao extends BaseMapper {
+public interface UserDao extends BaseDao<User> {
 
 	List<User> getIds(User user);
 
