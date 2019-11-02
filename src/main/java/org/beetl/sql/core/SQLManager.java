@@ -372,9 +372,10 @@ public class SQLManager {
                 tempSource = this.dbStyle.genSelectById(cls);
                 break;
             }
-			case EXIST_BY_ID:{
-				tempSource = this.dbStyle.genExistSql(cls);
-			}
+            case EXIST_BY_ID:{
+              tempSource = this.dbStyle.genExistSql(cls);
+              break;
+            }
             case SELECT_BY_TEMPLATE: {
                 tempSource = this.dbStyle.genSelectByTemplate(cls);
                 break;

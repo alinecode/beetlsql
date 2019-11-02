@@ -70,4 +70,8 @@ getCount
 queryAll
 ===
 
+@ println("--: 注解");
+
+```javascript
     select * from user;
+```
