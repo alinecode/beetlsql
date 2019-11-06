@@ -16,7 +16,7 @@ import org.beetl.sql.core.query.Query;
 public interface BaseMapper<T> {
 
     /**
-     * 通用插入，插入一个实体对象到数据库，所以字段将参与操作，除非你使用ColumnIgnore注解
+     * 通用插入，插入一个实体对象到数据库，所有字段将参与操作，使用ColumnIgnore注解的字段则会忽略
      *
      * @param entity
      */
@@ -46,17 +46,17 @@ public interface BaseMapper<T> {
     void insertTemplate(T entity, boolean autoDbAssignKey);
 
     /**
-     * 批量插入实体。此方法不会获取自增主键的值，如果需要，建议不适用批量插入，适用
+     * 批量插入实体。此方法不会获取自增主键的值，如果需要获取自增主键值，请使用
      * <pre>
-     * insert(T entity,true);
+     * insertBatch(List<T> list, true);
      * </pre>
      *
-     * @param list
+     * @param list 实体对象集合
      */
     void insertBatch(List<T> list);
 
     /**
-     * 批量插入，使用数据库返回自增主键
+     * 批量插入，设置assignKey为true的时候，数据库将会返回自增主键
      * @param list
      * @param autoDbAssignKey
      */
@@ -71,7 +71,7 @@ public interface BaseMapper<T> {
     KeyHolder insertReturnKey(T entity);
 
     /**
-     * 根据主键更新对象，所以属性都参与更新。也可以使用主键ColumnIgnore来控制更新的时候忽略此字段
+     * 根据主键更新对象，所以属性都参与更新，使用ColumnIgnore注解的字段则会忽略
      * @param entity
      * @return
      */
