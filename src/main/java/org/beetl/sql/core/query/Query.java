@@ -431,7 +431,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         }
         StringBuilder columnStr = new StringBuilder();
         for (String column : columns) {
-            columnStr.append(column).append(",");
+            columnStr.append(getColTrunk(column)).append(",");
         }
         columnStr.deleteCharAt(columnStr.length() - 1);
         return columnStr;
