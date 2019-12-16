@@ -55,6 +55,16 @@ public interface QueryExecuteI<M> {
 	 */
 	<M> M single(String... columns);
 
+	/**
+	 * 查询一条，如果没有，返回null，返回所有列，包括blob/clob，如果想避免返回这种字段，可以使用
+	 * {@code single(String... )} 或者 {@code singleSimple()}
+	 * @param <M>
+	 * @return
+	 */
+	default <M> M single(){
+		return single(null);
+	}
+
 	/***
 	 * 查询简单字段
 	 * @param <M>
@@ -68,6 +78,17 @@ public interface QueryExecuteI<M> {
 	 * @return
 	 */
 	<M> M unique(String... cols);
+
+
+	/**
+	 * 查询一条，如果没有或者有多条，抛异常,返回所有列，包括blob/clob，如果想避免返回这种字段，可以使用
+	 * {@code unique(String... )} 或者 {@code uniqueSimple()}
+	 *
+	 * @return
+	 */
+	default <M> M unique(){
+		return unique(null);
+	}
 
 	/**
 	 * 查询一条，如果没有或者有多条，抛异常

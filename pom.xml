@@ -242,9 +242,9 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-                <!--<excludes>-->
-                    <!--<exclude>sql/**</exclude>-->
-                <!--</excludes>-->
+                <excludes>
+                    <exclude>sql/**</exclude>
+                </excludes>
 			</resource>
 
 		</resources>
@@ -258,9 +258,9 @@
 					<target>1.8</target>
 					<encoding>UTF-8</encoding>
                     <parameters>true</parameters>
-                    <!--<excludes>-->
-                        <!--<exclude>org/beetl/sql/test/**</exclude>-->
-                    <!--</excludes>-->
+                    <excludes>
+                        <exclude>org/beetl/sql/test/**</exclude>
+                    </excludes>
 				</configuration>
 			</plugin>
 			<plugin>

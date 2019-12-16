@@ -1,8 +1,6 @@
 package org.beetl.sql.test;
 
-import org.beetl.sql.core.annotatoin.Jackson;
-import org.beetl.sql.core.annotatoin.Table;
-import org.beetl.sql.core.annotatoin.UpdateTime;
+import org.beetl.sql.core.annotatoin.*;
 
 import java.util.Date;
 
@@ -11,6 +9,7 @@ import java.util.Date;
 //   @OrmCondition(target = Department.class, attr="departmentId", targetAttr = "id", type=OrmQuery.Type.ONE)
 //})
 public class User extends BaseEntity {
+
 
 
 	private Integer departmentId;

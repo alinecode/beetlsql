@@ -1,12 +1,13 @@
 package org.beetl.sql.test;
 
 import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.AutoID;
 
 
 public class BaseObject {
 
-	@AssignID("test")
-	private Integer id;
+	@AutoID()
+	private int id;
 
 	public Integer getId() {
 		return id;

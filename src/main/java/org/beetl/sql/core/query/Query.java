@@ -3,11 +3,11 @@ package org.beetl.sql.core.query;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.StringTemplateResourceLoader;
-import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.*;
 import org.beetl.sql.core.annotatoin.QuerySimpleIgnore;
+import org.beetl.sql.core.db.ClassDesc;
+import org.beetl.sql.core.db.ColDesc;
+import org.beetl.sql.core.db.TableDesc;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.kit.BeanKit;
@@ -390,28 +390,14 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      * @return
      */
     private String[] getSimpleColumns() {
-        List<Field> fields = FieldsUtil.getAllFields(clazz);
-        List<String> cols = new ArrayList<>();
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
-            field.setAccessible(Boolean.TRUE);
-            //静态变量无需放入查询条件
-            if (Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
-            Annotation[] annotations = field.getAnnotations();
-            Boolean isSimple = Boolean.TRUE;
-            for (int j = 0; j < annotations.length; j++) {
-                Annotation annotation = annotations[j];
-                if (annotation instanceof QuerySimpleIgnore) {
-                    isSimple = Boolean.FALSE;
-                    break;
-                }
-            }
-            if (isSimple) {
-                String columnName = sqlManager.getNc()
-                        .getColName(clazz, StringKit.toLowerCaseFirstOne(field.getName()));
-                cols.add(columnName);
+        String tname = sqlManager.getNc().getTableName(this.clazz);
+        TableDesc desc = sqlManager.getMetaDataManager().getTable(tname);
+        Map<String, ColDesc> colMap = desc.getColsDetail();
+        List<String> cols = new ArrayList<>(colMap.size());
+        for(Map.Entry<String,ColDesc> entry:colMap.entrySet()){
+            int sqlType = entry.getValue().sqlType;
+            if(!JavaType.isBigType(sqlType)){
+                cols.add(entry.getKey());
             }
         }
         String[] columns = new String[cols.size()];

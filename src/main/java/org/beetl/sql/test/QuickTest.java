@@ -53,6 +53,7 @@ public class QuickTest {
 		});
 
 		UserDao dao = sql.getMapper(UserDao.class);
+		dao.createQuery().unique();
 		dao.queryAll();
 
 

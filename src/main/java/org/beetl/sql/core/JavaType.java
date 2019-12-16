@@ -31,7 +31,9 @@ public class JavaType {
     static {
         String javaVersion = System.getProperty("java.version");
         // version String should look like "1.4.2_10"
-		if (javaVersion.startsWith("12")) {
+        if (javaVersion.startsWith("13")) {
+            majorJavaVersion = 23;
+        }else if (javaVersion.startsWith("12")) {
 			majorJavaVersion = 22;
 		} else if (javaVersion.startsWith("11")) {
             majorJavaVersion = 21;
@@ -103,6 +105,9 @@ public class JavaType {
         jdbcJavaTypes.put(new Integer(Types.NCLOB), String.class); // 2011 大文本
     }
 
+    public static boolean isBigType(int sqlType){
+        return sqlType==Types.BLOB||sqlType==Types.CLOB||sqlType==Types.NCLOB;
+    }
 
     static {
         mapping.put(Types.BIGINT, "Long");

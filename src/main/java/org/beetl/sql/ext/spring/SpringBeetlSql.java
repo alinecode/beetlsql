@@ -8,7 +8,7 @@ import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.spring4.SqlManagerFactoryBean;
 import org.springframework.core.io.Resource;
 
-import javax.annotation.PostConstruct;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -40,7 +40,7 @@ public class SpringBeetlSql {
 	public SpringBeetlSql() {
 	}
 
-	@PostConstruct
+//	@PostConstruct
 	public void init() {
 		if (dbStyle == null) {
 			dbStyle = new MySqlStyle();

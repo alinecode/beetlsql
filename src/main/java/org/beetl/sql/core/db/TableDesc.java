@@ -86,7 +86,9 @@ public class TableDesc{
 		return cols;
 	}
 
-
+	public Map<String, ColDesc> getColsDetail() {
+		return (Map)colsDetail;
+	}
 
 	public String getRemark() {
 		return remark;
