@@ -4,7 +4,7 @@ import org.beetl.sql.core.annotatoin.*;
 
 import java.util.Date;
 
-@Table(name="user")
+@Table(name="User")
 //@OrmQuery({
 //   @OrmCondition(target = Department.class, attr="departmentId", targetAttr = "id", type=OrmQuery.Type.ONE)
 //})

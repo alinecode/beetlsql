@@ -7,6 +7,7 @@ import org.beetl.core.exception.ErrorInfo;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.annotatoin.builder.SampleJsonAtrributeBuilder;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.db.PostgresStyle;
 import org.beetl.sql.core.engine.PageQuery;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -32,8 +33,8 @@ public class QuickTest {
 		// SqlServerStyle style = new SqlServerStyle();
 		// SqlServer2012Style style = new SqlServer2012Style();
 		// OracleStyle style = new OracleStyle();
-		// PostgresStyle style = new PostgresStyle();
-		MySqlStyle style = new MySqlStyle();
+		 PostgresStyle style = new PostgresStyle();
+//		MySqlStyle style = new MySqlStyle();
 		ConnectionSource cs = ConnectionSourceHelper.getSingle(datasource());
 
 		SQLLoader loader = new ClasspathLoader("/sql");
@@ -53,8 +54,7 @@ public class QuickTest {
 		});
 
 		UserDao dao = sql.getMapper(UserDao.class);
-		dao.createQuery().unique();
-		dao.queryAll();
+		dao.createQuery().uniqueSimple();
 
 
 

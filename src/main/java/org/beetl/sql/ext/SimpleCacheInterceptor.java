@@ -226,8 +226,9 @@ public class SimpleCacheInterceptor implements Interceptor {
 
 		@Override
 		public void putCache(String ns, Object key, Object value) {
-			this.cache.get(ns).put(key, value);
-
+			if(value!=null){
+				this.cache.get(ns).put(key, value);
+			}
 		}
 
 		@Override

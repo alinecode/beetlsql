@@ -84,7 +84,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
                 // 若要效率更高，可以将constructor缓存下来，每个dao要创建lookup时都使用同一个constructor
                 Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
                 constructor.setAccessible(true);
-                lookup = constructor.newInstance(caller, MethodHandles.Lookup.PRIVATE);
+                lookup = constructor.newInstance(caller, MethodHandles.Lookup.PUBLIC | MethodHandles.Lookup.PRIVATE);
             }
             // 通过lookup直接调用默认实现
             return lookup.unreflectSpecial(method, caller).bindTo(proxy).invokeWithArguments(args);

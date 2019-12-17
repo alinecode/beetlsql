@@ -6,7 +6,7 @@ import org.beetl.sql.core.annotatoin.AutoID;
 
 public class BaseObject {
 
-	@AutoID()
+	@AssignID
 	private int id;
 
 	public Integer getId() {

@@ -2,11 +2,11 @@ package org.beetl.sql.test;
 
 public class MysqlDBConfig {
 //    public static String driver = "com.mysql.jdbc.Driver";
-    public static String driver = "com.mysql.cj.jdbc.Driver";
-    public static String dbName = "orm";
-    public static String password = "12345678";
-    public static String userName = "root";
-    public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"?&serverTimezone=UTC&useSSL=false";
+//    public static String driver = "com.mysql.cj.jdbc.Driver";
+//    public static String dbName = "orm";
+//    public static String password = "12345678";
+//    public static String userName = "root";
+//    public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"?&serverTimezone=UTC&useSSL=false";
 //    public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"?&serverTimezone=UTC&useSSL=false";
 
 
@@ -30,11 +30,11 @@ public class MysqlDBConfig {
 //    public static String userName = "risk";
 //    public static String url = "jdbc:oracle:thin:@172.16.86.56:1521:dfzb";
 
-//  public static String driver = "org.postgresql.Driver";
-//  public static String dbName = "postgres";
-//  public static String password = "postgres";
-//  public static String userName = "postgres";
-//  public static String url = "jdbc:postgresql://192.168.1.68:5432/postgres";
+  public static String driver = "org.postgresql.Driver";
+  public static String dbName = "orm";
+  public static String password = "postgres";
+  public static String userName = "postgres";
+  public static String url = "jdbc:postgresql://127.0.0.1:5432/orm";
 
 }
 
