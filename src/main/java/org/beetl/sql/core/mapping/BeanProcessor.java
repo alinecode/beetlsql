@@ -19,7 +19,7 @@ import java.sql.*;
 import java.util.*;
 
 /**
- * ResultSet处理类，负责转换到Bean或者Map
+ * ResultSet处理类，负责转换到Bean或者Map，这个类可以被替换，参考SQLManager.setDefaultBeanProcessors
  * @author: suxj, xiandafu
  */
 public class BeanProcessor {
@@ -449,7 +449,7 @@ public class BeanProcessor {
 				// 兼容性修改：oralce 驱动 不识别util.Date
 				if (dbType == DBStyle.DB_ORACLE || dbType == DBStyle.DB_POSTGRES || dbType == DBStyle.DB_DB2
 						|| dbType == DBStyle.DB_SQLSERVER) {
-					if (c == java.util.Date.class) {
+					if (o instanceof java.util.Date) {
 						o = new Timestamp(((java.util.Date) o).getTime());
 					}
 				}

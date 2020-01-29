@@ -1310,7 +1310,6 @@ public class SQLManager {
         if (holder != null) {
             String tableName = this.nc.getTableName(clazz);
             TableDesc table = this.metaDataManager.getTable(tableName);
-            ClassDesc clsDesc = table.getClassDesc(this.nc);
             Set<String> idCols = table.getIdNames();
             if (idCols.size() != 1) {
                 throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR, "有多个主键，不能自动设置");
@@ -1368,7 +1367,7 @@ public class SQLManager {
     	Class c = obj.getClass();
         String tableName = this.nc.getTableName(c);
         TableDesc table = this.metaDataManager.getTable(tableName);
-        ClassDesc classDesc = table.getClassDesc(this.nc);
+        ClassDesc classDesc = table.getClassDesc(c,this.nc);
         List<String> idProperties = classDesc.getIdAttrs();
         if(idProperties.size()!=1){
             throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR,"upsert方法期望只有一个主键");
