@@ -15,8 +15,7 @@ public class GroupBy {
 	}
 
 	public String getGroupBy() {
-		sb.setLength(sb.length() - 1);
-		return sb.toString();
+		return sb.toString().trim();
 	}
 
 	public GroupBy addHaving(String sql) {

@@ -1,5 +1,6 @@
 package org.beetl.sql.core.query;
 
+import org.beetl.ext.fn.StringUtil;
 import org.beetl.sql.core.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
@@ -38,10 +39,24 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         groupBy = null;
     }
 
+    /**
+     * 获取字段 加上前后空格
+     *
+     * @param colName
+     * @return
+     */
     protected String getCol(String colName) {
-        return " " + sqlManager.getDbStyle().getKeyWordHandler().getCol(colName) + " ";
+        return " " + getColTrunk(colName) + " ";
     }
 
+    /***
+     * 获取字段信息
+     * @param colName
+     * @return
+     */
+    protected String getColTrunk(String colName) {
+        return sqlManager.getDbStyle().getKeyWordHandler().getCol(colName);
+    }
 
     /****
      * 根据实体class获取表名
@@ -99,10 +114,8 @@ public class QueryCondition<T> implements QueryConditionI<T> {
      * @param objects
      * @return
      */
-    public Query<T> addPreParam(List<Object> objects) {
+    public void addPreParam(List<Object> objects) {
         objects.addAll(params);
-        params = objects;
-        return (Query) this;
     }
 
     /**
@@ -379,7 +392,9 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         if (!(condition instanceof QueryCondition)) {
             throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR, "连接条件必须是一个 QueryCondition 类型");
         }
-
+        if (condition.getSql() == null || "".equals(condition.getSql().toString())) {
+            return (Query) this;
+        }
         //去除叠加条件中的WHERE
         int i = condition.getSql().indexOf(WHERE);
         if (i > -1) {
