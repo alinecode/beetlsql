@@ -14,6 +14,7 @@ import org.beetl.sql.ext.DebugInterceptor;
 import javax.sql.DataSource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -43,18 +44,12 @@ public class QuickTest {
 		Interceptor[] inters = new Interceptor[]{debug};
 		final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
 		//预先注册一个，否则没有办法使用@Jackson注解
-		sql.getBeetl().getGroupTemplate().registerFunction("jackson", SampleJsonAtrributeBuilder.json);
-		sql.addIdAutonGen("test", new IDAutoGen() {
-			int i = 0;
 
-			@Override
-			public Object nextID(String params) {
-				return i++;
-			}
-		});
-
-		UserDao dao = sql.getMapper(UserDao.class);
-		dao.createQuery().uniqueSimple();
+		User user = new User();
+		user.setName("test");
+		user.setCreateTime(LocalDateTime.now());
+		sql.insert(user);
+		System.out.println(user.getCreateTime());
 
 
 

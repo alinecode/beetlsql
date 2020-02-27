@@ -2,6 +2,7 @@ package org.beetl.sql.test;
 
 import org.beetl.sql.core.annotatoin.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Table(name="User")
@@ -19,16 +20,16 @@ public class User extends BaseEntity {
 
     Department department;
 
-    @UpdateTime
-    private Date createTime;
+//    @UpdateTime
+    private LocalDateTime createTime;
     
 
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 

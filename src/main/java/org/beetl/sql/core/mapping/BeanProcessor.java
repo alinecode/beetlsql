@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -43,6 +44,7 @@ public class BeanProcessor {
 	static TimeTypeHandler timeTypeHandler = new TimeTypeHandler();
 	static CLobJavaSqlTypeHandler clobTypeHandler = new CLobJavaSqlTypeHandler();
 	static BlobJavaSqlTypeHandler blobTypeHandler = new BlobJavaSqlTypeHandler();
+	static LocalDateTimeTypeHandler localDateTimeHandler = new LocalDateTimeTypeHandler();
 	protected NameConversion nc = null;
 	protected SQLManager sm;
 	protected String dbName;
@@ -84,6 +86,7 @@ public class BeanProcessor {
 		handlers.put(Time.class, timeTypeHandler);
 		handlers.put(Clob.class, clobTypeHandler);
 		handlers.put(Blob.class, blobTypeHandler);
+		handlers.put(LocalDateTime.class,localDateTimeHandler);
 
 	}
 
@@ -446,6 +449,14 @@ public class BeanProcessor {
 					continue;
 				}
 				Class c = o.getClass();
+
+				if(c==LocalDateTime.class){
+					LocalDateTime d = (LocalDateTime)o;
+					ps.setTimestamp(i+1, Timestamp.valueOf(d));
+					continue ;
+
+				}
+
 				// 兼容性修改：oralce 驱动 不识别util.Date
 				if (dbType == DBStyle.DB_ORACLE || dbType == DBStyle.DB_POSTGRES || dbType == DBStyle.DB_DB2
 						|| dbType == DBStyle.DB_SQLSERVER) {
