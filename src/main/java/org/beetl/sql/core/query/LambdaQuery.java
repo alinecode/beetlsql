@@ -313,9 +313,8 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     @Override
-    public LambdaQuery<T> addPreParam(List<Object> objects) {
+    public void addPreParam(List<Object> objects) {
         super.addPreParam(objects);
-        return this;
     }
 
     @Override

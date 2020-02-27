@@ -138,11 +138,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     protected <K> List<K> selectByType(Class<K> retType, String... columns) {
         String column = splicingColumns(columns).toString();
-        assembleSelectSql(column);
-        String targetSql = this.getSql().toString();
+        StringBuilder sql = assembleSelectSql(column);
+        String targetSql = sql.toString();
         Object[] paras = getParams().toArray();
-        //先清除，避免执行出错后无法清除
-        clear();
         List<K> list = this.sqlManager.execute(new SQLReady(targetSql, paras), retType);
         return list;
     }
@@ -151,39 +149,38 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      * 组装查询的sql语句
      * @return
      */
-    private void assembleSelectSql(String column) {
+    private StringBuilder assembleSelectSql(String column) {
         StringBuilder sb = new StringBuilder("SELECT ").append(column).append(" ");
         sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
-        this.setSql(sb);
-        addAdditionalPartSql();
+        sb = addAdditionalPartSql(sb);
+        return sb;
     }
 
     /**
      * 增加分页，分组排序
      */
-    private void addAdditionalPartSql() {
-        addGroupAndOrderPartSql();
+    private StringBuilder addAdditionalPartSql(StringBuilder sql) {
+        addGroupAndOrderPartSql(sql);
         // 增加翻页
         if (this.startRow != -1) {
-            setSql(new StringBuilder(
-                    sqlManager.getDbStyle().getPageSQLStatement(this.getSql().toString(), startRow, pageSize)));
+            sql = new StringBuilder(
+                    sqlManager.getDbStyle().getPageSQLStatement(sql.toString(), startRow, pageSize));
         }
+        return sql;
     }
 
     /**
      * 增加分组，排序
      */
-    private void addGroupAndOrderPartSql() {
-        StringBuilder sb = this.getSql();
-
+    private void addGroupAndOrderPartSql(StringBuilder sql) {
         if (this.orderBy != null && this.groupBy != null) {
             //先group by 后 order by 顺序
-            sb.append(groupBy.getGroupBy()).append(" ");
-            sb.append(orderBy.getOrderBy()).append(" ");
+            sql.append(groupBy.getGroupBy()).append(" ");
+            sql.append(orderBy.getOrderBy()).append(" ");
         } else if (this.orderBy != null) {
-            sb.append(orderBy.getOrderBy()).append(" ");
+            sql.append(orderBy.getOrderBy()).append(" ");
         } else if (this.groupBy != null) {
-            sb.append(groupBy.getGroupBy()).append(" ");
+            sql.append(groupBy.getGroupBy()).append(" ");
         }
     }
 
@@ -220,13 +217,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder sb = new StringBuilder(sql);
 
         sb.append(" ").append(getSql());
-
-        this.setSql(sb);
-
-        String targetSql = this.getSql().toString();
-        Object[] paras = getParams().toArray();
-        //先清除，避免执行出错后无法清除
-        clear();
+        String targetSql = sb.toString();
+        Object[] paras = paraLis.toArray();
         int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
         return row;
     }
@@ -246,12 +238,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public int delete() {
         StringBuilder sb = new StringBuilder("DELETE FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
-        this.setSql(sb);
-
-        String targetSql = this.getSql().toString();
+        String targetSql = sb.toString();
         Object[] paras = getParams().toArray();
-        //先清除，避免执行出错后无法清除
-        clear();
         int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
         return row;
     }
@@ -260,12 +248,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public long count() {
         StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
         sb.append(getTableName(clazz)).append(" ").append(getSql());
-        this.setSql(sb);
-
-        String targetSql = this.getSql().toString();
+        String targetSql = sb.toString();
         Object[] paras = getParams().toArray();
-        //先清除，避免执行出错后无法清除
-        clear();
         List results = this.sqlManager.execute(new SQLReady(targetSql, paras), Long.class);
         return (Long) results.get(0);
     }
@@ -278,7 +262,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             condition.getSql().delete(i, i + 5);
         }
         if (this.groupBy == null) {
-            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("haveing 需要在groupBy后调用"));
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("having 需要在groupBy后调用"));
         }
 
         groupBy.addHaving(condition.getSql().toString());
@@ -343,13 +327,15 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         StringBuilder columnStr = splicingColumns(columns);
         //此处查询语句不需要设置分页
         this.startRow = -1;
-        assembleSelectSql(columnStr.toString());
-        String targetSql = this.getSql().toString();
+        StringBuilder sql = assembleSelectSql(columnStr.toString());
+        //检测是否包含groupBy
+        if (this.groupBy != null) {
+            sql = new StringBuilder("SELECT * FROM (").append(sql).append(") t");
+        }
+        String targetSql = sql.toString();
         Object[] paras = getParams().toArray();
         SQLReady sqlReady = new SQLReady(targetSql, paras);
         PageQuery<K> pageQuery = new PageQuery<K>(pageNumber, pageSize);
-        //先清除，避免执行出错后无法清除
-        clear();
         return this.sqlManager.execute(sqlReady, retType, pageQuery);
     }
 
@@ -382,6 +368,16 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      */
     private String getSqlErrorTip(String couse) {
         return String.format("\n┏━━━━━ SQL语法错误:\n" + "┣SQL：%s\n" + "┣原因：%s\n" + "┣解决办法：您可能需要重新获取一个Query\n" + "┗━━━━━\n",
+                getSql().toString(), couse);
+    }
+
+    /***
+     * 获取错误提示
+     *
+     * @return
+     */
+    private String getSqlErrorTip(String couse, String solve) {
+        return String.format("\n┏━━━━━ SQL语法错误:\n" + "┣SQL：%s\n" + "┣原因：%s\n" + "┣解决办法：" + solve + "\n" + "┗━━━━━\n",
                 getSql().toString(), couse);
     }
 

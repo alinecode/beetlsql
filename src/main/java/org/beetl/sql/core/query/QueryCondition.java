@@ -114,10 +114,8 @@ public class QueryCondition<T> implements QueryConditionI<T> {
      * @param objects
      * @return
      */
-    public Query<T> addPreParam(List<Object> objects) {
+    public void addPreParam(List<Object> objects) {
         objects.addAll(params);
-        params = objects;
-        return (Query) this;
     }
 
     /**

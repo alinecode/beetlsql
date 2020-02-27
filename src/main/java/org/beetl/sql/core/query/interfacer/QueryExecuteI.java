@@ -90,6 +90,7 @@ public interface QueryExecuteI<M> {
 	 */
 	int updateSelective(Object t);
 
+
 	/***
 	 * 全部插入，包括插入null值
 	 * @param m
