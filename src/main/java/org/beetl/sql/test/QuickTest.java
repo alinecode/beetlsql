@@ -45,11 +45,13 @@ public class QuickTest {
 		final SQLManager sql = new SQLManager(style, loader, cs, new UnderlinedNameConversion(), inters);
 		//预先注册一个，否则没有办法使用@Jackson注解
 
+		UserDao dao = sql.getMapper(UserDao.class);
 		User user = new User();
 		user.setName("test");
-		user.setCreateTime(LocalDateTime.now());
-		sql.insert(user);
-		System.out.println(user.getCreateTime());
+		List<User> users = dao.getIds(user);
+
+
+		System.out.println(users.size());
 
 
 

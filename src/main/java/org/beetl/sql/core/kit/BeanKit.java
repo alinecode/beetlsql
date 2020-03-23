@@ -241,13 +241,14 @@ public class BeanKit {
         if(holder!=null){
             return holder;
         }
-        try {
-            Field f =c.getDeclaredField(property);
-            ans =  f.getDeclaredAnnotations();
-            holder =  checkAttributeHanlderHolder(ans);
-        } catch (NoSuchFieldException e) {
-            //忽略
+
+        Field f = findField(c,property);
+        if(f==null){
+            return null ;
         }
+        ans =  f.getDeclaredAnnotations();
+        holder =  checkAttributeHanlderHolder(ans);
+
         return holder;
 
     }
@@ -308,6 +309,21 @@ public class BeanKit {
             }
 
         }
+    }
+
+    protected  static Field findField(Class c,String property){
+        while (c != null) {
+            Field[] fs = c.getDeclaredFields();
+            for (Field f : fs) {
+                if (!f.getName().equals(property)) {
+                    continue;
+                }
+                return f;
+
+            }
+            c = c.getSuperclass();
+        }
+        return null;
     }
 
     public static <T extends Annotation> T getAnnoation(Class c, String property, Class<T> annotationClass) {

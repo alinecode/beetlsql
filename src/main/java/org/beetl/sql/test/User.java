@@ -20,18 +20,9 @@ public class User extends BaseEntity {
 
     Department department;
 
-//    @UpdateTime
-    private LocalDateTime createTime;
+
     
 
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
 
     public Role getRole() {
         return role;
