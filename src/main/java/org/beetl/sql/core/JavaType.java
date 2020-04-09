@@ -15,13 +15,18 @@ import java.util.Map;
  * http://www.cnblogs.com/shishm/archive/2012/01/30/2332142.html
  *
  * @author lijiazhi
- * @author linziguan@live.com
- * 2016-12-08 丰富JavaType功能，可以javaType与jdbcType之间互相转换
+ * @author linziguan@live.com 2016-12-08 丰富JavaType功能，可以javaType与jdbcType之间互相转换
  */
 public class JavaType {
-    /*jdbc type 对应的java的type，参考JavaSqlTypeHandler和BeanProcessor*/
-    public static Map<Integer, Class<?>> jdbcJavaTypes = new HashMap<Integer, Class<?>>(); // jdbc type to java
-    // type/*生成java代码*/
+
+    /**
+     * jdbc type to java jdbc type 对应的java的type，参考JavaSqlTypeHandler和BeanProcessor
+     */
+    public static Map<Integer, Class<?>> jdbcJavaTypes = new HashMap<Integer, Class<?>>();
+
+    /**
+     * type/*生成java代码
+     */
     public static Map<Integer, String> mapping = new HashMap<Integer, String>();
 
     public static Map<String, Integer> jdbcTypeNames = new HashMap<String, Integer>();
@@ -33,9 +38,9 @@ public class JavaType {
         // version String should look like "1.4.2_10"
         if (javaVersion.startsWith("13")) {
             majorJavaVersion = 23;
-        }else if (javaVersion.startsWith("12")) {
-			majorJavaVersion = 22;
-		} else if (javaVersion.startsWith("11")) {
+        } else if (javaVersion.startsWith("12")) {
+            majorJavaVersion = 22;
+        } else if (javaVersion.startsWith("11")) {
             majorJavaVersion = 21;
         } else if (javaVersion.startsWith("10")) {
             majorJavaVersion = 20;
@@ -57,56 +62,77 @@ public class JavaType {
     public final static String SPECIAL = "SPECIAL";
 
     static {
-
-
         // 初始化jdbcJavaTypes：
-        jdbcJavaTypes.put(new Integer(Types.LONGNVARCHAR), String.class); // -16
+        // -16
+        jdbcJavaTypes.put(Integer.valueOf(Types.LONGNVARCHAR), String.class);
+        // -15 字符串
+        jdbcJavaTypes.put(Integer.valueOf(Types.NCHAR), String.class);
+        // -9 字符串
+        jdbcJavaTypes.put(Integer.valueOf(Types.NVARCHAR), String.class);
+        // -8 字符串
+        jdbcJavaTypes.put(Integer.valueOf(Types.ROWID), String.class);
+        // -7 布尔
+        jdbcJavaTypes.put(Integer.valueOf(Types.BIT), Boolean.class);
+        // -6 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.TINYINT), Integer.class);
+        // -5 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.BIGINT), Long.class);
+        // -4
+        jdbcJavaTypes.put(Integer.valueOf(Types.LONGVARBINARY), byte[].class);
+        // -3 二进制
+        jdbcJavaTypes.put(Integer.valueOf(Types.VARBINARY), byte[].class);
+        // -2 二进制
+        jdbcJavaTypes.put(Integer.valueOf(Types.BINARY), byte[].class);
+        // -1
+        jdbcJavaTypes.put(Integer.valueOf(Types.LONGVARCHAR), String.class);
         // 字符串
-        jdbcJavaTypes.put(new Integer(Types.NCHAR), String.class); // -15 字符串
-        jdbcJavaTypes.put(new Integer(Types.NVARCHAR), String.class); // -9 字符串
-        jdbcJavaTypes.put(new Integer(Types.ROWID), String.class); // -8 字符串
-        jdbcJavaTypes.put(new Integer(Types.BIT), Boolean.class); // -7 布尔
-        jdbcJavaTypes.put(new Integer(Types.TINYINT), Integer.class); // -6 数字
-        jdbcJavaTypes.put(new Integer(Types.BIGINT), Long.class); // -5 数字
-        jdbcJavaTypes.put(new Integer(Types.LONGVARBINARY), byte[].class); // -4
-        // 二进制
-        jdbcJavaTypes.put(new Integer(Types.VARBINARY), byte[].class); // -3 二进制
-        jdbcJavaTypes.put(new Integer(Types.BINARY), byte[].class); // -2 二进制
-        jdbcJavaTypes.put(new Integer(Types.LONGVARCHAR), String.class); // -1
-        // 字符串
-        // jdbcJavaTypes.put(new Integer(Types.NULL), String.class); // 0 /
-        jdbcJavaTypes.put(new Integer(Types.CHAR), String.class); // 1 字符串
-        jdbcJavaTypes.put(new Integer(Types.NUMERIC), BigDecimal.class); // 2 数字
-        jdbcJavaTypes.put(new Integer(Types.DECIMAL), BigDecimal.class); // 3 数字
-        jdbcJavaTypes.put(new Integer(Types.INTEGER), Integer.class); // 4 数字
-        jdbcJavaTypes.put(new Integer(Types.SMALLINT), Integer.class); // 5 数字
-        jdbcJavaTypes.put(new Integer(Types.FLOAT), BigDecimal.class); // 6 数字
-        jdbcJavaTypes.put(new Integer(Types.REAL), BigDecimal.class); // 7 数字
-        jdbcJavaTypes.put(new Integer(Types.DOUBLE), BigDecimal.class); // 8 数字
-        jdbcJavaTypes.put(new Integer(Types.VARCHAR), String.class); // 12 字符串
-        jdbcJavaTypes.put(new Integer(Types.BOOLEAN), Boolean.class); // 16 布尔
-        // jdbcJavaTypes.put(new Integer(Types.DATALINK), String.class); // 70 /
-        jdbcJavaTypes.put(new Integer(Types.DATE), Date.class); // 91 日期
-        jdbcJavaTypes.put(new Integer(Types.TIME), Time.class); // 92 日期
-        jdbcJavaTypes.put(new Integer(Types.TIMESTAMP), Timestamp.class); // 93 日期
-//		
+        // jdbcJavaTypes.put(new Integer(Types.NULL), String.class); // 0
+        // 1 字符串
+        jdbcJavaTypes.put(Integer.valueOf(Types.CHAR), String.class);
+        // 2 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.NUMERIC), BigDecimal.class);
+        // 3 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.DECIMAL), BigDecimal.class);
+        // 4 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.INTEGER), Integer.class);
+        // 5 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.SMALLINT), Integer.class);
+        // 6 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.FLOAT), BigDecimal.class);
+        // 7 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.REAL), BigDecimal.class);
+        // 8 数字
+        jdbcJavaTypes.put(Integer.valueOf(Types.DOUBLE), BigDecimal.class);
+        // 12 字符串
+        jdbcJavaTypes.put(Integer.valueOf(Types.VARCHAR), String.class);
+        // 16 布尔
+        jdbcJavaTypes.put(Integer.valueOf(Types.BOOLEAN), Boolean.class);
+        // jdbcJavaTypes.put(new Integer(Types.DATALINK), String.class); // 70
+        // 91 日期
+        jdbcJavaTypes.put(Integer.valueOf(Types.DATE), Date.class);
+        // 92 日期
+        jdbcJavaTypes.put(Integer.valueOf(Types.TIME), Time.class);
+        // 93 日期
+        jdbcJavaTypes.put(Integer.valueOf(Types.TIMESTAMP), Timestamp.class);
+//
 //		jdbcJavaTypes.put(Types.TIMESTAMP_WITH_TIMEZONE, Timestamp.class);
 //		jdbcJavaTypes.put(Types.TIME_WITH_TIMEZONE, Time.class);
-        jdbcJavaTypes.put(new Integer(Types.OTHER), Object.class); // 1111 其他类型？
+        // 1111 其他类型？
+        jdbcJavaTypes.put(Integer.valueOf(Types.OTHER), Object.class);
         // jdbcJavaTypes.put(new Integer(Types.JAVA_OBJECT), Object.class); //
         // 2000
         // jdbcJavaTypes.put(new Integer(Types.DISTINCT), String.class); // 2001
         // jdbcJavaTypes.put(new Integer(Types.STRUCT), String.class); // 2002
         // jdbcJavaTypes.put(new Integer(Types.ARRAY), String.class); // 2003
-        jdbcJavaTypes.put(new Integer(Types.BLOB), byte[].class); // 2004 二进制
-        jdbcJavaTypes.put(new Integer(Types.CLOB), String.class); // 2005 大文本
+        // 2004 二进制
+        jdbcJavaTypes.put(Integer.valueOf(Types.BLOB), byte[].class);
+        // 2005 大文本
+        jdbcJavaTypes.put(Integer.valueOf(Types.CLOB), String.class);
         // jdbcJavaTypes.put(new Integer(Types.REF), String.class); // 2006
-        jdbcJavaTypes.put(new Integer(Types.SQLXML), SQLXML.class); // 2009
-        jdbcJavaTypes.put(new Integer(Types.NCLOB), String.class); // 2011 大文本
-    }
-
-    public static boolean isBigType(int sqlType){
-        return sqlType==Types.BLOB||sqlType==Types.CLOB||sqlType==Types.NCLOB;
+        // 2009
+        jdbcJavaTypes.put(Integer.valueOf(Types.SQLXML), SQLXML.class);
+        // 2011 大文本
+        jdbcJavaTypes.put(Integer.valueOf(Types.NCLOB), String.class);
     }
 
     static {
@@ -153,9 +179,7 @@ public class JavaType {
             mapping.put(Types.TIMESTAMP_WITH_TIMEZONE, "Timestamp");
             mapping.put(Types.TIME_WITH_TIMEZONE, "Timestamp");
         }
-
     }
-
 
     static {
         Field[] fields = java.sql.Types.class.getFields();
@@ -165,12 +189,11 @@ public class JavaType {
                     String name = fields[i].getName().toLowerCase();
                     Integer value = (Integer) fields[i].get(java.sql.Types.class);
                     jdbcTypeNames.put(name, value);
-
                 } catch (IllegalArgumentException e) {
-                    //不可能发生
+                    // 不可能发生
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
-                    //不可能发生
+                    // 不可能发生
                     e.printStackTrace();
                 }
             }
@@ -198,8 +221,8 @@ public class JavaType {
 
     public static String getType(Integer sqlType, Integer size, Integer digit) {
         String type = mapping.get(sqlType);
-        if (type.equals(SPECIAL)) {
 
+        if (SPECIAL.equals(type)) {
             if (digit != null && digit != 0) {
                 return "Double";
             } else {
@@ -215,10 +238,13 @@ public class JavaType {
         }
     }
 
-
     public static boolean isJavaNumberType(int jdbcType) {
         Class<?> type = jdbcJavaTypes.get(jdbcType);
         return (type == null) ? false : (Number.class.isAssignableFrom(type));
+    }
+
+    public static boolean isBigType(int sqlType){
+        return sqlType==Types.BLOB||sqlType==Types.CLOB||sqlType==Types.NCLOB;
     }
 
     public static boolean isJdk8() {

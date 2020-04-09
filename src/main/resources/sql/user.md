@@ -23,7 +23,10 @@ updateUser
 pageQuery
 ===
 
-	select #page()# from user where id = #id#
+	
+	select #page()# 
+	from (
+	select count(1),department_id from user group by department_id ) a
 
 	
 select  

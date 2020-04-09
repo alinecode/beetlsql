@@ -26,6 +26,7 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     protected long startRow = -1, pageSize = -1;
     protected OrderBy orderBy = null;
     protected GroupBy groupBy = null;
+    protected  boolean distinct = false;
 
     protected QueryCondition() {
     }
@@ -80,6 +81,7 @@ public class QueryCondition<T> implements QueryConditionI<T> {
             return style.getKeyWordHandler().getTable(tabeName2);
         }
     }
+
 
 
     /**
@@ -425,5 +427,11 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     @Override
     public List<Object> getParams() {
         return params;
+    }
+
+    @Override
+    public Query<T> distinct() {
+        this.distinct = true;
+        return (Query) this;
     }
 }

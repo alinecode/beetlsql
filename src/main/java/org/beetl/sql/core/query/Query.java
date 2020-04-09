@@ -76,6 +76,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return selectByType(clazz);
     }
 
+
+
     @Override
     public List<T> selectSimple() {
         return selectByType(clazz, getSimpleColumns());
@@ -138,6 +140,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     protected <K> List<K> selectByType(Class<K> retType, String... columns) {
         String column = splicingColumns(columns).toString();
+        if(distinct){
+            column =" DISTINCT "+column;
+        }
         StringBuilder sql = assembleSelectSql(column);
         String targetSql = sql.toString();
         Object[] paras = getParams().toArray();

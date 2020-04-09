@@ -3,9 +3,7 @@ package org.beetl.sql.test;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.core.exception.ErrorInfo;
 import org.beetl.sql.core.*;
-import org.beetl.sql.core.annotatoin.builder.SampleJsonAtrributeBuilder;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.db.PostgresStyle;
 import org.beetl.sql.core.engine.PageQuery;
@@ -14,7 +12,6 @@ import org.beetl.sql.ext.DebugInterceptor;
 import javax.sql.DataSource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -34,8 +31,8 @@ public class QuickTest {
 		// SqlServerStyle style = new SqlServerStyle();
 		// SqlServer2012Style style = new SqlServer2012Style();
 		// OracleStyle style = new OracleStyle();
-		 PostgresStyle style = new PostgresStyle();
-//		MySqlStyle style = new MySqlStyle();
+//		 PostgresStyle style = new PostgresStyle();
+		MySqlStyle style = new MySqlStyle();
 		ConnectionSource cs = ConnectionSourceHelper.getSingle(datasource());
 
 		SQLLoader loader = new ClasspathLoader("/sql");
@@ -46,12 +43,20 @@ public class QuickTest {
 		//预先注册一个，否则没有办法使用@Jackson注解
 
 		UserDao dao = sql.getMapper(UserDao.class);
-		User user = new User();
-		user.setName("test");
-		List<User> users = dao.getIds(user);
+		 dao.createQuery().distinct()
+				.andEq("id",1).andEq("name","").select();
 
 
-		System.out.println(users.size());
+
+
+
+//		User user = new User();
+//		user.setName("test");
+//		PageQuery query = new PageQuery<>();
+//		 dao.pageQuery(query);
+//		 System.out.println(query.getList().size());
+
+
 
 
 

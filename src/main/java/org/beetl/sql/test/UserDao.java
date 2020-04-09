@@ -26,7 +26,7 @@ public interface UserDao extends BaseDao<User> {
 
     void getIds3(PageQuery query);
 
-	 void pageQuery(PageQuery<User> query,User user);
+	 void pageQuery(PageQuery<User> query);
     int getCount(String name);
 
     User getOneUser();

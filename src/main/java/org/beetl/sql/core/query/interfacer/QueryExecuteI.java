@@ -20,6 +20,7 @@ public interface QueryExecuteI<M> {
 
 	List<M> select();
 
+
 	/**
 	 * 查询简单字段
 	 * @return

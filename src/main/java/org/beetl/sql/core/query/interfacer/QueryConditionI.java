@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface QueryConditionI<T> {
 
+
+
     Query<T> andEq(String column, Object value);
 
     Query<T> andNotEq(String column, Object value);
@@ -114,4 +116,6 @@ public interface QueryConditionI<T> {
      * @return
      */
     List<Object> getParams();
+
+    Query<T> distinct();
 }

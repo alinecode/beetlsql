@@ -82,7 +82,7 @@ class SqlFormatter {
         private LinkedList<Boolean> afterByOrFromOrSelects = new LinkedList<Boolean>();
 
         public FormatProcess(String sql) {
-            this.tokens = new StringTokenizer(sql, "()+*/-=<>'`\"[], \n\r\f\t", true);
+            this.tokens = new StringTokenizer(sql, "()+*/-=<>'\"[], \n\r\f\t", true);
         }
 
         private static boolean isFunctionName(String tok) {
