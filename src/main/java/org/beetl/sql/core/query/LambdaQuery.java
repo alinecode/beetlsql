@@ -178,12 +178,12 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     public LambdaQuery<T> orIsNull(Property<T, ?> property) {
-        appendOrSql(getFunctionName(property), null, "IS NULL");
+        appendOrSql(getFunctionName(property), null, "IS NULL ");
         return this;
     }
 
     public LambdaQuery<T> orIsNotNull(Property<T, ?> property) {
-        appendOrSql(getFunctionName(property), null, "IS NOT NULL");
+        appendOrSql(getFunctionName(property), null, "IS NOT NULL ");
         return this;
     }
 
