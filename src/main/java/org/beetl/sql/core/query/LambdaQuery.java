@@ -173,7 +173,7 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     public LambdaQuery<T> orNotLike(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "NOT LIKE");
+        appendOrSql(getFunctionName(property), value, "NOT LIKE ");
         return this;
     }
 
