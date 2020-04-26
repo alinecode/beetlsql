@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 public class InterceptorContext {
-	private String sqlId;
-	private String sql;
-	private List<SQLParameter> paras;
-	private Map<String, Object> env = null;
-	private boolean isUpdate = false;
-	private Object result;
-	private Map<String, Object> inputParas;
+	protected String sqlId;
+	protected String sql;
+	protected List<SQLParameter> paras;
+	protected Map<String, Object> env = null;
+	protected boolean isUpdate = false;
+	protected Object result;
+	protected Map<String, Object> inputParas;
 
 	public InterceptorContext(String sqlId, String sql, List<SQLParameter> paras, Map<String, Object> inputParas,
 			boolean isUpdate) {

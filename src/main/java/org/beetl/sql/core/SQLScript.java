@@ -585,7 +585,7 @@ public class SQLScript {
             //记录不同sql对应的PreparedStatement
             Map<String,PreparedStatement> batchPs = new HashMap<String,PreparedStatement>();
             //上下文
-            Map<String,InterceptorContext> batchCtx = new HashMap<String,InterceptorContext>();
+            Map<String,BatchUpdateInterceptorContext> batchCtx = new HashMap<String,BatchUpdateInterceptorContext>();
             //不同sql产生的批处理结果，汇总到jdbcRets
             Map<String,List<Integer>> batchRet = new HashMap<String,List<Integer>>();
             conn = sm.getDs().getMaster();
@@ -596,10 +596,10 @@ public class SQLScript {
                 List<SQLParameter> objs = result.jdbcPara;
                 PreparedStatement ps = batchPs.get(result.jdbcSql);
                 List<Integer> rets = batchRet.get(result.jdbcSql);
-                InterceptorContext ctx = batchCtx.get(result.jdbcSql);
+                BatchUpdateInterceptorContext ctx = batchCtx.get(result.jdbcSql);
                 if (ps == null) {
                     ps = conn.prepareStatement(result.jdbcSql);
-                    ctx = new InterceptorContext(id, result.jdbcSql, new ArrayList<SQLParameter>(0), paras, true);
+                    ctx = new BatchUpdateInterceptorContext(id, result.jdbcSql,new ArrayList<List<SQLParameter>>());
                     rets = new ArrayList<Integer> ();
                     batchCtx.put(result.jdbcSql, ctx);
                     batchPs.put(result.jdbcSql, ps);
@@ -609,7 +609,8 @@ public class SQLScript {
                 this.setPreparedStatementPara(ps, objs);
                 ps.addBatch();
                 rets.add(k);
-                ctx.getParas().add(new SQLParameter(objs));
+                ctx.getBatchParas().add(objs);
+
             }
 
             for(Entry<String,PreparedStatement> entry:batchPs.entrySet()) {

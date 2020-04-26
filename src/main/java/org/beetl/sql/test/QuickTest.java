@@ -12,6 +12,7 @@ import org.beetl.sql.ext.DebugInterceptor;
 import javax.sql.DataSource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,11 +51,18 @@ public class QuickTest {
 
 
 
-//		User user = new User();
-//		user.setName("test");
-//		PageQuery query = new PageQuery<>();
-//		 dao.pageQuery(query);
-//		 System.out.println(query.getList().size());
+		User user = new User();
+		user.setName("test");
+		user.setId(1);
+		List<User> users = new ArrayList<>();
+		users.add(user);
+
+		User user2 = new User();
+		user2.setName("test1");
+		user2.setId(2);
+		users.add(user2);
+
+		sql.updateByIdBatch(users);
 
 
 

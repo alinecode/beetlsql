@@ -1731,7 +1731,7 @@ public class SQLManager {
         List<Long> countList = execute(new SQLReady(countSql, p.getArgs()), Long.class);
         Long count = countList.get(0);
         List<T> list = null;
-        if (count == 0) {
+        if (count==null&&count== 0) {
             list = Collections.emptyList();
         } else {
             long pageNumber = pageQuery.getPageNumber();
