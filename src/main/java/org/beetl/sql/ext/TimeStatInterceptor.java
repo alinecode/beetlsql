@@ -22,6 +22,7 @@ public class TimeStatInterceptor implements Interceptor {
 
 	public TimeStatInterceptor(List<String> excludes, long max) {
 		this.excludes = excludes;
+		this.max = max;
 	}
 
 	@Override
