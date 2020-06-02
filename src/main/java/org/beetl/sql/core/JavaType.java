@@ -52,9 +52,12 @@ public class JavaType {
             majorJavaVersion = 17;
         } else if (javaVersion.contains("1.6.")) {
             majorJavaVersion = 16;
-        } else {
-            // else leave 1.5 as default (it's either 1.5 or unknown)
+        }else if (javaVersion.contains("1.5.")) {
             majorJavaVersion = 15;
+        }
+        else {
+            // 时代变了，jdk版本太快，不识别的版本肯定是jdk8以上
+            majorJavaVersion = 18;
         }
     }
 

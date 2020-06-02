@@ -342,10 +342,7 @@ public class SQLScript {
             conn = sm.getDs().getConn(id, false, sql, objs);
             ps = conn.prepareStatement(sql);
             this.setPreparedStatementPara(ps, objs);
-
-
             rs = ps.executeQuery();
-
             if (mapper != null) {
                 BeanProcessor beanProcessor = this.getBeanProcessor();
                 resultList = new RowMapperResultSetExt<T>(mapper, beanProcessor).handleResultSet(this.id,rs, clazz);
