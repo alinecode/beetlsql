@@ -77,8 +77,7 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T buildInstance(Class<T> mapperInterface) {
-		ClassLoader loader =  sqlManager.getEntityLoader();
-		//当没有指定ClassLoader的情况下使用ContextLoader，适合大多数框架
+		ClassLoader loader = null == entityClassLoader ? Thread.currentThread().getContextClassLoader() : entityClassLoader;
 		if (BeanKit.queryLambdasSupport) {
 		    return (T) Proxy.newProxyInstance(loader==null?this.getClass().getClassLoader():loader, new Class<?>[] { mapperInterface },
 	                new MapperJava8Proxy(this,sqlManager, mapperInterface));

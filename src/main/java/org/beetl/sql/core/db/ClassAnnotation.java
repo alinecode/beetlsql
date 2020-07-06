@@ -11,18 +11,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.BeetlSQLException;
-import org.beetl.sql.core.annotatoin.Builder;
-import org.beetl.sql.core.annotatoin.ColumnIgnore;
-import org.beetl.sql.core.annotatoin.InsertIgnore;
-import org.beetl.sql.core.annotatoin.LogicDelete;
-import org.beetl.sql.core.annotatoin.UpdateIgnore;
-import org.beetl.sql.core.annotatoin.Version;
+import org.beetl.sql.core.annotatoin.*;
 import org.beetl.sql.core.annotatoin.builder.AttributeBuilderHolder;
 import org.beetl.sql.core.annotatoin.builder.ObjectBuilderHolder;
 import org.beetl.sql.core.annotatoin.builder.ObjectPersistBuilder;
 import org.beetl.sql.core.annotatoin.builder.ObjectSelectBuilder;
 import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.core.annotatoin.Column;
 
 /**
  * 记录了class及其属性的所有注解
@@ -38,6 +34,11 @@ public class ClassAnnotation {
     //版本号标记
     String versionProperty;
     int initVersionValue = -1;
+
+
+    //使用@Column注解后，属性到列明的映射
+    Map<String,String> attrAnnotationName = new HashMap<>();
+    CaseInsensitiveHashMap<String,String> colAnnotationName = new CaseInsensitiveHashMap<>();
 
     //属性对应的处理类,TODO优化，设置为null，否则jdk6有一定损耗
     CaseInsensitiveHashMap<String, AttributeBuilderHolder> colHandlers = new CaseInsensitiveHashMap<String, AttributeBuilderHolder>();
@@ -115,6 +116,13 @@ public class ClassAnnotation {
                 this.initVersionValue =version.value();
             }
 
+            Column column =  BeanKit.getAnnoation(entity, p.getName(), readMethod, Column.class);
+            if(column!=null){
+                String col = column.value();
+                this.attrAnnotationName.put(p.getName(),col);
+                this.colAnnotationName.put(col,p.getName());
+            }
+
             AttributeBuilderHolder holder = BeanKit.getAttributeHanlderHolder(entity,p.getName(),p);
             if(holder!=null){
                 //判断是否有对字段特殊处理
@@ -169,5 +177,11 @@ public class ClassAnnotation {
 		this.objectBuilders = objectBuilders;
 	}
 
-   
+    public Map<String, String> getAttrAnnotationName() {
+        return attrAnnotationName;
+    }
+
+    public CaseInsensitiveHashMap<String, String> getColAnnotationName() {
+        return colAnnotationName;
+    }
 }

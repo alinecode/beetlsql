@@ -6,14 +6,14 @@ import org.beetl.sql.core.annotatoin.AutoID;
 
 public class BaseObject {
 
-	@AssignID
-	private int id;
+	@AssignID("simple")
+	private Long id;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 }

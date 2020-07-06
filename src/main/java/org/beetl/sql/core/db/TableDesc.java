@@ -82,6 +82,10 @@ public class TableDesc{
 		
 	}
 
+	public void addIdNames(Set<String> idName) {
+		this.idNames = idNames;
+	}
+
 	public Set<String> getCols() {
 		return cols;
 	}

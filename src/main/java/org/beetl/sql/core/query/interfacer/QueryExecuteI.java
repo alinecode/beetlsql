@@ -63,7 +63,7 @@ public interface QueryExecuteI<M> {
 	 * @return
 	 */
 	default <M> M single(){
-		return single(null);
+		return single(new String[0]);
 	}
 
 	/***

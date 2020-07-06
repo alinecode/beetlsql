@@ -128,32 +128,37 @@ public class MetadataManager {
 	}
 	
 	private  TableDesc  initTable(TableDesc desc){
-	
 		synchronized (desc){
-			
+			//先创建一个临时TableDesc，避免并发访问desc
 			if(!desc.getCols().isEmpty()){
-				return desc ;
+				//已经加载
+				return desc;
 			}
+			TableDesc temp = new TableDesc(desc.getName(),desc.getRemark());
+			temp.setRealTableName(desc.getRealTableName());
+			temp.setCatalog(desc.getCatalog());
+			temp.setSchema(desc.getSchema());
+
 			Connection conn=null;
 			ResultSet rs = null;
 			String tableName = desc.getRealTableName()!=null?desc.getRealTableName():desc.getName();
 
 			try {
-				String catalog = desc.getCatalog();
-				String schema = desc.getSchema();
+				String catalog = temp.getCatalog();
+				String schema = temp.getSchema();
 	            schema = this.getDbSchema(schema);
 				conn =  ds.getMetaData();
 				
 				DatabaseMetaData dbmd =  conn.getMetaData();
 				rs = dbmd.getPrimaryKeys(catalog,schema, tableName);
-				
+
+
 				while (rs.next()) {
 					String idName=rs.getString("COLUMN_NAME");
-					desc.addIdName(idName);
+					temp.addIdName(idName);
 				}
 				rs.close();
 			
-				
 				rs = dbmd.getColumns(catalog,schema, tableName, "%");
 				
 				while(rs.next()){
@@ -181,20 +186,18 @@ public class MetadataManager {
 						//某些驱动可能不支持
 						checkAuto = false;
 					}
-					
-					desc.addCols(col);
+
+					temp.addCols(col);
 				}
 				rs.close();
-				return desc;
-				
+				map.put(temp.getName(),temp);
+				return temp;
 			} catch (SQLException e) {
 				throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 			}finally{
 				close(conn);
 			}
 		}
-		
-		
 	}
 	
 	private synchronized void initMetadata(){

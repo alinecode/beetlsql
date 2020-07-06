@@ -20,11 +20,19 @@ public class DefaultNameConversion extends NameConversion {
 
 	@Override
 	public String getColName(Class<?> c, String attrName) {
+		String col = super.getAnnotationColName(c,attrName);
+		if(col!=null){
+			return col;
+		}
 		return attrName;
 	}
 
 	@Override
 	public String getPropertyName(Class<?> c, String colName) {
+		String attrName = super.getAnnotationAttrName(c,colName);
+		if(attrName!=null){
+			return attrName;
+		}
 		return colName;
 	}
 

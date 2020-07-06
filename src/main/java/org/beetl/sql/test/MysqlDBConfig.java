@@ -3,10 +3,10 @@ package org.beetl.sql.test;
 public class MysqlDBConfig {
 //    public static String driver = "com.mysql.jdbc.Driver";
     public static String driver = "com.mysql.cj.jdbc.Driver";
-    public static String dbName = "orm";
+    public static String dbName = "test";
     public static String password = "12345678";
     public static String userName = "root";
-    public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"?&serverTimezone=GMT%2B8&useSSL=false";
+    public static String url = "jdbc:mysql://127.0.0.1:13306/" + dbName+"?&serverTimezone=GMT%2B8&useSSL=false";
 //    public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName+"?&serverTimezone=UTC&useSSL=false";
 
 

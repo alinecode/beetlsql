@@ -12,7 +12,7 @@ import java.util.Date;
 public class User extends BaseEntity {
 
 
-
+    @Column("department_id")
 	private Integer departmentId;
 
     @Jackson

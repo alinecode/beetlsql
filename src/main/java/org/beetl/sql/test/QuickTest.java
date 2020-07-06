@@ -5,14 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.db.PostgresStyle;
-import org.beetl.sql.core.engine.PageQuery;
+import org.beetl.sql.core.kit.BeanKit;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,25 +42,28 @@ public class QuickTest {
 		//预先注册一个，否则没有办法使用@Jackson注解
 
 		UserDao dao = sql.getMapper(UserDao.class);
-		 dao.createQuery().distinct()
-				.andEq("id",1).andEq("name","").select();
-
-
-
-
-
 		User user = new User();
-		user.setName("test");
-		user.setId(1);
-		List<User> users = new ArrayList<>();
-		users.add(user);
+		user.setId(1l);
+		Thread t = new Thread(){
+			public void run(){
+				dao.templateOne(user);
+			}
+		};
 
-		User user2 = new User();
-		user2.setName("test1");
-		user2.setId(2);
-		users.add(user2);
+		Thread t1 = new Thread(){
+			public void run(){
+				dao.templateOne(user);
+			}
+		};
 
-		sql.updateByIdBatch(users);
+		t.start();
+		t1.start();
+
+
+
+
+
+
 
 
 

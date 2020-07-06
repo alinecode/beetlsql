@@ -28,7 +28,10 @@ public class UnderlinedNameConversion extends  NameConversion {
 	
 	@Override
 	public String getColName(Class<?> c,String attrName) {
-		
+		String col = super.getAnnotationColName(c,attrName);
+		if(col!=null){
+			return col;
+		}
 		return StringKit.enCodeUnderlined(attrName);
 	}
 
@@ -36,6 +39,10 @@ public class UnderlinedNameConversion extends  NameConversion {
 
 	@Override
 	public String getPropertyName(Class<?> c,String colName) {
+		String attrName = super.getAnnotationAttrName(c,colName);
+		if(attrName!=null){
+			return attrName;
+		}
 		return StringKit.deCodeUnderlined(colName.toLowerCase());
 	}
 }

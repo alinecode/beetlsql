@@ -1,5 +1,7 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.core.db.ClassAnnotation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +53,25 @@ public abstract class NameConversion {
 		list.add("id");
 		return list;
 	}
-	/*
-	protected ConnectionSource ds = null;
-	protected DatabaseMetaData dbmd = null;*/
+
+
+	protected  String getAnnotationColName(Class c,String attrName){
+		if(c==null){
+			return null;
+		}
+		ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(c);
+		String col = classAnnotation.getAttrAnnotationName().get(attrName);
+		return col;
+	}
+
+	protected  String getAnnotationAttrName(Class c,String colName){
+		if(c==null){
+			return null;
+		}
+		ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(c);
+		String attr = (String)classAnnotation.getColAnnotationName().get(colName);
+		return attr;
+	}
+
+
 }
