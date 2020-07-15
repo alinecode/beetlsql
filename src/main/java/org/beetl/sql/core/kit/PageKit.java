@@ -8,6 +8,7 @@ import java.util.Map;
  * create time : 2017-05-28 19:09
  *
  * @author luoyizhu@gmail.com
+ * @author xiandafu
  */
 public final class PageKit {
     static String pageNumberName = "pageNumber";
@@ -52,45 +53,22 @@ public final class PageKit {
     public static String getCountSql(String selectSql) {
 
         selectSql = PageKit.formatSql(selectSql);
-
         String sql = selectSql.toLowerCase();
 
-        // 是否存在 order by
-        boolean hasOrderBy = sql.indexOf("    order by") != -1;
-        boolean fromIndexOver = false;
-        int fromIndex = 0;
-        int fromEnd = 0;
-
-        for (String s : sql.split("\n")) {
-            if (!fromIndexOver&&s.equals("    from")) {
-                fromIndexOver = true;
-                if (hasOrderBy == false) {
-                    break;
-                }
-            }
-
-            if (s.equals("    order by")) {
-                break;
-            }
-
-            if (!fromIndexOver) {
-                fromIndex += s.length()+1;
-            } 
-            fromEnd += s.length()+1;
-
-        }
-
+        // 是否存在最外层 order by
+        int orderByIndex = sql.indexOf("\n    order by");
+        //最外层的from
+        int fromIndex = sql.indexOf("\n    from") ;
         // 存在order by 就移除
-        if (hasOrderBy) {
-            return "select count(1) \n" + selectSql.substring(fromIndex, fromEnd);
-
+        if (orderByIndex!=-1) {
+            return "select count(1) \n" + selectSql.substring(fromIndex, orderByIndex);
         }
-
+        //简单的改成count
         return "select count(1) \n" + selectSql.substring(fromIndex);
     }
     
     public static void main(String[] args){
-    		String sql = "select * from user #abcd# where 1=1 and c=#abc# order #text('acd.123/2')#";
+    		String sql = "select * from xxx where a=1 group a  order by a desc";
     		sql = PageKit.getCountSql(sql);
     		System.out.println(sql);
     }
