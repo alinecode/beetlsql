@@ -303,9 +303,10 @@ public class MetadataManager {
 			
 			try {
 				setDefaultSchema(conn);
-				conn.close();
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
+			} finally {
+				close(conn);
 			}
 		}
 		
