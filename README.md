@@ -1,4 +1,21 @@
-* [BeetlSQL 2.x 使用说明，当前版本](README2.md)
+# Beetlsql
+
+* 作者: 闲大赋,Gavin.King,Sue,Zhoupan，woate,darren,蚊子
+* 开发时间:2015-07
+* 网站 http://ibeetl.com
+* qq群 219324263
+
+BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetlsql3_guide)
+
+```xml
+<dependency>
+    <groupId>com.ibeetl</groupId>
+    <artifactId>beetlsql</artifactId>
+    <version>3.${version}</version>
+</dependency>
+```
+
+ [BeetlSQL 2.x 使用说明，旧版本](README2.md)
 ```xml
 <dependency>
     <groupId>com.ibeetl</groupId>
@@ -6,11 +23,438 @@
     <version>2.13.3.RELEASE</version>
 </dependency>
 ```
-* [BeetlSQL 3.x 使用说明，开发版本](README3.md)
 
 
 
-http://kael-aiur.com/maven%E6%8F%92%E4%BB%B6/maven%E6%89%93%E5%8C%85%E6%89%80%E6%9C%89%E4%BE%9D%E8%B5%96%E6%88%90%E4%B8%80%E4%B8%AAjar%E5%8C%85%E5%8F%91%E5%B8%83.html
+
+
+## 数据访问框架
+
+BeetlSQL的目标是提供开发高效，维护高效，运行高效的数据库访问框架，在一个系统多个库的情况下，提供一致的编写代码方式。支持如下数据平台
+
+* 传统数据库：MySQL,MariaDB,Oralce,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
+* 大数据：HBase，ClickHouse，Cassandar，Hive
+* 物联网时序数据库：Machbase，TD-Engine，IotDB
+* SQL查询引擎:Drill,Presto，Druid
+* 内存数据库:ignite，CouchBase
+
+BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着的综合，BeetlSQL目的是对标甚至超越Spring Data，是实现数据访问统一的框架，无论是传统数据库，还是大数据，还是查询引擎或者时序库，内存数据库。
+
+
+
+##  适合用户
+
+* 你不想把精力浪费在简单据库增删改查上？BeetlSQL 内置数据库的CRUD功能
+* 你是属于以SQL为中心的程序员派别。BeetlSQL提供了较好的SQL管理，以及内置大量SQL
+* 你是对代码可维护性有高要求的架构师？BeetlSQL的设计目的就是尽可能提高数据库访问代码可维护性
+* 平台级产品需要跨库，支持各种客户数据库的？BeetlSQL 支持各种库，程序员编写一次，能运行到各种数据库
+* 系统需要连接多种库，比如连接商品库，连接订单库，或者设备基本信息在MySQL，设备数据在Clickhouse里。BeetlSQL很容易支持各种库，并能一统一的方式使用
+* 系统初期单库单表，长期需要多库多表？BeetlSQL很容易实现多库多表而不需要程序员过多关注。
+
+
+
+
+
+##  编译源码
+
+
+```java
+git clone https://gitee.com/xiandafu/beetlsql
+mvn clean package
+mvn clean install #如果想修改源码
+```
+
+注意：BeetlSQL3 集成了Spring，以及支持大数据等，就算配置了国内镜像，也可能需要很长时间下载大数据依赖包，为了让编译快速通过，你需要进入pom.xml ，屏蔽sql-integration,sql-db-support,sql-jmh三个模块
+
+ ```xml
+<modules>
+<!--核心功能 -->
+<module>sql-core</module>
+<module>sql-mapper</module>
+<module>sql-util</module>
+<module>sql-fetech</module>
+<!-- 打包到一起 -->
+<module>beetlsql</module>
+<module>sql-gen</module>
+<module>sql-test</module>
+<module>sql-samples</module>
+<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->
+<!--		<module>sql-integration</module>-->
+<!--    <module>sql-jmh</module>-->
+<!--		<module>sql-db-support</module>-->
+</modules>
+ ```
+
+
+
+## 阅读源码例子
+
+可以从模块`sql-samples`中找得到所有例子，或者从`sql-test` 中运行单元测试例子，或者在`sql-integration` 中的各个框架单元测试中找到相关例子。所有例子都是基于H2内存数据库，可以反复运行
+
+以`sql-samples`为例子
+
+sql-samples 又包含了三个模块大约100个例子
+
+* quickstart: BeetlSQL基础使用例子，可以快速了解BeetlSQL3
+* usuage: BeetlSQL所有API和功能
+* plugin:BeetlSQL高级扩展实例
+
+以usuage模块为例子，包含如下代码
+
+*  S01MapperSelectSample 15个例子，  mapper中的查询演示
+*  S02MapperUpdateSample 11个例子，  mapper中更新操作
+*  S03MapperPageSample  3个例子，mapper中的翻页查询
+*  S04QuerySample 9个例子，Query查询
+*  S05QueryUpdateSample 3个例子，Query完成update操作
+*  S06SelectSample 14个例子，SQLManager 查询API
+*  S07InsertSample 8个例子，SQLManager 插入新数据API,主键生成
+*  S08UpdateSample 6个例子,更新数据
+*  S09JsonMappingSample 5个例子， json配置映射
+*  S10FetchSample 2个例子，关系映射
+*  S11BeetlFunctionSample 2个例子，自定义sql脚本的方法
+
+
+
+## 代码示例
+
+
+
+### 例子1,内置方法，无需写SQL完成常用操作
+```java
+UserEntity user  = sqlManager.unique(UserEntity.class,1);
+
+user.setName("ok123");
+sqlManager.updateById(user);
+
+UserEntity newUser = new UserEntity();
+newUser.setName("newUser");
+newUser.setDepartmentId(1);
+sqlManager.insert(newUser);
+
+```
+
+输出日志友好,可反向定位到调用的代码
+```
+┏━━━━━ Debug [user.selectUserAndDepartment] ━━━
+┣ SQL：     select * from user where 1 = 1 and id=?
+┣ 参数：     [1]
+┣ 位置：     org.beetl.sql.test.QuickTest.main(QuickTest.java:47)
+┣ 时间：     23ms
+┣ 结果：     [1]
+┗━━━━━ Debug [user.selectUserAndDepartment] ━━━
+```
+
+### 例子2 使用SQL
+```java
+String sql = "select * from user where id=?";
+Integer id  = 1;
+SQLReady sqlReady = new SQLReady(sql,new Object[id]);
+List<UserEntity> userEntities = sqlManager.execute(sqlReady,UserEntity.class);
+//Map 也可以作为输入输出参数
+List<Map> listMap =  sqlManager.execute(sqlReady,Map.class);
+```
+
+### 例子3 使用模板SQL
+```java
+String sql = "select * from user where department_id=#{id} and name=#{name}";
+UserEntity paras = new UserEntity();
+paras.setDepartmentId(1);
+paras.setName("lijz");
+List<UserEntity> list = sqlManager.execute(sql,UserEntity.class,paras);
+
+String sql = "select * from user where id in ( #{join(ids)} )";
+List list = Arrays.asList(1,2,3,4,5); Map paras = new HashMap();
+paras.put("ids", list);
+List<UserEntity> users = sqlManager.execute(sql, UserEntity.class, paras);
+```
+
+### 例子4 使用Query类
+支持重构
+```java
+LambdaQuery<UserEntity> query = sqlManager.lambdaQuery(UserEntity.class);
+List<UserEntity> entities = query.andEq(UserEntity::getDepartmentId,1)
+                    .andIsNotNull(UserEntity::getName).select();
+
+```
+### 例子5 把数十行SQL放到sql文件里维护
+```java
+//访问user.md#select
+SqlId id = SqlId.of("user","select");
+Map map = new HashMap();
+map.put("name","n");
+List<UserEntity> list = sqlManager.select(id,UserEntity.class,map);
+```
+![](https://oscimg.oschina.net/oscnet/up-5f89c4abc4b0b777ff342b109c162b7298c.png)
+
+### 例子6 复杂映射支持
+支持像mybatis那样复杂的映射
+* 自动映射
+```java
+@Data
+@ResultProvider(AutoJsonMapper.class)
+ public static class MyUserView {
+        Integer id;
+        String name;
+        DepartmentEntity dept;
+ }
+
+```
+* 配置映射，比MyBatis更容易理解，报错信息更详细
+
+```json
+{
+	"id": "id",
+	"name": "name",
+	"dept": {
+		"id": "dept_id",
+		"name": "dept_name"
+	},
+	"roles": {
+		"id": "r_id",
+		"name": "r_name"
+	}
+}
+```
+
+
+### 例子7 最好使用mapper来作为数据库访问类
+
+```java 
+@SqlResource("user") /*sql文件在user.md里*/
+public interface UserMapper extends BaseMapper<UserEntity> {
+
+    @Sql("select * from user where id = ?")
+    UserEntity queryUserById(Integer id);
+
+    @Sql("update user set name=? where id = ?")
+    @Update
+    int updateName(String name,Integer id);
+
+    @Template("select * from user where id = #{id}")
+    UserEntity getUserById(Integer id);
+
+    @SpringData/*Spring Data风格*/
+    List<UserEntity> queryByNameOrderById(String name);
+
+    /**
+     * 可以定义一个default接口
+     * @return
+     */
+     default  List<DepartmentEntity> findAllDepartment(){
+        Map paras = new HashMap();
+        paras.put("exlcudeId",1);
+        List<DepartmentEntity> list = getSQLManager().execute("select * from department where id != #{exlcudeId}",DepartmentEntity.class,paras);
+        return list;
+    }
+
+
+    /**
+     * 调用sql文件user.md#select,方法名即markdown片段名字
+     * @param name
+     * @return
+     */
+     List<UserEntity> select(String name);
+
+
+    /**
+     * 翻页查询,调用user.md#pageQuery
+     * @param deptId
+     * @param pageRequest
+     * @return
+     */
+    PageResult<UserEntity>  pageQuery(Integer deptId, PageRequest pageRequest);
+	
+    @SqlProvider(provider= S01MapperSelectSample.SelectUserProvider.class)
+    List<UserEntity> queryUserByCondition(String name);
+
+    @SqlTemplateProvider(provider= S01MapperSelectSample.SelectUs
+    List<UserEntity> queryUserByTemplateCondition(String name);
+}
+```
+> 你看到的这些用在Mapper上注解都是可以自定义，自己扩展的
+
+### 例子8 使用Fetch 注解
+可以在查询后根据Fetch注解再次获取相关对象，实际上@FetchOne和 @FetchMany是自定义的，用户可自行扩展
+
+```java
+    @Data
+    @Table(name="user")
+    @Fetch
+    public static class UserData {
+        @Auto
+        private Integer id;
+        private String name;
+        private Integer departmentId;
+        @FetchOne("departmentId")
+        private DepartmentData dept;
+    }
+
+    /**
+     * 部门数据使用"b" sqlmanager
+     */
+    @Data
+    @Table(name="department")
+    @Fetch
+    public static class DepartmentData {
+        @Auto
+        private Integer id;
+        private String name;
+        @FetchMany("departmentId")
+        private List<UserData> users;
+    }
+
+```
+
+### 例子9 不同数据库切换
+可以自行扩展ConditionalSQLManager的decide方法，来决定使用哪个SQLManager
+```java
+        SQLManager a = SampleHelper.init();
+        SQLManager b = SampleHelper.init();
+        Map<String, SQLManager> map = new HashMap<>();
+        map.put("a", a);
+        map.put("b", b);
+        SQLManager sqlManager = new ConditionalSQLManager(a, map);
+
+        //不同对象，用不同sqlManager操作，存入不同的数据库
+        UserData user = new UserData();
+        user.setName("hello");
+        user.setDepartmentId(2);
+        sqlManager.insert(user);
+
+        DepartmentData dept = new DepartmentData();
+        dept.setName("dept");
+        sqlManager.insert(dept);
+
+```
+使用注解 @TargetSQLManager来决定使用哪个SQLManger
+```java
+    @Data
+    @Table(name = "department")
+    @TargetSQLManager("b")
+    public static class DepartmentData {
+        @Auto
+        private Integer id;
+        private String name;
+    }
+```
+
+### 例子10 如果想给每个sql语句增加一个sqlId标识
+
+这样好处是方便数据库DBA与程序员沟通
+```java
+ public static class SqlIdAppendInterceptor implements  Interceptor{
+        @Override
+        public void before(InterceptorContext ctx) {
+            ExecuteContext context = ctx.getExecuteContext();
+            String jdbcSql = context.sqlResult.jdbcSql;
+            String info  = context.sqlId.toString();
+            //为发送到数据库的sql增加一个注释说明，方便数据库dba能与开发人员沟通
+            jdbcSql = "/*"+info+"*/\n"+jdbcSql;
+            context.sqlResult.jdbcSql = jdbcSql;
+        }
+ }
+```
+
+### 例子11 代码生成框架
+可以使用内置的代码生成框架生成代码何文档，也可以自定义的，用户可自行扩展SourceBuilder类
+```java
+	List<SourceBuilder> sourceBuilder = new ArrayList<>();
+	SourceBuilder entityBuilder = new EntitySourceBuilder();
+	SourceBuilder mapperBuilder = new MapperSourceBuilder();
+	SourceBuilder mdBuilder = new MDSourceBuilder();
+	//数据库markdown文档
+	SourceBuilder docBuilder = new MDDocBuilder();
+
+	sourceBuilder.add(entityBuilder);
+	sourceBuilder.add(mapperBuilder);
+	sourceBuilder.add(mdBuilder);
+	sourceBuilder.add(docBuilder);
+    SourceConfig config = new SourceConfig(sqlManager,sourceBuilder);
+   //只输出到控制台
+	ConsoleOnlyProject project = new ConsoleOnlyProject();
+	String tableName = "USER";
+	config.gen(tableName,project);
+```
+### 例子13 定义一个Beetl函数
+```java
+        GroupTemplate groupTemplate = groupTemplate();
+        groupTemplate.registerFunction("nextDay",new NextDayFunction());
+
+        Map map = new HashMap();
+        map.put("date",new Date());
+        String sql = "select * from user where create_time is not null and create_time<#{nextDay(date)}";
+        List<UserEntity> count = sqlManager.execute(sql,UserEntity.class,map);
+```
+nextDay函数是一个Beetl函数，非常容易定义,非常容易在sql模板语句里使用
+```java
+   public static class NextDayFunction implements Function {
+
+        @Override
+        public Object call(Object[] paras, Context ctx) {
+            Date date = (Date) paras[0];
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.DAY_OF_YEAR, 1); // 今天+1天
+            return c.getTime();
+        }
+    }
+```
+
+### 例子14 更多可扩展的例子
+
+根据ID或者上下文自动分表，toTable是定义的一个Beetl函数，
+```java
+    static final String USER_TABLE="${toTable('user',id)}";
+    @Data
+    @Table(name = USER_TABLE)
+    public static class MyUser {
+        @AssignID
+        private Integer id;
+        private String name;
+    }
+```
+定义一个Jackson注解，@Builder是注解的注解，表示用Builder指示的类来解释执行，可以看到BeetlSQL的注解可扩展性就是来源于@Build注解
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value = {ElementType.METHOD, ElementType.FIELD})
+@Builder(JacksonConvert.class)
+public @interface Jackson {
+
+}
+```
+
+定义一个@Tenant 放在POJO上，BeetlSQL执行时候会给SQL添加额外参数，这里同样使用了@Build注解
+```java
+
+/**
+ * 组合注解，给相关操作添加额外的租户信息，从而实现根据租户分表或者分库
+ */
+@Retention(RetentionPolicy.RUNTIM@
+@Target(value = {ElementType.TYPE})
+@Builder(TenantContext.class)
+public @interface Tenant {
+
+}
+```
+使用XML而不是JSON作为映射
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value = {ElementType.TYPE})
+@Builder(ProviderConfig.class)
+public @interface XmlMapping {
+    String path() default "";
+}
+
+```
+
+
+> 参考源码例子 PluginAnnotationSample了解如何定义自定的注解，实际上BeetlSQL有一半的注解都是通过核心注解扩展出来的
+
+
+
+BeetlSQL的架构如下，欢迎参与到BeetlSQL3的生态开发
+![](https://oscimg.oschina.net/oscnet/up-9d8d470e78a797d2ff18dfdf378c9f81c1c.png)
+
 
 
 

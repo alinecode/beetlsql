@@ -80,7 +80,6 @@ public class SQLManager implements DataAPI  {
         }
         mapperBuilder =(MapperBuilder) BeanKit.newInstance(c);
         mapperBuilder.setSqlManager(this);
-        this.addIdAutonGen("uuid",new UUIDAutoGen());
 
     }
 

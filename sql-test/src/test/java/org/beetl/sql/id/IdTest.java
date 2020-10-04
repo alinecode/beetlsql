@@ -1,6 +1,7 @@
 package org.beetl.sql.id;
 
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.ext.UUIDAutoGen;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,6 +14,7 @@ public class IdTest extends BaseTest {
     @BeforeClass
     public static void init(){
         initTable(file);
+        sqlManager.addIdAutonGen("uuid",new UUIDAutoGen());
     }
 
 
