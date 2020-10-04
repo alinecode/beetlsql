@@ -1,4 +1,16 @@
-# Beetlsql
+## 数据访问框架
+
+BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**的数据库访问框架，在一个系统多个库的情况下，提供一致的编写代码方式。支持如下数据平台
+
+* 传统数据库：MySQL,MariaDB,Oralce,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
+* 大数据：HBase，ClickHouse，Cassandar，Hive
+* 物联网时序数据库：Machbase，TD-Engine，IotDB
+* SQL查询引擎:Drill,Presto，Druid
+* 内存数据库:ignite，CouchBase
+
+BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着的综合，BeetlSQL远大理想是对标甚至超越Spring Data，是实现数据访问统一的框架，无论是传统数据库，还是大数据，还是查询引擎或者时序库，内存数据库。
+
+
 
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan，woate,darren,蚊子
 * 开发时间:2015-07
@@ -28,20 +40,6 @@ BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetl
 
 
 
-## 数据访问框架
-
-BeetlSQL的目标是提供开发高效，维护高效，运行高效的数据库访问框架，在一个系统多个库的情况下，提供一致的编写代码方式。支持如下数据平台
-
-* 传统数据库：MySQL,MariaDB,Oralce,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
-* 大数据：HBase，ClickHouse，Cassandar，Hive
-* 物联网时序数据库：Machbase，TD-Engine，IotDB
-* SQL查询引擎:Drill,Presto，Druid
-* 内存数据库:ignite，CouchBase
-
-BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着的综合，BeetlSQL目的是对标甚至超越Spring Data，是实现数据访问统一的框架，无论是传统数据库，还是大数据，还是查询引擎或者时序库，内存数据库。
-
-
-
 ##  适合用户
 
 * 你不想把精力浪费在简单据库增删改查上？BeetlSQL 内置数据库的CRUD功能
@@ -50,8 +48,6 @@ BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着�
 * 平台级产品需要跨库，支持各种客户数据库的？BeetlSQL 支持各种库，程序员编写一次，能运行到各种数据库
 * 系统需要连接多种库，比如连接商品库，连接订单库，或者设备基本信息在MySQL，设备数据在Clickhouse里。BeetlSQL很容易支持各种库，并能一统一的方式使用
 * 系统初期单库单表，长期需要多库多表？BeetlSQL很容易实现多库多表而不需要程序员过多关注。
-
-
 
 
 
@@ -452,10 +448,12 @@ public @interface XmlMapping {
 
 
 
-BeetlSQL的架构如下，欢迎参与到BeetlSQL3的生态开发
+## BeetlSQL的架构
+
+
 ![](https://oscimg.oschina.net/oscnet/up-9d8d470e78a797d2ff18dfdf378c9f81c1c.png)
 
-
+除了SQLManager和ClassAnnoations，任何一部分都可以扩展
 
 
 
