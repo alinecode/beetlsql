@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.ibeetl</groupId>
+        <artifactId>beetlsql-all</artifactId>
+        <version>3.0.0-M6</version>
+    </parent>
+
+    <groupId>com.ibeetl</groupId>
+    <artifactId>sql-sample</artifactId>
+    <version>3.0.0-M6</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>sql-sample-common</module>
+        <module>sql-sample-quickstart</module>
+        <module>sql-sample-usage</module>
+        <module>plugin</module>
+    </modules>
+    <properties>
+        <beetlsql.version>3.0.0-M6</beetlsql.version>
+        <mysql.version>8.0.20</mysql.version>
+        <testcontainers.version>1.14.2</testcontainers.version>
+        <datastax.version>4.6.1</datastax.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>sql-core</artifactId>
+            <version>${beetlsql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>sql-gen</artifactId>
+            <version>${beetlsql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>sql-fetech</artifactId>
+            <version>${beetlsql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>sql-mapper</artifactId>
+            <version>${beetlsql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

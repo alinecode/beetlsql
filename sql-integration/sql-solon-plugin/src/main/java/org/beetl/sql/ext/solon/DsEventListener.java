@@ -1,0 +1,16 @@
+package org.beetl.sql.ext.solon;
+
+import org.noear.solon.core.BeanWrap;
+import org.noear.solon.core.XEventListener;
+
+import javax.sql.DataSource;
+
+class DsEventListener implements XEventListener<BeanWrap> {
+
+    @Override
+    public void onEvent(BeanWrap bw) {
+        if (bw.raw() instanceof DataSource) {
+            DbManager.global().get(bw);
+        }
+    }
+}

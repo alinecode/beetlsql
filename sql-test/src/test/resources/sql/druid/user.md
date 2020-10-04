@@ -1,0 +1,4 @@
+druidxxxx
+===
+    * 测试beetlsql能否根据数据加载特殊的sql语句
+    select * from sys_user /* from druid */

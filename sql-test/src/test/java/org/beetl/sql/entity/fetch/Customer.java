@@ -1,0 +1,20 @@
+package org.beetl.sql.entity.fetch;
+
+import lombok.Data;
+import org.beetl.sql.annotation.entity.AutoID;
+import org.beetl.sql.annotation.entity.Table;
+import org.beetl.sql.fetech.annotation.Fetch;
+import org.beetl.sql.fetech.annotation.FetchMany;
+
+import java.util.List;
+
+@Data
+@Fetch(level = 2)
+@Table(name="sys_customer")
+public class Customer {
+    @AutoID
+    Integer id;
+    String name;
+    @FetchMany("customerId")
+    List<CustomerOrder> order;
+}

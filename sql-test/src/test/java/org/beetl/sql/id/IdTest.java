@@ -1,0 +1,56 @@
+package org.beetl.sql.id;
+
+import org.beetl.sql.BaseTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+/**
+ * 测试mapper中使用@Root和Param注解
+ */
+public class IdTest extends BaseTest {
+	static String file = "/db/id.sql";
+    @BeforeClass
+    public static void init(){
+        initTable(file);
+    }
+
+
+    @Test
+    public void uuidTest(){
+
+		DeviceData data = new DeviceData();
+		data.setData("abc");
+		sqlManager.insert(data);
+		Assert.assertNotNull(data.getId());
+		System.out.println(data);
+
+    }
+
+	@Test
+	public void autoIdTest(){
+
+		Device data = new Device();
+		data.setSn("abc");
+		sqlManager.insert(data);
+		Assert.assertNotNull(data.getId());
+		System.out.println(data);
+
+	}
+
+
+	@Test
+	public void seqIdTest(){
+
+		DeviceDetail data = new DeviceDetail();
+		data.setJson("{}");
+		sqlManager.insert(data);
+		Assert.assertNotNull(data.getId());
+		System.out.println(data);
+
+	}
+
+
+
+
+}

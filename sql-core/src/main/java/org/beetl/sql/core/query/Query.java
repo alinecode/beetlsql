@@ -1,0 +1,484 @@
+package org.beetl.sql.core.query;
+
+import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.sql.clazz.ColDesc;
+import org.beetl.sql.clazz.TableDesc;
+import org.beetl.sql.clazz.kit.*;
+import org.beetl.sql.core.*;
+import org.beetl.sql.core.engine.SQLParameter;
+import org.beetl.sql.core.engine.template.SQLTemplate;
+import org.beetl.sql.core.engine.template.SQLTemplateEngine;
+import org.beetl.sql.core.page.DefaultPageRequest;
+import org.beetl.sql.core.page.PageRequest;
+import org.beetl.sql.core.page.PageResult;
+import org.beetl.sql.core.query.interfacer.QueryExecuteI;
+import org.beetl.sql.core.query.interfacer.QueryOtherI;
+import org.beetl.sql.core.query.interfacer.StrongValue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author GavinKing
+ */
+public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
+
+    private static final String ALL_COLUMNS = "*";
+    Class<T> clazz = null;
+    StringTemplateResourceLoader tempLoader = new StringTemplateResourceLoader();
+
+    public Query(SQLManager sqlManager, Class<T> clazz) {
+        this.sqlManager = sqlManager;
+        this.clazz = clazz;
+    }
+
+    /**
+     * 获取一个新条件
+     *
+     * @return
+     */
+    public Query<T> condition() {
+        return new Query(this.sqlManager, clazz);
+    }
+
+    /**
+     * 推荐直接使用 dao.createLambdaQuery()/sql.lambdaQuery()来获取
+     *
+     * @return
+     */
+    @Deprecated
+    public LambdaQuery<T> lambda() {
+        if (BeanKit.queryLambdasSupport) {
+            if (this.sql != null || this.groupBy != null || this.orderBy != null) {
+                throw new UnsupportedOperationException("LamdbaQuery必须在调用其他AP前获取");
+            }
+            return new LambdaQuery(this.sqlManager, clazz);
+        } else {
+            throw new UnsupportedOperationException("需要使用Java8以上");
+        }
+
+    }
+
+    @Override
+    public List<T> select(String... columns) {
+        return selectByType(clazz, columns);
+    }
+
+    @Override
+    public List<T> select() {
+        return selectByType(clazz);
+    }
+
+    @Override
+    public List<T> selectSimple() {
+        return selectByType(clazz, getSimpleColumns());
+    }
+
+    @Override
+    public T single(String... columns) {
+        List<T> list = limit(getFirstRowNumber(), 1).select(columns);
+        if (list.isEmpty()) {
+            return null;
+        }
+        // 同SQLManager.single 一致，只取第一条。
+        return list.get(0);
+    }
+
+    @Override
+    public Map mapSingle(String... columns) {
+        List<Map> list = limit(getFirstRowNumber(), 1).selectByType(Map.class, columns);
+        if (list.isEmpty()) {
+            return null;
+        }
+        // 同SQLManager.single 一致，只取第一条
+        return list.get(0);
+    }
+
+    @Override
+    public T singleSimple() {
+        return single(getSimpleColumns());
+    }
+
+    @Override
+    public T uniqueSimple() {
+        return unique(getSimpleColumns());
+    }
+
+    @Override
+    public T unique(String... cols) {
+        List<T> list = limit(getFirstRowNumber(), 2).select(cols);
+        if (list.isEmpty()) {
+            throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集");
+        } else if (list.size() != 1) {
+            throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，查询出多条结果集");
+        }
+        return list.get(0);
+    }
+
+    private int getFirstRowNumber() {
+        return this.sqlManager.isOffsetStartZero() ? 0 : 1;
+    }
+
+    @Override
+    public <K> List<K> select(Class<K> retType, String... columns) {
+        return this.selectByType(retType, columns);
+    }
+
+    @Override
+    public List<Map> mapSelect(String... columns) {
+        return this.selectByType(Map.class, columns);
+    }
+
+    protected <K> List<K> selectByType(Class<K> retType, String... columns) {
+        String column = splicingColumns(columns).toString();
+        if(distinct){
+            column =" DISTINCT "+column;
+        }
+        StringBuilder sql = assembleSelectSql(column);
+        String targetSql = sql.toString();
+        Object[] paras = getParams().toArray();
+        List<K> list = this.sqlManager.execute(new SQLReady(targetSql, paras), retType);
+        this.clear();
+        return list;
+    }
+
+    /***
+     * 组装查询的sql语句
+     * @return
+     */
+    private StringBuilder assembleSelectSql(String column) {
+        StringBuilder sb = new StringBuilder("SELECT ").append(column).append(" ");
+        sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
+        sb = addAdditionalPartSql(sb);
+        return sb;
+    }
+
+    /**
+     * 增加分页，分组排序
+     */
+    private StringBuilder addAdditionalPartSql(StringBuilder sql) {
+        addGroupAndOrderPartSql(sql);
+        // 增加翻页
+        if (this.startRow != null) {
+            sql = new StringBuilder(
+                    sqlManager.getDbStyle().getRangeSql().toRange(sql.toString(), startRow, pageSize));
+        }
+        return sql;
+    }
+
+    /**
+     * 增加分组，排序
+     */
+    private void addGroupAndOrderPartSql(StringBuilder sql) {
+        if (this.orderBy != null && this.groupBy != null) {
+            //先group by 后 order by 顺序
+            sql.append(groupBy.getGroupBy()).append(" ");
+            sql.append(orderBy.getOrderBy()).append(" ");
+        } else if (this.orderBy != null) {
+            sql.append(orderBy.getOrderBy()).append(" ");
+        } else if (this.groupBy != null) {
+            sql.append(groupBy.getGroupBy()).append(" ");
+        }
+    }
+
+    @Override
+    public int update(Object t) {
+        SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_ALL);
+        SQLSource sqlSource = sqlManager.getSqlLoader().querySQL(id);
+        if(sqlSource==null){
+            sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(clazz);
+            sqlManager.getSqlLoader().addSQL(id,sqlSource);
+            sqlSource.setId(id);
+        }
+        return handlerUpdateSql(t, sqlSource);
+    }
+
+    @Override
+    public int updateSelective(Object t) {
+        SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_ALL);
+        SQLSource sqlSource = sqlManager.getSqlLoader().querySQL(id);
+        if(sqlSource==null){
+            sqlSource = this.sqlManager.getDbStyle().genUpdateAll(clazz);
+            sqlManager.getSqlLoader().addSQL(id,sqlSource);
+            sqlSource.setId(id);
+        }
+        return handlerUpdateSql(t, sqlSource);
+    }
+
+    private int handlerUpdateSql(Object t, SQLSource sqlSource) {
+        if (this.sql == null || this.sql.length() == 0) {
+            throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR, "update操作没有输入过滤条件会导致更新所有记录");
+        }
+
+        SQLResult result =  this.sqlManager.getSQLResult(sqlSource.getId(),t);
+
+        List<Object> paraLis = new ArrayList<Object>();
+        for (SQLParameter sqlParameter : result.jdbcPara) {
+            paraLis.add(sqlParameter.value);
+        }
+        addPreParam(paraLis);
+
+        StringBuilder sb = new StringBuilder(result.jdbcSql);
+        //条件
+        sb.append(" ").append(getSql());
+        String targetSql = sb.toString();
+        Object[] paras = paraLis.toArray();
+        int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
+        this.clear();
+        return row;
+    }
+
+    @Override
+    public int insert(T t) {
+        int ret = this.sqlManager.insert(t);
+        return ret;
+    }
+
+    @Override
+    public int insertSelective(T t) {
+        return this.sqlManager.insertTemplate(t);
+    }
+
+    @Override
+    public int delete() {
+        StringBuilder sb = new StringBuilder("DELETE FROM ");
+        sb.append(getTableName(clazz)).append(" ").append(getSql());
+        String targetSql = sb.toString();
+        Object[] paras = getParams().toArray();
+        int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
+        return row;
+    }
+
+    @Override
+    public long count() {
+        StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
+        sb.append(getTableName(clazz)).append(" ").append(getSql());
+        String targetSql = sb.toString();
+        Object[] paras = getParams().toArray();
+        List results = this.sqlManager.execute(new SQLReady(targetSql, paras), Long.class);
+        return (Long) results.get(0);
+    }
+
+    @Override
+    public Query<T> having(QueryCondition condition) {
+        // 去除叠加条件中的WHERE
+        int i = condition.getSql().indexOf(WHERE);
+        if (i > -1) {
+            condition.getSql().delete(i, i + 5);
+        }
+        if (this.groupBy == null) {
+            throw new BeetlSQLException(BeetlSQLException.QUERY_SQL_ERROR, getSqlErrorTip("having 需要在groupBy后调用"));
+        }
+
+        groupBy.addHaving(condition.getSql().toString());
+        this.addParam(condition.getParams());
+        return this;
+    }
+
+    @Override
+    public Query<T> groupBy(String column) {
+        GroupBy groupBy = getGroupBy();
+        groupBy.add(getCol(column));
+        return this;
+    }
+
+    @Override
+    public Query<T> orderBy(String orderBy) {
+        OrderBy orderByInfo = this.getOrderBy();
+        orderByInfo.add(orderBy);
+        return this;
+    }
+
+    @Override
+    public Query<T> asc(String column) {
+        OrderBy orderByInfo = this.getOrderBy();
+        orderByInfo.add(getCol(column) + " ASC");
+        return this;
+    }
+
+    @Override
+    public Query<T> desc(String column) {
+        OrderBy orderByInfo = this.getOrderBy();
+        orderByInfo.add(getCol(column) + " DESC");
+        return this;
+    }
+
+    private OrderBy getOrderBy() {
+        if (this.orderBy == null) {
+            orderBy = new OrderBy();
+        }
+        return this.orderBy;
+    }
+
+    private GroupBy getGroupBy() {
+        if (this.groupBy == null) {
+            groupBy = new GroupBy();
+        }
+        return this.groupBy;
+    }
+
+    /**
+     * 默认从1开始，自动翻译成数据库的起始位置。如果配置了OFFSET_START_ZERO =true，则从0开始。
+     */
+    @Override
+    public Query<T> limit(Object startRow, long pageSize) {
+        this.startRow = startRow;
+        this.pageSize = pageSize;
+        return this;
+
+    }
+
+    protected <K> PageResult<K> pageByType(long pageNumber, long pageSize, Class<K> retType, String... columns) {
+        StringBuilder columnStr = splicingColumns(columns);
+        //此处查询语句不需要设置分页
+        this.startRow = null;
+        StringBuilder sql = assembleSelectSql(columnStr.toString());
+        //检测是否包含groupBy
+        if (this.groupBy != null) {
+            sql = new StringBuilder("SELECT * FROM (").append(sql).append(") t");
+        }
+        String targetSql = sql.toString();
+        Object[] paras = getParams().toArray();
+        SQLReady sqlReady = new SQLReady(targetSql, paras);
+        PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+        this.clear();
+        return this.sqlManager.execute(sqlReady, retType, pageRequest);
+    }
+
+
+    @Override
+    public PageResult<T> page(long pageNumber, long pageSize, String... columns) {
+        return pageByType(pageNumber, pageSize, clazz, columns);
+    }
+
+    @Override
+    public PageResult<T> pageSimple(long pageNumber, long pageSize) {
+        return page(pageNumber, pageSize, getSimpleColumns());
+    }
+
+    @Override
+    public <K> PageResult<K> page(long pageNumber, long pageSize, Class<K> retType, String... columns) {
+        return pageByType(pageNumber, pageSize, retType, columns);
+    }
+
+    @Override
+    public PageResult<Map> mapPage(long pageNumber, long pageSize, String... columns) {
+        return pageByType(pageNumber, pageSize, Map.class, columns);
+    }
+
+
+    /***
+     * 获取错误提示
+     *
+     * @return
+     */
+    private String getSqlErrorTip(String couse) {
+        return String.format("\n┏━━━━━ SQL语法错误:\n" + "┣SQL：%s\n" + "┣原因：%s\n" + "┣解决办法：您可能需要重新获取一个Query\n" + "┗━━━━━\n",
+                getSql().toString(), couse);
+    }
+
+    /***
+     * 获取错误提示
+     *
+     * @return
+     */
+    private String getSqlErrorTip(String couse, String solve) {
+        return String.format("\n┏━━━━━ SQL语法错误:\n" + "┣SQL：%s\n" + "┣原因：%s\n" + "┣解决办法：" + solve + "\n" + "┗━━━━━\n",
+                getSql().toString(), couse);
+    }
+
+    /***
+     * 获取简要字段
+     * @return
+     */
+    private String[] getSimpleColumns() {
+        String tname = sqlManager.getNc().getTableName(this.clazz);
+        TableDesc desc = sqlManager.getMetaDataManager().getTable(tname);
+        CaseInsensitiveHashMap<String, ColDesc> colMap = desc.getColsDetail();
+        List<String> cols = new ArrayList<>(colMap.size());
+        for(Map.Entry<String, Object> entry:colMap.entrySet()){
+            int sqlType = ((ColDesc)entry.getValue()).getSqlType();
+            if(!JavaType.isBigType(sqlType)){
+                cols.add(entry.getKey());
+            }
+        }
+        String[] columns = new String[cols.size()];
+        cols.toArray(columns);
+        return columns;
+    }
+
+    /**
+     * 拼接字段，不传参数时为*
+     *
+     * @param columns
+     * @return
+     */
+    private StringBuilder splicingColumns(String[] columns) {
+        if (columns == null || columns.length < 1) {
+            return new StringBuilder(ALL_COLUMNS);
+        }
+        StringBuilder columnStr = new StringBuilder();
+        for (String column : columns) {
+            columnStr.append(getColTrunk(column)).append(",");
+        }
+        columnStr.deleteCharAt(columnStr.length() - 1);
+        return columnStr;
+    }
+
+
+    /**
+     * 过滤空和NULL的值，
+     * 如果为空或者null则不增加查询条件
+     *
+     * @param value
+     * @return
+     */
+    public static StrongValue filterEmpty(Object value) {
+        return new StrongValue() {
+            @Override
+            public boolean isEffective() {
+                if (value == null) {
+                    return false;
+                }
+                //校验空值
+                if (value instanceof String) {
+                    return !"".equals(value);
+                }
+
+                if (value instanceof Collection) {
+                    return !((Collection) value).isEmpty();
+                }
+                return true;
+            }
+
+            @Override
+            public Object getValue() {
+                return value;
+            }
+        };
+    }
+
+    /**
+     * 过滤空和NULL的值，
+     * 如果为空或者null则不增加查询条件
+     *
+     * @param value
+     * @return
+     */
+    public static StrongValue filterNull(Object value) {
+        return new StrongValue() {
+            @Override
+            public boolean isEffective() {
+                return value != null;
+            }
+
+            @Override
+            public Object getValue() {
+                return value;
+            }
+        };
+    }
+
+}

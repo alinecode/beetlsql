@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.ibeetl</groupId>
+        <artifactId>beetlsql-all</artifactId>
+        <version>3.0.0-M6</version>
+    </parent>
+
+    <groupId>com.ibeetl</groupId>
+    <artifactId>sql-db-support</artifactId>
+    <version>3.0.0-M6</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>mysql</module>
+        <!--其他3.0新增的数据库支持 -->
+<!--        <module>polarDB</module>-->
+<!--        <module>ignite</module>-->
+<!--        <module>couchbase</module>-->
+<!--        <module>voltdb</module>-->
+<!--        <module>clickhouse</module>-->
+<!--        <module>taos</module>-->
+<!--        <module>hbase</module>-->
+<!--        <module>hive</module>-->
+<!--        <module>machbase</module>-->
+<!--        <module>drill</module>-->
+<!--        <module>derby</module>-->
+<!--        <module>druid</module>-->
+<!--        <module>opengauss</module>-->
+<!--        <module>kingbase</module>-->
+        <module>iotdb</module>
+
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetlsql</artifactId>
+            <version>3.0.0-M6</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    
+</project>

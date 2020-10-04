@@ -2,11 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
-	<artifactId>beetlsql</artifactId>
-	<version>2.13.4.RELEASE</version>
+	<artifactId>beetlsql-all</artifactId>
+	<version>3.0.0-M6</version>
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
+    <packaging>pom</packaging>
 	<licenses>
 		<license>
 			<name>The "BSD license</name>
@@ -14,8 +15,26 @@
 		</license>
 	</licenses>
 
+    <modules>
+		<!--核心功能 -->
+        <module>sql-core</module>
+        <module>sql-mapper</module>
+		<module>sql-util</module>
+		<module>sql-fetech</module>
+		<!-- 打包到一起 -->
+		<module>beetlsql</module>
+		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->
+        <module>sql-gen</module>
+		<module>sql-integration</module>
+        <module>sql-jmh</module>
+        <module>sql-test</module>
+		<module>sql-samples</module>
+<!--		<module>sql-db-support</module>-->
+    </modules>
+
 	<developers>
 		<developer>
+			<name>李家智(闲大赋)</name>
 			<email>xiandafu@126.com</email>
 		</developer>
 		<developer>
@@ -39,6 +58,10 @@
 			<name>darren</name>
 			<email>10176523@qq.com</email>
 		</developer>
+		<developer>
+			<name>一日看尽长安花</name>
+			<email>10176523@qq.com</email>
+		</developer>
 	</developers>
 
 	<scm>
@@ -55,13 +78,25 @@
 		<aspectj.version>1.6.11</aspectj.version>
 	</properties>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-            <version>3.1.8.RELEASE</version>
+            <version>3.2.0.RELEASE</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.18</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
 		</dependency>
 
 		<!-- junit -->
@@ -81,173 +116,10 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Java Servlet -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>4.2.3.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>4.2.3.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>4.2.3.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-<!--			  <version>6.0.6</version>-->
-			  <version>8.0.12</version>
-			<scope>provided</scope>
-		</dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>com.microsoft.sqlserver</groupId>-->
-            <!--<artifactId>sqljdbc4</artifactId>-->
-			<!--<version>4.0</version>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${basedir}/lib/sqljdbc4.jar</systemPath>-->
-        <!--</dependency>-->
-
-		<!-- dependency> <groupId>oracle</groupId> <artifactId>oralce-express</artifactId> 
-			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath> 
-			</dependency -->
-
-
-		<!-- dependency> <groupId>db2</groupId> <artifactId>driver</artifactId> 
-			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/db2jcc.jar</systemPath> 
-			</dependency -->
-
-		<!-- dependency> <groupId>db2</groupId> <artifactId>driver-license</artifactId> 
-			<version>6</version> <scope>system</scope> <systemPath>${basedir}/lib/db2jcc_license_cu.jar</systemPath> 
-			</dependency -->
-
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.0.21</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>2.6.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>${aspectj.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.jfinal</groupId>
-			<artifactId>jfinal</artifactId>
-			<version>3.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>4.2.3.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>4.2.3.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>4.2.3.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>4.2.3.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.2.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.9.6</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-
-		<!-- <dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>jdbcdriver</artifactId>
-			<version>4.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath>
-		</dependency> -->
-
-
-	</dependencies>
+    </dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>sql/**</exclude>
-                </excludes>
-			</resource>
 
-		</resources>
 		<plugins>
 
 			<plugin>
@@ -258,14 +130,12 @@
 					<target>1.8</target>
 					<encoding>UTF-8</encoding>
                     <parameters>true</parameters>
-                    <excludes>
-                        <exclude>org/beetl/sql/test/**</exclude>
-                    </excludes>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>snapshots</serverId>
@@ -331,23 +201,8 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
-
-			<!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-             <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId>
-                <configuration> <source>1.8</source> <target>1.8</target> </configuration>
-                </plugin> -->
-
-
 		</plugins>
+
 	</build>
 
 

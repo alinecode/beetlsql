@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 一个简单例子演示通过xml配置映射 -->
+<root>
+    <id>id</id>
+    <userName>name</userName>
+    <deptId>department_id</deptId>
+</root>

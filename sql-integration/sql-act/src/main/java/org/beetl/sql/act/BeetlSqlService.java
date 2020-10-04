@@ -1,0 +1,259 @@
+package org.beetl.sql.act;
+
+/*-
+ * #%L
+ * ACT Beetlsql
+ * %%
+ * Copyright (C) 2017 - 2018 ActFramework
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+import act.Act;
+import act.app.App;
+import act.db.Dao;
+import act.db.sql.DataSourceConfig;
+import act.db.sql.DataSourceProvider;
+import act.db.sql.SqlDbService;
+import act.db.sql.util.NamingConvention;
+import org.beetl.sql.annotation.entity.Table;
+import org.beetl.sql.clazz.ClassDesc;
+import org.beetl.sql.clazz.NameConversion;
+import org.beetl.sql.clazz.TableDesc;
+import org.beetl.sql.clazz.kit.ClassLoaderKit;
+import org.beetl.sql.core.*;
+
+import org.beetl.sql.core.db.*;
+import org.beetl.sql.core.loader.MarkdownClasspathLoader;
+import org.beetl.sql.core.loader.SQLLoader;
+import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.mapper.BaseMapper;
+import org.beetl.sql.mapper.DefaultMapperBuilder;
+import org.osgl.inject.Genie;
+import org.osgl.util.E;
+import org.osgl.util.S;
+
+import javax.inject.Provider;
+import javax.sql.DataSource;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+/**
+ * Implement `act.db.DbService` using BeetlSql
+ */
+public class BeetlSqlService extends SqlDbService {
+
+    public static final String DEF_LOADER_PATH = "/sql";
+
+    private SQLManager beetlSql;
+    private MapperBuilder mapperBuilder;
+    private ConcurrentMap<Class, BaseMapper> mapperMap = new ConcurrentHashMap<>();
+    private ConnectionSource connectionSource;
+
+    public BeetlSqlService(String dbId, App app, Map<String, String> config) {
+        super(dbId, app, config);
+    }
+
+    public SQLManager beetlSql() {
+        return beetlSql;
+    }
+
+    @Override
+    protected DataSourceProvider builtInDataSourceProvider() {
+        throw E.unsupport();
+    }
+
+    @Override
+    protected void doStartTx(Object delegate, boolean readOnly) {
+        DSTransactionManager.start();
+    }
+
+    @Override
+    protected void doRollbackTx(Object delegate, Throwable cause) {
+        try {
+            DSTransactionManager.rollback();
+        } catch (SQLException e) {
+            logger.warn(e, "Error rolling back transaction");
+        }
+    }
+
+    @Override
+    protected void doEndTxIfActive(Object delegate) {
+        if (!DSTransactionManager.inTrans()) {
+            return;
+        }
+        try {
+            DSTransactionManager.commit();
+        } catch (SQLException e) {
+            logger.warn(e, "Error commit transaction");
+        }
+    }
+
+    @Override
+    protected void dataSourceProvided(DataSource dataSource, DataSourceConfig dataSourceConfig, boolean readonly) {
+        connectionSource = ConnectionSourceHelper.getSingle(dataSource);
+        DBStyle style = configureDbStyle(dataSourceConfig);
+        SQLLoader loader = configureLoader();
+        NameConversion nc = configureNamingConvention();
+        Interceptor[] ins = configureInterceptor();
+        SQLManagerBuilder  builder = new  SQLManagerBuilder(connectionSource);
+		builder.setSqlLoader(loader);
+		builder.setDbStyle(style);
+		builder.setNc(nc);
+		builder.setInters(ins);
+		ClassLoaderKit classLoaderKit = new ClassLoaderKit(app().classLoader());
+		builder.setClassLoaderKit(classLoaderKit);
+        beetlSql = builder.build();
+        mapperBuilder = new DefaultMapperBuilder(beetlSql);
+    }
+
+    @Override
+    protected boolean supportDdl() {
+        return false;
+    }
+
+    @Override
+    public <DAO extends Dao> DAO defaultDao(Class<?> aClass) {
+		String tableName = this.beetlSql.getNc().getTableName(aClass);
+		TableDesc tableDesc = this.beetlSql.getMetaDataManager().getTable(tableName);
+		ClassDesc classDesc = new ClassDesc(aClass,tableDesc,this.beetlSql.getNc());
+		Map<String ,Object> idMethod =(Map<String , Object>) classDesc.getIdMethods();
+		if(idMethod.size()>1){
+			throw new IllegalStateException("BeetlSQL 目前不支持在ACT中使用复合主健");
+		}
+
+		Class idType = null;
+		String idAttr = null;
+		for(Map.Entry<String,Object> entry:idMethod.entrySet()){
+			idAttr = entry.getKey();
+			Method method = (Method) entry.getValue();
+			idType = method.getReturnType();
+			break;
+
+		}
+		return (DAO)newDao(idAttr,idType,aClass);
+
+
+    }
+
+	protected <ID_TYPE, MODEL_TYPE> BeetlSqlDao<ID_TYPE, MODEL_TYPE> newDao(String idAttr,Class<ID_TYPE> idType, Class<MODEL_TYPE> modelType) {
+		return new BeetlSqlDao<>(this.beetlSql,idAttr,modelType,idType);
+	}
+
+    @Override
+    public <DAO extends Dao> DAO newDaoInstance(Class<DAO> aClass) {
+		try {
+			return (DAO)aClass.newInstance();
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+    @Override
+    public Class<? extends Annotation> entityAnnotationType() {
+        return Table.class;
+    }
+
+    @Override
+    protected void releaseResources() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("beetsql shutdown: %s", id());
+        }
+        super.releaseResources();
+    }
+
+    BaseMapper mapper(Class modelClass) {
+        return mapperMap.get(modelClass);
+    }
+
+    public <MAPPER extends BaseMapper> void prepareMapperClass(Class<MAPPER> mapperClass, Class<?> modelClass) {
+        final MAPPER mapper = mapperBuilder.getMapper(mapperClass);
+        mapperMap.put(mapperClass, mapper);
+        mapperMap.put(modelClass, mapper);
+        Genie genie = Act.getInstance(Genie.class);
+        genie.registerProvider(mapperClass, new Provider<MAPPER>() {
+            @Override
+            public MAPPER get() {
+                return mapper;
+            }
+        });
+    }
+
+    private NameConversion configureNamingConvention() {
+        String s = this.config.rawConf.get("beetlsql.nc");
+        if (null != s) {
+            return Act.getInstance(s);
+        }
+
+        if (NamingConvention.Default.UNDERSCORE == this.config.tableNamingConvention) {
+            return new UnderlinedNameConversion();
+        }
+        return new DefaultNameConversion();
+    }
+
+    private SQLLoader configureLoader() {
+        String loaderPath = this.config.rawConf.get("loader.path");
+        if (null == loaderPath) {
+            loaderPath = DEF_LOADER_PATH;
+        }
+        return new MarkdownClasspathLoader(loaderPath);
+    }
+
+    private Interceptor[] configureInterceptor() {
+        boolean isDebug = Act.isDev();
+        if (!isDebug) {
+            String debug = this.config.rawConf.get("interceptor.debug");
+            if (null == debug) {
+                return new Interceptor[0];
+            }
+            isDebug = Boolean.parseBoolean(debug);
+        }
+        return isDebug ? new Interceptor[]{new DebugInterceptor()} : new Interceptor[0];
+    }
+
+    private DBStyle configureDbStyle(DataSourceConfig dsConfig) {
+        Map<String, String> conf = this.config.rawConf;
+        String style = conf.get("platform");
+        if (null == style) {
+            style = conf.get("style");
+        }
+        if (null == style) {
+            style = dsConfig.url;
+        }
+        if (S.notBlank(style)) {
+            style = style.trim().toLowerCase();
+            if (style.contains("oracle")) {
+                return new OracleStyle();
+            } else if (style.contains("mysql") || style.contains("maria")) {
+                return new MySqlStyle();
+            } else if (style.contains("postgres") || style.contains("pgsql")) {
+                return new PostgresStyle();
+            } else if (style.contains("h2")) {
+                return new H2Style();
+            } else if (style.contains("sqlserver")) {
+                return new SqlServerStyle();
+            } else if (style.contains("db2")) {
+                return new DB2SqlStyle();
+            } else if (style.contains("sqlite")) {
+                return new SQLiteStyle();
+            }
+        }
+        throw new UnsupportedOperationException("Unknown database style: " + style);
+    }
+
+}

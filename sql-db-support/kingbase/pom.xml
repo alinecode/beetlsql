@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.ibeetl</groupId>
+        <artifactId>sql-db-support</artifactId>
+        <version>3.0.0-M6</version>
+    </parent>
+
+    <groupId>com.ibeetl</groupId>
+    <artifactId>kingbase</artifactId>
+    <version>3.0.0-M6</version>
+    <dependencies>
+            <dependency>
+                <groupId>kingbase</groupId>
+                <artifactId>driver</artifactId>
+                <version>4</version>
+                <scope>system</scope>
+                <systemPath>/Users/xiandafu/git/beetlsql3.0/lib/kingbase8-8.2.0.jar</systemPath>
+            </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    
+</project>

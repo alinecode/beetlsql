@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <context:annotation-config/>
+    <context:component-scan base-package="org.beetl.sql.ext.spring.test"/>
+    <bean id="dataSource-master" class="com.zaxxer.hikari.HikariDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:h2:mem:masterdb;DB_CLOSE_ON_EXIT=FALSE"></property>
+        <property name="username" value="sa"></property>
+        <property name="password" value=""></property>
+
+    </bean>
+
+    <bean id="dataSource-slave-1" class="com.zaxxer.hikari.HikariDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:h2:mem:slavedb1;DB_CLOSE_ON_EXIT=FALSE"></property>
+        <property name="username" value="sa"></property>
+        <property name="password" value=""></property>
+    </bean>
+
+    <bean id="dataSource-slave-2" class="com.zaxxer.hikari.HikariDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:h2:mem:slavedb2;DB_CLOSE_ON_EXIT=FALSE"></property>
+        <property name="username" value="sa"></property>
+        <property name="password" value=""></property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource-master"></property>
+    </bean>
+    <!--声明以注解的方式配置spring 的事物-->
+    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+
+    <!-- BeetlSQL集成 -->
+
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean name="beetlSqlScannerConfigurer" class="org.beetl.sql.ext.spring.BeetlSqlScannerConfigurer">
+        <!-- 哪些类可以自动注入 -->
+        <property name="basePackage" value="org.beetl.sql.ext.spring"/>
+        <!-- 通过类后缀 来自动注入Dao -->
+        <property name="daoSuffix" value="Mapper"/>
+        <property name="sqlManagerFactoryBeanName" value="sqlManagerFactoryBean"/>
+    </bean>
+
+    <bean id="sqlManagerFactoryBean" class="org.beetl.sql.ext.spring.SqlManagerFactoryBean">
+        <property name="cs" >
+            <!-- 在SpringConnectionSource slave方法打断点验证 -->
+            <bean  class="org.beetl.sql.ext.spring.SpringConnectionSource">
+                <property name="masterSource" ref="dataSource-master"></property>
+                <property name="slaveSource">
+                    <list>
+                        <ref bean="dataSource-slave-1"></ref>
+                        <ref bean="dataSource-slave-2"></ref>
+                    </list>
+                </property>
+                <!-- 还可以设置从数据库 slaves -->
+            </bean>
+        </property>
+        <property name="dbStyle">
+            <bean class="org.beetl.sql.core.db.MySqlStyle"/>
+        </property>
+        <property name="sqlLoader">
+            <bean class="org.beetl.sql.core.loader.MarkdownClasspathLoader">
+                <property name="sqlRoot" value="sql"></property>
+            </bean>
+        </property>
+        <property name="nc">
+            <bean class="org.beetl.sql.core.UnderlinedNameConversion"/>
+        </property>
+        <property name="interceptors">
+            <list>
+                <bean class="org.beetl.sql.ext.DebugInterceptor"></bean>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>
