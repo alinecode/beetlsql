@@ -265,6 +265,9 @@ public interface UserMapper extends BaseMapper<UserEntity> {
 
     @SqlTemplateProvider(provider= S01MapperSelectSample.SelectUs
     List<UserEntity> queryUserByTemplateCondition(String name);
+
+    @Matcher /*自己定义个Matcher注解也很容易*/
+    List<UserEntity> query(Condition condition,String name);
 }
 ```
 > 你看到的这些用在Mapper上注解都是可以自定义，自己扩展的

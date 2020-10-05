@@ -12,7 +12,7 @@ BeetlSQL 所有插件开发例子。注意，有一定难度，建议初学者�
 * InterceptSample 定义Interceptor
     * 自定义一个Interceptor，能在执行sql前为sql追加一个注释，内容是sqlId，这样方便数据库dba与程序员打交道
     * 修改DebugInteceptor ，将Debug内容输出到日志框架
-* DbStyleSample ，Beetlsql核心之一，了解beetlsql底层如何运行，随意根据需求扩展
+* DbStyleSample ，BeetlSQL核心之一，了解beetlsql底层如何运行，随意根据需求扩展
     * 自定义一个Executor，执行底层jdbc操作
 
    
