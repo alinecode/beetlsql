@@ -333,15 +333,16 @@ public abstract class  AbstractDBStyle implements DBStyle {
         if (idType == DBType.ID_ASSIGN) {
             Map<String, AssignID> map = new HashMap<String, AssignID>();
             for (String idAttr : classDesc.getIdAttrs()) {
-                Method getter = (Method) classDesc.getIdMethods().get(idAttr);
-                AssignID assignId = BeanKit.getAnnotation(classDesc.getTargetClass(), idAttr, getter,AssignID.class);
+                AssignID assignId = BeanKit.getAnnotation(classDesc.getTargetClass(), idAttr, AssignID.class);
                 if (assignId != null && assignId.value().length() != 0) {
                     map.put(idAttr, assignId);
                 }
             }
             if (map.size() != 0) {
                 source.setAssignIds(map);
-            }
+            }else{
+            	throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND,"使用@Assign,但数据库未定义主键 "+cls);
+			}
 
         }
 

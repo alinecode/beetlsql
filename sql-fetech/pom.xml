@@ -7,17 +7,17 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.0.0-M6</version>
+        <version>3.0.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-fetech</artifactId>
-    <version>3.0.0-M6</version>
+    <version>3.0.0-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-core</artifactId>
-            <version>3.0.0-M6</version>
+            <version>3.0.0-RELEASE</version>
         </dependency>
     </dependencies>
     

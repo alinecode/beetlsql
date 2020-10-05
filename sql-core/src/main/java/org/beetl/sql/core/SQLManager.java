@@ -462,7 +462,7 @@ public class SQLManager implements DataAPI  {
             }
         }
 
-        if (totalRow != 0) {
+        if (totalRow==null||totalRow != 0) {
 
             long size = request.getPageSize();
             Object start = request.getStart(this.offsetStartZero); ;
