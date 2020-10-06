@@ -284,11 +284,17 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param clazz
      * @return
      */
-
+	@Override
     public <T> List<T> all(Class<T> clazz) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.all(clazz);
     }
+
+    @Override
+	public <T> List<T> all(Class<T> clazz, Object start, Long pageSize) {
+		SQLManager sqlManager = decide(clazz);
+		return  sqlManager.all(clazz, start, pageSize);
+	}
 
 
     /**

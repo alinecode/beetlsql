@@ -1,22 +1,15 @@
 package org.beetl.sql.test;
 
 
-import lombok.Data;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.ReThrowConsoleErrorHandler;
 import org.beetl.core.resource.FileResourceLoader;
-import org.beetl.sql.annotation.entity.Auto;
-import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.fetech.annotation.Fetch;
-import org.beetl.sql.fetech.annotation.FetchMany;
-import org.beetl.sql.fetech.annotation.FetchOne;
 import org.beetl.sql.gen.SourceBuilder;
 import org.beetl.sql.gen.SourceConfig;
 import org.beetl.sql.gen.simple.*;
 import org.beetl.sql.sample.SampleHelper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

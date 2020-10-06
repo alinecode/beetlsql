@@ -1,7 +1,7 @@
 package org.beetl.sql.starter;
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ConditionalSQLManager;
 import org.springframework.core.env.Environment;
 
@@ -74,9 +74,9 @@ public class BeetlSqlConfig {
         public SQLManagerConfig(Environment env,String sqlManagerName,SQLManagerConfig defaultConfig){
             String prefix =PREFIX+"."+sqlManagerName;
             dynamicSqlManager = env.getProperty(prefix+".dynamic");
-            if(!StringUtils.isEmpty(dynamicSqlManager)){
+            if(!StringKit.isEmpty(dynamicSqlManager)){
                 dynamicCondition = env.getProperty(prefix+".dynamic.condition");
-                if(StringUtils.isEmpty(dynamicCondition)){
+                if(StringKit.isEmpty(dynamicCondition)){
                     //默认
                     dynamicCondition = ConditionalSQLManager.DefaultConditional.class.getName();
                 }

@@ -14,7 +14,7 @@ import java.util.Map;
 public class SQLGrammarCreator extends GrammarCreator {
 
 	public PlaceholderST createTextOutputSt(Expression exp, FormatExpression format) {
-		check("TextOutputSt");
+		disableSyntaxCheck("TextOutputSt");
 		return new SQLPlaceholderST(exp, format, null);
 	}
 
@@ -27,14 +27,14 @@ public class SQLGrammarCreator extends GrammarCreator {
 	@Override
 	public FunctionExpression createFunction(String name, Expression[] exps, VarAttribute[] vas, boolean hasSafe,
 			Expression safeExp, GrammarToken token) {
-		check("Function");
+		disableSyntaxCheck("Function");
 		return new SqlFunctionExpression(name, exps, vas, hasSafe, safeExp, token);
 	}
 
 	@Override
 	public FunctionExpression createFunctionExp(String name, Expression[] exps, VarAttribute[] vas, boolean hasSafe,
 			Expression safeExp, GrammarToken token) {
-		check("FunctionExp");
+		disableSyntaxCheck("FunctionExp");
 		return new SqlFunctionExpression(name, exps, vas, hasSafe, safeExp, token);
 	}
 

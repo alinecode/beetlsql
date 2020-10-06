@@ -42,6 +42,8 @@ public interface DataAPI {
 
     long allCount(Class<?> clazz);
 
+	<T> List<T> all(Class<T> clazz,Object start,Long pageSize);
+
     <T> T templateOne(T t);
 
     <T> List<T> template(T t);

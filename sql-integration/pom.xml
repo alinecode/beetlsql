@@ -18,9 +18,10 @@
         <module>sql-springboot-starter</module>
         <module>sql-jfinal</module>
         <module>sql-solon-plugin</module>
-        <module>sql-act</module>
-        <module>act-sample</module>
+<!--        <module>sql-act</module>-->
+<!--        <module>act-sample</module>-->
     </modules>
+
     <dependencies>
 
         <dependency>
@@ -48,6 +49,7 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.200</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>

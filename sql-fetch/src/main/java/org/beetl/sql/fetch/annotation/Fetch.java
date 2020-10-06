@@ -1,7 +1,7 @@
-package org.beetl.sql.fetech.annotation;
+package org.beetl.sql.fetch.annotation;
 
 import org.beetl.sql.annotation.builder.Builder;
-import org.beetl.sql.fetech.DefaultBeanFetch;
+import org.beetl.sql.fetch.DefaultBeanFetch;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

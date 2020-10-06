@@ -1,4 +1,4 @@
-package org.beetl.sql.fetech;
+package org.beetl.sql.fetch;
 
 import org.beetl.sql.core.ExecuteContext;
 

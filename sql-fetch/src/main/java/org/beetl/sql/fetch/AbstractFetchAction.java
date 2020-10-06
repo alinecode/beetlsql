@@ -1,14 +1,10 @@
-package org.beetl.sql.fetech;
+package org.beetl.sql.fetch;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
-import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.engine.template.Beetl;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 public abstract  class AbstractFetchAction  implements  FetchAction{
 

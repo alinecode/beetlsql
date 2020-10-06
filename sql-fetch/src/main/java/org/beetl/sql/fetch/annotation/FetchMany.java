@@ -1,4 +1,4 @@
-package org.beetl.sql.fetech.annotation;
+package org.beetl.sql.fetch.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

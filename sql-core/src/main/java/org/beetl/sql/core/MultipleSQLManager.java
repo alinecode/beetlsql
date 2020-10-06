@@ -230,11 +230,15 @@ public class MultipleSQLManager extends  SQLManager {
      * @param clazz
      * @return
      */
-
+	@Override
     public <T> List<T> all(Class<T> clazz) {
         return current.get().all(clazz);
     }
 
+	@Override
+	public <T> List<T> all(Class<T> clazz, Object start, Long pageSize) {
+		return current.get().all(clazz,start,pageSize);
+	}
 
 
 

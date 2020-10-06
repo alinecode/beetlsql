@@ -1,13 +1,13 @@
-package org.beetl.sql.fetech;
+package org.beetl.sql.fetch;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.mapping.BeanFetch;
-import org.beetl.sql.fetech.annotation.Fetch;
-import org.beetl.sql.fetech.annotation.FetchMany;
-import org.beetl.sql.fetech.annotation.FetchOne;
+import org.beetl.sql.fetch.annotation.Fetch;
+import org.beetl.sql.fetch.annotation.FetchMany;
+import org.beetl.sql.fetch.annotation.FetchOne;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;

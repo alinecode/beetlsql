@@ -1,6 +1,5 @@
-package org.beetl.sql.fetech;
+package org.beetl.sql.fetch;
 
-import org.beetl.sql.clazz.ClassDesc;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
@@ -8,7 +7,6 @@ import org.beetl.sql.core.ExecuteContext;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.acl.Owner;
 import java.util.List;
 
 

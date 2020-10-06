@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>com.ibeetl</groupId>
-            <artifactId>sql-fetech</artifactId>
+            <artifactId>sql-fetch</artifactId>
             <version>${beetlsql.version}</version>
         </dependency>
         <dependency>

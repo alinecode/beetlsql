@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.ibeetl</groupId>
-    <artifactId>sql-fetech</artifactId>
+    <artifactId>sql-fetch</artifactId>
     <version>3.0.0-RELEASE</version>
     <dependencies>
         <dependency>
