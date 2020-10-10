@@ -3,7 +3,7 @@ package org.beetl.sql.jmh.mybatis.vo;
 import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.Table;
-import org.beetl.sql.fetech.annotation.Fetch;
+import org.beetl.sql.fetch.annotation.Fetch;
 
 
 @Data

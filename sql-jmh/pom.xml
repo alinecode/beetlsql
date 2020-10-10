@@ -43,24 +43,10 @@
 
             <dependency>
                 <groupId>com.ibeetl</groupId>
-                <artifactId>sql-core</artifactId>
+                <artifactId>beetlsql</artifactId>
                 <version>${beetlsql.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.ibeetl</groupId>
-                <artifactId>sql-gen</artifactId>
-                <version>${beetlsql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ibeetl</groupId>
-                <artifactId>sql-fetech</artifactId>
-                <version>${beetlsql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ibeetl</groupId>
-                <artifactId>sql-mapper</artifactId>
-                <version>${beetlsql.version}</version>
-            </dependency>
+
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
