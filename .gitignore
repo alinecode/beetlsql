@@ -4,5 +4,5 @@
 .idea/
 target/
 .DS_Store
-beetlsql.iml
+**/*.iml
 /bin/

@@ -28,26 +28,19 @@ import java.util.Map;
  *
  */
 public class FetchOneAction extends   AbstractFetchAction {
-    Class owner;
-    Class target;
+
     PropertyDescriptor from;
-    PropertyDescriptor to;
 
     /**
      * 以User例子来说
-     * @param owner owner是user对象
-     * @param target department对象
      * @param from user#departmentId
-     * @param to user#department
      */
-    public FetchOneAction(Class owner, Class target, PropertyDescriptor from, PropertyDescriptor to){
-        this.owner = owner;
-        this.target = target;
+    public FetchOneAction(PropertyDescriptor from){
+
         if(from==null){
         	throw new IllegalArgumentException("FetchOne 未正确指定属性 "+ owner+" to "+ target);
 		}
         this.from = from;
-        this.to = to;
     }
 
     /**
@@ -58,27 +51,30 @@ public class FetchOneAction extends   AbstractFetchAction {
     public void execute(ExecuteContext ctx,List list){
         try{
             Method fromReadMethod = from.getReadMethod();
-            Method toWriteMethod = to.getWriteMethod();
+            Method toWriteMethod = this.originProperty.getWriteMethod();
             Map<Object,List<Object>> todoLoad = new HashMap<>();
             for(int i=0;i<list.size();i++){
                 Object obj = list.get(i);
+				Object otherTypeId = fromReadMethod.invoke(obj,new Object[0]);
+				if(otherTypeId==null){
+					continue;
+				}
                 Object cached  = queryFromCache(ctx.sqlManager,obj);
                 //检测缓存
                 if(cached!=null&&obj!=cached){
                     list.remove(i);
                     //使用缓存对象代替，不需要操作数据库，也避免循环引用
                     list.add(i,cached);
-                    return ;
-                }
-                //缓存自己，也避免未来循环引用
-                addCached(ctx.sqlManager,obj);
+                    if(this.containAttribute(cached,originProperty.getName())){
+						//对象的字段已经被fetch过了
+						continue;
+					}
+					obj = cached;
+                }else{
+					//缓存自己，也避免未来循环引用
+					addCached(obj,otherTypeId);
+				}
 
-
-
-                Object otherTypeId = fromReadMethod.invoke(obj,new Object[0]);
-                if(otherTypeId==null){
-                    continue;
-                }
                 Object toObject = queryFromCache(target,otherTypeId);
                 if(toObject==null){
                     //先缓存需要从数据库加载的对象的key，deptId->user
@@ -118,6 +114,7 @@ public class FetchOneAction extends   AbstractFetchAction {
                 }
                 for(Object obj:objs){
                     toWriteMethod.invoke(obj,toObject);
+					addAttribute(obj,originProperty.getName());
                 }
                 addCached(toObject,key);
             }

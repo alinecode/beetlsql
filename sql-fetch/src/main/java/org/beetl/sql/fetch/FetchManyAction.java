@@ -28,38 +28,40 @@ import java.util.List;
  *
  */
 public class FetchManyAction extends   AbstractFetchAction {
-    Class owner;
-    Class target;
+
     PropertyDescriptor  idProperty;
     PropertyDescriptor otherTypeFrom;
-    PropertyDescriptor to;
-    public FetchManyAction(Class owner, Class target, PropertyDescriptor idProperty, PropertyDescriptor otherTypeFrom, PropertyDescriptor to){
-        this.owner = owner;
-        this.target = target;
+    public FetchManyAction(PropertyDescriptor idProperty, PropertyDescriptor otherTypeFrom){
+
         this.otherTypeFrom = otherTypeFrom;
         if(otherTypeFrom==null){
         	throw new IllegalArgumentException("未正确指定FetchMany的属性 "+owner+" to "+target);
 		}
-        this.to = to;
         this.idProperty = idProperty;
     }
     public void execute(ExecuteContext ctx,List list){
         try{
             Method idReadMethod = idProperty.getReadMethod();
             Method fromWriteMethod = otherTypeFrom.getWriteMethod();
-            Method toWriteMethod = to.getWriteMethod();
+            Method toWriteMethod = this.originProperty.getWriteMethod();
             for(int i=0;i<list.size();i++){
                 Object obj = list.get(i);
                 Object id = idReadMethod.invoke(obj,new Object[0]);
                 Object cached  = queryFromCache(owner,id);
                 // 检测缓存
-                if(cached!=null&&obj!=cached){
+                if(cached!=null){
                     list.remove(i);
                     list.add(i,cached);
-                    continue;
+                    if(this.containAttribute(cached,originProperty.getName())){
+						//对象的字段已经被fetch过了
+						continue;
+					}
+					obj = cached;
                 }else{
-                    addCached(ctx.sqlManager,obj);
-                }
+					addCached(obj,id);
+				}
+
+
                 Object template = BeanKit.newInstance(target);
                 fromWriteMethod.invoke(template,id);
                 List values = ctx.sqlManager.template(template);
@@ -77,6 +79,7 @@ public class FetchManyAction extends   AbstractFetchAction {
                 }
 
                 toWriteMethod.invoke(obj,values);
+                this.addAttribute(obj,originProperty.getName());
             }
 
         }catch(InvocationTargetException ex){

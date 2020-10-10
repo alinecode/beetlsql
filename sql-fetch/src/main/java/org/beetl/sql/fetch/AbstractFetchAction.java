@@ -5,8 +5,18 @@ import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 
+/**
+ * 实现FetchAction
+ * @author xiandafu
+ */
 public abstract  class AbstractFetchAction  implements  FetchAction{
+
+	Annotation annotation ;
+	PropertyDescriptor originProperty;
+	Class owner;
+	Class target;
 
     public Object queryFromCache(Class target,Object key){
         FetchContext context  = DefaultBeanFetch.local.get();
@@ -23,6 +33,12 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
         }
     }
 
+	/**
+	 * 判断某个对象是否已经加载
+	 * @param sqlManager
+	 * @param value
+	 * @return
+	 */
     public Object queryFromCache(SQLManager sqlManager,Object value){
         try {
             Class target = value.getClass();
@@ -45,4 +61,38 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
         context.add(value.getClass(),key,value);
     }
 
+	public void addAttribute(Object obj,String attrName){
+		FetchContext context  = DefaultBeanFetch.local.get();
+		context.addAttribute(obj,attrName);
+	}
+
+	/**
+	 * 判断对象的某个属性是否已经加载
+	 * @param obj
+	 * @param attrName
+	 * @return
+	 */
+	public  boolean containAttribute(Object obj,String attrName){
+		FetchContext context  = DefaultBeanFetch.local.get();
+		return context.containAttribute(obj,attrName);
+	}
+
+	@Override
+	public Annotation getAnnotation() {
+		return annotation;
+	}
+
+	@Override
+	public void init(Class owner, Class target,Annotation config, PropertyDescriptor originProperty){
+    	this.owner = owner;
+    	this.target = target;
+    	this.annotation = config;
+    	this.originProperty = originProperty;
+
+	}
+
+	@Override
+	public PropertyDescriptor getOriginProperty(){
+    	return this.originProperty;
+	}
 }
