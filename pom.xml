@@ -23,11 +23,11 @@
 		<module>sql-fetch</module>
         <module>sql-gen</module>
         <module>sql-test</module>
-        <module>sql-samples</module>
+<!--        <module>sql-samples</module>-->
 		<!-- 打包到一起 -->
 		<module>beetlsql</module>
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->
-<!--		<module>sql-integration</module>-->
+		<module>sql-integration</module>
 <!--        <module>sql-jmh</module>-->
 <!--		<module>sql-db-support</module>-->
     </modules>

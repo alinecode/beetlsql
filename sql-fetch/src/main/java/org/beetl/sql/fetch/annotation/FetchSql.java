@@ -35,7 +35,6 @@ public @interface FetchSql {
 	String value();
 
 
-
 }
 
 
