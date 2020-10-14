@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * SQLManager 管理工具
+ * SQLManager 工具
  *
  * @author noear
  * @since 2020-09-01
