@@ -21,7 +21,7 @@ public class XPluginImp implements XPlugin {
     public void start(XApp app) {
         app.onEvent(BeanWrap.class, new DsEventListener());
 
-        Aop.factory().beanCreatorAdd(Db.class, (clz, wrap, anno) -> {
+        Aop.context().beanBuilderAdd(Db.class, (clz, wrap, anno) -> {
             if (clz.isInterface() == false) {
                 return;
             }
@@ -39,7 +39,7 @@ public class XPluginImp implements XPlugin {
             }
         });
 
-        Aop.factory().beanInjectorAdd(Db.class, (varH, anno) -> {
+        Aop.context().beanInjectorAdd(Db.class, (varH, anno) -> {
             if (XUtil.isEmpty(anno.value())) {
                 Aop.getAsyn(DataSource.class, (dsBw) -> {
                     inject0(anno, varH, dsBw);
@@ -56,7 +56,7 @@ public class XPluginImp implements XPlugin {
         //初始化管理器（主要为了生成动态管理器）
         //
         Aop.beanOnloaded(() -> {
-            BeanWrap defBw = Aop.factory().getWrap(DataSource.class);
+            BeanWrap defBw = Aop.context().getWrap(DataSource.class);
             DbManager.global().dynamicBuild(defBw);
 
             Aop.wrapAndPut(SQLManager.class, DbManager.global().dynamicGet());
