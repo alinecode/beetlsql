@@ -39,6 +39,9 @@ public class CoreSelect extends BaseTest {
         long count = sqlManager.allCount(User.class);
         Assert.assertEquals(3l,count);
 
+		users = sqlManager.all(User.class,1,5l);
+		Assert.assertEquals(3,users.size());
+
     }
 
 

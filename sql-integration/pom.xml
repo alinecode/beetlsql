@@ -6,27 +6,28 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.0.0-RELEASE</version>
+        <version>3.0.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-integration</artifactId>
-    <version>3.0.0-RELEASE</version>
+    <version>3.0.1-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <module>sql-spring</module>
         <module>sql-springboot-starter</module>
         <module>sql-jfinal</module>
         <module>sql-solon-plugin</module>
-        <module>sql-act</module>
-        <module>act-sample</module>
+<!--        <module>sql-act</module>-->
+<!--        <module>act-sample</module>-->
     </modules>
+
     <dependencies>
 
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.0.0-RELEASE</version>
+            <version>3.0.1-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 
@@ -48,6 +49,7 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.200</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>

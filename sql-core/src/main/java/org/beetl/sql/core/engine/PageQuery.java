@@ -212,14 +212,14 @@ public class PageQuery<T> implements PageRequest, PageResult {
 
 	@Override
 	public PageResult of(List result) {
-		this.setList(list);
+		this.setList(result);
 		this.calcTotalPage();
 		return this;
 	}
 
 	@Override
 	public PageResult of(List result, Long total) {
-		this.setList(list);
+		this.setList(result);
 		this.setTotalRow(total);
 		this.calcTotalPage();
 		return this;

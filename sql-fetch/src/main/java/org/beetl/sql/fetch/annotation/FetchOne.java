@@ -1,4 +1,6 @@
-package org.beetl.sql.fetech.annotation;
+package org.beetl.sql.fetch.annotation;
+
+import org.beetl.sql.fetch.FetchOneAction;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,7 +24,7 @@ import java.lang.annotation.Target;
  *
  * 实现类应实现合并查询，以提高性能。
  * @author xiandafu
- * @see org.beetl.sql.fetech.FetchOneAction
+ * @see FetchOneAction
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

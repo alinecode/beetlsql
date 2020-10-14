@@ -4,20 +4,24 @@ import lombok.Data;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
-import org.beetl.sql.fetch.annotation.FetchMany;
+import org.beetl.sql.fetch.annotation.FetchOne;
+import org.beetl.sql.fetch.annotation.FetchSql;
 
 import java.util.List;
 import java.util.Objects;
 
 @Data
-@Fetch(level = 2)
-@Table(name="sys_customer")
-public class Customer {
+@Table(name="sys_order")
+@Fetch(level =2)
+public class CustomerOrder2 {
     @AutoID
     Integer id;
     String name;
-    @FetchMany("customerId")
-    List<CustomerOrder> order;
+    Integer customerId;
+    @FetchSql("select * from sys_customer where id =#{customerId}")
+    Customer customer;
+	@FetchSql("select * from sys_customer s where s.id =#{customerId} order by s.id desc")
+	List<Customer> customers;
 
 	@Override
 	public boolean equals(Object o) {
@@ -25,8 +29,8 @@ public class Customer {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Customer customer = (Customer) o;
-		return Objects.equals(id, customer.id);
+		CustomerOrder2 that = (CustomerOrder2) o;
+		return Objects.equals(id, that.id);
 	}
 
 	@Override

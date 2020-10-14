@@ -4,17 +4,13 @@ package org.beetl.sql.test;
 import lombok.Data;
 import org.beetl.sql.annotation.entity.Auto;
 import org.beetl.sql.annotation.entity.Table;
-import org.beetl.sql.annotation.entity.TargetSQLManager;
-import org.beetl.sql.core.ConditionalSQLManager;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.fetech.annotation.Fetch;
-import org.beetl.sql.fetech.annotation.FetchMany;
-import org.beetl.sql.fetech.annotation.FetchOne;
+import org.beetl.sql.fetch.annotation.Fetch;
+import org.beetl.sql.fetch.annotation.FetchMany;
+import org.beetl.sql.fetch.annotation.FetchOne;
 import org.beetl.sql.sample.SampleHelper;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 演示自动fetch,类似orm，但不同于orm，CRUD在ORM概念下过于复杂，

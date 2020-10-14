@@ -88,7 +88,7 @@ public class S2MappingSample {
         //运行时刻指定一个映射类
         TestUser testUser = sqlManager.rowMapper(MyRowMapper.class).unique(TestUser2.class, 1);
         //使用@RowProvider注解为类指定一个Mapper，这个更常用
-        TestUser testUse2 = sqlManager.unique(TestUser2.class, 1);
+		TestUser2 testUser2 = sqlManager.unique(TestUser2.class, 1);
     }
 
 

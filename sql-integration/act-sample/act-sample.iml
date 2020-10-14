@@ -64,6 +64,7 @@
     <orderEntry type="library" name="Maven: org.osgl:osgl-tool-ext:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.rythmengine:rythm-engine:1.3.0" level="project" />
     <orderEntry type="library" name="Maven: com.stevesoft.pat:pat:1.5.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="Maven: org.mvel:mvel2:2.2.8.Final" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.actframework:act-sql-common:1.6.0" level="project" />
@@ -82,17 +83,16 @@
     <orderEntry type="module" module-name="sql-core" />
     <orderEntry type="module" module-name="sql-util" />
     <orderEntry type="module" module-name="sql-gen" />
-    <orderEntry type="module" module-name="sql-fetech" />
+    <orderEntry type="module" module-name="sql-fetch" />
     <orderEntry type="module" module-name="sql-mapper" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: mysql:mysql-connector-java:8.0.20" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.protobuf:protobuf-java:3.6.1" level="project" />
-    <orderEntry type="library" name="Maven: com.h2database:h2:1.4.200" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.h2database:h2:1.4.200" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.zaxxer:HikariCP:3.3.1" level="project" />
-    <orderEntry type="library" name="Maven: com.ibeetl:beetl:3.2.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: com.ibeetl:beetl:3.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.7.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.18" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
   </component>

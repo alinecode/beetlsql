@@ -1,13 +1,14 @@
-package org.beetl.sql.fetech;
+package org.beetl.sql.fetch;
 
+import org.beetl.sql.annotation.builder.Builder;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.mapping.BeanFetch;
-import org.beetl.sql.fetech.annotation.Fetch;
-import org.beetl.sql.fetech.annotation.FetchMany;
-import org.beetl.sql.fetech.annotation.FetchOne;
+import org.beetl.sql.fetch.annotation.Fetch;
+import org.beetl.sql.fetch.annotation.FetchMany;
+import org.beetl.sql.fetch.annotation.FetchOne;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -67,49 +68,75 @@ public class DefaultBeanFetch implements BeanFetch {
 
 
     }
-    protected List<FetchAction> parse(SQLManager sqlManager,Class target){
-        if(fetchConfig.containsKey(target)){
-            return fetchConfig.get(target);
+    protected List<FetchAction> parse(SQLManager sqlManager,Class owner){
+        if(fetchConfig.containsKey(owner)){
+            return fetchConfig.get(owner);
         }
         List<FetchAction> actions = new ArrayList<>();
         try {
-            PropertyDescriptor[] allPs =  BeanKit.propertyDescriptors(target);
+            PropertyDescriptor[] allPs =  BeanKit.propertyDescriptors(owner);
             for(PropertyDescriptor pd:allPs ){
-                FetchOne fetchOne = BeanKit.getAnnotation(target,pd.getName(), FetchOne.class);
-                if(fetchOne!=null){
-                    String fromAttr = fetchOne.value();
-                    PropertyDescriptor fromProperty = BeanKit.getPropertyDescriptor(target,fromAttr);
-                    Class owner = target;
-                    Class fetchTargetType = pd.getPropertyType();
-                    PropertyDescriptor toProperty =pd;
 
-                    FetchOneAction action = new FetchOneAction(owner,fetchTargetType,fromProperty,toProperty);
-                    actions.add(action);
-                }
-                FetchMany fetchMany = BeanKit.getAnnotation(target,pd.getName(), FetchMany.class);
-                if(fetchMany!=null){
-                    PropertyDescriptor beanIdProperty = findIdProperty(target,sqlManager);
-                    PropertyDescriptor toProperty = pd;
+				List<Annotation> allAnnotation=BeanKit.getAllAnnotation(owner,pd.getName());
+				for(Annotation annotation:allAnnotation){
+					if(annotation instanceof  FetchOne){
+						FetchOne fetchOne = (FetchOne)annotation;
+						String fromAttr = fetchOne.value();
+						PropertyDescriptor fromProperty = BeanKit.getPropertyDescriptor(owner,fromAttr);
+						Class fetchTargetType = pd.getPropertyType();
+						PropertyDescriptor toProperty =pd;
+						FetchOneAction action = new FetchOneAction(fromProperty);
+						action.init(owner,fetchTargetType,fetchOne,pd);
+						actions.add(action);
+						break;
 
-                    String typeAttr = fetchMany.value();
-                    Class classType = pd.getPropertyType();
-                    Type type = pd.getReadMethod().getGenericReturnType();
-                    if(!List.class.isAssignableFrom(classType)){
-                        throw new IllegalStateException("one2Many 类型应该是List");
-                    }
-                    Class targetType = this.getCollectionType(type);
-                    PropertyDescriptor otherTypeFrom = BeanKit.getPropertyDescriptor(targetType,typeAttr);
-                    FetchManyAction action = new FetchManyAction(target,targetType,beanIdProperty,otherTypeFrom,toProperty);
-                    actions.add(action);
-                }
+					}else if(annotation instanceof  FetchMany){
+						FetchMany fetchMany = (FetchMany)annotation;
+						PropertyDescriptor beanIdProperty = findIdProperty(owner,sqlManager);
+						PropertyDescriptor toProperty = pd;
+
+						String typeAttr = fetchMany.value();
+						Class classType = pd.getPropertyType();
+						Type type = pd.getReadMethod().getGenericReturnType();
+						if(!List.class.isAssignableFrom(classType)){
+							throw new IllegalStateException("one2Many 类型应该是List");
+						}
+						Class targetType = this.getCollectionType(type);
+						PropertyDescriptor otherTypeFrom = BeanKit.getPropertyDescriptor(targetType,typeAttr);
+						FetchManyAction action = new FetchManyAction(beanIdProperty,otherTypeFrom);
+						action.init(owner,targetType,fetchMany,pd);
+						actions.add(action);
+						break;
+					}
+					//额外扩展
+					Builder builder = annotation.annotationType().getAnnotation(Builder.class);
+					if(builder!=null){
+						Class extFetchCls = builder.value();
+						if(FetchAction.class.isAssignableFrom(extFetchCls)){
+							FetchAction action = (FetchAction)BeanKit.newInstance(extFetchCls);
+							Class classType = pd.getPropertyType();
+							Type type = pd.getReadMethod().getGenericReturnType();
+							Class targetType = classType;
+							if(List.class.isAssignableFrom(classType)){
+								targetType = BeanKit.getCollectionType(type);
+							}
+							action.init(owner,targetType,annotation,pd);
+							actions.add(action);
+						}
+						break;
+					}
+				}
+
 
             }
         } catch (IntrospectionException e) {
-            throw new IllegalStateException(e);
+            throw new BeetlSQLException(BeetlSQLException.ERROR,e);
         }
-        fetchConfig.put(target,actions);
+        fetchConfig.put(owner,actions);
         return actions;
     }
+
+
 
 
     protected  PropertyDescriptor findIdProperty(Class target,SQLManager sqlManager) throws IntrospectionException{

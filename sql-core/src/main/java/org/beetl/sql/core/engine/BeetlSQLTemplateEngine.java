@@ -13,7 +13,7 @@ public class BeetlSQLTemplateEngine extends DefaultTemplateEngine {
 
 
 	@Override
-	protected GrammarCreator getGrammerCreator(GroupTemplate gt) {
+	protected GrammarCreator getGrammarCreator(GroupTemplate gt) {
 		GrammarCreator grammar = new SQLGrammarCreator();
 
 		return grammar;

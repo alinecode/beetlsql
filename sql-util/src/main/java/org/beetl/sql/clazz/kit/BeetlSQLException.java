@@ -74,6 +74,9 @@ public class BeetlSQLException extends RuntimeException {
 
 	public static final int 	GEN_CODE_ERROR  = 26;
 
+
+	public static final int 	ERROR  = 99;
+
 	public int code ;
 	
 	public BeetlSQLException(int code){

@@ -6,14 +6,14 @@
 
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
-    <version>3.0.0-RELEASE</version>
+    <version>3.0.1-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.0.0-RELEASE</version>
+        <version>3.0.1-RELEASE</version>
     </parent>
     <properties>
-        <beetlsql.version>3.0.0-RELEASE</beetlsql.version>
+        <beetlsql.version>3.0.1-RELEASE</beetlsql.version>
     </properties>
     <dependencies>
         <dependency>
@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>com.ibeetl</groupId>
-            <artifactId>sql-fetech</artifactId>
+            <artifactId>sql-fetch</artifactId>
             <version>${beetlsql.version}</version>
         </dependency>
         <dependency>

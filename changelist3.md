@@ -1,4 +1,8 @@
-* 默认定界符修改成`-- @`和回车，主要是考虑到--是sql注释符号，很容易在数据库工具，或者idea插件中使用
-* 默认占位符改成`#{}`,同样也是考虑在`idea插件中不报错，总体效果如下
-![idea-beetlsql](doc/idea-beetlsql.png)
+#3.0.1
+* 修复兼容2版本的PageQuery对象
+* Fetch框架增强，可以自定义Fetch实现，如新增@FetchSql
+* FetchSql注解，用于加载额外对象，比@FetchOne和@FetchMany更灵活
+* ClassAnnotation 一个问题修复
+* Fetch框架只能是用一个Fetch注解的Bug修复
+
 

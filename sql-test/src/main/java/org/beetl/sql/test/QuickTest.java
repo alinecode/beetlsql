@@ -9,6 +9,7 @@ import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.UUIDAutoGen;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -42,11 +43,8 @@ public class QuickTest {
         DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		Set<String> all =  sqlManager.getMetaDataManager().allTable();
 		sqlManager.addIdAutonGen("uuid",new UUIDAutoGen());
-		DeviceData deviceData = new DeviceData();
-		deviceData.setData("abc");
-		sqlManager.insert(deviceData);
-		System.out.println(deviceData.getId());
-
+		List<MyUser> users =sqlManager.all(MyUser.class,1,5l);
+		System.out.println(users.size());
     }
 
 }

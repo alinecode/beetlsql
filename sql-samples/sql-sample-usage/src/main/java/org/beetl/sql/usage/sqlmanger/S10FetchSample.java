@@ -2,16 +2,11 @@ package org.beetl.sql.usage.sqlmanger;
 
 import lombok.Data;
 import org.beetl.sql.annotation.entity.Auto;
-import org.beetl.sql.annotation.entity.JsonMapper;
-import org.beetl.sql.annotation.entity.ResultProvider;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.core.SqlId;
-import org.beetl.sql.core.mapping.join.JsonConfigMapper;
-import org.beetl.sql.fetech.annotation.Fetch;
-import org.beetl.sql.fetech.annotation.FetchMany;
-import org.beetl.sql.fetech.annotation.FetchOne;
+import org.beetl.sql.fetch.annotation.Fetch;
+import org.beetl.sql.fetch.annotation.FetchMany;
+import org.beetl.sql.fetch.annotation.FetchOne;
 import org.beetl.sql.sample.SampleHelper;
 
 import java.util.List;

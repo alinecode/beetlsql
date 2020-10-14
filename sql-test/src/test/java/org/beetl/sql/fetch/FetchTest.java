@@ -3,6 +3,7 @@ package org.beetl.sql.fetch;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.entity.fetch.Customer;
 import org.beetl.sql.entity.fetch.CustomerOrder;
+import org.beetl.sql.entity.fetch.CustomerOrder2;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,6 +42,25 @@ public class FetchTest extends BaseTest {
         Assert.assertNotNull(orders);
         Assert.assertEquals(2,orders.size());
     }
+
+	@Test
+	public void testAllOrder(){
+		List<CustomerOrder> orders = sqlManager.all(CustomerOrder.class);
+		for(CustomerOrder order:orders){
+			Assert.assertNotNull(order.getCustomer());
+		}
+	}
+
+
+	@Test
+	public void testFetchBySql(){
+		List<CustomerOrder2> orders = sqlManager.all(CustomerOrder2.class);
+		for(CustomerOrder2 order:orders){
+			Assert.assertNotNull(order.getCustomer());
+			Assert.assertNotNull(order.getCustomers());
+		}
+	}
+
 
 
 

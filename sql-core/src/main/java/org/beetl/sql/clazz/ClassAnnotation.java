@@ -161,8 +161,6 @@ public class ClassAnnotation {
 				}
 				if (AttributeConvert.class.isAssignableFrom(attrExt)) {
 					extAnnotation.addAttributeConvert(attr,(AttributeConvert) BeanKit.newSingleInstance(attrExt));
-				} else {
-					throw new IllegalStateException("not support "+attrExt);
 				}
 			}
 		}
