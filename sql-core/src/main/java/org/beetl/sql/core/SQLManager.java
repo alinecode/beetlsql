@@ -147,7 +147,8 @@ public class SQLManager implements DataAPI  {
      */
     public SQLResult getSQLResult(SqlId id, Object paras) {
         SQLExecutor script = getScript(id);
-        Map map = script.beforeExecute(null,paras);
+        //false和true不影响
+        Map map = script.beforeExecute(null,paras,false);
         return script.run(map);
     }
 
@@ -165,7 +166,7 @@ public class SQLManager implements DataAPI  {
         ctx.sqlId = source.id;
         ctx.sqlSource = source;
         SQLExecutor script = dbStyle.buildExecutor(ctx);
-        Map map = script.beforeExecute(null,inputParas);
+        Map map = script.beforeExecute(null,inputParas,false);
         SQLResult result = script.run(map);
         return result;
     }
@@ -173,7 +174,7 @@ public class SQLManager implements DataAPI  {
 
 	public SQLResult getSQLResult(SqlId id, Object paras, TemplateContext ctx) {
 		SQLExecutor script = getScript(id);
-		Map parasMap = script.beforeExecute(null,paras);
+		Map parasMap = script.beforeExecute(null,paras,false);
 		return script.run(parasMap, ctx);
 	}
 
@@ -443,7 +444,7 @@ public class SQLManager implements DataAPI  {
                 } else {
                     //使用当前sql转化成统计总数sql,page函数完成此功能
                     SQLExecutor script = getScript(sqlId);
-                    Map pageParas = script.beforeExecute(Long.class,paras);
+                    Map pageParas = script.beforeExecute(Long.class,paras,false);
                     pageParas.put(PAGE, Boolean.TRUE);
                     totalRow = script.selectUnique(Long.class,pageParas);
 
@@ -468,7 +469,7 @@ public class SQLManager implements DataAPI  {
             Object start = request.getStart(this.offsetStartZero); ;
             SQLExecutor sqlExecutor = this.getScript(sqlId);
             SQLExecutor pageSqlEx = getPageSqlScript(clazz,sqlId);
-            Map pageParas = pageSqlEx.beforeExecute(clazz,paras);
+            Map pageParas = pageSqlEx.beforeExecute(clazz,paras,false);
             if(pageParas.containsKey(PAGE)){
                 //如果paras是Map，那么求count的时候，会塞进一个PAGE标志，这里需要删除
                 pageParas.remove(PAGE);
@@ -589,7 +590,7 @@ public class SQLManager implements DataAPI  {
         String sqlTemplate = script.getExecuteContext().sqlSource.template;
         String pageSqlTemplate = dbStyle.getRangeSql().toTemplateRange(target,sqlTemplate);
 
-        Map<String, Object> param = script.beforeExecute(target,t);
+        Map<String, Object> param = script.beforeExecute(target,t,false);
         this.dbStyle.getRangeSql().addTemplateRangeParas(param, start, 2);
         List<T> list = this.execute(pageSqlTemplate, target, param);
         if(list.isEmpty()){
@@ -1232,7 +1233,7 @@ public class SQLManager implements DataAPI  {
         this.dbStyle.getRangeSql().addTemplateRangeParas(pageParas, start, size);
         ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
         SQLExecutor script = dbStyle.buildExecutor(executeContext);
-        Map map = script.beforeExecute(clazz,paras);
+        Map map = script.beforeExecute(clazz,paras,false);
         map.putAll(pageParas);
         return script.select(clazz, map);
     }

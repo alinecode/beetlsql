@@ -1,10 +1,13 @@
 package org.beetl.sql.ext;
 
+import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
+import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.engine.SQLParameter;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /** 用来统计sql执行时间
@@ -13,45 +16,65 @@ import java.util.List;
  */
 public class TimeStatInterceptor implements Interceptor {
 
-	List<String> excludes = null;
+	Filter filter = null;
 	long max;
 
 	public TimeStatInterceptor(long max) {
-		this(Collections.emptyList(), max);
+		this(null, max);
 	}
 
-	public TimeStatInterceptor(List<String> excludes, long max) {
-		this.excludes = excludes;
+	public TimeStatInterceptor(Filter filter, long max) {
+		this.filter = filter;
+		this.max = max;
 	}
 
-	//Override
+	@Override
 	public void before(InterceptorContext ctx) {
-//		if (excludes.contains(ctx.getSqlId()))
-//			return;
-//		ctx.put("stat.time", System.currentTimeMillis());
+		if(!include(ctx.getExecuteContext().sqlId)){
+			return;
+		}
+		ctx.setEnv(new HashMap<>());
+		ctx.getEnv().put("stat.time", System.currentTimeMillis());
 
 	}
 
-	//Override
+	@Override
 	public void after(InterceptorContext ctx) {
-//		if (excludes.contains(ctx.getSqlId()))
-//			return;
-//		long end = System.currentTimeMillis();
-//		long start = (Long) ctx.get("stat.time");
-//		if ((end - start) > max) {
-//			print(ctx.getSqlId(), ctx.getSql(), ctx.getParas(), (end - start));
-//		}
+		if(!include(ctx.getExecuteContext().sqlId)){
+			return;
+		}
+		long end = System.currentTimeMillis();
+		long start = (Long) ctx.get("stat.time");
+		if ((end - start) > max) {
+			ExecuteContext executeContext = ctx.getExecuteContext();
+			print(executeContext.sqlId.toString(), executeContext.sqlResult.jdbcSql, executeContext.sqlResult.jdbcPara, (end - start));
+		}
+
 
 	}
+
+
+
 
 	protected void print(String sqlId, String sql, List<SQLParameter> paras, long time) {
-		System.err.println("sqlId=" + sqlId + " time:" + time);
+		System.out.println("sqlId=" + sqlId + " time:" + time);
 		System.out.println("=====================");
-		System.out.println(sql);
+		System.out.println(DebugInterceptor.formatSql(sql));
 
 	}
 
-	//Override
+	protected boolean include(SqlId id){
+		if(filter==null){
+			return true;
+		}
+		return filter.isAccept(id);
+	}
+
+	public static interface  Filter{
+		public boolean isAccept(SqlId id);
+	}
+
+	@Override
 	public void exception(InterceptorContext ctx, Exception ex) {
 
 	}

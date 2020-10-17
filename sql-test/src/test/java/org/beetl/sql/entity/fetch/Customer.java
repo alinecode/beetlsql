@@ -1,6 +1,7 @@
 package org.beetl.sql.entity.fetch;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
@@ -12,6 +13,7 @@ import java.util.Objects;
 @Data
 @Fetch(level = 2)
 @Table(name="sys_customer")
+@EqualsAndHashCode(of="id")
 public class Customer {
     @AutoID
     Integer id;
@@ -19,18 +21,5 @@ public class Customer {
     @FetchMany("customerId")
     List<CustomerOrder> order;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Customer customer = (Customer) o;
-		return Objects.equals(id, customer.id);
-	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
 }

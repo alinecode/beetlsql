@@ -130,7 +130,7 @@ public interface SQLExecutor {
     SQLResult run(Map<String, Object> parasMap , TemplateContext ctx);
 
 
-    Map beforeExecute(Class target, Object paras);
+    Map beforeExecute(Class target, Object paras,boolean isUpdate);
 
     ExecuteContext getExecuteContext();
 

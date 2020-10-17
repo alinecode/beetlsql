@@ -28,6 +28,9 @@ public class FetchTest extends BaseTest {
         Assert.assertEquals(2,order.size());
         Customer customer = order.get(0).getCustomer();
         Assert.assertEquals(user.getId(),customer.getId());
+
+		Customer notExistCustomer = sqlManager.single(Customer.class,5);
+		Assert.assertNull(notExistCustomer);
     }
 
 

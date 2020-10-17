@@ -52,7 +52,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         InterceptorContext ctx = null;
         try {
             this.addParaIfAssignId(paras);
-            Map map = this.beforeExecute(target,paras);
+            Map map = this.beforeExecute(target,paras,true);
             SQLResult result = this.run(map);
             String sql = result.jdbcSql;
             List<SQLParameter> jdbcPara = result.jdbcPara;
@@ -85,7 +85,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 
     @Override
     public <T> T singleSelect(Class<T> target,Object paras) {
-        Map<String, Object> map = this.beforeExecute(target, paras);
+        Map<String, Object> map = this.beforeExecute(target, paras,false);
         return this.selectSingle(map, target);
     }
 
@@ -96,7 +96,7 @@ public class BaseSQLExecutor implements SQLExecutor {
     @Override
     public <T> T selectUnique(Class<T> target,Object paras) {
 
-        Map map = this.beforeExecute(target, paras);
+        Map map = this.beforeExecute(target, paras,false);
         List<T> result = select(target, map);
         int size = result.size();
         if (size == 1) {
@@ -111,7 +111,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 
     @Override
     public <T> List<T> select(Class<T> clazz, Object paras) {
-        Map map = this.beforeExecute(clazz, paras);
+        Map map = this.beforeExecute(clazz, paras,false);
         return this.select(clazz, map);
     }
 
@@ -190,7 +190,7 @@ public class BaseSQLExecutor implements SQLExecutor {
     @Override
     public <T> List<T> select(Class<T> target,Object paras, Object start, long size) {
         SQLExecutor newSqlEx = executeContext.sqlManager.getPageSqlScript(target,executeContext.sqlId);
-        Map mapParas = this.beforeExecute(target,paras);
+        Map mapParas = this.beforeExecute(target,paras,false);
         this.executeContext.sqlManager.getDbStyle().getRangeSql().addTemplateRangeParas(mapParas, start, size);
         return (List<T>)newSqlEx.select(paras.getClass(),mapParas);
     }
@@ -203,7 +203,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 
     @Override
     public int update(Class target,Object object) {
-        Map paras = this.beforeExecute(target,object);
+        Map paras = this.beforeExecute(target,object,true);
         SQLResult result = run(paras);
         String sql = result.jdbcSql;
         List<SQLParameter> objs = result.jdbcPara;
@@ -254,7 +254,7 @@ public class BaseSQLExecutor implements SQLExecutor {
                     throw new NullPointerException("列表 "+k+"为空") ;
                 }
                 this.addParaIfAssignId(entity);
-                Map<String, Object> paras = this.beforeExecute(target,entity);
+                Map<String, Object> paras = this.beforeExecute(target,entity,true);
                 SQLResult result = run(paras);
                 List<SQLParameter> objs = result.jdbcPara;
                 if (ps == null) {
@@ -321,7 +321,7 @@ public class BaseSQLExecutor implements SQLExecutor {
                 if(list.get(k)==null){
                     throw new NullPointerException("列表 "+k+"参数为空");
                 }
-                Map<String, Object> paras = this.beforeExecute(target,list.get(k));
+                Map<String, Object> paras = this.beforeExecute(target,list.get(k),true);
                 SQLResult result = run(paras);
                 List<SQLParameter> objs = result.jdbcPara;
                 PreparedStatement ps = batchPs.get(result.jdbcSql);
@@ -393,7 +393,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         MetadataManager mm = sqlManager.getMetaDataManager();
         TableDesc table = mm.getTable(sqlManager.getNc().getTableName(clazz));
         ClassDesc classDesc = table.genClassDesc(clazz, sqlManager.getNc());
-        Map<String, Object> paras = this.beforeExecute(clazz,objId);
+        Map<String, Object> paras = this.beforeExecute(clazz,objId,false);
         this.setIdsParas(classDesc, objId, paras);
 
         SQLResult result = run(paras);
@@ -536,7 +536,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         SQLResult sqlResult = new SQLResult(p.sql,p.args);
         executeContext.sqlResult = sqlResult;
         List<T> resultList = null;
-        InterceptorContext ctx = this.callInterceptorAsBefore(this.beforeExecute(clazz, Arrays.asList(p.getArgs())));
+        InterceptorContext ctx = this.callInterceptorAsBefore(this.beforeExecute(clazz, Arrays.asList(p.getArgs()),false));
         Connection conn = null;
         ResultSetHolder rsh = null;
         try {
@@ -573,7 +573,7 @@ public class BaseSQLExecutor implements SQLExecutor {
     public int sqlReadyExecuteUpdate(SQLReady p) {
         SQLResult sqlResult = new SQLResult(p.sql,p.args);
         executeContext.sqlResult = sqlResult;
-        InterceptorContext ctx = this.callInterceptorAsBefore(this.beforeExecute(null, Arrays.asList(p.getArgs())));
+        InterceptorContext ctx = this.callInterceptorAsBefore(this.beforeExecute(null, Arrays.asList(p.getArgs()),true));
         int rs = 0;
         Connection conn = null;
         ResultUpdateHolder rsh = null;
@@ -612,7 +612,7 @@ public class BaseSQLExecutor implements SQLExecutor {
                 this.executeContext.sqlResult = sqlResult;
                 if (i == 0) {
                     conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
-                    ctx = this.callInterceptorAsBefore(this.beforeExecute(null, Arrays.asList(jdbcArgs)));
+                    ctx = this.callInterceptorAsBefore(this.beforeExecute(null, Arrays.asList(jdbcArgs),true));
                     ps = conn.prepareStatement(sqlResult.jdbcSql);
                 }
                 this.setPreparedStatementPara(ps, sqlResult.jdbcPara);
@@ -678,7 +678,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         InterceptorContext ctx = null;
         try {
             this.addParaIfAssignId(paras);
-            Map map = this.beforeExecute(paras.getClass(),paras);
+            Map map = this.beforeExecute(paras.getClass(),paras,true);
             SQLResult result = this.run(map);
             String sql = result.jdbcSql;
             List<SQLParameter> jdbcPara = result.jdbcPara;
@@ -934,10 +934,10 @@ public class BaseSQLExecutor implements SQLExecutor {
      * @return
      */
     @Override
-    public Map beforeExecute(Class target, Object paras) {
+    public Map beforeExecute(Class target, Object paras,boolean isUpdate) {
         executeContext.target = target;
         executeContext.inputParas = paras;
-
+		executeContext.isUpdate = isUpdate;
 
 
         if(paras==null){
@@ -1088,6 +1088,9 @@ public class BaseSQLExecutor implements SQLExecutor {
      * @param result
      */
     protected Object afterBean(Object result) {
+    	if(result==null){
+    		return null;
+		}
         Class target = this.executeContext.target;
         if (target == null) {
             return result;

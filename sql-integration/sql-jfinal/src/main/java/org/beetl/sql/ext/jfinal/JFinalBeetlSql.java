@@ -6,6 +6,10 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.BeetlSQLTemplateEngine;
+import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
+import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 
 import javax.sql.DataSource;
@@ -23,36 +27,37 @@ public class JFinalBeetlSql {
 	static String[] ins = null;
 	static JFinalConnectonSource ds = null;
 
-	public static void init() {
-		HikariSource source = new HikariSource(PropKit.getProp().getProperties());
+	public static void init( Properties properties) {
+		HikariSource source = new HikariSource(properties);
 		source.start();
 		ds = new JFinalConnectonSource(source.getDataSource(), null);
 		initProp();
-		initSQLMananger();
+		initSQLManager();
+
 
 	}
 
 	public static void init(DataSource master, DataSource[] slaves) {
 		ds = new JFinalConnectonSource(master, slaves);
 		initProp();
-		initSQLMananger();
+		initSQLManager();
 
 	}
 
 
 
 	private static void initProp() {
-		nc = PropKit.get("sql.nc", "org.beetl.sql.core.HumpNameConversion");
-		sqlRoot = PropKit.get("sql.root", "/sql");
+		nc = PropKit.get("sql.nc", org.beetl.sql.core.DefaultNameConversion.class.getName());
+		sqlRoot = PropKit.get("sql.root", "sql");
 		String interceptors = PropKit.get("sql.interceptor");
 		ins = null;
 		if (interceptors != null) {
 			ins = interceptors.split(",");
 		}
-		dbStyle = PropKit.get("sql.dbStyle", "org.beetl.sql.core.db.MySqlStyle");
+		dbStyle = PropKit.get("sql.dbStyle", MySqlStyle.class.getName());
 	}
 
-	private static void initSQLMananger() {
+	private static void initSQLManager() {
 
 		DBStyle dbStyleIns = (DBStyle) instance(dbStyle);
 		MarkdownClasspathLoader sqlLoader = new MarkdownClasspathLoader(sqlRoot);
@@ -90,11 +95,7 @@ public class JFinalBeetlSql {
 
 
 	public static SQLManager dao() {
-		if (sqlManager != null)
-			return sqlManager;
-		else {
-			throw new RuntimeException("未初始化，需要调用init方法");
-		}
+		return sqlManager;
 	}
 
 
@@ -105,18 +106,17 @@ class HikariSource {
 	private String user;
 	private String password;
 	private String driverClass = "com.mysql.jdbc.Driver";
-	private int maxPoolSize = 100;
-	private int minPoolSize = 10;
-	private int initialPoolSize = 10;
-	private int maxIdleTime = 20;
-	private int acquireIncrement = 2;
+	private int maxPoolSize = 5;
+	private int minPoolSize = 5;
+	private int initialPoolSize = 5;
+
 
 	private HikariDataSource dataSource;
 
 	public HikariSource(Properties properties) {
 
 		Properties ps = properties;
-		initC3p0Properties(ps.getProperty("jdbcUrl")
+		configProperties(ps.getProperty("jdbcUrl")
 				, ps.getProperty("user")
 				, ps.getProperty("password"),
 				ps.getProperty("driverClass")
@@ -126,7 +126,7 @@ class HikariSource {
 				);
 	}
 
-	private void initC3p0Properties(String jdbcUrl, String user, String password, String driverClass,
+	private void configProperties(String jdbcUrl, String user, String password, String driverClass,
 			Integer maxPoolSize, Integer minPoolSize, Integer initialPoolSize) {
 		this.jdbcUrl = jdbcUrl;
 		this.user = user;
@@ -147,8 +147,7 @@ class HikariSource {
 		ds.setDriverClassName(driverClass);
 		ds.setMaximumPoolSize(maxPoolSize);
 		ds.setMinimumIdle(minPoolSize);
-
-
+		this.dataSource =ds;
 		return true;
 	}
 

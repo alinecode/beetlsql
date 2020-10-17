@@ -1,5 +1,7 @@
 package org.beetl.sql.core.engine;
 
+import java.util.Objects;
+
 /**
  * sql 参数描述，包含值，对应的名称，如
  * <pre>
@@ -55,5 +57,19 @@ public class SQLParameter {
 		this.jdbcType = jdbcType;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		SQLParameter that = (SQLParameter) o;
+		return type == that.type && jdbcType == that.jdbcType && Objects.equals(value, that.value) && Objects
+				.equals(expression, that.expression);
+	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(value, expression, type, jdbcType);
+	}
 }

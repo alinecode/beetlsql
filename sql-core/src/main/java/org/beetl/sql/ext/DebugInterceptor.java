@@ -216,7 +216,7 @@ public class DebugInterceptor implements Interceptor {
 		error(sb.toString());
 	}
 
-	protected String formatSql(String sql) {
+	public static String formatSql(String sql) {
 		return sql.replaceAll("--.*", "").replaceAll("\\n","").replaceAll("\\s+", " ");
 	}
 

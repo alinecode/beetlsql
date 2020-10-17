@@ -4,11 +4,11 @@ package org.beetl.sql.test;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
-import org.beetl.sql.ext.DBInitHelper;
-import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.ext.UUIDAutoGen;
+import org.beetl.sql.ext.*;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,11 +40,20 @@ public class QuickTest {
 
     public static void main(String[] args) throws Exception {
         SQLManager sqlManager = getSQLManager();
+
+		TimeStatInterceptor timeStatInterceptor = new TimeStatInterceptor(10);
+		List set = new ArrayList();
+		set.add("myUser");
+		SimpleCacheInterceptor cacheInterceptor = new SimpleCacheInterceptor(set);
+        sqlManager.setInters(new Interceptor[]{cacheInterceptor});
         DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		Set<String> all =  sqlManager.getMetaDataManager().allTable();
 		sqlManager.addIdAutonGen("uuid",new UUIDAutoGen());
-		List<MyUser> users =sqlManager.all(MyUser.class,1,5l);
-		System.out.println(users.size());
+		MyUser template = new MyUser();
+		MyUser myUser = sqlManager.unique(MyUser.class,1);
+		myUser = sqlManager.unique(MyUser.class,1);
+		System.out.println(myUser.getName());
+
     }
 
 }

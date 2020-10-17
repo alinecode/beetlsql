@@ -3,8 +3,11 @@ package org.beetl.sql.fetch;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.query.LambdaQuery;
+import org.beetl.sql.core.query.Query;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -32,13 +35,18 @@ public class FetchManyAction extends   AbstractFetchAction {
     PropertyDescriptor  idProperty;
     PropertyDescriptor otherTypeFrom;
     public FetchManyAction(PropertyDescriptor idProperty, PropertyDescriptor otherTypeFrom){
-
         this.otherTypeFrom = otherTypeFrom;
-        if(otherTypeFrom==null){
-        	throw new IllegalArgumentException("未正确指定FetchMany的属性 "+owner+" to "+target);
-		}
         this.idProperty = idProperty;
     }
+
+	@Override
+	public void init(Class owner, Class target, Annotation config, PropertyDescriptor originProperty){
+		super.init(owner, target, config, originProperty);
+		if(otherTypeFrom==null){
+			throw new IllegalArgumentException("未正确指定FetchMany的属性 "+owner+" to "+target);
+		}
+
+	}
     public void execute(ExecuteContext ctx,List list){
         try{
             Method idReadMethod = idProperty.getReadMethod();
@@ -62,9 +70,13 @@ public class FetchManyAction extends   AbstractFetchAction {
 				}
 
 
-                Object template = BeanKit.newInstance(target);
-                fromWriteMethod.invoke(template,id);
-                List values = ctx.sqlManager.template(template);
+//                Object template = BeanKit.newInstance(target);
+//				fromWriteMethod.invoke(template,id);
+//				List values = ctx.sqlManager.template(template);
+				Query query = ctx.sqlManager.query(target);
+				String colName = ctx.sqlManager.getNc().getColName(target,otherTypeFrom.getName());
+				List values  = query.andEq(colName,id).select();
+
                 for(int j=0;j<values.size();j++){
                     Object otherObj = values.get(j);
                     Object otherCached = queryFromCache(ctx.sqlManager,otherObj);

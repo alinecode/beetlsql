@@ -13,9 +13,14 @@ import java.util.Date;
 public class UpdateTimeConvert implements AttributeConvert {
     @Override
     public  Object toDb(ExecuteContext ctx,  Class cls,String name, Object dbValue){
-        Date now = new Date();
-        BeanKit.setBeanProperty(dbValue,now,name);
-        return now;
+		if(ctx.isUpdate){
+			Date now = new Date();
+			BeanKit.setBeanProperty(dbValue,now,name);
+			return now;
+		}
+
+		return null;
+
     }
 
 }

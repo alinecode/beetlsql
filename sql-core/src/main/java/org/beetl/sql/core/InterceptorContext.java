@@ -10,7 +10,6 @@ public class InterceptorContext {
 
 	private Map<String, Object> env = null;
 
-
 	private ExecuteContext executeContext;
 
 	public InterceptorContext(ExecuteContext executeContext) {

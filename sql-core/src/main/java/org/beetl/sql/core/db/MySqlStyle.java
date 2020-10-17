@@ -24,6 +24,18 @@ public class MySqlStyle extends AbstractDBStyle {
     public MySqlStyle() {
 
         rangeSql = new OffsetLimitRange(this);
+		this.keyWordHandler = new KeyWordHandler() {
+			@Override
+			public String getTable(String tableName) {
+				return "`" + tableName + "`";
+
+			}
+			@Override
+			public String getCol(String colName) {
+				return "`" + colName + "`";
+			}
+
+		};
     }
 
 
