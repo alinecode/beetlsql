@@ -121,8 +121,13 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 
 	}
 
+	@Override
+	public void removeExternalSource(SqlId id) {
+		this.sqlSourceMap.remove(id);
 
-	
+	}
+
+
 	protected  Long getURLVersion(URL url){
 		if(url==null){
 			return  0l;

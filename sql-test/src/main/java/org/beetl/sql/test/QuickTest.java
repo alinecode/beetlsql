@@ -49,11 +49,17 @@ public class QuickTest {
         DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		Set<String> all =  sqlManager.getMetaDataManager().allTable();
 		sqlManager.addIdAutonGen("uuid",new UUIDAutoGen());
-		MyUser template = new MyUser();
-		MyUser myUser = sqlManager.unique(MyUser.class,1);
-		myUser = sqlManager.unique(MyUser.class,1);
-		System.out.println(myUser.getName());
+		SqlId sqlid = SqlId.of("user","select");
+		int count = sqlManager.intValue(sqlid,null);
+		System.out.println(count);
 
+
+		count = sqlManager.intValue(sqlid,null);
+		System.out.println(count);
+
+
+		count = sqlManager.intValue(sqlid,null);
+		System.out.println(count);
     }
 
 }

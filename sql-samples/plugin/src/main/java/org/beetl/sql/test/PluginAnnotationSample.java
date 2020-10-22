@@ -36,10 +36,10 @@ public class PluginAnnotationSample {
     public static void main(String[] args) throws Exception {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         PluginAnnotationSample plugin = new PluginAnnotationSample(sqlManager);
-		plugin.testMatcherAnnotation();
+//		plugin.testMatcherAnnotation();
         plugin.testJacksonAnnotation();
-        plugin.loadMore();
-        plugin.tenant();
+//        plugin.loadMore();
+//        plugin.tenant();
 
     }
 

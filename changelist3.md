@@ -6,3 +6,11 @@
 * Fetch框架只能是用一个Fetch注解的Bug修复
 
 
+# 3.0.3
+* jfinal 支持
+# 3.0.4
+* 翻页bug修复
+* upsertByTemplate 返回false
+
+
+

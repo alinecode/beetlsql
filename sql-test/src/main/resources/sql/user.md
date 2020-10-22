@@ -1,10 +1,5 @@
-departmentJsonMapping
+select
 ===
 
-```json
-{
-"id":"id","name":"name",
-"users":
-  {"id":"u_id","name":"u_name"}}
-```
+select count(1)+1 from sys_user
   

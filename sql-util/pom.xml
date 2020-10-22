@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.0.3-RELEASE</version>
+        <version>3.0.5-RELEASE</version>
     </parent>
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-util</artifactId>
-    <version>3.0.3-RELEASE</version>
+    <version>3.0.5-RELEASE</version>
 
     
 </project>

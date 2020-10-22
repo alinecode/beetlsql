@@ -78,7 +78,7 @@ public interface BaseMapper<T> {
      */
 
     @AutoMapper(UpsertByTemplateAMI.class)
-    int upsertByTemplate(T entity);
+    boolean upsertByTemplate(T entity);
 
     /**
      * 根据主键删除对象，如果对象是复合主键，传入对象本生即可
