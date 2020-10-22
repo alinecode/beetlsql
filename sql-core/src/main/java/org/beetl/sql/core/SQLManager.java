@@ -1345,7 +1345,7 @@ public class SQLManager implements DataAPI  {
             String countSql = PageKit.getCountSql(sql);
             List<Long> countList = execute(new SQLReady(countSql, p.getArgs()), Long.class);
             count = countList.get(0);
-            if (count==null&&count == 0) {
+            if (count == null || count == 0) {
                 list = new ArrayList<>();
                 return pageRequest.of(list,0l);
             }
