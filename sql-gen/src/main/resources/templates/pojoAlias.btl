@@ -1,5 +1,7 @@
 package ${package};
-${imports}
+<%for(impCls in imports){%>
+import ${impCls};
+<%}%>
 
 /* 
 * ${comment}
@@ -14,38 +16,6 @@ public class ${className} implements java.io.Serializable} {
 	public static final String ALIAS_${attr.colName} = "${attr.colName}";
 	<%}%>
 	
-	<%for(attr in attrs){
-			if(!isEmpty(attr.comment)){%>
-	/*
-	${attr.comment}
-	*/
-	<%		}%>
-	private ${attr.type} ${attr.name} ;
-	<%}%>
-	
-	public ${className}() {
-	}
-	
-	<%for(attr in attrs){
-	if(!isEmpty(attr.comment)){%>
-	/**
-	* ${attr.comment}
-	*@return 
-	*/
-	<%}%>
-	public ${attr.type} get${attr.methodName}(){
-		return  ${attr.name};
-	}
-	<%if(!isEmpty(attr.comment)){%>
-	/**
-	* ${attr.comment}
-	*@param  ${attr.name}
-	*/
-	<%}%>
-	public void set${attr.methodName}(${attr.type} ${attr.name} ){
-		this.${attr.name} = ${attr.name};
-	}
-	
-	<%}%>
+   <%include("pojoAttribute.btl"){}%>
 
 }

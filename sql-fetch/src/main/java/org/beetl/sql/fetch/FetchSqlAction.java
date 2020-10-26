@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @see FetchSql
+ */
 public class FetchSqlAction extends  AbstractFetchAction {
 	@Override
 	public void execute(ExecuteContext ctx, List list) {

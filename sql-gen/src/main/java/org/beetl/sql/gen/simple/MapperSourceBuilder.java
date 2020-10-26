@@ -6,6 +6,7 @@ import org.beetl.sql.gen.BaseProject;
 import org.beetl.sql.gen.SourceConfig;
 
 import java.io.Writer;
+import java.util.Arrays;
 
 /**
  * 表对应实体的Dao代码，参考md.btl
@@ -33,8 +34,8 @@ public class MapperSourceBuilder extends BaseTemplateSourceBuilder {
 		template.binding("entityClass", entity.getName());
 		//得到生成的entity的包
 		String entityPkg = project.getBasePackage("entity");
-		String mapperHead = "import " + entityPkg + ".*;\n" ;
-		template.binding("imports", mapperHead);
+		String mapperHead =  entityPkg + ".*" ;
+		template.binding("imports", Arrays.asList(mapperHead));
 		Writer writer = project.getWriterByName(this.name,entity.getName()+"Dao.java");
 		template.renderTo(writer);
 

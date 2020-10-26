@@ -12,16 +12,23 @@ public class EntitySourceBuilder extends BaseTemplateSourceBuilder {
 	/**
 	 * 指定模板的路径
 	 */
-	public static  String mapperPath = "pojo.btl";
+	public static  String pojoPath = "pojo.btl";
+	public static  String pojoAliasPath = "pojoAlias.btl";
+	private boolean alias = false;
 	public EntitySourceBuilder() {
 		super("entity");
+	}
+
+	public EntitySourceBuilder(boolean alias) {
+		super("entity");
+		this.alias = alias;
 	}
 
 
 	@Override
 	public void generate(BaseProject project,SourceConfig config, Entity entity) {
 
-		Template template = groupTemplate.getTemplate(mapperPath);
+		Template template =alias?groupTemplate.getTemplate(pojoAliasPath): groupTemplate.getTemplate(pojoPath);
 		template.binding("attrs", entity.getList());
 		template.binding("className", entity.getName());
 		template.binding("table", entity.getTableName());

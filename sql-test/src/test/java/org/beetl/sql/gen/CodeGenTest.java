@@ -40,6 +40,7 @@ public class CodeGenTest extends BaseTest {
 	public void buildEntityByTableName(){
 		List<SourceBuilder> sourceBuilder = new ArrayList<>();
 		SourceBuilder entityBuilder = new EntitySourceBuilder();
+		SourceBuilder entityBuilder2 = new EntitySourceBuilder(true);
 		SourceBuilder mapperBuilder = new MapperSourceBuilder();
 		SourceBuilder mdBuilder = new MDSourceBuilder();
 		SourceBuilder docBuilder = new MDDocBuilder();
@@ -51,7 +52,7 @@ public class CodeGenTest extends BaseTest {
 
 		SourceConfig config = new SourceConfig(sqlManager,sourceBuilder);
 
-		DummyProject project = new DummyProject();
+		BaseProject project = new ConsoleOnlyProject();
    		String tableName = "sys_user";
    		config.gen(tableName,project);
 	}
