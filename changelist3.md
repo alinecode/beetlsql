@@ -5,7 +5,6 @@
 * ClassAnnotation 一个问题修复
 * Fetch框架只能是用一个Fetch注解的Bug修复
 
-
 # 3.0.3
 * jfinal 支持
 # 3.0.4
