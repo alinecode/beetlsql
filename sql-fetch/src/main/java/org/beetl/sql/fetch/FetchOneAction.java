@@ -72,7 +72,7 @@ public class FetchOneAction extends   AbstractFetchAction {
 					obj = cached;
                 }else{
 					//缓存自己，也避免未来循环引用
-					addCached(obj,otherTypeId);
+					addCached(ctx.sqlManager,obj);
 				}
 
                 Object toObject = queryFromCache(target,otherTypeId);

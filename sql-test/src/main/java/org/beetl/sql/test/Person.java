@@ -4,15 +4,17 @@ import lombok.Data;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
 import org.beetl.sql.fetch.annotation.FetchMany;
+import org.beetl.sql.fetch.annotation.FetchOne;
 
 import java.util.List;
 
 @Data
-@Table(name="department")
+@Table(name="person")
 @Fetch
-public class Department {
+public class Person {
 	private Integer id;
-	private String name;
-	@FetchMany("departmentId")
-	private List<MyUser> list;
+	private String address;
+	private Integer userId;
+	@FetchOne("userId")
+	private MyUser user;
 }

@@ -49,7 +49,7 @@ public class SimpleMavenProject extends BaseProject {
 			}
 		}else{
 
-			String src = this.root+ File.separator+"src/java/main";
+			String src = this.root+ File.separator+"src/main/java";
 			String pkg = getBasePackage(sourceBuilderName);
 			String subPath = pkg.replace('.',File.separatorChar);
 			String output = src+File.separator+subPath+File.separator+targetName;

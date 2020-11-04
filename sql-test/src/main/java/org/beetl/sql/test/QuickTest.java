@@ -41,25 +41,10 @@ public class QuickTest {
     public static void main(String[] args) throws Exception {
         SQLManager sqlManager = getSQLManager();
 
-		TimeStatInterceptor timeStatInterceptor = new TimeStatInterceptor(10);
-		List set = new ArrayList();
-		set.add("myUser");
-		SimpleCacheInterceptor cacheInterceptor = new SimpleCacheInterceptor(set);
-        sqlManager.setInters(new Interceptor[]{cacheInterceptor});
         DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		Set<String> all =  sqlManager.getMetaDataManager().allTable();
-		sqlManager.addIdAutonGen("uuid",new UUIDAutoGen());
-		SqlId sqlid = SqlId.of("user","select");
-		int count = sqlManager.intValue(sqlid,null);
-		System.out.println(count);
-
-
-		count = sqlManager.intValue(sqlid,null);
-		System.out.println(count);
-
-
-		count = sqlManager.intValue(sqlid,null);
-		System.out.println(count);
+		List<MyUser> myUsers = sqlManager.all(MyUser.class);
+		System.out.println(myUsers.size());
     }
 
 }

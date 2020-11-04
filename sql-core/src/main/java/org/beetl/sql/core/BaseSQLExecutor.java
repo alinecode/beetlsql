@@ -192,7 +192,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         SQLExecutor newSqlEx = executeContext.sqlManager.getPageSqlScript(target,executeContext.sqlId);
         Map mapParas = this.beforeExecute(target,paras,false);
         this.executeContext.sqlManager.getDbStyle().getRangeSql().addTemplateRangeParas(mapParas, start, size);
-        return (List<T>)newSqlEx.select(paras.getClass(),mapParas);
+        return (List<T>)newSqlEx.select(target,mapParas);
     }
 
 
