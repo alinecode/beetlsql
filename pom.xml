@@ -30,6 +30,7 @@
 		<module>sql-integration</module>
 <!--        <module>sql-jmh</module>-->
 <!--		<module>sql-db-support</module>-->
+        <module>sql-sega</module>
     </modules>
 
 	<developers>
