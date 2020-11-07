@@ -71,6 +71,7 @@ public class SQLManager implements DataAPI  {
     //sqlManager名字
     protected String name;
 
+
     protected SQLManager() {
         Class c = null;
         try {

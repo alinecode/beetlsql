@@ -12,7 +12,7 @@ public class SimpleTest  extends BaseTest{
 	}
 
 	@Test
-	public void testUnique(){
+	public void simple(){
 		SegaContext segaContext = SegaContext.segaContextFactory.current();
 		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
 		long count = sqlManager.allCount(User.class);
@@ -29,6 +29,23 @@ public class SimpleTest  extends BaseTest{
 		}
 		long  afterCount = sqlManager.allCount(User.class);
 		Assert.assertEquals(count,afterCount);
+	}
+
+	@Test
+	public void stock(){
+		SegaContext segaContext = SegaContext.segaContextFactory.current();
+		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
+		String id ="1";
+		Stock stock = sqlManager.unique(Stock.class,id);
+		try{
+			userMapper.addStock(id);
+			userMapper.addStock(id);
+			throw new RuntimeException("模拟异常");
+		}catch(RuntimeException ex){
+			segaContext.rollback();
+		}
+		Stock afterStock = sqlManager.unique(Stock.class,id);
+		Assert.assertEquals(stock.getCount(),afterStock.getCount());
 	}
 
 }

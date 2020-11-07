@@ -58,13 +58,13 @@ public class DynamicSqlManagerFactoryBean4Sb
 		ConditionalSQLManager temp  = new ConditionalSQLManager(mainSQLManager,allManager);
 		if(conditional!=null){
 
-				ClassLoader loader = Thread.currentThread().getContextClassLoader();
-				if(loader==null){
-					loader = DynamicSqlManagerFactoryBean4Sb.class.getClassLoader();
-				}
-				ConditionalSQLManager.Conditional conditionalIns = (ConditionalSQLManager.Conditional)
-						ObjectUtil.tryInstance(conditional,loader);
-				temp.setConditional(conditionalIns);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			if(loader==null){
+				loader = DynamicSqlManagerFactoryBean4Sb.class.getClassLoader();
+			}
+			ConditionalSQLManager.Conditional conditionalIns = (ConditionalSQLManager.Conditional)
+					ObjectUtil.tryInstance(conditional,loader);
+			temp.setConditional(conditionalIns);
 
 		}
 

@@ -51,6 +51,9 @@ public class SqlManagerFactoryBean
 	 * 拦截器
 	 */
 	protected Interceptor[] interceptors;
+
+	/**sqlManager名称**/
+	protected  String name ;
 	/**
 	 * BeetlSql核心类
 	 */
@@ -115,6 +118,9 @@ public class SqlManagerFactoryBean
 		builder.setInters(interceptors);
 		builder.setDbStyle(dbStyle);
 		builder.setSqlLoader(this.sqlLoader);
+		if(name!=null){
+			builder.setName(name);
+		}
 		SQLManager tempSQLManager = builder.build();
 
 		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine)tempSQLManager.getSqlTemplateEngine();

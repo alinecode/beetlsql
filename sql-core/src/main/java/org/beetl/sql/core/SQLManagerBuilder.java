@@ -16,6 +16,7 @@ import org.beetl.sql.ext.DebugInterceptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * SQLManager 构建器: 为了简化SQLManager的构建过程
@@ -57,7 +58,8 @@ public class SQLManagerBuilder {
     private String defaultCatalog;
 
     private boolean setSchema = false;
-
+	/** 默认的sqlManager名称**/
+    private String name="default";
     /** 数据库风格 */
     private DBStyle dbStyle;
 
@@ -92,6 +94,9 @@ public class SQLManagerBuilder {
 
 
     private ClassLoaderKit classLoaderKit = null;
+
+
+    public static Map<String,SQLManager> sqlManagerMap = new ConcurrentHashMap<>();
 
     public SQLManagerBuilder(ConnectionSource ds) {
         this.ds = ds;
@@ -138,6 +143,7 @@ public class SQLManagerBuilder {
         mySqlManager.setNc(myNc);
 		mySqlManager.setInters(myInters);
 		mySqlManager.setMetaDataManager(myMetadataManager);
+		mySqlManager.setName(this.name);
 		//TODO 配置文件加载
 		boolean offsetStartZero = Boolean.parseBoolean(myPs.getProperty("OFFSET_START_ZERO","false"));
        	mySqlManager.offsetStartZero = offsetStartZero;
@@ -150,6 +156,12 @@ public class SQLManagerBuilder {
         mySqlManager.setClassLoaderKit(myClassLoaderKit);
 
         dbStyle.config(mySqlManager);
+
+        if(sqlManagerMap.containsKey(this.name)){
+
+        	throw new IllegalStateException("需要为每一个SQLManager指定一个名称");
+		}
+		sqlManagerMap.put(name,mySqlManager);
 
         return mySqlManager;
     }
@@ -262,6 +274,16 @@ public class SQLManagerBuilder {
         this.setSchema = true;
         return this;
     }
+
+	/**
+	 * 为sqlManager指定一个名字，如果未指定，则默认"default"
+	 * @param name
+	 * @return
+	 */
+	public SQLManagerBuilder setName(String name){
+    	this.name = name;
+    	return this;
+	}
 
     private Interceptor[] getInters() {
         if (this.inters == null) {

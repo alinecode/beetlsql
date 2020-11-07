@@ -25,4 +25,14 @@ CREATE TABLE `department` (
 insert into  department values (1,'部门1');
 insert into  department values (2,'部门2');
 
+drop table if exists  `stock` ;
+CREATE TABLE `stock` (
+      `id` varchar(64) NOT NULL  ,
+      `count` int(11) DEFAULT NULL,
+      PRIMARY KEY (`id`)
+) ;
+
+insert into  stock values ('1',29);
+insert into  stock values ('2',5);
+
 

@@ -2,6 +2,7 @@ package org.beetl.sql.sega.common.ami;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.sega.common.SegaContext;
 import org.beetl.sql.sega.common.SegaRollbackTask;
@@ -26,19 +27,29 @@ public class SegaUpdateByIdAMI extends MapperInvoke {
 		}
 
 		SegaContext segaContext = SegaContext.segaContextFactory.current();
-		segaContext.getTransaction().addTask(new SegaRollbackTask() {
-			@Override
-			public boolean call() {
-				int count = sm.updateById(obj);
-				if(count==0){
-					return false;
-				}
-				return true;
-			}
-		});
+		segaContext.getTransaction().addTask(new UpdateSegaRollbackTask(sm.getName(),before) );
 
 		return count;
 
+	}
+
+	public static class UpdateSegaRollbackTask  implements  SegaRollbackTask{
+		String sqlManagerName;
+		Object obj;
+		public UpdateSegaRollbackTask(String sqlManagerName,Object obj){
+			this.sqlManagerName = sqlManagerName;
+			this.obj = obj;
+		}
+
+		@Override
+		public boolean call() {
+			SQLManager sm = getSQLManager(sqlManagerName);
+			int count = sm.updateById(obj);
+			if(count==0){
+				return false;
+			}
+			return true;
+		}
 	}
 
 }

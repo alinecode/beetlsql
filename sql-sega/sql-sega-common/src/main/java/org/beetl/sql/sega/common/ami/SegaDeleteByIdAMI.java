@@ -2,6 +2,7 @@ package org.beetl.sql.sega.common.ami;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.sega.common.SegaContext;
 import org.beetl.sql.sega.common.SegaRollbackTask;
@@ -9,9 +10,8 @@ import org.beetl.sql.sega.common.SegaRollbackTask;
 import java.lang.reflect.Method;
 
 /**
- * create time : 2017-04-27 16:07
  *
- * @author luoyizhu@gmail.com
+ * @author xiandafu
  */
 public class SegaDeleteByIdAMI extends MapperInvoke {
 
@@ -25,18 +25,26 @@ public class SegaDeleteByIdAMI extends MapperInvoke {
         if(count==0){
         	return 0;
 		}
-
 		SegaContext segaContext = SegaContext.segaContextFactory.current();
-		segaContext.getTransaction().addTask(new SegaRollbackTask() {
-			@Override
-			public boolean call() {
-				sm.insert(before);
-				return true;
-			}
-		});
-
+		segaContext.getTransaction().addTask(new DeleteSegaRollbackTask(sm.getName(),before));
 		return count;
 
     }
+
+    public static class DeleteSegaRollbackTask  implements  SegaRollbackTask{
+		String sqlManagerName;
+		Object obj;
+    	public DeleteSegaRollbackTask(String sqlManagerName,Object obj){
+			this.sqlManagerName = sqlManagerName;
+			this.obj = obj;
+		}
+
+		@Override
+		public boolean call() {
+			SQLManager sqlManager = SQLManagerBuilder.sqlManagerMap.get(sqlManagerName);
+			sqlManager.insert(obj);
+			return true;
+		}
+	}
 
 }
