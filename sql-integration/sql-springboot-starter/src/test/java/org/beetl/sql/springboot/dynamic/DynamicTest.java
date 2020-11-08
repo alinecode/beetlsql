@@ -11,25 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DynamicApplication.class)
-//@Transactional 多数据源事务spring没有内置实现
 public class DynamicTest {
-    @Autowired
-    @Qualifier("sqlManager")
-    SQLManager sqlManager;
-    @Autowired
-    DynamicUserInfoMapper mapper;
+
+	@Autowired
+	DynamicService dynamicService;
+
     @Test
     public void test(){
-        mapper.deleteById(19999);
-        sqlManager.single(UserInfoInDs1.class,1);
-        sqlManager.single(UserInfoInDs2.class,1);
-        mapper.single(1);
-        UserInfoInDs2 userInfoInDs2 = mapper.queryById(1);
-        System.out.println(userInfoInDs2.getId());
+		dynamicService.test();
     }
+
+
 
     /*以下代码初始化数据库用*/
 	@Autowired
@@ -37,7 +33,7 @@ public class DynamicTest {
 	SQLManager sqlManager1;
 
 	@Autowired
-	@Qualifier("sqlManager1")
+	@Qualifier("sqlManager2")
 	SQLManager sqlManager2;
 
 

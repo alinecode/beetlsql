@@ -13,17 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SimpleApplication.class)
-@Transactional
 public class SimpleTest {
-    @Autowired
-    SQLManager sqlManager;
+	@Autowired
+	SimpleService service;
 
-    @Autowired
-    SimpleUserInfoMapper userInfoMapper;
     @Test
     public void test(){
-        sqlManager.single(UserInfo.class,1);
-        userInfoMapper.single(1);
-		userInfoMapper.select();
+		service.test();
     }
 }

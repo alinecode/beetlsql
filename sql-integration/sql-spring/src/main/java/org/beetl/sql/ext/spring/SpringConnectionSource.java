@@ -56,7 +56,8 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 	@Override
 	protected Connection doGetConnection(DataSource ds) {
 		try {
-			return DataSourceUtils.getConnection(ds);
+			Connection connection =  DataSourceUtils.getConnection(ds);
+			return connection;
 		} catch (CannotGetJdbcConnectionException ex) {
 			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_CONNECTION, ex);
 		}

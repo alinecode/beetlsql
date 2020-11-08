@@ -24,31 +24,33 @@ public class DataSourceConfig {
 
     @Bean(name = "ds1")
     public DataSource ds1(Environment env) {
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(env.getProperty("spring.datasource.url"));
-        ds.setUsername(env.getProperty("spring.datasource.username"));
-        ds.setPassword(env.getProperty("spring.datasource.password"));
-        ds.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        return ds;
+		return newDataSource(env,"spring.datasource.url");
     }
 
     @Bean(name = "ds2")
     public DataSource ds2(Environment env) {
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(env.getProperty("spring.datasource.url"));
-        ds.setUsername(env.getProperty("spring.datasource.username"));
-        ds.setPassword(env.getProperty("spring.datasource.password"));
-        ds.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        return ds;
+       return newDataSource(env,"spring.datasource.url2");
     }
 
+    protected  DataSource newDataSource(Environment env,String urlKey){
+		HikariDataSource ds = new HikariDataSource();
+		ds.setJdbcUrl(env.getProperty(urlKey));
+		ds.setUsername(env.getProperty("spring.datasource.username"));
+		ds.setPassword(env.getProperty("spring.datasource.password"));
+		ds.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+		return ds;
+	}
 
-//
-//    @Bean
-//    @Primary
-//    public PlatformTransactionManager mysqlTransactionManager(@Qualifier("masterDs") DataSource dataSource)     {
-//             return new DataSourceTransactionManager(dataSource);
-//    }
 
+
+    @Bean
+    public PlatformTransactionManager ds1TransactionManager(@Qualifier("ds1") DataSource dataSource)     {
+             return new DataSourceTransactionManager(dataSource);
+    }
+
+	@Bean
+	public PlatformTransactionManager ds2TransactionManager(@Qualifier("ds2") DataSource dataSource)     {
+		return new DataSourceTransactionManager(dataSource);
+	}
 
 }
