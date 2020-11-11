@@ -1,59 +1,35 @@
 package org.beetl.sql.sega.common;
 
-import lombok.Data;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
-public class SegaTransaction {
-	List<SegaTaskTrace> tasks = new ArrayList<>();
-	boolean success = true;
-	int count = 0;
-	public void addTask(SegaRollbackTask task){
-		tasks.add(new SegaTaskTrace(task) );
-	}
-	public boolean rollback(){
-		List<SegaRollbackTask> failureTask = new ArrayList<>();
-		for(SegaTaskTrace trace: tasks){
-			trace.call();
-			if(!trace.success){
-				success = false;
-			}
-		}
+public interface SegaTransaction {
+	/**
+	 * 事务唯一id
+	 * @return
+	 */
+	String getSegaTransactionId();
 
-		if(!success){
-			//记录执行次数
-			count++;
-		}
-		return success;
-	}
+	/**
+	 * 添加回滚操作
+	 * @param task
+	 */
+	void addTask(SegaRollbackTask task);
 
-	public void failureTask(List<SegaRollbackTask> failureTask,SegaRollbackTask task){
-		success = false;
-		failureTask.add(task);
-	}
+	/**
+	 * 执行回滚
+	 * @return
+	 */
+	boolean rollback();
 
-	public void transactionFailure(){
+	/**
+	 * 所有回滚操作是否成功
+	 * @return
+	 */
+	boolean isSuccess();
 
-	}
-	static class SegaTaskTrace{
-		SegaRollbackTask rollbackTask  = null;
-		boolean success = false;
-		public SegaTaskTrace(SegaRollbackTask rollbackTask){
-			this.rollbackTask = rollbackTask;
-		}
-		public void call(){
-			try{
-				if(success){
-					//已经执行过了
-					return ;
-				}
-				success = rollbackTask.call();
-			}catch(Exception ex){
-				success = false;
-			}
-		}
-	}
-
+	/**
+	 * 回滚失败任务
+	 * @return
+	 */
+	List<SegaRollbackTask> failureTaskAfterRollBack();
 }

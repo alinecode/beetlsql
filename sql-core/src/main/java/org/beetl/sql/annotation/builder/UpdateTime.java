@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 //执行类
 @Builder(UpdateTimeConvert.class)
 public @interface UpdateTime {
-
+	FillStrategy value() default FillStrategy.INSERT_UPDATE ;
 }
 
 

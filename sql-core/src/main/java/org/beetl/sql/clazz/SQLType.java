@@ -14,4 +14,5 @@ public enum SQLType {
     public boolean isUpdate(){
         return this==INSERT||this==UPDATE||this==DELETE;
     }
+
 }

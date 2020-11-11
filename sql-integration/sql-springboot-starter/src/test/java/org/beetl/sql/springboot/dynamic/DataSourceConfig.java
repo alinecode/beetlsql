@@ -42,15 +42,4 @@ public class DataSourceConfig {
 	}
 
 
-
-    @Bean
-    public PlatformTransactionManager ds1TransactionManager(@Qualifier("ds1") DataSource dataSource)     {
-             return new DataSourceTransactionManager(dataSource);
-    }
-
-	@Bean
-	public PlatformTransactionManager ds2TransactionManager(@Qualifier("ds2") DataSource dataSource)     {
-		return new DataSourceTransactionManager(dataSource);
-	}
-
 }

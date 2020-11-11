@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * SQLManager 构建器: 为了简化SQLManager的构建过程
@@ -95,7 +96,7 @@ public class SQLManagerBuilder {
 
     private ClassLoaderKit classLoaderKit = null;
 
-
+	SQLManagerNameGenerator sqlManagerNameGenerator = new SQLManagerNameGenerator();
     public static Map<String,SQLManager> sqlManagerMap = new ConcurrentHashMap<>();
 
     public SQLManagerBuilder(ConnectionSource ds) {
@@ -143,6 +144,9 @@ public class SQLManagerBuilder {
         mySqlManager.setNc(myNc);
 		mySqlManager.setInters(myInters);
 		mySqlManager.setMetaDataManager(myMetadataManager);
+		if(this.name==null){
+			this.name= sqlManagerNameGenerator.nextName();
+		}
 		mySqlManager.setName(this.name);
 		//TODO 配置文件加载
 		boolean offsetStartZero = Boolean.parseBoolean(myPs.getProperty("OFFSET_START_ZERO","false"));
@@ -423,7 +427,26 @@ public class SQLManagerBuilder {
         return classLoaderKit;
     }
 
+
+
     public void setClassLoaderKit(ClassLoaderKit classLoaderKit) {
         this.classLoaderKit = classLoaderKit;
     }
+
+	/**
+	 * 为每个sqlManager生成一个默认名字,系统最好指定每个sql的名字
+	 */
+	static class SQLManagerNameGenerator{
+    	AtomicInteger count = null;
+    	public String nextName(){
+    		if(count==null){
+				count = new AtomicInteger(1);
+				return "default";
+			}
+
+    		return "default"+count.addAndGet(1);
+		}
+	}
 }
+
+

@@ -23,7 +23,13 @@ public class BeetlSqlConfig {
 
     public void init() {
         SQLManagerConfig defaultConfig = SQLManagerConfig.initDefault(env);
-        String[] allSqlManangerNames = env.getProperty("beetlsql").split(",");
+		String[] allSqlManangerNames = null;
+		String oldSqlManagerConfig = env.getProperty("beetlsql");
+		if(!StringKit.isBlank(oldSqlManagerConfig)){
+			allSqlManangerNames = oldSqlManagerConfig.split(",");
+		}else{
+			allSqlManangerNames = env.getProperty("beetlsql.sqlManagers").split(",");
+		}
         for(String s:allSqlManangerNames){
             SQLManagerConfig sqlManagerConfig = new SQLManagerConfig(env,s,defaultConfig);
             configs.put(s,sqlManagerConfig);

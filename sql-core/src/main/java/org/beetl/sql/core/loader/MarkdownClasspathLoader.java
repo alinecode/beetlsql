@@ -189,7 +189,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         BufferedReader bf = null;
         try {
        
-            bf = new BufferedReader(new InputStreamReader(ins,charset));
+            bf = buildBufferedReader(ins,charset);
             //解析markdown,可以解析xml，需要实现SQLFileParser
             SQLFileParser parser =this.getParser(modelName,bf);
             SQLSource source = null;
@@ -287,6 +287,22 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 		MarkdownParser parser = new MarkdownParser(modelName,br);
 		return parser;
 	}
+
+	/**
+	 * 子类覆盖，可以用于加密文件的解密
+	 * @param inputStream
+	 * @param charset
+	 * @return
+	 */
+	protected BufferedReader buildBufferedReader(InputStream inputStream,String charset)
+	 {
+		 try {
+			 BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream,charset));
+			 return bf;
+		 } catch (UnsupportedEncodingException e) {
+			 throw new IllegalArgumentException("错误的charset "+charset);
+		 }
+	 }
 
 	public String getSqlRoot() {
 		return sqlRoot;

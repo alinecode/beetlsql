@@ -8,6 +8,7 @@ import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.annotation.builder.UpdateTime;
 import org.beetl.sql.clazz.kit.BeanKit;
 
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
 import  com.fasterxml.jackson.databind.JavaType;
 import java.beans.PropertyDescriptor;
@@ -17,10 +18,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
- * 一个持久化前更新字段，使用当前日期格式
- * @see UpdateTime
+ * 转化字段为json到数据库，以及从数据库读取json字段（字符串类型）到pojo的属性上
+ * @see Jackson
  * @author xiandafu
  */
 public class JacksonConvert implements AttributeConvert {
@@ -45,9 +47,12 @@ public class JacksonConvert implements AttributeConvert {
     public  Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
         try{
             String json =  rs.getString(index);
+            if(StringKit.isEmpty(json)){
+            	return null;
+			}
             PropertyDescriptor ps  = BeanKit.getPropertyDescriptor(cls,name);
             Class retType = ps.getPropertyType();
-            //作为例子，这里考虑List的泛型
+            //作为例子，这里考虑List和Map的简单泛型
             if(List.class.isAssignableFrom(retType)){
                 Type type = ps.getReadMethod().getGenericReturnType();
                 Class listType = BeanKit.getCollectionType(type);
@@ -56,7 +61,16 @@ public class JacksonConvert implements AttributeConvert {
                 }else{
                     return objectMapper.readValue(json,getCollectionType(List.class,listType));
                 }
-            }else{
+            } if(Map.class.isAssignableFrom(retType)){
+				Type type = ps.getReadMethod().getGenericReturnType();
+				Class[] mapType = BeanKit.getMapParameterTypeClass(type);
+				if(mapType==null){
+					return objectMapper.readValue(json,List.class);
+				}else{
+					return objectMapper.readValue(json,getCollectionType(List.class,mapType));
+				}
+			}
+            else{
                 return objectMapper.readValue(json,retType);
             }
         }catch(JsonParseException ex){

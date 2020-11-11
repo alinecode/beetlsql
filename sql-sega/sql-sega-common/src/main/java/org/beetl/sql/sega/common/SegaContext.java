@@ -15,13 +15,10 @@ public class SegaContext {
 			return local.get();
 		}
 
-		@Override
-		public void clear() {
-			local.remove();
-		}
+
 	};
 
-	SegaTransaction transaction = new SegaTransaction();
+	LocalSegaTransaction transaction = new LocalSegaTransaction();
 	/**
 	 * 回滚所有操作
 	 * 子类可以继承，以多次尝试回滚或者发送到队列（比如数据不可用），延迟回滚
@@ -33,7 +30,7 @@ public class SegaContext {
 		}
 
 	}
-	public SegaTransaction getTransaction(){
+	public LocalSegaTransaction getTransaction(){
 		return transaction;
 	}
 }

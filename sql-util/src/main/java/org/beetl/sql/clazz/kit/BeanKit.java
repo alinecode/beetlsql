@@ -1,6 +1,7 @@
 package org.beetl.sql.clazz.kit;
 
 
+import lombok.Data;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.fun.MethodInvoker;
 import org.beetl.core.fun.ObjectUtil;
@@ -176,6 +177,8 @@ public class BeanKit {
                 return NumberKit.convertNumberToTargetClass((Number) result, requiredType);
             }
         }
+
+
 
         //TODO,增加一个扩展点，支持其他类型，比如JDK时间，Blob，Clob等
 
@@ -449,6 +452,14 @@ public class BeanKit {
         return paraType;
     }
 
+	public static Class[] getMapType(Type type){
+		if(!(type instanceof ParameterizedType) ){
+			return null;
+		}
+		Class[]  paraType =  getMapParameterTypeClass(type);
+		return paraType;
+	}
+
     public static Class getParameterTypeClass(Type t) {
         if (t instanceof WildcardType || t instanceof TypeVariable) {
             // 丢失类型
@@ -473,6 +484,42 @@ public class BeanKit {
 
     }
 
+	public static Class[] getMapParameterTypeClass(Type t) {
+		if (t instanceof WildcardType || t instanceof TypeVariable) {
+			// 丢失类型
+			return null;
+		} else if (t instanceof ParameterizedType) {
+			Type[] types =  ((ParameterizedType) t).getActualTypeArguments();
+			if(types.length==0){
+				return null;
+			}
+			Class[] classTypes=new Class[2];
+			Type type = types[0];
+			if(type  instanceof ParameterizedType){
+				classTypes[0] = (Class)((ParameterizedType) type).getRawType();
+			}else if(type instanceof  Class){
+				classTypes[0] = (Class)types[0];
+			}else{
+				throw new UnsupportedOperationException(type.toString());
+			}
+
+			Type type1 = types[1];
+			if(type1  instanceof ParameterizedType){
+				classTypes[1] = (Class)((ParameterizedType) type1).getRawType();
+			}else if(type1 instanceof  Class){
+				classTypes[1] = (Class)types[1];
+			}else{
+				throw new UnsupportedOperationException(type.toString());
+			}
+
+			return classTypes;
+
+		} else {
+			throw new UnsupportedOperationException(t.toString());
+		}
+
+	}
+
 
     public static Class getMapperEntity(Class mapperInterface){
         if (mapperInterface.isInterface()) {
@@ -491,8 +538,20 @@ public class BeanKit {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws  Exception {
+		Class c = User.class;
+		Method m = c.getMethod("getMaps",new Class[0]);
+		Type type = m.getGenericReturnType();
+		Class[] tt = BeanKit.getMapParameterTypeClass(type);
+		System.out.println(tt);
 
     }
+
+    @Data
+    public static class User{
+		Map<String,Integer> maps = null;
+	}
+
+
 
 }

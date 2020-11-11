@@ -5,6 +5,7 @@ import org.beetl.sql.core.SQLManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -16,10 +17,10 @@ public class DynamicService {
 
 	@Autowired
 	DynamicUserInfoMapper mapper;
-	//混合多数据源，不支持事务
-	//@Transactional(transactionManager = "ds1TransactionManager")
+	//混合多数据源，不支持事务,如果想具备事务功能，可以参考sega模块
+	@Transactional(propagation = Propagation.NEVER)
 	public void test(){
-//		mapper.deleteById(19999);
+		mapper.deleteById(19999);
 		sqlManager.single(UserInfoInDs1.class,1);
 		sqlManager.single(UserInfoInDs2.class,1);
 		mapper.single(1);

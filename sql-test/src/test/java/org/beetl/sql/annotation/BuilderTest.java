@@ -2,20 +2,13 @@ package org.beetl.sql.annotation;
 
 import lombok.Data;
 import org.beetl.sql.BaseTest;
-import org.beetl.sql.annotation.builder.AttributeConvert;
-import org.beetl.sql.annotation.builder.BeanConvert;
-import org.beetl.sql.annotation.builder.Builder;
-import org.beetl.sql.annotation.builder.TargetAdditional;
+import org.beetl.sql.annotation.builder.*;
 import org.beetl.sql.annotation.entity.Auto;
-import org.beetl.sql.annotation.entity.JsonMapper;
-import org.beetl.sql.annotation.entity.ResultProvider;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.core.mapping.join.AutoJsonMapper;
-import org.beetl.sql.core.mapping.join.JsonConfigMapper;
 import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.builder.MapperExtBuilder;
@@ -29,6 +22,7 @@ import java.lang.reflect.Type;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,6 +96,19 @@ public class BuilderTest extends BaseTest {
         Assert.assertTrue(list.size()==1);
     }
 
+	@Test
+	public void testUpdateTime() {
+		UserEntity4 userEntity4 = new UserEntity4();
+		userEntity4.setName("lijzh78");
+
+		sqlManager.insert(userEntity4);
+		UserEntity4 db = sqlManager.unique(UserEntity4.class,userEntity4.getId());
+		Assert.assertNotNull(db.getCreateDate());
+
+	}
+
+
+
 
 
 
@@ -138,13 +145,23 @@ public class BuilderTest extends BaseTest {
 
     @Table(name="sys_user")
     @Data
-    @UpdateTime
+    @MyUpdateTime
     public static class UserEntity3{
         @Auto
         Long id ;
         String name;
         Date createDate;
     }
+
+	@Table(name="sys_user")
+	@Data
+	public static class UserEntity4{
+		@Auto
+		Long id ;
+		String name;
+		@UpdateTime
+		LocalDateTime createDate;
+	}
 
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -157,7 +174,7 @@ public class BuilderTest extends BaseTest {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(value = {ElementType.TYPE})
     @Builder(UpdateContext.class)
-    public @interface UpdateTime {
+    public @interface MyUpdateTime {
 
     }
 
