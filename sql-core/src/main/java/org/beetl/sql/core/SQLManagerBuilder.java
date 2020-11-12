@@ -60,7 +60,7 @@ public class SQLManagerBuilder {
 
     private boolean setSchema = false;
 	/** 默认的sqlManager名称**/
-    private String name="default";
+    private String name=null;
     /** 数据库风格 */
     private DBStyle dbStyle;
 
@@ -160,11 +160,10 @@ public class SQLManagerBuilder {
         mySqlManager.setClassLoaderKit(myClassLoaderKit);
 
         dbStyle.config(mySqlManager);
-
-        if(sqlManagerMap.containsKey(this.name)){
-
-        	throw new IllegalStateException("需要为每一个SQLManager指定一个名称");
-		}
+//
+//        if(sqlManagerMap.containsKey(this.name)){
+//        	throw new IllegalStateException("需要为每一个SQLManager指定一个名称");
+//		}
 		sqlManagerMap.put(name,mySqlManager);
 
         return mySqlManager;

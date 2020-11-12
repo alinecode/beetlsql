@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql-all</artifactId>
-	<version>3.0.9-RELEASE</version>
+	<version>3.0.10-RELEASE</version>
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
@@ -22,6 +22,7 @@
 		<module>sql-util</module>
 		<module>sql-fetch</module>
         <module>sql-gen</module>
+        <module>sql-sega</module>
         <module>sql-test</module>
         <module>sql-samples</module>
 		<!-- 打包到一起 -->
@@ -30,7 +31,7 @@
 		<module>sql-integration</module>
 <!--        <module>sql-jmh</module>-->
 <!--		<module>sql-db-support</module>-->
-        <module>sql-sega</module>
+
     </modules>
 
 	<developers>
@@ -83,7 +84,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-            <version>3.2.2.RELEASE</version>
+            <version>3.2.4.RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 

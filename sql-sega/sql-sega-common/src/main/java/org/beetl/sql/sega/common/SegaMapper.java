@@ -8,6 +8,10 @@ import org.beetl.sql.sega.common.ami.SegaUpdateByIdAMI;
 
 import java.util.List;
 
+/**
+ * 类似BaseMapper，但提供了回滚方法逻辑
+ * @param <T>
+ */
 public interface SegaMapper<T> {
 	/** sega 改造的接口**/
 	@AutoMapper(SegaInsertAMI.class)

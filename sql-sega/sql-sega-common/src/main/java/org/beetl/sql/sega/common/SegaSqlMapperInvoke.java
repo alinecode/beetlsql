@@ -28,7 +28,7 @@ public class SegaSqlMapperInvoke extends MapperInvoke {
 		if(ret==0){
 			return ret;
 		}
-		SegaContext segaContext = SegaContext.segaContextFactory.current();
+		SegaContext segaContext = LocalSegaContext.segaContextFactory.current();
 		segaContext.getTransaction().addTask(new UpdateSqlSegaRollbackTask(sm.getName(),rollbackSql,updateSql,args) );
 		return ret;
 	}

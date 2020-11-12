@@ -1,6 +1,9 @@
 package org.beetlsql.sql.sega.test;
 
+import org.beetl.sql.sega.common.LocalSegaContext;
+import org.beetl.sql.sega.common.LocalSegaContextFactory;
 import org.beetl.sql.sega.common.SegaContext;
+import org.beetl.sql.sega.common.SegaContextFactory;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,6 +12,8 @@ public class SimpleTest  extends BaseTest{
 	@BeforeClass
 	public static void init(){
 		initTable(testSqlFile);
+		//使用本地
+		SegaContext.segaContextFactory = new LocalSegaContextFactory();
 	}
 
 	@Test
@@ -33,7 +38,7 @@ public class SimpleTest  extends BaseTest{
 
 	@Test
 	public void stock(){
-		SegaContext segaContext = SegaContext.segaContextFactory.current();
+		SegaContext segaContext = LocalSegaContext.segaContextFactory.current();
 		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
 		String id ="1";
 		Stock stock = sqlManager.unique(Stock.class,id);
