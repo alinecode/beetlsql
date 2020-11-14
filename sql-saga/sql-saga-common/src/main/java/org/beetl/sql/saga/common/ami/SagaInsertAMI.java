@@ -1,5 +1,6 @@
 package org.beetl.sql.saga.common.ami;
 
+import lombok.Data;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
@@ -15,7 +16,7 @@ public class SagaInsertAMI extends MapperInvoke {
 	@Override
 	public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
 		int ret = sm.insert(args[0]);
-		SagaContext sagaContext = LocalSagaContext.sagaContextFactory.current();
+		SagaContext sagaContext = SagaContext.sagaContextFactory.current();
 		Class target = args[0].getClass();
 		String idAttr = sm.getClassDesc(target).getIdAttr();
 		Object key = BeanKit.getBeanProperty(args[0],idAttr);
@@ -23,6 +24,7 @@ public class SagaInsertAMI extends MapperInvoke {
 		return ret;
 	}
 
+	@Data
 	public static class InsertSagaRollbackTask implements SagaRollbackTask {
 		String sqlManagerName;
 		Class entityClass;

@@ -1667,6 +1667,13 @@ public class SQLManager implements DataAPI  {
         return this.name;
     }
 
+    public void register(){
+    	if(this.getName()==null){
+    		throw new IllegalStateException("必须设定一个名字 ");
+		}
+    	SQLManagerBuilder.sqlManagerMap.put(this.getName(),this);
+	}
+
     public void addSqlManagerInGroup(String name,SQLManager sqlManager){
         this.group.put(name,sqlManager);
     }

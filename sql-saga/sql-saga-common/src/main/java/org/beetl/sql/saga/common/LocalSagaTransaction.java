@@ -44,19 +44,13 @@ public class LocalSagaTransaction implements SagaTransaction {
 	}
 
 
-	@Override
-	public List<SagaRollbackTask> failureTaskAfterRollBack(){
-		List<SagaRollbackTask> failure = tasks.stream().filter(segaTaskTrace -> !segaTaskTrace.isSuccess())
-				.map(segaTaskTrace -> segaTaskTrace.rollbackTask).collect(Collectors.toList());
-		return failure;
-	}
-
-
-
 	@Data
-	static class SegaTaskTrace{
+	public static class SegaTaskTrace implements java.io.Serializable{
 		SagaRollbackTask rollbackTask  = null;
 		boolean success = false;
+		public SegaTaskTrace(){
+			//序列化用
+		}
 		public SegaTaskTrace(SagaRollbackTask rollbackTask){
 			this.rollbackTask = rollbackTask;
 		}
@@ -68,6 +62,7 @@ public class LocalSagaTransaction implements SagaTransaction {
 				}
 				success = rollbackTask.call();
 			}catch(Exception ex){
+				ex.printStackTrace();
 				success = false;
 			}
 		}

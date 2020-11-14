@@ -32,24 +32,17 @@ public class KafkaSagaContext extends SagaContext {
 			return ;
 		}
 		if(transaction.getTotalTry()<config.getMaxTry()){
-			try {
-				config.getTemplate().send(config.getRetrySegaTopic(),config.getObjectMapper().writeValueAsString(transaction));
-			} catch (JsonProcessingException e) {
-				throw new IllegalArgumentException("不能序列化 transaction "+e.getMessage());
-			}
+			Object data = config.getRollbackCoder().encode(transaction);
+			config.getTemplate().send(config.getRetrySegaTopic(), data);
 		}else{
-			//丢入
-			try {
-				config.getTemplate().send(config.getFailSegaTopic(),config.getObjectMapper().writeValueAsString(transaction));
-			} catch (JsonProcessingException e) {
-				//不可能发生
-				throw new IllegalArgumentException("不能序列化 transaction "+e.getMessage());
-			}
+			//丢入失败队列
+			Object data = config.getRollbackCoder().encode(transaction);
+			config.getTemplate().send(config.getFailSegaTopic(), data);
 		}
 	}
 
 	@Override
 	public SagaTransaction getTransaction() {
-		return null;
+		return transaction;
 	}
 }

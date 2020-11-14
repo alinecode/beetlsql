@@ -28,7 +28,7 @@ public class SagaSqlMapperInvoke extends MapperInvoke {
 		if(ret==0){
 			return ret;
 		}
-		SagaContext sagaContext = LocalSagaContext.sagaContextFactory.current();
+		SagaContext sagaContext = SagaContext.sagaContextFactory.current();
 		sagaContext.getTransaction().addTask(new UpdateSqlSagaRollbackTask(sm.getName(),rollbackSql,updateSql,args) );
 		return ret;
 	}

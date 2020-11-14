@@ -36,7 +36,7 @@ public class SimpleTest  extends BaseTest{
 	}
 
 	@Test
-	public void stock(){
+	public boolean stock(){
 		SagaContext sagaContext = LocalSagaContext.sagaContextFactory.current();
 		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
 		String id ="1";
@@ -44,12 +44,15 @@ public class SimpleTest  extends BaseTest{
 		try{
 			userMapper.addStock(id);
 			userMapper.addStock(id);
-			throw new RuntimeException("模拟异常");
+			if(true)throw new RuntimeException("模拟异常");
 		}catch(RuntimeException ex){
 			sagaContext.rollback();
+			//操作失败，如果是微服务，需要告诉调用方，失败了，以便让调用发回滚自己的事务
+			return false;
 		}
 		Stock afterStock = sqlManager.unique(Stock.class,id);
 		Assert.assertEquals(stock.getCount(),afterStock.getCount());
+		return true;
 	}
 
 }

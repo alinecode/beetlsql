@@ -26,11 +26,11 @@ import java.util.List;
  */
 public class DebugInterceptor implements Interceptor {
 
-	static String mapperName = "org.beetl.sql.mapper.MapperJavaProxy";
-	static String sqlManager = SQLManager.class.getName();
-	static String queryClassName = Query.class.getName();
-	static String lambdaQueryName = LambdaQuery.class.getName();
-	static String defaultQueryMethod = QueryExecuteI.class.getName();
+	protected static String mapperName = "org.beetl.sql.mapper.MapperJavaProxy";
+	protected static String sqlManager = SQLManager.class.getName();
+	protected static String queryClassName = Query.class.getName();
+	protected static String lambdaQueryName = LambdaQuery.class.getName();
+	protected static String defaultQueryMethod = QueryExecuteI.class.getName();
 	// debug 输入优先输出的类，而不是SQLManager或者是BaseMapper
 	String preferredShowClass;
 
@@ -46,7 +46,8 @@ public class DebugInterceptor implements Interceptor {
 
 	//Override
 	public void before(InterceptorContext ctx) {
-		SqlId sqlId = ctx.getExecuteContext().sqlId;
+		ExecuteContext executeContext = ctx.getExecuteContext();
+		SqlId sqlId = executeContext.sqlId;
 		String jdbcSql = ctx.getExecuteContext().sqlResult.jdbcSql;
 		if (this.isDebugEnable(sqlId)) {
 			ctx.put("debug.time", System.currentTimeMillis());
@@ -56,7 +57,7 @@ public class DebugInterceptor implements Interceptor {
 		}
 		StringBuilder sb = new StringBuilder();
 		String lineSeparator = System.getProperty("line.separator", "\n");
-		sb.append("┏━━━━━ Debug [").append(formatSqlId(sqlId)).append("] ━━━").append(lineSeparator)
+		sb.append("┏━━━━━ Debug [").append(formatSqlId(executeContext)).append("] ━━━").append(lineSeparator)
 				.append("┣ SQL：\t " + formatSql(jdbcSql) + lineSeparator)
 				.append("┣ 参数：\t " + formatParas(ctx.getExecuteContext().sqlResult.jdbcPara)).append(lineSeparator);
 		RuntimeException ex = new RuntimeException();
@@ -71,7 +72,8 @@ public class DebugInterceptor implements Interceptor {
 		ctx.put("logs", sb);
 	}
 
-	protected String formatSqlId(SqlId id){
+	protected String formatSqlId(ExecuteContext executeContext){
+		SqlId id = executeContext.sqlId;
 		String str = id.toString();
 		String sql = formatSql(str);
 		if(sql.length()>50){
@@ -118,7 +120,8 @@ public class DebugInterceptor implements Interceptor {
 
 	//Override
 	public void after(InterceptorContext ctx) {
-		SqlId sqlId = ctx.getExecuteContext().sqlId;
+		ExecuteContext executeContext = ctx.getExecuteContext();
+		SqlId sqlId = executeContext.sqlId;
 		if (this.isSimple(sqlId)) {
 			this.simpleOut(ctx);
 			return;
@@ -151,7 +154,7 @@ public class DebugInterceptor implements Interceptor {
 				sb.append("┣ 结果：\t [").append(result).append("]").append(lineSeparator);
 			}
 		}
-		sb.append("┗━━━━━ Debug [").append(formatSqlId(sqlId)).append("] ━━━")
+		sb.append("┗━━━━━ Debug [").append(formatSqlId(executeContext)).append("] ━━━")
 				.append(lineSeparator);
 		println(sb.toString());
 	}

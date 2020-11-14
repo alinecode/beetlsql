@@ -11,12 +11,12 @@
     </parent>
 
     <groupId>com.ibeetl</groupId>
-    <artifactId>sql-sega</artifactId>
+    <artifactId>sql-saga</artifactId>
     <version>3.0.10-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
-        <module>sql-sega-common</module>
-        <module>sql-sega-springkafka</module>
+        <module>sql-saga-common</module>
+        <module>sql-saga-springkafka</module>
     </modules>
 
 </project>

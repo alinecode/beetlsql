@@ -70,6 +70,8 @@ public class ConditionalSQLManager extends  SQLManager {
        this.sqlManagerMap = sqlManagerMap;
     }
 
+
+
     /**
      * 子类或者Conditional覆盖，决定使用哪个sqlManager
      * @param pojo
@@ -977,7 +979,10 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param inters
      */
     public void setInters(Interceptor[] inters) {
-        throw new UnsupportedOperationException();
+		sqlManagerMap.values().forEach(sqlManager -> {
+			sqlManager.setInters(inters);
+		});
+		this.defaultSQLManager.setInters(inters);;
     }
 
     /**

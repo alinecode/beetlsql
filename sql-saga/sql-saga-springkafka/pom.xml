@@ -6,12 +6,12 @@
 
     <parent>
         <groupId>com.ibeetl</groupId>
-        <artifactId>sql-sega</artifactId>
+        <artifactId>sql-saga</artifactId>
         <version>3.0.10-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
-    <artifactId>sql-sega-spring</artifactId>
+    <artifactId>sql-saga-springkafa</artifactId>
     <version>3.0.10-RELEASE</version>
 
     <dependencies>
@@ -41,13 +41,13 @@
         </dependency>
         <dependency>
             <groupId>com.ibeetl</groupId>
-            <artifactId>sql-spring</artifactId>
+            <artifactId>sql-springboot-starter</artifactId>
             <version>3.0.10-RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibeetl</groupId>
-            <artifactId>sql-sega-common</artifactId>
+            <artifactId>sql-saga-common</artifactId>
             <version>3.0.10-RELEASE</version>
             <scope>compile</scope>
         </dependency>

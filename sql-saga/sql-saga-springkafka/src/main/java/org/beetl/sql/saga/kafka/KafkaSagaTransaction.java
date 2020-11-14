@@ -8,9 +8,6 @@ public class KafkaSagaTransaction extends LocalSagaTransaction {
 	@Override
 	public boolean rollback(){
 		boolean success = super.rollback();
-		if(!success){
-			totalTry++;
-		}
 		return success;
 	}
 

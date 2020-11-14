@@ -334,7 +334,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
             Map<String, AssignID> map = new HashMap<String, AssignID>();
             for (String idAttr : classDesc.getIdAttrs()) {
                 AssignID assignId = BeanKit.getAnnotation(classDesc.getTargetClass(), idAttr, AssignID.class);
-                if (assignId != null && assignId.value().length() != 0) {
+                if (assignId != null) {
                     map.put(idAttr, assignId);
                 }
             }

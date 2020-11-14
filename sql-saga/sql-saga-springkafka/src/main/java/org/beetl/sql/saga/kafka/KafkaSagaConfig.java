@@ -2,7 +2,9 @@ package org.beetl.sql.saga.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.beetl.sql.saga.common.SagaContext;
 import org.beetl.sql.saga.common.SagaContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -20,15 +23,16 @@ import java.util.List;
  */
 @Configuration
 @Data
+@Slf4j
 public class KafkaSagaConfig {
 	// 重试次数
-	@Value("{beetlsql.sega.maxTry:5}")
+	@Value("${beetlsql.saga.maxTry:2}")
 	protected int maxTry;
 	//重试队列
-	@Value("{beetlsql.sega.kafka-topic:retrySegaTopic}")
+	@Value("${beetlsql.saga.kafka-topic:retrySagaTopic}")
 	protected String retrySegaTopic;
 	//重试也失败后的发送的队列，通常人工处理
-	@Value("{beetlsql.sega.kafka-topic:failSegaTopic}")
+	@Value("${beetlsql.saga.kafka-topic:failSagaTopic}")
 	protected String failSegaTopic;
 
 	@Autowired
@@ -37,29 +41,32 @@ public class KafkaSagaConfig {
 	@Autowired
 	protected KafkaTemplate template;
 
-	@Bean
-	public SagaContextFactory segaContextFactory(){
-		return new KafkaSagaContextFactory();
+	@Autowired
+	protected  RollbackCoder rollbackCoder;
+
+	@PostConstruct
+	public  void initSaga() {
+		//必须设置事务实现方式
+		SagaContext.sagaContextFactory = new KafkaSagaContextFactory(this);
+
 	}
 
 	/**
 	 * 重试回滚
-	 * @param records
+	 * @param record
 	 * @throws Exception
 	 */
-	@KafkaListener( topics = "#{'${beetlsql.sega.kafka-topic:retrySegaTopic}'}")
-	public void segaTransaction(List<ConsumerRecord<?, String>> records, Acknowledgment acknowledgment) throws Exception {
-		if(records.size()!=1){
-			throw new IllegalStateException("期望一次消费一条");
-		}
-		for(ConsumerRecord<?, String> record: records){
-			String json = record.value();
-			KafkaSagaTransaction kafkaSegaTransaction = objectMapper.readValue(json, KafkaSagaTransaction.class);
+	@KafkaListener( topics = "#{'${beetlsql.saga.kafka-topic:retrySagaTopic}'}")
+	public void segaTransaction(ConsumerRecord<?, byte[]> record) throws Exception {
+		try{
+			byte[] obj = record.value();
+			KafkaSagaTransaction kafkaSegaTransaction = (KafkaSagaTransaction)rollbackCoder.decode(obj);
 			KafkaSagaContext kafkaSegaContext = new KafkaSagaContext(kafkaSegaTransaction,this);
 			kafkaSegaContext.rollback();
-
+		}catch(Exception ex){
+			log.info(ex.getMessage());
 		}
-		acknowledgment.acknowledge();
+
 	}
 
 

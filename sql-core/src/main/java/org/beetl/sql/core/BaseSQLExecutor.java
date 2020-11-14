@@ -890,6 +890,9 @@ public class BaseSQLExecutor implements SQLExecutor {
                 }
                 AssignID assignId = entry.getValue();
                 String algorithm = assignId.value();
+                if(StringKit.isEmpty(algorithm)){
+					throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND,"使用@Assign未指定算法，需要显示的赋值给 "+attrName);
+				}
                 String param = assignId.param();
                 Object o = executeContext.sqlManager.getAssignIdByIdAutonGen(algorithm, param, tableSource.getTableDesc().getName());
                 BeanKit.setBeanProperty(obj, o, attrName);

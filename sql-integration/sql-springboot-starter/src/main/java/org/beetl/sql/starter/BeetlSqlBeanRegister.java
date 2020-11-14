@@ -100,6 +100,7 @@ public class BeetlSqlBeanRegister
 		bdb.addPropertyValue("all", managersList);
 		bdb.addPropertyValue("defaultSQLManager",managersList.get(0));
 		bdb.addPropertyValue("conditional", config.dynamicCondition);
+		bdb.addPropertyValue("name", name);
 		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 
 

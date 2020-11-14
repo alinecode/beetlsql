@@ -1,5 +1,6 @@
 package org.beetl.sql.saga.common.ami;
 
+import lombok.Data;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.MapperInvoke;
@@ -26,13 +27,13 @@ public class SagaUpdateByIdAMI extends MapperInvoke {
 			return count;
 		}
 
-		SagaContext sagaContext = LocalSagaContext.sagaContextFactory.current();
+		SagaContext sagaContext = SagaContext.sagaContextFactory.current();
 		sagaContext.getTransaction().addTask(new UpdateSagaRollbackTask(sm.getName(),before) );
 
 		return count;
 
 	}
-
+	@Data
 	public static class UpdateSagaRollbackTask implements SagaRollbackTask {
 		String sqlManagerName;
 		Object obj;

@@ -22,7 +22,7 @@
 		<module>sql-util</module>
 		<module>sql-fetch</module>
         <module>sql-gen</module>
-        <module>sql-sega</module>
+        <module>sql-saga</module>
         <module>sql-test</module>
         <module>sql-samples</module>
 		<!-- 打包到一起 -->

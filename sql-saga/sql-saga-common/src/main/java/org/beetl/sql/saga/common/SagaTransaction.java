@@ -30,9 +30,5 @@ public interface SagaTransaction extends  java.io.Serializable {
 	 */
 	boolean isSuccess();
 
-	/**
-	 * 回滚失败任务
-	 * @return
-	 */
-	List<SagaRollbackTask> failureTaskAfterRollBack();
+
 }

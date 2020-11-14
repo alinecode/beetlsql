@@ -38,6 +38,7 @@ public class DynamicSqlManagerFactoryBean4Sb
 	protected String defaultSQLManager = null;
 	protected List<String> all = new ArrayList<>();
 	protected ApplicationContext applicationContext;
+	protected String name;
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
@@ -67,7 +68,8 @@ public class DynamicSqlManagerFactoryBean4Sb
 			temp.setConditional(conditionalIns);
 
 		}
-
+		temp.setName(name);
+		temp.register();
 		conditionalSQLManager = temp;
 		return conditionalSQLManager;
 	}
@@ -117,5 +119,13 @@ public class DynamicSqlManagerFactoryBean4Sb
 
 	public void setAll(List<String> all) {
 		this.all = all;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
