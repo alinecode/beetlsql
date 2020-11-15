@@ -11,4 +11,7 @@ public abstract class SagaContext {
 	};
 	public abstract void rollback();
 	public abstract SagaTransaction getTransaction();
+
+
+
 }

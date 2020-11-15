@@ -36,13 +36,8 @@ public class KafkaSagaConfig {
 	protected String failSegaTopic;
 
 	@Autowired
-	protected ObjectMapper objectMapper ;
-
-	@Autowired
 	protected KafkaTemplate template;
 
-	@Autowired
-	protected  RollbackCoder rollbackCoder;
 
 	@PostConstruct
 	public  void initSaga() {
@@ -57,10 +52,9 @@ public class KafkaSagaConfig {
 	 * @throws Exception
 	 */
 	@KafkaListener( topics = "#{'${beetlsql.saga.kafka-topic:retrySagaTopic}'}")
-	public void segaTransaction(ConsumerRecord<?, byte[]> record) throws Exception {
+	public void segaTransaction(ConsumerRecord<?, KafkaSagaTransaction> record) throws Exception {
 		try{
-			byte[] obj = record.value();
-			KafkaSagaTransaction kafkaSegaTransaction = (KafkaSagaTransaction)rollbackCoder.decode(obj);
+			KafkaSagaTransaction kafkaSegaTransaction = record.value();
 			KafkaSagaContext kafkaSegaContext = new KafkaSagaContext(kafkaSegaTransaction,this);
 			kafkaSegaContext.rollback();
 		}catch(Exception ex){

@@ -1,6 +1,7 @@
 package org.beetl.sql.saga.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.beetl.sql.saga.common.LocalSagaTransaction;
 import org.beetl.sql.saga.common.SagaContext;
 import org.beetl.sql.saga.common.SagaTransaction;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,7 +18,7 @@ public class KafkaSagaContext extends SagaContext {
 	String topic;
 	KafkaSagaConfig config;
 	public KafkaSagaContext(KafkaSagaConfig config){
-		transaction = new KafkaSagaTransaction();
+		newTransaction();
 		this.config = config;
 	}
 
@@ -27,22 +28,29 @@ public class KafkaSagaContext extends SagaContext {
 	}
 	@Override
 	public void rollback() {
-		boolean success = transaction.rollback();
-		if(success){
-			return ;
+		try{
+			boolean success = transaction.rollback();
+			if(success){
+				return ;
+			}
+			if(transaction.getTotalTry()<config.getMaxTry()){
+				config.getTemplate().send(config.getRetrySegaTopic(), transaction);
+			}else{
+				//丢入失败队列
+				config.getTemplate().send(config.getFailSegaTopic(), transaction);
+			}
+		}finally {
+			newTransaction();
 		}
-		if(transaction.getTotalTry()<config.getMaxTry()){
-			Object data = config.getRollbackCoder().encode(transaction);
-			config.getTemplate().send(config.getRetrySegaTopic(), data);
-		}else{
-			//丢入失败队列
-			Object data = config.getRollbackCoder().encode(transaction);
-			config.getTemplate().send(config.getFailSegaTopic(), data);
-		}
+
 	}
 
 	@Override
 	public SagaTransaction getTransaction() {
 		return transaction;
 	}
+	protected  void newTransaction(){
+		transaction = new KafkaSagaTransaction();
+	}
+
 }

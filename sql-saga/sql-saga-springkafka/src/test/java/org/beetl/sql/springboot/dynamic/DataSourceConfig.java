@@ -4,14 +4,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import org.beetl.sql.DebugWithNameInterceptor;
 import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.ext.DBInitHelper;
-import org.beetl.sql.saga.common.LocalSagaContextFactory;
-import org.beetl.sql.saga.common.SagaContext;
-import org.beetl.sql.saga.common.SagaContextFactory;
-import org.beetl.sql.saga.kafka.DefaultRollbackCode;
+import org.beetl.sql.saga.kafka.ByteSerializer;
 import org.beetl.sql.saga.kafka.KafkaSagaConfig;
-import org.beetl.sql.saga.kafka.RollbackCoder;
 import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -21,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 @Configuration
@@ -55,10 +48,7 @@ public class DataSourceConfig {
 		return (sqlMangerName, manager) -> manager.setInters(new Interceptor[]{new DebugWithNameInterceptor()});
 	}
 
-	@Bean
-	public RollbackCoder rollbackCoder(){
-		return new DefaultRollbackCode();
-	}
+
 
 
 

@@ -1,6 +1,8 @@
 package org.beetl.sql.saga.common;
 
 import lombok.Data;
+import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,6 @@ public class LocalSagaTransaction implements SagaTransaction {
 	}
 	@Override
 	public boolean rollback(){
-		List<SagaRollbackTask> failureTask = new ArrayList<>();
 		for(SegaTaskTrace trace: tasks){
 			trace.call();
 			if(!trace.success){
@@ -45,6 +46,7 @@ public class LocalSagaTransaction implements SagaTransaction {
 
 
 	@Data
+	@Slf4j
 	public static class SegaTaskTrace implements java.io.Serializable{
 		SagaRollbackTask rollbackTask  = null;
 		boolean success = false;
@@ -60,9 +62,11 @@ public class LocalSagaTransaction implements SagaTransaction {
 					//已经执行过了
 					return ;
 				}
+
 				success = rollbackTask.call();
+				log.info("execute rollback task "+rollbackTask.getClass()+":"+ rollbackTask+" success");
 			}catch(Exception ex){
-				ex.printStackTrace();
+				log.info("execute rollback task "+rollbackTask.getClass()+":"+ rollbackTask+" failure "+ex.getMessage());
 				success = false;
 			}
 		}

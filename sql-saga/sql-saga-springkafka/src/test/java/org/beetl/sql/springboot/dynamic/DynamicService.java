@@ -2,6 +2,7 @@ package org.beetl.sql.springboot.dynamic;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
+import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.saga.common.SagaContext;
 import org.beetl.sql.saga.common.SagaContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,10 @@ public class DynamicService {
 	UserInfoDs2Mapper userInfoDs2Mapper;
 
 
-
-	//混合多数据源，不支持事务,如果想具备事务功能，可以参考sega模块
+	/**
+	 * 模拟失败时候回滚
+	 * @return
+	 */
 	@Transactional(propagation = Propagation.NEVER)
 	public boolean normal(){
 		SagaContext sagaContext = SagaContext.sagaContextFactory.current();
@@ -49,7 +52,10 @@ public class DynamicService {
 		return true;
 	}
 
-
+	/**
+	 * 模拟数据库挡掉后，回滚失败，放入失败队列
+	 * @return
+	 */
 	@Transactional(propagation = Propagation.NEVER)
 	public boolean dbDown(){
 		SagaContext sagaContext = SagaContext.sagaContextFactory.current();
@@ -89,5 +95,10 @@ public class DynamicService {
 	protected  void rmTable(){
 		sqlManager1.executeUpdate(new SQLReady("drop table sys_user"));
 		sqlManager2.executeUpdate(new SQLReady("drop table sys_user"));
+	}
+
+	protected  void recreateTable(){
+		DBInitHelper.executeSqlScript(sqlManager1,"db/schema.sql");
+		DBInitHelper.executeSqlScript(sqlManager2,"db/schema.sql");
 	}
 }

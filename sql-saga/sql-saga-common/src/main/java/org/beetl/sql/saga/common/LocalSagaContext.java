@@ -3,7 +3,7 @@ package org.beetl.sql.saga.common;
 public class LocalSagaContext extends SagaContext {
 	SagaTransaction transaction = null;
 	public LocalSagaContext(){
-		transaction = new LocalSagaTransaction();
+		newTransaction();
 	}
 
 	/**
@@ -12,9 +12,14 @@ public class LocalSagaContext extends SagaContext {
 	 */
 	@Override
 	public void rollback(){
-		boolean success = transaction.rollback();
-		if(!success){
-			throw new SagaRollbackException("回滚失败");
+		try{
+			boolean success = transaction.rollback();
+			if(!success){
+				throw new SagaRollbackException("回滚失败");
+			}
+
+		}finally {
+			newTransaction();
 		}
 
 	}
@@ -22,5 +27,9 @@ public class LocalSagaContext extends SagaContext {
 	@Override
 	public SagaTransaction getTransaction(){
 		return transaction;
+	}
+
+	protected  void newTransaction(){
+		transaction = new LocalSagaTransaction();
 	}
 }
