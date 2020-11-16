@@ -30,6 +30,10 @@ public class SagaInsertAMI extends MapperInvoke {
 		Class entityClass;
 		Object pkId;
 
+		public InsertSagaRollbackTask(){
+			//反序列化用
+		}
+
 		public InsertSagaRollbackTask(String sqlManagerName,Class entityClass,Object pkId){
 			this.sqlManagerName = sqlManagerName;
 			this.entityClass = entityClass;

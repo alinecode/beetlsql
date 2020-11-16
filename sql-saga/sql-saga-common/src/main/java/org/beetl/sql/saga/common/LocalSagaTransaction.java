@@ -21,7 +21,7 @@ public class LocalSagaTransaction implements SagaTransaction {
 	}
 
 	@Override
-	public String getSegaTransactionId() {
+	public String transactionId() {
 		return id;
 	}
 
@@ -48,8 +48,8 @@ public class LocalSagaTransaction implements SagaTransaction {
 	@Data
 	@Slf4j
 	public static class SegaTaskTrace implements java.io.Serializable{
-		SagaRollbackTask rollbackTask  = null;
-		boolean success = false;
+		protected  SagaRollbackTask rollbackTask  = null;
+		protected boolean success = false;
 		public SegaTaskTrace(){
 			//序列化用
 		}

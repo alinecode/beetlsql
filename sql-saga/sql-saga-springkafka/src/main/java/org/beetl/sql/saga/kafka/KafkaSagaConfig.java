@@ -26,13 +26,13 @@ import java.util.List;
 @Slf4j
 public class KafkaSagaConfig {
 	// 重试次数
-	@Value("${beetlsql.saga.maxTry:2}")
+	@Value("${beetlsql-saga.max-try:2}")
 	protected int maxTry;
 	//重试队列
-	@Value("${beetlsql.saga.kafka-topic:retrySagaTopic}")
+	@Value("${beetlsql-saga.kafka.retry-topic:retrySagaTopic}")
 	protected String retrySegaTopic;
 	//重试也失败后的发送的队列，通常人工处理
-	@Value("${beetlsql.saga.kafka-topic:failSagaTopic}")
+	@Value("${beetlsql-saga.kafka.fail-topic:failSagaTopic}")
 	protected String failSegaTopic;
 
 	@Autowired
@@ -43,23 +43,6 @@ public class KafkaSagaConfig {
 	public  void initSaga() {
 		//必须设置事务实现方式
 		SagaContext.sagaContextFactory = new KafkaSagaContextFactory(this);
-
-	}
-
-	/**
-	 * 重试回滚
-	 * @param record
-	 * @throws Exception
-	 */
-	@KafkaListener( topics = "#{'${beetlsql.saga.kafka-topic:retrySagaTopic}'}")
-	public void segaTransaction(ConsumerRecord<?, KafkaSagaTransaction> record) throws Exception {
-		try{
-			KafkaSagaTransaction kafkaSegaTransaction = record.value();
-			KafkaSagaContext kafkaSegaContext = new KafkaSagaContext(kafkaSegaTransaction,this);
-			kafkaSegaContext.rollback();
-		}catch(Exception ex){
-			log.info(ex.getMessage());
-		}
 
 	}
 

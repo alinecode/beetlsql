@@ -1,5 +1,9 @@
 package org.beetl.sql.saga.common;
 
+import lombok.Data;
+
+import java.util.concurrent.Callable;
+
 public class LocalSagaContext extends SagaContext {
 	SagaTransaction transaction = null;
 	public LocalSagaContext(){
@@ -32,4 +36,39 @@ public class LocalSagaContext extends SagaContext {
 	protected  void newTransaction(){
 		transaction = new LocalSagaTransaction();
 	}
+
+
+	/**
+	 * 支持除了jdbc访问数据库外，也可以把服务调用放到这里
+	 * 统一处理回滚
+	 */
+	@Override
+	public <T> T callService(Callable<T> callable, Runnable runnable) throws Exception{
+		try{
+			return callable.call();
+		}catch(Exception ex){
+			this.getTransaction().addTask(new FunctionCallback(runnable));
+			throw ex;
+		}
+	}
+
+	@Data
+	public static class FunctionCallback implements  SagaRollbackTask{
+
+		Runnable function;
+		public FunctionCallback(Runnable function){
+			this.function = function;
+		}
+
+		@Override
+		public boolean call() {
+			try{
+				function.run();
+				return true;
+			}catch (Exception ex){
+				return false;
+			}
+		}
+	}
+
 }

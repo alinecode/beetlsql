@@ -82,6 +82,9 @@ public class DynamicService {
 
 
 
+
+
+
 	@Autowired
 	@Qualifier("sqlManager1")
 	SQLManager sqlManager1;
@@ -97,7 +100,7 @@ public class DynamicService {
 		sqlManager2.executeUpdate(new SQLReady("drop table sys_user"));
 	}
 
-	protected  void recreateTable(){
+	public  void recreateTable(){
 		DBInitHelper.executeSqlScript(sqlManager1,"db/schema.sql");
 		DBInitHelper.executeSqlScript(sqlManager2,"db/schema.sql");
 	}

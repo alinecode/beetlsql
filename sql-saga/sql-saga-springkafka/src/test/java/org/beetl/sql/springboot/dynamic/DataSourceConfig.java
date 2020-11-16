@@ -52,11 +52,4 @@ public class DataSourceConfig {
 
 
 
-//	@PostConstruct
-//	public  void initSaga() {
-//    	//必须设置事务实现方式
-//		SagaContext.sagaContextFactory = new LocalSagaContextFactory();
-//
-//	}
-
 }

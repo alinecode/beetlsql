@@ -1,6 +1,6 @@
-如果多数据源没有分布式事务管理，sega模块可以实现分布式事务的功能，能统一提交和回滚，回滚调用根据SegaMapper的API自动生成
+如果多数据源没有分布式事务管理，saga模块可以实现分布式事务的功能，能统一提交和回滚，回滚调用根据SegaMapper的API自动生成
 
-**注意**，sega模式并不能像XA那样实现数据隔离，实现数据隔离必须数据库提供，sega模块按照sega原理来实现回滚，保证数据一致
+**注意**，sega模式并不能像XA那样实现数据隔离，实现数据隔离必须数据库提供，saga模块按照saga原理来实现回滚，保证数据一致
 
 参考代码`SimpleTest`
 ```
@@ -20,12 +20,12 @@ try{
 
 ```
 
-UserMapper需要继承SegaMapper，而不是BaseMapper
+UserMapper需要继承SagaMapper，而不是BaseMapper
 ```
 
-public interface UserMapper extends SegaMapper<User> {
+public interface UserMapper extends SagaMapper<User> {
 }
 
 ```
 
-如果目标框架，比如spring 出现回滚，则自动使用sega模式进行回滚调用，不需要程序调用segaContext.rollback()
+如果目标框架，必须禁止事务管理，否则saga不生效

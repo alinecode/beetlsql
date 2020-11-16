@@ -10,7 +10,7 @@ public interface SagaTransaction extends  java.io.Serializable {
 	 * 事务唯一id
 	 * @return
 	 */
-	String getSegaTransactionId();
+	String transactionId();
 
 	/**
 	 * 添加回滚操作

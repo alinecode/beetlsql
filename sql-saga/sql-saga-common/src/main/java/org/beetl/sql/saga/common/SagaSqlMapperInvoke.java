@@ -40,6 +40,10 @@ public class SagaSqlMapperInvoke extends MapperInvoke {
 		String updateSql;
 		Object[] args;
 
+		public UpdateSqlSagaRollbackTask(){
+			//反序列化用
+		}
+
 		public UpdateSqlSagaRollbackTask(String sqlManagerName,String rollbackSql,
 				String updateSql,
 				Object[] args){

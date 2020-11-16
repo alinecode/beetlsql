@@ -35,6 +35,10 @@ public class SagaDeleteByIdAMI extends MapperInvoke {
     public static class DeleteSagaRollbackTask implements SagaRollbackTask {
 		String sqlManagerName;
 		Object obj;
+
+		public DeleteSagaRollbackTask(){
+			//反序列化用
+		}
     	public DeleteSagaRollbackTask(String sqlManagerName,Object obj){
 			this.sqlManagerName = sqlManagerName;
 			this.obj = obj;

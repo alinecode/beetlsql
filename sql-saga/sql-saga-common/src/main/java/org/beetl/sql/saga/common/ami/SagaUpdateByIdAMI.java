@@ -37,6 +37,9 @@ public class SagaUpdateByIdAMI extends MapperInvoke {
 	public static class UpdateSagaRollbackTask implements SagaRollbackTask {
 		String sqlManagerName;
 		Object obj;
+		public UpdateSagaRollbackTask(){
+			//反序列化用
+		}
 		public UpdateSagaRollbackTask(String sqlManagerName,Object obj){
 			this.sqlManagerName = sqlManagerName;
 			this.obj = obj;
