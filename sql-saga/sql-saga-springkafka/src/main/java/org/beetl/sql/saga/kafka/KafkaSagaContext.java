@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.beetl.sql.saga.common.*;
 import org.beetl.sql.saga.common.ami.SagaDeleteByIdAMI;
 import org.beetl.sql.saga.common.ami.SagaInsertAMI;
@@ -76,6 +77,7 @@ public class KafkaSagaContext extends SagaContext {
 	}
 
 	@Data
+	@Slf4j
 	public static class FunctionCallback implements SagaRollbackTask {
 		@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
 		Runnable function;
@@ -88,6 +90,7 @@ public class KafkaSagaContext extends SagaContext {
 				function.run();
 				return true;
 			}catch (Exception ex){
+				log.info(ex.getMessage(),ex);
 				return false;
 			}
 		}

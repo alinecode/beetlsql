@@ -18,7 +18,6 @@ import org.springframework.core.env.Environment;
 import javax.sql.DataSource;
 
 @Configuration
-@ImportAutoConfiguration(KafkaSagaConfig.class)
 public class DataSourceConfig {
     @Autowired
     ApplicationContext ctx;

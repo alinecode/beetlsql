@@ -9,7 +9,8 @@ import java.io.ObjectInputStream;
 import java.util.Map;
 
 /**
- * 反序列化
+ * 反序列化，采用二进制
+ * @author xiandafu
  */
 public class ByteDeserializer implements Deserializer {
 

@@ -1,10 +1,10 @@
 package org.beetlsql.sql.saga.test;
 
 import org.beetl.sql.saga.common.SagaMapper;
-import org.beetl.sql.saga.common.annotation.SegaUpdateSql;
+import org.beetl.sql.saga.common.annotation.SagaUpdateSql;
 
 public interface UserMapper extends SagaMapper<User> {
-	@SegaUpdateSql(
+	@SagaUpdateSql(
 		sql="update stock set count=count+1 where id=?",
 		rollback = "update stock set count=count-1 where id=? and count!=0"
 	)

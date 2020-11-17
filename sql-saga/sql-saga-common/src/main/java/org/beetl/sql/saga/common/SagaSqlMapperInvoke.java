@@ -5,13 +5,13 @@ import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;
-import org.beetl.sql.saga.common.annotation.SegaUpdateSql;
+import org.beetl.sql.saga.common.annotation.SagaUpdateSql;
 
 import java.lang.reflect.Method;
 
 /**
  *
- * @see SegaUpdateSql
+ * @see SagaUpdateSql
  */
 public class SagaSqlMapperInvoke extends MapperInvoke {
 	String  updateSql = null;

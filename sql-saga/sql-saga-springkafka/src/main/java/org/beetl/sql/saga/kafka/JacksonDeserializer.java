@@ -5,6 +5,7 @@ import org.beetl.sql.saga.common.SagaTransaction;
 
 import java.io.IOException;
 
+
 public class JacksonDeserializer implements Deserializer<KafkaSagaTransaction> {
 	@Override
 	public KafkaSagaTransaction deserialize(String topic, byte[] data) {

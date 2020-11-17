@@ -3,7 +3,6 @@ package org.beetl.sql.saga.kafka;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.beetl.sql.saga.common.LocalSagaTransaction;
 import org.beetl.sql.saga.common.SagaRollbackTask;
 import org.beetl.sql.saga.common.SagaTransaction;
 
@@ -17,7 +16,7 @@ import java.util.UUID;
 @Data
 public class KafkaSagaTransaction implements SagaTransaction {
 	@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
-	protected List<KafkaSegaTaskTrace> tasks = new ArrayList<>();
+	protected List<KafkaSagaTaskTrace> tasks = new ArrayList<>();
 	protected String id;
 	protected boolean success = true;
 	protected  int totalTry = 0;
@@ -32,11 +31,11 @@ public class KafkaSagaTransaction implements SagaTransaction {
 
 	@Override
 	public void addTask(SagaRollbackTask task){
-		tasks.add(new KafkaSegaTaskTrace(task) );
+		tasks.add(new KafkaSagaTaskTrace(task) );
 	}
 	@Override
 	public boolean rollback(){
-		for(KafkaSegaTaskTrace trace: tasks){
+		for(KafkaSagaTaskTrace trace: tasks){
 			trace.call();
 			if(!trace.success){
 				success = false;
@@ -50,14 +49,14 @@ public class KafkaSagaTransaction implements SagaTransaction {
 	}
 	@Data
 	@Slf4j
-	public static class KafkaSegaTaskTrace implements java.io.Serializable {
+	public static class KafkaSagaTaskTrace implements java.io.Serializable {
 		@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
 		protected  SagaRollbackTask rollbackTask  = null;
 		protected boolean success = false;
-		public KafkaSegaTaskTrace(){
+		public KafkaSagaTaskTrace(){
 			//序列化用
 		}
-		public KafkaSegaTaskTrace(SagaRollbackTask rollbackTask){
+		public KafkaSagaTaskTrace(SagaRollbackTask rollbackTask){
 			this.rollbackTask = rollbackTask;
 		}
 		public void call(){

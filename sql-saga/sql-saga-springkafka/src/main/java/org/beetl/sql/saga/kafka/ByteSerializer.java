@@ -7,7 +7,7 @@ import org.beetl.sql.saga.common.SagaTransaction;
 import java.io.*;
 
 /**
- * 序列化到kafka
+ * 序列化到kafka，二进制
  * @author xiandafu
  */
 public class ByteSerializer implements Serializer<SagaTransaction> {

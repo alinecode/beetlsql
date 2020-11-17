@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Target({java.lang.annotation.ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Builder(SagaSqlBuilder.class)
-public @interface SegaUpdateSql {
+public @interface SagaUpdateSql {
 
 
 	/**
