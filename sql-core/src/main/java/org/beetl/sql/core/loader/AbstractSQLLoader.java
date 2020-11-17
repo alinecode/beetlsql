@@ -11,26 +11,28 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * 包含了所有的SQL，包含内置和外部。外部sql应该支持根据不同数据库加载不同数据
  */
-public  abstract class AbstractSQLLoader implements SQLLoader {
+public abstract class AbstractSQLLoader implements SQLLoader {
 
 
 	protected DBStyle dbs = null;
 
-	protected  boolean product ;
+	protected boolean product;
 	/**
 	 * 存放自动生成，或者用户提供的sql
 	 */
 	protected Map<SqlId, SQLSource> autoGenSourceMap = new ConcurrentHashMap<SqlId, SQLSource>();
 
 
-	public abstract  SQLSource queryExternalSource(SqlId id);
-	public abstract  boolean existExternalSource(SqlId id);
-	public abstract  boolean isExternalSourceModified(SqlId id);
-	public abstract  void removeExternalSource(SqlId id);
+	public abstract SQLSource queryExternalSource(SqlId id);
+
+	public abstract boolean existExternalSource(SqlId id);
+
+	public abstract boolean isExternalSourceModified(SqlId id);
+
+	public abstract void removeExternalSource(SqlId id);
 
 
-
-	public AbstractSQLLoader(){
+	public AbstractSQLLoader() {
 
 	}
 
@@ -39,40 +41,40 @@ public  abstract class AbstractSQLLoader implements SQLLoader {
 	 * @param id
 	 * @return
 	 */
-    @Override
+	@Override
 	public SQLSource querySQL(SqlId id) {
 		SQLSource sqlSource = autoGenSourceMap.get(id);
-		if(sqlSource!=null){
+		if (sqlSource != null) {
 			return sqlSource;
 		}
 		return queryExternalSource(id);
-    }
+	}
 
-    @Override
+	@Override
 	public boolean isModified(SqlId id) {
-    	if(isProduct()){
-    		return false;
-		}
-		if(autoGenSourceMap.containsKey(id)){
+		if (isProduct()) {
 			return false;
 		}
-		boolean isModified =  isExternalSourceModified(id);
-		if(isModified){
+		if (autoGenSourceMap.containsKey(id)) {
+			return false;
+		}
+		boolean isModified = isExternalSourceModified(id);
+		if (isModified) {
 			removeExternalSource(id);
 		}
 		return isModified;
 
-    }
+	}
 
-    @Override
+	@Override
 	public boolean exist(SqlId id) {
-		if(autoGenSourceMap.containsKey(id)){
+		if (autoGenSourceMap.containsKey(id)) {
 			return true;
 		}
 
 		return existExternalSource(id);
 
-    }
+	}
 
 	public DBStyle getDbStyle() {
 		return dbs;
@@ -84,8 +86,8 @@ public  abstract class AbstractSQLLoader implements SQLLoader {
 
 	@Override
 	public void addSQL(SqlId id, SQLSource source) {
-		autoGenSourceMap.put(id,source);
-    }
+		autoGenSourceMap.put(id, source);
+	}
 
 	@Override
 	public boolean isProduct() {
@@ -98,11 +100,9 @@ public  abstract class AbstractSQLLoader implements SQLLoader {
 	}
 
 	@Override
-	public String getPathBySqlId(SqlId id){
-		return id.getNamespace().replace('.','/');
+	public String getPathBySqlId(SqlId id) {
+		return id.getNamespace().replace('.', '/');
 	}
-
-
 
 
 }

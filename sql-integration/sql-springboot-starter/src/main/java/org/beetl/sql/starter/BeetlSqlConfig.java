@@ -56,7 +56,7 @@ public class BeetlSqlConfig {
 
         public static SQLManagerConfig initDefault(Environment env){
 
-            String prefix =PREFIX+"_default";
+            String prefix =PREFIX+"._default";
             String basePackage = env.getProperty(prefix+".basePackage", "com");
             String daoSuffix = env.getProperty(prefix+".daoSuffix", "Mapper");
             String sqlPath = env.getProperty(prefix+".sqlPath", "sql");

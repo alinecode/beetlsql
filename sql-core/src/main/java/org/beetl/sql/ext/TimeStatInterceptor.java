@@ -30,7 +30,7 @@ public class TimeStatInterceptor implements Interceptor {
 
 	@Override
 	public void before(InterceptorContext ctx) {
-		if(!include(ctx.getExecuteContext().sqlId)){
+		if (!include(ctx.getExecuteContext().sqlId)) {
 			return;
 		}
 		ctx.setEnv(new HashMap<>());
@@ -40,20 +40,19 @@ public class TimeStatInterceptor implements Interceptor {
 
 	@Override
 	public void after(InterceptorContext ctx) {
-		if(!include(ctx.getExecuteContext().sqlId)){
+		if (!include(ctx.getExecuteContext().sqlId)) {
 			return;
 		}
 		long end = System.currentTimeMillis();
 		long start = (Long) ctx.get("stat.time");
 		if ((end - start) > max) {
 			ExecuteContext executeContext = ctx.getExecuteContext();
-			print(executeContext.sqlId.toString(), executeContext.sqlResult.jdbcSql, executeContext.sqlResult.jdbcPara, (end - start));
+			print(executeContext.sqlId.toString(), executeContext.sqlResult.jdbcSql, executeContext.sqlResult.jdbcPara,
+					(end - start));
 		}
 
 
 	}
-
-
 
 
 	protected void print(String sqlId, String sql, List<SQLParameter> paras, long time) {
@@ -63,14 +62,14 @@ public class TimeStatInterceptor implements Interceptor {
 
 	}
 
-	protected boolean include(SqlId id){
-		if(filter==null){
+	protected boolean include(SqlId id) {
+		if (filter == null) {
 			return true;
 		}
 		return filter.isAccept(id);
 	}
 
-	public static interface  Filter{
+	public static interface Filter {
 		public boolean isAccept(SqlId id);
 	}
 

@@ -119,7 +119,7 @@ public class ExecuteContext {
      */
     public void setContextPara(String key,Object obj){
         if(contextParas==null){
-            contextParas = new HashMap<>();
+            contextParas = new HashMap<>(6);
         }
         contextParas.put(key,obj);
     }

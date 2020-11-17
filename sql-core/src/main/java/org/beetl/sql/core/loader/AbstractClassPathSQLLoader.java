@@ -17,7 +17,7 @@ public abstract class AbstractClassPathSQLLoader extends  AbstractSQLLoader{
     }
 
     @Override
-    public BeetlSQLException getExeception(SqlId sqlId) {
+    public BeetlSQLException getException(SqlId sqlId) {
         String path = getPathBySqlId(sqlId);
 
         String envInfo = path + ".md(sql)" + " sqlLoader:" + this;

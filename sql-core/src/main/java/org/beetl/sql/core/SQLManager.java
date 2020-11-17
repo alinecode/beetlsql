@@ -15,18 +15,14 @@ import org.beetl.sql.core.engine.template.TemplateContext;
 
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
-import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
-import org.beetl.sql.ext.UUIDAutoGen;
 
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -53,8 +49,10 @@ public class SQLManager implements DataAPI  {
     Map<String, IDAutoGen> idAutonGenMap = new HashMap<String, IDAutoGen>();
     private DBStyle dbStyle;
     private SQLLoader sqlLoader;
-    private ConnectionSource ds = null;// 数据库连接管理
-    private NameConversion nc = null;// 名字转换器
+    /*数据库连接管理*/
+    private ConnectionSource ds = null;
+    /* 名字转换器 */
+    private NameConversion nc = null;
     private MetadataManager metaDataManager;
 
     private ClassLoaderKit classLoaderKit = null;
@@ -68,7 +66,7 @@ public class SQLManager implements DataAPI  {
     ThreadLocal<QueryConfig> queryConfigLocal = ThreadLocal.withInitial(()->new QueryConfig());
 
     protected Map<String,SQLManager> group = new HashMap<>();
-    //sqlManager名字
+	/**sqlManager名字**/
     protected String name;
 
 
@@ -188,7 +186,7 @@ public class SQLManager implements DataAPI  {
     public SQLExecutor getScript(SqlId sqlId) {
         SQLSource source = sqlLoader.querySQL(sqlId);
         if (source == null) {
-            throw sqlLoader.getExeception(sqlId);
+            throw sqlLoader.getException(sqlId);
         }
         ExecuteContext context = ExecuteContext.instance(this).initSQLSource(source);
         context.fill(queryConfigLocal);

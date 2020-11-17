@@ -185,7 +185,6 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 		}
 		String modelName = sqlId.getNamespace();
         long lastModified = getURLVersion(url);
-        LinkedList<String> list = new LinkedList<String>();
         BufferedReader bf = null;
         try {
        
@@ -270,9 +269,9 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 	public static class SQLFileVersion{
 		public URL url;
 		//根目录下sql文件版本
-		public long root=0l;
+		public long root=0L;
 		//具体db下的
-		public long db=0l;
+		public long db=0L;
 
 		public boolean isModified(SQLFileVersion newVersion){
 			if(newVersion.root!=root||newVersion.db!=db){

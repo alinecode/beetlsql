@@ -74,7 +74,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 			ctx.put("cache.hit", Boolean.FALSE);
 		} else {
 			ctx.put("cache.hit", Boolean.TRUE);
-			ctx.getExecuteContext().executeResult= cacheObject;
+			ctx.getExecuteContext().executeResult = cacheObject;
 		}
 
 		return;
@@ -86,6 +86,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * @see org.beetl.sql.core.Interceptor#after(org.beetl.sql.core.
 	 * InterceptorContext)
 	 */
+	@Override
 	public void after(InterceptorContext ctx) {
 		if (ctx.get("cache.required") == null) {
 			return;
@@ -116,12 +117,12 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 */
 	public Object getCacheKey(InterceptorContext ctx) {
 		ExecuteContext executeContext = ctx.getExecuteContext();
-		return this.getCacheKey(executeContext.sqlId,executeContext.sqlResult.jdbcPara);
+		return this.getCacheKey(executeContext.sqlId, executeContext.sqlResult.jdbcPara);
 	}
 
 
 	protected Object getCacheKey(SqlId sqlId, List<SQLParameter> paras) {
-		return  new CacheKey(sqlId,paras);
+		return new CacheKey(sqlId, paras);
 	}
 
 	/**
@@ -152,7 +153,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	 * @param ctx
 	 */
 	public void putCache(String ns, Object key, InterceptorContext ctx) {
-//		 缓存内容.
+		//		 缓存内容.
 		this.cm.putCache(ns, key, ctx.getExecuteContext().executeResult);
 	}
 
@@ -178,10 +179,11 @@ public class SimpleCacheInterceptor implements Interceptor {
 
 	}
 
-	public class CacheKey{
+	public class CacheKey {
 		SqlId sqlId;
 		List paras;
-		public CacheKey(SqlId sqlId,List paras){
+
+		public CacheKey(SqlId sqlId, List paras) {
 			this.sqlId = sqlId;
 			this.paras = paras;
 		}
@@ -204,9 +206,13 @@ public class SimpleCacheInterceptor implements Interceptor {
 
 	public interface CacheManager {
 		void initCache(String ns);
+
 		void putCache(String ns, Object key, Object value);
+
 		Object getCache(String ns, Object key);
+
 		void clearCache(String ns);
+
 		boolean containCache(String ns, Object key);
 	}
 

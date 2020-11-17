@@ -46,7 +46,7 @@ public interface SQLLoader {
 
 	public String getPathBySqlId(SqlId id);
 
-	public BeetlSQLException getExeception(SqlId id);
+	public BeetlSQLException getException(SqlId id);
 
 
 	
