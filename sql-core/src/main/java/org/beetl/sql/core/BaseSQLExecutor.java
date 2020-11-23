@@ -1075,8 +1075,9 @@ public class BaseSQLExecutor implements SQLExecutor {
 
         SQLManager sqlManager = executeContext.sqlManager;
 
-        if (sqlManager.inters == null)
+        if (sqlManager.inters == null) {
             return;
+        }
 
         for (Interceptor in : executeContext.sqlManager.inters) {
             in.after(ctx);
