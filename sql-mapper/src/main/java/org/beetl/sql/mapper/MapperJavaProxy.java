@@ -123,6 +123,7 @@ public class MapperJavaProxy implements InvocationHandler {
      * @throws Throwable the throwable
      */
     //Override
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Class caller = method.getDeclaringClass();
         MapperInvoke invoke = builder.getAmi(entityClass,caller,method);

@@ -24,13 +24,16 @@ import java.util.Map;
  */
 public class EmptyExpressionFunction implements Function {
 
+	@Override
 	public Boolean call(Object[] paras, Context ctx) {
 
-		if (paras.length == 0)
+		if (paras.length == 0) {
 			return true;
+		}
 		Object result = paras[0];
-		if (result == null)
+		if (result == null) {
 			return true;
+		}
 		if (result instanceof String) {
 
 			return ((String) result).length() == 0;

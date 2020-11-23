@@ -133,6 +133,7 @@ public class PageQuery<T> implements PageRequest, PageResult {
 		this.list = list;
 	}
 
+	@Override
 	public long getPageNumber() {
 		return pageNumber;
 	}
@@ -155,6 +156,7 @@ public class PageQuery<T> implements PageRequest, PageResult {
 		return totalPage;
 	}
 
+	@Override
 	public long getTotalRow() {
 		return totalRow;
 	}
@@ -287,8 +289,9 @@ public class PageQuery<T> implements PageRequest, PageResult {
 		}
 		if (paras == null) {
 			return other.paras == null;
-		} else
+		} else {
 			return paras.equals(other.paras);
+		}
 	}
 
 	public static class ParasBuilder {

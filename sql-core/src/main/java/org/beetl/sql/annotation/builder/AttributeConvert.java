@@ -13,6 +13,7 @@ import java.sql.SQLException;
  * 参考{@ UpdateTime}
  * @param <ATTR>  Bean的属性类型
  * @param <DBCOL> 数据库属性类型
+ *  @author xiandafu
  */
 
 @Plugin
@@ -37,12 +38,13 @@ public interface AttributeConvert {
 	 * @param pojo  传入的Pojo
 	 * @return
 	 */
-	public default Object toDb(ExecuteContext ctx,  Class cls,String name, Object pojo) {
-		return BeanKit.getBeanProperty(pojo,name);
+	default Object toDb(ExecuteContext ctx, Class cls, String name, Object pojo) {
+		return BeanKit.getBeanProperty(pojo, name);
 	}
 
 	/**
 	 * 把数据库值映射成java对象值，比如json转成fastjson或者jackson实体
+	 *
 	 * @param ctx
 	 * @param cls
 	 * @param name
@@ -51,7 +53,7 @@ public interface AttributeConvert {
 	 * @return
 	 * @throws SQLException
 	 */
-	public default Object toAttr(ExecuteContext ctx, Class cls,String name, ResultSet rs, int index) throws SQLException {
+	default Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
 
 		return rs.getObject(index);
 	}

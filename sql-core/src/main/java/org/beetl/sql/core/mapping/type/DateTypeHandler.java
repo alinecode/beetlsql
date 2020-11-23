@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public class DateTypeHandler extends JavaSqlTypeHandler {
 
 	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		Timestamp a = typePara.rs.getTimestamp(typePara.index);
 		if (a != null) {

@@ -40,10 +40,12 @@ public class MultipleSQLManager extends  SQLManager {
     }
 
 
+    @Override
     public <T> Query<T> query(Class<T> clazz) {
         return new Query<T>(this, clazz);
     }
 
+    @Override
     public <T> LambdaQuery<T> lambdaQuery(Class<T> clazz) {
         if (BeanKit.queryLambdasSupport) {
             return new LambdaQuery<T>(this, clazz);
@@ -89,12 +91,14 @@ public class MultipleSQLManager extends  SQLManager {
      * @param inputParas
      * @return
      */
+    @Override
     public SQLResult getSQLResult(SQLSource source, Object inputParas) {
        return current.get().getSQLResult(source,inputParas);
     }
 
 
-	public SQLResult getSQLResult(SqlId id, Object paras, TemplateContext ctx) {
+	@Override
+    public SQLResult getSQLResult(SqlId id, Object paras, TemplateContext ctx) {
         return current.get().getSQLResult(id,paras,ctx);
 	}
 
@@ -104,29 +108,35 @@ public class MultipleSQLManager extends  SQLManager {
      * @param sqlId
      * @return
      */
+    @Override
     public SQLExecutor getScript(SqlId sqlId) {
        return current.get().getScript(sqlId);
     }
 
+    @Override
     public boolean containSqlId(SqlId sqlId){
         return current.get().containSqlId(sqlId);
 	}
 
-	public SQLErrorInfo validateSqlId(SqlId id){
+	@Override
+    public SQLErrorInfo validateSqlId(SqlId id){
 		return current.get().validateSqlId(id);
 	}
 
 
-	public SQLManager viewType(Class view){
+	@Override
+    public SQLManager viewType(Class view){
         current.get().viewType(view);
         return this;
     }
 
+    @Override
     public SQLManager resultSetMapper(Class resultSetMapperClass){
         current.get().resultSetMapper(resultSetMapperClass);
         return this;
     }
 
+    @Override
     public SQLManager rowMapper(Class rowMapperClass){
         current.get().rowMapper(rowMapperClass);
         return this;
@@ -141,6 +151,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param autoSQLEnum ConstantEnum
      * @return BaseSQLExecutor
      */
+    @Override
     public SQLExecutor getScript(Class<?> cls, AutoSQLEnum autoSQLEnum) {
             return current.get().getScript(cls, autoSQLEnum);
 
@@ -161,6 +172,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return Pojo集合
      */
 
+    @Override
     public <T> List<T> select(SqlId sqlId, Class<T> clazz, Object paras) {
 		return current.get().select(sqlId,clazz,paras);
     }
@@ -171,6 +183,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param clazz
      * @return
      */
+    @Override
     public <T> List<T> select(SqlId sqlId, Class<T> clazz) {
         return this.select(sqlId, clazz, null);
     }
@@ -182,6 +195,7 @@ public class MultipleSQLManager extends  SQLManager {
 
 
 
+    @Override
     public <T> PageResult<T> pageQuery(SqlId sqlId, Class<T> clazz, Object paras, PageRequest request){
 
        return current.get().pageQuery(sqlId,clazz,paras,request);
@@ -197,6 +211,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T unique(Class<T> clazz, Object pk) {
         return current.get().unique(clazz,pk);
 
@@ -211,6 +226,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 如果没有找到，返回null
      */
 
+    @Override
     public <T> T single(Class<T> clazz, Object pk) {
         return current.get().single(clazz,pk);
     }
@@ -223,6 +239,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T lock(Class<T> clazz, Object pk) {
        return current.get().lock(clazz,pk);
     }
@@ -252,6 +269,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public long allCount(Class<?> clazz) {
         return current.get().allCount(clazz);
     }
@@ -259,11 +277,13 @@ public class MultipleSQLManager extends  SQLManager {
 
 
 
+    @Override
     public <T> T templateOne(T t) {
         return current.get().templateOne(t);
     }
 
 
+    @Override
     public <T> List<T> template(T t) {
         return current.get().template(t);
     }
@@ -279,12 +299,14 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> long templateCount(T t) {
         return templateCount(t.getClass(), t);
     }
 
 
 
+    @Override
     public <T> long templateCount(Class<T> target, Object paras) {
        return current.get().templateCount(target,paras);
     }
@@ -298,6 +320,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public Long longValue(SqlId id, Object paras) {
         return current.get().longValue(id,paras);
     }
@@ -310,6 +333,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public Integer intValue(SqlId id, Object paras) {
         return this.selectSingle(id, paras, Integer.class);
     }
@@ -324,6 +348,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public BigDecimal bigDecimalValue(SqlId id, Object paras) {
         return this.selectSingle(id, paras, BigDecimal.class);
     }
@@ -339,6 +364,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T selectSingle(SqlId sqlId, Object paras, Class<T> target) {
         return current.get().selectSingle(sqlId,paras,target);
     }
@@ -354,6 +380,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T selectUnique(SqlId id, Object paras, Class<T> target) {
         return current.get().selectUnique(id,paras,target);
     }
@@ -374,6 +401,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int deleteById(Class<?> clazz, Object pkValue) {
         return current.get().deleteById(clazz,pkValue);
     }
@@ -385,6 +413,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int deleteObject(Object obj) {
         return current.get().deleteObject(obj);
     }
@@ -398,6 +427,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insert(Object paras) {
         return this.insert(paras.getClass(), paras);
     }
@@ -410,6 +440,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insertTemplate(Object paras) {
         return this.insertTemplate(paras.getClass(), paras);
     }
@@ -424,6 +455,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insert(Class clazz, Object paras) {
 		return generalInsert(clazz, paras, false);
 	}
@@ -438,6 +470,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insertTemplate(Class clazz, Object paras) {
         return generalInsert(clazz, paras, true);
     }
@@ -451,11 +484,13 @@ public class MultipleSQLManager extends  SQLManager {
 	 * @return
 	 */
 
+    @Override
     public boolean exist(Class<?> clazz, Object pk){
 		return current.get().exist(clazz,pk);
 
 	}
 
+    @Override
     protected int generalInsert(Class clazz, Object paras, boolean template) {
         return current.get().generalInsert(clazz,paras,template);
     }
@@ -470,6 +505,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param list
      */
 
+    @Override
     public int[] insertBatch(Class clazz, List<?> list) {
         return current.get().insertBatch(clazz,list);
     }
@@ -486,6 +522,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insert(SqlId sqlId, Object paras) {
         return current.get().insert(sqlId,paras);
     }
@@ -501,6 +538,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param cols,需要得到数据库自动生成的值
      */
 
+    @Override
     public Object[] insert(SqlId sqlId, Object paras, String[] cols) {
         return current.get().insert(sqlId,paras,cols);
     }
@@ -513,6 +551,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 受影响条数
      */
 
+    @Override
     public boolean upsert(Object obj) {
         return this.upsert(obj,false);
     }
@@ -524,6 +563,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 受影响条数
      */
 
+    @Override
     public boolean upsertByTemplate(Object obj) {
         return this.upsert(obj,true);
     }
@@ -536,7 +576,8 @@ public class MultipleSQLManager extends  SQLManager {
      * @param template
      * @return 受影响条数
      */
-    protected boolean upsert(Object obj,boolean template) {
+    @Override
+    protected boolean upsert(Object obj, boolean template) {
     	return current.get().upsert(obj,template);
 
     }
@@ -551,6 +592,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int updateById(Object obj) {
        return current.get().updateById(obj);
     }
@@ -562,6 +604,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int updateTemplateById(Object obj) {
         return current.get().updateTemplateById(obj);
     }
@@ -572,6 +615,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int updateTemplateById(Class c, Map paras) {
         return current.get().updateTemplateById(c,paras);
     }
@@ -584,6 +628,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int updateTemplateById(Class c, Object obj) {
         return current.get().updateTemplateById(c,obj);
     }
@@ -596,6 +641,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int[] updateByIdBatch(List<?> list) {
         return current.get().updateByIdBatch(list);
     }
@@ -608,6 +654,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int update(SqlId sqlId, Object obj) {
        return current.get().update(sqlId,obj);
     }
@@ -619,6 +666,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int update(SqlId sqlId) {
         return current.get().update(sqlId);
     }
@@ -631,6 +679,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int update(SqlId sqlId, Map<String, Object> paras) {
         return current.get().update(sqlId,paras);
     }
@@ -643,6 +692,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int[] updateBatch(SqlId sqlId, List<?> list) {
         return current.get().updateBatch(sqlId,list);
     }
@@ -655,6 +705,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int[] updateBatchTemplateById(Class clz, List<?> list) {
         return current.get().updateBatchTemplateById(clz,list);
     }
@@ -668,6 +719,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int updateAll(Class<?> clazz, Object param) {
         return current.get().updateAll(clazz,param);
 
@@ -684,17 +736,20 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras) {
 
         return current.get().execute(sqlTemplate,clazz,paras);
     }
 
 
+    @Override
     public TableDesc getTableDesc(String table){
        return  current.get().getTableDesc(table);
     }
 
 
+    @Override
     public ClassDesc getClassDesc(Class target){
         return current.get().getClassDesc(target);
     }
@@ -708,6 +763,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras) {
        return current.get().execute(sqlTemplate,clazz,paras);
     }
@@ -738,7 +794,8 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
-    public <T> PageResult<T> executePageQuery(String sqlTemplate, Class<T> clazz, Object paras,PageRequest<T> request) {
+    @Override
+    public <T> PageResult<T> executePageQuery(String sqlTemplate, Class<T> clazz, Object paras, PageRequest<T> request) {
 		return current.get().executePageQuery(sqlTemplate,clazz,paras,request);
     }
 
@@ -750,6 +807,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param paras
      * @return
      */
+    @Override
     public int executeUpdate(String sqlTemplate, Object paras) {
 		return  current.get().executeUpdate(sqlTemplate,paras);
     }
@@ -764,6 +822,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回查询结果
      */
 
+    @Override
     public <T> List<T> execute(SQLReady p, Class<T> clazz) {
     	 return  current.get().execute(p,clazz);
     }
@@ -777,6 +836,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param <T>
      * @return
      */
+    @Override
     public <T> PageResult<T> execute(SQLReady p, Class<T> clazz, PageRequest<T> pageRequest) {
         return  current.get().execute(p,clazz,pageRequest);
     }
@@ -788,11 +848,13 @@ public class MultipleSQLManager extends  SQLManager {
      * @return 返回更新条数
      */
 
+    @Override
     public int executeUpdate(SQLReady p) {
 		return current.get().executeUpdate(p);
     }
     
 
+    @Override
     public int[] executeBatchUpdate(SQLBatchReady batch) {
         return  current.get().executeBatchUpdate(batch);
     }
@@ -807,6 +869,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T executeOnConnection(OnConnection<T> onConnection) {
 
         return current.get().executeOnConnection(onConnection);
@@ -814,19 +877,23 @@ public class MultipleSQLManager extends  SQLManager {
 
 
 
+    @Override
     public SQLLoader getSqlLoader() {
         return current.get().getSqlLoader();
     }
 
+    @Override
     public void setSqlLoader(SQLLoader sqlLoader) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public ConnectionSource getDs() {
         return current.get().getDs();
     }
 
 
+    @Override
     public void setDs(ConnectionSource ds) {
         throw new UnsupportedOperationException();
     }
@@ -836,11 +903,13 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public NameConversion getNc() {
         return current.get().getNc();
     }
 
 
+    @Override
     public void setNc(NameConversion nc) {
         throw new UnsupportedOperationException();
     }
@@ -850,6 +919,7 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public DBStyle getDbStyle() {
         return current.get().getDbStyle();
     }
@@ -859,6 +929,7 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public SQLTemplateEngine getSqlTemplateEngine() {
         return current.get().getSqlTemplateEngine();
     }
@@ -868,6 +939,7 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public MetadataManager getMetaDataManager() {
         return current.get().getMetaDataManager();
     }
@@ -878,6 +950,7 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public Interceptor[] getInters() {
         return current.get().getInters();
     }
@@ -887,6 +960,7 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @param inters
      */
+    @Override
     public void setInters(Interceptor[] inters) {
         throw new UnsupportedOperationException();
     }
@@ -897,6 +971,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param name
      * @param alorithm
      */
+    @Override
     public void addIdAutonGen(String name, IDAutoGen alorithm) {
         throw new UnsupportedOperationException();
     }
@@ -908,6 +983,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param param
      * @return
      */
+    @Override
     protected Object getAssignIdByIdAutonGen(String name, String param, String table) {
        return current.get().getAssignIdByIdAutonGen(name,param,table);
 
@@ -918,11 +994,13 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public Map<String, BeanProcessor> getProcessors() {
         return current.get().getProcessors();
     }
 
 
+    @Override
     public void setProcessors(Map<String, BeanProcessor> processors) {
         throw new UnsupportedOperationException();
     }
@@ -932,6 +1010,7 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public BeanProcessor getDefaultBeanProcessors() {
         return current.get().getDefaultBeanProcessors();
     }
@@ -941,12 +1020,14 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @param defaultBeanProcessors
      */
+    @Override
     public void setDefaultBeanProcessors(BeanProcessor defaultBeanProcessors) {
          throw new UnsupportedOperationException();
     }
 
 
 
+    @Override
     public <T> T getMapper(Class<T> mapperInterface) {
        return current.get().getMapper(mapperInterface);
     }
@@ -954,6 +1035,7 @@ public class MultipleSQLManager extends  SQLManager {
 
 
 
+    @Override
     public ClassLoaderKit getClassLoaderKit() {
        return current.get().getClassLoaderKit();
     }
@@ -963,6 +1045,7 @@ public class MultipleSQLManager extends  SQLManager {
      *
      * @param classLoaderKit
      */
+    @Override
     public void setClassLoaderKit(ClassLoaderKit classLoaderKit) {
         throw new UnsupportedOperationException();
     }
@@ -975,11 +1058,13 @@ public class MultipleSQLManager extends  SQLManager {
      * @param virtualTable
      * @param realTable
      */
-    public void addVirtualTable(String realTable,String virtualTable){
+    @Override
+    public void addVirtualTable(String realTable, String virtualTable){
         throw new UnsupportedOperationException();
     }
 
-	public void setDbStyle(DBStyle dbStyle) {
+	@Override
+    public void setDbStyle(DBStyle dbStyle) {
         throw new UnsupportedOperationException();
 
 	}
@@ -989,36 +1074,44 @@ public class MultipleSQLManager extends  SQLManager {
 
 	}
 
-	public SqlIdFactory getSqlIdFactory() {
+	@Override
+    public SqlIdFactory getSqlIdFactory() {
 		return current.get().getSqlIdFactory();
 	}
 
-	public void setSqlIdFactory(SqlIdFactory sqlIdFactory) {
+	@Override
+    public void setSqlIdFactory(SqlIdFactory sqlIdFactory) {
         throw new UnsupportedOperationException();
 	}
 
-	public String getCharset() {
+	@Override
+    public String getCharset() {
 		return current.get().getCharset();
 	}
 
-	public void setCharset(String charset) {
+	@Override
+    public void setCharset(String charset) {
         throw new UnsupportedOperationException();
 	}
 
-	public boolean isProduct() {
+	@Override
+    public boolean isProduct() {
 		return current.get().isProduct();
 	}
 
-	public void setProduct(boolean product) {
+	@Override
+    public void setProduct(boolean product) {
         throw new UnsupportedOperationException();
 	}
 
-	public void setSQLTemplateEngine(SQLTemplateEngine sqlTemplateEngine) {
+	@Override
+    public void setSQLTemplateEngine(SQLTemplateEngine sqlTemplateEngine) {
         throw new UnsupportedOperationException();
 	}
 
 
-	public SQLManager use(String name){
+	@Override
+    public SQLManager use(String name){
         SQLManager sqlManager = group.get(name);
         if(sqlManager==null){
             throw new IllegalArgumentException(name);

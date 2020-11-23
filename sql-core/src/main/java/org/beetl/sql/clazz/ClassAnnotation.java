@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Data
 public class ClassAnnotation {
 
-    static DefaultCache<Class,ClassAnnotation> cache = new DefaultCache<Class,ClassAnnotation>();
+    static DefaultCache<Class, ClassAnnotation> cache = new DefaultCache<>();
 
     //实体对象
     Class entityClass = null;
@@ -83,7 +83,7 @@ public class ClassAnnotation {
 	/**
 	 * 用户自定义的注解扩展
 	 */
-	ClassExtAnnoation extAnnotation = new ClassExtAnnoation() ;
+	ClassExtAnnotation extAnnotation = new ClassExtAnnotation();
 	/**
 	 * 用户是否有自定义的扩展注解
 	 */
@@ -311,12 +311,12 @@ public class ClassAnnotation {
 	}
 
 	/**
-	 * 查找annoation
-	 * @param userCustomizedAnnatation
+	 * 查找annotation
+	 * @param userCustomizedAnnotation
 	 * @return
 	 */
-	protected Class getBuilderAnnotation(Annotation userCustomizedAnnatation){
-		Builder builder  = userCustomizedAnnatation.annotationType().getAnnotation(Builder.class);
+	protected Class getBuilderAnnotation(Annotation userCustomizedAnnotation){
+		Builder builder  = userCustomizedAnnotation.annotationType().getAnnotation(Builder.class);
 		if(builder==null){
 			return null;
 		}
@@ -384,7 +384,4 @@ public class ClassAnnotation {
 			attrUpdateIgnores = new HashSet<>();
 		}
 	}
-
-
-
 }

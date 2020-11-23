@@ -25,8 +25,9 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 
 	@Override
 	public Connection getConn(ExecuteContext ctx, boolean isUpdate){
-		if (this.slaves == null || this.slaves.length == 0)
+		if (this.slaves == null || this.slaves.length == 0) {
 			return this.getWriteConn(ctx);
+		}
 		//如果是更新语句，也得走master
 		if (isUpdate){
 			return this.getWriteConn(ctx);
@@ -65,11 +66,13 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 
 
 
-	public DataSource getMasterSource() {
+	@Override
+    public DataSource getMasterSource() {
 		return master;
 	}
 
-	public void setMasterSource(DataSource master) {
+	@Override
+    public void setMasterSource(DataSource master) {
 		this.master = master;
 	}
 

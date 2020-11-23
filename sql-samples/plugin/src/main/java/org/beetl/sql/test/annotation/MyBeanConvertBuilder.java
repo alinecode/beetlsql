@@ -12,6 +12,7 @@ import java.lang.annotation.Annotation;
  * @author xiandafu
  */
 public class MyBeanConvertBuilder implements BeanConvert {
+    @Override
     public  Object after(ExecuteContext ctx, Object obj, Annotation an){
         LoadOne loadOne = (LoadOne)an;
         System.out.println("paras "+ loadOne.name());

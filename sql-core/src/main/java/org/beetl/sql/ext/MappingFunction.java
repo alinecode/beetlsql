@@ -1,13 +1,6 @@
 package org.beetl.sql.ext;
 
 
-//import cn.hutool.core.map.MapUtil;
-//import cn.hutool.core.util.ObjectUtil;
-//import cn.hutool.core.util.StrUtil;
-//import com.ibeetl.admin.core.conf.beetl.resultmap.GridMapping;
-//import com.ibeetl.admin.core.util.cache.CacheUtil;
-
-
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.core.resource.StringTemplateResourceLoader;
@@ -29,9 +22,7 @@ public class MappingFunction implements Function {
     public Object call(Object[] paras, Context ctx) {
         String currentSqlId = ctx.getGlobal("_id").toString();
         ExecuteContext executeContext = (ExecuteContext)ctx.getGlobal("_executeContext");
-//        if (ObjectUtil.isNotNull(cache)) {
-//            return StrUtil.EMPTY;
-//        }
+
 
         String sqlSegmentId = (String) paras[0];
         Map inputParas = ctx.globalVar;
@@ -47,31 +38,6 @@ public class MappingFunction implements Function {
         /*获取参数指定的sqlid所在的md文件名*/
         String file = this.getParentId(ctx);
         SQLResult result;
-
-
-//        if (sqlSegmentId.indexOf(".") == -1) {
-//            /*同一个md文件的sql段*/
-//            result = sm.getSQLResult(file + "." + sqlSegmentId, inputParas, new BeetlTemplateContext(ctx));
-//        } else {
-//            /*另一个md文件的sql段*/
-//            result = sm.getSQLResult(sqlSegmentId, inputParas, ctx);
-//        }
-//
-//        // 追加参数
-//        list.addAll(result.jdbcPara);
-//        ctx.set("_paras", list);
-//
-//        GroupTemplate groupTemplate = sm.getBeetl().getGroupTemplate();
-//        Map rsMap =
-//                groupTemplate.runScript(
-//                        result.jdbcSql, inputParas, STRING_WRITER, STRING_TEMPLATE_RESOURCE_LOADER);
-//
-//        if (MapUtil.isNotEmpty(rsMap)) {
-//            GridMapping mapping =
-//                    new GridMapping((Map<String, Object>) rsMap.values().stream().findFirst().get());
-//            CacheUtil.put(currentSqlId, mapping);
-//        }
-
         return null;
     }
 

@@ -24,7 +24,8 @@ public class MapperSourceBuilder extends BaseTemplateSourceBuilder {
 	}
 
 	//Override
-	public void generate(BaseProject project,SourceConfig config, Entity entity) {
+	@Override
+	public void generate(BaseProject project, SourceConfig config, Entity entity) {
 
 
 		Template template = groupTemplate.getTemplate(mapperPath);

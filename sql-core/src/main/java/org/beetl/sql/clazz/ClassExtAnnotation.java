@@ -12,9 +12,10 @@ import java.util.Map;
 
 /**
  * 用户自定义的注解
+ * @author xiandafu
  */
 @Data
-public class ClassExtAnnoation {
+public class ClassExtAnnotation {
     private TargetAdditional targetAdditional;
     private Annotation additionalAnnotation;
     private Map<String, AttributeConvert>  attributeConvertMap ;

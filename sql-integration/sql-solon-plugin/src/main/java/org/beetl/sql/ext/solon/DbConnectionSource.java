@@ -54,6 +54,7 @@ class DbConnectionSource extends DefaultConnectionSource {
     }
 
     //Override
+    @Override
     public boolean isTransaction() {
         return XTranUtils.inTrans();
     }

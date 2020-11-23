@@ -106,6 +106,7 @@ public class IotDbStyle extends AbstractDBStyle {
 	public void config(SQLManager sqlManager){
 
 		sqlManager.setDefaultBeanProcessors( new BeanProcessor(){
+			@Override
 			protected  String getColName(ExecuteContext ctx, ResultSetMetaData rsmd, int col) throws SQLException{
 				/*iotdb会返回STORAGE GROUP，需要排除*/
 				String colName = super.getColName(ctx,rsmd,col);

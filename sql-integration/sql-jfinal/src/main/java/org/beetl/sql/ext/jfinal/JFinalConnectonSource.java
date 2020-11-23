@@ -17,7 +17,8 @@ public class JFinalConnectonSource extends DefaultConnectionSource {
 
 	}
 
-	protected Connection doGetConnection(DataSource ds) {
+	@Override
+    protected Connection doGetConnection(DataSource ds) {
 		try {
 			if (Trans.inTrans()) {
 				return Trans.getCurrentThreadConnection(ds);
@@ -31,7 +32,8 @@ public class JFinalConnectonSource extends DefaultConnectionSource {
 		}
 	}
 
-	public boolean isTransaction() {
+	@Override
+    public boolean isTransaction() {
 		return Trans.inTrans();
 	}
 

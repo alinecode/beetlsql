@@ -78,7 +78,9 @@ public class SampleHelper {
 		}
 		finally {
 			try {
-				if(conn!=null)conn.close();
+				if(conn!=null) {
+					conn.close();
+				}
 			} catch (SQLException sqlException) {
 				//ignore
 			}

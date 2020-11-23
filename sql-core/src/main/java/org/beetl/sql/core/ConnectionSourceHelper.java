@@ -59,18 +59,21 @@ class SimpleConnectoinSource implements ConnectionSource {
 	}
 
 
-	public Connection getMasterConn() {
+	@Override
+    public Connection getMasterConn() {
 		return _getConn();
 	}
 
 
-	public Connection getConn(ExecuteContext ctx, boolean isUpdate) {
+	@Override
+    public Connection getConn(ExecuteContext ctx, boolean isUpdate) {
 		return _getConn();
 	}
 
 	
 
-	public boolean isTransaction() {
+	@Override
+    public boolean isTransaction() {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -81,7 +84,8 @@ class SimpleConnectoinSource implements ConnectionSource {
 	}
 
 
-	public Connection getMetaData() {
+	@Override
+    public Connection getMetaData() {
 		return this.getMasterConn();
 	}
 	

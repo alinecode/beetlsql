@@ -456,7 +456,7 @@ public @interface XmlMapping {
 
 ![](https://oscimg.oschina.net/oscnet/up-9d8d470e78a797d2ff18dfdf378c9f81c1c.png)
 
-除了SQLManager和ClassAnnoations，任何一部分都可以扩展
+除了SQLManager和ClassAnnotations，任何一部分都可以扩展
 
 
 

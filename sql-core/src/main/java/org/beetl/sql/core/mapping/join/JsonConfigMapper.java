@@ -167,8 +167,12 @@ public class JsonConfigMapper extends ConfigJoinMapper {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             SqlIdKey sqlIdKey = (SqlIdKey) o;
             return target.equals(sqlIdKey.target) &&
                     mapping.equals(sqlIdKey.mapping);
@@ -195,8 +199,12 @@ public class JsonConfigMapper extends ConfigJoinMapper {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             Key key = (Key) o;
             return target.equals(key.target) &&
                     json.equals(key.json);

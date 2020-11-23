@@ -53,6 +53,7 @@ public class Insert implements Output {
     }
 
     //Override
+    @Override
     public void toSql(ConcatBuilder sb) {
         sb.append("insert into");
         if(sb.getCtx().keyWordHandler!=null){

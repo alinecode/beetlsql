@@ -42,6 +42,7 @@ public class JacksonConvert implements AttributeConvert {
 
 
 
+    @Override
     public  Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
         try{
             String json =  rs.getString(index);

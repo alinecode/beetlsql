@@ -244,6 +244,7 @@ public class S2MappingSample {
     public static class Base64Convert  implements AttributeConvert {
         Charset utf8  = Charset.forName("UTF-8");
 
+        @Override
         public  Object toDb(ExecuteContext ctx, Class cls, String name, Object pojo) {
 
             String value= (String) BeanKit.getBeanProperty(pojo,name);
@@ -251,6 +252,7 @@ public class S2MappingSample {
             return new String(bs,utf8);
 
         }
+        @Override
         public  Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
             String value  = rs.getString(index);
             return new String(java.util.Base64.getDecoder().decode(value),utf8);

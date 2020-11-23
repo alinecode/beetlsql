@@ -14,6 +14,7 @@ import java.util.Date;
 
 public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 	//Override
+	@Override
 	public void processExcption(BeetlException ex, Writer writer) {
 		ErrorInfo error = new ErrorInfo(ex);
 
@@ -79,6 +80,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 		throw new BeetlSQLException(BeetlSQLException.SQL_SCRIPT_ERROR, "SQL Script Error:" + sb,ex);
 	}
 
+	@Override
 	protected String getDateTime() {
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");

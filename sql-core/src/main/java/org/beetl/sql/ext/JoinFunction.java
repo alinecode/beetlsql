@@ -49,6 +49,7 @@ public class JoinFunction implements Function {
 		}
 	}
 
+	@Override
 	public Object call(Object[] paras, Context ctx) {
 		Object temp = paras[0];
 		if (temp == null) {

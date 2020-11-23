@@ -10,7 +10,8 @@ public class KafkaSagaContextFactory implements SagaContextFactory {
 	}
 
 	ThreadLocal<KafkaSagaContext> local = new ThreadLocal(){
-		protected SagaContext initialValue(){
+		@Override
+        protected SagaContext initialValue(){
 			return new KafkaSagaContext(config);
 		}
 	};

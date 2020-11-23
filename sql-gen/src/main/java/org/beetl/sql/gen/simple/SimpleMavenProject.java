@@ -36,7 +36,8 @@ public class SimpleMavenProject extends BaseProject {
 	 * @return  得到一个路径,对应maven工程下面的src
 	 */
 	//Override
-	public Writer getWriterByName(String sourceBuilderName, String targetName) {
+	@Override
+    public Writer getWriterByName(String sourceBuilderName, String targetName) {
 		String home = this.root;
 		FileWriter writer = null;
 		if(sourceBuilderName.equals("md")){

@@ -13,25 +13,25 @@ public interface PageRequest<T> {
      * 当前页数，从1开始
      * @return
      */
-    public long getPageNumber();
+     long getPageNumber();
 
     /**
      * 每页记录个数
      * @return
      */
-    public int getPageSize();
+     int getPageSize();
 
     /**
      * 分页排序
      * @return
      */
-    public String getOrderBy();
+     String getOrderBy();
 
     /**
      * 有时候，分页请求不需要再次查询总数，这样可以节省一次sql查询，
      * @return
      */
-    public boolean isTotalRequired();
+     boolean isTotalRequired();
 
     //不推荐，兼容beetlsql2
     default Object getParas(){
@@ -54,6 +54,6 @@ public interface PageRequest<T> {
      * @return
      * @see DefaultPageResult
      */
-    public PageResult of(List<T> result);
+     PageResult of(List<T> result);
     public PageResult of(List<T> result,Long total);
 }

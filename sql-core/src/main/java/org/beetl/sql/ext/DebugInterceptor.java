@@ -45,6 +45,7 @@ public class DebugInterceptor implements Interceptor {
 	}
 
 	//Override
+	@Override
 	public void before(InterceptorContext ctx) {
 		ExecuteContext executeContext = ctx.getExecuteContext();
 		SqlId sqlId = executeContext.sqlId;
@@ -119,6 +120,7 @@ public class DebugInterceptor implements Interceptor {
 	}
 
 	//Override
+	@Override
 	public void after(InterceptorContext ctx) {
 		ExecuteContext executeContext = ctx.getExecuteContext();
 		SqlId sqlId = executeContext.sqlId;

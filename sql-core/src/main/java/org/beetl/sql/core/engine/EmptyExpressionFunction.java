@@ -46,7 +46,8 @@ import org.beetl.core.Function;
  */
 public class EmptyExpressionFunction implements Function {
 
-	public Boolean call(Object[] paras, Context ctx) {
+	@Override
+    public Boolean call(Object[] paras, Context ctx) {
 
 
 		Object result = paras[0];

@@ -18,8 +18,8 @@ public interface MapperBuilder {
 	 */
 	<T> T getMapper(Class<T> mapperInterface);
 
-	public SQLManager getSqlManager();
+	SQLManager getSqlManager();
 
-	public void setSqlManager(SQLManager sqlManager);
+	void setSqlManager(SQLManager sqlManager);
 
 }

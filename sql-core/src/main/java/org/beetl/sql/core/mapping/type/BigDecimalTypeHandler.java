@@ -7,6 +7,7 @@ import java.sql.SQLException;
 public class BigDecimalTypeHandler extends JavaSqlTypeHandler {
 
 	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		BigDecimal a = typePara.rs.getBigDecimal(typePara.index);
 		return a;

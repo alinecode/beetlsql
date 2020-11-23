@@ -42,6 +42,7 @@ public class DruidStyle extends AbstractDBStyle {
     }
 
 
+    @Override
     public RangeSql getRangeSql(){
         throw new UnsupportedOperationException("druid 不支持offset");
     }

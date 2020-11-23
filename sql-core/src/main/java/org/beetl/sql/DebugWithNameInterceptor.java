@@ -11,6 +11,7 @@ import org.beetl.sql.ext.DebugInterceptor;
  */
 public class DebugWithNameInterceptor extends DebugInterceptor {
 
+	@Override
 	protected String formatSqlId(ExecuteContext executeContext){
 		SqlId id = executeContext.sqlId;
 		String str = id.toString();

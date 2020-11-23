@@ -6,6 +6,7 @@ import java.sql.SQLException;
 public class ByteTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
 	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 		byte a = rs.getByte(typePara.index);

@@ -36,6 +36,7 @@ public class BaseSQLExecutor implements SQLExecutor {
     }
 
 
+    @Override
     public int insert(Class clazz, Object paras) {
         KeyHolder holder = paras instanceof Map ? KeyHolder.empty : KeyHolder.getKeyHolderByClass(paras.getClass());
         int ret = insert(paras, holder);
@@ -44,7 +45,8 @@ public class BaseSQLExecutor implements SQLExecutor {
     }
 
 
-    public Object[] insert(Class target,Object paras, String[] cols) {
+    @Override
+    public Object[] insert(Class target, Object paras, String[] cols) {
 
         Connection conn = null;
         ResultUpdateHolder ruh = null;
@@ -965,7 +967,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         //处理入参是否需要变化
         ClassAnnotation an = ClassAnnotation.getClassAnnotation(parasType);
         if(an.isContainExtAnnotation()){
-            ClassExtAnnoation ext = an.getExtAnnotation();
+            ClassExtAnnotation ext = an.getExtAnnotation();
             if(ext.hasAttributeExt()){
                 Map<String, AttributeConvert> attrMap =ext.getAttributeConvertMap();
                 for(Map.Entry<String, AttributeConvert> entry:attrMap.entrySet()){
@@ -1002,7 +1004,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         }
         ClassAnnotation targetClassAnnotation = ClassAnnotation.getClassAnnotation(target);
         if(targetClassAnnotation.isContainExtAnnotation()){
-            ClassExtAnnoation targetExtClassAnnotation = targetClassAnnotation.getExtAnnotation();
+            ClassExtAnnotation targetExtClassAnnotation = targetClassAnnotation.getExtAnnotation();
             Annotation annotation = targetExtClassAnnotation.getAdditionalAnnotation();
             if(annotation!=null){
                 TargetAdditional targetAdditional = targetExtClassAnnotation.getTargetAdditional();
@@ -1030,6 +1032,7 @@ public class BaseSQLExecutor implements SQLExecutor {
      * @param ctx
      * @return
      */
+    @Override
     public SQLResult run(Map<String, Object> parasMap, TemplateContext ctx) {
         SQLTemplateEngine gt = executeContext.sqlManager.sqlTemplateEngine;
         SQLTemplate t = null;
@@ -1075,8 +1078,9 @@ public class BaseSQLExecutor implements SQLExecutor {
 
         SQLManager sqlManager = executeContext.sqlManager;
 
-        if (sqlManager.inters == null)
+        if (sqlManager.inters == null) {
             return;
+        }
 
         for (Interceptor in : executeContext.sqlManager.inters) {
             in.after(ctx);
@@ -1104,7 +1108,7 @@ public class BaseSQLExecutor implements SQLExecutor {
             return result;
         }
         ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(target);
-        ClassExtAnnoation extAnnotation = classAnnotation.getExtAnnotation();
+        ClassExtAnnotation extAnnotation = classAnnotation.getExtAnnotation();
         if (extAnnotation!= null && extAnnotation.getBeanConvert() != null) {
             BeanConvert convert = extAnnotation.getBeanConvert();
             if(convert!=null){
@@ -1149,8 +1153,9 @@ public class BaseSQLExecutor implements SQLExecutor {
             return;
         }
         SQLManager sqlManager = executeContext.sqlManager;
-        if (sqlManager.inters == null)
+        if (sqlManager.inters == null) {
             return;
+        }
 
         for (Interceptor in : sqlManager.inters) {
             in.exception(ctx, ex);

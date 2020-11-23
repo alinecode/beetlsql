@@ -8,6 +8,7 @@ public class ShortTypeHandler extends JavaSqlTypeHandler implements PrimitiveVal
 	Short defaultValue = 0;
 
 	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 		short a = rs.getShort(typePara.index);

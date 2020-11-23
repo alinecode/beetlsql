@@ -12,5 +12,5 @@ import java.util.Map;
  */
 @Plugin
 public interface TargetAdditional {
-    public Map<String,Object> getAdditional(ExecuteContext ctx, Annotation an);
+    Map<String,Object> getAdditional(ExecuteContext ctx, Annotation an);
 }

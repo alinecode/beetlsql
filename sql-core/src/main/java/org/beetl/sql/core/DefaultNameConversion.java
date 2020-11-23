@@ -11,18 +11,18 @@ import org.beetl.sql.clazz.NameConversion;
 public class DefaultNameConversion extends NameConversion {
 
 	@Override
-	public String getTableName(Class<?> c) {
-		String name = getAnnotationTableName(c);
+	public String getTableName(Class<?> clazz) {
+		String name = getAnnotationTableName(clazz);
 		if(name!=null){
 			return name;
 		}
-		return c.getSimpleName();
+		return clazz.getSimpleName();
 	}
 
 	@Override
-	public String getColName(Class<?> c, String attrName) {
+	public String getColName(Class<?> clazz, String attrName) {
 
-		String col = super.getAnnotationColName(c,attrName);
+		String col = super.getAnnotationColName(clazz,attrName);
 		if(col!=null){
 			return col;
 		}
@@ -30,8 +30,8 @@ public class DefaultNameConversion extends NameConversion {
 	}
 
 	@Override
-	public String getPropertyName(Class<?> c, String colName) {
-		String attrName = super.getAnnotationAttrName(c,colName);
+	public String getPropertyName(Class<?> clazz, String colName) {
+		String attrName = super.getAnnotationAttrName(clazz,colName);
 		if(attrName!=null){
 			return attrName;
 		}

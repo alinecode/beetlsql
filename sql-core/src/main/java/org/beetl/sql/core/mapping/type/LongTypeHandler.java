@@ -6,6 +6,7 @@ import java.sql.SQLException;
 public class LongTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
 	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 

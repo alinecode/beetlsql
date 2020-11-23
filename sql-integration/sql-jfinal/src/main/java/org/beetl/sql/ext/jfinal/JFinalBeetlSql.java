@@ -158,8 +158,9 @@ class HikariSource {
 	}
 
 	public boolean stop() {
-		if (dataSource != null)
+		if (dataSource != null) {
 			dataSource.close();
+		}
 		return true;
 	}
 }
