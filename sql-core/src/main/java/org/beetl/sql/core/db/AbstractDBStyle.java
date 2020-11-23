@@ -141,15 +141,15 @@ public abstract class  AbstractDBStyle implements DBStyle {
         ClassDesc classDesc = table.genClassDesc(cls,this.nameConversion);
         ConcatContext concatContext = this.createConcatContext();
 
-        if(classDesc.getClassAnnoation().getLogicDeleteAttrName()==null) {
+        if(classDesc.getClassAnnotation().getLogicDeleteAttrName()==null) {
             Delete delete = concatContext.delete().from(cls);
             appendIdCondition(cls,delete);
             return new SQLTableSource(delete.toSql());
         }else {
             Update update = concatContext.update().from(cls);
             appendIdCondition(cls,update);
-            String col = this.nameConversion.getColName(cls, classDesc.getClassAnnoation().getLogicDeleteAttrName());
-            Object value = classDesc.getClassAnnoation().getLogicDeleteAttrValue();
+            String col = this.nameConversion.getColName(cls, classDesc.getClassAnnotation().getLogicDeleteAttrName());
+            Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
             update.assignConstants(col,value);
             return new SQLTableSource(update.toSql());
         }
@@ -211,13 +211,13 @@ public abstract class  AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && properties.hasNext()) {
             String col = cols.next();
             String prop = properties.next();
-            if (classDesc.getClassAnnoation().isUpdateIgnore(prop)) {
+            if (classDesc.getClassAnnotation().isUpdateIgnore(prop)) {
                 continue;
             }
             if (idCols.contains(col)) {
                 continue;
             }
-            if(prop.equals(classDesc.getClassAnnoation().getVersionProperty())){
+            if(prop.equals(classDesc.getClassAnnotation().getVersionProperty())){
                 //版本字段
                 update.assignConstants(col,col+1);
                 continue;
@@ -243,13 +243,13 @@ public abstract class  AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && properties.hasNext()) {
             String col = cols.next();
             String prop = properties.next();
-            if (classDesc.getClassAnnoation().isUpdateIgnore(prop)) {
+            if (classDesc.getClassAnnotation().isUpdateIgnore(prop)) {
                 continue;
             }
             if (idCols.contains(col)) {
                 continue;
             }
-            if(prop.equals(classDesc.getClassAnnoation().getVersionProperty())){
+            if(prop.equals(classDesc.getClassAnnotation().getVersionProperty())){
                 //版本字段
                 update.assignConstants(col,col+1);
                 continue;
@@ -289,7 +289,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && attrs.hasNext()) {
             String col = cols.next();
             String attr = attrs.next();
-            if (classDesc.getClassAnnoation().isInsertIgnore(attr)) {
+            if (classDesc.getClassAnnotation().isInsertIgnore(attr)) {
                 continue;
             }
 
@@ -310,9 +310,9 @@ public abstract class  AbstractDBStyle implements DBStyle {
                 }
             }
 
-            if(attr.equals(classDesc.getClassAnnoation().getVersionProperty())&&classDesc.getClassAnnoation().getInitVersionValue()!=-1){
+            if(attr.equals(classDesc.getClassAnnotation().getVersionProperty())&&classDesc.getClassAnnotation().getInitVersionValue()!=-1){
                 //版本字段
-                insert.conditionalSet(col,classDesc.getClassAnnoation().getInitVersionValue()+"");
+                insert.conditionalSet(col,classDesc.getClassAnnotation().getInitVersionValue()+"");
                 continue;
 
             }
@@ -384,14 +384,14 @@ public abstract class  AbstractDBStyle implements DBStyle {
             String col = cols.next();
             String prop = properties.next();
 
-            if (classDesc.getClassAnnoation().isUpdateIgnore(prop)) {
+            if (classDesc.getClassAnnotation().isUpdateIgnore(prop)) {
                 continue;
             }
             if (idCols.contains(col)) {
                 //主键不更新
                 continue;
             }
-            if(prop.equals(classDesc.getClassAnnoation().getVersionProperty())){
+            if(prop.equals(classDesc.getClassAnnotation().getVersionProperty())){
                 //版本字段
                 update.assignConstants(col,col+1);
                 continue ;
@@ -403,7 +403,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
     protected void appendVersion(ClassDesc desc,WhereNode node){
-        String property = desc.getClassAnnoation().getVersionProperty();
+        String property = desc.getClassAnnotation().getVersionProperty();
         if(property==null){
             return ;
         }

@@ -15,7 +15,7 @@ public class MockClassDesc extends  ClassDesc {
     }
 
 
-    public ClassAnnotation getClassAnnoation(){
+    public ClassAnnotation getClassAnnotation(){
          throw new IllegalStateException("虚拟类，无此属性");
     }
 
