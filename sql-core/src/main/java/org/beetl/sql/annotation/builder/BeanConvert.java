@@ -16,7 +16,7 @@ public interface BeanConvert {
      * @param ctx
      * @param obj
      * @param an  注解信息，可以提供额外参数
-     * @return
+     * @return Object
      */
      default Object before(ExecuteContext ctx, Object obj, Annotation an){
         return obj;
@@ -27,7 +27,7 @@ public interface BeanConvert {
      * @param ctx
      * @param obj
      * @param an
-     * @return
+     * @return Object
      */
      default Object after(ExecuteContext ctx, Object obj, Annotation an){
         return obj;

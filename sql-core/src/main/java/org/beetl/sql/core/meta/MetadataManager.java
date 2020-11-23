@@ -9,9 +9,12 @@ import java.util.Set;
  */
 public interface MetadataManager {
      boolean existTable(String tableName);
+
      TableDesc getTable(String name);
+
      Set<String> allTable();
-     public void addTableVirtual(String realTable,String virtual);
+
+     void addTableVirtual(String realTable, String virtual);
 
 }
 

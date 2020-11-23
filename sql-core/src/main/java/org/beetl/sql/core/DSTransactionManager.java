@@ -15,10 +15,10 @@ import java.util.Map;
  *
  */
 public class DSTransactionManager {
-	
+
 	static ThreadLocal<Boolean> inTrans = ThreadLocal.withInitial(() -> false);
 	
-	static ThreadLocal<Map<DataSource,Connection>> conns = new  ThreadLocal<Map<DataSource,Connection>>();
+	static ThreadLocal<Map<DataSource,Connection>> conns = new  ThreadLocal<>();
 
 	
 	public static void start(){
@@ -96,7 +96,7 @@ public class DSTransactionManager {
 		Map<DataSource,Connection>  map = conns.get();
 		Connection conn = null;
 		if (map == null) {
-			map = new HashMap<DataSource, Connection>();
+			map = new HashMap<>();
 			conn = ds.getConnection();
 			//如果用户还有不需要事物，且每次都提交的操作，这个需求很怪，不管了
 			conn.setAutoCommit(false);
