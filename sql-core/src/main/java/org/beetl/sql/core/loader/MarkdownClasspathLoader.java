@@ -130,7 +130,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 
 	protected  Long getURLVersion(URL url){
 		if(url==null){
-			return  0l;
+			return  0L;
 		}
 
 		if(url.getProtocol().equals("file")){
@@ -138,10 +138,8 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 			return new File(path).lastModified();
 		}else{
 			//其他协议，比如jar。
-			return 0l;
+			return 0L;
 		}
-		
-		
 	}
 	
 

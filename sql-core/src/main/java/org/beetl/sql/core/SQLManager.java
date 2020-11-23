@@ -458,7 +458,7 @@ public class SQLManager implements DataAPI  {
                 }
             }
             if (totalRow == null) {
-                totalRow = 0l;
+                totalRow = 0L;
             }
         }
 
@@ -1347,7 +1347,7 @@ public class SQLManager implements DataAPI  {
             count = countList.get(0);
             if (count == null || count == 0) {
                 list = new ArrayList<>();
-                return pageRequest.of(list,0l);
+                return pageRequest.of(list,0L);
             }
 
 
