@@ -8,15 +8,17 @@ import java.util.List;
 
 /**
  * 完成fetch操作，execute方法内部需要先判断是否已经Fetch过，避免无限循环，参考{@code FetchAction}
+ *
+ * @author xiandafu
  * @see FetchOneAction
  * @see FetchManyAction
- * @author xiandafu
  */
 public interface FetchAction {
-    public void execute(ExecuteContext ctx, List list);
+    void execute(ExecuteContext ctx, List list);
 
-    public void init(Class owner, Class target,Annotation config, PropertyDescriptor pd);
-    public Annotation getAnnotation();
-    public PropertyDescriptor getOriginProperty();
+    void init(Class owner, Class target, Annotation config, PropertyDescriptor pd);
 
+    Annotation getAnnotation();
+
+    PropertyDescriptor getOriginProperty();
 }
