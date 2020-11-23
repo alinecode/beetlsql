@@ -1,6 +1,5 @@
 package org.beetl.sql.ext.spring.test;
 
-import org.beetl.sql.core.db.DBStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

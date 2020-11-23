@@ -30,6 +30,7 @@ public class RowMapperResultSetExt<T> implements ResultSetExt<List<T>> {
 	}
 
 	//Override
+	@Override
 	public List<T> handleResultSet(ExecuteContext ctx, ResultSet rs, Class<?> z, Annotation config) throws SQLException {
 		int rowNum = 0;
 		List<T> resultList = new ArrayList<T>();

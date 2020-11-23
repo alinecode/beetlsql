@@ -45,6 +45,7 @@ public class DebugInterceptor implements Interceptor {
 	}
 
 	//Override
+	@Override
 	public void before(InterceptorContext ctx) {
 		ExecuteContext executeContext = ctx.getExecuteContext();
 		SqlId sqlId = executeContext.sqlId;
@@ -119,6 +120,7 @@ public class DebugInterceptor implements Interceptor {
 	}
 
 	//Override
+	@Override
 	public void after(InterceptorContext ctx) {
 		ExecuteContext executeContext = ctx.getExecuteContext();
 		SqlId sqlId = executeContext.sqlId;
@@ -139,8 +141,9 @@ public class DebugInterceptor implements Interceptor {
 			if (result.getClass().isArray()) {
 				int[] ret = (int[]) result;
 				for (int i = 0; i < ret.length; i++) {
-					if (i > 0)
+					if (i > 0) {
 						sb.append(",");
+					}
 					sb.append(ret[i]);
 				}
 			} else {

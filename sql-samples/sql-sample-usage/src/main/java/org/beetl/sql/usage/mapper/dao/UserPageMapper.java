@@ -3,7 +3,7 @@ package org.beetl.sql.usage.mapper.dao;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.mapper.BaseMapper;
-import org.beetl.sql.mapper.annotation.*;
+import org.beetl.sql.mapper.annotation.SqlResource;
 import org.beetl.sql.sample.entity.UserEntity;
 
 /**

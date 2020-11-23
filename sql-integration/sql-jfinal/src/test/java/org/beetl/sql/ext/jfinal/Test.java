@@ -1,8 +1,6 @@
 package org.beetl.sql.ext.jfinal;
 
-import com.jfinal.aop.AopManager;
 import com.jfinal.config.*;
-import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.server.undertow.UndertowServer;
 import com.jfinal.template.Engine;

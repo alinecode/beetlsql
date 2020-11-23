@@ -11,7 +11,6 @@ import org.beetl.sql.gen.simple.EntitySourceBuilder;
 import org.beetl.sql.gen.simple.MDSourceBuilder;
 import org.beetl.sql.gen.simple.MapperSourceBuilder;
 
-import java.io.FileFilter;
 import java.util.*;
 
 /**

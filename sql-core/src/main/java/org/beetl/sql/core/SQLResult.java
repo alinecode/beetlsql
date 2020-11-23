@@ -4,7 +4,6 @@ import org.beetl.sql.core.engine.SQLParameter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * SQL模板 执行结果

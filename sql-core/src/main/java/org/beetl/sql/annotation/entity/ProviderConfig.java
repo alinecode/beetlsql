@@ -1,7 +1,5 @@
 package org.beetl.sql.annotation.entity;
 
-import org.beetl.sql.core.mapping.ResultSetMapper;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

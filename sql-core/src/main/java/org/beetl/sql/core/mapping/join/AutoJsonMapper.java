@@ -93,8 +93,12 @@ public class AutoJsonMapper extends JsonConfigMapper {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             AutoKey autoKey = (AutoKey) o;
             return target.equals(autoKey.target) &&
                     nameConversion.equals(autoKey.nameConversion);

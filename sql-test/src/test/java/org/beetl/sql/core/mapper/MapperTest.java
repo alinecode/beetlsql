@@ -10,7 +10,9 @@ import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.AutoMapper;
 import org.beetl.sql.mapper.annotation.Template;
 import org.beetl.sql.mapper.internal.InsertAMI;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.lang.reflect.Method;
 import java.util.List;

@@ -3,14 +3,12 @@ package org.beetl.sql.mapper.provider;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.StringKit;
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.SqlProvider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * 实现{@code SqlProvider},mapper的sql语句由SqlProvider类来提供，

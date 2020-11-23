@@ -195,12 +195,16 @@ class SqlFormatter {
                 this.afterInsert = false;
             } else {
                 this.beginLine = false;
-                if ("case".equals(this.lcToken)) this.indent += 1;
+                if ("case".equals(this.lcToken)) {
+                    this.indent += 1;
+                }
             }
         }
 
         private void white() {
-            if (!this.beginLine) this.result.append(" ");
+            if (!this.beginLine) {
+                this.result.append(" ");
+            }
         }
 
         private void updateOrInsertOrDelete() {
@@ -210,7 +214,9 @@ class SqlFormatter {
             if ("update".equals(this.lcToken)) {
                 newline();
             }
-            if ("insert".equals(this.lcToken)) this.afterInsert = true;
+            if ("insert".equals(this.lcToken)) {
+                this.afterInsert = true;
+            }
         }
 
         private void select() {

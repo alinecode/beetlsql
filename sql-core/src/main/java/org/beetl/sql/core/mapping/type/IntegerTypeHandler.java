@@ -1,6 +1,5 @@
 package org.beetl.sql.core.mapping.type;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -9,6 +8,7 @@ public class IntegerTypeHandler extends JavaSqlTypeHandler implements PrimitiveV
 	static Integer defaultValue = 0;
 
 	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 		int a = rs.getInt(typePara.index);

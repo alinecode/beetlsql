@@ -1,21 +1,14 @@
 package org.beetl.sql.core.nosql;
 
-import org.beetl.sql.annotation.entity.AssignID;
-import org.beetl.sql.annotation.entity.AutoID;
-import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.KeyWordHandler;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.QuerySQLExecutor;
 import org.beetl.sql.core.SQLExecutor;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.DBType;
-import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
 
 import java.lang.annotation.Annotation;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,6 +44,7 @@ public class PrestoStyle extends AbstractDBStyle {
      *
      * @return
      */
+    @Override
     public  boolean preparedStatementSupport(){
         return false;
     }

@@ -1,10 +1,5 @@
 package org.beetl.sql.core;
 
-import org.beetl.sql.annotation.builder.TargetAdditional;
-import org.beetl.sql.annotation.builder.AttributeConvert;
-import org.beetl.sql.annotation.builder.BeanConvert;
-import org.beetl.sql.clazz.*;
-
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.ResultSetMapper;
 import org.beetl.sql.core.mapping.RowMapper;

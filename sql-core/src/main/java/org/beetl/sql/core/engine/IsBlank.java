@@ -5,6 +5,7 @@ import org.beetl.core.Function;
 
 public class IsBlank implements Function {
 	//Override
+	@Override
 	public Boolean call(Object[] paras, Context ctx) {
 		Object o = paras[0];
 		if (o == null) {

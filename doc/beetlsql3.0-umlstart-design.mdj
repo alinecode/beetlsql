@@ -5019,7 +5019,7 @@
 											"top": 23,
 											"width": 106.18359375,
 											"height": 13,
-											"text": "ClassAnnoations"
+											"text": "ClassAnnotations"
 										},
 										{
 											"_type": "LabelView",
@@ -7917,7 +7917,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "ClassAnnoations",
+					"name": "ClassAnnotations",
 					"operations": [
 						{
 							"_type": "UMLOperation",
@@ -9378,7 +9378,7 @@
 											"top": 199,
 											"width": 106.18359375,
 											"height": 13,
-											"text": "ClassAnnoations"
+											"text": "ClassAnnotations"
 										},
 										{
 											"_type": "LabelView",
@@ -12353,7 +12353,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFwtb7owg/jCRE="
 					},
-					"name": "ClassAnnoations"
+					"name": "ClassAnnotations"
 				},
 				{
 					"_type": "UMLComponent",

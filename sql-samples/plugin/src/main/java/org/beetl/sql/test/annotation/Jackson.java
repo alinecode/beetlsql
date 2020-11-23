@@ -1,7 +1,6 @@
 package org.beetl.sql.test.annotation;
 
 import org.beetl.sql.annotation.builder.Builder;
-import org.beetl.sql.annotation.builder.UpdateTimeConvert;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

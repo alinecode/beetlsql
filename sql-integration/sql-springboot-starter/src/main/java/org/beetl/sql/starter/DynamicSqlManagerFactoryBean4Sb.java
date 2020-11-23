@@ -4,7 +4,6 @@ import org.beetl.core.fun.ObjectUtil;
 import org.beetl.sql.core.ConditionalSQLManager;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.ext.spring.DynamicSqlManagerFactoryBean;
-import org.beetl.sql.ext.spring.SqlManagerFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;

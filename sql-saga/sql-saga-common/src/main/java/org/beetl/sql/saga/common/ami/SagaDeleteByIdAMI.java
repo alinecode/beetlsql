@@ -6,7 +6,6 @@ import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.saga.common.SagaContext;
 import org.beetl.sql.saga.common.SagaRollbackTask;
-import org.beetl.sql.saga.common.LocalSagaContext;
 
 import java.lang.reflect.Method;
 

@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
-import org.beetl.sql.fetch.annotation.FetchOne;
 import org.beetl.sql.fetch.annotation.FetchSql;
 
 import java.util.List;

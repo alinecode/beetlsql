@@ -1,9 +1,7 @@
 package org.beetl.sql.fetch;
 
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 
 import java.beans.PropertyDescriptor;
@@ -47,7 +45,8 @@ public class FetchManyAction extends   AbstractFetchAction {
 		}
 
 	}
-    public void execute(ExecuteContext ctx,List list){
+    @Override
+    public void execute(ExecuteContext ctx, List list){
         try{
             Method idReadMethod = idProperty.getReadMethod();
             Method fromWriteMethod = otherTypeFrom.getWriteMethod();
@@ -69,11 +68,7 @@ public class FetchManyAction extends   AbstractFetchAction {
 					addCached(obj,id);
 				}
 
-
-//                Object template = BeanKit.newInstance(target);
-//				fromWriteMethod.invoke(template,id);
-//				List values = ctx.sqlManager.template(template);
-				Query query = ctx.sqlManager.query(target);
+                Query query = ctx.sqlManager.query(target);
 				String colName = ctx.sqlManager.getNc().getColName(target,otherTypeFrom.getName());
 				List values  = query.andEq(colName,id).select();
 

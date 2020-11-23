@@ -1,19 +1,18 @@
 package org.beetl.sql.clazz.kit;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 线程安全的hashMap
+ *
  * @author xiandafu
  */
 public class ThreadSafeCaseInsensitiveHashMap extends CaseInsensitiveHashMap {
 
 	private static final long serialVersionUID = 9178606903603606032L;
 
-	private final Map<String, String> lowerCaseMap = new HashMap<String, String>();
 
 	final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
@@ -22,8 +21,8 @@ public class ThreadSafeCaseInsensitiveHashMap extends CaseInsensitiveHashMap {
 
 	@Override
 	public boolean containsKey(Object key) {
+		r.lock();
 		try {
-			r.lock();
 			return super.containsKey(key);
 		} finally {
 			r.unlock();
@@ -33,8 +32,9 @@ public class ThreadSafeCaseInsensitiveHashMap extends CaseInsensitiveHashMap {
 
 	@Override
 	public Object get(Object key) {
+		r.lock();
 		try {
-			r.lock();
+
 			return super.get(key);
 		} finally {
 			r.unlock();
@@ -47,8 +47,8 @@ public class ThreadSafeCaseInsensitiveHashMap extends CaseInsensitiveHashMap {
 		/*
 		 * 保持map和lowerCaseMap同步 在put新值之前remove旧的映射关系
 		 */
+		w.lock();
 		try {
-			w.lock();
 			return super.put(key, value);
 		} finally {
 			w.unlock();
@@ -58,8 +58,9 @@ public class ThreadSafeCaseInsensitiveHashMap extends CaseInsensitiveHashMap {
 
 	@Override
 	public void putAll(Map m) {
+		w.lock();
 		try {
-			w.lock();
+
 			super.putAll(m);
 		} finally {
 			w.unlock();
@@ -69,8 +70,8 @@ public class ThreadSafeCaseInsensitiveHashMap extends CaseInsensitiveHashMap {
 
 	@Override
 	public Object remove(Object key) {
+		w.lock();
 		try {
-			w.lock();
 			return super.remove(key);
 		} finally {
 			w.unlock();

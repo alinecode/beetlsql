@@ -4,9 +4,9 @@ import org.beetl.sql.annotation.entity.TargetSQLManager;
 import org.beetl.sql.clazz.ClassDesc;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.TableDesc;
+import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
-import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.template.SQLErrorInfo;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
@@ -88,11 +88,13 @@ public class ConditionalSQLManager extends  SQLManager {
 
 
 
+    @Override
     public <T> Query<T> query(Class<T> clazz) {
         SQLManager sqlManager = decide(clazz);
         return new Query<T>(sqlManager, clazz);
     }
 
+    @Override
     public <T> LambdaQuery<T> lambdaQuery(Class<T> clazz) {
         if (BeanKit.queryLambdasSupport) {
             SQLManager sqlManager = decide(clazz);
@@ -139,12 +141,14 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param inputParas
      * @return
      */
+    @Override
     public SQLResult getSQLResult(SQLSource source, Object inputParas) {
         return defaultSQLManager.getSQLResult(source,inputParas);
     }
 
 
-	public SQLResult getSQLResult(SqlId id, Object paras, TemplateContext ctx) {
+	@Override
+    public SQLResult getSQLResult(SqlId id, Object paras, TemplateContext ctx) {
         return defaultSQLManager.getSQLResult(id,paras,ctx);
 	}
 
@@ -154,27 +158,33 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param sqlId
      * @return
      */
+    @Override
     public SQLExecutor getScript(SqlId sqlId) {
         throw new UnsupportedOperationException(ConditionalSQLManager.class.getName());
     }
 
+    @Override
     public boolean containSqlId(SqlId sqlId){
         throw new UnsupportedOperationException(ConditionalSQLManager.class.getName());
 	}
 
-	public SQLErrorInfo validateSqlId(SqlId id){
+	@Override
+    public SQLErrorInfo validateSqlId(SqlId id){
         throw new UnsupportedOperationException(ConditionalSQLManager.class.getName());
 	}
 
 
-	public SQLManager viewType(Class view){
+	@Override
+    public SQLManager viewType(Class view){
         throw new UnsupportedOperationException(ConditionalSQLManager.class.getName());
     }
 
+    @Override
     public SQLManager resultSetMapper(Class resultSetMapperClass){
         throw new UnsupportedOperationException(ConditionalSQLManager.class.getName());
     }
 
+    @Override
     public SQLManager rowMapper(Class rowMapperClass){
         throw new UnsupportedOperationException(ConditionalSQLManager.class.getName());
     }
@@ -188,6 +198,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param autoSQLEnum ConstantEnum
      * @return BaseSQLExecutor
      */
+    @Override
     public SQLExecutor getScript(Class<?> cls, AutoSQLEnum autoSQLEnum) {
             SQLManager sqlManager = decide(cls);
             return sqlManager.getScript(cls, autoSQLEnum);
@@ -209,6 +220,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return Pojo集合
      */
 
+    @Override
     public <T> List<T> select(SqlId sqlId, Class<T> clazz, Object paras) {
         SQLManager sqlManager = decide(clazz);
 		return sqlManager.select(sqlId,clazz,paras);
@@ -220,6 +232,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param clazz
      * @return
      */
+    @Override
     public <T> List<T> select(SqlId sqlId, Class<T> clazz) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.select(sqlId, clazz, null);
@@ -232,6 +245,7 @@ public class ConditionalSQLManager extends  SQLManager {
 
 
 
+    @Override
     public <T> PageResult<T> pageQuery(SqlId sqlId, Class<T> clazz, Object paras, PageRequest request){
         SQLManager sqlManager = decide(clazz);
        return sqlManager.pageQuery(sqlId,clazz,paras,request);
@@ -247,6 +261,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T unique(Class<T> clazz, Object pk) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.unique(clazz,pk);
@@ -262,6 +277,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 如果没有找到，返回null
      */
 
+    @Override
     public <T> T single(Class<T> clazz, Object pk) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.single(clazz,pk);
@@ -275,6 +291,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T lock(Class<T> clazz, Object pk) {
         SQLManager sqlManager = decide(clazz);
        return sqlManager.lock(clazz,pk);
@@ -306,6 +323,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public long allCount(Class<?> clazz) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.allCount(clazz);
@@ -314,12 +332,14 @@ public class ConditionalSQLManager extends  SQLManager {
 
 
 
+    @Override
     public <T> T templateOne(T t) {
         SQLManager sqlManager = decide(t.getClass());
         return sqlManager.templateOne(t);
     }
 
 
+    @Override
     public <T> List<T> template(T t) {
         SQLManager sqlManager = decide(t.getClass());
         return sqlManager.template(t);
@@ -337,12 +357,14 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> long templateCount(T t) {
         return templateCount(t.getClass(), t);
     }
 
 
 
+    @Override
     public <T> long templateCount(Class<T> target, Object paras) {
         SQLManager sqlManager = decide(target);
        return sqlManager.templateCount(target,paras);
@@ -357,6 +379,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public Long longValue(SqlId id, Object paras) {
         return decide(id).longValue(id,paras);
     }
@@ -369,6 +392,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public Integer intValue(SqlId id, Object paras) {
         return decide(id).selectSingle(id, paras, Integer.class);
     }
@@ -383,6 +407,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public BigDecimal bigDecimalValue(SqlId id, Object paras) {
         return decide(id).selectSingle(id, paras, BigDecimal.class);
     }
@@ -398,6 +423,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T selectSingle(SqlId sqlId, Object paras, Class<T> target) {
         SQLManager sqlManager = decide(target);
         return sqlManager.selectSingle(sqlId,paras,target);
@@ -414,6 +440,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T selectUnique(SqlId id, Object paras, Class<T> target) {
         SQLManager sqlManager = decide(target);
         return sqlManager.selectUnique(id,paras,target);
@@ -436,6 +463,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int deleteById(Class<?> clazz, Object pkValue) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.deleteById(clazz,pkValue);
@@ -448,6 +476,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int deleteObject(Object obj) {
         SQLManager sqlManager = decide(obj.getClass());
         return sqlManager.deleteObject(obj);
@@ -462,6 +491,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insert(Object paras) {
         return this.insert(paras.getClass(), paras);
     }
@@ -474,6 +504,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insertTemplate(Object paras) {
         return this.insertTemplate(paras.getClass(), paras);
     }
@@ -488,6 +519,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insert(Class clazz, Object paras) {
 		return generalInsert(clazz, paras, false);
 	}
@@ -502,6 +534,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insertTemplate(Class clazz, Object paras) {
         return generalInsert(clazz, paras, true);
     }
@@ -515,12 +548,14 @@ public class ConditionalSQLManager extends  SQLManager {
 	 * @return
 	 */
 
+    @Override
     public boolean exist(Class<?> clazz, Object pk){
         SQLManager sqlManager = decide(clazz);
 		return sqlManager.exist(clazz,pk);
 
 	}
 
+    @Override
     protected int generalInsert(Class clazz, Object paras, boolean template) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.generalInsert(clazz,paras,template);
@@ -536,6 +571,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param list
      */
 
+    @Override
     public int[] insertBatch(Class clazz, List<?> list) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.insertBatch(clazz,list);
@@ -553,6 +589,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int insert(SqlId sqlId, Object paras) {
         SQLManager sqlManager = decide(paras.getClass());
         return sqlManager.insert(sqlId,paras);
@@ -569,6 +606,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param cols,需要得到数据库自动生成的值
      */
 
+    @Override
     public Object[] insert(SqlId sqlId, Object paras, String[] cols) {
         return decide(sqlId).insert(sqlId,paras,cols);
     }
@@ -581,6 +619,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 受影响条数
      */
 
+    @Override
     public boolean upsert(Object obj) {
         return this.upsert(obj,false);
     }
@@ -592,6 +631,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 如果是插入操作，返回true，如果是更新，返回false
      */
 
+    @Override
     public boolean upsertByTemplate(Object obj) {
         return this.upsert(obj,true);
     }
@@ -604,7 +644,8 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param template
      * @return 如果是插入操作，返回true，如果是更新，返回false
      */
-    protected boolean upsert(Object obj,boolean template) {
+    @Override
+    protected boolean upsert(Object obj, boolean template) {
         SQLManager sqlManager = decide(obj.getClass());
     	return sqlManager.upsert(obj,template);
 
@@ -621,6 +662,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int updateById(Object obj) {
         SQLManager sqlManager = decide(obj.getClass());
        return sqlManager.updateById(obj);
@@ -633,6 +675,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int updateTemplateById(Object obj) {
         SQLManager sqlManager = decide(obj.getClass());
         return sqlManager.updateTemplateById(obj);
@@ -644,6 +687,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int updateTemplateById(Class c, Map paras) {
         SQLManager sqlManager = decide(c);
         return sqlManager.updateTemplateById(c,paras);
@@ -657,6 +701,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int updateTemplateById(Class c, Object obj) {
         SQLManager sqlManager = decide(c);
         return sqlManager.updateTemplateById(c,obj);
@@ -670,6 +715,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int[] updateByIdBatch(List<?> list) {
         if(list.isEmpty()){
             return new int[0];
@@ -687,6 +733,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int update(SqlId sqlId, Object obj) {
        return decide(sqlId).update(sqlId,obj);
     }
@@ -698,6 +745,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int update(SqlId sqlId) {
         return decide(sqlId).update(sqlId);
     }
@@ -710,6 +758,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int update(SqlId sqlId, Map<String, Object> paras) {
         return decide(sqlId).update(sqlId,paras);
     }
@@ -722,6 +771,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 返回更新的条数
      */
 
+    @Override
     public int[] updateBatch(SqlId sqlId, List<?> list) {
         return decide(sqlId).updateBatch(sqlId,list);
     }
@@ -734,6 +784,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int[] updateBatchTemplateById(Class clz, List<?> list) {
         SQLManager sqlManager = decide(clz);
         return sqlManager.updateBatchTemplateById(clz,list);
@@ -748,6 +799,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public int updateAll(Class<?> clazz, Object param) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.updateAll(clazz,param);
@@ -765,18 +817,21 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.execute(sqlTemplate,clazz,paras);
     }
 
 
+    @Override
     public TableDesc getTableDesc(String table){
         throw new UnsupportedOperationException(table);
 //       return  current.get().getTableDesc(table);
     }
 
 
+    @Override
     public ClassDesc getClassDesc(Class target){
         SQLManager sqlManager = decide(target);
         return sqlManager.getClassDesc(target);
@@ -791,6 +846,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras) {
         SQLManager sqlManager = decide(clazz);
        return sqlManager.execute(sqlTemplate,clazz,paras);
@@ -823,7 +879,8 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
-    public <T> PageResult<T> executePageQuery(String sqlTemplate, Class<T> clazz, Object paras,PageRequest<T> request) {
+    @Override
+    public <T> PageResult<T> executePageQuery(String sqlTemplate, Class<T> clazz, Object paras, PageRequest<T> request) {
         SQLManager sqlManager = decide(clazz);
         return sqlManager.executePageQuery(sqlTemplate,clazz,paras,request);
     }
@@ -836,6 +893,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param paras
      * @return
      */
+    @Override
     public int executeUpdate(String sqlTemplate, Object paras) {
 		return  defaultSQLManager.executeUpdate(sqlTemplate,paras);
     }
@@ -871,6 +929,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param <T>
      * @return
      */
+    @Override
     public <T> PageResult<T> execute(SQLReady p, Class<T> clazz, PageRequest<T> pageRequest) {
         SQLManager sqlManager = decide(clazz);
         return  sqlManager.execute(p,clazz,pageRequest);
@@ -883,10 +942,12 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return 返回更新条数
      */
 
+    @Override
     public int executeUpdate(SQLReady p) {
 		return defaultSQLManager.executeUpdate(p);
     }
 
+    @Override
     public int[] executeBatchUpdate(SQLBatchReady batch) {
          return defaultSQLManager.executeBatchUpdate(batch);
     }
@@ -898,6 +959,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
 
+    @Override
     public <T> T executeOnConnection(OnConnection<T> onConnection) {
 
        return  defaultSQLManager.executeOnConnection(onConnection);
@@ -905,19 +967,23 @@ public class ConditionalSQLManager extends  SQLManager {
 
 
 
+    @Override
     public SQLLoader getSqlLoader() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void setSqlLoader(SQLLoader sqlLoader) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public ConnectionSource getDs() {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void setDs(ConnectionSource ds) {
         throw new UnsupportedOperationException();
     }
@@ -927,11 +993,13 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public NameConversion getNc() {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void setNc(NameConversion nc) {
         throw new UnsupportedOperationException();
     }
@@ -941,6 +1009,7 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public DBStyle getDbStyle() {
         throw new UnsupportedOperationException();
     }
@@ -950,6 +1019,7 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public SQLTemplateEngine getSqlTemplateEngine() {
         throw new UnsupportedOperationException();
     }
@@ -959,6 +1029,7 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public MetadataManager getMetaDataManager() {
         throw new UnsupportedOperationException();
     }
@@ -969,6 +1040,7 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public Interceptor[] getInters() {
         throw new UnsupportedOperationException();
     }
@@ -978,6 +1050,7 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @param inters
      */
+    @Override
     public void setInters(Interceptor[] inters) {
 		sqlManagerMap.values().forEach(sqlManager -> {
 			sqlManager.setInters(inters);
@@ -991,6 +1064,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param name
      * @param alorithm
      */
+    @Override
     public void addIdAutonGen(String name, IDAutoGen alorithm) {
 		sqlManagerMap.values().forEach(sqlManager -> {
 			sqlManager.addIdAutonGen(name,alorithm);
@@ -1005,6 +1079,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param param
      * @return
      */
+    @Override
     protected Object getAssignIdByIdAutonGen(String name, String param, String table) {
         throw new UnsupportedOperationException();
 
@@ -1015,11 +1090,13 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public Map<String, BeanProcessor> getProcessors() {
         throw new UnsupportedOperationException();
     }
 
 
+    @Override
     public void setProcessors(Map<String, BeanProcessor> processors) {
         throw new UnsupportedOperationException();
     }
@@ -1029,6 +1106,7 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @return
      */
+    @Override
     public BeanProcessor getDefaultBeanProcessors() {
         return defaultSQLManager.getDefaultBeanProcessors();
     }
@@ -1038,12 +1116,14 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @param defaultBeanProcessors
      */
+    @Override
     public void setDefaultBeanProcessors(BeanProcessor defaultBeanProcessors) {
          throw new UnsupportedOperationException();
     }
 
 
 
+    @Override
     public <T> T getMapper(Class<T> mapperInterface) {
         return super.getMapper(mapperInterface);
     }
@@ -1051,6 +1131,7 @@ public class ConditionalSQLManager extends  SQLManager {
 
 
 
+    @Override
     public ClassLoaderKit getClassLoaderKit() {
        return this.defaultSQLManager.getClassLoaderKit();
     }
@@ -1060,6 +1141,7 @@ public class ConditionalSQLManager extends  SQLManager {
      *
      * @param classLoaderKit
      */
+    @Override
     public void setClassLoaderKit(ClassLoaderKit classLoaderKit) {
         throw new UnsupportedOperationException();
     }
@@ -1072,11 +1154,13 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param virtualTable
      * @param realTable
      */
-    public void addVirtualTable(String realTable,String virtualTable){
+    @Override
+    public void addVirtualTable(String realTable, String virtualTable){
         throw new UnsupportedOperationException();
     }
 
-	public void setDbStyle(DBStyle dbStyle) {
+	@Override
+    public void setDbStyle(DBStyle dbStyle) {
         throw new UnsupportedOperationException();
 
 	}
@@ -1086,31 +1170,38 @@ public class ConditionalSQLManager extends  SQLManager {
 
 	}
 
-	public SqlIdFactory getSqlIdFactory() {
+	@Override
+    public SqlIdFactory getSqlIdFactory() {
         throw new UnsupportedOperationException();
 	}
 
-	public void setSqlIdFactory(SqlIdFactory sqlIdFactory) {
+	@Override
+    public void setSqlIdFactory(SqlIdFactory sqlIdFactory) {
         throw new UnsupportedOperationException();
 	}
 
-	public String getCharset() {
+	@Override
+    public String getCharset() {
         throw new UnsupportedOperationException();
 	}
 
-	public void setCharset(String charset) {
+	@Override
+    public void setCharset(String charset) {
         throw new UnsupportedOperationException();
 	}
 
-	public boolean isProduct() {
+	@Override
+    public boolean isProduct() {
         throw new UnsupportedOperationException();
 	}
 
-	public void setProduct(boolean product) {
+	@Override
+    public void setProduct(boolean product) {
         throw new UnsupportedOperationException();
 	}
 
-	public void setSQLTemplateEngine(SQLTemplateEngine sqlTemplateEngine) {
+	@Override
+    public void setSQLTemplateEngine(SQLTemplateEngine sqlTemplateEngine) {
         throw new UnsupportedOperationException();
 	}
 

@@ -5,15 +5,14 @@ import org.beetl.core.Resource;
 import org.beetl.core.engine.GrammarCreator;
 import org.beetl.core.statement.*;
 
-import java.util.Map;
-
 /**
  * 对sql模板语法进行定制，比如占位符输出"?"而不是实际内容
  * @author xiandafu
  */
 public class SQLGrammarCreator extends GrammarCreator {
 
-	public PlaceholderST createTextOutputSt(Expression exp, FormatExpression format) {
+	@Override
+    public PlaceholderST createTextOutputSt(Expression exp, FormatExpression format) {
 		disableSyntaxCheck("TextOutputSt");
 		return new SQLPlaceholderST(exp, format, null);
 	}
@@ -53,7 +52,8 @@ public class SQLGrammarCreator extends GrammarCreator {
 		 * @param name
 		 * @return
 		 */
-		protected Resource getResource(GroupTemplate gt, String name) {
+		@Override
+        protected Resource getResource(GroupTemplate gt, String name) {
 			return null;
 		}
 	}

@@ -133,9 +133,12 @@ public class ClassDesc {
 	public Map<String,Object> getIdMethods() {
 		return this.idMethods;
 	}
-	
 
-	public ClassAnnotation getClassAnnoation(){
+	/**
+	 * 修正拼写错误
+	 * @return ClassAnnotation
+	 */
+	public ClassAnnotation getClassAnnotation(){
 		return ca;
 	}
 

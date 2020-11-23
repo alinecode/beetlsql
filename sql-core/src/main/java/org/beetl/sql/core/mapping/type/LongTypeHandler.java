@@ -2,12 +2,11 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class LongTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
 	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 

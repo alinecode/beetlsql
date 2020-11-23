@@ -1,32 +1,21 @@
 package org.beetl.sql.core.nosql;
 
-import org.beetl.sql.annotation.entity.AssignID;
-import org.beetl.sql.annotation.entity.AutoID;
-import org.beetl.sql.annotation.entity.SeqID;
-import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.DefaultKeyWordHandler;
-import org.beetl.sql.clazz.kit.SpecialKeyWordHandlder;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.mapping.BeanProcessor;
-import org.beetl.sql.core.mapping.type.*;
+import org.beetl.sql.core.mapping.type.BooleanTypeHandler;
+import org.beetl.sql.core.mapping.type.DoubleTypeHandler;
+import org.beetl.sql.core.mapping.type.ReadTypeParameter;
 import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.range.LimitWithOffsetRange;
-import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 数据库差异：iotdb,目前itodjbc实现比较奇怪，因此参考IotDbHackStyle：
@@ -117,6 +106,7 @@ public class IotDbStyle extends AbstractDBStyle {
 	public void config(SQLManager sqlManager){
 
 		sqlManager.setDefaultBeanProcessors( new BeanProcessor(){
+			@Override
 			protected  String getColName(ExecuteContext ctx, ResultSetMetaData rsmd, int col) throws SQLException{
 				/*iotdb会返回STORAGE GROUP，需要排除*/
 				String colName = super.getColName(ctx,rsmd,col);

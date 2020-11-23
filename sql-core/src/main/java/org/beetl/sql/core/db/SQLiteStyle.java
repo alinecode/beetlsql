@@ -4,8 +4,6 @@ import org.beetl.sql.clazz.kit.KeyWordHandler;
 import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
 
-import java.util.Map;
-
 /**
  * SQLite 数据库
  * Created by mikey.zhaopeng on 2015/11/18.

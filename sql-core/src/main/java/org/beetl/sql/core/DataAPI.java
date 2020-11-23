@@ -14,10 +14,12 @@ import java.util.Map;
  *
  * 操作数据的api，未来考虑都为非JDBC提供统一一个接口
  *
+ * @author xiandafu
  * @see SQLManager
  * @see MultipleSQLManager
  */
 public interface DataAPI {
+
     <T> Query<T> query(Class<T> clazz);
 
     <T> LambdaQuery<T> lambdaQuery(Class<T> clazz);
@@ -34,7 +36,7 @@ public interface DataAPI {
 
     <T> T single(Class<T> clazz, Object pk);
 
-    public <T> List<T> selectByIds(Class<T> clazz, List<?> pks);
+    <T> List<T> selectByIds(Class<T> clazz, List<?> pks);
 
     <T> T lock(Class<T> clazz, Object pk);
 

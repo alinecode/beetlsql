@@ -1,7 +1,7 @@
 package org.beetl.sql.core;
 
-import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.annotation.entity.AssignID;
+import org.beetl.sql.clazz.TableDesc;
 
 import java.util.Map;
 

@@ -2,8 +2,6 @@ package org.beetl.sql.ext.spring.test.dynamic;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.ext.DBInitHelper;
-import org.beetl.sql.ext.spring.test.UserInfo;
-import org.beetl.sql.ext.spring.test.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

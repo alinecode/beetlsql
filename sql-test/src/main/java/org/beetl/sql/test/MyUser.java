@@ -2,7 +2,8 @@ package org.beetl.sql.test;
 
 
 import lombok.Data;
-import org.beetl.sql.annotation.entity.*;
+import org.beetl.sql.annotation.entity.Auto;
+import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
 import org.beetl.sql.fetch.annotation.FetchOne;
 

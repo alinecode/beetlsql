@@ -3,7 +3,6 @@ package org.beetl.sql.core.nosql;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.QuerySQLExecutor;
 import org.beetl.sql.core.SQLExecutor;
-import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.range.RangeSql;
@@ -43,6 +42,7 @@ public class DruidStyle extends AbstractDBStyle {
     }
 
 
+    @Override
     public RangeSql getRangeSql(){
         throw new UnsupportedOperationException("druid 不支持offset");
     }

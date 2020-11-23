@@ -2,16 +2,14 @@
 package org.beetl.sql.core.loader;
 
 import org.beetl.sql.clazz.SQLType;
-import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.Plugin;
-import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.SqlId;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.rmi.UnexpectedException;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -130,7 +128,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 
 	protected  Long getURLVersion(URL url){
 		if(url==null){
-			return  0l;
+			return  0L;
 		}
 
 		if(url.getProtocol().equals("file")){
@@ -138,10 +136,8 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 			return new File(path).lastModified();
 		}else{
 			//其他协议，比如jar。
-			return 0l;
+			return 0L;
 		}
-		
-		
 	}
 	
 
@@ -261,6 +257,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 
 	}
 
+	@Override
 	public String toString(){
 		return this.sqlRoot;
 	}

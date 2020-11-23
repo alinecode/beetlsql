@@ -1,12 +1,10 @@
 package org.beetl.sql.core.mapper;
 
-import org.beetl.sql.core.page.PageRequest;
-import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.entity.User;
 import org.beetl.sql.mapper.BaseMapper;
-import org.beetl.sql.mapper.annotation.*;
-
-import java.util.List;
+import org.beetl.sql.mapper.annotation.Param;
+import org.beetl.sql.mapper.annotation.Root;
+import org.beetl.sql.mapper.annotation.Template;
 
 /**
  * 参数命名

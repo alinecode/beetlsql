@@ -1,7 +1,7 @@
 package org.beetl.sql.core.loader;
 
-import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.db.DBStyle;
 
 import java.util.Map;
@@ -76,10 +76,12 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 
 	}
 
+	@Override
 	public DBStyle getDbStyle() {
 		return dbs;
 	}
 
+	@Override
 	public void setDbStyle(DBStyle dbs) {
 		this.dbs = dbs;
 	}

@@ -1,7 +1,5 @@
 package org.beetl.sql.core.mapping.type;
 
-import java.sql.Clob;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

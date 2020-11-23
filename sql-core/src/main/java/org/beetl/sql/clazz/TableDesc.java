@@ -107,10 +107,11 @@ public class TableDesc {
 		if(classDesc==null){
 			synchronized(classes){
 				classDesc = classes.get(c);
-				if(classDesc!=null) return classDesc;
-				classDesc = new ClassDesc(c,this,nc);
+				if (classDesc != null) {
+					return classDesc;
+				}
+				classDesc = new ClassDesc(c, this, nc);
 				classes.put(c, classDesc);
-				
 			}
 		}
 		

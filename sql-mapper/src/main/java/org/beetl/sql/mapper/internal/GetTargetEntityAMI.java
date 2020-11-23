@@ -1,9 +1,9 @@
 package org.beetl.sql.mapper.internal;
 
-		import org.beetl.sql.core.SQLManager;
-		import org.beetl.sql.mapper.MapperInvoke;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.mapper.MapperInvoke;
 
-		import java.lang.reflect.Method;
+import java.lang.reflect.Method;
 
 /**
  * create time : 2017-04-27 16:10

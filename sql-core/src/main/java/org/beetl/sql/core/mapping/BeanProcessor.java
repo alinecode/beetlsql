@@ -7,7 +7,10 @@ import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.EnumKit;
 import org.beetl.sql.clazz.kit.JavaType;
-import org.beetl.sql.core.*;
+import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.SQLManagerBuilder;
+import org.beetl.sql.core.SqlId;
+import org.beetl.sql.core.Tail;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.engine.SQLParameter;
@@ -377,8 +380,9 @@ public class BeanProcessor {
 	public void callSetter(Object target, PropertyDescriptor prop, Object value, Class<?> type) throws SQLException {
 
 		Method setter = BeanKit.getWriteMethod(prop, target.getClass());
-		if (setter == null)
+		if (setter == null) {
 			return;
+		}
 		if (type.isEnum()) {
 			if (value == null) {
 				return;

@@ -1,7 +1,7 @@
 package org.beetl.sql.mapper.identity;
 
-import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;

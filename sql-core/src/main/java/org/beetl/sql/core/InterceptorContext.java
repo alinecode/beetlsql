@@ -1,9 +1,6 @@
 package org.beetl.sql.core;
 
-import org.beetl.sql.core.engine.SQLParameter;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class InterceptorContext {

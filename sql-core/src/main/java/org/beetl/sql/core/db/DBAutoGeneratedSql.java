@@ -3,8 +3,6 @@ package org.beetl.sql.core.db;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.core.SQLSource;
 
-import java.util.Set;
-
 /**
  * 根据实体自动生成crud 的sql
  */

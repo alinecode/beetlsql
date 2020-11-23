@@ -21,6 +21,7 @@ public class UnderlinedNameConversion extends NameConversion {
 		return StringKit.enCodeUnderlined(c.getSimpleName());
 	}
 	
+	@Override
 	public  String getClassName(String tableName){
 
 		 String temp = StringKit.deCodeUnderlined(tableName.toLowerCase());

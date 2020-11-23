@@ -3,7 +3,6 @@ package org.beetl.sql.springboot.dynamic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.beetl.sql.annotation.entity.Auto;
 import org.beetl.sql.saga.kafka.KafkaSagaConfig;
 import org.beetl.sql.saga.kafka.KafkaSagaContext;
 import org.beetl.sql.saga.kafka.KafkaSagaTransaction;

@@ -31,7 +31,8 @@ public class SnowflakeIDAutoGen implements IDAutoGen<Long> {
 	}
 
 	//Override
-	public Long nextID(String params) {
+	@Override
+    public Long nextID(String params) {
 		if (params == null || params.length() == 0) {
 			return defaultWork.nextId();
 		} else {

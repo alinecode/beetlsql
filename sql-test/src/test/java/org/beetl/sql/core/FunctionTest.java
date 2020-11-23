@@ -4,7 +4,6 @@ import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
-import org.beetl.sql.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

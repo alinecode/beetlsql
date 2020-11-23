@@ -3,7 +3,9 @@ package org.beetl.sql.mapper.builder;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.page.PageResult;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 public class  ReturnTypeParser {

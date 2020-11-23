@@ -3,10 +3,7 @@ package org.beetl.sql.core.engine;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLResult;
-import org.beetl.sql.core.SQLSource;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 

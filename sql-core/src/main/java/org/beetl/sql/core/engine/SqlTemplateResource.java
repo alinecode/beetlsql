@@ -2,9 +2,9 @@ package org.beetl.sql.core.engine;
 
 import org.beetl.core.Resource;
 import org.beetl.core.ResourceLoader;
+import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.loader.SQLLoader;
-import org.beetl.sql.core.SQLSource;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -19,6 +19,7 @@ public class SqlTemplateResource extends Resource<SqlId> {
 
 	}
 
+	@Override
 	public Reader openReader() {
 		return new NoneBlockStringReader(source.getTemplate());
 	}
@@ -63,13 +64,16 @@ class  NoneBlockStringReader extends Reader {
 		return;
 	}
 
+	@Override
 	public int read() throws IOException {
 
-		if (next >= length)
+		if (next >= length) {
 			return -1;
+		}
 		return str.charAt(next++);
 	}
 
+	@Override
 	public int read(char cbuf[], int off, int len) throws IOException {
 			if ((off < 0) || (off > cbuf.length) || (len < 0) ||
 					((off + len) > cbuf.length) || ((off + len) < 0)) {
@@ -77,8 +81,9 @@ class  NoneBlockStringReader extends Reader {
 			} else if (len == 0) {
 				return 0;
 			}
-			if (next >= length)
+			if (next >= length) {
 				return -1;
+			}
 			int n = Math.min(length - next, len);
 			str.getChars(next, next + n, cbuf, off);
 			next += n;
@@ -86,9 +91,11 @@ class  NoneBlockStringReader extends Reader {
 	}
 
 
+	@Override
 	public long skip(long ns) throws IOException {
-			if (next >= length)
+			if (next >= length) {
 				return 0;
+			}
 			// Bound skip by beginning and end of the source
 			long n = Math.min(length - next, ns);
 			n = Math.max(-next, n);
@@ -97,15 +104,18 @@ class  NoneBlockStringReader extends Reader {
 	}
 
 
+	@Override
 	public boolean ready() throws IOException {
 			return true;
 	}
 
+	@Override
 	public boolean markSupported() {
 		return true;
 	}
 
 
+	@Override
 	public void mark(int readAheadLimit) throws IOException {
 		if (readAheadLimit < 0){
 			throw new IllegalArgumentException("Read-ahead limit < 0");
@@ -114,10 +124,12 @@ class  NoneBlockStringReader extends Reader {
 	}
 
 
+	@Override
 	public void reset() throws IOException {
 			next = mark;
 	}
 
+	@Override
 	public void close() {
 
 	}

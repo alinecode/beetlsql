@@ -10,8 +10,8 @@ import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.DefaultKeyWordHandler;
 import org.beetl.sql.clazz.kit.KeyWordHandler;
-import org.beetl.sql.core.concat.*;
 import org.beetl.sql.core.*;
+import org.beetl.sql.core.concat.*;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.meta.SchemaMetadataManager;
@@ -141,15 +141,15 @@ public abstract class  AbstractDBStyle implements DBStyle {
         ClassDesc classDesc = table.genClassDesc(cls,this.nameConversion);
         ConcatContext concatContext = this.createConcatContext();
 
-        if(classDesc.getClassAnnoation().getLogicDeleteAttrName()==null) {
+        if(classDesc.getClassAnnotation().getLogicDeleteAttrName()==null) {
             Delete delete = concatContext.delete().from(cls);
             appendIdCondition(cls,delete);
             return new SQLTableSource(delete.toSql());
         }else {
             Update update = concatContext.update().from(cls);
             appendIdCondition(cls,update);
-            String col = this.nameConversion.getColName(cls, classDesc.getClassAnnoation().getLogicDeleteAttrName());
-            Object value = classDesc.getClassAnnoation().getLogicDeleteAttrValue();
+            String col = this.nameConversion.getColName(cls, classDesc.getClassAnnotation().getLogicDeleteAttrName());
+            Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
             update.assignConstants(col,value);
             return new SQLTableSource(update.toSql());
         }
@@ -211,13 +211,13 @@ public abstract class  AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && properties.hasNext()) {
             String col = cols.next();
             String prop = properties.next();
-            if (classDesc.getClassAnnoation().isUpdateIgnore(prop)) {
+            if (classDesc.getClassAnnotation().isUpdateIgnore(prop)) {
                 continue;
             }
             if (idCols.contains(col)) {
                 continue;
             }
-            if(prop.equals(classDesc.getClassAnnoation().getVersionProperty())){
+            if(prop.equals(classDesc.getClassAnnotation().getVersionProperty())){
                 //版本字段
                 update.assignConstants(col,col+1);
                 continue;
@@ -243,13 +243,13 @@ public abstract class  AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && properties.hasNext()) {
             String col = cols.next();
             String prop = properties.next();
-            if (classDesc.getClassAnnoation().isUpdateIgnore(prop)) {
+            if (classDesc.getClassAnnotation().isUpdateIgnore(prop)) {
                 continue;
             }
             if (idCols.contains(col)) {
                 continue;
             }
-            if(prop.equals(classDesc.getClassAnnoation().getVersionProperty())){
+            if(prop.equals(classDesc.getClassAnnotation().getVersionProperty())){
                 //版本字段
                 update.assignConstants(col,col+1);
                 continue;
@@ -266,6 +266,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
 
+    @Override
     public SQLSource genInsertTemplate(Class<?> cls){
         return generalInsert(cls,true);
     }
@@ -289,7 +290,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         while (cols.hasNext() && attrs.hasNext()) {
             String col = cols.next();
             String attr = attrs.next();
-            if (classDesc.getClassAnnoation().isInsertIgnore(attr)) {
+            if (classDesc.getClassAnnotation().isInsertIgnore(attr)) {
                 continue;
             }
 
@@ -310,9 +311,9 @@ public abstract class  AbstractDBStyle implements DBStyle {
                 }
             }
 
-            if(attr.equals(classDesc.getClassAnnoation().getVersionProperty())&&classDesc.getClassAnnoation().getInitVersionValue()!=-1){
+            if(attr.equals(classDesc.getClassAnnotation().getVersionProperty())&&classDesc.getClassAnnotation().getInitVersionValue()!=-1){
                 //版本字段
-                insert.conditionalSet(col,classDesc.getClassAnnoation().getInitVersionValue()+"");
+                insert.conditionalSet(col,classDesc.getClassAnnotation().getInitVersionValue()+"");
                 continue;
 
             }
@@ -384,14 +385,14 @@ public abstract class  AbstractDBStyle implements DBStyle {
             String col = cols.next();
             String prop = properties.next();
 
-            if (classDesc.getClassAnnoation().isUpdateIgnore(prop)) {
+            if (classDesc.getClassAnnotation().isUpdateIgnore(prop)) {
                 continue;
             }
             if (idCols.contains(col)) {
                 //主键不更新
                 continue;
             }
-            if(prop.equals(classDesc.getClassAnnoation().getVersionProperty())){
+            if(prop.equals(classDesc.getClassAnnotation().getVersionProperty())){
                 //版本字段
                 update.assignConstants(col,col+1);
                 continue ;
@@ -403,7 +404,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
     protected void appendVersion(ClassDesc desc,WhereNode node){
-        String property = desc.getClassAnnoation().getVersionProperty();
+        String property = desc.getClassAnnotation().getVersionProperty();
         if(property==null){
             return ;
         }
@@ -477,19 +478,21 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
     public String getOrderBy() {
-        return   lineSeparator + appendExpress("text(has(_orderBy)?' order by '+_orderBy)") + " ";
+        return lineSeparator + appendExpress("text(has(_orderBy)?' order by '+_orderBy)") + " ";
     }
 
-    public String appendExpress(String express){
+    public String appendExpress(String express) {
         return sqlTemplateEngine.appendVar(express);
     }
 
-    /* 根据注解来决定主键采用哪种方式生成。在跨数据库应用中，可以为一个id指定多个注解方式，如mysql，postgres 用auto，oracle 用seq
+    /**
+     * 根据注解来决定主键采用哪种方式生成。在跨数据库应用中，可以为一个id指定多个注解方式，如mysql，postgres 用auto，oracle 用seq
      */
     @Override
-    public int getIdType(Class c,String idProperty) {
+    public int getIdType(Class c, String idProperty) {
         List<Annotation> ans = BeanKit.getAllAnnotation(c, idProperty);
-        int idType = DBType.ID_AUTO; //默认是自增长
+        //默认是自增长
+        int idType = DBType.ID_AUTO;
 
         for (Annotation an : ans) {
             if (an instanceof AutoID) {
@@ -595,6 +598,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         return offsetStartZero;
     }
 
+    @Override
     public void setOffsetStartZero(boolean offsetStartZero) {
         this.offsetStartZero = offsetStartZero;
     }
@@ -604,6 +608,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         return null;
     }
 
+    @Override
     public SQLTemplateEngine getSQLTemplateEngine(){
         return this.sqlTemplateEngine;
     }

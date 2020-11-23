@@ -2,11 +2,10 @@ package org.beetl.sql.mapper;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
-
 import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
 
-
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -124,6 +123,7 @@ public class MapperJavaProxy implements InvocationHandler {
      * @throws Throwable the throwable
      */
     //Override
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Class caller = method.getDeclaringClass();
         MapperInvoke invoke = builder.getAmi(entityClass,caller,method);

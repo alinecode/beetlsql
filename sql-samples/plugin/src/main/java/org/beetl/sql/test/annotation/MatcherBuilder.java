@@ -1,7 +1,6 @@
 package org.beetl.sql.test.annotation;
 
 import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.core.MapperBuilder;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.mapper.MapperInvoke;

@@ -2,21 +2,19 @@ package org.beetl.sql.test.annotation;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.beetl.sql.annotation.builder.AttributeConvert;
-import org.beetl.sql.annotation.builder.UpdateTime;
 import org.beetl.sql.clazz.kit.BeanKit;
-
 import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
-import  com.fasterxml.jackson.databind.JavaType;
+
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +42,7 @@ public class JacksonConvert implements AttributeConvert {
 
 
 
+    @Override
     public  Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
         try{
             String json =  rs.getString(index);

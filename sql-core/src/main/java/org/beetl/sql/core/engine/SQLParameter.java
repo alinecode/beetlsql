@@ -41,6 +41,7 @@ public class SQLParameter {
 
 	}
 
+	@Override
 	public String toString() {
 		if (value != null) {
 			return value.toString();
@@ -59,10 +60,12 @@ public class SQLParameter {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 		SQLParameter that = (SQLParameter) o;
 		return type == that.type && jdbcType == that.jdbcType && Objects.equals(value, that.value) && Objects
 				.equals(expression, that.expression);

@@ -1,11 +1,10 @@
 package org.beetl.sql.clazz;
 
 
-
 import lombok.Data;
-import org.beetl.sql.annotation.builder.TargetAdditional;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.annotation.builder.BeanConvert;
+import org.beetl.sql.annotation.builder.TargetAdditional;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -13,9 +12,10 @@ import java.util.Map;
 
 /**
  * 用户自定义的注解
+ * @author xiandafu
  */
 @Data
-public class ClassExtAnnoation {
+public class ClassExtAnnotation {
     private TargetAdditional targetAdditional;
     private Annotation additionalAnnotation;
     private Map<String, AttributeConvert>  attributeConvertMap ;

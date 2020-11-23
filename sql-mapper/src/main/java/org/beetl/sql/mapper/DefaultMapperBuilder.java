@@ -47,6 +47,7 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	 * @see org.beetl.sql.ext.dao2.MapperBuilder#getMapper(java.lang.Class)
 	 */
 	//Override
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getMapper(Class<T> mapperInterface) {
 		if(sqlManager==null){
@@ -83,10 +84,12 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	
 	}
 
+	@Override
 	public SQLManager getSqlManager() {
 		return sqlManager;
 	}
 
+	@Override
 	public void setSqlManager(SQLManager sqlManager) {
 		this.sqlManager = sqlManager;
 	}

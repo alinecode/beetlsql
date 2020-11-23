@@ -2,8 +2,6 @@ package org.beetl.sql.clazz.kit;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**

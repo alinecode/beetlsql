@@ -1,7 +1,5 @@
 package org.beetl.sql.saga.common;
 
-import java.util.List;
-
 /**
  * 必须实现序列化或者被json工具序列化
  */

@@ -6,8 +6,6 @@ import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.engine.SQLParameter;
-import org.beetl.sql.core.engine.template.SQLTemplate;
-import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;

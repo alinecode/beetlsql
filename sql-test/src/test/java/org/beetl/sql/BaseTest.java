@@ -4,14 +4,13 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DebugInterceptor;
-
-import org.beetl.sql.test.QuickTest;
 import org.junit.BeforeClass;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * 单元测试基础类，用于初始化database 和 SQLManager

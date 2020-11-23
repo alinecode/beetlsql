@@ -2,22 +2,16 @@ package org.beetl.sql.annotation;
 
 import lombok.Data;
 import org.beetl.sql.BaseTest;
-import org.beetl.sql.annotation.entity.*;
-import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.annotation.entity.JsonMapper;
+import org.beetl.sql.annotation.entity.ResultProvider;
+import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.core.mapping.ResultSetMapper;
-import org.beetl.sql.core.mapping.RowMapper;
 import org.beetl.sql.core.mapping.join.AutoJsonMapper;
 import org.beetl.sql.core.mapping.join.JsonConfigMapper;
-import org.beetl.sql.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.lang.annotation.Annotation;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class JsonMappingTest extends BaseTest {

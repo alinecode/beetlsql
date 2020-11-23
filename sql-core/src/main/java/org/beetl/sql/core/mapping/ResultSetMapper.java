@@ -24,7 +24,7 @@ public interface ResultSetMapper<T> {
      * @param target
      * @param resultSet
      * @param config  实现了ProviderConfig注解的注解，如果没有，则为空
-     * @return
+     * @return List<T>
      */
-    public List<T> mapping(ExecuteContext ctx, Class target, ResultSet resultSet, Annotation config) throws SQLException;
+    List<T> mapping(ExecuteContext ctx, Class target, ResultSet resultSet, Annotation config) throws SQLException;
 }

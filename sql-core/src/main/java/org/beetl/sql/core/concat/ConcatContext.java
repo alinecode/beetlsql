@@ -1,13 +1,11 @@
 package org.beetl.sql.core.concat;
 
 
-
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.DefaultKeyWordHandler;
 import org.beetl.sql.clazz.kit.KeyWordHandler;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
-
 
 import java.util.ArrayList;
 import java.util.List;

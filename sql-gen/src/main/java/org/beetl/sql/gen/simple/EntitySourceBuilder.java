@@ -1,7 +1,9 @@
 package org.beetl.sql.gen.simple;
 
 import org.beetl.core.Template;
-import org.beetl.sql.gen.*;
+import org.beetl.sql.gen.BaseProject;
+import org.beetl.sql.gen.Entity;
+import org.beetl.sql.gen.SourceConfig;
 
 import java.io.Writer;
 

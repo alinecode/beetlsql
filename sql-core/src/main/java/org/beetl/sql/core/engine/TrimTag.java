@@ -51,6 +51,7 @@ public class TrimTag extends Tag {
 	 *
 	 * @see org.beetl.core.Tag#render()
 	 */
+	@Override
 	public void render() {
 		try {
 			Object[] args = this.args;

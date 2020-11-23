@@ -1,14 +1,14 @@
 package org.beetl.sql.core.db;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Map;
-
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.range.RangeSql;
+
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Map;
 
 public class PostgresStyle extends AbstractDBStyle {
 	RangeSql rangeSql = null;

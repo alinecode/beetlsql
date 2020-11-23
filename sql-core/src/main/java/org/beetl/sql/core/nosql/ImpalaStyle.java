@@ -47,6 +47,7 @@ public class ImpalaStyle extends AbstractDBStyle {
         return rangeSql;
     }
 
+    @Override
     protected void checkId(Collection colsId, Collection attrsId, String clsName) {
         // 不检测主键
         return;

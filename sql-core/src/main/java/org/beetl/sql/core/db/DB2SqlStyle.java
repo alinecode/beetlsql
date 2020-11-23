@@ -1,11 +1,10 @@
 package org.beetl.sql.core.db;
 
-import org.beetl.sql.clazz.TableDesc;
-import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.KeyWordHandler;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
+import org.beetl.sql.clazz.TableDesc;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.range.RangeSql;
 
 import java.lang.annotation.Annotation;

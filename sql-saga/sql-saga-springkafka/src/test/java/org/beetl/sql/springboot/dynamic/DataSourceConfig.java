@@ -1,19 +1,14 @@
 package org.beetl.sql.springboot.dynamic;
 
 import com.zaxxer.hikari.HikariDataSource;
-
 import org.beetl.sql.DebugWithNameInterceptor;
 import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.saga.kafka.ByteSerializer;
-import org.beetl.sql.saga.kafka.KafkaSagaConfig;
 import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
 
 import javax.sql.DataSource;
 

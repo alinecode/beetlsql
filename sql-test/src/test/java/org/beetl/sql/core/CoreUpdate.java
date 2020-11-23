@@ -2,7 +2,9 @@ package org.beetl.sql.core;
 
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.entity.User;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Date;

@@ -1,15 +1,12 @@
 package org.beetl.sql.mapper.springdata;
 
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *  模拟spring data 风格，https://spring.io/projects/spring-data，支持一部分简单定义

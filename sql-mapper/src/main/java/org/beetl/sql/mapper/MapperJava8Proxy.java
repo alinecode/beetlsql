@@ -6,7 +6,8 @@ import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * Java代理实现.
@@ -38,6 +39,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
      * @param mapperInterface the dao2 interface
      * @return the dao2 proxy
      */
+    @Override
     public MapperJava8Proxy mapperInterface(Class<?> mapperInterface) {
         super.mapperInterface(mapperInterface);
         return this;
@@ -50,6 +52,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
      * @param entityClass the entity class
      * @return the dao2 proxy
      */
+    @Override
     public MapperJava8Proxy entityClass(Class<?> entityClass) {
         this.entityClass = entityClass;
         return this;
@@ -61,6 +64,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
      *
      * @return the dao2 proxy
      */
+    @Override
     public MapperJava8Proxy build() {
         super.build();
         return this;

@@ -3,17 +3,9 @@ package org.beetl.sql.core;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.nosql.DruidStyle;
-import org.beetl.sql.core.query.LambdaQuery;
-import org.beetl.sql.core.query.Query;
-import org.beetl.sql.entity.User;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class SqlLoaderTest extends BaseTest {
 

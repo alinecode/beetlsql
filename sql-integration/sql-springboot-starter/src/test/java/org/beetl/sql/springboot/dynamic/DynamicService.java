@@ -1,6 +1,5 @@
 package org.beetl.sql.springboot.dynamic;
 
-import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.core.SQLManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

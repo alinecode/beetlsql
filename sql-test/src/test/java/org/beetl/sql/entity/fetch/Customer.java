@@ -8,7 +8,6 @@ import org.beetl.sql.fetch.annotation.Fetch;
 import org.beetl.sql.fetch.annotation.FetchMany;
 
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Fetch(level = 2)

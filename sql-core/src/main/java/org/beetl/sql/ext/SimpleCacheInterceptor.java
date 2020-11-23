@@ -1,6 +1,5 @@
 package org.beetl.sql.ext;
 
-import lombok.Data;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;
@@ -190,10 +189,12 @@ public class SimpleCacheInterceptor implements Interceptor {
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o)
+			if (this == o) {
 				return true;
-			if (o == null || getClass() != o.getClass())
+			}
+			if (o == null || getClass() != o.getClass()) {
 				return false;
+			}
 			CacheKey cacheKey = (CacheKey) o;
 			return sqlId.equals(cacheKey.sqlId) && paras.equals(cacheKey.paras);
 		}
@@ -219,6 +220,7 @@ public class SimpleCacheInterceptor implements Interceptor {
 	public static class MapCacheManager implements CacheManager {
 		Map<String, Map<Object, Object>> cache = new ConcurrentHashMap<String, Map<Object, Object>>();
 
+		@Override
 		public void initCache(String ns) {
 			cache.put(ns, new ConcurrentHashMap<Object, Object>());
 		}

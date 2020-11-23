@@ -3,7 +3,6 @@ package org.beetl.sql.sample;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
-import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.page.DefaultPageResult;
 import org.beetl.sql.ext.DebugInterceptor;
@@ -79,7 +78,9 @@ public class SampleHelper {
 		}
 		finally {
 			try {
-				if(conn!=null)conn.close();
+				if(conn!=null) {
+					conn.close();
+				}
 			} catch (SQLException sqlException) {
 				//ignore
 			}

@@ -21,6 +21,8 @@ public interface RangeSql {
      */
 
     String toRange(String jdbcSql, Object objOffset,Long limit);
+
     String toTemplateRange(Class mapping,String template);
+
     void addTemplateRangeParas(Map<String, Object> paras, Object objOffset, long size);
 }
