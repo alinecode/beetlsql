@@ -121,6 +121,7 @@ public class HiveStyle extends AbstractDBStyle {
     public void config(SQLManager sqlManager){
 
         sqlManager.setDefaultBeanProcessors( new BeanProcessor(){
+            @Override
             protected  String getColName(ExecuteContext ctx, ResultSetMetaData rsmd, int col) throws SQLException{
                String colName = super.getColName(ctx,rsmd,col);
                if(ctx.sqlId.isPage()){

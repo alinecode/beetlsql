@@ -12,6 +12,7 @@ public class CaseInsensitiveOrderSet<T> extends LinkedHashSet<String> {
 	String first = null;
 
 	//Override
+	@Override
 	public boolean contains(Object value) {
 		
 		String t = (String)value;
@@ -19,6 +20,7 @@ public class CaseInsensitiveOrderSet<T> extends LinkedHashSet<String> {
 	}
 
 	//Override
+	@Override
 	public boolean add(String value) {
 		if(value==null){
 			throw new NullPointerException(value);
@@ -36,6 +38,7 @@ public class CaseInsensitiveOrderSet<T> extends LinkedHashSet<String> {
 	}
 
 	//Override
+	@Override
 	public boolean addAll(Collection c) {
 		Collection<String> t = (Collection<String>) c;
 		for (String s : t) {

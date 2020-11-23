@@ -39,6 +39,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
      * @param mapperInterface the dao2 interface
      * @return the dao2 proxy
      */
+    @Override
     public MapperJava8Proxy mapperInterface(Class<?> mapperInterface) {
         super.mapperInterface(mapperInterface);
         return this;
@@ -51,6 +52,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
      * @param entityClass the entity class
      * @return the dao2 proxy
      */
+    @Override
     public MapperJava8Proxy entityClass(Class<?> entityClass) {
         this.entityClass = entityClass;
         return this;
@@ -62,6 +64,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
      *
      * @return the dao2 proxy
      */
+    @Override
     public MapperJava8Proxy build() {
         super.build();
         return this;

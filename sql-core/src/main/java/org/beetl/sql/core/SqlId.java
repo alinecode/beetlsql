@@ -106,6 +106,7 @@ public class SqlId {
   	return this.managedType==ManagedType.sql||this.managedType==ManagedType.template;
   }
 
+  @Override
   protected SqlId clone(){
     SqlId clone = new SqlId();
     clone.namespace = this.namespace;
@@ -158,8 +159,12 @@ public class SqlId {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SqlId sqlId = (SqlId) o;
     return namespace.equals(sqlId.namespace) &&
             id.equals(sqlId.id) &&

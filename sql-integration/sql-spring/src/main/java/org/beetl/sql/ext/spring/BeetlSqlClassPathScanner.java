@@ -72,6 +72,7 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
 	 * @param beanDefinition
 	 * @return
 	 */
+	@Override
 	protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
 		// 原方法这里不是判断是否为接口和是不依赖
 		return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata().isIndependent();

@@ -17,6 +17,7 @@ import java.util.Date;
  * @see UpdateTime
  * @author xiandafu,whcrow(https://gitee.com/whcrow)
  */
+@SuppressWarnings("AliMissingOverrideAnnotation")
 public class UpdateTimeConvert implements AttributeConvert {
     @Override
     public  Object toDb(ExecuteContext ctx,  Class cls,String name, Object dbValue){
@@ -57,7 +58,8 @@ public class UpdateTimeConvert implements AttributeConvert {
 
     }
 
-	public  Object toAttr(ExecuteContext ctx, Class cls,String name, ResultSet rs, int index) throws
+	@Override
+	public  Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws
 			SQLException {
 		Class dateType = BeanKit.getPropertyDescriptor(cls,name).getPropertyType();
 		Object now;

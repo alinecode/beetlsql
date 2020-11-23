@@ -266,6 +266,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
 
+    @Override
     public SQLSource genInsertTemplate(Class<?> cls){
         return generalInsert(cls,true);
     }
@@ -477,19 +478,21 @@ public abstract class  AbstractDBStyle implements DBStyle {
     }
 
     public String getOrderBy() {
-        return   lineSeparator + appendExpress("text(has(_orderBy)?' order by '+_orderBy)") + " ";
+        return lineSeparator + appendExpress("text(has(_orderBy)?' order by '+_orderBy)") + " ";
     }
 
-    public String appendExpress(String express){
+    public String appendExpress(String express) {
         return sqlTemplateEngine.appendVar(express);
     }
 
-    /* 根据注解来决定主键采用哪种方式生成。在跨数据库应用中，可以为一个id指定多个注解方式，如mysql，postgres 用auto，oracle 用seq
+    /**
+     * 根据注解来决定主键采用哪种方式生成。在跨数据库应用中，可以为一个id指定多个注解方式，如mysql，postgres 用auto，oracle 用seq
      */
     @Override
-    public int getIdType(Class c,String idProperty) {
+    public int getIdType(Class c, String idProperty) {
         List<Annotation> ans = BeanKit.getAllAnnotation(c, idProperty);
-        int idType = DBType.ID_AUTO; //默认是自增长
+        //默认是自增长
+        int idType = DBType.ID_AUTO;
 
         for (Annotation an : ans) {
             if (an instanceof AutoID) {
@@ -595,6 +598,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         return offsetStartZero;
     }
 
+    @Override
     public void setOffsetStartZero(boolean offsetStartZero) {
         this.offsetStartZero = offsetStartZero;
     }
@@ -604,6 +608,7 @@ public abstract class  AbstractDBStyle implements DBStyle {
         return null;
     }
 
+    @Override
     public SQLTemplateEngine getSQLTemplateEngine(){
         return this.sqlTemplateEngine;
     }

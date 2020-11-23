@@ -8,7 +8,7 @@ import java.sql.*;
 
 public class CharArrayTypeHandler extends JavaSqlTypeHandler {
 
-	//Override
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 		int index = typePara.index;

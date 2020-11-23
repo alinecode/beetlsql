@@ -39,6 +39,7 @@ public class SchemaLessMetaDataManager extends SchemaMetadataManager {
         parseBean(bean);
     }
 
+    @Override
     protected  void moreInfo(TableDesc tableDesc){
         if(!this.extClassMap.containsKey(tableDesc.getName())){
             return ;

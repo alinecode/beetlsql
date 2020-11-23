@@ -45,7 +45,8 @@ public class FetchManyAction extends   AbstractFetchAction {
 		}
 
 	}
-    public void execute(ExecuteContext ctx,List list){
+    @Override
+    public void execute(ExecuteContext ctx, List list){
         try{
             Method idReadMethod = idProperty.getReadMethod();
             Method fromWriteMethod = otherTypeFrom.getWriteMethod();
@@ -67,11 +68,7 @@ public class FetchManyAction extends   AbstractFetchAction {
 					addCached(obj,id);
 				}
 
-
-//                Object template = BeanKit.newInstance(target);
-//				fromWriteMethod.invoke(template,id);
-//				List values = ctx.sqlManager.template(template);
-				Query query = ctx.sqlManager.query(target);
+                Query query = ctx.sqlManager.query(target);
 				String colName = ctx.sqlManager.getNc().getColName(target,otherTypeFrom.getName());
 				List values  = query.andEq(colName,id).select();
 

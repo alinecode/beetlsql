@@ -56,7 +56,7 @@ public class Update extends WhereNode {
     }
 
 
-    //Override
+    @Override
     public void toSql(ConcatBuilder sb) {
         sb.append("update");
         sb.append(mainTable).append("set");

@@ -44,6 +44,7 @@ public class TaosStyle  extends AbstractDBStyle {
         return rangeSql;
     }
 
+    @Override
     protected void checkId(Collection colsId, Collection attrsId, String clsName) {
         // CLickHouse 不支持主键
         return ;

@@ -38,7 +38,8 @@ import org.beetl.core.Function;
  */
 public class NotEmptyExpressionFunction implements Function {
 
-	public Boolean call(Object[] paras, Context ctx) {
+	@Override
+    public Boolean call(Object[] paras, Context ctx) {
 
 
 		Object result = paras[0];

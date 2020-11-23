@@ -178,6 +178,7 @@ public class PluginAnnotationSample {
      * @param <T>
      */
     public static interface  MyBaseMapper<T> extends BaseMapper{
+        @Override
         @AutoMapper(DeleteCheckByIdAMI.class)
         int deleteById(Object key);
     }

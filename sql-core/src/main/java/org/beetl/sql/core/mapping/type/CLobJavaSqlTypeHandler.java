@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CLobJavaSqlTypeHandler extends JavaSqlTypeHandler {
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 		Clob a = rs.getClob(typePara.index);

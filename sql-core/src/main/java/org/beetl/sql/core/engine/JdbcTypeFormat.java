@@ -6,7 +6,8 @@ import org.beetl.sql.clazz.kit.JavaType;
 public class JdbcTypeFormat implements Format {
 
 	//Override
-	public Object format(Object data, String pattern) {
+	@Override
+    public Object format(Object data, String pattern) {
 		char cs = pattern.charAt(0);
 		if (cs == '-' || Character.isDigit(cs)) {
 			return Integer.parseInt(pattern);

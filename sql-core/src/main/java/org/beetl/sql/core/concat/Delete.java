@@ -18,6 +18,7 @@ public class Delete extends WhereNode {
     }
 
     //Override
+    @Override
     public void toSql(ConcatBuilder sb) {
         sb.append("delete ");
         sb.append("from ").append(mainTable);

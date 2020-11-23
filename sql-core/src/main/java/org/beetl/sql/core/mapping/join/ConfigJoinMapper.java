@@ -218,7 +218,7 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
             if(cell==null){
                 cell = new HashSet<>();
                 gridKeys.put(node,cell);
-                gridValues.put(node,new ArrayList<NodeValue>());
+                gridValues.put(node,new ArrayList<>());
             }
             if(!cell.contains(nodeValue.key)){
                 cell.add(nodeValue.key);

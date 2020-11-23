@@ -45,6 +45,7 @@ public class SqlServerStyle extends AbstractDBStyle {
         return sqlServerRange;
     }
 
+    @Override
     public String getOrderBy() {
         //重写getOrderBy，如果设置了分页的order by条件 则按 order by 否则添加一个 current_timestamp 来排序
         return lineSeparator + appendExpress("text(' order by ' + _orderBy!'current_timestamp')" ) + " ";

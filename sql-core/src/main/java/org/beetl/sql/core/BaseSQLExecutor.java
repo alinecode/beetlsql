@@ -36,6 +36,7 @@ public class BaseSQLExecutor implements SQLExecutor {
     }
 
 
+    @Override
     public int insert(Class clazz, Object paras) {
         KeyHolder holder = paras instanceof Map ? KeyHolder.empty : KeyHolder.getKeyHolderByClass(paras.getClass());
         int ret = insert(paras, holder);
@@ -44,7 +45,8 @@ public class BaseSQLExecutor implements SQLExecutor {
     }
 
 
-    public Object[] insert(Class target,Object paras, String[] cols) {
+    @Override
+    public Object[] insert(Class target, Object paras, String[] cols) {
 
         Connection conn = null;
         ResultUpdateHolder ruh = null;
@@ -1030,6 +1032,7 @@ public class BaseSQLExecutor implements SQLExecutor {
      * @param ctx
      * @return
      */
+    @Override
     public SQLResult run(Map<String, Object> parasMap, TemplateContext ctx) {
         SQLTemplateEngine gt = executeContext.sqlManager.sqlTemplateEngine;
         SQLTemplate t = null;
@@ -1150,8 +1153,9 @@ public class BaseSQLExecutor implements SQLExecutor {
             return;
         }
         SQLManager sqlManager = executeContext.sqlManager;
-        if (sqlManager.inters == null)
+        if (sqlManager.inters == null) {
             return;
+        }
 
         for (Interceptor in : sqlManager.inters) {
             in.exception(ctx, ex);

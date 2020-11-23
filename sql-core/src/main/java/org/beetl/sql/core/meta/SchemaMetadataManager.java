@@ -67,6 +67,7 @@ public class SchemaMetadataManager implements MetadataManager {
 	 * @param tableName
 	 * @return
 	 */
+	@Override
 	public boolean existTable(String tableName) {
 		TableDesc t = getTable(tableName);
 		return t!=null;
@@ -75,6 +76,7 @@ public class SchemaMetadataManager implements MetadataManager {
 
 
 
+	@Override
 	public TableDesc getTable(String name){
 		TableDesc table =getTableFromMap(name);		
 		if(table==null){
@@ -88,6 +90,7 @@ public class SchemaMetadataManager implements MetadataManager {
 		return table;
 	}
 	
+	@Override
 	public Set<String> allTable(){
 		if(tableInfoMap ==null){
 			this.initMetadata();
@@ -312,7 +315,9 @@ public class SchemaMetadataManager implements MetadataManager {
 	protected void close(Connection conn){
 		try{
 			if(!ds.isTransaction()){
-				if(conn!=null)conn.close();
+				if(conn!=null) {
+					conn.close();
+				}
 			}
 			
 		}catch(Exception ex){
@@ -452,7 +457,8 @@ public class SchemaMetadataManager implements MetadataManager {
 		return tableVirtual;
 	}
 
-	public void addTableVirtual(String realTable,String virtual){
+	@Override
+	public void addTableVirtual(String realTable, String virtual){
 		this.tableVirtual.put(realTable,virtual);
 		if(this.tableInfoMap ==null){
 			return ;

@@ -46,7 +46,8 @@ public class HBaseStyle extends AbstractDBStyle {
     }
 
 
-    protected SQLSource generalInsert(Class<?> cls,boolean template){
+    @Override
+    protected SQLSource generalInsert(Class<?> cls, boolean template){
         SQLSource sqlSource   = super.generalInsert(cls,template);
         String upsert = sqlSource.template.replaceFirst("insert","UPSERT");
         sqlSource.template = upsert;

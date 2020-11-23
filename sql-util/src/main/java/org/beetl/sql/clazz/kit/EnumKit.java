@@ -26,8 +26,9 @@ public class EnumKit {
 		if(value==null){
 			return null;
 		}
-		if (!c.isEnum())
-			 throw new IllegalArgumentException(c.getName());
+		if (!c.isEnum()) {
+			throw new IllegalArgumentException(c.getName());
+		}
 
 		EnumConfig config = cache.get(c);
 		if(config==null){
@@ -48,7 +49,9 @@ public class EnumKit {
 	 * @return
 	 */
 	public static Object getValueByEnum(Object en) {
-		if(en==null) return null;
+		if(en==null) {
+			return null;
+		}
 		Class c = en.getClass();
 		EnumConfig config = cache.get(c);
 		if(config==null){
@@ -143,6 +146,7 @@ public class EnumKit {
 		try {
 			final Method values = c.getMethod("values");
 			java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+				@Override
 				public Void run() {
 					values.setAccessible(true);
 					return null;

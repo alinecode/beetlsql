@@ -14,41 +14,50 @@ public class QuerySQLExecutor extends BaseSQLExecutor {
         super(executeContext);
     }
 
+    @Override
     public int insert(Class target, Object paras){
         throw new UnsupportedOperationException("Query only support");
     }
 
 
-    public Object[] insert(Class target,Object paras, String[] cols){
+    @Override
+    public Object[] insert(Class target, Object paras, String[] cols){
         throw new UnsupportedOperationException("Query only support");
     }
 
 
-    public int update(Class target,Object obj){
+    @Override
+    public int update(Class target, Object obj){
         throw new UnsupportedOperationException("Query only support");
     }
 
+    @Override
     public int[] updateBatch(List<?> list){
         throw new UnsupportedOperationException("Query only support");
     }
 
-    public int[] updateBatch(Class<?> target ,List<?> list){
+    @Override
+    public int[] updateBatch(Class<?> target , List<?> list){
         throw new UnsupportedOperationException("Query only support");
     }
 
-    public int[] insertBatch(Class<?> target,List<?> list){
+    @Override
+    public int[] insertBatch(Class<?> target, List<?> list){
         throw new UnsupportedOperationException("Query only support");
     }
 
 
+    @Override
     public int deleteById(Class<?> target, Object objId){
         throw new UnsupportedOperationException("Query only support");
     }
 
+    @Override
     public int sqlReadyExecuteUpdate(SQLReady p){
         throw new UnsupportedOperationException("Query only support");
     }
 
+    @Override
     public int[] sqlReadyBatchExecuteUpdate(SQLBatchReady batch){
         throw new UnsupportedOperationException("Query only support");
     }

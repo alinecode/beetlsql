@@ -10,16 +10,19 @@ public class MockClassDesc extends  ClassDesc {
         super(table, nc);
     }
 
+    @Override
     public Map<String,Object> getIdMethods() {
         throw new IllegalStateException("虚拟类，无此属性");
     }
 
 
+    @Override
     public ClassAnnotation getClassAnnotation(){
          throw new IllegalStateException("虚拟类，无此属性");
     }
 
 
+    @Override
     public Class getTargetClass() {
         throw new IllegalStateException("虚拟类，无此属性");
     }

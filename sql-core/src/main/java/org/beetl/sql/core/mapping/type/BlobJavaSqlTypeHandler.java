@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BlobJavaSqlTypeHandler extends JavaSqlTypeHandler {
+	@Override
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		ResultSet rs = typePara.rs;
 		Blob a = rs.getBlob(typePara.index);

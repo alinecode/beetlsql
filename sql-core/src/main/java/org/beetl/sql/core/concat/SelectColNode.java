@@ -26,6 +26,7 @@ public class SelectColNode extends TrimSupport implements Output {
         this.all = true;
     }
 
+    @Override
     public void toSql(ConcatBuilder sb){
         if(count){
             sb.append("count(1)");

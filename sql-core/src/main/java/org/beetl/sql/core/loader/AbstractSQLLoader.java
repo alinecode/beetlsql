@@ -81,6 +81,7 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 		return dbs;
 	}
 
+	@Override
 	public void setDbStyle(DBStyle dbs) {
 		this.dbs = dbs;
 	}
