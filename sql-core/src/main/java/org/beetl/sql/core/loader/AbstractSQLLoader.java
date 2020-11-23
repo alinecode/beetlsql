@@ -76,6 +76,7 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 
 	}
 
+	@Override
 	public DBStyle getDbStyle() {
 		return dbs;
 	}

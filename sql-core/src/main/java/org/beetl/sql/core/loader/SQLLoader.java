@@ -5,7 +5,7 @@ import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.db.DBStyle;
 
- interface SQLLoader {
+ public interface SQLLoader {
 
 
 	 /**
@@ -40,6 +40,10 @@ import org.beetl.sql.core.db.DBStyle;
 	  */
 	 void addSQL(SqlId id, SQLSource source);
 
+	 /**
+	  * 获取数据库方言配置
+	  * @return DBStyle
+	  */
 	 DBStyle getDbStyle();
 
 	 void setDbStyle(DBStyle dbs);

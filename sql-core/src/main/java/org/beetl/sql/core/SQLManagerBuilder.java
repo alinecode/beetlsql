@@ -215,8 +215,9 @@ public class SQLManagerBuilder {
     public Properties loadDefaultConfig() {
         Properties ps = new Properties();
         InputStream ins = this.getClass().getResourceAsStream("/btsql.properties");
-        if (ins == null)
-            throw new IllegalStateException("默认配置文件加载错:找不到 btsql.properties");;
+        if (ins == null) {
+            throw new IllegalStateException("默认配置文件加载错:找不到 btsql.properties");
+        }
         try {
             ps.load(ins);
         } catch (IOException e) {
