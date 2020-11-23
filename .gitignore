@@ -6,4 +6,4 @@ target/
 .DS_Store
 **/*.iml
 /bin/
-**.iml
+**/**.iml
