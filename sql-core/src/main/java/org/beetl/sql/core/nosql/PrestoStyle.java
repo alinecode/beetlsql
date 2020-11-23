@@ -44,6 +44,7 @@ public class PrestoStyle extends AbstractDBStyle {
      *
      * @return
      */
+    @Override
     public  boolean preparedStatementSupport(){
         return false;
     }

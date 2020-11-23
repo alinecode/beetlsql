@@ -117,6 +117,7 @@ public class HiveStyle extends AbstractDBStyle {
      * 对返回的列名去掉翻页前缀
      * @param sqlManager
      */
+    @Override
     public void config(SQLManager sqlManager){
 
         sqlManager.setDefaultBeanProcessors( new BeanProcessor(){
