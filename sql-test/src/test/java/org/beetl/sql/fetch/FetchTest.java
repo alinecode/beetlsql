@@ -4,7 +4,6 @@ import org.beetl.sql.BaseTest;
 import org.beetl.sql.entity.fetch.Customer;
 import org.beetl.sql.entity.fetch.CustomerOrder;
 import org.beetl.sql.entity.fetch.CustomerOrder2;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

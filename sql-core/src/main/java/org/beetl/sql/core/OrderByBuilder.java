@@ -3,11 +3,9 @@ package org.beetl.sql.core;
 import lombok.Data;
 import org.beetl.core.fun.MethodInvoker;
 import org.beetl.core.fun.ObjectUtil;
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.query.LambdaQuery;
 
-import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.function.Function;

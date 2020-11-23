@@ -1,6 +1,5 @@
 package org.beetl.sql.ext;
 
-import lombok.Data;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.InterceptorContext;

@@ -1,8 +1,5 @@
 package org.beetl.sql.mapper.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 记录了mapper方法的一个参数
  * <pre>

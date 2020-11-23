@@ -1,7 +1,6 @@
 package org.beetl.sql.core.mapping.xml;
 
 import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.mapping.ResultSetMapper;
 
 import java.lang.annotation.Annotation;

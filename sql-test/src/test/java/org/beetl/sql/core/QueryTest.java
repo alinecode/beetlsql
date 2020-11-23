@@ -3,7 +3,6 @@ package org.beetl.sql.core;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
-import org.beetl.sql.core.query.QueryCondition;
 import org.beetl.sql.entity.User;
 import org.junit.Assert;
 import org.junit.Before;

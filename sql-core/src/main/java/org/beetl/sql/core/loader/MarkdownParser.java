@@ -1,8 +1,8 @@
 package org.beetl.sql.core.loader;
 
-import org.beetl.sql.core.SqlId;
-import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.clazz.kit.Plugin;
+import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.SqlId;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -154,10 +154,4 @@ public class MarkdownParser implements SQLFileParser {
 		lastLine = line;
 		return line;
 	}
-	
-	
-	
-	
-	
-	
 }

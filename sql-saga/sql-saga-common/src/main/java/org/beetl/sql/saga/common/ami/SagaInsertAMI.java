@@ -5,7 +5,6 @@ import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.mapper.MapperInvoke;
-import org.beetl.sql.saga.common.LocalSagaContext;
 import org.beetl.sql.saga.common.SagaContext;
 import org.beetl.sql.saga.common.SagaRollbackTask;
 

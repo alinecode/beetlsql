@@ -1,31 +1,18 @@
 package org.beetl.sql.test;
 
 
-import lombok.Data;
-import org.beetl.sql.annotation.builder.AttributeConvert;
-import org.beetl.sql.annotation.builder.Builder;
-import org.beetl.sql.annotation.builder.UpdateTimeConvert;
-import org.beetl.sql.annotation.entity.AutoID;
-import org.beetl.sql.annotation.entity.Table;
-import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.core.*;
-import org.beetl.sql.core.page.DefaultPageRequest;
-import org.beetl.sql.core.page.DefaultPageResult;
-import org.beetl.sql.core.page.PageRequest;
-import org.beetl.sql.core.page.PageResult;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLReady;
+import org.beetl.sql.core.SQLResult;
+import org.beetl.sql.core.SqlId;
 import org.beetl.sql.sample.SampleHelper;
 import org.beetl.sql.sample.entity.UserEntity;
 import org.beetl.sql.test.mapper.UserMapper;
 
-import javax.naming.Name;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.nio.charset.Charset;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 演示like，batchUpdate,in 操作

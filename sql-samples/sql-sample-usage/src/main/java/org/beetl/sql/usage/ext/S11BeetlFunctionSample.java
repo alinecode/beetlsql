@@ -7,8 +7,6 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.sample.SampleHelper;
 import org.beetl.sql.sample.entity.UserEntity;
-import org.beetl.sql.usage.mapper.S01MapperSelectSample;
-import org.beetl.sql.usage.mapper.dao.UserSelectMapper;
 
 import java.util.*;
 

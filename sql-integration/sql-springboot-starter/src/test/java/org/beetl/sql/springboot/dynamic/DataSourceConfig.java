@@ -1,19 +1,11 @@
 package org.beetl.sql.springboot.dynamic;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.sql.core.ConditionalSQLManager;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.ext.DBInitHelper;
-import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 

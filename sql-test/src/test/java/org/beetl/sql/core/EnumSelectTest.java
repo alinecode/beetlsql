@@ -6,17 +6,9 @@ import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.EnumMapping;
 import org.beetl.sql.annotation.entity.EnumValue;
 import org.beetl.sql.annotation.entity.Table;
-import org.beetl.sql.core.page.DefaultPageRequest;
-import org.beetl.sql.core.page.PageRequest;
-import org.beetl.sql.core.page.PageResult;
-import org.beetl.sql.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 枚举验证

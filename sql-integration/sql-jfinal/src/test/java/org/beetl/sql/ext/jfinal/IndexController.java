@@ -3,7 +3,6 @@ package org.beetl.sql.ext.jfinal;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.ext.DBInitHelper;
 
 public class IndexController extends Controller {
 	@Before(Trans.class)

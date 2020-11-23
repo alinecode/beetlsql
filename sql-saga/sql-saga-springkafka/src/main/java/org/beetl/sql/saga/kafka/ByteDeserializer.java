@@ -6,7 +6,6 @@ import org.beetl.sql.saga.common.SagaTransaction;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Map;
 
 /**
  * 反序列化，采用二进制

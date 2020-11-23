@@ -1,12 +1,11 @@
 package org.beetl.sql.mapper.identity;
 
-import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SqlId;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 批量操作

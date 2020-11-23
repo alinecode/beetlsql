@@ -1,18 +1,15 @@
 package org.beetl.sql.core.mapping.join;
 
-import lombok.Data;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.ResultSetMapper;
-import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
 import org.beetl.sql.core.mapping.type.ReadTypeParameter;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -154,8 +151,12 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
 
             @Override
             public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
+                if (this == o) {
+                    return true;
+                }
+                if (o == null || getClass() != o.getClass()) {
+                    return false;
+                }
                 TempKey tempKey = (TempKey) o;
                 return value.equals(tempKey.value);
             }

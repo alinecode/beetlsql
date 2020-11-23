@@ -139,8 +139,9 @@ public class DebugInterceptor implements Interceptor {
 			if (result.getClass().isArray()) {
 				int[] ret = (int[]) result;
 				for (int i = 0; i < ret.length; i++) {
-					if (i > 0)
+					if (i > 0) {
 						sb.append(",");
+					}
 					sb.append(ret[i]);
 				}
 			} else {

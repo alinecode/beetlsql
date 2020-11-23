@@ -1,12 +1,5 @@
 package org.beetl.sql.core.meta;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.Set;
-
 import org.beetl.sql.clazz.ColDesc;
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
@@ -14,6 +7,13 @@ import org.beetl.sql.clazz.kit.Plugin;
 import org.beetl.sql.clazz.kit.ThreadSafeCaseInsensitiveHashMap;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.db.DBStyle;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 用于管理SQL数据库元信息，比如表，列，主键

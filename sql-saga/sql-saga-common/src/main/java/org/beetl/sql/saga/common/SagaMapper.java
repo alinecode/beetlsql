@@ -1,7 +1,9 @@
 package org.beetl.sql.saga.common;
 
 import org.beetl.sql.mapper.annotation.AutoMapper;
-import org.beetl.sql.mapper.internal.*;
+import org.beetl.sql.mapper.internal.SelectByIdsAMI;
+import org.beetl.sql.mapper.internal.SingleAMI;
+import org.beetl.sql.mapper.internal.UniqueAMI;
 import org.beetl.sql.saga.common.ami.SagaDeleteByIdAMI;
 import org.beetl.sql.saga.common.ami.SagaInsertAMI;
 import org.beetl.sql.saga.common.ami.SagaUpdateByIdAMI;

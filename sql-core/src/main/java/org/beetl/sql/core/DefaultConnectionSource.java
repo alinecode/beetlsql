@@ -24,9 +24,14 @@ public class DefaultConnectionSource implements ConnectionSource{
 
 	@Override
 	public Connection getConn(ExecuteContext ctx,boolean isUpdate){
-		if(this.slaves==null||this.slaves.length==0) return this.getWriteConn(ctx);
-		if(isUpdate) return this.getWriteConn(ctx);
-		else return this.getReadConn(ctx);
+		if(this.slaves==null||this.slaves.length==0) {
+			return this.getWriteConn(ctx);
+		}
+		if(isUpdate) {
+			return this.getWriteConn(ctx);
+		} else {
+			return this.getReadConn(ctx);
+		}
 
 	}
 
@@ -36,8 +41,9 @@ public class DefaultConnectionSource implements ConnectionSource{
 	}
 
 	protected  Connection getReadConn(ExecuteContext ctx ) {
-		if(slaves==null||slaves.length==0) return getWriteConn(ctx);
-		else{
+		if(slaves==null||slaves.length==0) {
+			return getWriteConn(ctx);
+		} else{
 		
 			return nextSlaveConn();
 		}

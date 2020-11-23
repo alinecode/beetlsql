@@ -8,7 +8,6 @@ import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.entity.User;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.AutoMapper;
-import org.beetl.sql.mapper.annotation.Param;
 import org.beetl.sql.mapper.annotation.Template;
 import org.beetl.sql.mapper.internal.InsertAMI;
 import org.junit.Assert;

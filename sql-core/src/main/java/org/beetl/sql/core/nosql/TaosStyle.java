@@ -1,21 +1,13 @@
 package org.beetl.sql.core.nosql;
 
-import org.beetl.sql.annotation.entity.AssignID;
-import org.beetl.sql.annotation.entity.AutoID;
-import org.beetl.sql.annotation.entity.SeqID;
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.ConnectionSource;
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.range.LimitWithOffsetRange;
-import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 中国的时序数据库

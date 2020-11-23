@@ -1,6 +1,5 @@
 package org.beetl.sql.test.annotation;
 
-import org.beetl.sql.annotation.builder.Builder;
 import org.beetl.sql.annotation.entity.ProviderConfig;
 
 import java.lang.annotation.ElementType;

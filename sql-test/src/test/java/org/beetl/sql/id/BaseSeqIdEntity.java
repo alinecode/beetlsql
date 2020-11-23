@@ -8,7 +8,6 @@
 package org.beetl.sql.id;
 
 import lombok.Data;
-import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
 
 import java.io.Serializable;

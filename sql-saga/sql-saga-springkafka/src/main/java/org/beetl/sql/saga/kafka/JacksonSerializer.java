@@ -3,7 +3,6 @@ package org.beetl.sql.saga.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serializer;
-import org.beetl.sql.saga.common.SagaTransaction;
 
 import java.io.UnsupportedEncodingException;
 

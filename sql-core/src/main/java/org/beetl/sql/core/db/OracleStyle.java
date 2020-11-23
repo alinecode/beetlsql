@@ -1,14 +1,13 @@
 package org.beetl.sql.core.db;
 
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.SeqID;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.range.RangeSql;
 import org.beetl.sql.core.range.RowNumRange;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Map;
 
 public class OracleStyle extends AbstractDBStyle {
 

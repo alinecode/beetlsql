@@ -1,7 +1,7 @@
 package org.beetl.sql.core.loader;
 
-import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.db.DBStyle;
 
 import java.util.Map;

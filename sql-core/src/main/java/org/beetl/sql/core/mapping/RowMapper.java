@@ -3,7 +3,6 @@ package org.beetl.sql.core.mapping;
 import org.beetl.sql.annotation.entity.ProviderConfig;
 import org.beetl.sql.annotation.entity.RowProvider;
 import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.SQLManager;
 
 import java.lang.annotation.Annotation;
 import java.sql.ResultSet;

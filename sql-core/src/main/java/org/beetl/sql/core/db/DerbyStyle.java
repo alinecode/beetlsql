@@ -1,8 +1,6 @@
 package org.beetl.sql.core.db;
 
-import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
-import org.beetl.sql.core.range.RowNumRange;
 
 import java.text.MessageFormat;
 import java.util.Map;

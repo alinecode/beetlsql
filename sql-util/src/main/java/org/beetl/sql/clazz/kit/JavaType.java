@@ -1,7 +1,5 @@
 package org.beetl.sql.clazz.kit;
 
-import jdk.nashorn.internal.runtime.regexp.joni.constants.EncloseType;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;

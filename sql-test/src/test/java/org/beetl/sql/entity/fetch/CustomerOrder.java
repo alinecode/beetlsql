@@ -7,9 +7,6 @@ import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
 import org.beetl.sql.fetch.annotation.FetchOne;
 
-import java.util.Date;
-import java.util.Objects;
-
 @Data
 @Table(name="sys_order")
 @Fetch(level =2)

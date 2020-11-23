@@ -1,12 +1,9 @@
 package org.beetl.sql.core.mapping.join;
 
-import com.sun.javafx.geom.transform.Identity;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Script;
 import org.beetl.core.exception.BeetlException;
 import org.beetl.core.resource.StringTemplateResourceLoader;
-import org.beetl.sql.annotation.entity.JsonMapper;
-import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;

@@ -1,9 +1,9 @@
 package org.beetl.sql.mapper.internal;
 
-import java.lang.reflect.Method;
-
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.MapperInvoke;
+
+import java.lang.reflect.Method;
 
 /**
  * 生成select * from table where id = ? for update 的行级锁查询语句

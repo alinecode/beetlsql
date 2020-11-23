@@ -4,7 +4,8 @@ import org.apache.kafka.common.serialization.Serializer;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.beetl.sql.saga.common.SagaTransaction;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * 序列化到kafka，二进制

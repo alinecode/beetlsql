@@ -2,7 +2,6 @@ package org.beetl.sql.ext;
 
 import org.beetl.sql.core.IDAutoGen;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**

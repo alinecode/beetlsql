@@ -2,7 +2,6 @@ package org.beetl.sql.gen.simple;
 
 import org.beetl.sql.gen.BaseProject;
 
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 

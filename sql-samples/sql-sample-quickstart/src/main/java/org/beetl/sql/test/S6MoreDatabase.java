@@ -10,7 +10,6 @@ import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.annotation.entity.TargetSQLManager;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.BeetlSQLTemplateEngine;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.sample.SampleHelper;

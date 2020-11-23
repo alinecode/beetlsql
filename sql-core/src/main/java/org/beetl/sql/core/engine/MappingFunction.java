@@ -5,14 +5,11 @@ import org.beetl.core.Function;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.SQLResult;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
-import org.beetl.sql.core.engine.template.BeetlTemplateContext;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 
 import java.io.StringWriter;
-import java.util.List;
 import java.util.Map;
 
 public class MappingFunction implements Function {

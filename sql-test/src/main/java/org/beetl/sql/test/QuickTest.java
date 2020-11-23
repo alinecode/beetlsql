@@ -4,11 +4,10 @@ package org.beetl.sql.test;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
-import org.beetl.sql.ext.*;
+import org.beetl.sql.ext.DBInitHelper;
+import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

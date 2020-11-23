@@ -1,28 +1,13 @@
 package org.beetl.sql.ext.spring;
 
-import lombok.Data;
-import org.beetl.core.Function;
-import org.beetl.core.tag.TagFactory;
-import org.beetl.sql.clazz.NameConversion;
-import org.beetl.sql.core.*;
-import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
-import org.beetl.sql.core.loader.MarkdownClasspathLoader;
-import org.beetl.sql.core.loader.SQLLoader;
+import org.beetl.sql.core.ConditionalSQLManager;
+import org.beetl.sql.core.SQLManager;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.io.Resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import static org.springframework.util.Assert.notNull;
 
 /**
  * 动态 SqlManager，适用于一个项目有多个不同的数据库

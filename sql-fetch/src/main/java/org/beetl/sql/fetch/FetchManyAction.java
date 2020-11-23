@@ -1,9 +1,7 @@
 package org.beetl.sql.fetch;
 
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 
 import java.beans.PropertyDescriptor;

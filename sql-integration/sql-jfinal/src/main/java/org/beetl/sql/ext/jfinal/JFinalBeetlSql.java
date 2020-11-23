@@ -1,15 +1,13 @@
 package org.beetl.sql.ext.jfinal;
 
 import com.jfinal.kit.PropKit;
-
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.clazz.NameConversion;
-import org.beetl.sql.core.*;
+import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.engine.BeetlSQLTemplateEngine;
-import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
-import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 
 import javax.sql.DataSource;

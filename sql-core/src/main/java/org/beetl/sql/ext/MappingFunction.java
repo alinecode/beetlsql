@@ -8,17 +8,16 @@ package org.beetl.sql.ext;
 //import com.ibeetl.admin.core.util.cache.CacheUtil;
 
 
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Map;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
-import org.beetl.core.GroupTemplate;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLResult;
-import org.beetl.sql.core.engine.template.BeetlTemplateContext;
+
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Map;
 
 public class MappingFunction implements Function {
 

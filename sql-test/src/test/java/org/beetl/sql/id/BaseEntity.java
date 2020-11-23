@@ -8,10 +8,8 @@
 package org.beetl.sql.id;
 
 import lombok.Data;
-import org.beetl.sql.annotation.entity.UpdateIgnore;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author 黄川 huchuc@vip.qq.com

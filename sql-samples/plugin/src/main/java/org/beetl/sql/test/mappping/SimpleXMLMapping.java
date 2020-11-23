@@ -4,11 +4,9 @@ import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.mapping.ResultSetMapper;
 import org.beetl.sql.core.mapping.join.AttrNode;
 import org.beetl.sql.core.mapping.join.ConfigJoinMapper;
 import org.beetl.sql.core.mapping.join.JsonConfigMapper;
-import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
 import org.beetl.sql.test.annotation.XmlMapping;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -19,10 +17,8 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

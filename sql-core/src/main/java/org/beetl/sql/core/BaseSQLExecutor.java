@@ -3,20 +3,19 @@ package org.beetl.sql.core;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.annotation.builder.BeanConvert;
 import org.beetl.sql.annotation.builder.TargetAdditional;
+import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.clazz.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.StringKit;
-import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.db.KeyHolder;
-import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.engine.SQLParameter;
 import org.beetl.sql.core.engine.template.SQLTemplate;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.mapping.*;
-
+import org.beetl.sql.core.meta.MetadataManager;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

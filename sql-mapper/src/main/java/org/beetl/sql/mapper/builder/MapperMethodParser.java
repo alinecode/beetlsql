@@ -21,7 +21,7 @@ import org.beetl.sql.mapper.template.SelectTemplateMI;
 import org.beetl.sql.mapper.template.UpdateTemplateMI;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
 
 /**
  * 解析Mapper方法，得到MapperInvoke类,能解析内置的的Sql,TemplateSql,也支持通过Builder注解自定义注解

@@ -2,12 +2,8 @@ package org.beetl.sql.mapper.identity;
 
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.mapper.MapperInvoke;
-import org.beetl.sql.mapper.builder.MethodParam;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;
 import org.beetl.sql.mapper.builder.ParameterParser;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * sql来源于sql资源文件,通常mapper的泛型的类名+方法名即sqlId

@@ -2,9 +2,9 @@ package org.beetl.sql.core.engine;
 
 import org.beetl.core.Resource;
 import org.beetl.core.ResourceLoader;
+import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.loader.SQLLoader;
-import org.beetl.sql.core.SQLSource;
 
 import java.io.IOException;
 import java.io.Reader;

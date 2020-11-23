@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.sql.DataSource;
-
 import java.util.HashMap;
 import java.util.Map;
 

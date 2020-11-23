@@ -6,7 +6,8 @@ import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * Java代理实现.

@@ -5,8 +5,6 @@ import org.beetl.core.Resource;
 import org.beetl.core.engine.GrammarCreator;
 import org.beetl.core.statement.*;
 
-import java.util.Map;
-
 /**
  * 对sql模板语法进行定制，比如占位符输出"?"而不是实际内容
  * @author xiandafu

@@ -1,11 +1,10 @@
 package org.beetl.sql.clazz;
 
 
-
 import lombok.Data;
-import org.beetl.sql.annotation.builder.TargetAdditional;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.annotation.builder.BeanConvert;
+import org.beetl.sql.annotation.builder.TargetAdditional;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;

@@ -1,12 +1,12 @@
 package org.beetl.sql.mapper;
 
-import java.util.List;
-
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.mapper.annotation.AutoMapper;
 import org.beetl.sql.mapper.internal.*;
+
+import java.util.List;
 
 /**
  * BaseMapper.定义了一个Mapper接口，并内置了多个方法

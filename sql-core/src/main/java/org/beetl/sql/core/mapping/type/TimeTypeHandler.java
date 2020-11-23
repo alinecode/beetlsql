@@ -2,7 +2,6 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.SQLException;
 import java.sql.Time;
-import java.sql.Timestamp;
 
 public class TimeTypeHandler extends JavaSqlTypeHandler {
 

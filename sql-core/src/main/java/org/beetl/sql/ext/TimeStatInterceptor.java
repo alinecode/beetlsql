@@ -6,7 +6,6 @@ import org.beetl.sql.core.InterceptorContext;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.engine.SQLParameter;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 

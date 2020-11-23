@@ -2,12 +2,11 @@ package org.beetl.sql.clazz;
 
 
 import lombok.Data;
-import org.beetl.sql.annotation.builder.TargetAdditional;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.annotation.builder.BeanConvert;
 import org.beetl.sql.annotation.builder.Builder;
+import org.beetl.sql.annotation.builder.TargetAdditional;
 import org.beetl.sql.annotation.entity.*;
-
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.clazz.kit.DefaultCache;

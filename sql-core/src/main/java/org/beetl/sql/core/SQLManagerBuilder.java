@@ -3,7 +3,6 @@ package org.beetl.sql.core;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
 import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
@@ -11,6 +10,7 @@ import org.beetl.sql.core.loader.AbstractClassPathSQLLoader;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
+import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import java.io.IOException;

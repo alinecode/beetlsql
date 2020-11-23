@@ -1,10 +1,7 @@
 package org.beetl.sql.core.db;
 
-import org.beetl.sql.core.concat.ConcatBuilder;
 import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
-
-import java.util.Map;
 
 /**
  * 数据库差异：h2.

@@ -3,18 +3,13 @@ package org.beetl.sql.mapper.provider;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.StringKit;
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.SqlTemplateProvider;
-import org.beetl.sql.mapper.builder.MethodParam;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;
 import org.beetl.sql.mapper.builder.ParameterParser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 实现{@code SqlTemplateProvider}

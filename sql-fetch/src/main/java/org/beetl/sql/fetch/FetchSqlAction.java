@@ -1,11 +1,9 @@
 package org.beetl.sql.fetch;
 
 import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.fetch.annotation.FetchSql;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

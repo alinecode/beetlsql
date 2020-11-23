@@ -4,15 +4,9 @@ import lombok.Data;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.core.SQLSource;
-import org.beetl.sql.core.SqlId;
-import org.beetl.sql.core.loader.SQLLoader;
-import org.beetl.sql.core.nosql.DruidStyle;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Map;
 
 /**
  * 分页测试

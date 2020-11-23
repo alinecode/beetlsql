@@ -1,21 +1,14 @@
 package org.beetl.sql.saga.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.beetl.sql.saga.common.SagaContext;
-import org.beetl.sql.saga.common.SagaContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.Acknowledgment;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 
 /**
  * 配置使用kafka 需要的topic，重试次数等

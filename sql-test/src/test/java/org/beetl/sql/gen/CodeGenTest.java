@@ -1,9 +1,10 @@
 package org.beetl.sql.gen;
 
-import org.beetl.core.ReThrowConsoleErrorHandler;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.gen.simple.*;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;

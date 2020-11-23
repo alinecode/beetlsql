@@ -1,18 +1,11 @@
 package org.beetl.sql.core.nosql;
 
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.DBType;
-import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
-import org.beetl.sql.core.mapping.type.ReadTypeParameter;
-import org.beetl.sql.core.mapping.type.WriteTypeParameter;
 import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
 
-import java.sql.Date;
-import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  *

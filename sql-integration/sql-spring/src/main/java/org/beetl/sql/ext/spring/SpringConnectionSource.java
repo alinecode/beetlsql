@@ -9,7 +9,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.List;
 
 /**
  * @author xiandafu

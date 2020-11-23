@@ -2,11 +2,8 @@ package org.beetl.sql.core.mapping.type;
 
 import org.beetl.sql.core.db.DBType;
 
-import java.sql.Clob;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class DateTypeHandler extends JavaSqlTypeHandler {
 

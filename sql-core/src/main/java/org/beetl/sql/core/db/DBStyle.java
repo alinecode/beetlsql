@@ -10,7 +10,6 @@ import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.meta.SchemaMetadataManager;
 import org.beetl.sql.core.range.RangeSql;
 
-import java.util.Map;
 import java.util.Properties;
 
 /**

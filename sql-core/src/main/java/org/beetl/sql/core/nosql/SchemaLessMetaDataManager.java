@@ -8,13 +8,10 @@ import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.clazz.kit.ThreadSafeCaseInsensitiveHashMap;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.meta.SchemaMetadataManager;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.util.List;
-import java.util.Set;
 
 /**
  *

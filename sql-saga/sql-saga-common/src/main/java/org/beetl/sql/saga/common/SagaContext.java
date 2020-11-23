@@ -1,10 +1,7 @@
 package org.beetl.sql.saga.common;
 
 
-import lombok.Data;
-
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 public abstract class SagaContext {
 	/**

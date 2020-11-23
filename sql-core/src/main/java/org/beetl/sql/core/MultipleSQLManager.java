@@ -3,22 +3,25 @@ package org.beetl.sql.core;
 import org.beetl.sql.clazz.ClassDesc;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.TableDesc;
-import org.beetl.sql.clazz.kit.*;
+import org.beetl.sql.clazz.kit.AutoSQLEnum;
+import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.clazz.kit.ClassLoaderKit;
 import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.meta.MetadataManager;
-import org.beetl.sql.core.meta.SchemaMetadataManager;
 import org.beetl.sql.core.engine.template.SQLErrorInfo;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
+import org.beetl.sql.core.meta.MetadataManager;
+import org.beetl.sql.core.meta.SchemaMetadataManager;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 
 /**

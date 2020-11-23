@@ -3,11 +3,9 @@ package org.beetl.sql.core.engine.template;
 import org.beetl.core.AntlrProgramBuilder;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
-import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.engine.StringSqlTemplateLoader;
+import org.beetl.sql.core.loader.SQLLoader;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
