@@ -1,23 +1,36 @@
-如果多数据源没有分布式事务管理，saga模块可以实现分布式事务的功能，能统一提交和回滚，回滚调用根据SegaMapper的API自动生成
+level1: 如果只是操作多库，本地回滚，本地回滚失败放弃
+level2: 如果只是操作多库，但如果回滚失败（数据库宕机或者主备切换中），那需要消息重试。需要基础设施kafka
+level3：如果是多库+微服务。需要基础设施kafka+ beetlsql-saga-server
 
-**注意**，sega模式并不能像XA那样实现数据隔离，实现数据隔离必须数据库提供，saga模块按照saga原理来实现回滚，保证数据一致
+
+
+**注意**，sega模式并不能像XA那样实现数据隔离，实现数据隔离必须业务上考虑如何数据隔离，saga模块按照saga原理来实现回滚，保证数据一致
 
 参考代码`SimpleTest`
 ```
-UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
-long count = sqlManager.allCount(User.class);
-try{
-    User user = new User();
-    user.setName("abc");
-    userMapper.insert(user);
-    User user2 = new User();
-    user2.setName("abc");
-    userMapper.insert(user2);
-    throw new RuntimeException("模拟异常");
-}catch(RuntimeException ex){
-    sagaContext.rollback();
-}
-
+@Test
+	public void simple(){
+		SagaContext sagaContext = SagaContext.sagaContextFactory.current();
+		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
+		long count = sqlManager.allCount(User.class);
+		try{
+			sagaContext.start(); //标记开始事务
+			User user = new User();
+			user.setName("abc");
+			userMapper.insert(user);
+			User user2 = new User();
+			user2.setName("abc");
+			userMapper.insert(user2);
+			if(1==1){
+				throw new RuntimeException("模拟异常");
+			}
+			sagaContext.commit(); //标记提交事务
+		}catch(RuntimeException ex){
+			sagaContext.rollback();//标记回滚事务
+		}
+		long  afterCount = sqlManager.allCount(User.class);
+		Assert.assertEquals(count,afterCount);
+	}
 ```
 
 UserMapper需要继承SagaMapper，而不是BaseMapper
@@ -28,4 +41,7 @@ public interface UserMapper extends SagaMapper<User> {
 
 ```
 
-如果目标框架，必须禁止事务管理，否则saga不生效
+取决于应用场景level1_3，如上SagaContext有不同的实现.但其api保持不变
+
+
+
