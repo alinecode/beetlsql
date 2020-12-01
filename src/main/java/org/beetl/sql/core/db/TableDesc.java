@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.beetl.sql.core.NameConversion;
 import org.beetl.sql.core.kit.CaseInsensitiveHashMap;
@@ -25,7 +26,7 @@ public class TableDesc{
 	
 
 	//跟table相关的类
-	private Map<Class,ClassDesc> classes = new LinkedHashMap<Class,ClassDesc>();
+	private Map<Class,ClassDesc> classes = new ConcurrentHashMap<>();
 	//table 列的详细描述
 	private CaseInsensitiveHashMap<String,ColDesc> colsDetail = new CaseInsensitiveHashMap<String,ColDesc>();
 	//table所在的schema
@@ -107,13 +108,10 @@ public class TableDesc{
 	public ClassDesc getClassDesc(Class c,NameConversion nc){
 		ClassDesc classDesc = classes.get(c);
 		if(classDesc==null){
-			synchronized(classes){
-				classDesc = classes.get(c);
-				if(classDesc!=null) return classDesc;
-				classDesc = new ClassDesc(c,this,nc);
-				classes.put(c, classDesc);
-				
-			}
+			classDesc = classes.get(c);
+			if(classDesc!=null) return classDesc;
+			classDesc = new ClassDesc(c,this,nc);
+			classes.put(c, classDesc);
 		}
 		
 		return classDesc;
