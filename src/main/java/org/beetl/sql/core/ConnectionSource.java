@@ -1,6 +1,8 @@
 package org.beetl.sql.core;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public interface ConnectionSource {
@@ -9,43 +11,46 @@ public interface ConnectionSource {
 	 * @return
 	 */
 	public Connection getMaster();
-	
-	
+
+
 	public Connection getSlave();
-	
+
 	public Connection getMetaData();
-	
-	
+
+
 	/**
 	 * 根据条件得到链接
-	 * @param sqlId 
+	 * @param sqlId
 	 * @param isUpdate 是否更新数据
 	 * @param sql
 	 * @param paras
 	 * @return
 	 */
-	public Connection getConn(String sqlId,boolean isUpdate,String sql,List<?> paras);
-	
+	public Connection getConn(String sqlId, boolean isUpdate, String sql, List<?> paras);
+
 	/**
 	 * 强迫选择主从，取消掉，没人用
 	 */
 	@Deprecated
 	public void forceBegin(boolean isMaster);
-	
+
 	/**
 	 * 强制选择主从结束，如果调用了forceBegin，则必须调用forceEnd
 	 */
 	@Deprecated
 	public void forceEnd();
-	
-	
-	
 
-	
+
 	public boolean isTransaction();
-	
-	
-	
-	
-	
+
+	default void applyStatementSetting(Connection conn, Statement statement) throws SQLException {
+
+	}
+
+
+	default void applyConnectionSetting(Connection conn) throws SQLException {
+
+	}
+
+
 }

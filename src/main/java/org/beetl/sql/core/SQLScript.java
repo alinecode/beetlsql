@@ -213,7 +213,6 @@ public class SQLScript {
             }
 
             this.setPreparedStatementPara(ps, objs);
-
             int ret = ps.executeUpdate();
 
             if (idType == DBStyle.ID_AUTO || idType == DBStyle.ID_SEQ) {
@@ -261,7 +260,7 @@ public class SQLScript {
 
 
             this.setPreparedStatementPara(ps, objs);
-
+			sm.getDs().applyStatementSetting(conn,ps);
             int ret = ps.executeUpdate();
 
             if (getKey) {
@@ -342,6 +341,7 @@ public class SQLScript {
             conn = sm.getDs().getConn(id, false, sql, objs);
             ps = conn.prepareStatement(sql);
             this.setPreparedStatementPara(ps, objs);
+			sm.getDs().applyStatementSetting(conn,ps);
             rs = ps.executeQuery();
             if (mapper != null) {
                 BeanProcessor beanProcessor = this.getBeanProcessor();
@@ -467,6 +467,7 @@ public class SQLScript {
             conn = sm.getDs().getConn(id, true, sql, objs);
             ps = conn.prepareStatement(sql);
             this.setPreparedStatementPara(ps, objs);
+			sm.getDs().applyStatementSetting(conn,ps);
             rs = ps.executeUpdate();
             this.callInterceptorAsAfter(ctx, rs);
         } catch (SQLException e) {
@@ -499,8 +500,11 @@ public class SQLScript {
                 if (ps == null) {
                     ps = conn.prepareStatement(result.jdbcSql);
                     ctx = this.callInterceptorAsBefore(this.id, sql, true, Collections.EMPTY_LIST, paras);
+					this.setPreparedStatementPara(ps, objs);
+					sm.getDs().applyStatementSetting(conn,ps);
                 }
-                this.setPreparedStatementPara(ps, objs);
+
+
                 ps.addBatch();
 
             }
@@ -542,9 +546,9 @@ public class SQLScript {
                     conn = sm.getDs().getConn(id, true, result.jdbcSql, objs);
                     ps = autoDbAssignKey?conn.prepareStatement(result.jdbcSql,Statement.RETURN_GENERATED_KEYS):conn.prepareStatement(result.jdbcSql);
                     ctx = this.callInterceptorAsBefore(this.id, result.jdbcSql, true, new ArrayList<SQLParameter>(0), paras);
+					sm.getDs().applyStatementSetting(conn,ps);
                 }
 
-                this.setPreparedStatementPara(ps, objs);
 
                 ps.addBatch();
 
@@ -601,6 +605,7 @@ public class SQLScript {
                     batchCtx.put(result.jdbcSql, ctx);
                     batchPs.put(result.jdbcSql, ps);
                     batchRet.put(result.jdbcSql, rets);
+					sm.getDs().applyStatementSetting(conn,ps);
                 }
 
                 this.setPreparedStatementPara(ps, objs);
@@ -670,6 +675,7 @@ public class SQLScript {
 			conn = sm.getDs().getConn(id, false, sql, objs);
 			ps = conn.prepareStatement(sql);
 			this.setPreparedStatementPara(ps, objs);
+			sm.getDs().applyStatementSetting(conn,ps);
 			rs = ps.executeQuery();
 
 			try {
@@ -722,7 +728,9 @@ public class SQLScript {
         try {
             conn = sm.getDs().getConn(id, false, sql, objs);
             ps = conn.prepareStatement(sql);
+
             this.setPreparedStatementPara(ps, objs);
+			sm.getDs().applyStatementSetting(conn,ps);
             rs = ps.executeQuery();
             try {
                 BeanProcessor beanProcessor = this.getBeanProcessor();
@@ -789,6 +797,7 @@ public class SQLScript {
             conn = sm.getDs().getConn(id, true, sql, objs);
             ps = conn.prepareStatement(sql);
             this.setPreparedStatementPara(ps, objs);
+			sm.getDs().applyStatementSetting(conn,ps);
             rs = ps.executeUpdate();
             this.callInterceptorAsAfter(ctx, rs);
         } catch (SQLException e) {
@@ -814,6 +823,7 @@ public class SQLScript {
             conn = sm.getDs().getConn(id, false, sql, objs);
             ps = conn.prepareStatement(sql);
             this.setPreparedStatementPara(ps, objs);
+			sm.getDs().applyStatementSetting(conn,ps);
             rs = ps.executeQuery();
             resultList = mappingSelect(rs, clazz);
 
@@ -843,6 +853,7 @@ public class SQLScript {
             conn = sm.getDs().getConn(id, true, sql, objs);
             ps = conn.prepareStatement(sql);
             this.setPreparedStatementPara(ps, objs);
+			sm.getDs().applyStatementSetting(conn,ps);
             rs = ps.executeUpdate();
             this.callInterceptorAsAfter(ctx, rs);
         } catch (SQLException e) {
@@ -874,6 +885,7 @@ public class SQLScript {
                     conn  = sm.getDs().getConn(id, true, sql, objs);
                     ctx = this.callInterceptorAsBefore(this.id, sql, true, objs, this.getSQLReadyParas(Arrays.asList(jdbcArgs)));
                     ps = conn.prepareStatement(sql);
+					sm.getDs().applyStatementSetting(conn,ps);
                 }
                 this.setPreparedStatementPara(ps, objs);
                 ps.addBatch();
@@ -902,6 +914,8 @@ public class SQLScript {
         beanProcessor.setPreparedStatementPara(this.sqlSource.getId(), ps, objs);
 
     }
+
+
 
 
     protected void clean(boolean isUpdate, Connection conn, PreparedStatement ps, ResultSet rs) {
