@@ -72,7 +72,7 @@ public class UpdateTimeConvert implements AttributeConvert {
 		}else if(java.sql.Date.class == dateType){
 			now = rs.getDate(index);
 		}else if(java.util.Date.class==dateType){
-			now = rs.getDate(index);
+			now = rs.getTimestamp(index);
 		}
 		else {
 			throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"期望类型是日期类型，但是 "+cls);
