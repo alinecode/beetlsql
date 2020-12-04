@@ -7,17 +7,17 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-integration</artifactId>
-        <version>3.1.0-RELEASE</version>
+        <version>3.1.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-jfinal</artifactId>
-    <version>3.1.0-RELEASE</version>
+    <version>3.1.1-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.1.0-RELEASE</version>
+            <version>3.1.1-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 <!--        <dependency>-->
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.jfinal</groupId>
             <artifactId>jfinal</artifactId>
-            <version>4.9.02</version>
+            <version>4.9.03</version>
             <scope>provided</scope>
         </dependency>
 

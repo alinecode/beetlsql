@@ -1,4 +1,4 @@
-package org.beetl.sql.saga.kafka;
+package org.beetl.sql.saga.ms.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

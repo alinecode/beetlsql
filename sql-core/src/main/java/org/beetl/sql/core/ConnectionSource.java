@@ -1,6 +1,10 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.clazz.kit.BeetlSQLException;
+
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Beetlsql 使用ConnectionSource管理 数据库连接。这有点类似DataSource
@@ -57,6 +61,38 @@ public interface ConnectionSource {
 	 *
 	 * @return
 	 */
-	  boolean isTransaction();
+	boolean isTransaction();
+
+
+	default void applyStatementSetting(ExecuteContext ctx,Connection conn,Statement statement) throws SQLException {
+
+	}
+
+
+	default void applyConnectionSetting(ExecuteContext ctx,Connection conn){
+
+	}
+
+	default void closeConnection(Connection conn,boolean isUpdate){
+		if (!isTransaction()) {
+			try {
+
+				if (conn != null) {
+					// colse 不一定能保证能自动commit
+					if (isUpdate && !conn.getAutoCommit()) {
+
+						conn.commit();
+					}
+
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+			}
+
+		}
+	}
+
+
 
 }

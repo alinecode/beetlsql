@@ -1,4 +1,4 @@
-package org.beetl.sql.saga.kafka;
+package org.beetl.sql.saga.ms.client;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
@@ -14,12 +14,13 @@ import java.util.UUID;
  * 提供一个jackson序列化
  */
 @Data
-public class SagaLevel3Transaction implements SagaTransaction {
+public class KafkaLevel2Transaction implements SagaTransaction {
 	@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
 	protected List<KafkaSagaTaskTrace> tasks = new ArrayList<>();
 	protected String id;
 	protected boolean success = true;
-	public SagaLevel3Transaction(){
+	protected  int totalTry = 0;
+	public KafkaLevel2Transaction(){
 		id = UUID.randomUUID().toString();
 	}
 
@@ -40,10 +41,12 @@ public class SagaLevel3Transaction implements SagaTransaction {
 				success = false;
 			}
 		}
+		if(!success){
+			//记录执行次数
+			totalTry++;
+		}
 		return success;
 	}
-
-
 	@Data
 	@Slf4j
 	public static class KafkaSagaTaskTrace implements java.io.Serializable {

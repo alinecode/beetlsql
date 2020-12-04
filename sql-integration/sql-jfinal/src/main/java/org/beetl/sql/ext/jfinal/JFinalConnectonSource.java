@@ -3,6 +3,7 @@ package org.beetl.sql.ext.jfinal;
 
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.DefaultConnectionSource;
+import org.beetl.sql.core.ExecuteContext;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -18,7 +19,7 @@ public class JFinalConnectonSource extends DefaultConnectionSource {
 	}
 
 	@Override
-    protected Connection doGetConnection(DataSource ds) {
+    protected Connection doGetConnection(ExecuteContext ctx,DataSource ds) {
 		try {
 			if (Trans.inTrans()) {
 				return Trans.getCurrentThreadConnection(ds);

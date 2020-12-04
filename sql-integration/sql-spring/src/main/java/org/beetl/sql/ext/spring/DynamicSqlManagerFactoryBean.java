@@ -23,7 +23,7 @@ public class DynamicSqlManagerFactoryBean
 
 	protected ConditionalSQLManager.Conditional conditional = new ConditionalSQLManager.DefaultConditional();
 	protected SQLManager defaultSQLManager = null;
-	protected  HashMap<String, SQLManager> all = new HashMap<>();
+	protected HashMap<String, SQLManager> all = new HashMap<>();
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
@@ -36,7 +36,7 @@ public class DynamicSqlManagerFactoryBean
 			return conditionalSQLManager;
 		}
 
-		ConditionalSQLManager temp  = new ConditionalSQLManager(defaultSQLManager,all);
+		ConditionalSQLManager temp = new ConditionalSQLManager(defaultSQLManager, all);
 		temp.setConditional(conditional);
 		conditionalSQLManager = temp;
 		return conditionalSQLManager;

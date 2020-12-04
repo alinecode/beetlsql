@@ -12,6 +12,8 @@ import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
+import org.beetl.sql.ext.SnowflakeIDAutoGen;
+import org.beetl.sql.ext.UUIDAutoGen;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
@@ -56,7 +58,7 @@ public class SqlManagerFactoryBean
 	protected Interceptor[] interceptors;
 
 	/**sqlManager名称**/
-	protected  String name ;
+	protected String name;
 	/**
 	 * BeetlSql核心类
 	 */
@@ -87,6 +89,7 @@ public class SqlManagerFactoryBean
 		if (interceptors == null) {
 			interceptors = new Interceptor[0];
 		}
+
 
 		Properties properties = new Properties();
 
@@ -121,12 +124,12 @@ public class SqlManagerFactoryBean
 		builder.setInters(interceptors);
 		builder.setDbStyle(dbStyle);
 		builder.setSqlLoader(this.sqlLoader);
-		if(name!=null){
+		if (name != null) {
 			builder.setName(name);
 		}
 		SQLManager tempSQLManager = builder.build();
 
-		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine)tempSQLManager.getSqlTemplateEngine();
+		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine) tempSQLManager.getSqlTemplateEngine();
 
 		for (Map.Entry<String, Function> entry : functions.entrySet()) {
 			beetlTemplateEngine.getBeetl().getGroupTemplate().registerFunction(entry.getKey(), entry.getValue());
@@ -135,10 +138,14 @@ public class SqlManagerFactoryBean
 		for (Map.Entry<String, TagFactory> entry : tagFactorys.entrySet()) {
 			beetlTemplateEngine.getBeetl().getGroupTemplate().registerTagFactory(entry.getKey(), entry.getValue());
 		}
+		tempSQLManager.addIdAutoGen("simple", new SnowflakeIDAutoGen());
+		tempSQLManager.addIdAutoGen("uuid", new UUIDAutoGen());
 
 		for (Map.Entry<String, IDAutoGen> entry : this.idAutoGens.entrySet()) {
-			tempSQLManager.addIdAutonGen(entry.getKey(), entry.getValue());
+			tempSQLManager.addIdAutoGen(entry.getKey(), entry.getValue());
 		}
+
+
 		sqlManager = tempSQLManager;
 		return sqlManager;
 	}

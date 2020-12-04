@@ -69,7 +69,7 @@ public class S07InsertSample {
      */
     public void idGenerator() {
         //初始化一个id生成器
-        sqlManager.addIdAutonGen("myIdGenerator", new IDAutoGen() {
+        sqlManager.addIdAutoGen("myIdGenerator", new IDAutoGen() {
 
             @Override
             public Object nextID(String params) {

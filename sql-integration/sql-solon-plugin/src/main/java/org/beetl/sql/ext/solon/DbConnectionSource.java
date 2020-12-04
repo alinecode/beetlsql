@@ -45,7 +45,7 @@ class DbConnectionSource extends DefaultConnectionSource {
     }
 
     @Override
-    protected Connection doGetConnection(DataSource ds) {
+    protected Connection doGetConnection(ExecuteContext ctx,DataSource ds) {
         try {
             return XTranUtils.getConnection(ds);
         } catch (SQLException e) {

@@ -7,15 +7,18 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-saga</artifactId>
-        <version>3.1.0-RELEASE</version>
+        <version>3.1.1-RELEASE</version>
     </parent>
+    <packaging>pom</packaging>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-saga-level3</artifactId>
-    <version>3.1.0-RELEASE</version>
+    <version>3.1.1-RELEASE</version>
     <modules>
         <module>sql-saga-microservice-client</module>
         <module>sql-saga-microservice-server</module>
     </modules>
+
+
     
 </project>

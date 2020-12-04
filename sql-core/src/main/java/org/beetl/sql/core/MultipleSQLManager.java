@@ -972,7 +972,7 @@ public class MultipleSQLManager extends  SQLManager {
      * @param alorithm
      */
     @Override
-    public void addIdAutonGen(String name, IDAutoGen alorithm) {
+    public void addIdAutoGen(String name, IDAutoGen alorithm) {
         throw new UnsupportedOperationException();
     }
 
@@ -984,8 +984,8 @@ public class MultipleSQLManager extends  SQLManager {
      * @return
      */
     @Override
-    protected Object getAssignIdByIdAutonGen(String name, String param, String table) {
-       return current.get().getAssignIdByIdAutonGen(name,param,table);
+    protected Object getAssignIdByIdAutoGen(String name, String param, String table) {
+       return current.get().getAssignIdByIdAutoGen(name,param,table);
 
     }
 

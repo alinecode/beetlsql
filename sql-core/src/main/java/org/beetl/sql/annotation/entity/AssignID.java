@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 /**
  * 标识字段主键且是程序制定
- * 如果value不为空，则表示某种算法，通过{@link org.beetl.sql.core.SQLManager#addIdAutonGen(String, IDAutoGen)}注册
+ * 如果value不为空，则表示某种算法，通过{@link org.beetl.sql.core.SQLManager#addIdAutoGen(String, IDAutoGen)}注册
  * BeetlSQL在插入此对象，会调用此算法获取id值
  * @see SnowflakeIDAutoGen
  */

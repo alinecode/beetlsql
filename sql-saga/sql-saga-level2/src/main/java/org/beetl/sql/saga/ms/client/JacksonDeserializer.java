@@ -1,4 +1,4 @@
-package org.beetl.sql.saga.kafka;
+package org.beetl.sql.saga.ms.client;
 
 import org.apache.kafka.common.serialization.Deserializer;
 

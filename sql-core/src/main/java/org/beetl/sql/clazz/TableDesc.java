@@ -6,6 +6,7 @@ import org.beetl.sql.clazz.kit.CaseInsensitiveOrderSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 数据库表或者视图信息
@@ -34,8 +35,8 @@ public class TableDesc {
 	private Set<String> cols = new CaseInsensitiveOrderSet<String>();
 	
 
-	//跟table相关的类
-	private Map<Class,ClassDesc> classes = new LinkedHashMap<Class,ClassDesc>();
+	//跟table相关的类，必须线程安全，是懒加载的
+	private Map<Class,ClassDesc> classes = new ConcurrentHashMap<>();
 
 	/**
 	 * table 列的详细描述

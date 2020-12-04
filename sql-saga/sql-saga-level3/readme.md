@@ -8,6 +8,7 @@
 
 * client1，任何微服务客户端，通过kafka 发送事务数据。客户端在调用start时候，标记自己的事务，在commit或者rollback的时候发送回滚sql到saga server
 
+注意，采用消息方式同saga-server 交互，问题是回滚可能带来延迟。即提示用户出错，但数据当时还可能没有回滚
   
 
 ![](../../doc/saga-microservice.png)

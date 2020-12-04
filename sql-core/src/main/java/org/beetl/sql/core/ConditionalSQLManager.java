@@ -1065,11 +1065,11 @@ public class ConditionalSQLManager extends  SQLManager {
      * @param alorithm
      */
     @Override
-    public void addIdAutonGen(String name, IDAutoGen alorithm) {
+    public void addIdAutoGen(String name, IDAutoGen alorithm) {
 		sqlManagerMap.values().forEach(sqlManager -> {
-			sqlManager.addIdAutonGen(name,alorithm);
+			sqlManager.addIdAutoGen(name,alorithm);
 		});
-		this.defaultSQLManager.addIdAutonGen(name,alorithm);
+		this.defaultSQLManager.addIdAutoGen(name,alorithm);
     }
 
     /**
@@ -1080,7 +1080,7 @@ public class ConditionalSQLManager extends  SQLManager {
      * @return
      */
     @Override
-    protected Object getAssignIdByIdAutonGen(String name, String param, String table) {
+    protected Object getAssignIdByIdAutoGen(String name, String param, String table) {
         throw new UnsupportedOperationException();
 
     }

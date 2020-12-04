@@ -14,7 +14,7 @@ public class IdTest extends BaseTest {
     @BeforeClass
     public static void init(){
         initTable(file);
-        sqlManager.addIdAutonGen("uuid",new UUIDAutoGen());
+        sqlManager.addIdAutoGen("uuid",new UUIDAutoGen());
     }
 
 

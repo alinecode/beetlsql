@@ -1,9 +1,10 @@
-package org.beetl.sql.saga.kafka;
+package org.beetl.sql.saga.ms.client;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.beetl.sql.saga.common.SagaContext;
+import org.beetl.sql.saga.ms.client.task.RollbackTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +28,14 @@ public class SagaLevel3Config {
 	@Value("${beetlsql-saga.kafka.server-topic:saga-server-topic}")
 	protected String serverTopic;
 
+
+	@Value("${beetlsql-saga.kafka.client-topic-prefix}")
+	protected String appTopic;
 	@Autowired
 	protected KafkaTemplate template;
 
+	@Value("${spring.application.name}")
+	protected  String appName;
 
 
 	@PostConstruct
@@ -39,8 +45,12 @@ public class SagaLevel3Config {
 
 	}
 
-
-	@KafkaListener( topics = "#{'${beetlsql-saga.kafka.rollback-topic}'}")
+	/**
+	 * 每个client监听topic的规则是serverTopic+'-client-'+appName
+	 * @param record
+	 * @throws Exception
+	 */
+	@KafkaListener( topics = "#{'${beetlsql-saga.kafka.client-topic-prefix}+'-'+'${spring.application.name}'}")
 	public void retry(ConsumerRecord<?, RollbackTask> record) throws Exception {
 		try{
 			RollbackTask task = record.value();

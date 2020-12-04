@@ -1,4 +1,4 @@
-package org.beetl.sql.saga.kafka;
+package org.beetl.sql.saga.ms.client;
 
 import org.beetl.sql.saga.common.LocalSagaContext;
 import org.beetl.sql.saga.common.SagaContext;
@@ -35,31 +35,55 @@ public class SagaLevel3Context extends SagaContext {
 
 	public void start(String gid) {
 		super.start(gid);
-		client.start(gid, this.time);
+		try{
+			client.start(gid, time);
+		}catch (Exception ex){
+			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
+		}
+		finally {
+			clear();
+		}
 	}
 
 	public void commit() {
-		client.sendTransactionTask(gid,time,transaction, true);
-		transaction.getTasks().clear();
-		newTransaction();
+		try{
+			client.sendRollbackTaskInCommit(gid,time,transaction);
+		}catch (Exception ex){
+			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
+		}finally {
+			clear();
+		}
 	}
 
 	@Override
 	public void rollback() {
-		client.sendTransactionTask(gid,time,transaction, false);
-		transaction.getTasks().clear();
-		newTransaction();
+		try{
+			//仅仅发送回滚任务，真正回滚需要等待收到saga-server通知，然后调用realRollback
+			client.sendRollbackTask(gid,time,transaction);
+		}catch (Exception ex){
+			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
+		}finally {
+			clear();
+		}
+
+
 	}
 
 	/**
 	 * 真正的本地回滚
 	 */
-	public void realRollback() {
-		boolean success = transaction.rollback();
-		if (success) {
-			return;
+	public boolean realRollback() {
+		try{
+			boolean success = transaction.rollback();
+			if (success) {
+				client.rollbackSuccess(gid,time);
+				return true;
+			}
+			client.rollbackFailure(gid,time,transaction);
+			return false;
+		}finally {
+			clear();
 		}
-		rollback();
 
 	}
 
@@ -72,8 +96,13 @@ public class SagaLevel3Context extends SagaContext {
 		transaction = new SagaLevel3Transaction();
 	}
 
+	protected  void clear(){
+		transaction.getTasks().clear();
+		newTransaction();
+	}
+
 	/**
-	 * 服务调用也放入context管理
+	 * 非sql类的，比如批量增加数据，逆向操作可能只是简单的删除外键，而不需要每条都删除
 	 * @param callable
 	 * @param runnable ，必须保证可被json序列化和反序列化，比如，提供一个空的构造函数
 	 * @param <T>

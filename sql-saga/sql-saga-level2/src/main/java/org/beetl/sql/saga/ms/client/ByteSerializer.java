@@ -1,4 +1,4 @@
-package org.beetl.sql.saga.kafka;
+package org.beetl.sql.saga.ms.client;
 
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
