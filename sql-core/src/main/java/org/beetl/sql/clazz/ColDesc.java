@@ -14,13 +14,16 @@ public class ColDesc {
 	private Integer size;
 	private Integer digit;
 	private String remark ;
+	//YES,NO or emptyString
+	private String isNullable;
 	private boolean isAuto = false;
-	public ColDesc(String colName, int sqlType, Integer size, Integer digit, String remark){
+	public ColDesc(String colName, int sqlType, Integer size, Integer digit, String remark,String isNullable){
 		this.colName = colName;
 		this.sqlType = sqlType;
 		this.size = size;
 		this.digit = digit;
 		this.remark = remark;
+		this.isNullable = isNullable;
 		
 	}
 	public ColDesc(String colName){

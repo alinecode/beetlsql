@@ -17,7 +17,8 @@
     <modules>
         <module>sql-saga-level1</module>
         <module>sql-saga-level2</module>
-        <module>sql-saga-level3</module>
+        <!-- 需要springboot，kafka，swagger 等依赖。可以被屏蔽，以加速项目下载jar -->
+<!--        <module>sql-saga-level3</module>-->
     </modules>
 
 </project>

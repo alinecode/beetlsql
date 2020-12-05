@@ -40,8 +40,8 @@ public abstract class SagaContext {
 
 	public abstract SagaTransaction getTransaction();
 
-	//支持除了jdbc访问数据库外，也可以把服务调用放到这里
-	public abstract <T> T callService(Callable<T> callable, Runnable runnable) throws Exception;
+	//自定义复杂的回滚操作
+	public abstract <T> T callService(Callable<T> callable, Runnable rollback) throws Exception;
 
 	public SagaContext setGid(Object businessKey){
 		this.businessKey = businessKey;

@@ -18,7 +18,7 @@ public class DataSourceConfig {
     @Autowired
     ApplicationContext ctx;
 
-    @Bean
+    @Bean("datasource")
     public DataSource datasource(Environment env) {
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(env.getProperty("spring.datasource.url"));

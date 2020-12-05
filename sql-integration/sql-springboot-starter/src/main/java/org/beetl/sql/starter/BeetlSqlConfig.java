@@ -28,6 +28,9 @@ public class BeetlSqlConfig {
 		if(!StringKit.isBlank(oldSqlManagerConfig)){
 			allSqlManangerNames = oldSqlManagerConfig.split(",");
 		}else{
+			if(StringKit.isBlank(env.getProperty("beetlsql.sqlManagers"))){
+				throw new IllegalArgumentException("缺少 beetlsql.sqlManagers 配置");
+			}
 			allSqlManangerNames = env.getProperty("beetlsql.sqlManagers").split(",");
 		}
         for(String s:allSqlManangerNames){

@@ -187,6 +187,9 @@ public class SchemaMetadataManager implements MetadataManager {
 					Integer sqlType = rs.getInt("DATA_TYPE");
 					Integer size = rs.getInt("COLUMN_SIZE");
 					Object o = rs.getObject("DECIMAL_DIGITS");
+					String isNullable = (String)rs.getObject("IS_NULLABLE");
+
+
 
 					Integer digit = null;
 					if(o!=null){
@@ -194,7 +197,7 @@ public class SchemaMetadataManager implements MetadataManager {
 					}
 
 					String remark = rs.getString("REMARKS");
-					ColDesc col = new ColDesc(colName,sqlType,size,digit,remark);
+					ColDesc col = new ColDesc(colName,sqlType,size,digit,remark,isNullable);
 					try{
 						if(checkAuto){
 							String  auto = rs.getString("IS_AUTOINCREMENT");
