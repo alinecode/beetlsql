@@ -53,7 +53,7 @@ public class SagaManager {
 			rollbackEntity.setFirstAppName(appName);
 			rollbackEntity.setCreateTime(System.currentTimeMillis());
 			rollbackEntity.setTotal(null);
-			rollbackEntity.setRollbackStatus(RollbackStatus.Error);
+			rollbackEntity.setRollbackStatus(RollbackStatus.INIT);
 			rollbackEntity.setSuccess(0);
 			rollbackMapper.insert(rollbackEntity);
 			log.info("start gid trans for "+gid+" from "+appName);
@@ -63,6 +63,7 @@ public class SagaManager {
 		entity.setGid(gid);
 		entity.setTime(time);
 		entity.setCreateTime(System.currentTimeMillis());
+		entity.setRollbackStatus(RollbackStatus.INIT);
 		log.info("start trans "+ appName+ " for "+gid+":"+time );
 		rollbackTaskMapper.insert(entity);
 
@@ -77,7 +78,7 @@ public class SagaManager {
 	 * @param rollback
 	 */
 	public void addRollbackBySuccessCommit(String gid,long time,String appName, SagaTransaction rollback){
-		updateRollbackTask(gid,time,appName,rollback);
+		updateRollbackTask(gid,time,appName,BusinessStatus.Success,rollback);
 		log.info("commit trans "+ appName+ " for "+gid+":"+time );
 	}
 
@@ -89,7 +90,7 @@ public class SagaManager {
 	 * @param rollback
 	 */
 	public void addRollbackAfterException(String gid,long time, String appName,SagaTransaction rollback){
-		updateRollbackTask(gid,time,appName,rollback);
+		updateRollbackTask(gid,time,appName,BusinessStatus.Error,rollback);
 		log.info("rollback trans "+ appName+ " for "+gid+":"+time );
 		int earlierCount= rollbackTaskMapper.findEarlierTransaction(gid,time);
 		if(earlierCount>0){
@@ -104,10 +105,16 @@ public class SagaManager {
 		log.info("rollback task total "+ list.size()+" for "+gid );
 
 		list.stream().forEach(rollbackTaskEntity -> {
-			String appKafka =clientTopicPrefix+"-"+rollbackTaskEntity.getAppName();
-			kafkaTemplate.send(appKafka,rollbackTaskEntity.getTaskInfo());
+			doRollback(rollbackTaskEntity);
 		});
 
+	}
+
+	public void doRollback(RollbackTaskEntity rollbackTaskEntity){
+		String appKafka =clientTopicPrefix+"-"+rollbackTaskEntity.getAppName();
+		rollbackTaskEntity.setRollbackStatus(RollbackStatus.Ongoing);
+		rollbackTaskMapper.updateById(rollbackTaskEntity);
+		kafkaTemplate.send(appKafka,rollbackTaskEntity.getTaskInfo());
 	}
 
 
@@ -127,10 +134,13 @@ public class SagaManager {
 		if(success){
 			entity.setRollbackStatus(RollbackStatus.Success);
 			rollbackMapper.addSuccess(gid);
+			//是否所有回滚都完成
 			RollbackEntity  rollbackEntity = rollbackMapper.unique(gid);
 			if(rollbackEntity.getTotal().equals(rollbackEntity.getSuccess())){
 				//成功,目前版本暂时不做处理。可通知发起方firstAppName，或者通知所有参与放
 				log.info("rollback all task for "+ appName +" for "+gid+" success ");
+				rollbackEntity.setRollbackStatus(RollbackStatus.Success);
+				rollbackMapper.updateById(rollbackEntity);
 			}
 		}else{
 			entity.setRollbackStatus(RollbackStatus.Error);
@@ -141,14 +151,15 @@ public class SagaManager {
 		return  ;
 	}
 
-	protected  RollbackTaskEntity updateRollbackTask(String gid,long time, String appName,SagaTransaction rollback){
+	protected  RollbackTaskEntity updateRollbackTask(String gid,long time, String appName,BusinessStatus businessStatus,SagaTransaction rollback){
 		RollbackTaskEntity template = new RollbackTaskEntity();
 		template.setTime(time);
 		template.setAppName(appName);
 		template.setGid(gid);
 		RollbackTaskEntity entity = rollbackTaskMapper.templateOne(template);
+
 		entity.setTaskInfo(rollback);
-		entity.setStatus(BusinessStatus.Success);
+		entity.setStatus(businessStatus);
 		entity.setUpdateTime(System.currentTimeMillis());
 		rollbackTaskMapper.updateById(entity);
 		return entity;
