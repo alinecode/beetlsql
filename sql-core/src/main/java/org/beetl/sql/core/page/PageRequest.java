@@ -8,7 +8,7 @@ import java.util.List;
  * @author xiandafu
  * @see DefaultPageRequest
  */
-public interface PageRequest<T> {
+public interface PageRequest<T>  extends  java.io.Serializable{
     /**
      * 当前页数，从1开始
      * @return

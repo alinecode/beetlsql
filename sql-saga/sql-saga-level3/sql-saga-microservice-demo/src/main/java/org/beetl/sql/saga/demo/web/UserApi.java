@@ -3,6 +3,7 @@ package org.beetl.sql.saga.demo.web;
 import lombok.extern.slf4j.Slf4j;
 import org.beetl.sql.saga.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @Slf4j
+@ConditionalOnProperty(value = "spring.application.name",havingValue = "userSystem")
 public class UserApi {
 	@Autowired
 	UserService userService;

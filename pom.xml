@@ -28,7 +28,7 @@
 		<!-- 打包到一起 -->
 		<module>beetlsql</module>
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->
-<!--		<module>sql-integration</module>-->
+		<module>sql-integration</module>
 <!--        <module>sql-jmh</module>-->
 <!--		<module>sql-db-support</module>-->
 
@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-            <version>3.2.4.RELEASE</version>
+            <version>3.3.0.RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 

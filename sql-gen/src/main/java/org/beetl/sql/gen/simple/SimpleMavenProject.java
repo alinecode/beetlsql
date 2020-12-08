@@ -41,7 +41,7 @@ public class SimpleMavenProject extends BaseProject {
 		String home = this.root;
 		FileWriter writer = null;
 		if(sourceBuilderName.equals("md")){
-			String src = this.root+ File.separator+"src/resources/sql";
+			String src = this.root+ File.separator+"src/main/resources/sql";
 			String output = src+File.separator+targetName;
 			try {
 				writer = new FileWriter(new File(output));

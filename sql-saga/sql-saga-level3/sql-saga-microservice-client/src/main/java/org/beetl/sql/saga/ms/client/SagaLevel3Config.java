@@ -50,7 +50,7 @@ public class SagaLevel3Config {
 	 * @param record
 	 * @throws Exception
 	 */
-	@KafkaListener( topics = "#{'${beetlsql-saga.kafka.client-topic-prefix}+'-'+'${spring.application.name}'}")
+	@KafkaListener( topics = "#{'${beetlsql-saga.kafka.client-topic-prefix}'+'-'+'${spring.application.name}'}")
 	public void retry(ConsumerRecord<?, RollbackTask> record) throws Exception {
 		try{
 			RollbackTask task = record.value();

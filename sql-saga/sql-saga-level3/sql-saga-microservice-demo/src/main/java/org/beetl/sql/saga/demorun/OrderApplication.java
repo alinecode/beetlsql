@@ -1,20 +1,18 @@
-package org.beetl.sql.saga.ms.server;
+package org.beetl.sql.saga.demorun;
 
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.annotation.EnableKafka;
-@PropertySource({""})
+
 @PropertySource(value = {
-		"classpath:saga-server-beetlsql-application.properties"
+		"classpath:common-application.properties","classpath:order-application.properties"
 }, encoding = "utf-8")
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"org.beetl.sql.saga.demo", "org.beetl.sql.saga.ms.client"})
 @EnableKafka
-public class SagaServerApplication {
-
+public class OrderApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(SagaServerApplication.class, args);
+		SpringApplication.run(OrderApplication.class, args);
 	}
-
 }

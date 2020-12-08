@@ -20,15 +20,5 @@ public class Attribute {
 	private boolean isAuto;
 	private String comment;
 
-	private String uName;
-
-	public String getMethodName() {
-		if (name.length() > 2 && Character.isUpperCase(name.charAt(2))) {
-			return name;
-		}else{
-			return StringKit.toUpperCaseFirstOne(name);
-		}
-	}
-
 
 }

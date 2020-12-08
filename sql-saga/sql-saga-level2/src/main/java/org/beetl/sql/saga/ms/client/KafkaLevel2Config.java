@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.beetl.sql.saga.common.SagaContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -31,7 +33,7 @@ public class KafkaLevel2Config {
 	/**
 	 * 事务回滚成功后的通知
 	 */
-	@Value("${beetlsql-saga.kafka.success-topic}")
+	@Value("${beetlsql-saga.kafka.success-topic:successSagaTopic}")
 	protected String successSegaTopic;
 
 	@Autowired
