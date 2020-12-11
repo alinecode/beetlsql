@@ -205,15 +205,14 @@ public class SourceConfig {
 		CaseInsensitiveHashMap<String, ColDesc> cols =  tableDesc.getColsDetail();
 		for(Map.Entry colInfo:cols.entrySet()){
 			ColDesc colDesc = (ColDesc)colInfo.getValue();
-			Attribute attribute = toAttribute(colDesc,packageList);
+			Attribute attribute = toAttribute(tableDesc,colDesc,packageList);
 			list.add(attribute);
 		}
 		entity.setList(list);
 		return entity;
-
 	}
 
-	protected  Attribute toAttribute(ColDesc colDesc,PackageList packageList){
+	protected  Attribute toAttribute(TableDesc tableDesc,ColDesc colDesc,PackageList packageList){
 		Attribute attribute = new Attribute();
 		attribute.setAuto(colDesc.isAuto());
 		attribute.setColName(colDesc.getColName());
@@ -222,6 +221,9 @@ public class SourceConfig {
 		attribute.setJavaType(javaType);
 		attribute.setName(sqlManager.getNc().getPropertyName(colDesc.getColName()));
 		attribute.setJavaType(getJavaType(colDesc,packageList));
+		if(tableDesc.getIdNames().contains(colDesc.getColName())){
+			attribute.setId(true);
+		}
 		return attribute;
 	}
 
@@ -243,7 +245,7 @@ public class SourceConfig {
 
 		String type = JavaType.getType(desc.getSqlType(), desc.getSize(), desc.getDigit());
 		if (preferDoubleType==PreferDoubleType.BigDecimal&& type.equals("Double")) {
-			packageList.getPkgs().add("java.maths.BigDecimal");
+			packageList.getPkgs().add("java.math.BigDecimal");
 			type = "BigDecimal";
 		}
 

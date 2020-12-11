@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql-all</artifactId>
-	<version>3.1.1-RELEASE</version>
+	<version>3.1.2-RELEASE</version>
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
@@ -23,8 +23,8 @@
 		<module>sql-fetch</module>
         <module>sql-gen</module>
         <module>sql-saga</module>
-<!--        <module>sql-test</module>-->
-<!--        <module>sql-samples</module>-->
+        <module>sql-test</module>
+        <module>sql-samples</module>
 		<!-- 打包到一起 -->
 		<module>beetlsql</module>
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->

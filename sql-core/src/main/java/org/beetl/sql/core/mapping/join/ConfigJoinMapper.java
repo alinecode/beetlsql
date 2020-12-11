@@ -206,7 +206,7 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
     }
 
     /**
-     * 保存遍历ResultSet后的了Node执行生成的值
+     * 保存遍历ResultSet后的了Node执行生成的值，可以理解为缓存。
      */
     static class Grid{
 

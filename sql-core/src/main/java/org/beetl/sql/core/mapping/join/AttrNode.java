@@ -103,7 +103,7 @@ public   class AttrNode{
 
 
     /**
-     * 遍历结果集，赋值到grid里
+     * 遍历同层的结果集，赋值到grid里
      * @param renderContext
      * @param ctx
      * @param rtp
@@ -114,23 +114,32 @@ public   class AttrNode{
         ConfigJoinMapper.Grid grid = renderContext.grid;
         if(grid.contain(this,nodeValue.key)){
             //此数据已经被映成对象
-            ConfigJoinMapper.ObjectWrapper obj = grid.getNodeValue(this,nodeValue.key).objectWrapper;
-            renderContext.parent = obj;
+            ConfigJoinMapper.ObjectWrapper realObj = grid.getNodeValue(this,nodeValue.key).objectWrapper;
+			if(parent!=null){
+				////赋值给父类
+				ConfigJoinMapper.ObjectWrapper parentObj = renderContext.parent;
+				assignToParent(renderContext,ctx,parentObj,realObj,this.typePdInParent);
+			}
+			//递归下一层
+            renderContext.parent = realObj;
             visitAll(renderContext,ctx,rtp);
             return ;
-        }
-        //映射成对象
-        grid.push(this,nodeValue);
-        fillObject(nodeValue);
-        //赋值给父类
-        ConfigJoinMapper.ObjectWrapper realObj = nodeValue.objectWrapper;;
-        if(parent!=null){
-            ConfigJoinMapper.ObjectWrapper parentObj = renderContext.parent;
-            assignToParent(renderContext,ctx,parentObj,realObj,this.typePdInParent);
-        }
-        //遍历子节点
-        renderContext.parent = realObj;
-        visitAll(renderContext,ctx,rtp);
+        }else{
+			//映射成新的实例
+			grid.push(this,nodeValue);
+			fillObject(nodeValue);
+			//赋值给父类
+			ConfigJoinMapper.ObjectWrapper realObj = nodeValue.objectWrapper;
+
+			if(parent!=null){
+				ConfigJoinMapper.ObjectWrapper parentObj = renderContext.parent;
+				assignToParent(renderContext,ctx,parentObj,realObj,this.typePdInParent);
+			}
+			//遍历子节点
+			renderContext.parent = realObj;
+			visitAll(renderContext,ctx,rtp);
+		}
+
     }
 
     //转化成对象
@@ -144,7 +153,7 @@ public   class AttrNode{
     //从ResultSet中获取值
     ConfigJoinMapper.NodeValue getNodeValueFromResultSet(ConfigJoinMapper.RenderContext renderContext, ExecuteContext ctx, ReadTypeParameter rtp) throws SQLException {
         if(colMap.isEmpty()){
-            throw new IllegalArgumentException("无法映射，此层没有值,无法识别是否重复");
+            throw new IllegalArgumentException("无法映射对象"+this.target+" 没有结果集映射值,无法识别是否重复 ");
         }
         Map<String,Object> map = new HashMap<>();
         BeanProcessor beanProcessor = renderContext.beanProcessor;

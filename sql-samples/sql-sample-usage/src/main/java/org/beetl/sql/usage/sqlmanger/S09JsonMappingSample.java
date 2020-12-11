@@ -9,7 +9,10 @@ import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.mapping.join.JsonConfigMapper;
 import org.beetl.sql.sample.SampleHelper;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 演示使用json配置复杂映射
@@ -42,11 +45,15 @@ public class S09JsonMappingSample {
 
     public void selectDept(){
         String sql = "select d.id id,d.name name ,u.id u_id,u.name u_name " +
-                " from department d join sys_user u on d.id=u.department_id  where d.id=?";
+                " from department d join sys_user u on d.id=u.department_id  where d.id in (?,?)";
         Integer deptId = 1;
-        SQLReady ready = new SQLReady(sql,new Object[]{deptId});
+		Integer deptId2 =2 ;
+        SQLReady ready = new SQLReady(sql,new Object[]{deptId,deptId2});
         List<DepartmentInfo> list = sqlManager.execute(ready,DepartmentInfo.class);
         System.out.println(list.toString());
+
+
+
     }
 
     /**
@@ -80,9 +87,10 @@ public class S09JsonMappingSample {
      */
     public void selectUserByDynamicMdConfig2(){
         SqlId selectById = SqlId.of("jsonConfig","selectUserDetail");
-        UserInfo4 para = new UserInfo4();
-        para.setId(1);
-        List<UserInfo4> users = sqlManager.select(selectById,UserInfo4.class,para);
+        List ids = Arrays.asList(1,2);
+        Map paras = new HashMap();
+		paras.put("ids",ids);
+        List<UserInfo4> users = sqlManager.select(selectById,UserInfo4.class,paras);
         UserInfo4 info= users.get(0);
         System.out.println(info.getDept().getName());
         System.out.println(info.getRoles());

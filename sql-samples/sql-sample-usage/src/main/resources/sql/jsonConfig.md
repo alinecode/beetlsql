@@ -31,7 +31,7 @@ select u.*,d.name as dept_name,d.id as dept_id ,r.id r_id,r.`name` r_name from s
       left  join department d on u.department_id= d.id 
       left join user_role ur on ur.user_id = u.id 
        left join role r on r.id=ur.role_id											
-where u.id=#{id}
+where u.id in ( #{join(ids)} )
 
 ```
 ${jsonMapping("userDetailConfig")}

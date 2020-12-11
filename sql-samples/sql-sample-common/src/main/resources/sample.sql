@@ -75,6 +75,8 @@ CREATE TABLE `user_role` (
 
 INSERT INTO `user_role` VALUES (1, 1, 2);
 INSERT INTO `user_role` VALUES (2, 2, 1);
+INSERT INTO `user_role` VALUES (12, 1, 1);
+INSERT INTO `user_role` VALUES (13, 2, 2);
 INSERT INTO `user_role` VALUES (3, 3, 1);
 INSERT INTO `user_role` VALUES (4, 4, 1);
 INSERT INTO `user_role` VALUES (5, 5, 3);
@@ -84,7 +86,5 @@ INSERT INTO `user_role` VALUES (8, 8, 3);
 INSERT INTO `user_role` VALUES (9, 9, 3);
 INSERT INTO `user_role` VALUES (10, 10, 1);
 INSERT INTO `user_role` VALUES (11, 11, 2);
-INSERT INTO `user_role` VALUES (12, 1, 3);
-INSERT INTO `user_role` VALUES (13, 2, 2);
 INSERT INTO `user_role` VALUES (14, 3, 3);
 

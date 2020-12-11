@@ -44,8 +44,8 @@ public class S7CodeGen {
         SQLManager sqlManager = SampleHelper.init();
         S7CodeGen gen = new S7CodeGen(sqlManager);
         gen.genCode();
-        gen.genDoc();
-        gen.genAllDoc();
+//        gen.genDoc();
+//        gen.genAllDoc();
     }
 
     /**
