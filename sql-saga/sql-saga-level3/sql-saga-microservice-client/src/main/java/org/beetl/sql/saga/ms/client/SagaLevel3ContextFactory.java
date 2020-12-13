@@ -4,8 +4,8 @@ import org.beetl.sql.saga.common.SagaContext;
 import org.beetl.sql.saga.common.SagaContextFactory;
 
 public class SagaLevel3ContextFactory implements SagaContextFactory {
-	SagaLevel3Config config;
-	public SagaLevel3ContextFactory(SagaLevel3Config config){
+	SagaLevel3ClientConfig config;
+	public SagaLevel3ContextFactory(SagaLevel3ClientConfig config){
 		this.config = config;
 	}
 

@@ -8,7 +8,6 @@ import java.util.concurrent.Callable;
  */
 public abstract class SagaContext {
 
-	protected Object businessKey;
 	protected String gid;
 	protected Long time;
 	/**
@@ -26,7 +25,7 @@ public abstract class SagaContext {
 	}
 	public  void start(String gid){
 		this.gid = gid;
-		this.time = time;
+		this.time = System.nanoTime();
 	}
 
 	public abstract void rollback();
@@ -43,9 +42,13 @@ public abstract class SagaContext {
 	//自定义复杂的回滚操作
 	public abstract <T> T callService(Callable<T> callable, Runnable rollback) throws Exception;
 
-	public SagaContext setGid(Object businessKey){
-		this.businessKey = businessKey;
+	public SagaContext setGid(String gid){
+		this.gid = gid;
 		return this;
 	}
 
+	public SagaContext setTime(Long time) {
+		this.time = time;
+		return this;
+	}
 }

@@ -7,7 +7,7 @@ import org.beetl.sql.saga.ms.server.entity.RollbackTaskEntity;
 import java.util.List;
 
 public interface RollbackTaskMapper extends BaseMapper<RollbackTaskEntity> {
-	@Sql("select count(1) from rollback_task t where t.gid=? and t.time<time")
+	@Sql("select count(1) from rollback_task t where t.gid=? and t.time<?")
 	public int findEarlierTransaction(String gid,Long time);
 	@Sql("select * from rollback_task t where t.gid=? order by time desc")
 	List<RollbackTaskEntity> allRollbackTask(String gid);

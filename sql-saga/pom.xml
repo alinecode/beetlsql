@@ -15,10 +15,31 @@
     <version>3.1.2-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
+        <!-- 多库Saga事务支持 -->
         <module>sql-saga-level1</module>
+        <!-- 多库Saga事务支持，有Kafka辅助提高可靠性 -->
         <module>sql-saga-level2</module>
+        <!-- 微服务Saga -->
         <!-- 需要springboot，kafka，swagger 等依赖。可以被屏蔽，以加速项目下载jar -->
         <module>sql-saga-level3</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

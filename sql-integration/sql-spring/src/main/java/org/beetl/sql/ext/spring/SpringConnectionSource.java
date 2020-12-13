@@ -116,12 +116,15 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 	}
 
 	@Override
-	public void closeConnection(Connection conn,boolean isUpdate){
-		super.closeConnection(conn,isUpdate);
+	public void closeConnection(Connection conn,ExecuteContext ctx,boolean isUpdate){
+		DataSource dataSource = getDatasourceFromContext(ctx);
+		DataSourceUtils.releaseConnection(conn,dataSource);
 	}
 
 	protected  DataSource getDatasourceFromContext(ExecuteContext ctx){
 		DataSource dataSource = (DataSource)ctx.getContextPara(DS_CONTEXT_PARAM);
 		return dataSource;
 	}
+
+
 }

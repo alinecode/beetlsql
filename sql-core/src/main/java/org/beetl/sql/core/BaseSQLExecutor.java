@@ -84,7 +84,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		} finally {
-			clean(true, conn, ruh);
+			clean(true, conn,ruh);
 		}
 	}
 
@@ -714,22 +714,22 @@ public class BaseSQLExecutor implements SQLExecutor {
 		}
 	}
 
-	protected void clean(boolean isUpdate, Connection conn, Closeable closeable) {
+	protected void clean(boolean isUpdate,Connection conn, Closeable closeable) {
 
 		try {
 			if (closeable != null) {
 				closeable.close();
 			}
 
-			closeConnection(conn, isUpdate);
+			closeConnection(conn,isUpdate);
 
 		} catch (SQLException e) {
 			// ignore
 		}
 	}
 
-	protected void closeConnection(Connection conn, boolean isUpdate) {
-		executeContext.sqlManager.getDs().closeConnection(conn, isUpdate);
+	protected void closeConnection(Connection conn,boolean isUpdate) {
+		executeContext.sqlManager.getDs().closeConnection(conn, this.executeContext,isUpdate);
 	}
 
 	protected ResultSetHolder dbQuery(Connection conn, String sql, List<SQLParameter> jdbcPara) throws SQLException {

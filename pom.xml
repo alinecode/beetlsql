@@ -18,19 +18,26 @@
     <modules>
 		<!--核心功能 -->
         <module>sql-core</module>
+        <!-- mapper 功能 -->
         <module>sql-mapper</module>
+        <!-- 工具包 -->
 		<module>sql-util</module>
+        <!-- 一对多，多对多等映射实现 -->
 		<module>sql-fetch</module>
+        <!-- 代码生成，文档生成 -->
         <module>sql-gen</module>
+        <!-- saga事务实现和事务管理器实现 -->
         <module>sql-saga</module>
-        <module>sql-test</module>
-        <module>sql-samples</module>
+<!--        <module>sql-test</module>-->
+<!--        <module>sql-samples</module>-->
 		<!-- 打包到一起 -->
 		<module>beetlsql</module>
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->
 		<module>sql-integration</module>
-<!--        <module>sql-jmh</module>-->
-<!--		<module>sql-db-support</module>-->
+        <!-- 性能测试，包含了jpa，myabtis等国内外框架-->
+        <module>sql-jmh</module>
+        <!-- 验证多库支持 -->
+		<module>sql-db-support</module>
 
     </modules>
 

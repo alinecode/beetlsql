@@ -7,11 +7,11 @@ CREATE TABLE `rollback_task` (
       `id` varchar(36) NOT NULL,
       `gid` varchar(255) NOT NULL,
       `app_name` varchar(255) NOT NULL,
-      `time` int(11) NOT NULL,
-      `status` varchar(32) NOT NULL,
-      `create_time` int(11) NOT NULL,
-      `update_time` int(11) ,
-      `task_info` text NOT NULL,
+      `time` bigint NOT NULL,
+      `status` varchar(32) ,
+      `create_time` bigint NOT NULL,
+      `update_time` bigint ,
+      `task_info` text ,
       `rollback_status` varchar(32) ,
       PRIMARY KEY (`id`)
 ) ;
@@ -22,8 +22,8 @@ CREATE TABLE `rollback_task` (
 DROP TABLE IF EXISTS `rollback`;
 CREATE TABLE `rollback` (
              `gid` varchar(255) NOT NULL,
-             `create_time` int(11) NOT NULL,
-             `update_time` int(11) ,
+             `create_time` bigint NOT NULL,
+             `update_time` bigint ,
              `rollback_status` varchar(32) ,
              `first_app_name` varchar(32) ,
              `total` int(11) ,

@@ -2,6 +2,7 @@ package org.beetl.sql.saga.common;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
+import org.beetl.sql.core.loader.SQLLoader;
 
 /**
  * 一次sega回滚任务,子类实现必须保证是可序列化的，以方便任务能保存到数据库，或者发送个消息系统
@@ -22,5 +23,8 @@ public interface SagaRollbackTask extends java.io.Serializable{
 		 }
 		 return sqlManager;
 	 }
+
+
+
 
 }

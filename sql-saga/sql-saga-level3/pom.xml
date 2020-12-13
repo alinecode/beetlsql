@@ -15,11 +15,11 @@
     <artifactId>sql-saga-level3</artifactId>
     <version>3.1.2-RELEASE</version>
     <modules>
+        <!-- 参考demo实现 -->
         <module>sql-saga-microservice-client</module>
         <module>sql-saga-microservice-server</module>
         <module>sql-saga-microservice-demo</module>
     </modules>
 
 
-    
 </project>

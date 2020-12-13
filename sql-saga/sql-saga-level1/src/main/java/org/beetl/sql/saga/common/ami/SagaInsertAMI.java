@@ -1,5 +1,6 @@
 package org.beetl.sql.saga.common.ami;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
@@ -18,8 +19,8 @@ public class SagaInsertAMI extends MapperInvoke {
 		SagaContext sagaContext = SagaContext.sagaContextFactory.current();
 		Class target = args[0].getClass();
 		String idAttr = sm.getClassDesc(target).getIdAttr();
-		Object key = BeanKit.getBeanProperty(args[0],idAttr);
-		sagaContext.getTransaction().addTask(new InsertSagaRollbackTask(sm.getName(),target,key) );
+		Object key = BeanKit.getBeanProperty(args[0], idAttr);
+		sagaContext.getTransaction().addTask(new InsertSagaRollbackTask(sm.getName(), target, key));
 		return ret;
 	}
 
@@ -27,13 +28,14 @@ public class SagaInsertAMI extends MapperInvoke {
 	public static class InsertSagaRollbackTask implements SagaRollbackTask {
 		String sqlManagerName;
 		Class entityClass;
+		@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@Clazz")
 		Object pkId;
 
-		public InsertSagaRollbackTask(){
+		public InsertSagaRollbackTask() {
 			//反序列化用
 		}
 
-		public InsertSagaRollbackTask(String sqlManagerName,Class entityClass,Object pkId){
+		public InsertSagaRollbackTask(String sqlManagerName, Class entityClass, Object pkId) {
 			this.sqlManagerName = sqlManagerName;
 			this.entityClass = entityClass;
 			this.pkId = pkId;
@@ -42,8 +44,8 @@ public class SagaInsertAMI extends MapperInvoke {
 		@Override
 		public boolean call() {
 			SQLManager sqlManager = SQLManagerBuilder.sqlManagerMap.get(sqlManagerName);
-			int count = sqlManager.deleteById(entityClass,pkId);
-			if(count!=1){
+			int count = sqlManager.deleteById(entityClass, pkId);
+			if (count != 1) {
 				//数据库没数据，可能是主从切换，数据还在路上
 				return false;
 			}

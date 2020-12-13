@@ -8,18 +8,13 @@ import java.util.UUID;
 
 @Data
 public class LocalSagaTransaction implements SagaTransaction {
-	protected String id;
 	protected List<SagaRollbackTask> tasks = new ArrayList<>();
 	protected boolean success = true;
 
 	public LocalSagaTransaction(){
-		id = UUID.randomUUID().toString();
+
 	}
 
-	@Override
-	public String transactionId() {
-		return id;
-	}
 
 	@Override
 	public void addTask(SagaRollbackTask task){

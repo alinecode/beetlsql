@@ -4,11 +4,6 @@ package org.beetl.sql.saga.common;
  * 必须实现序列化或者被json工具序列化
  */
 public interface SagaTransaction extends  java.io.Serializable {
-	/**
-	 * 事务唯一id
-	 * @return
-	 */
-	String transactionId();
 
 	/**
 	 * 添加回滚操作

@@ -2,7 +2,7 @@ package org.beetl.sql.saga.ms.client.task;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
-import org.beetl.sql.saga.common.SagaTransaction;
+import org.beetl.sql.saga.ms.client.SagaLevel3Transaction;
 
 /**
  * 发送到saga-server的回滚任务，
@@ -10,13 +10,13 @@ import org.beetl.sql.saga.common.SagaTransaction;
  */
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
-public class RollbackTask extends RollbackInCommitTask {
+public class RollbackClientTask extends RollbackInCommitClientTask {
 
-	public RollbackTask(String gid,long time,SagaTransaction rollback) {
+	public RollbackClientTask(String gid,long time, SagaLevel3Transaction rollback) {
 		super(gid,time,rollback);
 	}
 
-	public RollbackTask() {
+	public RollbackClientTask() {
 		//序列化用
 	}
 

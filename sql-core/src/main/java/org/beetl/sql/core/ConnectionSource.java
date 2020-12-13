@@ -73,7 +73,7 @@ public interface ConnectionSource {
 
 	}
 
-	default void closeConnection(Connection conn,boolean isUpdate){
+	default void closeConnection(Connection conn,ExecuteContext ctx,boolean isUpdate){
 		if (!isTransaction()) {
 			try {
 

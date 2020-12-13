@@ -22,9 +22,9 @@ public class DemoController {
 	@Autowired
 	RestTemplateBuilder restTemplateBuilder;
 
-	String orderAddUrl = "127.0.0.1:8081/order/item/{orderId}/{userId}/{fee}";
-	String userBalanceUpdateUrl = "127.0.0.1:8082/user/fee/{orderId}/{userId}/{fee}";
-	String userBalanceQueryUrl = "127.0.0.1:8082/user/info/{userId}";
+	String orderAddUrl = "http://127.0.0.1:8081/order/item/{orderId}/{userId}/{fee}";
+	String userBalanceUpdateUrl = "http://127.0.0.1:8082/user/fee/{orderId}/{userId}/{fee}";
+	String userBalanceQueryUrl = "http://127.0.0.1:8082/user/info/{userId}";
 	String userId = "xiandafu";
 
 	@PostMapping("/buy/{gid}")

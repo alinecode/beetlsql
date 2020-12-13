@@ -1,5 +1,6 @@
 package org.beetl.sql.saga.common.ami;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
@@ -35,6 +36,7 @@ public class SagaUpdateByIdAMI extends MapperInvoke {
 	@Data
 	public static class UpdateSagaRollbackTask implements SagaRollbackTask {
 		String sqlManagerName;
+		@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
 		Object obj;
 		public UpdateSagaRollbackTask(){
 			//反序列化用

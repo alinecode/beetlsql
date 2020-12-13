@@ -5,7 +5,6 @@ import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.saga.common.SagaTransaction;
 import org.beetl.sql.saga.ms.server.util.BusinessStatus;
-import org.beetl.sql.saga.ms.server.util.Jackson;
 import org.beetl.sql.saga.ms.server.util.RollbackStatus;
 
 @Table(name="rollback_task")
@@ -19,8 +18,7 @@ public class RollbackTaskEntity {
 	BusinessStatus status;
 	RollbackStatus rollbackStatus;
 	Long time;
-	@Jackson
-	SagaTransaction taskInfo;
+	String taskInfo;
 	Long createTime;
 	Long updateTime;
 }

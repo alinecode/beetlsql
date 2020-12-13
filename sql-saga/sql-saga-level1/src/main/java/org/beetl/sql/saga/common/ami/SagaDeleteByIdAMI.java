@@ -1,5 +1,6 @@
 package org.beetl.sql.saga.common.ami;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
@@ -31,8 +32,9 @@ public class SagaDeleteByIdAMI extends MapperInvoke {
 
     }
 	@Data
-    public static class DeleteSagaRollbackTask implements SagaRollbackTask {
+	public static class DeleteSagaRollbackTask implements SagaRollbackTask {
 		String sqlManagerName;
+		@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
 		Object obj;
 
 		public DeleteSagaRollbackTask(){

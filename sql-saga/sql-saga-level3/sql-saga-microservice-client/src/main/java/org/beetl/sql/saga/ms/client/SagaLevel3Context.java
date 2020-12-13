@@ -9,24 +9,25 @@ import java.util.concurrent.Callable;
 /**
  * 回滚事务，如果没有完全成功，则发送到kafka队列，在尝试多次后，仍然没有成功，发送给
  *
- * @see  SagaLevel3Config
+ * @see  SagaLevel3ClientConfig
  * @author xiandafu
  */
 public class SagaLevel3Context extends SagaContext {
 	SagaLevel3Transaction transaction = null;
-	SagaLevel3Config config;
+	SagaLevel3ClientConfig config;
 	SagaServerClient client = null;
 
-	public SagaLevel3Context(SagaLevel3Config config) {
+	public SagaLevel3Context(SagaLevel3ClientConfig config) {
 		newTransaction();
 		this.config = config;
 		client = new SagaServerClient(config);
 	}
 
-	public SagaLevel3Context(SagaLevel3Transaction transaction, SagaLevel3Config config) {
+	public SagaLevel3Context(SagaLevel3Transaction transaction, SagaLevel3ClientConfig config) {
 		this.transaction = transaction;
 		this.config = config;
 		client = new SagaServerClient(config);
+
 	}
 
 	public void start() {
@@ -38,20 +39,19 @@ public class SagaLevel3Context extends SagaContext {
 		try{
 			client.start(gid, time);
 		}catch (Exception ex){
-			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
-		}
-		finally {
 			clear();
+			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
+
 		}
+
 	}
 
 	public void commit() {
 		try{
 			client.sendRollbackTaskInCommit(gid,time,transaction);
+			clear();
 		}catch (Exception ex){
 			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
-		}finally {
-			clear();
 		}
 	}
 
@@ -60,12 +60,10 @@ public class SagaLevel3Context extends SagaContext {
 		try{
 			//仅仅发送回滚任务，真正回滚需要等待收到saga-server通知，然后调用realRollback
 			client.sendRollbackTask(gid,time,transaction);
+			clear();
 		}catch (Exception ex){
 			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
-		}finally {
-			clear();
 		}
-
 
 	}
 
@@ -81,8 +79,9 @@ public class SagaLevel3Context extends SagaContext {
 			}
 			client.rollbackFailure(gid,time,transaction);
 			return false;
-		}finally {
-			clear();
+		}catch(Exception ex){
+			//不可能到这里
+			throw new IllegalStateException(ex);
 		}
 
 	}
@@ -98,6 +97,8 @@ public class SagaLevel3Context extends SagaContext {
 
 	protected  void clear(){
 		transaction.getTasks().clear();
+		this.setGid(null);
+		this.setTime(0L);
 		newTransaction();
 	}
 

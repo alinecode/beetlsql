@@ -17,17 +17,12 @@ import java.util.UUID;
 public class KafkaLevel2Transaction implements SagaTransaction {
 	@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
 	protected List<KafkaSagaTaskTrace> tasks = new ArrayList<>();
-	protected String id;
 	protected boolean success = true;
 	protected  int totalTry = 0;
 	public KafkaLevel2Transaction(){
-		id = UUID.randomUUID().toString();
+
 	}
 
-	@Override
-	public String transactionId() {
-		return id;
-	}
 
 	@Override
 	public void addTask(SagaRollbackTask task){
