@@ -449,6 +449,67 @@ public @interface XmlMapping {
 
 > 参考源码例子 PluginAnnotationSample了解如何定义自定的注解，实际上BeetlSQL有一半的注解都是通过核心注解扩展出来的
 
+### 例子15 微服务事务
+
+BeetlSQL除了集成传统的事务管理器外，也提供Saga事务支持，支持多库事务和微服务事务。 其原理是自动为每个操作提供方向操作，并把这些操作作为任务交给Saga—Server调度。实现了通过Kafka作为客户端（各个APP）与SagaServer 交互的媒介保证任务可靠传递并最终被系统执行。
+
+```java
+String orderAddUrl = "http://127.0.0.1:8081/order/item/{orderId}/{userId}/{fee}";
+String userBalanceUpdateUrl = "http://127.0.0.1:8082/user/fee/{orderId}/{userId}/{fee}";
+..........
+SagaContext sagaContext = SagaContext.sagaContextFactory.current();
+try {
+  sagaContext.start(gid);
+  //模拟调用俩个微服务，订单和用户
+  rest.postForEntity(orderAddUrl, null,String.class, paras);
+  rest.postForEntity(userBalanceUpdateUrl, null,String.class, paras);
+  if (1 == 1) {
+    throw new RuntimeException("模拟失败,查询saga-server 看效果");
+  }
+} catch (Exception e) {
+  log.info("error " + e.getMessage());
+  log.info("start rollback  " + e.getMessage());
+  sagaContext.rollback();
+  return e.getMessage();
+}
+```
+
+以用户系统为例(源码是DemoController)，userBalanceUpdateUrl对应如下扣费逻辑
+
+```java
+@Autowired
+UserMapper userMapper;
+@Transactional(propagation= Propagation.NEVER)
+public void update(String orderId,String userId,Integer fee){
+  SagaContext sagaContext = SagaContext.sagaContextFactory.current();
+  try{
+    sagaContext.start(orderId);
+    UserEntity  user  = userMapper.unique(userId);
+    user.setBalance(user.getBalance()-fee);
+    userMapper.updateById(user);
+    sagaContext.commit();
+  }catch (Exception e){
+    sagaContext.rollback();
+  }
+}
+```
+
+这里的UserMapper实际上是SagaMapper子类（而不是BaseMapper）,会为每个操作提供反向操作
+
+```java
+public interface SagaMapper<T> {
+	/** sega 改造的接口**/
+	@AutoMapper(SagaInsertAMI.class)
+	void insert(T entity);
+
+	@AutoMapper(SagaUpdateByIdAMI.class)
+	int updateById(T entity);
+
+	@AutoMapper(SagaDeleteByIdAMI.class)
+	int deleteById(Object key);
+}
+```
+
 
 
 ## BeetlSQL的架构
