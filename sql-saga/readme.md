@@ -1,6 +1,5 @@
-level1: 如果只是操作多库，本地回滚，本地回滚失败放弃
-level2: 如果只是操作多库，但如果回滚失败（数据库宕机或者主备切换中），那需要消息重试。需要基础设施kafka
-level3：如果是多库+微服务。需要基础设施kafka+ beetlsql-saga-server
+local: 如果只是操作多库，本地回滚，本地回滚失败放弃
+microservice：如果是多库+微服务。需要基础设施kafka+ 和启动beetlsql-saga-server作为事务管理器
 
 
 
@@ -24,7 +23,7 @@ level3：如果是多库+微服务。需要基础设施kafka+ beetlsql-saga-serv
 			if(1==1){
 				throw new RuntimeException("模拟异常");
 			}
-			sagaContext.commit(); //标记提交事务
+			sagaContext.commit();  //标记提交事务
 		}catch(RuntimeException ex){
 			sagaContext.rollback();//标记回滚事务
 		}

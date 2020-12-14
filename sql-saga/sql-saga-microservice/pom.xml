@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.ibeetl</groupId>
+        <artifactId>sql-saga</artifactId>
+        <version>3.1.2-RELEASE</version>
+    </parent>
+    <packaging>pom</packaging>
+
+    <groupId>com.ibeetl</groupId>
+    <artifactId>sql-saga-microservice</artifactId>
+    <version>3.1.2-RELEASE</version>
+    <modules>
+        <!-- 参考demo实现 -->
+        <module>sql-saga-client</module>
+        <module>sql-saga-microservice-server</module>
+        <module>sql-saga-microservice-demo</module>
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.3.2.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>
