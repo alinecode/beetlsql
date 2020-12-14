@@ -124,7 +124,7 @@ public class SagaManager {
 		server2ClientRollbackTask.setTaskInfo(rollbackTaskEntity.getTaskInfo());
 
 		try {
-			kafkaTemplate.send(appKafka, objectMapper.writeValueAsString(server2ClientRollbackTask));
+			kafkaTemplate.send(appKafka, rollbackTaskEntity.getGid(),objectMapper.writeValueAsString(server2ClientRollbackTask));
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException(e);
 		}

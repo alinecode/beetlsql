@@ -32,6 +32,53 @@
 * 回滚任务由各个客户端生成，beetlsql的saga mapper会自动生成操作的逆向操作（不需要解析sql来生成逆向sql）
 
   
+Saga-Server提供Swagger API用于查询和管理回滚任任务，如下是一个查询gid为3的所有回滚任务，
+可以看到有3个回滚任务，userSystem，orderSystem和demoSystem，这三个系统，demoSytem的status是Error
+表示触发了回滚，3个系统的rollbackStatus都是Success，表示回滚执行成功
+
+
+```json
+{
+  "success": true,
+  "msg": "成功",
+  "data": [
+    {
+      "id": "a717d181-608b-4f99-ab8a-9c60e83cce12",
+      "gid": "123",
+      "appName": "userSystem",
+      "status": "Success",
+      "rollbackStatus": "Success",
+      "time": 1138055785025836,
+      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaLevel3Transaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaUpdateByIdAMI$UpdateSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"obj\":{\"@Clazz\":\"org.beetl.sql.saga.demo.entity.UserEntity\",\"id\":\"xiandafu\",\"name\":\"闲大赋\",\"balance\":4}},\"success\":false}],\"success\":true}",
+      "createTime": 1607864163823,
+      "updateTime": 1607864164067
+    },
+    {
+      "id": "c4765a46-cf2f-4d7a-a714-dc35bf723df2",
+      "gid": "123",
+      "appName": "orderSystem",
+      "status": "Success",
+      "rollbackStatus": "Success",
+      "time": 1138055465293352,
+      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaLevel3Transaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaInsertAMI$InsertSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"entityClass\":\"org.beetl.sql.saga.demo.entity.OrderEntity\",\"pkId\":\"4a40f48b-4b29-4b62-8d47-5f3867b03afd\"},\"success\":false}],\"success\":true}",
+      "createTime": 1607864163570,
+      "updateTime": 1607864164058
+    },
+    {
+      "id": "48eb2fbe-9ff8-4913-bfd2-63176b3646b4",
+      "gid": "123",
+      "appName": "demoSystem",
+      "status": "Error",
+      "rollbackStatus": "Success",
+      "time": 1138055258883126,
+      "taskInfo": "{\"tasks\":[],\"success\":true}",
+      "createTime": 1607864163543,
+      "updateTime": 1607864164052
+    }
+  ],
+  "errorCode": 0
+}
+```
 
 
 

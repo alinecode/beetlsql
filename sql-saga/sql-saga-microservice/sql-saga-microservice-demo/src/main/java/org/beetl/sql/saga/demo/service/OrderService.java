@@ -25,6 +25,7 @@ public class OrderService {
 			sagaContext.commit();
 		}catch (Exception e){
 			sagaContext.rollback();
+			throw new RuntimeException(e);
 		}
 	}
 }

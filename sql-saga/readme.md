@@ -1,9 +1,9 @@
-local: 如果只是操作多库，本地回滚，本地回滚失败放弃
+local: 如果只是操作多库，本地回滚，本地回滚失败放弃。
 microservice：如果是多库+微服务。需要基础设施kafka+ 和启动beetlsql-saga-server作为事务管理器
 
-
-
-**注意**，sega模式并不能像XA那样实现数据隔离，实现数据隔离必须业务上考虑如何数据隔离，saga模块按照saga原理来实现回滚，保证数据一致
+**注意**，sega模式并不能像XA那样实现数据隔离，实现数据隔离必须业务上考虑如何数据隔离，
+saga模块按照saga原理来实现回滚，保证数据一致.如果你只是简单的多库，可以使用分布式事务而不是Saga。使用
+BeetlSQL提供的Saga好处是很容易从多库迁移到微服务
 
 参考代码`SimpleTest`
 ```
@@ -40,7 +40,7 @@ public interface UserMapper extends SagaMapper<User> {
 
 ```
 
-取决于应用场景level1_3，如上SagaContext有不同的实现.但其api保持不变
+取决于应用场景是local(多库）还是microservice，如上SagaContext有不同的实现.但其api保持不变
 
 
 

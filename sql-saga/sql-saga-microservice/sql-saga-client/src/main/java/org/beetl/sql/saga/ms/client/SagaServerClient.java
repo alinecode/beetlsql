@@ -20,7 +20,7 @@ public class SagaServerClient {
 	 */
 	public void start(String gid, long time) {
 		StartClientTask startTask = new StartClientTask(level3Config.getAppName(),gid, time);
-		level3Config.getTemplate().send(level3Config.getServerTopic(), toString(startTask));
+		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(startTask));
 	}
 
 
@@ -30,7 +30,7 @@ public class SagaServerClient {
 	 */
 	public void sendRollbackTask(String gid, long time, SagaLevel3Transaction tasks) {
 		RollbackClientTask rollbackTask = new RollbackClientTask(level3Config.getAppName(),gid, time, tasks);
-		level3Config.getTemplate().send(level3Config.getServerTopic(), toString(rollbackTask));
+		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(rollbackTask));
 	}
 
 	/**
@@ -40,19 +40,19 @@ public class SagaServerClient {
 	public void sendRollbackTaskInCommit(String gid, long time, SagaLevel3Transaction tasks) {
 		RollbackInCommitClientTask rollbackInCommitTask =
 				new RollbackInCommitClientTask(level3Config.getAppName(),gid, time, tasks);
-		level3Config.getTemplate().send(level3Config.getServerTopic(), toString(rollbackInCommitTask));
+		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(rollbackInCommitTask));
 	}
 
 	public void rollbackSuccess(String gid, long time) {
 		RollbackSuccessClientTask rollbackSuccessTask = new RollbackSuccessClientTask(level3Config.getAppName(),gid, time);
-		level3Config.getTemplate().send(level3Config.getServerTopic(), toString(rollbackSuccessTask));
+		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(rollbackSuccessTask));
 
 	}
 
 	public void rollbackFailure(String gid, long time, SagaLevel3Transaction tasks) {
 		RollbackFailureClientTask rollbackFailureTask =
 				new RollbackFailureClientTask(level3Config.getAppName(),gid, time, tasks);
-		level3Config.getTemplate().send(level3Config.getServerTopic(), toString(rollbackFailureTask));
+		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(rollbackFailureTask));
 
 	}
 
