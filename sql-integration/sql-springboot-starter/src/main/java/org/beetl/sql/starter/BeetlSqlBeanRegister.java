@@ -116,7 +116,7 @@ public class BeetlSqlBeanRegister
 		scanner.setSqlManagerFactoryBeanName(name);
 		scanner.setSuffix(config.getDaoSuffix());
 		scanner.registerFilters();
-		scanner.scan(config.getBasePackage());
+		scanner.scan(config.getBasePackage().split(","));
 
 	}
 
@@ -161,7 +161,7 @@ public class BeetlSqlBeanRegister
 		scanner.setSqlManagerFactoryBeanName(name);
 		scanner.setSuffix(config.getDaoSuffix());
 		scanner.registerFilters();
-		scanner.scan(config.getBasePackage());
+		scanner.scan(config.getBasePackage().split(","));
 		return bdb;
 
 	}
