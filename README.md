@@ -451,7 +451,7 @@ public @interface XmlMapping {
 
 ### 例子15 微服务事务
 
-BeetlSQL除了集成传统的事务管理器外，也提供Saga事务支持，支持多库事务和微服务事务。 其原理是自动为每个操作提供方向操作，并把这些操作作为任务交给Saga—Server调度。实现了通过Kafka作为客户端（各个APP）与SagaServer 交互的媒介保证任务可靠传递并最终被系统执行。
+BeetlSQL除了集成传统的事务管理器外，也提供Saga事务支持，支持多库事务和微服务事务。 其原理是自动为每个操作提供反向操作，如insert的反向操作是deleteById，并把这些操作作为任务交给Saga—Server调度。实现了通过Kafka作为客户端（各个APP）与SagaServer 交互的媒介保证任务可靠传递并最终被系统执行。
 
 ```java
 String orderAddUrl = "http://127.0.0.1:8081/order/item/{orderId}/{userId}/{fee}";
