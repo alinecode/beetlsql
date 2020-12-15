@@ -35,13 +35,6 @@ public class SagaLevel3Context extends SagaContext {
 	}
 
 	public void start(String gid) {
-		if(this.gid!=null){
-			/**
-			 * 只能在当前微服务开始处有一个start，不能在微服务实现里有多个start，
-			 * 这不同于传统的事务上下文有传播机制
-			 */
-			throw new IllegalStateException("不能在单进程里嵌套使用Saga事务");
-		}
 		super.start(gid);
 		try{
 			client.start(gid, time);
@@ -55,6 +48,7 @@ public class SagaLevel3Context extends SagaContext {
 
 	public void commit() {
 		try{
+			super.decreaseStep();
 			client.sendRollbackTaskInCommit(gid,time,transaction);
 
 		}catch (Exception ex){
@@ -67,6 +61,7 @@ public class SagaLevel3Context extends SagaContext {
 	@Override
 	public void rollback() {
 		try{
+			super.decreaseStep();
 			//仅仅发送回滚任务，真正回滚需要等待收到saga-server通知，然后调用realRollback
 			client.sendRollbackTask(gid,time,transaction);
 		}catch (Exception ex){
@@ -106,9 +101,13 @@ public class SagaLevel3Context extends SagaContext {
 	}
 
 	protected  void clear(){
+		if(this.step!=0){
+			return ;
+		}
+
 		transaction.getTasks().clear();
 		this.setGid(null);
-		this.setTime(0L);
+		this.setTime(-1L);
 		newTransaction();
 	}
 

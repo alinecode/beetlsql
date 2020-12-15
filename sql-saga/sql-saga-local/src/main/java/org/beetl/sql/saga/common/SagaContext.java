@@ -22,7 +22,9 @@ public abstract class SagaContext {
 	 * 比如，微服务A调用了微服务B，因此A的time肯定是小于B的time，如果B出错并标记回滚，Saga—Server发现还没有到事务边界，不会操作。等B抛出异常到A后，A调用回滚
 	 * 因为边界在A，所以A发起真正回滚
 	 */
-	protected Long time;
+	protected Long time = -1L;
+
+	transient  protected int step = 0;
 	/**
 	 * 特定框架必须实现SegaContextFactory，以及SegaContext子类
 	 */
@@ -34,11 +36,13 @@ public abstract class SagaContext {
 	};
 
 	public  void start(){
+		checkNested();
 		time= System.nanoTime();
+		addStep();
 	}
 	public  void start(String gid){
+		this.start();
 		this.gid = gid;
-		this.time = System.nanoTime();
 	}
 
 	public abstract void rollback();
@@ -47,7 +51,7 @@ public abstract class SagaContext {
 	 * 提交，对于分库操作，无需任何commit，但是，如果是微服务，commit要发送rollback到全局事务控制器，等待可能的回滚
 	 */
 	public  void commit(){
-		//do nothing
+		decreaseStep();
 	}
 
 	public abstract SagaTransaction getTransaction();
@@ -64,4 +68,23 @@ public abstract class SagaContext {
 		this.time = time;
 		return this;
 	}
+
+	protected  void checkNested(){
+		if(time!=-1&&step==0){
+			throw new IllegalStateException("Saga事务嵌套出错");
+		}
+	}
+
+	protected  void addStep(){
+		step++;
+	}
+
+	protected  void decreaseStep(){
+		step--;
+	}
+
+	protected  boolean shouldRollback(){
+		return step==0;
+	}
+
 }

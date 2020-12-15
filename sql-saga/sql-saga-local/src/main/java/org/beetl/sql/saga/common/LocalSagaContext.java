@@ -16,6 +16,10 @@ public class LocalSagaContext extends SagaContext {
 	 */
 	@Override
 	public void rollback(){
+		decreaseStep();
+		if(!shouldRollback()){
+			return ;
+		}
 		try{
 			boolean success = transaction.rollback();
 			if(!success){
