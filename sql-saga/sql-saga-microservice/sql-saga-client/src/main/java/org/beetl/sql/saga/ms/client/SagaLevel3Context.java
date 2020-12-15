@@ -48,7 +48,7 @@ public class SagaLevel3Context extends SagaContext {
 
 	public void commit() {
 		try{
-			super.decreaseStep();
+			super.commit();
 			client.sendRollbackTaskInCommit(gid,time,transaction);
 
 		}catch (Exception ex){
@@ -61,7 +61,10 @@ public class SagaLevel3Context extends SagaContext {
 	@Override
 	public void rollback() {
 		try{
-			super.decreaseStep();
+			super.rollback();
+			if(!shouldRollback()){
+				return ;
+			}
 			//仅仅发送回滚任务，真正回滚需要等待收到saga-server通知，然后调用realRollback
 			client.sendRollbackTask(gid,time,transaction);
 		}catch (Exception ex){
@@ -101,7 +104,7 @@ public class SagaLevel3Context extends SagaContext {
 	}
 
 	protected  void clear(){
-		if(this.step!=0){
+		if(this.nested !=0){
 			return ;
 		}
 

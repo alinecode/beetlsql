@@ -81,6 +81,13 @@ public class SagaManager {
 	public void addRollbackBySuccessCommit(String gid, long time, String appName, String rollback) {
 		updateRollbackTask(gid, time, appName, BusinessStatus.Success, rollback);
 		log.info("commit trans " + appName + " for " + gid + ":" + time);
+		int earlierCount = rollbackTaskMapper.findEarlierTransaction(gid, time);
+		if (earlierCount > 0) {
+			return;
+		}
+		//全部都成功了，考虑删除
+		removeGid(gid);
+
 	}
 
 	/**
@@ -153,10 +160,13 @@ public class SagaManager {
 			//是否所有回滚都完成
 			RollbackEntity rollbackEntity = rollbackMapper.unique(gid);
 			if (rollbackEntity.getTotal().equals(rollbackEntity.getSuccess())) {
-				//成功,目前版本暂时不做处理。可通知发起方firstAppName，或者通知所有参与放
+				//所有回滚成功,目前版本暂时不做处理。可通知发起方firstAppName，或者通知所有参与方
+				//不立即掉用removeGid,可以手工清理或者延迟清理
 				log.info("rollback all task for " + appName + " for " + gid + " success ");
 				rollbackEntity.setRollbackStatus(RollbackStatus.Success);
 				rollbackMapper.updateById(rollbackEntity);
+
+
 			}
 		} else {
 			entity.setRollbackStatus(RollbackStatus.Error);
@@ -183,5 +193,10 @@ public class SagaManager {
 		entity.setUpdateTime(System.currentTimeMillis());
 		rollbackTaskMapper.updateById(entity);
 		return entity;
+	}
+
+	protected  void removeGid(String gid){
+		rollbackMapper.deleteById(gid);
+		rollbackTaskMapper.removeRollbackTask(gid);
 	}
 }

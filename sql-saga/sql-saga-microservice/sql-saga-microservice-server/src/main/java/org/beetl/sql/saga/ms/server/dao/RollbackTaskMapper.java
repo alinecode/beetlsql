@@ -2,6 +2,7 @@ package org.beetl.sql.saga.ms.server.dao;
 
 import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.annotation.Sql;
+import org.beetl.sql.mapper.annotation.Update;
 import org.beetl.sql.saga.ms.server.entity.RollbackTaskEntity;
 
 import java.util.List;
@@ -11,4 +12,8 @@ public interface RollbackTaskMapper extends BaseMapper<RollbackTaskEntity> {
 	public int findEarlierTransaction(String gid,Long time);
 	@Sql("select * from rollback_task t where t.gid=? order by time desc")
 	List<RollbackTaskEntity> allRollbackTask(String gid);
+
+	@Sql("delete from rollback_task  where gid=?")
+	@Update
+	void removeRollbackTask(String gid);
 }

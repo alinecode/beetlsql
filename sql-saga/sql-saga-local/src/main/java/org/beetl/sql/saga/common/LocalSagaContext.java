@@ -16,12 +16,13 @@ public class LocalSagaContext extends SagaContext {
 	 */
 	@Override
 	public void rollback(){
-		decreaseStep();
+		super.rollback();
 		if(!shouldRollback()){
 			return ;
 		}
 		try{
 			boolean success = transaction.rollback();
+			//用户可以扩展，提供多次回滚机会而不是只回滚一次
 			if(!success){
 				throw new SagaRollbackException("回滚失败");
 			}

@@ -24,7 +24,10 @@ public abstract class SagaContext {
 	 */
 	protected Long time = -1L;
 
-	transient  protected int step = 0;
+	transient  protected int nested = 0;
+
+	transient  protected boolean failure = false;
+
 	/**
 	 * 特定框架必须实现SegaContextFactory，以及SegaContext子类
 	 */
@@ -38,20 +41,26 @@ public abstract class SagaContext {
 	public  void start(){
 		checkNested();
 		time= System.nanoTime();
-		addStep();
+		addNested();
 	}
 	public  void start(String gid){
 		this.start();
 		this.gid = gid;
 	}
 
-	public abstract void rollback();
+	public void rollback(){
+		failure = true;
+		decreaseNested();
+	}
 
 	/**
 	 * 提交，对于分库操作，无需任何commit，但是，如果是微服务，commit要发送rollback到全局事务控制器，等待可能的回滚
 	 */
 	public  void commit(){
-		decreaseStep();
+		if(failure){
+			throw new IllegalStateException("Saga事务标记回滚，不应该提交");
+		}
+		decreaseNested();
 	}
 
 	public abstract SagaTransaction getTransaction();
@@ -70,21 +79,25 @@ public abstract class SagaContext {
 	}
 
 	protected  void checkNested(){
-		if(time!=-1&&step==0){
+		if(time!=-1&& nested ==0){
 			throw new IllegalStateException("Saga事务嵌套出错");
 		}
 	}
 
-	protected  void addStep(){
-		step++;
+	protected  void addNested(){
+		nested++;
 	}
 
-	protected  void decreaseStep(){
-		step--;
+	protected  void decreaseNested(){
+		nested--;
 	}
 
+	/**
+	 * 是否正需要出发回滚机制
+	 * @return
+	 */
 	protected  boolean shouldRollback(){
-		return step==0;
+		return nested ==0;
 	}
 
 }
