@@ -16,7 +16,7 @@ public class UpdateConstantsExpress extends Express {
         return this;
     }
     public Update value(Object var){
-       this.value = value;
+       this.value = var;
         return update;
     }
 
