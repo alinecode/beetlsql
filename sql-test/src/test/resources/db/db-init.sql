@@ -6,12 +6,13 @@ CREATE TABLE `sys_user` (
     `age` int(4) DEFAULT NULL,
     `department_id` int(11) DEFAULT NULL,
     `create_date` datetime NULL DEFAULT NULL,
+    `version` int(11) DEFAULT 0 NOT NULL,
     PRIMARY KEY (`id`)
 ) ;
 
-insert into  sys_user values (1,'lijz',12,1,null);
-insert into  sys_user values (2,'用户二',12,2,null);
-insert into  sys_user values (3,'用户三',18,2,null);
+insert into  sys_user values (1,'lijz',12,1,null,0);
+insert into  sys_user values (2,'用户二',12,2,null,0);
+insert into  sys_user values (3,'用户三',18,2,null,0);
 
 
 drop table if exists  `department` ;
