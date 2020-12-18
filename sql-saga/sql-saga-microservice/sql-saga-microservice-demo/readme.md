@@ -6,6 +6,24 @@
 * 可以访问saga-server 的swagger   http://127.0.0.1:18081/swagger-ui/index.html
 
 如下是购买流程
+``` 
+String orderAddUrl = "http://127.0.0.1:8081/order/item/{orderId}/{userId}/{fee}";
+String userBalanceUpdateUrl = "http://127.0.0.1:8082/user/fee/{orderId}/{userId}/{fee}";
+SagaContext sagaContext = SagaContext.sagaContextFactory.current();
+try {
+    sagaContext.start(gid);
+    //模拟调用俩个微服务，订单和用户
+    rest.postForEntity(orderAddUrl, null,String.class, paras);
+    rest.postForEntity(userBalanceUpdateUrl, null,String.class, paras);
+    if (1 == 1) {
+        throw new RuntimeException("模拟失败,查询saga-server 看效果");
+    }
+} catch (Exception e) {
+    sagaContext.rollback();
+    return e.getMessage();
+}
+
+```
 
 * 浏览器访问DemoApplication的swagger,调用buy/{gid},这里gid为任意订单号。执行操作，系统应该分别调用用户和订单系统，获取余额，增加订单和扣费
 在调用成功后，模拟一个失败验证能否回滚。
