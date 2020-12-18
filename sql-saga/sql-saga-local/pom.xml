@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-saga-local</artifactId>
-    <version>3.1.4-RELEASE</version>
+    <version>3.1.5-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-mapper</artifactId>
-            <version>3.1.4-RELEASE</version>
+            <version>3.1.5-RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -34,7 +34,7 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-saga</artifactId>
-        <version>3.1.4-RELEASE</version>
+        <version>3.1.5-RELEASE</version>
     </parent>
 
 

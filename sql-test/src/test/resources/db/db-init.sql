@@ -52,3 +52,17 @@ insert into  sys_order values (2,'b',1);
 insert into  sys_order values (3,'c',2);
 insert into  sys_order values (4,'d',2);
 
+
+--  测试版本号
+drop table if exists  `product_order` ;
+CREATE TABLE `product_order` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `create_date` datetime NULL DEFAULT NULL,
+    `version` int(11) DEFAULT 0 NOT NULL,
+    `status` int(2) DEFAULT 0 NOT NULL,
+
+    PRIMARY KEY (`id`)
+) ;
+
+
+insert into  product_order values (1,now(),1,0);

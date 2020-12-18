@@ -58,7 +58,7 @@ public class SimpleMavenProject extends BaseProject {
 			try {
 				writer = new FileWriter(new File(output));
 			} catch (IOException e) {
-				throw new IllegalArgumentException(output);
+				throw new IllegalArgumentException(output,e);
 			}
 
 		}

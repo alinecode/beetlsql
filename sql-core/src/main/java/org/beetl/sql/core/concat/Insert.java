@@ -32,10 +32,8 @@ public class Insert implements Output {
         return this;
     }
 
-
-
     public Insert setConstant(String col, String sql){
-        colNode.add(col);
+        colNode.addConstants(col);
         valueNode.addConstants(sql);
         return this;
     }
@@ -67,4 +65,6 @@ public class Insert implements Output {
         valueNode.toSql(sb);
         sb.rightBracket();
     }
+
+
 }

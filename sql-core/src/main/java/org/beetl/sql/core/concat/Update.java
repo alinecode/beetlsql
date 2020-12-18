@@ -45,6 +45,13 @@ public class Update extends WhereNode {
         return this;
     }
 
+	public Update assignVersion(String col){
+		UpdateVersionExpress updateValueExpress = new UpdateVersionExpress(this);
+		updateValueExpress.col = col;
+		updateList.add(updateValueExpress);
+		return this;
+	}
+
 
     public Update notEmptyAssign(String varName, String col){
         UpdateValueExpress updateValueExpress = new UpdateValueExpress(this).col(col);
@@ -64,7 +71,7 @@ public class Update extends WhereNode {
         if(trim){
             sb.appendTrimStart();
             for(int i=0;i<updateList.size();i++){
-                UpdateNotEmptyExpress express = (UpdateNotEmptyExpress)updateList.get(i);
+				Express express = (Express)updateList.get(i);
                 express.toSql(sb);
             }
             sb.appendTrimEnd();

@@ -20,6 +20,12 @@ public class InsertColNode  extends  TrimSupport implements Output {
         return this;
     }
 
+	public InsertColNode addConstants(String name){
+		ConstantColName colName = new ConstantColName(this,name);
+		list.add(colName);
+		return this;
+	}
+
     public InsertColNode conditional(String col, String varName){
         InsertColEmptyExpress notEmptyExpress = new InsertColEmptyExpress(col,varName);
         list.add(notEmptyExpress);
@@ -64,5 +70,23 @@ public class InsertColNode  extends  TrimSupport implements Output {
             sb.testVar(varName,col);
         }
     }
+
+
+	public static class ConstantColName extends Express {
+		String col;
+		InsertColNode colNode;
+		public ConstantColName(InsertColNode colNode,String col){
+			this.colNode = colNode;
+			this.col = col;
+		}
+		@Override
+		public void toSql(ConcatBuilder sb) {
+			String col1 = sb.getCtx().keyWordHandler.getCol(col);
+			sb.append(col1);
+			if(colNode.trim){
+				sb.comma();
+			}
+		}
+	}
 
 }

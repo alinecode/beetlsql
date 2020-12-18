@@ -6,7 +6,9 @@ package org.beetl.sql.core.concat;
  */
 public class ColName extends Express {
     String col;
+	InsertColNode colNode;
     public ColName(String col){
+    	this.colNode = colNode;
         this.col = col;
     }
     @Override

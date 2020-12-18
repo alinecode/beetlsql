@@ -54,6 +54,20 @@ public class CoreUpdate extends BaseTest {
 
     }
 
+	@Test
+	public void insertTemplate(){
+		User user = new User();
+		user.setId(5);
+		user.setName("newName");
+		user.setDepartmentId(1);
+		sqlManager.insertTemplate(user);
+		Assert.assertNotNull(user.getId());
+		User dbUser = sqlManager.single(User.class,user.getId());
+		Assert.assertEquals(user.getName(),dbUser.getName());
+		Assert.assertNull(dbUser.getCreateDate());
+
+	}
+
 
     @Test
     public void batchInsert(){

@@ -25,6 +25,6 @@ public class UpdateConstantsExpress extends Express {
     @Override
     public void toSql(ConcatBuilder sb) {
         String col1 = sb.ctx.keyWordHandler.getCol(col);
-        sb.append("set").append(col1).assign().append(value.toString());
+        sb.append(col1).assign().append(value.toString());
     }
 }

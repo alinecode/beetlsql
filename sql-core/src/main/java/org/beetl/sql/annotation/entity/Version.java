@@ -30,7 +30,7 @@ public @interface Version {
 
 	/**
 	 *
-	 * @return 默认表示程序指定，否则，beetlsql使用此值作为初始值
+	 * @return 默认-1表示程序指定一个版本号，否则，beetlsql使用此值作为初始值
 	 */
 	int value() default -1;
 
