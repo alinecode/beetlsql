@@ -54,7 +54,7 @@ public class DemoController {
 				throw new RuntimeException("模拟失败,查询saga-server 看效果");
 			}
 		} catch (Exception e) {
-			log.info("error " + e.getMessage());
+			log.info("error " + e.getMessage(),e);
 			log.info("start rollback  " + e.getMessage());
 			sagaContext.rollback();
 			return e.getMessage();

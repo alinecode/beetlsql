@@ -23,7 +23,7 @@
       "status": "Success",
       "rollbackStatus": "Success",
       "time": 1138055785025836,
-      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaLevel3Transaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaUpdateByIdAMI$UpdateSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"obj\":{\"@Clazz\":\"org.beetl.sql.saga.demo.entity.UserEntity\",\"id\":\"xiandafu\",\"name\":\"闲大赋\",\"balance\":4}},\"success\":false}],\"success\":true}",
+      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaClientTransaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaUpdateByIdAMI$UpdateSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"obj\":{\"@Clazz\":\"org.beetl.sql.saga.demo.entity.UserEntity\",\"id\":\"xiandafu\",\"name\":\"闲大赋\",\"balance\":4}},\"success\":false}],\"success\":true}",
       "createTime": 1607864163823,
       "updateTime": 1607864164067
     },
@@ -34,7 +34,7 @@
       "status": "Success",
       "rollbackStatus": "Success",
       "time": 1138055465293352,
-      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaLevel3Transaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaInsertAMI$InsertSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"entityClass\":\"org.beetl.sql.saga.demo.entity.OrderEntity\",\"pkId\":\"4a40f48b-4b29-4b62-8d47-5f3867b03afd\"},\"success\":false}],\"success\":true}",
+      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaClientTransaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaInsertAMI$InsertSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"entityClass\":\"org.beetl.sql.saga.demo.entity.OrderEntity\",\"pkId\":\"4a40f48b-4b29-4b62-8d47-5f3867b03afd\"},\"success\":false}],\"success\":true}",
       "createTime": 1607864163570,
       "updateTime": 1607864164058
     },
@@ -60,10 +60,11 @@
 * 查看各个系统的beetlsql 日志，会发现反向操作成功执行
 * 查看Saga-server 的Swagger ，可以看到回滚任务执行结果
 * 可以订阅各个TOPIC，了解回滚任务是如何发送到Saga-Server，以及如何从Saga—Server获取回滚任务
-* 可以在SagaLevel3ClientConfig.retry方法打断点和
+* 可以在SagaClientConfig.retry方法打断点，了解各个client如何开始真正回滚
 
 
 如下为是使用的topic和数据库
+
 ```
 
 ./kafka-topics.sh --delete --zookeeper 127.0.0.1:2181 --topic saga-client-demoSystem

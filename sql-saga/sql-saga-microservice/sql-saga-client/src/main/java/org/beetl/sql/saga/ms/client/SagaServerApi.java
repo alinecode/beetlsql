@@ -6,10 +6,10 @@ import org.beetl.sql.saga.ms.client.task.*;
 /**
  * 与saga-server 交互的api
  */
-public class SagaServerClient {
-	SagaLevel3ClientConfig level3Config;
+public class SagaServerApi {
+	SagaClientConfig level3Config;
 
-	public SagaServerClient(SagaLevel3ClientConfig level3Config) {
+	public SagaServerApi(SagaClientConfig level3Config) {
 		this.level3Config = level3Config;
 	}
 
@@ -28,7 +28,7 @@ public class SagaServerClient {
 	 * 发送回滚任务到服务器
 	 * @param tasks
 	 */
-	public void sendRollbackTask(String gid, long time, SagaLevel3Transaction tasks) {
+	public void sendRollbackTask(String gid, long time, SagaClientTransaction tasks) {
 		RollbackClientTask rollbackTask = new RollbackClientTask(level3Config.getAppName(),gid, time, tasks);
 		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(rollbackTask));
 	}
@@ -37,7 +37,7 @@ public class SagaServerClient {
 	 * 发送回滚任务到服务器
 	 * @param tasks
 	 */
-	public void sendRollbackTaskInCommit(String gid, long time, SagaLevel3Transaction tasks) {
+	public void sendRollbackTaskInCommit(String gid, long time, SagaClientTransaction tasks) {
 		RollbackInCommitClientTask rollbackInCommitTask =
 				new RollbackInCommitClientTask(level3Config.getAppName(),gid, time, tasks);
 		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(rollbackInCommitTask));
@@ -49,7 +49,7 @@ public class SagaServerClient {
 
 	}
 
-	public void rollbackFailure(String gid, long time, SagaLevel3Transaction tasks) {
+	public void rollbackFailure(String gid, long time, SagaClientTransaction tasks) {
 		RollbackFailureClientTask rollbackFailureTask =
 				new RollbackFailureClientTask(level3Config.getAppName(),gid, time, tasks);
 		level3Config.getTemplate().send(level3Config.getServerTopic(), gid,toString(rollbackFailureTask));

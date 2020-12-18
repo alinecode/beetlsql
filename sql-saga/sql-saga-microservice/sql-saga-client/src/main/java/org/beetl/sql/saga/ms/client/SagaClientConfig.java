@@ -22,7 +22,7 @@ import java.util.List;
 @Configuration("sagaLevel3Config")
 @Data
 @Slf4j
-public class SagaLevel3ClientConfig {
+public class SagaClientConfig {
 
 	/**
 	 * saga-server topic
@@ -42,11 +42,10 @@ public class SagaLevel3ClientConfig {
 	@Autowired
 	protected ObjectMapper objectMapper;
 
-
 	@PostConstruct
 	public void initSaga() {
 		//必须设置事务实现方式
-		SagaContext.sagaContextFactory = new SagaLevel3ContextFactory(this);
+		SagaContext.sagaContextFactory = new SagaClientContextFactory(this);
 
 	}
 
@@ -62,12 +61,13 @@ public class SagaLevel3ClientConfig {
 				String json = record.value();
 				log.info("retry rollback " + json);
 				Server2ClientRollbackTask task = objectMapper.readValue(json, Server2ClientRollbackTask.class);
-				SagaLevel3Transaction transaction = objectMapper.readValue(task.getTaskInfo(), SagaLevel3Transaction.class);
-				SagaLevel3Context kafkaSegaContext = new SagaLevel3Context(transaction, this);
+				SagaClientTransaction transaction = objectMapper.readValue(task.getTaskInfo(), SagaClientTransaction.class);
+				SagaClientContext kafkaSegaContext =  SagaClientContext.tempContext(transaction, this);
 				kafkaSegaContext.setGid(task.getGid()).setTime(task.getTime());
 				kafkaSegaContext.realRollback();
 
 			} catch (Exception ex) {
+				//除非kafka也失败，否则不可能运行到这里
 				log.info(ex.getMessage(),ex);
 			}
 		}

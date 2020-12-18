@@ -87,6 +87,7 @@ public class SagaManager {
 		}
 		//全部都成功了，考虑删除
 		removeGid(gid);
+		notifyClient4CommitSuccess(gid);
 
 	}
 
@@ -165,6 +166,7 @@ public class SagaManager {
 				log.info("rollback all task for " + appName + " for " + gid + " success ");
 				rollbackEntity.setRollbackStatus(RollbackStatus.Success);
 				rollbackMapper.updateById(rollbackEntity);
+				notifyClient4RollbackSuccess(gid);
 
 
 			}
@@ -198,5 +200,27 @@ public class SagaManager {
 	protected  void removeGid(String gid){
 		rollbackMapper.deleteById(gid);
 		rollbackTaskMapper.removeRollbackTask(gid);
+	}
+
+	/**
+	 * 全部事务成功提交后通知
+	 * @param gid
+	 */
+	protected void notifyClient4CommitSuccess(String gid){
+		/**
+		 * 成当saga事务成功后，是否需要通知所有app，考虑到通信代价，以及并非所有项目都有这需求，目前版本不打算完成
+		 * 实际需求是有的，但可以通过业务编程来解决。比如微服务最后一个环节结束后，通知某些微服务
+		 */
+
+	}
+
+	/**
+	 * 全部事务回滚成功后通知
+	 * @param gid
+	 */
+	protected void notifyClient4RollbackSuccess(String gid){
+		/**
+		 * 目前不考虑通知客户端所有回滚成功
+		 */
 	}
 }

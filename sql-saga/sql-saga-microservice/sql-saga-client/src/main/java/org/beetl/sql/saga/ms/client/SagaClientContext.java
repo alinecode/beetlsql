@@ -9,24 +9,35 @@ import java.util.concurrent.Callable;
 /**
  * 回滚事务，如果没有完全成功，则发送到kafka队列，在尝试多次后，仍然没有成功，发送给
  *
- * @see  SagaLevel3ClientConfig
+ * @see  SagaClientConfig
  * @author xiandafu
  */
-public class SagaLevel3Context extends SagaContext {
-	SagaLevel3Transaction transaction = null;
-	SagaLevel3ClientConfig config;
-	SagaServerClient client = null;
+public class SagaClientContext extends SagaContext {
+	SagaClientTransaction transaction = null;
+	SagaClientConfig config;
+	SagaServerApi client = null;
 
-	public SagaLevel3Context(SagaLevel3ClientConfig config) {
-		newTransaction();
+	public SagaClientContext(SagaClientConfig config) {
+		transaction = new SagaClientTransaction();
 		this.config = config;
-		client = new SagaServerClient(config);
+		client = new SagaServerApi(config);
 	}
 
-	public SagaLevel3Context(SagaLevel3Transaction transaction, SagaLevel3ClientConfig config) {
+	/**
+	 * 创建一个临时
+	 * @param transaction
+	 * @param config
+	 * @return
+	 */
+	public static SagaClientContext tempContext(SagaClientTransaction transaction, SagaClientConfig config){
+		SagaClientContext sagaClientContext = new SagaClientContext(transaction,config);
+		return sagaClientContext;
+	}
+
+	private SagaClientContext(SagaClientTransaction transaction, SagaClientConfig config) {
 		this.transaction = transaction;
 		this.config = config;
-		client = new SagaServerClient(config);
+		client = new SagaServerApi(config);
 
 	}
 
@@ -35,7 +46,15 @@ public class SagaLevel3Context extends SagaContext {
 	}
 
 	public void start(String gid) {
-		super.start(gid);
+		if(!nested.isRoot()){
+			if(!this.gid.equals(gid)){
+				throw new IllegalStateException("gid 必须一致 期望"+this.gid+" 但是 "+gid);
+			}
+			return ;
+		}
+		time= System.nanoTime();
+		nested.enter();
+		this.gid = gid;
 		try{
 			client.start(gid, time);
 		}catch (Exception ex){
@@ -48,9 +67,11 @@ public class SagaLevel3Context extends SagaContext {
 
 	public void commit() {
 		try{
-			super.commit();
+			nested.exit();
+			if(!nested.isRoot()){
+				return ;
+			}
 			client.sendRollbackTaskInCommit(gid,time,transaction);
-
 		}catch (Exception ex){
 			throw new IllegalStateException("事务管理器不可用 "+ex.getMessage());
 		}finally {
@@ -61,8 +82,8 @@ public class SagaLevel3Context extends SagaContext {
 	@Override
 	public void rollback() {
 		try{
-			super.rollback();
-			if(!shouldRollback()){
+			nested.exit();
+			if(!nested.isRoot()){
 				return ;
 			}
 			//仅仅发送回滚任务，真正回滚需要等待收到saga-server通知，然后调用realRollback
@@ -99,25 +120,21 @@ public class SagaLevel3Context extends SagaContext {
 		return transaction;
 	}
 
-	protected void newTransaction() {
-		transaction = new SagaLevel3Transaction();
-	}
+
 
 	protected  void clear(){
-		if(this.nested !=0){
+		if(!nested.isRoot()){
 			return ;
 		}
-
-		transaction.getTasks().clear();
 		this.setGid(null);
 		this.setTime(-1L);
-		newTransaction();
+		this.transaction = new SagaClientTransaction();
 	}
 
 	/**
 	 * 非sql类的，比如批量增加数据，逆向操作可能只是简单的删除外键，而不需要每条都删除
 	 * @param callable
-	 * @param runnable ，必须保证可被json序列化和反序列化，比如，提供一个空的构造函数
+	 * @param runnable ，必须保证callable和runnable可被json序列化和反序列化
 	 * @param <T>
 	 * @return
 	 * @throws Exception

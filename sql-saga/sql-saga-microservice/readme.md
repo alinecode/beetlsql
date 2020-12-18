@@ -1,4 +1,4 @@
-在springboot框架下，微服务解决方法
+在springboot 框架下，微服务解决方法
 
 * Saga-server 负责记录回滚sql语句（以任务形式），并在需要的时候回滚。也可以定时或者UI界面触发
 
@@ -6,7 +6,7 @@
 
 * client，任何微服务客户端，通过kafka 发送事务数据。客户端在调用start时候，标记自己的事务，在commit或者rollback的时候发送回滚sql到saga server
 
-* 当微服务调用链中最初的那个事务要求回滚，则表示真正需要回滚，Saga—Server会发送回滚任务到各自系，进行真正回滚
+* 当微服务调用链中最初的那个事务要求回滚（画重点)，则表示真正需要回滚，Saga—Server会发送回滚任务到各自系，进行真正回滚
 
 * Kafka 消息机制保证了回滚任务一定能被执行。
 
@@ -49,7 +49,7 @@ Saga-Server提供Swagger API用于查询和管理回滚任任务，如下是一�
       "status": "Success",
       "rollbackStatus": "Success",
       "time": 1138055785025836,
-      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaLevel3Transaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaUpdateByIdAMI$UpdateSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"obj\":{\"@Clazz\":\"org.beetl.sql.saga.demo.entity.UserEntity\",\"id\":\"xiandafu\",\"name\":\"闲大赋\",\"balance\":4}},\"success\":false}],\"success\":true}",
+      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaClientTransaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaUpdateByIdAMI$UpdateSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"obj\":{\"@Clazz\":\"org.beetl.sql.saga.demo.entity.UserEntity\",\"id\":\"xiandafu\",\"name\":\"闲大赋\",\"balance\":4}},\"success\":false}],\"success\":true}",
       "createTime": 1607864163823,
       "updateTime": 1607864164067
     },
@@ -60,7 +60,7 @@ Saga-Server提供Swagger API用于查询和管理回滚任任务，如下是一�
       "status": "Success",
       "rollbackStatus": "Success",
       "time": 1138055465293352,
-      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaLevel3Transaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaInsertAMI$InsertSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"entityClass\":\"org.beetl.sql.saga.demo.entity.OrderEntity\",\"pkId\":\"4a40f48b-4b29-4b62-8d47-5f3867b03afd\"},\"success\":false}],\"success\":true}",
+      "taskInfo": "{\"tasks\":[{\"@Clazz\":\"org.beetl.sql.saga.ms.client.SagaClientTransaction$KafkaSagaTaskTrace\",\"rollbackTask\":{\"@Clazz\":\"org.beetl.sql.saga.common.ami.SagaInsertAMI$InsertSagaRollbackTask\",\"sqlManagerName\":\"mySqlManager\",\"entityClass\":\"org.beetl.sql.saga.demo.entity.OrderEntity\",\"pkId\":\"4a40f48b-4b29-4b62-8d47-5f3867b03afd\"},\"success\":false}],\"success\":true}",
       "createTime": 1607864163570,
       "updateTime": 1607864164058
     },
@@ -83,8 +83,8 @@ Saga-Server提供Swagger API用于查询和管理回滚任任务，如下是一�
 
 # todo
 
-* Saga-Server 定时清理已经完成的回滚或者是全部成功的事务，避免数据库过大
-* 考虑设定整体事务回滚时长，比如10分钟，超过10分钟，不做回滚等待手工处理
+* 要考虑Saga-Server会记录大量事务数据，甚至比业务数据还多。要考虑以gid的分库分表。或者定时清理已经完成的回滚或者是全部成功的事务，避免数据库过大
+* 回滚失败后（比如数据库宕机或者主从替换中），Saga-Server不再处理，等待人工调用api再次回滚。可以考虑其它机制或者接入其它系统，专门处理回滚也失败的事务。
 
 
 

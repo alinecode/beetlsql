@@ -17,7 +17,7 @@ public class LocalSagaContext extends SagaContext {
 	@Override
 	public void rollback(){
 		super.rollback();
-		if(!shouldRollback()){
+		if(!nested.isRoot()){
 			return ;
 		}
 		try{
@@ -33,12 +33,24 @@ public class LocalSagaContext extends SagaContext {
 
 	}
 
+
+	public  void commit(){
+		try{
+			super.commit();
+		}finally {
+			newTransaction();
+		}
+
+
+	}
 	@Override
 	public SagaTransaction getTransaction(){
 		return transaction;
 	}
 
 	protected  void newTransaction(){
+		this.gid=null;
+		this.time=1L;
 		transaction = new LocalSagaTransaction();
 	}
 

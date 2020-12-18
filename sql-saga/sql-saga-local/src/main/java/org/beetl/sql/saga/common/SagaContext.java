@@ -16,17 +16,16 @@ public abstract class SagaContext {
 	 * */
 	protected String gid;
 	/**
-	 * 事务的开始事件。对于对于local的saga模式来说，此time并不实际意义
+	 * 事务的开始事件。对于对于local的saga模式来说，此time无实际意义
 	 * 但对于微服务来说，time标识了业务的先后顺序，从而能识别事务的边界。saga-server收到最小的time 回滚任务，则表示真的需要发起回滚了，已经到了事务边界了。
-	 * 不同于其他saga实现有显示的开始和结束。beetlsql的saga-server通过时间自动判断，更加科学(显示的申明saga开始和结束有问题，因为此服务本生也会在其他saga事务里，不利于嵌套）
+	 * 不同于其他saga实现有显示的开始和结束。beetlsql的saga-server通过时间自动判断，更加科学(显示的申明saga开始和结束有问题，因为此服务本生也随着业务变化会在其他saga事务里，不利于嵌套）
 	 * 比如，微服务A调用了微服务B，因此A的time肯定是小于B的time，如果B出错并标记回滚，Saga—Server发现还没有到事务边界，不会操作。等B抛出异常到A后，A调用回滚
 	 * 因为边界在A，所以A发起真正回滚
 	 */
 	protected Long time = -1L;
 
-	transient  protected int nested = 0;
+	transient  protected Nested nested = new Nested();
 
-	transient  protected boolean failure = false;
 
 	/**
 	 * 特定框架必须实现SegaContextFactory，以及SegaContext子类
@@ -38,30 +37,31 @@ public abstract class SagaContext {
 		}
 	};
 
-	public  void start(){
-		checkNested();
+	public void start(){
+
+		//不符合saga的编写方式
+		if(time!=-1 && nested.isRoot()){
+			throw new IllegalStateException("Saga事务嵌套出错");
+		}
 		time= System.nanoTime();
-		addNested();
+		nested.enter();
 	}
 	public  void start(String gid){
-		this.start();
+		SagaContext.this.start();
 		this.gid = gid;
 	}
 
 	public void rollback(){
-		failure = true;
-		decreaseNested();
+		nested.exit();
 	}
 
 	/**
 	 * 提交，对于分库操作，无需任何commit，但是，如果是微服务，commit要发送rollback到全局事务控制器，等待可能的回滚
 	 */
 	public  void commit(){
-		if(failure){
-			throw new IllegalStateException("Saga事务标记回滚，不应该提交");
-		}
-		decreaseNested();
+		nested.exit();
 	}
+
 
 	public abstract SagaTransaction getTransaction();
 
@@ -76,28 +76,6 @@ public abstract class SagaContext {
 	public SagaContext setTime(Long time) {
 		this.time = time;
 		return this;
-	}
-
-	protected  void checkNested(){
-		if(time!=-1&& nested ==0){
-			throw new IllegalStateException("Saga事务嵌套出错");
-		}
-	}
-
-	protected  void addNested(){
-		nested++;
-	}
-
-	protected  void decreaseNested(){
-		nested--;
-	}
-
-	/**
-	 * 是否正需要出发回滚机制
-	 * @return
-	 */
-	protected  boolean shouldRollback(){
-		return nested ==0;
 	}
 
 }

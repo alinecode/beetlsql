@@ -14,11 +14,11 @@ import java.util.UUID;
  * 提供一个jackson序列化
  */
 @Data
-public class SagaLevel3Transaction implements SagaTransaction {
+public class SagaClientTransaction implements SagaTransaction {
 	@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@Clazz")
 	protected List<KafkaSagaTaskTrace> tasks = new ArrayList<>();
 	protected boolean success = true;
-	public SagaLevel3Transaction(){
+	public SagaClientTransaction(){
 
 	}
 

@@ -117,11 +117,12 @@ public class SimpleTest  extends BaseTest{
 				sagaContext2.commit();
 			}catch(RuntimeException re){
 				sagaContext2.rollback();
+				//必须再抛出
 				throw re;
 			}
-
 			sagaContext.commit();
-		}catch(RuntimeException ex){
+		}
+		catch(RuntimeException ex){
 			//开始回滚
 			sagaContext.rollback();
 		}

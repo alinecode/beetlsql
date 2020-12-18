@@ -3,16 +3,16 @@ package org.beetl.sql.saga.ms.client;
 import org.beetl.sql.saga.common.SagaContext;
 import org.beetl.sql.saga.common.SagaContextFactory;
 
-public class SagaLevel3ContextFactory implements SagaContextFactory {
-	SagaLevel3ClientConfig config;
-	public SagaLevel3ContextFactory(SagaLevel3ClientConfig config){
+public class SagaClientContextFactory implements SagaContextFactory {
+	SagaClientConfig config;
+	public SagaClientContextFactory(SagaClientConfig config){
 		this.config = config;
 	}
 
-	ThreadLocal<SagaLevel3Context> local = new ThreadLocal(){
+	ThreadLocal<SagaClientContext> local = new ThreadLocal(){
 		@Override
         protected SagaContext initialValue(){
-			return new SagaLevel3Context(config);
+			return new SagaClientContext(config);
 		}
 	};
 	@Override
