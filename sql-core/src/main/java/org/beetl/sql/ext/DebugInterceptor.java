@@ -240,9 +240,7 @@ public class DebugInterceptor implements Interceptor {
 	}
 
 	protected void simpleOutException(InterceptorContext ctx, Exception ex) {
-		SqlId sqlId = ctx.getExecuteContext().sqlId;
 		StringBuilder sb = new StringBuilder();
-		String sql = ctx.getExecuteContext().sqlResult.jdbcSql;
 		sb.append("BeetlSQL Debug Error  ");
 		sb.append(ex != null ? ex.getMessage() : "");
 		this.error(sb.toString());
