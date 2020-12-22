@@ -79,7 +79,10 @@ public class SagaManager {
 	 * @param rollback
 	 */
 	public void addRollbackBySuccessCommit(String gid, long time, String appName, String rollback) {
-		updateRollbackTask(gid, time, appName, BusinessStatus.Success, rollback);
+		RollbackTaskEntity rollbackTaskEntity = updateRollbackTask(gid, time, appName, BusinessStatus.Success, rollback);
+		if(rollbackTaskEntity==null){
+			return ;
+		}
 		log.info("commit trans " + appName + " for " + gid + ":" + time);
 		int earlierCount = rollbackTaskMapper.findEarlierTransaction(gid, time);
 		if (earlierCount > 0) {
@@ -99,7 +102,10 @@ public class SagaManager {
 	 * @param rollbackJson
 	 */
 	public void addRollbackAfterException(String gid, long time, String appName, String rollbackJson) {
-		updateRollbackTask(gid, time, appName, BusinessStatus.Error, rollbackJson);
+		RollbackTaskEntity dbRollbackTaskEntity = updateRollbackTask(gid, time, appName, BusinessStatus.Error, rollbackJson);
+		if(dbRollbackTaskEntity==null){
+			return ;
+		}
 		log.info("rollback trans " + appName + " for " + gid + ":" + time);
 		int earlierCount = rollbackTaskMapper.findEarlierTransaction(gid, time);
 		if (earlierCount > 0) {
@@ -145,15 +151,16 @@ public class SagaManager {
 	 * @param time
 	 * @param success
 	 */
-	public void notifyRollback(String gid, long time, boolean success, String appName) {
+	public void notifyRollback(String gid, long time, boolean success, String appName,String rollbackTaskJson) {
 		RollbackTaskEntity template = new RollbackTaskEntity();
 		template.setTime(time);
 		template.setAppName(appName);
 		template.setGid(gid);
 		RollbackTaskEntity entity = rollbackTaskMapper.templateOne(template);
 		if(entity==null){
-			log.info("找不到回滚任务 "+gid+":"+time);
-			throw new IllegalStateException("找不到回滚任务 "+gid+":"+time);
+			log.error("找不到回滚任务 "+gid+":"+time);
+			//忽略,不可能发生
+			return ;
 		}
 		if (success) {
 			entity.setRollbackStatus(RollbackStatus.Success);
@@ -172,6 +179,7 @@ public class SagaManager {
 			}
 		} else {
 			entity.setRollbackStatus(RollbackStatus.Error);
+			entity.setTaskInfo(rollbackTaskJson);
 		}
 		entity.setUpdateTime(System.currentTimeMillis());
 		rollbackTaskMapper.updateById(entity);
@@ -187,8 +195,8 @@ public class SagaManager {
 		template.setGid(gid);
 		RollbackTaskEntity entity = rollbackTaskMapper.templateOne(template);
 		if (entity == null) {
-			log.info("未能发现回滚任务 " + gid + ":" + time);
-			throw new IllegalArgumentException("未能发现回滚任务 " + gid + ":" + time);
+			log.error("未能发现回滚任务 " + gid + ":" + time);
+			return null;
 		}
 		entity.setTaskInfo(rollbackJson);
 		entity.setStatus(businessStatus);

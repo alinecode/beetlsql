@@ -21,4 +21,13 @@ public class Attribute {
 	private String comment;
 
 
+	public String getMethodName() {
+		if (name.length() > 2 && Character.isUpperCase(name.charAt(2))) {
+			return name;
+		}else{
+			return StringKit.toUpperCaseFirstOne(name);
+		}
+	}
+
+
 }

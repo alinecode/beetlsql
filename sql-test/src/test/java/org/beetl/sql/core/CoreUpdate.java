@@ -85,7 +85,7 @@ public class CoreUpdate extends BaseTest {
 
         List list = Arrays.asList(user,user2);
         sqlManager.insertBatch(User.class,list);
-
+		Assert.assertNotNull(user2.getId());
         long newCount = sqlManager.allCount(User.class);
         Assert.assertEquals(newCount,count+2);
 

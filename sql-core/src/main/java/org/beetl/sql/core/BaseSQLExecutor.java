@@ -277,21 +277,24 @@ public class BaseSQLExecutor implements SQLExecutor {
 
 			}
 			rs = ps.executeBatch();
-			if (holder.hasAttr()) {
-				ResultSet keysSet = ps.getGeneratedKeys();
-				String[] attrs = holder.getAttrNames();
-				Object[] values = new Object[holder.getAttrNames().length];
-				int index = 0;
-				while (keysSet.next()) {
-					Object entity = list.get(index);
-					for (int i = 0; i < attrs.length; i++) {
-						Object value = keysSet.getObject(i + 1);
-						BeanKit.setBeanPropertyWithCast(entity, value, attrs[i]);
+			if(executeContext.sqlManager.getDbStyle().batchGeneratedKeysSupport()){
+				if (holder.hasAttr()) {
+					ResultSet keysSet = ps.getGeneratedKeys();
+					String[] attrs = holder.getAttrNames();
+					Object[] values = new Object[holder.getAttrNames().length];
+					int index = 0;
+					while (keysSet.next()) {
+						Object entity = list.get(index);
+						for (int i = 0; i < attrs.length; i++) {
+							Object value = keysSet.getObject(i + 1);
+							BeanKit.setBeanPropertyWithCast(entity, value, attrs[i]);
+						}
+						index++;
 					}
-					index++;
+					keysSet.close();
 				}
-				keysSet.close();
 			}
+
 			this.executeContext.executeResult = rs;
 			this.callInterceptorAsAfter(ctx, rs);
 

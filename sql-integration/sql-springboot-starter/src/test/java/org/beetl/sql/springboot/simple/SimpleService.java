@@ -23,6 +23,24 @@ public class SimpleService {
 		userInfoMapper.select();
 	}
 
+	@Transactional
+	public UserInfo queryUser(Integer id){
+		return sqlManager.single(UserInfo.class,id);
+
+	}
+
+
+	@Transactional
+	public void exception(){
+		UserInfo info = sqlManager.single(UserInfo.class,1);
+		info.setName("abc+exception");
+		userInfoMapper.updateById(info);
+		int a = 1/0;
+	}
+
+
+
+
 	@Transactional(readOnly = true,timeout = 1)
 	public void timeout()  {
 		sqlManager.single(UserInfo.class,1);

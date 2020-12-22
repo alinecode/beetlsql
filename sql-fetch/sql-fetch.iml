@@ -11,7 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="sql-core" />
     <orderEntry type="module" module-name="sql-util" />
-    <orderEntry type="library" name="Maven: com.ibeetl:beetl:3.3.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: com.ibeetl:beetl:3.3.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.7.2" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.18" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />

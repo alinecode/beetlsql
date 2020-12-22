@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author xiandafu
  */
 @Configuration
-public class MVCConfig implements WebMvcConfigurer {
+public class SagaServerMVCConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

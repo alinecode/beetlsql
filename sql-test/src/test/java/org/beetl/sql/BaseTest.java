@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.SimpleDebugInterceptor;
 import org.junit.BeforeClass;
 
 import javax.sql.DataSource;
@@ -50,6 +51,7 @@ public class BaseTest   {
 		builder.setNc(new UnderlinedNameConversion());
 		builder.setInters(new Interceptor[]{new DebugInterceptor()});
 		builder.setDbStyle(new H2Style());
+		builder.setInters(new Interceptor[]{new SimpleDebugInterceptor()});
 		sqlManager = builder.build();
 	}
 

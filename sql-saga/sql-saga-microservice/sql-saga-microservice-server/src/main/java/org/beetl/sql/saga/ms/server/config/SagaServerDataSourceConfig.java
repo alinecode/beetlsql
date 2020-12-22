@@ -14,7 +14,7 @@ import org.springframework.core.env.Environment;
 import javax.sql.DataSource;
 
 @Configuration
-public class DataSourceSagaServerConfig {
+public class SagaServerDataSourceConfig {
     @Autowired
     ApplicationContext ctx;
 

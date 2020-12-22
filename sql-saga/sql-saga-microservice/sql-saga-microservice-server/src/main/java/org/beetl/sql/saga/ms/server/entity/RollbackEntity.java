@@ -5,6 +5,7 @@ import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.saga.ms.server.util.RollbackStatus;
 
+
 @Table(name = "rollback")
 @Data
 public class RollbackEntity {

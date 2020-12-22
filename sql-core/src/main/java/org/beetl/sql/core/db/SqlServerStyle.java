@@ -45,6 +45,12 @@ public class SqlServerStyle extends AbstractDBStyle {
         return sqlServerRange;
     }
 
+	@Override
+	public boolean batchGeneratedKeysSupport(){
+    	return false;
+	}
+
+
     @Override
     public String getOrderBy() {
         //重写getOrderBy，如果设置了分页的order by条件 则按 order by 否则添加一个 current_timestamp 来排序

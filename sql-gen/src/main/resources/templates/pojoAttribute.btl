@@ -5,7 +5,7 @@
 	${attr.comment}
 	*/
 	<%}
-	if(attr.id&&attr.autoId){
+	if(attr.id&&attr.auto){
 	%>
 	@AutoId
 	<%

@@ -232,8 +232,9 @@ public class DebugInterceptor implements Interceptor {
 
 	protected void simpleOut(InterceptorContext ctx) {
 		SqlId sqlId = ctx.getExecuteContext().sqlId;
+		String sql = ctx.getExecuteContext().sqlResult.jdbcSql;
 		StringBuilder sb = new StringBuilder();
-		sb.append("--BeetlSql:").append(sqlId).append(", paras:").append(formatParas(ctx.getExecuteContext().sqlResult.jdbcPara));
+		sb.append("BeetlSQL Debug:[").append(formatSql(sql)).append("], paras:").append(formatParas(ctx.getExecuteContext().sqlResult.jdbcPara));
 		this.println(sb.toString());
 		return;
 	}
@@ -241,10 +242,9 @@ public class DebugInterceptor implements Interceptor {
 	protected void simpleOutException(InterceptorContext ctx, Exception ex) {
 		SqlId sqlId = ctx.getExecuteContext().sqlId;
 		StringBuilder sb = new StringBuilder();
-		sb.append("--BeetlSql Error:");
+		String sql = ctx.getExecuteContext().sqlResult.jdbcSql;
+		sb.append("BeetlSQL Debug Error  ");
 		sb.append(ex != null ? ex.getMessage() : "");
-		sb.append(" 位于 ").append(sqlId).append(", paras:").append(formatParas(ctx.getExecuteContext().sqlResult.jdbcPara));
-
 		this.error(sb.toString());
 		return;
 	}

@@ -23,7 +23,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
  * @author xiandafu
  */
 @Configuration
-public class SwaggerConfig {
+public class SagaServerSwaggerConfig {
 
 	private String apiPathRegex = "/api.*";
     @Bean

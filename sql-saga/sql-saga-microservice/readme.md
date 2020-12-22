@@ -13,6 +13,8 @@
 > 注意，采用客户端异步消息方式同saga-server 交互，问题是回滚可能带来延迟。即提示用户出错，
 > 但数据当时还可能没有回滚.这依赖于Saga—Server和消息服务器的性能，本示例是秒级回滚，不影响体验
   
+如果不懂Saga，可以参考 https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga，我认为最好的一篇说明Saga的的文章
+
 
 ![](../../doc/saga-microservice.png)
 

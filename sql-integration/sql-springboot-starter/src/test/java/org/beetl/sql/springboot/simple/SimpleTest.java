@@ -1,6 +1,7 @@
 package org.beetl.sql.springboot.simple;
 
 
+import org.beetl.sql.springboot.UserInfo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,21 @@ public class SimpleTest {
     public void test(){
 		service.test();
     }
+
+	@Test
+	public void exception(){
+    	UserInfo info = service.queryUser(1);
+    	String name = info.getName();
+    	try{
+			service.exception();
+			Assert.fail();
+		}catch (Exception exception){
+
+		}
+		UserInfo info2 = service.queryUser(1);
+    	Assert.assertEquals(name,info2.getName());
+
+	}
 
 	@Test
 	public void timeout(){

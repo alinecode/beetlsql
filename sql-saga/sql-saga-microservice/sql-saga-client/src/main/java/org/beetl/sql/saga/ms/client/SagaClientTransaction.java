@@ -7,6 +7,7 @@ import org.beetl.sql.saga.common.SagaRollbackTask;
 import org.beetl.sql.saga.common.SagaTransaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +31,10 @@ public class SagaClientTransaction implements SagaTransaction {
 	}
 	@Override
 	public boolean rollback(){
-		for(KafkaSagaTaskTrace trace: tasks){
+		//倒序回滚
+		List<KafkaSagaTaskTrace> copy = new ArrayList<>(tasks);
+		Collections.reverse(copy);
+		for(KafkaSagaTaskTrace trace: copy){
 			trace.call();
 			if(!trace.success){
 				success = false;

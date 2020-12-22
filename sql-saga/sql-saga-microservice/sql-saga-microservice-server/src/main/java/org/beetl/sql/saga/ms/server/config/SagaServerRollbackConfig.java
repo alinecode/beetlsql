@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Configuration
 @Slf4j
-public class KafkaConfigSagaLevel3ServerConfig {
+public class SagaServerRollbackConfig {
 	@Autowired
 	SagaManager sagaManager;
 
@@ -48,18 +48,17 @@ public class KafkaConfigSagaLevel3ServerConfig {
 				} else if (clz == RollbackClientTask.class) {
 					String rollbackTaskJson = node.get("rollback").toString();
 					sagaManager.addRollbackAfterException(gid, time, appName, rollbackTaskJson);
-					;
 				} else if (clz == RollbackFailureClientTask.class) {
-					sagaManager.notifyRollback(gid, time, false, appName);
+					String rollbackTaskJson = node.get("rollback").toString();
+					sagaManager.notifyRollback(gid, time, false, appName,rollbackTaskJson);
 				} else if (clz == RollbackSuccessClientTask.class) {
-
-					sagaManager.notifyRollback(gid, time, true, appName);
+					sagaManager.notifyRollback(gid, time, true, appName,null);
 				} else {
 					throw new IllegalStateException("error task " + clz.getClass());
 				}
 			} catch (RuntimeException re) {
 				log.info(re.getMessage(), re);
-				//任何错误通过消息机制重试时重试
+				//saga server自身的任何错误（如数据库问题）通过消息机制重试时重试
 				throw re;
 
 			}
