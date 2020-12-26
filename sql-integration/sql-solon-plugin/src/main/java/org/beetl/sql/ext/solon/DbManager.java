@@ -3,14 +3,17 @@ package org.beetl.sql.ext.solon;
 import org.beetl.sql.core.ConditionalSQLManager;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
-import org.noear.solon.XUtil;
+import org.beetl.sql.core.db.*;
+import org.beetl.sql.core.nosql.*;
+import org.noear.solon.Utils;
 import org.noear.solon.core.Aop;
 import org.noear.solon.core.BeanWrap;
-import org.noear.solon.core.XEventBus;
+import org.noear.solon.core.event.EventBus;
 
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * SQLManager 工具
@@ -36,15 +39,17 @@ class DbManager {
         DbConnectionSource cs = null;
         DataSource master = bw.raw();
 
-        if (XUtil.isNotEmpty(bw.attrs())) {
-            String[] slaveAry = bw.attrs().split(",");
+        String slaves_str = bw.attrGet("slaves");
+
+        if (Utils.isNotEmpty(slaves_str)) {
+            String[] slaveAry = slaves_str.split(",");
             DataSource[] slaves = new DataSource[slaveAry.length];
 
             for (int i = 0, len = slaveAry.length; i < len; i++) {
                 slaves[i] = Aop.get(slaveAry[i]);
 
                 if (slaves[i] == null) {
-                    throw new RuntimeException("SQLManagerUtils: This data source does not exist: " + slaveAry[i]);
+                    throw new RuntimeException("DbManager: This data source does not exist: " + slaveAry[i]);
                 }
             }
 
@@ -55,8 +60,10 @@ class DbManager {
 
         SQLManagerBuilder builder = SQLManager.newBuilder(cs);
 
+        buildStyle(bw, builder);
+
         //推到事件中心，用于扩展
-        XEventBus.push(builder);
+        EventBus.push(builder);
 
         return builder.build();
     }
@@ -107,8 +114,99 @@ class DbManager {
 
     /**
      * 注册管理器
-     * */
+     */
     public void reg(BeanWrap bw) {
         get(bw);
+    }
+
+    private void buildStyle(BeanWrap bw, SQLManagerBuilder builder) {
+        String dialect = bw.attrGet("dialect");
+
+        if (Utils.isNotEmpty(dialect)) {
+            DBStyle style = null;
+
+            if (dialect.indexOf(".") > 0) {
+                style = Utils.newInstance(dialect);
+
+            } else {
+                dialect = dialect.toLowerCase();
+
+                switch (dialect) {
+                    case "oracle":
+                        style = new OracleStyle();
+                        break;
+                    case "mysql":
+                        style = new MySqlStyle();
+                        break;
+                    case "sqlserver":
+                        style = new SqlServerStyle();
+                        break;
+                    case "sqlserver2012":
+                        style = new SqlServer2012Style();
+                        break;
+                    case "postgres":
+                    case "postgresql":
+                    case "pgsql":
+                        style = new PostgresStyle();
+                        break;
+                    case "db2":
+                        style = new DB2SqlStyle();
+                        break;
+                    case "h2":
+                        style = new H2Style();
+                        break;
+                    case "sqlite":
+                        style = new SQLiteStyle();
+                        break;
+                    case "polardb":
+                        style = new PolarDBStyle();
+                        break;
+
+
+                    case "cassandra":
+                    case "cassandrasql":
+                        style = new CassandraSqlStyle();
+                        break;
+                    case "clickhouse":
+                        style = new ClickHouseStyle();
+                        break;
+                    case "couchbase":
+                        style = new CouchBaseStyle();
+                        break;
+                    case "drill":
+                        style = new DrillStyle();
+                        break;
+                    case "druid":
+                        style = new DruidStyle();
+                        break;
+                    case "hbase":
+                        style = new HBaseStyle();
+                        break;
+                    case "hive":
+                        style = new HiveStyle();
+                        break;
+                    case "ignite":
+                        style = new IgniteStyle();
+                        break;
+                    case "impala":
+                        style = new ImpalaStyle();
+                        break;
+                    case "machbase":
+                        style = new MachbaseStyle();
+                        break;
+                    case "presto":
+                        style = new PrestoStyle();
+                        break;
+                    case "taos":
+                        style = new TaosStyle();
+                        break;
+
+                }
+            }
+
+            if (style != null) {
+                builder.setDbStyle(style);
+            }
+        }
     }
 }
