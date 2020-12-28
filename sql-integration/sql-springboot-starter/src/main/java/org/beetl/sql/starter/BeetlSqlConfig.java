@@ -5,6 +5,7 @@ import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ConditionalSQLManager;
 import org.springframework.core.env.Environment;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +45,10 @@ public class BeetlSqlConfig {
     public static class SQLManagerConfig{
         String basePackage = null;// 配置beetlsql.daoSuffix来自动扫描com包极其子包下的所有以Dao结尾的Mapper类
         String daoSuffix = null;// 通过类后缀 来自动注入Dao
-        String sqlPath = null;// 存放sql文件的根目录
-        String nameConversion = null;// 数据库和javapojo的映射关系
+		String sqlPath = null;// 存放sql文件的根目录
+		String sqlFileCharset = null;// 文件的字符集
+
+		String nameConversion = null;// 数据库和javapojo的映射关系
         String dbStyle = null; // 何种数据库
         boolean dev = false;
         String ds = null;
@@ -63,6 +66,7 @@ public class BeetlSqlConfig {
             String basePackage = env.getProperty(prefix+".basePackage", "com");
             String daoSuffix = env.getProperty(prefix+".daoSuffix", "Mapper");
             String sqlPath = env.getProperty(prefix+".sqlPath", "sql");
+			String sqlFileCharset = env.getProperty(prefix+".sqlFileCharset", Charset.defaultCharset().name());
             String nameConversion = env.getProperty(prefix+".nameConversion", "org.beetl.sql.core.UnderlinedNameConversion");
             String dbStyle = env.getProperty(prefix+".dbStyle", "org.beetl.sql.core.db.MySqlStyle");
             boolean dev = env.getProperty(prefix+".dev", Boolean.class, true);
@@ -73,7 +77,7 @@ public class BeetlSqlConfig {
             defaultConfig.setNameConversion(nameConversion);
             defaultConfig.setDbStyle(dbStyle);
             defaultConfig.setDev(dev);
-
+            defaultConfig.setSqlFileCharset(sqlFileCharset);
 
             return defaultConfig;
 
@@ -97,6 +101,7 @@ public class BeetlSqlConfig {
             basePackage = env.getProperty(prefix+".basePackage", defaultConfig.getBasePackage());
             daoSuffix = env.getProperty(prefix+".daoSuffix", defaultConfig.getDaoSuffix());
             sqlPath = env.getProperty(prefix+".sqlPath", defaultConfig.getSqlPath());
+			sqlFileCharset = env.getProperty(prefix+".sqlFileCharset", defaultConfig.getSqlFileCharset());
             nameConversion = env.getProperty(prefix+".nameConversion", defaultConfig.getNameConversion());
             dbStyle = env.getProperty(prefix+".dbStyle", defaultConfig.getDbStyle());
             dev = env.getProperty(prefix+".dev", Boolean.class,defaultConfig.isDev());

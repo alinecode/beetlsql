@@ -8,9 +8,12 @@ import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.spring.BeetlSqlClassPathScanner;
 import org.beetl.sql.ext.spring.SqlManagerFactoryBean;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -18,10 +21,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import javax.sql.DataSource;
+import java.util.*;
 
 /**
  * @author xiandafu ,waote
@@ -31,7 +32,7 @@ public class BeetlSqlBeanRegister
 
 	private ResourceLoader resourceLoader;
 	Environment env;
-//	ApplicationContext applicationContext;
+
 	BeetlSqlConfig beetlSqlConfig ;
 
 
@@ -44,6 +45,7 @@ public class BeetlSqlBeanRegister
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		beetlSqlConfig = new BeetlSqlConfig(env);
 		this.readySqlManager(registry);
+
 
 	}
 
@@ -83,7 +85,10 @@ public class BeetlSqlBeanRegister
 		});
 	}
 
+
+
 	protected void registerDynamicSQLManager(BeanDefinitionRegistry registry,String name,BeetlSqlConfig.SQLManagerConfig config,ClassLoader classLoader){
+
 		String[] sqlManagers = config.dynamicSqlManager.split(",");
 		BeetlSqlConfig.SQLManagerConfig defaultSQLManagerConfig = BeetlSqlConfig.SQLManagerConfig.initDefault(env);
 
@@ -132,10 +137,9 @@ public class BeetlSqlBeanRegister
 	protected BeanDefinitionBuilder registerSQLManager(BeanDefinitionRegistry registry,String name,BeetlSqlConfig.SQLManagerConfig config,ClassLoader classLoader,boolean  scan){
 
 
-		MarkdownClasspathLoader loader = new MarkdownClasspathLoader(config.getSqlPath());
+		MarkdownClasspathLoader loader = new MarkdownClasspathLoader(config.getSqlPath(),config.getSqlFileCharset());
 		BeanDefinitionBuilder sqlSourceBuilder = registerBeetlSqlSource(name,config);
 		registry.registerBeanDefinition(name+"BeetlSqlDataSourceBean",sqlSourceBuilder.getBeanDefinition());
-
 		Properties ps = new Properties();
 		ps.put("PRODUCT_MODE", config.dev?"false":"true");
 		BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(SqlManagerFactoryBean.class);
@@ -171,5 +175,6 @@ public class BeetlSqlBeanRegister
 		this.env = env;
 
 	}
+
 
 }

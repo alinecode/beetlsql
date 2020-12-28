@@ -17,3 +17,9 @@ and name=#{name}
 -- @}
 ```
 
+
+utf8
+===
+
+select '中文' from sys_user where id =1
+

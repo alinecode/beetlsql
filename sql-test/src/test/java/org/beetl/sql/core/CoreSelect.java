@@ -102,5 +102,14 @@ public class CoreSelect extends BaseTest {
     }
 
 
+	@Test
+	public void testSQLResult(){
+		SqlId sqlId = SqlId.of("user.utf8");
+		SQLResult sqlResult = sqlManager.getSQLResult(sqlId,new HashMap<>());
+		String sql = sqlResult.jdbcSql.trim();
+		String expectedSql="select '中文' from sys_user where id =1";
+		Assert.assertEquals(expectedSql,sql);
+	}
+
 
 }

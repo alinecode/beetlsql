@@ -80,10 +80,7 @@ public class SqlManagerFactoryBean
 			return sqlManager;
 		}
 
-		//加载数据库
-		if (sqlLoader == null) {
-			sqlLoader = new MarkdownClasspathLoader("sql");
-		}
+
 
 		//这里配置拦截器
 		if (interceptors == null) {
@@ -117,6 +114,11 @@ public class SqlManagerFactoryBean
 
 		//其他扩展属性
 		properties.putAll(extProperties);
+
+		//加载数
+		if (sqlLoader == null) {
+			sqlLoader = new MarkdownClasspathLoader("sql");
+		}
 
 		SQLManagerBuilder builder = new SQLManagerBuilder(cs);
 		builder.setBeetlPs(properties);

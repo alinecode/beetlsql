@@ -18,7 +18,6 @@ public class SimpleDataSourceConfig {
     @Autowired
     ApplicationContext ctx;
 
-    @Primary
     @Bean(name = "ds1")
     public DataSource datasource(Environment env) {
         HikariDataSource ds = new HikariDataSource();

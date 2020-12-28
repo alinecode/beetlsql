@@ -352,7 +352,11 @@ public class SQLManagerBuilder {
 
     private SQLLoader getSqlLoader() {
         if (sqlLoader == null) {
-            sqlLoader = new MarkdownClasspathLoader("sql","utf-8");
+			String charset = getBeetlPs().getProperty("CHARSET");
+			if(charset==null){
+				charset = "utf-8";
+			}
+            sqlLoader = new MarkdownClasspathLoader("sql",charset);
         }
         return sqlLoader;
     }
@@ -405,7 +409,7 @@ public class SQLManagerBuilder {
             return sqlTemplateEngine;
         }
         sqlTemplateEngine = new BeetlTemplateEngine();
-        sqlTemplateEngine.init(this.sqlLoader,beetlPs);
+        sqlTemplateEngine.init(this.getSqlLoader(),beetlPs);
         return sqlTemplateEngine;
 
     }
