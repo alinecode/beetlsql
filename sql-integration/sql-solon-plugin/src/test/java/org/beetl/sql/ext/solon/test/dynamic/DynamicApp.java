@@ -1,11 +1,12 @@
 package org.beetl.sql.ext.solon.test.dynamic;
 
-import org.noear.solon.XApp;
+
+import org.noear.solon.Solon;
 
 public class DynamicApp {
     public static void main(String[] args) {
-        XApp.start(DynamicApp.class, args, (app) -> {
-            app.prop().loadAdd("application-dynamic.properties");
+        Solon.start(DynamicApp.class, args, (app) -> {
+            app.cfg().loadAdd("application-dynamic.properties");
         });
     }
 }

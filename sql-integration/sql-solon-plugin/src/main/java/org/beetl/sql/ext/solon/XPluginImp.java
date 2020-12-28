@@ -1,14 +1,15 @@
 package org.beetl.sql.ext.solon;
 
 import org.beetl.sql.core.SQLManager;
-import org.noear.solon.XApp;
-import org.noear.solon.XUtil;
+import org.noear.solon.SolonApp;
+import org.noear.solon.Utils;
 import org.noear.solon.core.Aop;
 import org.noear.solon.core.BeanWrap;
+import org.noear.solon.core.Plugin;
 import org.noear.solon.core.VarHolder;
-import org.noear.solon.core.XPlugin;
 
 import javax.sql.DataSource;
+
 
 /**
  * Solon 插件接口实现，完成对接与注入支持
@@ -16,9 +17,9 @@ import javax.sql.DataSource;
  * @author noear
  * @since 2020-09-01
  * */
-public class XPluginImp implements XPlugin {
+public class XPluginImp implements Plugin {
     @Override
-    public void start(XApp app) {
+    public void start(SolonApp app) {
         //监听事件
         app.onEvent(BeanWrap.class, new DsEventListener());
 
@@ -27,7 +28,7 @@ public class XPluginImp implements XPlugin {
                 return;
             }
 
-            if (XUtil.isEmpty(anno.value())) {
+            if (Utils.isEmpty(anno.value())) {
                 Aop.getAsyn(DataSource.class, (dsBw) -> {
                     create0(clz, dsBw);
                 });
@@ -41,7 +42,7 @@ public class XPluginImp implements XPlugin {
         });
 
         Aop.context().beanInjectorAdd(Db.class, (varH, anno) -> {
-            if (XUtil.isEmpty(anno.value())) {
+            if (Utils.isEmpty(anno.value())) {
                 Aop.getAsyn(DataSource.class, (dsBw) -> {
                     inject0(anno, varH, dsBw);
                 });
@@ -83,7 +84,7 @@ public class XPluginImp implements XPlugin {
         }
 
         if (SQLManager.class.isAssignableFrom(varH.getType())) {
-            if (XUtil.isNotEmpty(anno.value())) {
+            if (Utils.isNotEmpty(anno.value())) {
                 varH.setValue(tmp);
             } else {
                 Aop.getAsyn(SQLManager.class, (bw2) -> {
