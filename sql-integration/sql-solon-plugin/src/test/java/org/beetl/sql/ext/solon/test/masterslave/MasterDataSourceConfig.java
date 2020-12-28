@@ -2,27 +2,27 @@ package org.beetl.sql.ext.solon.test.masterslave;
 
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.noear.solon.annotation.XBean;
-import org.noear.solon.annotation.XConfiguration;
-import org.noear.solon.annotation.XInject;
+import org.noear.solon.annotation.Bean;
+import org.noear.solon.annotation.Configuration;
+import org.noear.solon.annotation.Inject;
 
 import javax.sql.DataSource;
 
-@XConfiguration
+@Configuration
 public class MasterDataSourceConfig {
 
-    @XBean(attrs = "slaveDs1,slaveDs2")
-    public DataSource master(@XInject("${db1}") HikariDataSource ds) {
+    @Bean(attrs = "slaveDs1,slaveDs2")
+    public DataSource master(@Inject("${db1}") HikariDataSource ds) {
         return ds;
     }
 
-    @XBean("slaveDs1")
-    public DataSource slaveDs1(@XInject("${db1}") HikariDataSource ds) {
+    @Bean("slaveDs1")
+    public DataSource slaveDs1(@Inject("${db1}") HikariDataSource ds) {
         return ds;
     }
 
-    @XBean("slaveDs2")
-    public DataSource slaveDs2(@XInject("${db1}") HikariDataSource ds) {
+    @Bean("slaveDs2")
+    public DataSource slaveDs2(@Inject("${db1}") HikariDataSource ds) {
         return ds;
     }
 }
