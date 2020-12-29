@@ -42,6 +42,7 @@ public class BaseTest   {
 		dataSource.setUsername("sa");
 		dataSource.setPassword("");
 		dataSource.setDriverClassName("org.h2.Driver");
+		dataSource.setMaximumPoolSize(5);
 
 	}
 

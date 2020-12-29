@@ -3,6 +3,7 @@ package org.beetl.sql.core.engine.template;
 import org.beetl.core.AntlrProgramBuilder;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.engine.StringSqlTemplateLoader;
 import org.beetl.sql.core.loader.SQLLoader;
 
@@ -24,7 +25,7 @@ public class Beetl {
 				loader.setProduct(product);
 			}
 			String charset = ps.getProperty("CHARSET");
-			if (charset == null || charset.length() == 0) {
+			if (StringKit.isBlank(charset)) {
 				charset = Charset.defaultCharset().name();
 
 			}
