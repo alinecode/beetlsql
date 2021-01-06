@@ -22,7 +22,6 @@ public class TaskController {
 	 */
 	@GetMapping("allRollbackTask")
 	@ApiOperation("列表SagaServer中所有的任务")
-
 	public JsonResult<List<RollbackTaskEntity>> allRollbackTask() {
 		List<RollbackTaskEntity> list = sagaService.allSagaRollbackTask();
 		return JsonResult.success(list);
@@ -97,6 +96,19 @@ public class TaskController {
 		sagaService.forceRollback(gid);
 		return JsonResult.success();
 	}
+
+	/**
+	 * 任务已经手工处理完毕，更改任务状态为成功
+	 * @param gid
+	 * @return
+	 */
+	@PostMapping("forceSuccess/{gid}")
+	@ApiOperation("手工设置回滚任务执行成功")
+	public JsonResult forceSuccess(@PathVariable String gid) {
+		sagaService.forceRollback(gid);
+		return JsonResult.success();
+	}
+
 
 
 }

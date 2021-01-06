@@ -102,4 +102,28 @@ public class SagaService {
 		});
 	}
 
+
+	/**
+	 * 设置任务回滚成功，用户手工处理后，这里同步状态
+	 * @param gid
+	 */
+	public void  forceSuccess(String gid){
+		List<RollbackTaskEntity> list = rollbackTaskMapper.createLambdaQuery().andEq(RollbackTaskEntity::getId,gid)
+				.desc(RollbackTaskEntity::getTime).select();
+		Long now = System.currentTimeMillis();
+		list.forEach(rollbackTaskEntity -> {
+			rollbackTaskEntity.setRollbackStatus(RollbackStatus.Success);
+			rollbackTaskEntity.setUpdateTime(now);
+			rollbackTaskMapper.updateById(rollbackTaskEntity);
+		});
+
+		RollbackEntity rollbackEntity = rollbackMapper.unique(gid);
+		rollbackEntity.setRollbackStatus(RollbackStatus.Success);
+		rollbackEntity.setUpdateTime(now);
+		rollbackMapper.updateById(rollbackEntity);
+
+	}
+
+
+
 }

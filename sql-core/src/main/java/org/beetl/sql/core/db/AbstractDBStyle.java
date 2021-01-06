@@ -1,5 +1,6 @@
 package org.beetl.sql.core.db;
 
+import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
@@ -35,6 +36,16 @@ public abstract class AbstractDBStyle implements DBStyle {
 	protected String lineSeparator = System.getProperty("line.separator", "\n");
 	protected KeyWordHandler keyWordHandler = new DefaultKeyWordHandler();
 	SQLTemplateEngine sqlTemplateEngine = null;
+
+	public static AssignID DEFAULT_ASSIGNID = null;
+
+	@Data
+	public static class MockXXX{
+		@AssignID String id;
+	}
+	static{
+		DEFAULT_ASSIGNID = BeanKit.getAnnotation(MockXXX.class,"id",AssignID.class);
+	}
 
 	public AbstractDBStyle() {
 
@@ -333,13 +344,12 @@ public abstract class AbstractDBStyle implements DBStyle {
 				AssignID assignId = BeanKit.getAnnotation(classDesc.getTargetClass(), idAttr, AssignID.class);
 				if (assignId != null) {
 					map.put(idAttr, assignId);
+				}else{
+					map.put(idAttr,	DEFAULT_ASSIGNID);
 				}
 			}
-			if (map.size() != 0) {
-				source.setAssignIds(map);
-			} else {
-				throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND, "使用@Assign,但数据库未定义主键 " + cls);
-			}
+			source.setAssignIds(map);
+
 
 		}
 

@@ -18,6 +18,7 @@ public abstract  class BaseSqlPMI extends MapperInvoke {
 
 
     protected SQLReady getSQLReadyByProvider(SqlProvider sqlProvider, Method owner, Object[] args) {
+
         Class<?> providerCls = null;
         String providerMethodName = null;
         try {
