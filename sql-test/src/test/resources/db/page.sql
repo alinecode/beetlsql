@@ -1,4 +1,5 @@
 -- 常规测试,不要修改，否则单元测试不通过
+drop table if exists  `sys_user` ;
 CREATE TABLE `sys_user` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(64) DEFAULT NULL,
