@@ -1,9 +1,9 @@
 <%
 	for(attr in attrs){
 	if(!isEmpty(attr.comment)){%>
-	/*
-	${attr.comment}
-	*/
+	/**
+	 * ${attr.comment}
+	 */
 	<%}
 	if(attr.id&&attr.auto){
 	%>
