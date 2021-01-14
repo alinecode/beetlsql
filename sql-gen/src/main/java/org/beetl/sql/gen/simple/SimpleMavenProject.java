@@ -43,6 +43,8 @@ public class SimpleMavenProject extends BaseProject {
 		if(sourceBuilderName.equals("md")){
 			String src = this.root+ File.separator+"src/main/resources/sql";
 			String output = src+File.separator+targetName;
+			checkFolder(src);
+			checkFolder(output);
 			try {
 				writer = new FileWriter(new File(output));
 			} catch (IOException e) {
@@ -54,6 +56,9 @@ public class SimpleMavenProject extends BaseProject {
 			String pkg = getBasePackage(sourceBuilderName);
 			String subPath = pkg.replace('.',File.separatorChar);
 			String output = src+File.separator+subPath+File.separator+targetName;
+
+			checkFolder(src);
+			checkFolder(output);
 
 			try {
 				writer = new FileWriter(new File(output));
@@ -69,5 +74,9 @@ public class SimpleMavenProject extends BaseProject {
 	@Override
 	public   String getBasePackage(String sourceBuilerName){
 		return basePackage+"."+sourceBuilerName;
+	}
+
+	protected  void checkFolder(String file){
+		new File(file).mkdirs();
 	}
 }

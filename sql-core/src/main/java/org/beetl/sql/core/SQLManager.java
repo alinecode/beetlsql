@@ -835,7 +835,6 @@ public class SQLManager implements DataAPI {
 		int[] ret = script.insertBatch(clazz, list);
 		return ret;
 
-
 	}
 
 

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-@Transactional
 public class MyBatisSpringService implements BaseService {
     AtomicInteger idGen = new AtomicInteger(1000);
 

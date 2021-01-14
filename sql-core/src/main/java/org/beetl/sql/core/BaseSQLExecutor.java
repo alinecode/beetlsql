@@ -715,6 +715,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 				// ignore
 			}
 		}
+		closeConnection(conn,isUpdate);
 	}
 
 	protected void clean(boolean isUpdate,Connection conn, Closeable closeable) {
