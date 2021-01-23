@@ -7,11 +7,11 @@
 	<%}
 	if(attr.id&&attr.auto){
 	%>
-	@AutoId
+	@AutoID
 	<%
 	}else if(attr.id){
 	%>
-	@AssingId()
+	@AssignID
 	<%}%>
 	private ${attr.javaType} ${attr.name} ;
 	<%}%>
