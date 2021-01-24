@@ -1,10 +1,7 @@
 package org.beetl.sql.mapper.builder;
 
 import org.beetl.sql.annotation.builder.Builder;
-import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.BeetlSQLException;
-import org.beetl.sql.clazz.kit.Plugin;
-import org.beetl.sql.clazz.kit.StringKit;
+import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.*;
@@ -33,13 +30,17 @@ public class MapperMethodParser {
     protected  Class   defaultRetType;
     protected Method method = null;
     protected Class mapperClass = null;
+    protected  int preferredSqlLen = -1;
     public MapperMethodParser(Class defaultRetType, Class mapperClass, Method method){
         this.defaultRetType = defaultRetType;
         this.mapperClass = mapperClass;
         this.method = method;
+        this.preferredSqlLen = PropertiesKit.getInstance().getIntValue("MAPPER_SQL_MAX_LENGTH");
     }
 
     public MapperInvoke parse(){
+
+
 
         AutoMapper autoMapper = method.getAnnotation(AutoMapper.class);
         if(autoMapper!=null){
@@ -156,6 +157,7 @@ public class MapperMethodParser {
 
     protected MapperInvoke parseSqlTemplateMethod(Template sqlAnnotation){
         String sqlTemplate = sqlAnnotation.value();
+		checkSqlLength(sqlTemplate);
         Annotation action = getSqlType(method);
         //返回值说明
         ReturnTypeParser returnTypeParser = new ReturnTypeParser(method,defaultRetType);
@@ -190,6 +192,7 @@ public class MapperMethodParser {
 
     protected MapperInvoke parseSqlMethod(Sql sqlAnnotation){
         String jdbcSql = sqlAnnotation.value();
+		checkSqlLength(jdbcSql);
         Annotation action = getSqlType(method);
         ReturnTypeParser returnTypeParser = new ReturnTypeParser(method,defaultRetType);
         //参数说明
@@ -248,7 +251,14 @@ public class MapperMethodParser {
         return method.getReturnType();
     }
 
-
+	protected  void checkSqlLength(String sql){
+    	if(preferredSqlLen==-1){
+    		return;
+		}
+    	if(sql.length()>preferredSqlLen){
+    		throw new BeetlSQLException(BeetlSQLException.MAPPER_SQL_LIMIT,"期望Mapper方法 "+method+" 的SQL最大长度是 "+preferredSqlLen+" 实际是 "+sql.length());
+		}
+	}
 
 
 

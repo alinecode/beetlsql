@@ -2,6 +2,7 @@ package org.beetl.sql.core;
 
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
+import org.beetl.sql.clazz.kit.PropertiesKit;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
@@ -199,50 +200,13 @@ public class SQLManagerBuilder {
 
     private Properties getBeetlPs() {
         if (beetlPs == null) {
-            Properties ps = loadDefaultConfig();
-            Properties ext = loadExtConfig();
-            ps.putAll(ext);
+            Properties ps = PropertiesKit.getInstance().getPs();
             this.beetlPs = ps;
         }
         return beetlPs;
     }
 
-    /***
-     * 加载cfg自定义配置
-     *
-     * @return
-     */
-    public Properties loadDefaultConfig() {
-        Properties ps = new Properties();
-        InputStream ins = this.getClass().getResourceAsStream("/btsql.properties");
-        if (ins == null) {
-            throw new IllegalStateException("默认配置文件加载错:找不到 btsql.properties");
-        }
-        try {
-            ps.load(ins);
-        } catch (IOException e) {
-            throw new IllegalStateException("默认配置文件加载错:/btsql.properties");
-        }
-        return ps;
-    }
 
-
-    public Properties loadExtConfig() {
-        Properties ps = new Properties();
-        InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream("btsql-ext.properties");
-        if (ins == null) {
-            return ps;
-        }
-
-        try {
-            ps.load(ins);
-            ins.close();
-        } catch (IOException e) {
-            throw new IllegalStateException("默认配置文件加载错:/btsql-ext.properties");
-        }
-
-        return ps;
-    }
 
     /**
      * @param beetlPs 额外的beetl配置

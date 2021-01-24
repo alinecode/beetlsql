@@ -74,6 +74,10 @@ public class BeetlSQLException extends RuntimeException {
 
 	public static final int 	GEN_CODE_ERROR  = 26;
 
+	/**
+	 * mapper方法的sql长度超出了限制，其配置是"MAPPER_SQL_MAX_LENGTH"
+	 */
+	public static final int 	MAPPER_SQL_LIMIT  = 27;
 
 	public static final int 	ERROR  = 99;
 

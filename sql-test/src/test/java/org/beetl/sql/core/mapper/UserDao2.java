@@ -32,4 +32,18 @@ public interface UserDao2 extends BaseMapper<User> {
     @Template("select * from sys_user where id=#{id}")
     public User queryByName7(@Param("u1") @Root User  user,@Root User root);
 
+	/**
+	 * 限制Mapper的Sql或者Template注解的sql语句长度，以增强维护性
+	 * @param user
+	 * @return
+	 */
+	@Template("select * from sys_user where id=#{id} and test test test test test test "
+			+ " and test test test test test test "
+			+ " and test test test test test test "
+			+ " and test test test test test test "
+			+ " and test test test test test test "
+			+ " and test test test test test test "
+			+ " and test test test test test test ")
+	public User queryByName8( User  user);
+
 }

@@ -1,6 +1,7 @@
 package org.beetl.sql.core.mapper;
 
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
@@ -155,6 +156,28 @@ public class Mapper2Test extends BaseTest {
         @AutoMapper(HelloAMI.class)
         String helloWorld(T entity);
     }
+
+
+
+	@Test
+	public void mapperSqlLengthCheck(){
+		User root = new User();
+		root.setId(1);
+		root.setName("lijz");
+		root.setAge(12);
+		UserDao2 dao = sqlManager.getMapper(UserDao2.class);
+		try{
+			//过长的mapper会抛出异常
+			User ret  = dao.queryByName8(root);
+		}catch(BeetlSQLException beetlSQLException){
+			beetlSQLException.printStackTrace();
+			Assert.assertEquals(BeetlSQLException.MAPPER_SQL_LIMIT,beetlSQLException.getCode());
+			return ;
+		}
+
+		Assert.fail();
+
+	}
 
     public static interface MyUserMapper extends MyBaseMapper<User>{
         @Template("select * from sys_user where id=#{id}")

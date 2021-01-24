@@ -7,17 +7,17 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-integration</artifactId>
-        <version>3.2.6-RELEASE</version>
+        <version>3.2.7-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>act-sample</artifactId>
-    <version>3.2.6-RELEASE</version>
+    <version>3.2.7-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-act</artifactId>
-            <version>3.2.6-RELEASE</version>
+            <version>3.2.7-RELEASE</version>
         </dependency>
     </dependencies>
 

@@ -43,9 +43,8 @@ public class SimpleMavenProject extends BaseProject {
 		if(sourceBuilderName.equals("md")){
 			String src = this.root+ File.separator+"src/main/resources/sql";
 			String output = src+File.separator+targetName;
-			checkFolder(src);
-			checkFolder(output);
 			try {
+				checkFile(output);
 				writer = new FileWriter(new File(output));
 			} catch (IOException e) {
 				throw new IllegalArgumentException(output);
@@ -57,10 +56,8 @@ public class SimpleMavenProject extends BaseProject {
 			String subPath = pkg.replace('.',File.separatorChar);
 			String output = src+File.separator+subPath+File.separator+targetName;
 
-			checkFolder(src);
-			checkFolder(output);
-
 			try {
+				checkFile(output);
 				writer = new FileWriter(new File(output));
 			} catch (IOException e) {
 				throw new IllegalArgumentException(output,e);
@@ -75,8 +72,17 @@ public class SimpleMavenProject extends BaseProject {
 	public   String getBasePackage(String sourceBuilerName){
 		return basePackage+"."+sourceBuilerName;
 	}
-
-	protected  void checkFolder(String file){
-		new File(file).mkdirs();
+	protected void checkFile(String filePath) throws IOException {
+		File file = new File(filePath);
+		File fileParent = file.getParentFile();
+		if (!fileParent.exists()) {
+			// 创建多级目录
+			fileParent.mkdirs();
+		}
+		if (!file.exists()) {
+			//创建文件
+			file.createNewFile();
+		}
 	}
+
 }
