@@ -33,6 +33,11 @@ public class PropertiesKit {
 		return Integer.parseInt(ps.getProperty(name).trim());
 	}
 
+	public Integer getIntValue(String name,String defaultValue){
+
+		return Integer.parseInt(ps.getProperty(name,defaultValue).trim());
+	}
+
 	/***
 	 * 加载cfg自定义配置
 	 *

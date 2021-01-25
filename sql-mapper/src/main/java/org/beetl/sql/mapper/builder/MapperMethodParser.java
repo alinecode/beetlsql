@@ -35,7 +35,7 @@ public class MapperMethodParser {
         this.defaultRetType = defaultRetType;
         this.mapperClass = mapperClass;
         this.method = method;
-        this.preferredSqlLen = PropertiesKit.getInstance().getIntValue("MAPPER_SQL_MAX_LENGTH");
+        this.preferredSqlLen = PropertiesKit.getInstance().getIntValue("MAPPER_SQL_MAX_LENGTH","-1");
     }
 
     public MapperInvoke parse(){
