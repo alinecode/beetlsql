@@ -8,6 +8,6 @@ BeetlSQL使用简单实例,采用H2,可以直接运行，H2的脚本在common工
 * S7CodeGen: 使用BeetlSQL生成代码，SQL语句和数据库文档
 
 
-用户能在2小时内浏览完所有例子并基本掌握BeetlSQL的用法
+用户能在2小时内浏览完所有例子并基本掌握BeetlSQL的用法，如果需要更多例子，请参考sql-sample-usage模块，包含了几乎所有用法
 
 
