@@ -44,8 +44,9 @@ public class S3PageSample {
 //        page.jdbcPage();
 //        page.resourceSqlPage();
 //        page.resourceGroupSqlPage();
+        page.resourceSqlCount();
 //        page.jdbcMapperPage();
-        page.templateMapperPage();
+//        page.templateMapperPage();
     }
 
     /**
@@ -130,6 +131,14 @@ public class S3PageSample {
         DefaultPageResult pageResult = (DefaultPageResult)pr;
         printPageResult(pageResult);
     }
+
+
+	public void resourceSqlCount(){
+		PageRequest request = DefaultPageRequest.of(1,10);
+		PageResult pr = mapper.pageQuery3(request);
+		DefaultPageResult pageResult = (DefaultPageResult)pr;
+		printPageResult(pageResult);
+	}
 
 
 	public void jdbcMapperPage(){

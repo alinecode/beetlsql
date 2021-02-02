@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<MyUser> {
 	@Sql("select * from sys_user where id = 1")
 	List<MyUser> query();
+
+	Integer count(String name);
 }

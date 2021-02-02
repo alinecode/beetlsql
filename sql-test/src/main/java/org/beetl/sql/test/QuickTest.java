@@ -41,9 +41,10 @@ public class QuickTest {
         SQLManager sqlManager = getSQLManager();
 
         DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		Set<String> all =  sqlManager.getMetaDataManager().allTable();
+//		Set<String> all =  sqlManager.getMetaDataManager().allTable();
 		List<MyUser> myUsers = sqlManager.all(MyUser.class);
-		System.out.println(myUsers.size());
+		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
+		System.out.println(userMapper.count(""));
     }
 
 }

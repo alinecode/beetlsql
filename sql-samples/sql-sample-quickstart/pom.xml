@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ibeetl</groupId>
-    <artifactId>sql-smaple-quickstart</artifactId>
-    <version>3.2.8-RELEASE</version>
+    <artifactId>sql-sample-quickstart</artifactId>
+    <version>3.2.9-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-sample</artifactId>
-        <version>3.2.8-RELEASE</version>
+        <version>3.2.9-RELEASE</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-sample-common</artifactId>
-            <version>3.2.8-RELEASE</version>
+            <version>3.2.9-RELEASE</version>
         </dependency>
     </dependencies>
     

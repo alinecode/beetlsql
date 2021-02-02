@@ -75,6 +75,12 @@ public interface UserMapper extends BaseMapper<UserEntity> {
      */
     PageResult<Map>  pageQuery2(Integer deptId, PageRequest pageRequest);
 
+	/**
+	 * 提供count语句而不是内置的count语句，查看pageQuery3$count
+	 * @param pageRequest
+	 * @return
+	 */
+	PageResult<Map>  pageQuery3(PageRequest pageRequest);
 
 	@Sql("select * from sys_user where department_id = ?")
 	PageResult<UserEntity> queryDeptById(Integer id,PageRequest pageRequest);

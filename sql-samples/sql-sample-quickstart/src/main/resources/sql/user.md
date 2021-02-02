@@ -39,6 +39,24 @@ group by department_id
 ```
 
 
+pageQuery3
+===
+
+```sql
+select #{page()} from sys_user where 1=1 
+-- @if(isNotEmpty(deptId)){
+ and department_id=#{deptId}
+-- @}
+```
+
+pageQuery3$count
+===
+
+```sql
+select count(1) from sys_user /* 使用指定的count语句*/
+```
+
+
 departmentJsonMapping
 ===
 

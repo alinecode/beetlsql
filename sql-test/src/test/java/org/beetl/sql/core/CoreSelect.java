@@ -103,6 +103,18 @@ public class CoreSelect extends BaseTest {
 
 
 	@Test
+	public void testPage2(){
+		Map map = new HashMap();
+		PageRequest request = DefaultPageRequest.of(1,10);
+		SqlId sqlId = SqlId.of("user.queryByCondition2");
+		PageResult<User> result = sqlManager.pageQuery(sqlId,
+				User.class,map,request);
+		Assert.assertEquals(result.getTotalRow(),3);
+		Assert.assertEquals(result.getList().size(),3);
+	}
+
+
+	@Test
 	public void testSQLResult(){
 		SqlId sqlId = SqlId.of("user.utf8");
 		SQLResult sqlResult = sqlManager.getSQLResult(sqlId,new HashMap<>());

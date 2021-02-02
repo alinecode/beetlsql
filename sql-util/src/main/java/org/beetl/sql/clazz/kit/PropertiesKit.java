@@ -45,14 +45,14 @@ public class PropertiesKit {
 	 */
 	static public Properties loadDefaultConfig() {
 		Properties ps = new Properties();
-		InputStream ins = PropertiesKit.class.getResourceAsStream("/btsql.properties");
+		InputStream ins =loadIns("/btsql.properties");
 		if (ins == null) {
 			throw new IllegalStateException("默认配置文件加载错:找不到 btsql.properties");
 		}
 		try {
 			ps.load(ins);
 		} catch (IOException e) {
-			throw new IllegalStateException("默认配置文件加载错:/btsql.properties");
+			throw new IllegalStateException("默认配置文件加载错:btsql.properties");
 		}
 		return ps;
 	}
@@ -60,7 +60,7 @@ public class PropertiesKit {
 
 	private static Properties loadExtConfig() {
 		Properties ps = new Properties();
-		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream("btsql-ext.properties");
+		InputStream ins = loadIns("btsql-ext.properties");
 		if (ins == null) {
 			return ps;
 		}
@@ -74,4 +74,19 @@ public class PropertiesKit {
 
 		return ps;
 	}
+
+	protected  static InputStream loadIns(String resource){
+		if(Thread.currentThread().getContextClassLoader()!=null){
+			InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+			if(ins!=null){
+				return ins;
+			}
+		}
+
+		InputStream ins = PropertiesKit.class.getResourceAsStream(resource);
+		return ins;
+
+	}
+
+
 }
