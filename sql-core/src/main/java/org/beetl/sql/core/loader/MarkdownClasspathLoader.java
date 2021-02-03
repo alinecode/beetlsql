@@ -189,7 +189,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
             SQLFileParser parser =this.getParser(modelName,bf);
             SQLSource source = null;
 	    		while((source=parser.next())!=null){
-	    			source.sqlType = SQLType.UNKOWN;
+	    			source.sqlType = SQLType.UNKNOWN;
 	    			SQLFileVersion version = new SQLFileVersion();
 	    			version.url = url;
 	    			 if(isRoot){
