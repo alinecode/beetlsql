@@ -14,7 +14,7 @@ public class SQLSource {
 	/**
 	 * 内置的sql语句有确定的SQLType
 	 */
-	public SQLType sqlType = SQLType.UNKOWN;
+	public SQLType sqlType = SQLType.UNKNOWN;
 	/**
 	 * 内置的sql语句总是true，从sql文件里读出的总是false
 	 */
