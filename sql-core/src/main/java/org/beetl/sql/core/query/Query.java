@@ -210,7 +210,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR, "update操作没有输入过滤条件会导致更新所有记录");
         }
 
-        SQLResult result =  this.sqlManager.getSQLResult(sqlSource.getId(),t);
+        SQLResult result =  this.sqlManager.getSQLResult(sqlSource.getId(),t,true);
 
         List<Object> paraLis = new ArrayList<Object>();
         for (SQLParameter sqlParameter : result.jdbcPara) {

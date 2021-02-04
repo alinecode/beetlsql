@@ -138,9 +138,13 @@ public class SQLManager implements DataAPI {
 	 * @return
 	 */
 	public SQLResult getSQLResult(SqlId id, Object paras) {
+		return getSQLResult(id,paras,false);
+	}
+
+	public SQLResult getSQLResult(SqlId id, Object paras,boolean isUpdate) {
 		SQLExecutor script = getScript(id);
 		//false和true不影响
-		Map map = script.beforeExecute(null, paras, false);
+		Map map = script.beforeExecute(null, paras, isUpdate);
 		return script.run(map);
 	}
 

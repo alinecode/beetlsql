@@ -2,6 +2,7 @@ package org.beetl.sql.core.query;
 
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.KeyWordHandler;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.query.interfacer.QueryConditionI;
@@ -56,7 +57,8 @@ public class QueryCondition<T> implements QueryConditionI<T> {
      * @return
      */
     protected String getColTrunk(String colName) {
-        return sqlManager.getDbStyle().getKeyWordHandler().getCol(colName);
+		KeyWordHandler keyWordHandler = sqlManager.getDbStyle().getKeyWordHandler();
+		return keyWordHandler!=null?keyWordHandler.getCol(colName):colName;
     }
 
     /****

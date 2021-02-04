@@ -6,18 +6,18 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.2.9-RELEASE</version>
+        <version>3.2.10-RELEASE</version>
     </parent>
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-core</artifactId>
-    <version>3.2.9-RELEASE</version>
+    <version>3.2.10-RELEASE</version>
     <properties>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-util</artifactId>
-            <version>3.2.9-RELEASE</version>
+            <version>3.2.10-RELEASE</version>
         </dependency>
     </dependencies>
     <build>

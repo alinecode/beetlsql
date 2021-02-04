@@ -6,6 +6,7 @@ import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.ClassDesc;
 import org.beetl.sql.clazz.NameConversion;
+import org.beetl.sql.clazz.SQLType;
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
@@ -81,7 +82,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		} else {
 			select.all();
 		}
-		return new SQLTableSource(select.toSql());
+		return new SQLTableSource(select.toSql(),SQLType.SELECT);
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		} else {
 			select.all();
 		}
-		return new SQLTableSource(select.toSql());
+		return new SQLTableSource(select.toSql(),SQLType.SELECT);
 	}
 
 
@@ -105,7 +106,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Select select = concatContext.select();
 		select.count().from(cls);
 		appendIdCondition(cls, select);
-		return new SQLTableSource(select.toSql());
+		return new SQLTableSource(select.toSql(),SQLType.SELECT);
 
 	}
 
@@ -129,7 +130,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		}
 
 		getSelectTemplate(cls, select);
-		return new SQLTableSource(select.toSql());
+		return new SQLTableSource(select.toSql(),SQLType.SELECT);
 	}
 
 	@Override
@@ -138,7 +139,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Select select = concatContext.select();
 		select.count().from(cls);
 		getSelectTemplate(cls, select);
-		return new SQLTableSource(select.toSql());
+		return new SQLTableSource(select.toSql(),SQLType.SELECT);
 	}
 
 
@@ -152,14 +153,14 @@ public abstract class AbstractDBStyle implements DBStyle {
 		if (classDesc.getClassAnnotation().getLogicDeleteAttrName() == null) {
 			Delete delete = concatContext.delete().from(cls);
 			appendIdCondition(cls, delete);
-			return new SQLTableSource(delete.toSql());
+			return new SQLTableSource(delete.toSql(),SQLType.DELETE);
 		} else {
 			Update update = concatContext.update().from(cls);
 			appendIdCondition(cls, update);
 			String col = this.nameConversion.getColName(cls, classDesc.getClassAnnotation().getLogicDeleteAttrName());
 			Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
 			update.assignConstants(col, value);
-			return new SQLTableSource(update.toSql());
+			return new SQLTableSource(update.toSql(),SQLType.DELETE);
 		}
 
 
@@ -176,7 +177,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		}
 
 		String sql = select.toSql();
-		return new SQLTableSource(sql);
+		return new SQLTableSource(sql,SQLType.SELECT);
 	}
 
 	@Override
@@ -189,14 +190,14 @@ public abstract class AbstractDBStyle implements DBStyle {
 		appendIdCondition(cls, update);
 		appendVersion(classDesc, update);
 
-		return new SQLTableSource(update.toSql());
+		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
 	}
 
 	@Override
 	public SQLSource genUpdateAbsolute(Class<?> cls) {
 		//无条件更新所有，需要谨慎使用，子类可以抛出异常禁止这类方法调用
 		Update update = getUpdate(cls);
-		return new SQLTableSource(update.toSql());
+		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
 	}
 
 
@@ -232,7 +233,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 			update.notEmptyAssign(prop, col);
 
 		}
-		return new SQLTableSource(update.toSql());
+		return new SQLTableSource(update.toSql(), SQLType.UPDATE);
 	}
 
 	@Override
@@ -264,7 +265,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 			update.notEmptyAssign(prop, col);
 
 		}
-		return new SQLTableSource(update.toSql());
+		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
 	}
 
 	@Override
@@ -289,6 +290,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 		int idType = DBType.ID_ASSIGN;
 		SQLTableSource source = new SQLTableSource();
+		source.setSqlType(SQLType.INSERT);
 		Iterator<String> cols = classDesc.getInCols().iterator();
 		Iterator<String> attrs = classDesc.getAttrs().iterator();
 
