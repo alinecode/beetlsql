@@ -1,6 +1,7 @@
 package org.beetl.sql.core.query.interfacer;
 
 
+import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 
 import java.util.List;
@@ -138,6 +139,13 @@ public interface QueryExecuteI<M> {
 	 */
 	long count();
 
+	PageResult<M> pageSimple(PageRequest pageRequest);
+
+	PageResult<M> page(PageRequest pageRequest, String... columns);
+
+	<K> PageResult<K> page(PageRequest pageRequest, Class<K> retType, String... columns);
+
+	PageResult<Map> mapPage(PageRequest pageRequest, String... columns);
 
 	/**
 	 * 指定字段查询分页查询，不传入字段查询所有 SELECT *

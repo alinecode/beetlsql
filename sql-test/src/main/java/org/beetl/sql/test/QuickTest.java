@@ -42,8 +42,11 @@ public class QuickTest {
 
         DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 //		Set<String> all =  sqlManager.getMetaDataManager().allTable();
-		List<MyUser> myUsers = sqlManager.all(MyUser.class);
+//		List<MyUser> myUsers = sqlManager.all(MyUser.class);
 		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
+		MyUser myUser = userMapper.unique(1);
+		myUser.setName("abc");
+		userMapper.createLambdaQuery().andEq(MyUser::getId,1).update(myUser);
 		System.out.println(userMapper.count(""));
     }
 

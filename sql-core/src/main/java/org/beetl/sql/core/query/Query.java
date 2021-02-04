@@ -259,7 +259,13 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return (Long) results.get(0);
     }
 
-    @Override
+	@Override
+	public PageResult<T> pageSimple(PageRequest pageRequest) {
+    	return pageByType(pageRequest,clazz,getSimpleColumns());
+	}
+
+
+	@Override
     public Query<T> having(QueryCondition condition) {
         // 去除叠加条件中的WHERE
         int i = condition.getSql().indexOf(WHERE);
@@ -328,7 +334,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     }
 
-    protected <K> PageResult<K> pageByType(long pageNumber, long pageSize, Class<K> retType, String... columns) {
+    protected <K> PageResult<K> pageByType(PageRequest pageRequest, Class<K> retType, String... columns) {
         StringBuilder columnStr = splicingColumns(columns);
         //此处查询语句不需要设置分页
         this.startRow = null;
@@ -340,15 +346,30 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         String targetSql = sql.toString();
         Object[] paras = getParams().toArray();
         SQLReady sqlReady = new SQLReady(targetSql, paras);
-        PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+
         this.clear();
         return this.sqlManager.execute(sqlReady, retType, pageRequest);
     }
 
+	@Override
+	public PageResult<T> page(PageRequest pageRequest, String... columns) {
+		return pageByType(pageRequest, clazz, columns);
+	}
 
-    @Override
+	@Override
+	public <K> PageResult<K> page(PageRequest pageRequest, Class<K> retType, String... columns) {
+		return pageByType(pageRequest,retType,columns);
+	}
+
+	@Override
+	public PageResult<Map> mapPage(PageRequest pageRequest, String... columns) {
+		return pageByType(pageRequest,Map.class,columns);
+	}
+
+	@Override
     public PageResult<T> page(long pageNumber, long pageSize, String... columns) {
-        return pageByType(pageNumber, pageSize, clazz, columns);
+		PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+        return pageByType(pageRequest, clazz, columns);
     }
 
     @Override
@@ -358,12 +379,14 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public <K> PageResult<K> page(long pageNumber, long pageSize, Class<K> retType, String... columns) {
-        return pageByType(pageNumber, pageSize, retType, columns);
+		PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+        return pageByType(pageRequest, retType, columns);
     }
 
     @Override
     public PageResult<Map> mapPage(long pageNumber, long pageSize, String... columns) {
-        return pageByType(pageNumber, pageSize, Map.class, columns);
+		PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+        return pageByType(pageRequest, Map.class, columns);
     }
 
 

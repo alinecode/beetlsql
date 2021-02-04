@@ -4,6 +4,7 @@ import lombok.Data;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.core.SQLReady;
+import org.beetl.sql.core.query.LambdaQuery;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -79,6 +80,21 @@ public class PageTest extends BaseTest {
 
 
     }
+
+
+	@Test
+	public void queryPage() {
+
+
+		LambdaQuery<User> query = sqlManager.lambdaQuery(User.class);
+		PageRequest pageRequest = DefaultPageRequest.of(1,10);
+		PageResult<User> ret = query.pageSimple(pageRequest);
+		Assert.assertEquals(13,ret.getTotalRow());
+		Assert.assertEquals(2,ret.getTotalPage());
+		Assert.assertEquals(10,ret.getList().size());
+
+
+	}
 
 
     @Table(name="sys_user")
