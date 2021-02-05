@@ -81,12 +81,6 @@
 
         <dependency>
             <groupId>org.actframework</groupId>
-            <artifactId>act</artifactId>
-            <version>${act.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.actframework</groupId>
             <artifactId>act-sql-common</artifactId>
             <version>${act-sql-common.version}</version>
             <exclusions>

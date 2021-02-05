@@ -9,9 +9,9 @@ package org.beetl.sql.act;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,6 @@ import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
 import org.beetl.sql.core.*;
-
 import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
@@ -109,18 +108,18 @@ public class BeetlSqlService extends SqlDbService {
         connectionSource = ConnectionSourceHelper.getSingle(dataSource);
         DBStyle style = configureDbStyle(dataSourceConfig);
         SQLLoader loader = configureLoader();
-        NameConversion nc = configureNamingConvention();
+        NameConversion nm = configureNamingConvention();
         Interceptor[] ins = configureInterceptor();
-        SQLManagerBuilder  builder = new  SQLManagerBuilder(connectionSource);
+		SQLManagerBuilder builder = new SQLManagerBuilder(connectionSource);
+		builder.setInters(ins);
+		builder.setNc(nm);
 		builder.setSqlLoader(loader);
 		builder.setDbStyle(style);
-		builder.setNc(nc);
-		builder.setInters(ins);
-		ClassLoaderKit classLoaderKit = new ClassLoaderKit(app().classLoader());
-		builder.setClassLoaderKit(classLoaderKit);
-        beetlSql = builder.build();
-        mapperBuilder = new DefaultMapperBuilder(beetlSql);
-    }
+		builder.setClassLoaderKit(new ClassLoaderKit(app().classLoader()));
+		beetlSql = builder.build();
+		mapperBuilder = new DefaultMapperBuilder(beetlSql);
+
+	}
 
     @Override
     protected boolean supportDdl() {
@@ -129,40 +128,40 @@ public class BeetlSqlService extends SqlDbService {
 
     @Override
     public <DAO extends Dao> DAO defaultDao(Class<?> aClass) {
-		String tableName = this.beetlSql.getNc().getTableName(aClass);
-		TableDesc tableDesc = this.beetlSql.getMetaDataManager().getTable(tableName);
-		ClassDesc classDesc = new ClassDesc(aClass,tableDesc,this.beetlSql.getNc());
-		Map<String ,Object> idMethod =(Map<String , Object>) classDesc.getIdMethods();
-		if(idMethod.size()>1){
-			throw new IllegalStateException("BeetlSQL 目前不支持在ACT中使用复合主健");
-		}
+        String tableName = this.beetlSql.getNc().getTableName(aClass);
+        TableDesc tableDesc = this.beetlSql.getMetaDataManager().getTable(tableName);
+        ClassDesc classDesc = tableDesc.genClassDesc(aClass, this.beetlSql.getNc());
+        Map<String, Object> idMethod = (Map<String, Object>) classDesc.getIdMethods();
+        if (idMethod.size() > 1) {
+            throw new IllegalStateException("BeetlSQL 目前不支持在ACT中使用复合主健");
+        }
 
-		Class idType = null;
-		String idAttr = null;
-		for(Map.Entry<String,Object> entry:idMethod.entrySet()){
-			idAttr = entry.getKey();
-			Method method = (Method) entry.getValue();
-			idType = method.getReturnType();
-			break;
+        Class idType = null;
+        String idAttr = null;
+        for (Map.Entry<String, Object> entry : idMethod.entrySet()) {
+            idAttr = entry.getKey();
+            Method method = (Method) entry.getValue();
+            idType = method.getReturnType();
+            break;
 
-		}
-		return (DAO)newDao(idAttr,idType,aClass);
+        }
+        return (DAO) newDao(idAttr, idType, aClass);
 
 
     }
 
-	protected <ID_TYPE, MODEL_TYPE> BeetlSqlDao<ID_TYPE, MODEL_TYPE> newDao(String idAttr,Class<ID_TYPE> idType, Class<MODEL_TYPE> modelType) {
-		return new BeetlSqlDao<>(this.beetlSql,idAttr,modelType,idType);
-	}
+    protected <ID_TYPE, MODEL_TYPE> BeetlSqlDao<ID_TYPE, MODEL_TYPE> newDao(String idAttr, Class<ID_TYPE> idType, Class<MODEL_TYPE> modelType) {
+        return new BeetlSqlDao<>(this.beetlSql, idAttr, modelType, idType);
+    }
 
     @Override
     public <DAO extends Dao> DAO newDaoInstance(Class<DAO> aClass) {
-		try {
-			return (DAO)aClass.newInstance();
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-	}
+        try {
+            return (DAO) aClass.newInstance();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     @Override
     public Class<? extends Annotation> entityAnnotationType() {

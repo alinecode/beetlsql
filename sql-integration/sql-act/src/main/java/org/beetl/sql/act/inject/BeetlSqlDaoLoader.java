@@ -1,10 +1,10 @@
-package org.beetl.sql.act;
+package org.beetl.sql.act.inject;
 
 /*-
  * #%L
  * ACT Beetlsql
  * %%
- * Copyright (C) 2017 - 2018 ActFramework
+ * Copyright (C) 2017 - 2019 ActFramework
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,34 +20,28 @@ package org.beetl.sql.act;
  * #L%
  */
 
-import act.Act;
+import act.app.App;
 import act.app.DbServiceManager;
-import act.db.DbService;
-import org.beetl.sql.mapper.BaseMapper;
-import org.osgl.$;
+import org.beetl.sql.act.BeetlSqlDao;
 import org.osgl.inject.BeanSpec;
 import org.osgl.inject.GenericTypedBeanLoader;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-/**
- * Responsible for inject BaseMapper instance
- */
-public class MapperLoader implements GenericTypedBeanLoader<BaseMapper> {
+public class BeetlSqlDaoLoader implements GenericTypedBeanLoader<BeetlSqlDao> {
+    private DbServiceManager dbServiceManager;
+    public BeetlSqlDaoLoader() {
+        dbServiceManager = App.instance().dbServiceManager();
+    }
 
     @Override
-    public BaseMapper load(BeanSpec beanSpec) {
+    public BeetlSqlDao load(BeanSpec beanSpec) {
         List<Type> typeList = beanSpec.typeParams();
         int sz = typeList.size();
-        if (sz > 0) {
-            Class<?> modelType = BeanSpec.rawTypeOf(typeList.get(0));
-            String dbId = DbServiceManager.dbId(modelType);
-            DbService service = Act.app().dbServiceManager().dbService(dbId);
-            if (service instanceof BeetlSqlService) {
-                BeetlSqlService beetl = $.cast(service);
-                return beetl.mapper(modelType);
-            }
+        if (sz > 1) {
+            Class<?> modelType = BeanSpec.rawTypeOf(typeList.get(1));
+            return (BeetlSqlDao) dbServiceManager.dao(modelType);
         }
         return null;
     }
