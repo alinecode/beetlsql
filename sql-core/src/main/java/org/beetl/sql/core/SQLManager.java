@@ -246,7 +246,7 @@ public class SQLManager implements DataAPI {
 		}
 
 		ExecuteContext context = ExecuteContext.instance(this);
-		SQLSource tempSource = this.sqlLoader.querySQL(id);
+		SQLSource tempSource = this.sqlLoader.queryAutoSQL(id);
 
 		if (tempSource != null) {
 			context.initSQLSource(tempSource);
@@ -1121,7 +1121,7 @@ public class SQLManager implements DataAPI {
 
 
 		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.querySQL(id);
+		SQLSource source = sqlLoader.queryAutoSQL(id);
 		if (source == null) {
 			source = new SQLSource(id, sqlTemplate);
 			source.setSqlType(SQLType.SELECT);
@@ -1156,7 +1156,7 @@ public class SQLManager implements DataAPI {
 	@Override
 	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras) {
 		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.querySQL(id);
+		SQLSource source = sqlLoader.queryAutoSQL(id);
 		if (source == null) {
 			source = new SQLSource(id, sqlTemplate);
 			source.setSqlType(SQLType.SELECT);
@@ -1181,7 +1181,7 @@ public class SQLManager implements DataAPI {
 	@Override
 	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras, Object start, long size) {
 		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate).toPage();
-		SQLSource source = sqlLoader.querySQL(id);
+		SQLSource source = sqlLoader.queryAutoSQL(id);
 		if (source == null) {
 			String pageSql = this.dbStyle.getRangeSql().toTemplateRange(clazz, sqlTemplate);
 			source = new SQLSource(id, pageSql);
@@ -1212,7 +1212,7 @@ public class SQLManager implements DataAPI {
 	public <T> PageResult<T> executePageQuery(String sqlTemplate, Class<T> clazz, Object paras,
 			PageRequest<T> request) {
 		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.querySQL(id);
+		SQLSource source = sqlLoader.queryAutoSQL(id);
 		if (source == null) {
 			source = new SQLSource(id, sqlTemplate);
 			source.setSqlType(SQLType.SELECT);
@@ -1233,7 +1233,7 @@ public class SQLManager implements DataAPI {
 	@Override
 	public int executeUpdate(String sqlTemplate, Object paras) {
 		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.querySQL(id);
+		SQLSource source = sqlLoader.queryAutoSQL(id);
 		if (source == null) {
 			source = new SQLSource(id, sqlTemplate);
 			source.setSqlType(SQLType.UPDATE);

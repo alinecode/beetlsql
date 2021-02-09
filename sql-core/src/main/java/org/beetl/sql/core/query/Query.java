@@ -184,7 +184,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     @Override
     public int update(Object t) {
         SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_ALL);
-        SQLSource sqlSource = sqlManager.getSqlLoader().querySQL(id);
+        SQLSource sqlSource = sqlManager.getSqlLoader().queryAutoSQL(id);
         if(sqlSource==null){
             sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(clazz);
             sqlManager.getSqlLoader().addSQL(id,sqlSource);
@@ -196,7 +196,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     @Override
     public int updateSelective(Object t) {
         SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_ALL);
-        SQLSource sqlSource = sqlManager.getSqlLoader().querySQL(id);
+        SQLSource sqlSource = sqlManager.getSqlLoader().queryAutoSQL(id);
         if(sqlSource==null){
             sqlSource = this.sqlManager.getDbStyle().genUpdateAll(clazz);
             sqlManager.getSqlLoader().addSQL(id,sqlSource);

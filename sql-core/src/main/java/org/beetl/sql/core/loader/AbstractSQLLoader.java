@@ -51,6 +51,12 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 	}
 
 	@Override
+	public SQLSource queryAutoSQL(SqlId id){
+		SQLSource sqlSource = autoGenSourceMap.get(id);
+		return sqlSource;
+	}
+
+	@Override
 	public boolean isModified(SqlId id) {
 		if (isProduct()) {
 			return false;

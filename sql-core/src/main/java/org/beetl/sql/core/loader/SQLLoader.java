@@ -17,6 +17,13 @@ import org.beetl.sql.core.db.DBStyle;
 	 SQLSource querySQL(SqlId id);
 
 	 /**
+	  * 查询自动生成，或者Java提供的Sql
+	  * @param id
+	  * @return
+	  */
+	 SQLSource queryAutoSQL(SqlId id);
+
+	 /**
 	  * 判断一个sql是否修改过
 	  *
 	  * @param id

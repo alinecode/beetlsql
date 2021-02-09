@@ -7,7 +7,7 @@ import org.beetl.sql.annotation.entity.Table;
 import java.util.Date;
 
 @Data
-@Table(name="user")
+@Table(name="test")
 public class ClickHouseUser {
     @AssignID
     private String id;

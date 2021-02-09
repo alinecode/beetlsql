@@ -459,7 +459,12 @@ public class BaseSQLExecutor implements SQLExecutor {
 		} catch (SQLException e) {
 			this.callInterceptorAsException(ctx, e);
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
-		} finally {
+		}catch(BeetlSQLException beetlSQLException){
+			//仍然把sql打印出来
+			this.callInterceptorAsException(ctx, beetlSQLException);
+			throw beetlSQLException;
+		}
+		finally {
 			clean(false, conn, rsh);
 		}
 

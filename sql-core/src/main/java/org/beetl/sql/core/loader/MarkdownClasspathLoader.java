@@ -40,7 +40,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 	 */
 	protected  Map<SqlId, SQLSource> sqlSourceMap = new ConcurrentHashMap<SqlId, SQLSource>();
 
-	protected  SQLSource EMPTY = new SQLSource();
+	protected  SQLSource EMPTY = SQLSource.emptySource();
 
 	public MarkdownClasspathLoader(String root,String charset) {
 		super();

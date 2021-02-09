@@ -214,6 +214,7 @@ public class SchemaMetadataManager implements MetadataManager {
 					temp.addCols(col);
 				}
 				rs.close();
+				moreInfo(temp);
 				tableInfoMap.put(temp.getName(),temp);
 				return temp;
 			} catch (SQLException e) {

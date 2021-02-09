@@ -30,6 +30,12 @@ public class SQLSource {
 		this.template = template;
 	}
 
+	public static SQLSource emptySource(){
+		SQLSource sqlSource = new SQLSource();
+		sqlSource.template="empty";
+		return sqlSource;
+	}
+
 	public SQLFileVersion getVersion() {
 		return version;
 	}
