@@ -55,6 +55,8 @@ public class S06SelectSample {
         sample.pageResourceId();
         sample.groupPageResourceId();
         sample.includeOtherSql();
+        sample.includeDynamicSql();
+
         sample.likeAndIn();
 
 
@@ -249,6 +251,16 @@ public class S06SelectSample {
          user = sqlManager.selectUnique(includeTestId,map,UserEntity.class);
 
     }
+
+	public void includeDynamicSql(){
+		SqlId dynamicId = SqlId.of("selectSample","includeDynamicSql");
+		String sql = "id=#{id} /* ${notes} */";
+		Map map = new HashMap();
+		map.put("myDynamicSql",sql);
+		map.put("id",1);
+		UserEntity user = sqlManager.selectUnique(dynamicId,map,UserEntity.class);
+
+	}
 
     public void likeAndIn(){
         SqlId likeSampleId = SqlId.of("selectSample","likeAndIn");

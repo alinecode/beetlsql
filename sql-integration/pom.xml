@@ -19,7 +19,6 @@
         <module>sql-jfinal</module>
         <module>sql-solon-plugin</module>
         <module>sql-act</module>
-        <module>act-sample</module>
     </modules>
 
     <dependencies>

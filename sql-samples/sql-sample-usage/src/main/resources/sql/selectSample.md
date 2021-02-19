@@ -97,6 +97,16 @@ likeAndIn
 select * from  sys_user where id in ( #{join(ids)} ) and name like #{name} order by ${order}
 ```
 
+
+includeDynamicSql
+===
+
+* 如果sql是动态的，通过java定义的,比如变量myDynamicSql
+
+```sql
+select * from  sys_user where #{db.dynamicSql(myDynamicSql,{"notes":true\})}
+```
+
 part1
 ===
 
