@@ -12,6 +12,11 @@ import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import java.io.StringWriter;
 import java.util.Map;
 
+/**
+ * 复杂映射，申明结果集应该使用哪种映射配置
+ * @author xiandafu
+ * @see org.beetl.sql.core.mapping.join.JsonConfigMapper
+ */
 public class MappingFunction implements Function {
     private static final StringWriter STRING_WRITER = new StringWriter();
     private static final StringTemplateResourceLoader STRING_TEMPLATE_RESOURCE_LOADER =

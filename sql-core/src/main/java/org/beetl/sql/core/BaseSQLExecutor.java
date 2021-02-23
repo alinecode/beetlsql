@@ -447,7 +447,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 
 			if (resultList.isEmpty()) {
 				if (throwException) {
-					throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集");
+					throw new BeetlSQLException(BeetlSQLException.UNIQUE_EXCEPT_ERROR, "unique查询，但数据库未找到结果集 "+objId);
 				}
 
 			} else {
