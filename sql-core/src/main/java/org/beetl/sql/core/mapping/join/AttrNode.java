@@ -160,6 +160,12 @@ public   class AttrNode{
         for(Map.Entry<Integer,String> entry:colMap.entrySet()){
             rtp.setIndex(entry.getKey());
             JavaSqlTypeHandler sqlTypeHandler = beanProcessor.getHandler(target);
+            // 如果从target获取不到handler，则通过属性直接获取value类型转换Handler
+            if(sqlTypeHandler==null){
+                PropertyDescriptor ps = propertyMap.get(entry.getValue());
+                Class propertyType = ps.getPropertyType();
+                sqlTypeHandler = beanProcessor.getHandler(propertyType);
+            }
             if(sqlTypeHandler==null){
                 sqlTypeHandler = beanProcessor.getDefaultHandler();
             }
