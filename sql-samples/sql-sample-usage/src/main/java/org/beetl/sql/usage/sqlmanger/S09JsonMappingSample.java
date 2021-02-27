@@ -118,7 +118,10 @@ public class S09JsonMappingSample {
         List<UserInfo> users;
     }
 
-    @Data
+	/**
+	 * BeetlSQL会自动映射，除非你需要配置说明映射规则
+	 */
+	@Data
     @ResultProvider(JsonConfigMapper.class)
     @JsonMapper(USER_MAPPING)
     public static class UserInfo {
@@ -151,6 +154,7 @@ public class S09JsonMappingSample {
 
     /**
      * 一个更复杂例子,用户包含部门和多个角色，参考 jsonConfig.md#userDetailConfig
+	 * 自动根据属性映射
      */
     @Data
     @ResultProvider(JsonConfigMapper.class)

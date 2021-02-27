@@ -37,11 +37,11 @@ public class S1QuickStart {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S1QuickStart quickStart = new S1QuickStart(sqlManager);
         quickStart.baseSqlManager();
-        quickStart.executeSql();
-        quickStart.executeTemplate();
-        quickStart.query();
-        quickStart.mapper();
-        quickStart.sqlResource();
+//        quickStart.executeSql();
+//        quickStart.executeTemplate();
+//        quickStart.query();
+//        quickStart.mapper();
+//        quickStart.sqlResource();
     }
 
     /**
@@ -177,8 +177,7 @@ public class S1QuickStart {
         map.put("name","n");
         List<UserEntity> list = sqlManager.select(id,UserEntity.class,map);
 
-        UserMapper mapper = sqlManager.getMapper(UserMapper.class);
-        mapper.select("n");
+        mapper.selectUserByName("n");
 
     }
 

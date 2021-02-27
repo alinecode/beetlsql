@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * 业务调用应该调用mapper的方法，而不是直接调用较为底层的SQLManager方法
+ */
 @SqlResource("user") /*sql文件在user.md里*/
 public interface UserMapper extends BaseMapper<UserEntity> {
 
@@ -48,7 +51,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
      * @param name
      * @return
      */
-     List<UserEntity> select(String name);
+     List<UserEntity> selectUserByName(String name);
 
 
     /**

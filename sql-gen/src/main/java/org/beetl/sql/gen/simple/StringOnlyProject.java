@@ -2,6 +2,7 @@ package org.beetl.sql.gen.simple;
 
 import org.beetl.sql.gen.BaseProject;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -14,16 +15,25 @@ import java.io.Writer;
  */
 public class StringOnlyProject extends BaseProject {
 	Writer writer;
-	public StringOnlyProject(){
+
+	public StringOnlyProject() {
 		super();
 		this.writer = new StringWriter();
 	}
 
-	public StringOnlyProject(Writer writer){
+	public StringOnlyProject(Writer writer) {
 		this.writer = writer;
 	}
+
 	@Override
 	public Writer getWriterByName(String sourceBuilderName, String targetName) {
+		try {
+			writer.append("\n/***************** ");
+			writer.append(targetName);
+			writer.append("*****************/\n\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return writer;
 	}
 
@@ -31,7 +41,7 @@ public class StringOnlyProject extends BaseProject {
 	 * 返回内容
 	 * @return
 	 */
-	public String getContent(){
+	public String getContent() {
 		return writer.toString();
 	}
 

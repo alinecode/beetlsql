@@ -7,11 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-integration</artifactId>
-        <version>3.3.1-RELEASE</version>
+        <version>3.3.3-RELEASE</version>
     </parent>
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-springboot-starter</artifactId>
-    <version>3.3.1-RELEASE</version>
+    <version>3.3.3-RELEASE</version>
+    <properties><springfox.version>3.0.0</springfox.version></properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -36,8 +37,15 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-spring</artifactId>
-            <version>3.3.1-RELEASE</version>
+            <version>3.3.3-RELEASE</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>${springfox.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>

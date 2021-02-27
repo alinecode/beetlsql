@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 默认情况，beetlsql从数据库中查询的数据，会与需要映射的任何java类(POJO）取交集，进行映射，但也有别的办法控制如何映射
  * 演示如何将数据库查询结果映射到java对象上
  *
  * @author xiandafu

@@ -39,14 +39,14 @@ public class S3PageSample {
     public static void main(String[] args) throws Exception {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S3PageSample page = new S3PageSample(sqlManager);
-//        page.baseRange();
-//        page.page();
-//        page.jdbcPage();
-//        page.resourceSqlPage();
-//        page.resourceGroupSqlPage();
+        page.baseRange();
+        page.page();
+        page.jdbcPage();
+        page.resourceSqlPage();
+        page.resourceGroupSqlPage();
         page.resourceSqlCount();
-//        page.jdbcMapperPage();
-//        page.templateMapperPage();
+        page.jdbcMapperPage();
+        page.templateMapperPage();
     }
 
     /**

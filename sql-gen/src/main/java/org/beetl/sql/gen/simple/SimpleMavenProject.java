@@ -85,4 +85,7 @@ public class SimpleMavenProject extends BaseProject {
 		}
 	}
 
+	public void setBasePackage(String basePackage) {
+		this.basePackage = basePackage;
+	}
 }

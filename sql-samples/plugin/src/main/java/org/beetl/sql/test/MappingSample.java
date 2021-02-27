@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 演示如实如何实现TypeHandler转化BigInteger，和JsonNode，以及RowMapper，xml定义的ResultSetMapper，这些提供了灵活的映射
@@ -120,7 +121,7 @@ public class MappingSample {
     public static class UserVo {
         Integer id;
         String name;
-        String extraAttribute;
+        String[] extraAttribute;
 
 
     }
@@ -221,7 +222,8 @@ public class MappingSample {
             UserVo vo = (UserVo)obj;
             //额外取得结果集
             String col = rs.getString("col");
-            vo.setExtraAttribute(col);
+            String[] arrays = col.split(",");
+            vo.setExtraAttribute(arrays);
             return vo;
         }
     }
