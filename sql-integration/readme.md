@@ -1,7 +1,7 @@
 BeetlSQL 集成与其他框架的核心代码,包括
 * Spring集成
-* Spring Boot集成
-* Act集成(未成功)
+* Spring Boot集成,附带多数据源，Swagger例子
+* Act集成
 * Solon集成
 * Jfinal集成
 
