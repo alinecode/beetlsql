@@ -3,6 +3,7 @@ package org.beetl.sql.sample;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
+import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.page.DefaultPageResult;
 import org.beetl.sql.ext.DebugInterceptor;
@@ -41,7 +42,7 @@ public class SampleHelper {
         SQLManagerBuilder builder = new SQLManagerBuilder(source);
         builder.setNc(new UnderlinedNameConversion());
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
-        builder.setDbStyle(new MySqlStyle());
+        builder.setDbStyle(new H2Style());
         SQLManager sqlManager = builder.build();
         return sqlManager;
 
