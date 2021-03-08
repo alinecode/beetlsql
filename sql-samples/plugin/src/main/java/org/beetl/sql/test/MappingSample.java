@@ -123,7 +123,6 @@ public class MappingSample {
         String name;
         String[] extraAttribute;
 
-
     }
     @Data
     @EqualsAndHashCode(callSuper = false)
@@ -196,7 +195,6 @@ public class MappingSample {
      * Beetlsql 并没有内置对BigInteger支持，这里可以扩展
      */
     public static class BigIntTypeHandler extends JavaSqlTypeHandler{
-        static ObjectMapper objectMapper = new ObjectMapper();
         @Override
         public Object getValue(ReadTypeParameter typePara) throws SQLException {
             BigDecimal decimal = typePara.getRs().getBigDecimal(typePara.getIndex());
