@@ -47,7 +47,8 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 		if (sqlSource != null) {
 			return sqlSource;
 		}
-		return queryExternalSource(id);
+		sqlSource =  queryExternalSource(id);
+		return sqlSource;
 	}
 
 	@Override

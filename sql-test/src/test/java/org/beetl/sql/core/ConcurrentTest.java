@@ -45,9 +45,36 @@ public class ConcurrentTest extends BaseTest {
 		}
     }
 
+
+	@Test
+	public void testPageSelect() throws Exception{
+		int eprId=0;
+		ExecutorService exec = Executors.newFixedThreadPool(11);
+		Future[] futures = new Future[11];
+		for (int i = 0; i < 11; i++) {
+			futures[i] = exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					PageResult<User>  pageResult = page();
+				}
+			});
+
+		}
+		for (int i = 0; i < 11; i++) {
+			futures[i].get();
+		}
+	}
+
     protected  User select(){
     	User user = sqlManager.lambdaQuery(User.class).andEq(User::getId,1).single();
     	return user;
+	}
+
+	protected  PageResult<User>  page(){
+    	SqlId sqlId = SqlId.of("user","queryByCondition");
+		PageRequest pageRequest = DefaultPageRequest.of(1,10);
+		PageResult<User> user = sqlManager.pageQuery(sqlId,User.class,null,pageRequest);
+		return user;
 	}
 
 
