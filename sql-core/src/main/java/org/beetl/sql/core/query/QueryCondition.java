@@ -341,14 +341,14 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     //Override
     @Override
     public Query<T> orLike(String column, Object value) {
-        appendOrSql(column, value, "LIKE");
+        appendOrSql(column, value, "LIKE ");
         return (Query) this;
     }
 
     //Override
     @Override
     public Query<T> orNotLike(String column, Object value) {
-        appendOrSql(column, value, "NOT LIKE");
+        appendOrSql(column, value, "NOT LIKE ");
         return (Query) this;
     }
 

@@ -168,22 +168,22 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     public LambdaQuery<T> orLike(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "LIKE");
+        appendOrSql(getFunctionName(property), value, "LIKE ");
         return this;
     }
 
     public LambdaQuery<T> orNotLike(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "NOT LIKE");
+        appendOrSql(getFunctionName(property), value, "NOT LIKE ");
         return this;
     }
 
     public LambdaQuery<T> orIsNull(Property<T, ?> property) {
-        appendOrSql(getFunctionName(property), null, "IS NULL");
+        appendOrSql(getFunctionName(property), null, "IS NULL ");
         return this;
     }
 
     public LambdaQuery<T> orIsNotNull(Property<T, ?> property) {
-        appendOrSql(getFunctionName(property), null, "IS NOT NULL");
+        appendOrSql(getFunctionName(property), null, "IS NOT NULL ");
         return this;
     }
 
