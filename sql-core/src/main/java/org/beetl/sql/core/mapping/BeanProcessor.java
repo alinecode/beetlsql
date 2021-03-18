@@ -437,6 +437,11 @@ public class BeanProcessor {
 	}
 
 
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+	}
+
 	/**
 	 * 记录存在name在 PropertyDescriptor中的下标
 	 * @param c
@@ -460,6 +465,7 @@ public class BeanProcessor {
 
 				if (props[i].getName().equalsIgnoreCase(expectedProperty)) {
 					if(viewType==null){
+						//大部分情况下
 						columnToProperty[col] = i;
 					}else{
 						//检测此属性是否属于此列

@@ -45,14 +45,14 @@ public class SourceConfig {
 	/**
 	 * 对应的日期类型
 	 */
-	enum PreferDateType{
+	public static enum PreferDateType{
 		Date,Timestamp,LocalDate
 	}
 
 	/**
 	 * 对应的浮点数生成类型
 	 */
-	enum PreferDoubleType{
+	public static enum PreferDoubleType{
 		Double,BigDecimal
 	}
 

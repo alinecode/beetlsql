@@ -357,13 +357,7 @@ public class BeanKit {
         return writeMethod;
     }
 
-    public static Class loadClass(String className){
-        try {
-            return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e);
-        }
-    }
+
 
     public static  boolean isJavaClass(Class entityClass){
         Package pck = entityClass.getPackage();
@@ -375,10 +369,6 @@ public class BeanKit {
             return true;
         }
         return false;
-    }
-
-    public static String getPackageName(Class<?> clazz) {
-        return StringKit.beforeLast(clazz.getName(), '.');
     }
 
 	public static boolean isBaseDataType(Class<?> clazz) {
@@ -400,20 +390,6 @@ public class BeanKit {
 	}
 
 
-    protected  static Field findField(Class c,String property){
-        while (c != null) {
-            Field[] fs = c.getDeclaredFields();
-            for (Field f : fs) {
-                if (!f.getName().equals(property)) {
-                    continue;
-                }
-                return f;
-
-            }
-            c = c.getSuperclass();
-        }
-        return null;
-    }
 
     private static List<Annotation> addAnnotation(Annotation[] array1, Annotation[] array2) {
         List<Annotation> list = new ArrayList<Annotation>();

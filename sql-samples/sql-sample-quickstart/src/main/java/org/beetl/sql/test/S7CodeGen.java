@@ -62,6 +62,8 @@ public class S7CodeGen {
 		sourceBuilder.add(mdBuilder);
 
         SourceConfig config = new SourceConfig(sqlManager,sourceBuilder);
+
+        config.setPreferDateType(SourceConfig.PreferDateType.Date);
         //如果有错误，抛出异常而不是继续运行1
         EntitySourceBuilder.getGroupTemplate().setErrorHandler(new ReThrowConsoleErrorHandler() );
 
