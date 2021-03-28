@@ -2,8 +2,10 @@ package org.beetl.sql.test;
 
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
+import org.beetl.sql.core.nosql.TaosStyle;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -32,22 +34,18 @@ public class QuickTest {
 		SQLManagerBuilder builder = new SQLManagerBuilder(source);
 		builder.setNc(new UnderlinedNameConversion());
 		builder.setInters(new Interceptor[]{new DebugInterceptor()});
-		builder.setDbStyle(new H2Style());
+		builder.setDbStyle(new TaosStyle());
 		SQLManager sqlManager = builder.build();
 		return sqlManager;
 	}
 
     public static void main(String[] args) throws Exception {
-        SQLManager sqlManager = getSQLManager();
+		SQLManager sqlManager = getSQLManager();
 
-        DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-//		Set<String> all =  sqlManager.getMetaDataManager().allTable();
-//		List<MyUser> myUsers = sqlManager.all(MyUser.class);
-		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
+		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		MyUser myUser = new MyUser();
-		myUser.setName("abc");;
-		sqlManager.template(myUser);
-
+		myUser.setId(1);
+		sqlManager.templateOne(myUser);
 
     }
 

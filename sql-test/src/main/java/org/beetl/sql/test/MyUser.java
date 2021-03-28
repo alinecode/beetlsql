@@ -21,4 +21,13 @@ public class MyUser {
     private Date createTime;
     private Integer personId;
 
+    private String isOk;
+
+    public String getIsOk() {
+        return isOk;
+    }
+
+    public void setIsOk(String isOk) {
+        this.isOk = isOk;
+    }
 }

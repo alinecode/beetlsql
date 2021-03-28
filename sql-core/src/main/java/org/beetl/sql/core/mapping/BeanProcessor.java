@@ -5,7 +5,7 @@ import org.beetl.sql.annotation.entity.View;
 import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.EnumKit;
+import org.beetl.sql.clazz.EnumKit;
 import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManagerBuilder;

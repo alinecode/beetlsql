@@ -18,6 +18,7 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
 public @interface Column {
 	String value();
+
 }
 
 

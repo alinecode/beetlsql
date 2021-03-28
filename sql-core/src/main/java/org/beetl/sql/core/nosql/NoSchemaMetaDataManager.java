@@ -10,6 +10,7 @@ import org.beetl.sql.core.meta.MetadataManager;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.sql.Types;
 import java.util.List;
 import java.util.Set;
 
@@ -88,15 +89,23 @@ public class NoSchemaMetaDataManager implements MetadataManager {
 
     }
 
+    /**
+     * 从java类型猜测数据类型，此方法没什么用处，仅仅是为了完善colDesc
+     * @param colDesc
+     * @param type
+     */
     protected void initSqlType(ColDesc colDesc,Class type){
        Integer jdbcType =  JavaType.javaTypeJdbcs.get(type);
        if(jdbcType==null){
-           throw new IllegalArgumentException("NoSchemaMetaDataManager 不支持类型 "+type);
+           if(type==Double.class||type==Float.class||type==double.class||type==float.class){
+               //不建议类型未Double或者Float
+               jdbcType = Types.NUMERIC;
+           }
+           //对于枚举或者复杂属性，暂时设置为Other
+           jdbcType =  Types.OTHER;
        }
         colDesc.setSqlType(jdbcType);
-       //不设置size应该不会有问题，beetlsql几乎没用上这个，除非以后增加从Pojo生成create table语句，这个才有意义
         return ;
-
     }
 
 

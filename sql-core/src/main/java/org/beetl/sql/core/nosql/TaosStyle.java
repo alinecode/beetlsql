@@ -1,6 +1,8 @@
 package org.beetl.sql.core.nosql;
 
 import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.SQLTableSource;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.meta.MetadataManager;
@@ -60,5 +62,44 @@ public class TaosStyle  extends AbstractDBStyle {
         metadataManager = new NoSchemaMetaDataManager();
         return metadataManager;
     }
+
+
+    /**
+     * taos 不支持 where 1=1，因此内置语句需要把出现的1=1 替换掉
+     * @param cls
+     * @param viewType
+     * @return
+     */
+    @Override
+    public SQLSource genSelectByTemplate(Class<?> cls, Class viewType) {
+        SQLTableSource sqlTableSource = (SQLTableSource)super.genSelectByTemplate(cls,viewType);
+        String sql =  sqlTableSource.getTemplate();
+        String after = replaceByWhereTag(sql);
+        sqlTableSource.setTemplate(after);
+        return sqlTableSource;
+
+    }
+
+    @Override
+    public SQLSource genSelectCountByTemplate(Class<?> cls) {
+        SQLTableSource sqlTableSource = (SQLTableSource)super.genSelectCountByTemplate(cls);
+        String sql =  sqlTableSource.getTemplate();
+        String after = replaceByWhereTag(sql);
+        sqlTableSource.setTemplate(after);
+        return sqlTableSource;
+    }
+
+    //一个临时方案，替换1=1部分，因为taos不支持1=1表达式
+    protected  String replaceByWhereTag(String sql){
+        String trimStart = "\n-- @ where(){";
+        sql=sql.replace("where 1=1",trimStart);
+        sql =sql +"\n -- @ }";
+        return sql;
+    }
+
+
+
+
+
 
 }

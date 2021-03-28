@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 数据库差异：mysql数据库
+ * 数据库差异：db数据库，beetlsql3暂时不能用
  *
  * @author xiandafu
  */

@@ -1,19 +1,24 @@
-package org.beetl.sql.clazz.kit;
+package org.beetl.sql.clazz;
 
+import org.beetl.sql.annotation.entity.EnumValue;
+import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.clazz.kit.Cache;
+import org.beetl.sql.clazz.kit.DefaultCache;
+
+import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 映射枚举
- * 
+ * 映射枚举和缓存
  * @author xiandafu
  *
  */
 public class EnumKit {
 
-
+	/*所有遇到的枚举类的缓存*/
 	private static Cache<Class, EnumConfig> cache = new DefaultCache<>();
 
 	/**
@@ -32,8 +37,7 @@ public class EnumKit {
 
 		EnumConfig config = cache.get(c);
 		if(config==null){
-			//不可能发生
-			throw new IllegalStateException("枚举没有初始化");
+			config = init(c);
 		}
 
 		//测试 SQLServer 数据库的 tinyint 类型 会被转为 Short 而如果封装时Key的类型为Integer 则无法取出
@@ -55,8 +59,7 @@ public class EnumKit {
 		Class c = en.getClass();
 		EnumConfig config = cache.get(c);
 		if(config==null){
-			//不可能发生
-			throw new IllegalStateException("枚举没有初始化");
+			config = init(c);
 		}
 		return config.dbMap.get(en);
 	}
@@ -66,10 +69,28 @@ public class EnumKit {
 	 * @param c
 	 * @see ClassAnnotation
 	 */
-	public static void initNoAnotation(Class c){
-		if(cache.get(c)!=null){
-			return ;
+	public static EnumConfig init(Class c){
+		EnumConfig config = cache.get(c);
+		if(config!=null){
+			return config;
 		}
+		String valueAttrName = lookupEnumValueAttr(c);
+		if(valueAttrName!=null){
+			config = init(c,valueAttrName);
+		}else{
+			config = initDefaultValue(c);
+		}
+		return config;
+
+	}
+
+	/**
+	 * 使用枚举名称作为值
+	 * @param c
+	 * @return
+	 */
+	private static  EnumConfig initDefaultValue(Class c){
+
 		Map<Object, Enum> map = new HashMap<Object, Enum>();
 		Map<Enum, Object> map2 = new HashMap(); // db
 		Enum[] temporaryConstants = getEnumValues(c);
@@ -81,15 +102,73 @@ public class EnumKit {
 		}
 		EnumConfig config = new EnumConfig(map, map2);
 		cache.put(c, config);
+		return config;
 	}
 
 	/**
 	 * 初始化枚举的映射，使用属性p来作为映射
 	 * @param entityClass
-	 * @param p
-	 * @see ClassAnnotation
+	 * @param attr
 	 */
-	public static void init(Class entityClass,PropertyDescriptor p){
+	public static EnumConfig init(Class entityClass,String attr){
+		EnumConfig enumConfig = cache.get(entityClass);
+		if(enumConfig!=null){
+			return enumConfig ;
+		}
+
+		try {
+			PropertyDescriptor[] ps = BeanKit.propertyDescriptors(entityClass);
+			for(PropertyDescriptor p:ps){
+				if(p.getName().equals(attr)){
+					enumConfig = init(entityClass,p);
+					return enumConfig;
+				}
+			}
+			throw new RuntimeException("不可能发生找不到attr"+attr);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+
+
+	}
+
+
+	/**
+	 * 查找可能包含EnumValue的字段
+	 * @param enumClass
+	 * @return
+	 */
+	private static String lookupEnumValueAttr(Class enumClass){
+		PropertyDescriptor[] ps = null;
+		try {
+			ps = BeanKit.propertyDescriptors(enumClass);
+		} catch (IntrospectionException e) {
+			throw new IllegalStateException(e);
+		}
+
+		for(PropertyDescriptor p:ps){
+			Method readMethod =  p.getReadMethod();
+			if(readMethod.getDeclaringClass()==Object.class){
+				continue;
+			}
+			String attr = p.getName();
+			EnumValue enumValue = BeanKit.getAnnotation(enumClass, attr, readMethod, EnumValue.class);
+			if(enumValue!=null){
+				return attr;
+			}
+		}
+
+		return null;
+
+	}
+
+
+	/**
+	 * 初始化枚举的映射，使用属性p来作为映射
+	 * @param entityClass
+	 * @param p
+	 */
+	private static EnumConfig init(Class entityClass,PropertyDescriptor p){
 
 		try {
 			Method m = p.getReadMethod();
@@ -104,34 +183,16 @@ public class EnumKit {
 			}
 			EnumConfig config = new EnumConfig(map, map2);
 			cache.put(entityClass, config);
+			return config;
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
+
 
 	/**
-	 * 初始化枚举的映射，使用属性p来作为映射
-	 * @param entityClass
-	 * @param attr
-	 * @see org.beetl.sql.core.db.ClassAnnotation
+	 * 枚举名称和值的对应关系
 	 */
-	public static void init(Class entityClass,String attr){
-		if(cache.get(entityClass)!=null){
-			return ;
-		}
-		try {
-			PropertyDescriptor[] ps = BeanKit.propertyDescriptors(entityClass);
-			for(PropertyDescriptor p:ps){
-				if(p.getName().equals(attr)){
-					init(entityClass,p);
-					break;
-				}
-			}
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
 	public static class EnumConfig {
 		Map<Object, Enum> map = new HashMap<Object, Enum>();
 		Map<Enum, Object> dbMap = new HashMap(); // db

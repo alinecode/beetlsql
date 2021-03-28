@@ -10,6 +10,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 枚举验证
  */
@@ -36,6 +39,22 @@ public class EnumSelectTest extends BaseTest {
 		sqlManager.insert(data);
 		UserData2 dbData = sqlManager.unique(UserData2.class,data.getId());
 		Assert.assertTrue(Name2.Li==dbData.getName());
+
+	}
+
+	@Test
+	public void testEnumValue2(){
+		UserData2 data = new UserData2();
+		data.setName(Name2.Li);
+		sqlManager.insert(data);
+
+		Map<String,Object> map = new HashMap();
+		map.put("name",Name2.Li);
+
+		String sqlTemplate = "select * from sys_user where name=#{name}";
+
+		sqlManager.execute(sqlTemplate,UserData2.class,map);
+
 
 	}
 

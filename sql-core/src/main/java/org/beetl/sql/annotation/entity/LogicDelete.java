@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * 逻辑删除标记,如果有此标记，那么内置删除语句deleteById 将变成update语句，并设置属性为
+ *
+ * 此注解仅用于在deleteById内置操作中使用update方式，此注解不影响任何查询语句
  * {@code value}的值
  * @author xiandafu
  * @see org.beetl.sql.core.db.AbstractDBStyle#genDeleteById

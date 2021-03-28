@@ -1,7 +1,7 @@
 package org.beetl.sql.ext;
 
 import org.beetl.sql.clazz.SQLType;
-import org.beetl.sql.clazz.kit.EnumKit;
+import org.beetl.sql.clazz.EnumKit;
 import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.engine.SQLParameter;

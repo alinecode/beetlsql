@@ -10,7 +10,6 @@ import org.beetl.sql.annotation.entity.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.clazz.kit.DefaultCache;
-import org.beetl.sql.clazz.kit.EnumKit;
 import org.beetl.sql.core.mapping.BeanFetch;
 import org.beetl.sql.core.mapping.ResultSetMapper;
 import org.beetl.sql.core.mapping.RowMapper;
@@ -47,12 +46,7 @@ public class ClassAnnotation {
     //update和insert 忽略策略
     Set<String> attrUpdateIgnores = null;
 	Set<String> attrInsertIgnores = null;
-	/**
-	 * 枚举映射,记录一下，实际完成在{@code org.beetl.sql.core.kit.EnumKit}
-	 * @see EnumValue
-	 * @see EnumMapping
-	 */
-	Map<String,String> enums = null;
+
 
     // 逻辑删除标记以及设置的默认值
     String logicDeleteAttrName =null;
@@ -180,6 +174,7 @@ public class ClassAnnotation {
 		if(table!=null){
 			this.tableName = table.name();
 		}
+
 		ResultProvider mappingConfig = (ResultProvider)this.entityClass.getAnnotation(
 				ResultProvider.class);
 		if(mappingConfig!=null){
@@ -219,18 +214,9 @@ public class ClassAnnotation {
 				EnumMapping enumMapping = BeanKit.getAnnotation(entityClass, attr, readMethod, EnumMapping.class);
 				if(enumMapping!=null){
 					String enumAttr = enumMapping.value();
-					if(this.enums==null){
-						this.enums = new HashMap<>();
-					}
-					this.enums.put(attr,enumAttr);
 					EnumKit.init(type,enumAttr);
 				}else{
-					String enumAttr = lookupEnumValueAttr(type);
-					if(enumAttr!=null){
-						EnumKit.init(type,enumAttr);
-					}else{
-						EnumKit.initNoAnotation(type);
-					}
+					EnumKit.init(type);
 				}
             }
 
@@ -291,24 +277,7 @@ public class ClassAnnotation {
 
 
 
-    private String lookupEnumValueAttr(Class enumClass){
-		PropertyDescriptor[] ps = getPropertyDescriptor(enumClass);
-		for(PropertyDescriptor p:ps){
-			Method readMethod =  p.getReadMethod();
-			if(readMethod.getDeclaringClass()==Object.class){
-				continue;
-			}
-			Class type = p.getPropertyType();
-			String attr = p.getName();
-			EnumValue enumValue = BeanKit.getAnnotation(enumClass, attr, readMethod, EnumValue.class);
-			if(enumValue!=null){
-				return attr;
-			}
-		}
 
-		return null;
-
-	}
 
 	/**
 	 * 查找annotation
