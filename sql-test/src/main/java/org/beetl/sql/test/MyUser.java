@@ -4,6 +4,7 @@ package org.beetl.sql.test;
 import lombok.Data;
 import org.beetl.sql.annotation.builder.UpdateTime;
 import org.beetl.sql.annotation.entity.Auto;
+import org.beetl.sql.annotation.entity.Column;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
 import org.beetl.sql.fetch.annotation.FetchOne;
@@ -16,18 +17,7 @@ import java.util.Date;
 public class MyUser {
     @Auto()
     private Integer id;
+    @Column("user_name")
     private String name;
-    @UpdateTime
-    private Date createTime;
-    private Integer personId;
 
-    private String isOk;
-
-    public String getIsOk() {
-        return isOk;
-    }
-
-    public void setIsOk(String isOk) {
-        this.isOk = isOk;
-    }
 }

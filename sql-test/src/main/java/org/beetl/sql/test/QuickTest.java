@@ -2,14 +2,23 @@ package org.beetl.sql.test;
 
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.beetl.core.ReThrowConsoleErrorHandler;
 import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
+import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.nosql.TaosStyle;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.gen.SourceBuilder;
+import org.beetl.sql.gen.SourceConfig;
+import org.beetl.sql.gen.simple.ConsoleOnlyProject;
+import org.beetl.sql.gen.simple.EntitySourceBuilder;
+import org.beetl.sql.gen.simple.MDSourceBuilder;
+import org.beetl.sql.gen.simple.MapperSourceBuilder;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,21 +29,21 @@ import java.util.Set;
  */
 
 public class QuickTest {
-	private static   DataSource datasource() {
-		HikariDataSource ds = new HikariDataSource();
-		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
-		ds.setUsername("sa");
-		ds.setPassword("");
-		ds.setDriverClassName("org.h2.Driver");
-		return ds;
-	}
+//	private static   DataSource datasource() {
+//		HikariDataSource ds = new HikariDataSource();
+//		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
+//		ds.setUsername("sa");
+//		ds.setPassword("");
+//		ds.setDriverClassName("org.h2.Driver");
+//		return ds;
+//	}
 	private  static SQLManager getSQLManager(){
-		DataSource dataSource = datasource();
+		DataSource dataSource = mysqlDatasource();
 		ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
 		SQLManagerBuilder builder = new SQLManagerBuilder(source);
 		builder.setNc(new UnderlinedNameConversion());
 		builder.setInters(new Interceptor[]{new DebugInterceptor()});
-		builder.setDbStyle(new TaosStyle());
+		builder.setDbStyle(new MySqlStyle());
 		SQLManager sqlManager = builder.build();
 		return sqlManager;
 	}
@@ -42,11 +51,47 @@ public class QuickTest {
     public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 
-		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		MyUser myUser = new MyUser();
-		myUser.setId(1);
-		sqlManager.templateOne(myUser);
+		System.out.println(sqlManager.getMetaDataManager().allTable());
+
+
+
+		List<SourceBuilder> sourceBuilder = new ArrayList<>();
+		SourceBuilder entityBuilder = new EntitySourceBuilder();
+		SourceBuilder mapperBuilder = new MapperSourceBuilder();
+		SourceBuilder mdBuilder = new MDSourceBuilder();
+
+		sourceBuilder.add(entityBuilder);
+		sourceBuilder.add(mapperBuilder);
+		sourceBuilder.add(mdBuilder);
+
+		SourceConfig config = new SourceConfig(sqlManager,sourceBuilder);
+
+
+		ConsoleOnlyProject project = new ConsoleOnlyProject();
+		String tableName = "sys_user";
+		//可以在控制台看到生成的所有代码
+		config.gen(tableName,project);
 
     }
+
+
+	public static DataSource mysqlDatasource() {
+		HikariDataSource ds = new HikariDataSource();
+		ds.setJdbcUrl(MysqlDBConfig.url);
+		ds.setUsername(MysqlDBConfig.userName);
+		ds.setPassword(MysqlDBConfig.password);
+		ds.setDriverClassName(MysqlDBConfig.driver);
+		// ds.setAutoCommit(false);
+		return ds;
+	}
+
+	public static class MysqlDBConfig {
+		//    public static String driver = "com.mysql.jdbc.Driver";
+		public static String driver = "com.mysql.cj.jdbc.Driver";
+		public static String dbName = "test";
+		public static String password = "12345678";
+		public static String userName = "root";
+		public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true";
+	}
 
 }

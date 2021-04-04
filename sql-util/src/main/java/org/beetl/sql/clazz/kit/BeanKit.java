@@ -450,7 +450,11 @@ public class BeanKit {
                 return (Class)((ParameterizedType) type).getRawType();
             }else if(type instanceof  Class){
                 return (Class)types[0];
-            }else{
+            }else if(type instanceof  TypeVariable){
+                //未定义，则返回null。则通过mapper接口，而不是方法来判断范型类型
+                return null;
+            }
+            else {
                 throw new UnsupportedOperationException(type.toString());
             }
 

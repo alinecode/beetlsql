@@ -2,6 +2,7 @@ package org.beetl.sql.mapper;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.mapper.annotation.InheritMapper;
 import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
 
 import java.lang.reflect.InvocationHandler;
@@ -125,8 +126,16 @@ public class MapperJavaProxy implements InvocationHandler {
     //Override
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Class caller = method.getDeclaringClass();
-        MapperInvoke invoke = builder.getAmi(entityClass,caller,method);
+        MapperInvoke invoke = null;
+
+        InheritMapper inheritMapper = method.getAnnotation(InheritMapper.class);
+        if(inheritMapper==null){
+            //大部分情况
+            Class caller = method.getDeclaringClass();
+            invoke = builder.getAmi(entityClass,caller,method);
+        }else{
+            invoke = builder.getAmi(entityClass,this.mapperInterface,method);
+        }
         Object ret = invoke.call(this.sqlManager, this.entityClass, method, args);
         return ret;
     }

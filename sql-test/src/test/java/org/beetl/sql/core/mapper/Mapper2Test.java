@@ -7,14 +7,18 @@ import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.entity.User;
+import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.AutoMapper;
+import org.beetl.sql.mapper.annotation.InheritMapper;
+import org.beetl.sql.mapper.annotation.SqlResource;
 import org.beetl.sql.mapper.annotation.Template;
 import org.beetl.sql.mapper.internal.InsertAMI;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -179,6 +183,22 @@ public class Mapper2Test extends BaseTest {
 
 	}
 
+
+    @Test
+    public void mapperInheritMapper(){
+
+        MyTestUserMapper dao = sqlManager.getMapper(MyTestUserMapper.class);
+        try{
+            dao.implementByChild();
+        }catch(RuntimeException re){
+            re.printStackTrace();
+            Assert.fail();
+        }
+
+
+
+    }
+
     public static interface MyUserMapper extends MyBaseMapper<User>{
         @Template("select * from sys_user where id=#{id}")
         public User queryTemplateById(Integer id);
@@ -193,6 +213,19 @@ public class Mapper2Test extends BaseTest {
             return "hello";
         }
     }
+
+
+    public static interface  CommonMapper<T> extends BaseMapper{
+        @InheritMapper
+        public List<T> implementByChild();
+    }
+
+    @SqlResource("user")
+    public static interface  MyTestUserMapper extends CommonMapper<User>{
+
+    }
+
+
 
 
 

@@ -46,5 +46,13 @@ nameCondition
 utf8
 ===
 
-select '中文' from sys_user where id =1
+    select '中文' from sys_user where id =1
+
+
+
+implementByChild
+===
+
+    select * from sys_user  where id =1;
+
 

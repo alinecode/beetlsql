@@ -36,7 +36,7 @@ public class SubQueryCommonTest extends BaseTest {
 
     @SqlResource("lambda")
     public static interface AnyMapper extends BaseMapper<User>{
-    	/* 构造一个公共的子查询Lambda,由lambda#allUserInDepartment构成
+    	/* 构造一个公共的子查询Lambda,lambda#allUserInDepartment构成
     	*/
     	@SubQuery
     	public LambdaQuery<User> allUserInDepartment(Integer deptId);
