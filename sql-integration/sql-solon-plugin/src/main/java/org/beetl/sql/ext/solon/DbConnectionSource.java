@@ -15,6 +15,7 @@ import java.sql.SQLException;
  * @author noear
  * @since 2020-09-01
  * */
+
 class DbConnectionSource extends DefaultConnectionSource {
     public DbConnectionSource(DataSource master, DataSource[] slaves) {
         super(master, slaves);

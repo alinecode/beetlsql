@@ -7,7 +7,7 @@ import org.noear.solon.extend.aspect.annotation.Service;
 import org.noear.solon.extend.data.annotation.Tran;
 
 /**
- * Solon 的事务，只支持 XController, XService, XDao ，且只支持注在函数上（算是较为克制）
+ * Solon 的事务，只支持 Controller, Service, Dao ，且只支持注在函数上（算是较为克制）
  * */
 @Service
 public class SimpleService {
