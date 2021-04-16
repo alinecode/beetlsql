@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.3.9-RELEASE</version>
+        <version>3.3.10-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>taos</artifactId>
-    <version>3.3.9-RELEASE</version>
+    <version>3.3.10-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>com.taosdata.jdbc</groupId>
