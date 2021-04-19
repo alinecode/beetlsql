@@ -102,7 +102,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
         //https://dzone.com/articles/correct-reflective-access-to-interface-default-methods
         //https://gist.github.com/lukaseder/f47f5a0d156bf7b80b67da9d14422d4a
         //如何优化？
-        if (JavaType.majorJavaVersion <= 18) {
+        if (JavaType.JAVA_MAJOR_VERSION <= 8) {
             final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class);
             constructor.setAccessible(true);
 

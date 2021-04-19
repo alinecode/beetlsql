@@ -35,34 +35,28 @@ public class JavaType {
 
     public static Map<String, Integer> jdbcTypeNames = new HashMap<String, Integer>();
     public static Map<Integer, String> jdbcTypeId2Names = new HashMap<Integer, String>();
-    public static int majorJavaVersion = 15;
 
-    static {
-        String javaVersion = System.getProperty("java.version");
-        if (javaVersion.startsWith("13")) {
-            majorJavaVersion = 23;
-        } else if (javaVersion.startsWith("12")) {
-            majorJavaVersion = 22;
-        } else if (javaVersion.startsWith("11")) {
-            majorJavaVersion = 21;
-        } else if (javaVersion.startsWith("10")) {
-            majorJavaVersion = 20;
-        } else if (javaVersion.startsWith("9")) {
-            majorJavaVersion = 19;
-        } else if (javaVersion.startsWith("1.8.")) {
-            majorJavaVersion = 18;
-        } else if (javaVersion.contains("1.7.")) {
-            majorJavaVersion = 17;
-        } else if (javaVersion.contains("1.6.")) {
-            majorJavaVersion = 16;
-        }else if (javaVersion.contains("1.5.")) {
-            majorJavaVersion = 15;
-        }
-        else {
+    public static final int JAVA_MAJOR_VERSION = getJavaMajorVersion();
+
+    private static int getJavaMajorVersion() {
+        final String javaVersion = System.getProperty("java.version");
+        final String[] parts = javaVersion.split("\\.");
+        //link: http://openjdk.java.net/jeps/223
+        boolean isJep223;
+        try {
+            final int token = Integer.parseInt(parts[0]);
+            isJep223 = token != 1;
+            return isJep223 ? token : Integer.parseInt(parts[1]);
+        } catch (final Exception e) {
             //不识别版本，认为兼容jdk8
-            majorJavaVersion = 18;
+            return 8;
         }
     }
+
+    public static boolean isJdk8() {
+        return JAVA_MAJOR_VERSION >= 8;
+    }
+
 
     public final static String UNKNOW = "UNKNOW";
     public final static String SPECIAL = "SPECIAL";
@@ -141,8 +135,8 @@ public class JavaType {
         jdbcJavaTypes.put(Integer.valueOf(Types.NCLOB), String.class);
 
         //保留java类型可能对应的sql类型
-        for(Map.Entry<Integer,Class<?>> entry:jdbcJavaTypes.entrySet()){
-            javaTypeJdbcs.put(entry.getValue(),entry.getKey());
+        for (Map.Entry<Integer, Class<?>> entry : jdbcJavaTypes.entrySet()) {
+            javaTypeJdbcs.put(entry.getValue(), entry.getKey());
         }
     }
 
@@ -185,7 +179,7 @@ public class JavaType {
         mapping.put(Types.VARCHAR, "String");
 
         // jdk 8 support
-        if (majorJavaVersion >= 18) {
+        if (isJdk8()) {
             mapping.put(Types.REF_CURSOR, UNKNOW);
             mapping.put(Types.TIMESTAMP_WITH_TIMEZONE, "Timestamp");
             mapping.put(Types.TIME_WITH_TIMEZONE, "Timestamp");
@@ -200,7 +194,7 @@ public class JavaType {
                     String name = fields[i].getName().toLowerCase();
                     Integer value = (Integer) fields[i].get(java.sql.Types.class);
                     jdbcTypeNames.put(name, value);
-                    jdbcTypeId2Names.put(value,name);
+                    jdbcTypeId2Names.put(value, name);
                 } catch (IllegalArgumentException e) {
                     // 不可能发生
                     e.printStackTrace();
@@ -233,6 +227,7 @@ public class JavaType {
 
     /**
      * 得到一个jdbc对应的java类型
+     *
      * @param sqlType
      * @param size
      * @param digit
@@ -262,12 +257,8 @@ public class JavaType {
         return (type == null) ? false : (Number.class.isAssignableFrom(type));
     }
 
-    public static boolean isJdk8() {
-        return majorJavaVersion >= 18;
-    }
-
-    public static boolean isBigType(int sqlType){
-        return sqlType==Types.BLOB||sqlType==Types.CLOB||sqlType==Types.NCLOB;
+    public static boolean isBigType(int sqlType) {
+        return sqlType == Types.BLOB || sqlType == Types.CLOB || sqlType == Types.NCLOB;
     }
 
 }
