@@ -38,7 +38,7 @@ public class JavaType {
 
     public static final int JAVA_MAJOR_VERSION = getJavaMajorVersion();
 
-    private static int getJavaMajorVersion() {
+     static int getJavaMajorVersion() {
         final String javaVersion = System.getProperty("java.version");
         final String[] parts = javaVersion.split("\\.");
         //link: http://openjdk.java.net/jeps/223
@@ -260,5 +260,7 @@ public class JavaType {
     public static boolean isBigType(int sqlType) {
         return sqlType == Types.BLOB || sqlType == Types.CLOB || sqlType == Types.NCLOB;
     }
+
+
 
 }

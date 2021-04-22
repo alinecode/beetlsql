@@ -39,12 +39,7 @@ public class DefaultConnectionSource implements ConnectionSource {
 
 	@Override
 	public Connection getMasterConn() {
-		try {
-			return master.getConnection();
-
-		} catch (SQLException e) {
-			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_CONNECTION, e);
-		}
+		return doGetConnection(null,master);
 
 	}
 

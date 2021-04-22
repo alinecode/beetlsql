@@ -5,6 +5,7 @@ import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.KeyWordHandler;
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
 
@@ -26,12 +27,13 @@ public class MySqlStyle extends AbstractDBStyle {
 		this.keyWordHandler = new KeyWordHandler() {
 			@Override
 			public String getTable(String tableName) {
-				return "`" + tableName + "`";
+				return StringKit.addEscape(tableName,'`');
 
 			}
 			@Override
 			public String getCol(String colName) {
-				return "`" + colName + "`";
+                return StringKit.addEscape(colName,'`');
+
 			}
 
 		};

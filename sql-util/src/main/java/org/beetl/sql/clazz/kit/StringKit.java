@@ -171,10 +171,7 @@ public class StringKit {
         return true;
     }
 	
-	
-	public static void main(String[] args) {
-		System.out.println(trimAllWhitespace(" fsdfsd sdfds fsd "));
-	}
+
 
     /**
      * 判断一个 Object 是否为空，不包含集合对象的判断
@@ -281,10 +278,30 @@ public class StringKit {
 		}
 		return (String[]) list.toArray(new String[list.size()]);
 	}
-	
-//	public static String removeLastToken(String str,String token) {
-//	    if()
-//	}
+
+	public static String addEscape(String name,char escape){
+    	return addEscape(name,escape,escape);
+	}
+
+	public static String addEscape(String name,char leftEscape,char rightEscape){
+    	int index = name.indexOf('.');
+    	if(index==-1){
+    		return new StringBuilder(name.length()+2).append(leftEscape).append(name).append(rightEscape).toString();
+		}else{
+    		String schema = name.substring(0,index);
+    		String table = name.substring(index+1);
+    		StringBuilder sb = new StringBuilder(name.length()+4);
+    		sb.append(leftEscape).append(schema).append(rightEscape).append('.').append(leftEscape).append(table).append(rightEscape);
+    		return sb.toString();
+
+		}
+	}
+
+
+	public static void main(String[] args) {
+		System.out.println(addEscape("abc",'[',']'));
+		System.out.println(addEscape("abc.eft",'[',']'));
+	}
 	
 	
 }

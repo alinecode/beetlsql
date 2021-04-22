@@ -1,6 +1,7 @@
 package org.beetl.sql.core.db;
 
 import org.beetl.sql.clazz.kit.KeyWordHandler;
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.range.RangeSql;
 
 import java.util.Map;
@@ -11,11 +12,11 @@ public class SqlServerStyle extends AbstractDBStyle {
         this.keyWordHandler = new KeyWordHandler() {
             @Override
             public String getTable(String tableName) {
-                return "[" + tableName + "]";
+                return StringKit.addEscape(tableName,'[',']');
             }
             @Override
             public String getCol(String colName) {
-                return "[" + colName + "]";
+                return StringKit.addEscape(colName,'[',']');
             }
         };
         sqlServerRange = new SqlServerRange(this);

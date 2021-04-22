@@ -79,6 +79,7 @@ public class BeanProcessor {
 	private void initHandlers() {
 		handlers.put(BigDecimal.class, bigDecimalHandler);
 		handlers.put(Boolean.class, booleanDecimalHandler);
+		handlers.put(boolean.class, booleanDecimalHandler);
 		handlers.put(byte[].class, byteArrayTypeHandler);
 		handlers.put(byte.class, byteTypeHandler);
 		handlers.put(Byte.class, byteTypeHandler);
