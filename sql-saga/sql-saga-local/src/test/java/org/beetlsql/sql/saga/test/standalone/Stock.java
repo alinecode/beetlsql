@@ -1,4 +1,4 @@
-package org.beetlsql.sql.saga.test;
+package org.beetlsql.sql.saga.test.standalone;
 
 import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;

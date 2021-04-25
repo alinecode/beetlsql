@@ -323,7 +323,7 @@ public class SchemaMetadataManager implements MetadataManager {
 					conn.close();
 				}
 			}
-			
+
 		}catch(Exception ex){
 			//忽略这个错误
 		}

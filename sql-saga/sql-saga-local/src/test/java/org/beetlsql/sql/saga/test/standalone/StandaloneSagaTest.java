@@ -1,4 +1,4 @@
-package org.beetlsql.sql.saga.test;
+package org.beetlsql.sql.saga.test.standalone;
 
 import org.beetl.sql.saga.common.LocalSagaContext;
 import org.beetl.sql.saga.common.LocalSagaContextFactory;
@@ -7,7 +7,10 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SimpleTest  extends BaseTest{
+/**
+ * 单独运行或者与其他框架集成的示例
+ */
+public class StandaloneSagaTest extends BaseTest{
 	@BeforeClass
 	public static void init(){
 		initTable(testSqlFile);

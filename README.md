@@ -96,7 +96,7 @@ sql-samples 又包含了三个模块大约100个例子
 * usuage: BeetlSQL所有API和功能
 * plugin:BeetlSQL高级扩展实例
 
-以usuage模块为例子，包含如下代码
+以usage模块为例子，包含如下代码
 
 *  S01MapperSelectSample 15个例子，  mapper中的查询演示
 *  S02MapperUpdateSample 11个例子，  mapper中更新操作
@@ -110,6 +110,8 @@ sql-samples 又包含了三个模块大约100个例子
 *  S10FetchSample 2个例子，关系映射
 *  S11BeetlFunctionSample 2个例子，自定义sql脚本的方法
 
+
+BeetlSQL提供了saga事物管理一种思路，但目前还是试验版本，欢迎不怕死的人尝试，和我一起完善这部分，其例子可以在saga模块的单元测试中找到
 
 
 ## 代码示例

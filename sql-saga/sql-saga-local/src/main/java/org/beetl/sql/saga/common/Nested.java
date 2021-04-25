@@ -7,6 +7,9 @@ public class Nested {
 	}
 	public void exit(){
 		count--;
+		if(count==-1){
+			System.out.println("abc");
+		}
 	}
 
 	public boolean isRoot(){

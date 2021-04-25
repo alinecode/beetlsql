@@ -21,6 +21,9 @@ public class SimpleService {
 		sqlManager.single(UserInfo.class,1);
 		userInfoMapper.single(1);
 		userInfoMapper.select();
+
+		userInfoMapper.createLambdaQuery().select();
+		userInfoMapper.createLambdaQuery().select();
 	}
 
 	@Transactional

@@ -1,4 +1,4 @@
-package org.beetlsql.sql.saga.test;
+package org.beetlsql.sql.saga.test.standalone;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;

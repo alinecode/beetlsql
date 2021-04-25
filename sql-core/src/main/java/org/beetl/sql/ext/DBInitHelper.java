@@ -16,6 +16,7 @@ import java.sql.SQLException;
 public class DBInitHelper {
 
 	public static void executeSqlScript(SQLManager sqlManager,String  sqlFile){
+		Connection conn = null;
 		try{
 			InputStream ins = sqlManager.getClassLoaderKit().loadResource(sqlFile);
 			if(ins==null){
@@ -27,7 +28,8 @@ public class DBInitHelper {
 			String str = new String(bs,"UTF-8");
 			String[] sqls = str.split(";");
 			DefaultConnectionSource defaultConnectionSource = (DefaultConnectionSource)sqlManager.getDs();
-			executeSql(defaultConnectionSource.getMasterConn(),sqls);
+			conn = defaultConnectionSource.getMasterConn();
+			executeSql(conn,sqls);
 			if(defaultConnectionSource.getSlaves()!=null){
 				for(DataSource salve:defaultConnectionSource.getSlaves()){
 					executeSql(salve.getConnection(),sqls);
@@ -36,6 +38,13 @@ public class DBInitHelper {
 
 		}catch(Exception ex){
 			throw new RuntimeException(ex);
+		}finally {
+			try {
+				conn.close();
+			} catch (SQLException throwables) {
+				//忽略
+				throwables.printStackTrace();
+			}
 		}
 	}
 
