@@ -112,18 +112,6 @@ public class SampleHelper {
 		ps.close();
 	}
 
-
-
-//    public static DataSource mysqlDatasource() {
-//        HikariDataSource ds = new HikariDataSource();
-//        ds.setJdbcUrl("jdbc:mysql://127.0.0.1:13306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8");
-//        ds.setUsername("root");
-//        ds.setPassword("12345678");
-//        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//        return ds;
-//    }
-
-
     public static void printPageResult(DefaultPageResult pageResult){
         System.out.println(pageResult.getPage());
         System.out.println(pageResult.getPageSize());

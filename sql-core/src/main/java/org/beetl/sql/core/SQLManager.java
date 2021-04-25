@@ -428,7 +428,7 @@ public class SQLManager implements DataAPI {
 				} else {
 					//使用当前sql转化成统计总数sql,page函数完成此功能
 					SQLExecutor script = getScript(sqlId);
-					Map pageParas = script.beforeExecute(Long.class, paras, false);
+					Map pageParas = script.beforeExecute(clazz, paras, false);
 					pageParas.put(PAGE, Boolean.TRUE);
 					totalRow = script.selectUnique(Long.class, pageParas);
 

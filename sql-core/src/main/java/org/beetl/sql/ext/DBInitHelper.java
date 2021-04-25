@@ -17,6 +17,7 @@ public class DBInitHelper {
 
 	public static void executeSqlScript(SQLManager sqlManager,String  sqlFile){
 		Connection conn = null;
+		DefaultConnectionSource defaultConnectionSource = null;
 		try{
 			InputStream ins = sqlManager.getClassLoaderKit().loadResource(sqlFile);
 			if(ins==null){
@@ -27,7 +28,7 @@ public class DBInitHelper {
 			ins.read(bs);
 			String str = new String(bs,"UTF-8");
 			String[] sqls = str.split(";");
-			DefaultConnectionSource defaultConnectionSource = (DefaultConnectionSource)sqlManager.getDs();
+			defaultConnectionSource = (DefaultConnectionSource)sqlManager.getDs();
 			conn = defaultConnectionSource.getMasterConn();
 			executeSql(conn,sqls);
 			if(defaultConnectionSource.getSlaves()!=null){
@@ -39,12 +40,7 @@ public class DBInitHelper {
 		}catch(Exception ex){
 			throw new RuntimeException(ex);
 		}finally {
-			try {
-				conn.close();
-			} catch (SQLException throwables) {
-				//忽略
-				throwables.printStackTrace();
-			}
+			defaultConnectionSource.closeConnection(conn,null,true);
 		}
 	}
 

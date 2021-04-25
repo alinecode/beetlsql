@@ -317,17 +317,7 @@ public class SchemaMetadataManager implements MetadataManager {
 	}
 	
 	protected void close(Connection conn){
-		try{
-			if(!ds.isTransaction()){
-				if(conn!=null) {
-					conn.close();
-				}
-			}
-
-		}catch(Exception ex){
-			//忽略这个错误
-		}
-		
+		this.ds.closeConnection(conn,null,false);
 	}
 	
 	protected void initDefaultSchema(){
@@ -448,7 +438,11 @@ public class SchemaMetadataManager implements MetadataManager {
 	private String getDbTableName(String name){
 		if(dbName.equals("oracle")){
 			return name.toUpperCase();
-		}else{
+		}else if(dbName.equals("h2")){
+			//假设h2数据库没有schema
+			return null;
+		}
+		else{
 			return name;
 		}
 	}

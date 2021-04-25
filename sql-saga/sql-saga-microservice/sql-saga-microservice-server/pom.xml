@@ -7,22 +7,22 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-saga-microservice</artifactId>
-        <version>3.3.12-RELEASE</version>
+        <version>3.3.13-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-saga-microservice-server</artifactId>
-    <version>3.3.12-RELEASE</version>
+    <version>3.3.13-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-saga-client</artifactId>
-            <version>3.3.12-RELEASE</version>
+            <version>3.3.13-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-springboot-starter</artifactId>
-            <version>3.3.12-RELEASE</version>
+            <version>3.3.13-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

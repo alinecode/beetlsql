@@ -5,7 +5,11 @@ import org.beetl.sql.annotation.entity.Auto;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Column;
 import org.beetl.sql.annotation.entity.Table;
+import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.UnderlinedNameConversion;
+import org.beetl.sql.core.page.DefaultPageRequest;
+import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.AutoMapper;
@@ -22,7 +26,7 @@ import java.util.List;
  * @see Jackson , json注解
  * @see LoadOne, 加载更多数据
  * @see Matcher, mapper扩展新注解
- * @see Tenant,多租户注解
+ * @see SchemaTenant, 多租户注解
  *
  */
 public class PluginAnnotationSample {
@@ -37,9 +41,12 @@ public class PluginAnnotationSample {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         PluginAnnotationSample plugin = new PluginAnnotationSample(sqlManager);
 //		plugin.testMatcherAnnotation();
-        plugin.testJacksonAnnotation();
+//        plugin.testJacksonAnnotation();
 //        plugin.loadMore();
-//        plugin.tenant();
+        plugin.tenantSchema();
+
+
+
 
     }
 
@@ -92,20 +99,47 @@ public class PluginAnnotationSample {
         System.out.println(userInfo.getDept().getName());
 
     }
-
-
     /**
-     * 查询前根据注解 @Tenant，提供一些必要的上下文参数
+     * 一个租户一个库。
      */
-    public void tenant(){
-        //设置当前操作的租户
-        TenantContext.tenantLocals.set(1);
+    public void tenantSchema(){
 
-        String sql = "select * from sys_user where department_id=#{tenantId}";
-        List<TenantUser> list = sqlManager.execute(sql,TenantUser.class,new HashMap());
+
+        sqlManager.setNc(new UnderlinedNameConversion(){
+            @Override
+            protected String getAnnotationTableName(Class clazz) {
+                ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(clazz);
+                String name =  classAnnotation.getTableName();
+                if(name.indexOf("${schema}")!=-1){
+                    String schema =  SchemaTenantContext.tenantSchemaLocals.get();
+                    name = name.replace("${schema}",schema);
+                }
+
+                return name ;
+            }
+        });
+
+
+
+        //设置当前操作的租户,由于采用h2内存数据库，只有一个schema是public。
+        SchemaTenantContext.tenantSchemaLocals.set("public");
+
+        SchemaTenantUser user = sqlManager.unique(SchemaTenantUser.class,1);
+
+        String sql = "select * from ${schema}.sys_user ";
+        List<SchemaTenantUser> list = sqlManager.execute(sql,SchemaTenantUser.class,new HashMap());
         System.out.println(list.get(0));
 
+        String pageSql = "select #{page('*')} from ${schema}.sys_user ";
+        PageResult<SchemaTenantUser> pageResult = sqlManager.executePageQuery(pageSql,SchemaTenantUser.class,new HashMap<>(),
+                DefaultPageRequest.of(1, 10));
+
     }
+
+
+
+
+
 
 
 
@@ -149,16 +183,19 @@ public class PluginAnnotationSample {
         String name;
     }
 
-
+    /**
+     * 通过schema来设置映射到某个库的某个表
+     */
     @Data
-    @Table(name="sys_user")
-    @Tenant
-    public static class TenantUser{
+    @Table(name="${schema}.sys_user")
+    @SchemaTenant
+    public static class SchemaTenantUser{
         @Auto
         private Integer id;
         @Column("name")
         private String name;
     }
+
 
 
 

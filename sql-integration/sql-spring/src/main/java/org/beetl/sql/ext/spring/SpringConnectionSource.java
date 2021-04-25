@@ -124,6 +124,9 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 	}
 
 	protected  DataSource getDatasourceFromContext(ExecuteContext ctx){
+		if(ctx==null){
+			return this.getMasterSource();
+		}
 		DataSource dataSource = (DataSource)ctx.getContextPara(DS_CONTEXT_PARAM);
 		return dataSource;
 	}

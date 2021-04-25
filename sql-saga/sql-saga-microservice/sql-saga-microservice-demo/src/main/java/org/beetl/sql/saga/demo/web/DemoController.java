@@ -39,7 +39,7 @@ public class DemoController {
 		String retStr = rest.getForEntity(userBalanceQueryUrl,String.class,paras).getBody();
 		Integer balance = Integer.parseInt(retStr);
 		if(balance<3){
-			//不应该发生，因为回滚成功
+			//不应该发生这个错误，因为回滚成功。如果看到这个错误，代表有bug
 			throw new RuntimeException("余额不足 "+balance);
 		}
 
