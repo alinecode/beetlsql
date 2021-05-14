@@ -7,14 +7,16 @@ import java.lang.annotation.Target;
 
 /**
  * 乐观锁实现,此注解会使得内置的update语句在where部分加上 此注解的对应的列名
- * <pre>{@code
+ * <pre>
+ * {@code
  * @AssignId
  * private int id
+ *
  * @version
  * private int  dataVersion;
  * }</pre>
  *
- * updateById 会生成如下sql语句
+ * updateById 会生成如下sql语句：
  *
  * <pre>
  * where  id=#id#  and  data_version = #dataVersion#

@@ -10,5 +10,5 @@ import java.util.List;
  * @author xiandafu
  */
 public interface BeanFetch {
-    void fetchMore(ExecuteContext ctx, List beans, Annotation annotation);
+	void fetchMore(ExecuteContext ctx, List beans, Annotation annotation);
 }

@@ -52,7 +52,7 @@ public class SQLManager implements DataAPI {
 	String charset;
 	boolean isProduct = false;
 	MapperBuilder mapperBuilder = null;
-	ThreadLocal<QueryConfig> queryConfigLocal = ThreadLocal.withInitial(() -> new QueryConfig());
+	ThreadLocal<QueryConfig> queryConfigLocal = ThreadLocal.withInitial(QueryConfig::new);
 	private DBStyle dbStyle;
 	private SQLLoader sqlLoader;
 	/*数据库连接管理*/
@@ -206,7 +206,6 @@ public class SQLManager implements DataAPI {
 
 
 	}
-
 
 	public SQLManager viewType(Class view) {
 		this.queryConfigLocal.get().setViewClass(view);

@@ -18,16 +18,23 @@ import java.lang.annotation.Target;
  *
  * }</pre>
  *
- * 这里Xxxx类必须是如下类的子类，以实现不同的操作
- * Convert
  * @author xiandafu
- * @see  Fetch
- * @see UpdateTime
+ * @see  org.beetl.sql.core.mapping.BeanFetch
+ * @see TargetAdditional
+ * @see BeanConvert
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.ANNOTATION_TYPE})
 public @interface Builder {
-	Class value();
+	/**
+	 * 当注解在类上时，可为以下类的子类： <br/>
+	 * {@link TargetAdditional} <br/>
+	 * {@link org.beetl.sql.core.mapping.BeanFetch} <br/>
+	 * {@link BeanConvert} <br/>
+	 * 当注解在字段上时，可为以下类的子类： <br/>
+	 * {@link AttributeConvert} <br/>
+	 */
+	Class<?> value();
 }
 
 

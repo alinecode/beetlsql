@@ -5,6 +5,9 @@ import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.db.DBStyle;
 
+/**
+ * 用于定义SQL语句的加载接口
+ */
  public interface SQLLoader {
 
 
@@ -12,7 +15,7 @@ import org.beetl.sql.core.db.DBStyle;
 	  * 从缓存中取得SQLSource，抛出错误 BeetlSQLException.CANNOT_GET_SQL
 	  *
 	  * @param id
-	  * @return
+	  * @return 返回对应SQL源
 	  */
 	 SQLSource querySQL(SqlId id);
 
@@ -40,10 +43,10 @@ import org.beetl.sql.core.db.DBStyle;
 	 boolean exist(SqlId id);
 
 	 /**
-	  * SQLLoader里增加一个预先有的sql，如自动生成的SQL
+	  * 新增一个指定标识的SQL资源
 	  *
-	  * @param id
-	  * @param source
+	  * @param id 指定SqlId
+	  * @param source 新增SQL资源
 	  */
 	 void addSQL(SqlId id, SQLSource source);
 
@@ -55,11 +58,16 @@ import org.beetl.sql.core.db.DBStyle;
 
 	 void setDbStyle(DBStyle dbs);
 
+	/**
+	 * 是否是生产配置
+	 */
 	 boolean isProduct();
 
 	 void setProduct(boolean product);
 
-
+	/**
+	 * 返回{@link SqlId} 表示的SQL资源路径
+	 */
 	 String getPathBySqlId(SqlId id);
 
 	 BeetlSQLException getException(SqlId id);
