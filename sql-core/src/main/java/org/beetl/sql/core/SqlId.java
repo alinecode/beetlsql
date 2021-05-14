@@ -3,12 +3,18 @@ package org.beetl.sql.core;
 import java.util.Objects;
 
 /**
- * sqlId标识,通过namespace,id，type来区分唯一一个sql
+ * sqlId标识,通过namespace，id，type来区分每个sql资源
  * @author xiandafu
  */
 public class SqlId {
 
+	/**
+	 * 命名空间
+	 */
 	protected String namespace;
+	/**
+	 * SQL资源ID
+	 */
 	protected String id;
 	/**
 	 * 通过sql转化成其他sql用，比如分页sql
@@ -51,7 +57,9 @@ public class SqlId {
 		return new SqlId(sqlId);
 	}
 
-	/*对一些特殊标记的sqlId做处理*/
+	/**
+	 * 推断SQL资源的类型，对一些特殊标记的sqlId做处理
+	 */
 	protected String inferType(String temp) {
 		if (temp.endsWith("$page")) {
 			this.type = Type.page;
@@ -114,6 +122,11 @@ public class SqlId {
 		return clone;
 	}
 
+	/**
+	 * 创建一个在同一命名空间下的SqlId
+	 * @param id
+	 * @return 返回创建好的SqlId
+	 */
 	public SqlId sibling(String id) {
 		SqlId newSqlId = new SqlId(namespace, id);
 		return newSqlId;
@@ -166,7 +179,28 @@ public class SqlId {
 		return Objects.hash(namespace, id, type);
 	}
 
-	enum Type {general, page, range, count, view}
+	enum Type {
+		/**
+		 * 通用类型
+		 */
+		general,
+		/**
+		 * 分页类型
+		 */
+		page,
+		/**
+		 * 范围类型
+		 */
+		range,
+		/**
+		 * 统计类型
+		 */
+		count,
+		/**
+		 * 视图类型
+		 */
+		view
+	}
 
 	enum ManagedType {resource, auto, template, sql}
 }

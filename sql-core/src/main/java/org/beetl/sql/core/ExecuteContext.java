@@ -38,19 +38,20 @@ public class ExecuteContext {
     /**
      * ViewType类型，如果viewType不为null
      */
-    public Class viewClass = null;
+    public Class<?> viewClass = null;
     /**
      * 行映射类，与resultMapper只能二选一存在
      */
-    public RowMapper rowMapper = null;
+    public RowMapper<?> rowMapper = null;
     /**
      * Bean映射类
      */
-    public ResultSetMapper resultMapper = null;
+    public ResultSetMapper<?> resultMapper = null;
 
     /**
      * 用来负责将ResultSet映射到对象上，如果此不为null，则使用此类负责映射，
-     * 否则，参考RowMapper或者ResultSetMapper，如果也为null，则使用SQLManager的默认的BeanProcessor
+     * 否则，参考RowMapper或者ResultSetMapper；<br/>
+	 * 如果为null，则使用SQLManager的默认的BeanProcessor
      */
     public BeanProcessor beanProcessor = null;
 

@@ -23,52 +23,51 @@ import java.util.stream.Collectors;
 
 
 /**
- * BeetlSQL重要类，记录了class及其属性的所有注解,用于各种骚操作的配置
+ * BeetlSQL重要类，记录了实体类与所有字段的注解,用于BeetlSQL个性化功能的配置
  *
- * 一个bean可以有多个注解。
  * @author xiandafu
- * @since  3.0
+ * @since 3.0
  */
 @Data
 public class ClassAnnotation {
 
-    static DefaultCache<Class, ClassAnnotation> cache = new DefaultCache<>();
+	static DefaultCache<Class, ClassAnnotation> cache = new DefaultCache<>();
 
-    //实体对象
-    Class entityClass = null;
-    //@Table 对应的名字
-    String tableName = null;
+	//实体对象
+	Class entityClass = null;
+	//@Table 对应的名字
+	String tableName = null;
 	//使用@Column注解后，属性到列明的映射
-    Map<String,String> attrAnnotationName = new HashMap<>();
-    //使用@Column注解后 列名到属性映射
-	CaseInsensitiveHashMap<String,String> colAnnotationName = new CaseInsensitiveHashMap<>();
+	Map<String, String> attrAnnotationName = new HashMap<>();
+	//使用@Column注解后 列名到属性映射
+	CaseInsensitiveHashMap<String, String> colAnnotationName = new CaseInsensitiveHashMap<>();
 
-    //update和insert 忽略策略
-    Set<String> attrUpdateIgnores = null;
+	//update和insert 忽略策略
+	Set<String> attrUpdateIgnores = null;
 	Set<String> attrInsertIgnores = null;
 
 
-    // 逻辑删除标记以及设置的默认值
-    String logicDeleteAttrName =null;
-    int logicDeleteAttrValue = 0;
+	// 逻辑删除标记以及设置的默认值
+	String logicDeleteAttrName = null;
+	int logicDeleteAttrValue = 0;
 
-    //版本号标记和设置的初始值
-    String versionProperty;
-    int initVersionValue = -1;
-    /**
-     *  额外的映射方式，rowMapper，resultSetMapper
-     *  这是因为他们都是用了ResultSet作为遍历
-     */
+	//版本号标记和设置的初始值
+	String versionProperty;
+	int initVersionValue = -1;
+	/**
+	 *  额外的映射方式，rowMapper，resultSetMapper
+	 *  这是因为他们都是用了ResultSet作为遍历
+	 */
 	RowMapper rowMapper = null;
 	ResultSetMapper resultSetMapper = null;
-	Annotation  mapperConfig = null;
-
-
+	/**
+	 * 被{@link ProviderConfig} 注解的注解
+	 */
+	Annotation mapperConfig = null;
 	BeanFetch beanFetch = null;
 	Annotation beanFetchAnnotation = null;
 
-//
-//	Map<String,Annotation> fetechMap;
+	//	Map<String,Annotation> fetechMap;
 
 	/**
 	 * 插入实体时候自动从数据库获取的值，参考{@link Auto} 和 {@link AutoID} {@link SeqID}
@@ -84,82 +83,77 @@ public class ClassAnnotation {
 	boolean containExtAnnotation = false;
 
 
-    public static ClassAnnotation getClassAnnotation(Class entity){
-        ClassAnnotation ca = cache.get(entity);
-        if(ca!=null){
-            return ca;
-        }
+	protected ClassAnnotation(Class entityClass) {
+		this.entityClass = entityClass;
+	}
 
-
-        ca = new ClassAnnotation(entity);
-        ca.init();
-        cache.put(entity,ca);
-        return ca;
-    }
-
-    protected  ClassAnnotation(Class entityClass){
-        this.entityClass = entityClass;
-
-
-    }
-
-    protected void init(){
-		if(BeanKit.isJavaClass(entityClass)){
-			return ;
+	public static ClassAnnotation getClassAnnotation(Class entity) {
+		ClassAnnotation ca = cache.get(entity);
+		if (ca != null) {
+			return ca;
 		}
-    	mappingCheck();
-        propertyCheck();
-        checkExtAnnotation();
 
-    }
+		ca = new ClassAnnotation(entity);
+		ca.init();
+		cache.put(entity, ca);
+		return ca;
+	}
 
+	protected void init() {
+		if (BeanKit.isJavaClass(entityClass)) {
+			return;
+		}
+		/*检查映射相关注解*/
+		mappingCheck();
+		/*检查属性相关注解*/
+		propertyCheck();
+		/*检查可扩展注解*/
+		checkExtAnnotation();
 
+	}
 
 
 	/**
 	 * 检查额外的用户自定义注解
 	 */
-	protected  void checkExtAnnotation(){
+	protected void checkExtAnnotation() {
 		Annotation[] ans = this.entityClass.getAnnotations();
-		for(Annotation an:ans){
+		for (Annotation an : ans) {
 			Builder builder = an.annotationType().getAnnotation(Builder.class);
-			if(builder==null){
+			if (builder == null) {
 				continue;
 			}
 			Class ext = builder.value();
-			if(TargetAdditional.class.isAssignableFrom(ext)){
+			if (TargetAdditional.class.isAssignableFrom(ext)) {
 				extAnnotation.setAdditionalAnnotation(an);
-				extAnnotation.setTargetAdditional((TargetAdditional)BeanKit.newSingleInstance(ext));
-			}else if(BeanConvert.class.isAssignableFrom(ext)){
-				extAnnotation.setBeanConvert((BeanConvert)BeanKit.newSingleInstance(ext));
+				extAnnotation.setTargetAdditional(BeanKit.<TargetAdditional>newSingleInstance(ext));
+			} else if (BeanConvert.class.isAssignableFrom(ext)) {
+				extAnnotation.setBeanConvert(BeanKit.<BeanConvert>newSingleInstance(ext));
 				extAnnotation.setBeanConvertAnnotation(an);
-			}else if(BeanFetch.class.isAssignableFrom(ext)){
-				this.beanFetch = (BeanFetch)BeanKit.newSingleInstance(ext);
+			} else if (BeanFetch.class.isAssignableFrom(ext)) {
+				this.beanFetch = BeanKit.<BeanFetch>newSingleInstance(ext);
 				this.beanFetchAnnotation = an;
-			}
-			else{
+			} else {
 				//忽略不关心的
 			}
 
 		}
 
 		PropertyDescriptor[] ps = this.getPropertyDescriptor(this.entityClass);
-		for(PropertyDescriptor p:ps){
+		for (PropertyDescriptor p : ps) {
 			String attr = p.getName();
-			List<Annotation> attrAns = BeanKit.getAllAnnotation(entityClass,attr);
-			for(Annotation an:attrAns) {
+			List<Annotation> attrAns = BeanKit.getAllAnnotation(entityClass, attr);
+			for (Annotation an : attrAns) {
 				Class attrExt = getBuilderAnnotation(an);
-				if(attrExt==null){
+				if (attrExt == null) {
 					continue;
 				}
 				if (AttributeConvert.class.isAssignableFrom(attrExt)) {
-					extAnnotation.addAttributeConvert(attr,(AttributeConvert) BeanKit.newSingleInstance(attrExt));
+					extAnnotation.addAttributeConvert(attr, BeanKit.<AttributeConvert>newSingleInstance(attrExt));
 				}
 			}
 		}
-
-		containExtAnnotation = extAnnotation.hasAttributeExt()|| extAnnotation.hasEntityExt();
-
+		containExtAnnotation = extAnnotation.hasAttributeExt() || extAnnotation.hasEntityExt();
 	}
 
 	/**
@@ -167,116 +161,105 @@ public class ClassAnnotation {
 	 * @see ResultProvider
 	 * @see RowProvider
 	 */
-    protected void mappingCheck(){
-
-		Table table = (Table)BeanKit.getAnnotation(entityClass,Table.class);;
-
-		if(table!=null){
+	protected void mappingCheck() {
+		/*映射表的注解*/
+		Table table = BeanKit.getAnnotation(entityClass, Table.class);
+		if (table != null) {
 			this.tableName = table.name();
 		}
 
-		ResultProvider mappingConfig = (ResultProvider)this.entityClass.getAnnotation(
-				ResultProvider.class);
-		if(mappingConfig!=null){
-			this.resultSetMapper = (ResultSetMapper)BeanKit.newSingleInstance(mappingConfig.value());
-		}
-		RowProvider provider = (RowProvider)this.entityClass.getAnnotation(RowProvider.class);
-		if(provider!=null){
-			this.rowMapper = (RowMapper) BeanKit.newInstance(provider.value());
+		ResultProvider mappingConfig = (ResultProvider) this.entityClass.getAnnotation(ResultProvider.class);
+		if (mappingConfig != null) {
+			this.resultSetMapper = BeanKit.newSingleInstance(mappingConfig.value());
 		}
 
-
-
-		if(rowMapper!=null&&resultSetMapper!=null){
-			throw new IllegalArgumentException("rowMapper 或者 resultSetMapper 不能同时存在于"+entityClass);
+		RowProvider provider = (RowProvider) this.entityClass.getAnnotation(RowProvider.class);
+		if (provider != null) {
+			this.rowMapper = BeanKit.newInstance(provider.value());
+		}
+		if (rowMapper != null && resultSetMapper != null) {
+			throw new IllegalArgumentException("rowMapper 或者 resultSetMapper 不能同时存在于" + entityClass);
 		}
 
 		Annotation[] ans = this.entityClass.getAnnotations();
-		for(Annotation an:ans){
+		for (Annotation an : ans) {
 			ProviderConfig builder = an.annotationType().getAnnotation(ProviderConfig.class);
-			if(builder!=null){
+			if (builder != null) {
 				this.mapperConfig = an;
 			}
 		}
 
-    }
+	}
 
 
-
-    protected  void propertyCheck(){
-        PropertyDescriptor[] ps = this.getPropertyDescriptor(this.entityClass);
-        for(PropertyDescriptor p:ps){
-            Method readMethod =  p.getReadMethod();
-            Class type = p.getPropertyType();
+	protected void propertyCheck() {
+		PropertyDescriptor[] ps = this.getPropertyDescriptor(this.entityClass);
+		for (PropertyDescriptor p : ps) {
+			Method readMethod = p.getReadMethod();
+			Class type = p.getPropertyType();
 			String attr = p.getName();
-			//各种内置注解
-            if(type.isEnum()){
+			if (type.isEnum()) {
+				// 判断实体类上是否有枚举映射注解，用于结果集映射
 				EnumMapping enumMapping = BeanKit.getAnnotation(entityClass, attr, readMethod, EnumMapping.class);
-				if(enumMapping!=null){
+				if (enumMapping != null) {
 					String enumAttr = enumMapping.value();
-					EnumKit.init(type,enumAttr);
-				}else{
+					EnumKit.init(type, enumAttr);
+				} else {
 					EnumKit.init(type);
 				}
-            }
-
+			}
+			// 字段与数据列映射注解
 			Column column = BeanKit.getAnnotation(entityClass, attr, readMethod, Column.class);
-			if(column!=null){
+			if (column != null) {
 				String col = column.value();
-				this.attrAnnotationName.put(attr,col);
-				this.colAnnotationName.put(col,attr);
+				this.attrAnnotationName.put(attr, col);
+				this.colAnnotationName.put(col, attr);
 			}
 
-
 			Auto auto = BeanKit.getAnnotation(entityClass, attr, readMethod, Auto.class);
-			if(auto!=null){
+			if (auto != null) {
 				checkAutoAttrList();
 				autoAttrList.add(attr);
 			}
 
-			AutoID  autoId = BeanKit.getAnnotation(entityClass, attr, readMethod, AutoID.class);
-			if(autoId!=null){
+			AutoID autoId = BeanKit.getAnnotation(entityClass, attr, readMethod, AutoID.class);
+			if (autoId != null) {
 				checkAutoAttrList();
-				autoAttrList.add(0,attr);
+				autoAttrList.add(0, attr);
 			}
 
 			SeqID seqId = BeanKit.getAnnotation(entityClass, attr, readMethod, SeqID.class);
-			if(seqId!=null){
+			if (seqId != null) {
 				checkAutoAttrList();
-				autoAttrList.add(0,attr);
+				autoAttrList.add(0, attr);
 			}
 
-
 			InsertIgnore ig = BeanKit.getAnnotation(entityClass, attr, readMethod, InsertIgnore.class);
-			UpdateIgnore ug = BeanKit.getAnnotation(entityClass, attr, readMethod, UpdateIgnore.class);
-			if(ig!=null){
+			if (ig != null) {
 				checkAttrInsertIgnores();
 				this.attrInsertIgnores.add(attr);
 			}
 
-			if(ug!=null){
+			UpdateIgnore ug = BeanKit.getAnnotation(entityClass, attr, readMethod, UpdateIgnore.class);
+			if (ug != null) {
 				checkAttrUpdateIgnores();
 				this.attrUpdateIgnores.add(attr);
 			}
 
-            LogicDelete logicDelete =  BeanKit.getAnnotation(entityClass, attr, readMethod, LogicDelete.class);
-            if(logicDelete!=null) {
-                this.logicDeleteAttrName = p.getName();
-                this.logicDeleteAttrValue =logicDelete.value();
-            }
+			LogicDelete logicDelete = BeanKit.getAnnotation(entityClass, attr, readMethod, LogicDelete.class);
+			if (logicDelete != null) {
+				this.logicDeleteAttrName = p.getName();
+				this.logicDeleteAttrValue = logicDelete.value();
+			}
 
-            Version version =  BeanKit.getAnnotation(entityClass, attr, readMethod, Version.class);
-            if(version!=null){
-                this.versionProperty = attr;
-                this.initVersionValue =version.value();
-            }
+			Version version = BeanKit.getAnnotation(entityClass, attr, readMethod, Version.class);
+			if (version != null) {
+				this.versionProperty = attr;
+				this.initVersionValue = version.value();
+			}
+		}
 
-        }
-
-    }
-
-
-
+	}
 
 
 	/**
@@ -284,32 +267,31 @@ public class ClassAnnotation {
 	 * @param userCustomizedAnnotation
 	 * @return
 	 */
-	protected Class getBuilderAnnotation(Annotation userCustomizedAnnotation){
-		Builder builder  = userCustomizedAnnotation.annotationType().getAnnotation(Builder.class);
-		if(builder==null){
+	protected Class getBuilderAnnotation(Annotation userCustomizedAnnotation) {
+		Builder builder = userCustomizedAnnotation.annotationType().getAnnotation(Builder.class);
+		if (builder == null) {
 			return null;
 		}
 		return builder.value();
 	}
 
 
-
-    public PropertyDescriptor[] getPropertyDescriptor(Class entityClass){
-        try {
-            return BeanKit.propertyDescriptors(entityClass);
-        } catch (IntrospectionException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-	public boolean isInsertIgnore(String attrName){
-
-		return attrInsertIgnores!=null&&attrInsertIgnores.contains(attrName);
+	public PropertyDescriptor[] getPropertyDescriptor(Class entityClass) {
+		try {
+			return BeanKit.propertyDescriptors(entityClass);
+		} catch (IntrospectionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public boolean isUpdateIgnore(String attrName){
-		return attrUpdateIgnores!=null&&attrUpdateIgnores.contains(attrName);
+
+	public boolean isInsertIgnore(String attrName) {
+
+		return attrInsertIgnores != null && attrInsertIgnores.contains(attrName);
+	}
+
+	public boolean isUpdateIgnore(String attrName) {
+		return attrUpdateIgnores != null && attrUpdateIgnores.contains(attrName);
 	}
 
 	public BeanFetch getBeanFetch() {
@@ -317,39 +299,37 @@ public class ClassAnnotation {
 	}
 
 
-	public String[] getInsertAutoAttrs(){
-		if(autoAttrList==null){
-			return  BeanKit.EMP_STRING_ARRAY;
+	public String[] getInsertAutoAttrs() {
+		if (autoAttrList == null) {
+			return BeanKit.EMP_STRING_ARRAY;
 		}
 		return autoAttrList.toArray(new String[0]);
 	}
 
 	public String[] getInsertAutoCols(NameConversion nc) {
-		if(this.autoAttrList.isEmpty()){
-			return null ;
+		if (this.autoAttrList.isEmpty()) {
+			return null;
 		}
-		return autoAttrList.stream()
-				.map(t ->  nc.getColName(this.entityClass,t))
-				.collect(Collectors.toList())
+		return autoAttrList.stream().map(t -> nc.getColName(this.entityClass, t)).collect(Collectors.toList())
 				.toArray(new String[0]);
 	}
 
 
-	protected  void checkAutoAttrList(){
-		if(autoAttrList==null){
+	protected void checkAutoAttrList() {
+		if (autoAttrList == null) {
 			autoAttrList = new ArrayList<>(1);
 		}
 	}
 
-	protected void checkAttrInsertIgnores(){
-		if(attrInsertIgnores==null){
+	protected void checkAttrInsertIgnores() {
+		if (attrInsertIgnores == null) {
 			attrInsertIgnores = new HashSet();
 		}
 
 	}
 
-	protected  void checkAttrUpdateIgnores(){
-		if(attrUpdateIgnores==null){
+	protected void checkAttrUpdateIgnores() {
+		if (attrUpdateIgnores == null) {
 			attrUpdateIgnores = new HashSet<>();
 		}
 	}

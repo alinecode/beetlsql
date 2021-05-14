@@ -1,5 +1,6 @@
 package org.beetl.sql.clazz;
 
+import org.beetl.sql.annotation.entity.EnumMapping;
 import org.beetl.sql.annotation.entity.EnumValue;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.Cache;
@@ -12,9 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 映射枚举和缓存
+ * 记录下实体类中存在的枚举字段与结果集映射的配置信息
+ * {@link EnumMapping} 和 {@link EnumValue}
  * @author xiandafu
- *
  */
 public class EnumKit {
 
@@ -28,7 +29,7 @@ public class EnumKit {
 	 * @return 枚举
 	 */
 	public static Enum getEnumByValue(Class c, Object value) {
-		if(value==null){
+		if (value == null) {
 			return null;
 		}
 		if (!c.isEnum()) {
@@ -36,13 +37,13 @@ public class EnumKit {
 		}
 
 		EnumConfig config = cache.get(c);
-		if(config==null){
+		if (config == null) {
 			config = init(c);
 		}
 
 		//测试 SQLServer 数据库的 tinyint 类型 会被转为 Short 而如果封装时Key的类型为Integer 则无法取出
-		if(Short.class == value.getClass()) {
-			value = ((Short)value).intValue();
+		if (Short.class == value.getClass()) {
+			value = ((Short) value).intValue();
 		}
 		return config.map.get(value);
 	}
@@ -53,12 +54,12 @@ public class EnumKit {
 	 * @return
 	 */
 	public static Object getValueByEnum(Object en) {
-		if(en==null) {
+		if (en == null) {
 			return null;
 		}
 		Class c = en.getClass();
 		EnumConfig config = cache.get(c);
-		if(config==null){
+		if (config == null) {
 			config = init(c);
 		}
 		return config.dbMap.get(en);
@@ -69,15 +70,15 @@ public class EnumKit {
 	 * @param c
 	 * @see ClassAnnotation
 	 */
-	public static EnumConfig init(Class c){
+	public static EnumConfig init(Class c) {
 		EnumConfig config = cache.get(c);
-		if(config!=null){
+		if (config != null) {
 			return config;
 		}
 		String valueAttrName = lookupEnumValueAttr(c);
-		if(valueAttrName!=null){
-			config = init(c,valueAttrName);
-		}else{
+		if (valueAttrName != null) {
+			config = init(c, valueAttrName);
+		} else {
 			config = initDefaultValue(c);
 		}
 		return config;
@@ -89,7 +90,7 @@ public class EnumKit {
 	 * @param c
 	 * @return
 	 */
-	private static  EnumConfig initDefaultValue(Class c){
+	private static EnumConfig initDefaultValue(Class c) {
 
 		Map<Object, Enum> map = new HashMap<Object, Enum>();
 		Map<Enum, Object> map2 = new HashMap(); // db
@@ -110,21 +111,21 @@ public class EnumKit {
 	 * @param entityClass
 	 * @param attr
 	 */
-	public static EnumConfig init(Class entityClass,String attr){
+	public static EnumConfig init(Class entityClass, String attr) {
 		EnumConfig enumConfig = cache.get(entityClass);
-		if(enumConfig!=null){
-			return enumConfig ;
+		if (enumConfig != null) {
+			return enumConfig;
 		}
 
 		try {
 			PropertyDescriptor[] ps = BeanKit.propertyDescriptors(entityClass);
-			for(PropertyDescriptor p:ps){
-				if(p.getName().equals(attr)){
-					enumConfig = init(entityClass,p);
+			for (PropertyDescriptor p : ps) {
+				if (p.getName().equals(attr)) {
+					enumConfig = init(entityClass, p);
 					return enumConfig;
 				}
 			}
-			throw new RuntimeException("不可能发生找不到attr"+attr);
+			throw new RuntimeException("在" + entityClass.getCanonicalName() + "中无法找到字段 " + attr);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -138,7 +139,7 @@ public class EnumKit {
 	 * @param enumClass
 	 * @return
 	 */
-	private static String lookupEnumValueAttr(Class enumClass){
+	private static String lookupEnumValueAttr(Class enumClass) {
 		PropertyDescriptor[] ps = null;
 		try {
 			ps = BeanKit.propertyDescriptors(enumClass);
@@ -146,14 +147,14 @@ public class EnumKit {
 			throw new IllegalStateException(e);
 		}
 
-		for(PropertyDescriptor p:ps){
-			Method readMethod =  p.getReadMethod();
-			if(readMethod.getDeclaringClass()==Object.class){
+		for (PropertyDescriptor p : ps) {
+			Method readMethod = p.getReadMethod();
+			if (readMethod.getDeclaringClass() == Object.class) {
 				continue;
 			}
 			String attr = p.getName();
 			EnumValue enumValue = BeanKit.getAnnotation(enumClass, attr, readMethod, EnumValue.class);
-			if(enumValue!=null){
+			if (enumValue != null) {
 				return attr;
 			}
 		}
@@ -168,7 +169,7 @@ public class EnumKit {
 	 * @param entityClass
 	 * @param p
 	 */
-	private static EnumConfig init(Class entityClass,PropertyDescriptor p){
+	private static EnumConfig init(Class entityClass, PropertyDescriptor p) {
 
 		try {
 			Method m = p.getReadMethod();
@@ -177,7 +178,7 @@ public class EnumKit {
 			Enum[] temporaryConstants = getEnumValues(entityClass);
 			for (Enum e : temporaryConstants) {
 
-				Object key = m.invoke(e, new Object[] {});
+				Object key = m.invoke(e, new Object[]{});
 				map.put(key, e);
 				map2.put(e, key);
 			}
@@ -196,14 +197,15 @@ public class EnumKit {
 	public static class EnumConfig {
 		Map<Object, Enum> map = new HashMap<Object, Enum>();
 		Map<Enum, Object> dbMap = new HashMap(); // db
+
 		public EnumConfig(Map<Object, Enum> map, Map<Enum, Object> dbMap) {
 			this.map = map;
 			this.dbMap = dbMap;
 		}
 
 	}
-	
-	private static Enum[] getEnumValues(Class c){
+
+	private static Enum[] getEnumValues(Class c) {
 		try {
 			final Method values = c.getMethod("values");
 			java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
@@ -218,41 +220,47 @@ public class EnumKit {
 			return temporaryConstants;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		} 
-		
+		}
+
 	}
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		Color c = Color.RED;
 		Object value = EnumKit.getValueByEnum(c);
 		System.out.println(value);
-		
-		String a = "BLUE" ;
-		Color e = (Color)EnumKit.getEnumByValue(Color.class, 1);
+
+		String a = "BLUE";
+		Color e = (Color) EnumKit.getEnumByValue(Color.class, 1);
 		System.out.println(e);
-		
+
 	}
-	
+
 	public enum Color {
-		RED("RED",1),BLUE ("BLUE",2);
-		private String name;  
+		RED("RED", 1), BLUE("BLUE", 2);
+		private String name;
 		private int value;
-		private Color(String name, int value) {  
-		    this.name = name;  
-		    this.value = value;  
+
+		private Color(String name, int value) {
+			this.name = name;
+			this.value = value;
 		}
+
 		public String getName() {
 			return name;
 		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
+
 		public int getValue() {
 			return value;
 		}
+
 		public void setValue(int value) {
 			this.value = value;
-		}  
-		
-	} 
-	
+		}
+
+	}
+
 }

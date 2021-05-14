@@ -8,17 +8,22 @@ import java.lang.annotation.Target;
 /**
  * 列名，通常只需要NameConversion来负责转化 除非有特殊的命名，可以使用这个
  * <pre>
+ * {@code
  * @Column("id_")
  * private Integer id;
+ * }
  * </pre>
+ *
  * @author xiandafu
  * @see Table
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
 public @interface Column {
+	/**
+	 * 数据表列名
+	 */
 	String value();
-
 }
 
 

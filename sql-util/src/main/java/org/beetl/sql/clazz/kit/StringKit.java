@@ -39,7 +39,9 @@ public class StringKit {
 		}
 	}
 
-	// 大写字母前面加上下划线并转为全小写
+	/**
+	 * 转下划线字符, eg AaaBbb => aaa_bbb
+	 */
 	public static String enCodeUnderlined(String s) {
 		char[] chars = toLowerCaseFirstOne(s).toCharArray();
 		StringBuilder temp = new StringBuilder();
@@ -51,8 +53,10 @@ public class StringKit {
 		}
 		return temp.toString();
 	}
-	
-	// 删除下划线并转把后一个字母转成大写
+
+	/**
+	 * 转驼峰式字符，eg: aaa_bbb => aaaBbb , Aaa_bBb=>aaaBBb
+	 */
 	public static String deCodeUnderlined(String str) {
 		
 		String[] splitArr = str.split("_");

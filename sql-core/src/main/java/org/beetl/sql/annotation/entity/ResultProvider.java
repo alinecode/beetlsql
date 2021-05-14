@@ -8,23 +8,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 指定一个映射实现
- * <pre>{@
- *     @ResultProvider(SimpleJoinMapping.class)
+ * 指定一个映射结果集到Java实体类的实现
+ * <pre>
+ *    {@literal @}ResultProvider(AutoJsonMapper.class)
  *     public class User{
  *			private Integer id;
  *			private Department dept;
  *     }
- * }</pre>
- *  SimpleJoinMapping.class 应该是{@code ResultSetMapper}的一个子类
+ * </pre>
+ *  AutoJsonMapper.class 应该是{@code ResultSetMapper}的一个子类
  * @author xiandafu
  * @see ResultSetMapper
- * @see SimpleJoinMapping
+ * @see org.beetl.sql.core.mapping.join.AutoJsonMapper
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ResultProvider {
-	Class<? extends ResultSetMapper>  value();
+	Class<? extends ResultSetMapper> value();
 }
 
 
