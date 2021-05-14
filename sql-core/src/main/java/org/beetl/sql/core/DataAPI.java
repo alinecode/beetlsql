@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.core.engine.template.SQLErrorInfo;
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
@@ -122,6 +123,10 @@ public interface DataAPI {
 
     <T> List<T> execute(SQLReady p, Class<T> clazz);
     <T> T executeQueryOne(SQLReady p, Class<T> clazz);
+
+    <T> StreamData<T> streamExecute(SQLReady p, Class<T> clazz);
+
+    <T> StreamData<T> stream(SqlId sqlId,  Class<T> clazz,Object paras);
 
     <T> PageResult<T> execute(SQLReady p, Class<T> clazz, PageRequest<T> pageRequest);
 

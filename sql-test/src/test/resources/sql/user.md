@@ -55,4 +55,9 @@ implementByChild
 
     select * from sys_user  where id =1;
 
+streamTest
+===
+
+    select * from sys_user
+
 

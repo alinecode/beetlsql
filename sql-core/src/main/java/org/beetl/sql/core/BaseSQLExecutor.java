@@ -589,6 +589,73 @@ public class BaseSQLExecutor implements SQLExecutor {
 	}
 
 	@Override
+	public <T> StreamData<T> streamExecute(Class<T> clazz, SQLReady p) {
+		SQLResult sqlResult = new SQLResult(p.sql, p.args);
+		executeContext.sqlResult = sqlResult;
+		List<T> resultList = null;
+		Connection conn = null;
+		ResultSetHolder rsh = null;
+		try {
+			conn = executeContext.sqlManager.getDs().getConn(executeContext, false);
+			rsh = dbQuery(conn, sqlResult.jdbcSql, sqlResult.jdbcPara);
+			ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(clazz);
+			//单行映射
+			RowMapper rowMapper =
+					executeContext.rowMapper != null ? executeContext.rowMapper : classAnnotation.getRowMapper();
+			//结果集映
+			ResultSetMapper resultSetMapper = executeContext.resultMapper != null ?
+					executeContext.resultMapper :
+					classAnnotation.getResultSetMapper();
+			//映射方式三选一
+			if (resultSetMapper != null) {
+				throw new UnsupportedOperationException("stream查询不支持ResultSetMapper");
+			}
+			StreamData data = new StreamData(rsh.resultSet,this.executeContext,clazz);
+			if(rowMapper!=null){
+				data.setRowMapper(rowMapper,classAnnotation.getMapperConfig());
+			}
+			//不 close 数据库链接，期待事物上下文结束后关闭链接，参考StreamData.foreach方法
+			return data;
+		} catch (SQLException e) {
+			clean(false, conn, rsh);
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		}
+	}
+
+	@Override
+	public <T> StreamData<T> stream(Class<T> clazz, Object obj) {
+		Map paras = this.beforeExecute(clazz, obj, false);
+		SQLResult result = run(paras);
+		ResultSetHolder rsh = null;
+		Connection conn = null;
+		try {
+			conn = executeContext.sqlManager.getDs().getConn(executeContext, false);
+			rsh = dbQuery(conn, result.jdbcSql, result.jdbcPara);
+			ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(clazz);
+			//单行映射
+			RowMapper rowMapper =
+					executeContext.rowMapper != null ? executeContext.rowMapper : classAnnotation.getRowMapper();
+			//结果集映
+			ResultSetMapper resultSetMapper = executeContext.resultMapper != null ?
+					executeContext.resultMapper :
+					classAnnotation.getResultSetMapper();
+			//映射方式三选一
+			if (resultSetMapper != null) {
+				throw new UnsupportedOperationException("stream查询不支持ResultSetMapper");
+			}
+			StreamData data = new StreamData(rsh.resultSet,this.executeContext,clazz);
+			if(rowMapper!=null){
+				data.setRowMapper(rowMapper,classAnnotation.getMapperConfig());
+			}
+			//不 close 数据库链接，期待事物上下文结束后关闭链接，参考StreamData.foreach方法
+			return data;
+		} catch (SQLException e) {
+			clean(false, conn, rsh);
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		}
+	}
+
+	@Override
 	public int sqlReadyExecuteUpdate(SQLReady p) {
 		SQLResult sqlResult = new SQLResult(p.sql, p.args);
 		executeContext.sqlResult = sqlResult;
@@ -743,9 +810,11 @@ public class BaseSQLExecutor implements SQLExecutor {
 
 	protected ResultSetHolder dbQuery(Connection conn, String sql, List<SQLParameter> jdbcPara) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(sql);
+
 		this.applyStatementSetting(executeContext, conn, ps);
 		this.setPreparedStatementPara(ps, jdbcPara);
 		ResultSet rs = ps.executeQuery();
+
 		return new ResultSetHolder(ps, rs);
 	}
 

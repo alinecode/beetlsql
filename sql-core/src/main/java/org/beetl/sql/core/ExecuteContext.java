@@ -88,7 +88,7 @@ public class ExecuteContext {
             executeContext.viewClass = queryConfig.getViewClass();
             executeContext.rowMapper = queryConfig.getRowMapper();
             executeContext.resultMapper = queryConfig.getResultSetMapper();
-            queryConfig.clear();
+            sqlManager.queryConfigLocal.remove();
         }
 
         return executeContext;

@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.core.engine.template.TemplateContext;
+import org.beetl.sql.core.mapping.StreamData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -113,6 +114,11 @@ public interface SQLExecutor {
 	int deleteById(Class<?> target, Object objId);
 
 	<T> List<T> sqlReadySelect(Class<T> target, SQLReady p);
+
+
+	<T> StreamData<T> streamExecute(Class<T> clazz,SQLReady p);
+
+	<T> StreamData<T> stream(Class<T> target,Object obj);
 
 	int sqlReadyExecuteUpdate(SQLReady p);
 

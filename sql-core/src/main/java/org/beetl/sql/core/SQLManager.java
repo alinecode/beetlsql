@@ -13,6 +13,7 @@ import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
@@ -1273,6 +1274,33 @@ public class SQLManager implements DataAPI {
 		}
 
 	}
+
+	/**
+	 * 返回一个流，适合处理超大量数据
+	 * @param p
+	 * @param clazz
+	 * @param <T>
+	 * @return
+	 */
+	@Override
+	public <T> StreamData<T> streamExecute(SQLReady p, Class<T> clazz) {
+		SqlId id = this.sqlIdFactory.buildSql(p.getSql());
+		SQLSource source = new SQLSource(id, p.getSql());
+		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
+		SQLExecutor script = dbStyle.buildExecutor(executeContext);
+		return script.streamExecute(clazz,p);
+
+	}
+
+	@Override
+	public <T> StreamData<T> stream(SqlId sqlId, Class<T> clazz, Object paras) {
+		SQLExecutor script = getScript(sqlId);
+		StreamData data = script.stream(clazz,paras);
+		return data;
+	}
+
+
+
 
 	private <T> List<T> executeWithId(SqlId id, SQLReady p, Class<T> clazz) {
 

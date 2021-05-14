@@ -106,6 +106,19 @@ public class CoreUpdate extends BaseTest {
 
     }
 
+
+    @Test
+    public void batchSQLBatchReady(){
+        SQLBatchReady sqlBatchReady = new SQLBatchReady("update sys_user set name=? where id = ?",
+                Arrays.asList(new Object[]{"abc",1},new Object[]{"abcd",2}));
+        sqlManager.executeBatchUpdate(sqlBatchReady);
+
+        User user = sqlManager.unique(User.class,1);
+        User user2 = sqlManager.unique(User.class,2);
+        Assert.assertEquals("abc",user.getName());
+        Assert.assertEquals("abcd",user2.getName());
+
+    }
     @Test
     public void batchBatchUpdate(){
 
