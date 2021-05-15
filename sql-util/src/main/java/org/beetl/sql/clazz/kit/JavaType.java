@@ -216,6 +216,15 @@ public class JavaType {
         }
     }
 
+	public static boolean isDateTimeType(Integer sqlType) {
+		// 日期类型有特殊操作
+		if ( sqlType == Types.TIMESTAMP || sqlType == Types.TIMESTAMP_WITH_TIMEZONE) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
     public static boolean isInteger(Integer sqlType) {
         if (sqlType == Types.BOOLEAN || sqlType == Types.BIT || sqlType == Types.INTEGER || sqlType == Types.TINYINT
                 || sqlType == Types.SMALLINT) {

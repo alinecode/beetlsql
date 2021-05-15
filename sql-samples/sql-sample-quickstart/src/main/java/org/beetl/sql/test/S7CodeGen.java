@@ -63,7 +63,7 @@ public class S7CodeGen {
 
         SourceConfig config = new SourceConfig(sqlManager,sourceBuilder);
 
-        config.setPreferDateType(SourceConfig.PreferDateType.Date);
+        config.setPreferDateType(SourceConfig.PreferDateType.LocalDate);
         //如果有错误，抛出异常而不是继续运行1
         EntitySourceBuilder.getGroupTemplate().setErrorHandler(new ReThrowConsoleErrorHandler() );
 

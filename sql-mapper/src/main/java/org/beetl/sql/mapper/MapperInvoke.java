@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * mapper中的每个方法都会对应一个MapperInvoke类
  * 如下java包中提供各种实现
  * <ul>
- *     <li>internal:自带的实现，如简单的CRUID，{@code BaseMapper} 使用了这个包下
+ *     <li>internal:自带的实现，如简单的CRUD，{@code BaseMapper} 使用了这个包下
  *     所有代码，比如insert,updateById,deleteById,all,templateOne
  *     </li>
  *     <li>ready:注解提供jdbc sql语句

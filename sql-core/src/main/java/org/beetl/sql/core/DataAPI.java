@@ -126,6 +126,8 @@ public interface DataAPI {
 
     <T> StreamData<T> streamExecute(SQLReady p, Class<T> clazz);
 
+    <T> StreamData<T> streamExecute(String sqlTemplate, Class<T> clazz,Object para);
+
     <T> StreamData<T> stream(SqlId sqlId,  Class<T> clazz,Object paras);
 
     <T> PageResult<T> execute(SQLReady p, Class<T> clazz, PageRequest<T> pageRequest);

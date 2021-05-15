@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- * 自定义基接口配置构建器.
+ * 入口类，自定义基接口配置构建器.使用MapperMethodParser 解析方法，得出采用的IAM类
  *
  *
  * @author xiandafu,luoyizhu@gmail.com

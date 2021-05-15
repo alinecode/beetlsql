@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 测试内置的查询操作
+ * 测试stream查询
  */
 public class StreamTest extends BaseTest {
     @BeforeClass
@@ -72,10 +72,6 @@ public class StreamTest extends BaseTest {
         });
         Assert.assertEquals(expected,total.get());
 
-
-
-
-
         DSTransactionManager.commit();
 
 
@@ -84,7 +80,7 @@ public class StreamTest extends BaseTest {
 
 
     @Test
-    public void test() throws SQLException {
+    public void testStream() throws SQLException {
         //stream操作必须再事务里使用，以期望能stream结束后，事物自动关闭数据库链接，而不是beetlsql
         DSTransactionManager.start();
 
@@ -99,6 +95,23 @@ public class StreamTest extends BaseTest {
         Assert.assertEquals(expected,total.get());
         DSTransactionManager.commit();
 
+    }
+
+
+    @Test
+    public void testStreamTemplate() throws SQLException {
+        //stream操作必须再事务里使用，以期望能stream结束后，事物自动关闭数据库链接，而不是beetlsql
+        DSTransactionManager.start();
+
+        String sql = "select * from sys_user ";
+        long expected = sqlManager.allCount(User.class);
+        final AtomicLong total = new AtomicLong();
+        StreamData<User> streamData = sqlManager.streamExecute(sql,User.class,new HashMap<>());
+        streamData.foreach(user -> {
+            total.incrementAndGet();
+        });
+        Assert.assertEquals(expected,total.get());
+        DSTransactionManager.commit();
 
     }
 

@@ -125,7 +125,7 @@ public class SQLManager implements DataAPI {
 	/**
 	 * 是否是生产模式:生产模式MetadataManager ，不查看sql文件变化,默认是false
 	 *
-	 * @return
+	 * @return ture表示不检测sql变化
 	 */
 	public boolean isProductMode() {
 		return this.isProduct;
@@ -469,8 +469,8 @@ public class SQLManager implements DataAPI {
 			list = Collections.EMPTY_LIST;
 		}
 
-		PageResult pageReqeust = totalRequired ? request.of(list, totalRow) : request.of(list);
-		return pageReqeust;
+		PageResult pageRequest = totalRequired ? request.of(list, totalRow) : request.of(list);
+		return pageRequest;
 	}
 
 
@@ -1289,6 +1289,22 @@ public class SQLManager implements DataAPI {
 		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
 		SQLExecutor script = dbStyle.buildExecutor(executeContext);
 		return script.streamExecute(clazz,p);
+
+	}
+
+
+	@Override
+	public <T> StreamData<T> streamExecute(String sqlTemplate, Class<T> clazz,Object para) {
+		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
+		SQLSource source = sqlLoader.queryAutoSQL(id);
+		if (source == null) {
+			source = new SQLSource(id, sqlTemplate);
+			source.setSqlType(SQLType.SELECT);
+			this.sqlLoader.addSQL(id, source);
+		}
+		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
+		SQLExecutor script = dbStyle.buildExecutor(executeContext);
+		return script.stream(clazz,para);
 
 	}
 
