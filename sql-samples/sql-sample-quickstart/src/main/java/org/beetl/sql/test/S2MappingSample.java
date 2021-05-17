@@ -133,6 +133,8 @@ public class S2MappingSample {
 
     }
 
+
+
     /**
      * 演示使用Column 注解映射java属性与表列名，
      */

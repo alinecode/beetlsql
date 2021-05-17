@@ -1,5 +1,6 @@
 package org.beetl.sql.test.mapper;
 
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.mapper.BaseMapper;
@@ -92,6 +93,9 @@ public interface UserMapper extends BaseMapper<UserEntity> {
 	@Template("select #{page()} from sys_user where department_id = #{id}")
 	PageResult<UserEntity> queryTemplateDeptById(Integer id,PageRequest pageRequest);
 
-
+	/*返回StreamData对象，用于查询大量数据*/
+	@Template("select * from sys_user where id != #{id}")
+	//或者使用 @Sql("select * from sys_user where id != ？")
+	StreamData allUserStream(Integer id);
 
 }

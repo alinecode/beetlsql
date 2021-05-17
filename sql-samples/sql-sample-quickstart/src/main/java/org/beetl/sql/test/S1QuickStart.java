@@ -3,9 +3,11 @@ package org.beetl.sql.test;
 
 
 
+import org.beetl.sql.core.DSTransactionManager;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.SqlId;
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.sample.SampleHelper;
@@ -13,6 +15,7 @@ import org.beetl.sql.sample.entity.DepartmentEntity;
 import org.beetl.sql.sample.entity.UserEntity;
 import org.beetl.sql.test.mapper.UserMapper;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +39,13 @@ public class S1QuickStart {
     public static void main(String[] args) throws Exception {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S1QuickStart quickStart = new S1QuickStart(sqlManager);
-        quickStart.baseSqlManager();
+//        quickStart.baseSqlManager();
 //        quickStart.executeSql();
 //        quickStart.executeTemplate();
 //        quickStart.query();
 //        quickStart.mapper();
-//        quickStart.sqlResource();
+        quickStart.sqlResource();
+//        quickStart.stream();
     }
 
     /**
@@ -171,14 +175,38 @@ public class S1QuickStart {
      * 参考sql/user.md#select
      */
     public  void sqlResource(){
-        SqlId id = SqlId.of("user","select");
+        SqlId id = SqlId.of("user","selectUserByName");
         //or SqlId id = SqlId.of("user.select");
         Map map = new HashMap();
         map.put("name","n");
         List<UserEntity> list = sqlManager.select(id,UserEntity.class,map);
 
-        mapper.selectUserByName("n");
+//        mapper.selectUserByName("n");
 
     }
+
+
+	/**
+	 * 对于需要处理海量数据，可以使用stream api查询，返回StreaData对象
+	 * 参考sql/user.md#select
+	 */
+	public  void stream() throws SQLException {
+		//不同于其他beetlsql api，stream对象包含了数据库链接，因此查询完毕后，脱离了beetlsql管理，因此期待在
+		//事物上下文里被调用，这里采用beetlsql内置的事物管理器，spring框架可以使用spring事物管理，而不需要DSTransactionManager
+		DSTransactionManager.start();
+		SQLReady sqlReady = new SQLReady("select * from sys_user");
+		StreamData<UserEntity> streamData = sqlManager.streamExecute(sqlReady,UserEntity.class);
+		streamData.foreach(user -> {
+			System.out.println(user.getName());
+		});
+
+		streamData = mapper.allUserStream(1);
+		streamData.foreach(user -> {
+			System.out.println(user.getName());
+		});
+
+		DSTransactionManager.commit();
+
+	}
 
 }

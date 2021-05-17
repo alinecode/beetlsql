@@ -42,6 +42,13 @@ import org.beetl.sql.core.db.DBStyle;
 	  */
 	 boolean exist(SqlId id);
 
+	/**
+	 * 检测是否存在sqlId的namespace，如文件
+	 * @param id
+	 * @return
+	 */
+	boolean existNamespace(SqlId id);
+
 	 /**
 	  * 新增一个指定标识的SQL资源
 	  *
