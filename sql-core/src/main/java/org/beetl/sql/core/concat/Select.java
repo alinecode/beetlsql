@@ -63,7 +63,6 @@ public class Select extends WhereNode {
         mainTable = ctx.nc.getTableName(target);
         mainTable = ctx.keyWordHandler.getTable(mainTable);
 
-
         return this;
     }
 

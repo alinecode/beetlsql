@@ -8,7 +8,7 @@ public class Delete extends WhereNode {
     }
 
     public Delete from(Class target) {
-        mainTable = ctx.nc.getTableName(target);
+        mainTable = ctx.keyWordHandler.getTable(ctx.nc.getTableName(target));
         return this;
     }
 

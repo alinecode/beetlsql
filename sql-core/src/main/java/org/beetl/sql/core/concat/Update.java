@@ -15,13 +15,10 @@ public class Update extends WhereNode {
     }
 
     public Update from(Class target) {
-        mainTable = ctx.nc.getTableName(target);
+        mainTable = ctx.keyWordHandler.getTable(ctx.nc.getTableName(target));
         return this;
     }
-    public Update from(String table) {
-        mainTable = table;
-        return this;
-    }
+
 
     public Update table(String table) {
         this.mainTable = table;

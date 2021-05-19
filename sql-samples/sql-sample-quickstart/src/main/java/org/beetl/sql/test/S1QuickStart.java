@@ -181,7 +181,7 @@ public class S1QuickStart {
         map.put("name","n");
         List<UserEntity> list = sqlManager.select(id,UserEntity.class,map);
 
-//        mapper.selectUserByName("n");
+        mapper.selectUserByName("n");
 
     }
 
