@@ -1,4 +1,4 @@
-package org.beetlsql.sql.saga.test;
+package org.beetlsql.sql.saga.test.spring;
 
 import lombok.Data;
 import org.beetl.sql.annotation.entity.AutoID;

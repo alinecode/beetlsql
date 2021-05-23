@@ -39,7 +39,9 @@ public class StringKit {
 		}
 	}
 
-	// 大写字母前面加上下划线并转为全小写
+	/**
+	 * 转下划线字符, eg AaaBbb => aaa_bbb
+	 */
 	public static String enCodeUnderlined(String s) {
 		char[] chars = toLowerCaseFirstOne(s).toCharArray();
 		StringBuilder temp = new StringBuilder();
@@ -51,8 +53,10 @@ public class StringKit {
 		}
 		return temp.toString();
 	}
-	
-	// 删除下划线并转把后一个字母转成大写
+
+	/**
+	 * 转驼峰式字符，eg: aaa_bbb => aaaBbb , Aaa_bBb=>aaaBBb
+	 */
 	public static String deCodeUnderlined(String str) {
 		
 		String[] splitArr = str.split("_");
@@ -171,10 +175,7 @@ public class StringKit {
         return true;
     }
 	
-	
-	public static void main(String[] args) {
-		System.out.println(trimAllWhitespace(" fsdfsd sdfds fsd "));
-	}
+
 
     /**
      * 判断一个 Object 是否为空，不包含集合对象的判断
@@ -281,10 +282,30 @@ public class StringKit {
 		}
 		return (String[]) list.toArray(new String[list.size()]);
 	}
-	
-//	public static String removeLastToken(String str,String token) {
-//	    if()
-//	}
+
+	public static String addEscape(String name,char escape){
+    	return addEscape(name,escape,escape);
+	}
+
+	public static String addEscape(String name,char leftEscape,char rightEscape){
+    	int index = name.indexOf('.');
+    	if(index==-1){
+    		return new StringBuilder(name.length()+2).append(leftEscape).append(name).append(rightEscape).toString();
+		}else{
+    		String schema = name.substring(0,index);
+    		String table = name.substring(index+1);
+    		StringBuilder sb = new StringBuilder(name.length()+4);
+    		sb.append(leftEscape).append(schema).append(rightEscape).append('.').append(leftEscape).append(table).append(rightEscape);
+    		return sb.toString();
+
+		}
+	}
+
+
+	public static void main(String[] args) {
+		System.out.println(addEscape("abc",'[',']'));
+		System.out.println(addEscape("abc.eft",'[',']'));
+	}
 	
 	
 }

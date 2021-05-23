@@ -28,7 +28,7 @@ import java.sql.Statement;
  */
 public interface ConnectionSource {
 	/**
-	 * 得到一个主库连接,主要用于
+	 * 得到一个主库连接
 	 *
 	 * @return
 	 */

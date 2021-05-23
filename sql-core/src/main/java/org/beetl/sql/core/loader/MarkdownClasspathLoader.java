@@ -264,8 +264,22 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         return this.sqlRoot;
     }
 
+	@Override
+	public boolean existNamespace(SqlId id) {
+		URL root = this.getRootFile(id);
+		if(root!=null){
+			return true;
+		}
+		URL db = this.getDBRootFile(id);
+		if(db!=null){
+			return true;
+		}
 
-    public static class SQLFileVersion {
+		return false;
+	}
+
+
+	public static class SQLFileVersion {
         public URL url;
         //根目录下sql文件版本
         public long root = 0L;

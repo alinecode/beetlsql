@@ -1,5 +1,6 @@
 一个模拟Spring应用，Saga事务的管理,假设用户有4元余额，想购买一个3元产品
 
+* 
 * 启动saga-server,运行SagaServerApplication（需要安装Kafka）
 * 启动DemoApplication,OrderApplication,UserApplication
 * 可以访问各个系统的swagger，比如http://127.0.0.1:8080(8081,8082)/swagger-ui/index.html

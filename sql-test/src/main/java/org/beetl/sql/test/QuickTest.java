@@ -29,6 +29,8 @@ import java.util.Set;
  */
 
 public class QuickTest {
+
+	static DataSource dataSource = mysqlDatasource();
 //	private static   DataSource datasource() {
 //		HikariDataSource ds = new HikariDataSource();
 //		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -38,7 +40,7 @@ public class QuickTest {
 //		return ds;
 //	}
 	private  static SQLManager getSQLManager(){
-		DataSource dataSource = mysqlDatasource();
+
 		ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
 		SQLManagerBuilder builder = new SQLManagerBuilder(source);
 		builder.setNc(new UnderlinedNameConversion());
@@ -50,27 +52,22 @@ public class QuickTest {
 
     public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
-
-		System.out.println(sqlManager.getMetaDataManager().allTable());
-
+		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
 
 
-		List<SourceBuilder> sourceBuilder = new ArrayList<>();
-		SourceBuilder entityBuilder = new EntitySourceBuilder();
-		SourceBuilder mapperBuilder = new MapperSourceBuilder();
-		SourceBuilder mdBuilder = new MDSourceBuilder();
 
-		sourceBuilder.add(entityBuilder);
-		sourceBuilder.add(mapperBuilder);
-		sourceBuilder.add(mdBuilder);
-
-		SourceConfig config = new SourceConfig(sqlManager,sourceBuilder);
+		userMapper.createLambdaQuery().select();
+		System.out.println("down");
 
 
-		ConsoleOnlyProject project = new ConsoleOnlyProject();
-		String tableName = "sys_user";
-		//可以在控制台看到生成的所有代码
-		config.gen(tableName,project);
+		userMapper.createLambdaQuery().select();
+		System.out.println("down2");
+
+		userMapper.createLambdaQuery().select();
+		System.out.println("down3");
+
+
+
 
     }
 
@@ -81,6 +78,8 @@ public class QuickTest {
 		ds.setUsername(MysqlDBConfig.userName);
 		ds.setPassword(MysqlDBConfig.password);
 		ds.setDriverClassName(MysqlDBConfig.driver);
+		ds.setLeakDetectionThreshold(10);
+		ds.setMaximumPoolSize(1);
 		// ds.setAutoCommit(false);
 		return ds;
 	}
@@ -89,7 +88,7 @@ public class QuickTest {
 		//    public static String driver = "com.mysql.jdbc.Driver";
 		public static String driver = "com.mysql.cj.jdbc.Driver";
 		public static String dbName = "test";
-		public static String password = "12345678";
+		public static String password = "123456";
 		public static String userName = "root";
 		public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true";
 	}

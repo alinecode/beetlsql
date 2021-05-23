@@ -20,8 +20,9 @@ public abstract class AbstractClassPathSQLLoader extends  AbstractSQLLoader{
     public BeetlSQLException getException(SqlId sqlId) {
         String path = getPathBySqlId(sqlId);
 
+
         String envInfo = path + ".md(sql)" + " sqlLoader:" + this;
-        if (exist(sqlId)) {
+        if (existNamespace(sqlId)) {
             envInfo = envInfo + ",文件找到，但没有对应的sqlId";
         } else {
             envInfo = envInfo + ",未找到对应的sql文件";

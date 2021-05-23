@@ -3,6 +3,7 @@ package org.beetl.sql.mapper.builder;
 import org.beetl.sql.annotation.builder.Builder;
 import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.SqlId;
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.*;
 import org.beetl.sql.mapper.identity.BatchUpdateRMI;
@@ -13,12 +14,17 @@ import org.beetl.sql.mapper.ready.BatchSqlReadyMI;
 import org.beetl.sql.mapper.ready.PageSqlReadyMI;
 import org.beetl.sql.mapper.ready.SelectSqlReadyMI;
 import org.beetl.sql.mapper.ready.UpdateSqlReadyMI;
+import org.beetl.sql.mapper.stream.StreamSqlIdMI;
+import org.beetl.sql.mapper.stream.StreamSqlReadyMI;
+import org.beetl.sql.mapper.stream.StreamTemplateSqlMI;
 import org.beetl.sql.mapper.template.PageTemplateMI;
 import org.beetl.sql.mapper.template.SelectTemplateMI;
 import org.beetl.sql.mapper.template.UpdateTemplateMI;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * 解析Mapper方法，得到MapperInvoke类,能解析内置的的Sql,TemplateSql,也支持通过Builder注解自定义注解
@@ -38,8 +44,11 @@ public class MapperMethodParser {
         this.preferredSqlLen = PropertiesKit.getInstance().getIntValue("MAPPER_SQL_MAX_LENGTH","-1");
     }
 
-    public MapperInvoke parse(){
-
+	/**
+	 * 解析Mapper中定于定义方法，采用对应的MapperInvoke
+	 * @return
+	 */
+	public MapperInvoke parse(){
 
 
         AutoMapper autoMapper = method.getAnnotation(AutoMapper.class);
@@ -48,25 +57,32 @@ public class MapperMethodParser {
             return invoke;
         }
 
+        if(StreamData.class.isAssignableFrom(method.getReturnType())){
+			MapperInvoke invoke =  parseStreamMethod();
+			return invoke;
+		}
+
         Sql sqlAnnotation = method.getAnnotation(Sql.class);
         if(sqlAnnotation!=null){
-            return parseSqlMethod(sqlAnnotation);
+			MapperInvoke invoke = parseSqlMethod(sqlAnnotation);
+			return invoke;
         }
 
         Template templateAnnotation = method.getAnnotation(Template.class);
         if(templateAnnotation !=null){
-            return parseSqlTemplateMethod(templateAnnotation);
+			MapperInvoke invoke =  parseSqlTemplateMethod(templateAnnotation);
+			return invoke;
         }
-
-
 
         MapperExtBuilder mapperBuilder = findExtBuilder();
         if(mapperBuilder!=null){
-            return mapperBuilder.parse(defaultRetType,method);
+			MapperInvoke invoke =  mapperBuilder.parse(defaultRetType,method);
+			return invoke;
         }
 
         //默认，sqlId方式
-        return parseSqlId();
+		MapperInvoke invoke =  parseSqlId();
+        return invoke;
 
     }
 
@@ -189,6 +205,43 @@ public class MapperMethodParser {
             throw new UnsupportedOperationException("不支持 "+action.toString());
         }
     }
+
+    protected  MapperInvoke parseStreamMethod(){
+    	Sql sqlAnnotation = this.method.getAnnotation(Sql.class);
+		Class targetType = getStreamType();
+
+		ParameterParser parameterParser = new ParameterParser(method);
+		MethodParamsHolder paramsHolder = parameterParser.getHolder();
+
+    	if(sqlAnnotation!=null){
+			StreamSqlReadyMI sqlReadyMI = new StreamSqlReadyMI(sqlAnnotation.value(),targetType);
+			return sqlReadyMI;
+		}
+
+    	Template templateAnnotation = this.method.getAnnotation(Template.class);
+    	if(templateAnnotation!=null){
+    		String sqlTemplate = templateAnnotation.value();
+			StreamTemplateSqlMI streamTemplateSqlMI = new StreamTemplateSqlMI(sqlTemplate,targetType,paramsHolder);
+			return streamTemplateSqlMI;
+		}
+
+		String namespace = getNamespace();
+		String id = method.getName();
+		SqlId sqlId = SqlId.of(namespace,id);
+
+		StreamSqlIdMI sqlIdMI = new StreamSqlIdMI(sqlId,targetType,paramsHolder);
+		return  sqlIdMI;
+
+	}
+
+	protected  Class getStreamType(){
+    	Type t = method.getGenericReturnType();
+		if(!(t instanceof ParameterizedType) ){
+			return defaultRetType;
+		}
+		Class type = BeanKit.getParameterTypeClass(method.getReturnType());
+		return type!=null?type:this.defaultRetType;
+	}
 
     protected MapperInvoke parseSqlMethod(Sql sqlAnnotation){
         String jdbcSql = sqlAnnotation.value();

@@ -230,12 +230,20 @@ public class SourceConfig {
 	protected String getJavaType(ColDesc desc,PackageList packageList) {
 		int jdbcType = desc.getSqlType();
 		if (JavaType.isDateType(jdbcType)) {
+
 			if (preferDateType == PreferDateType.Date) {
 				packageList.getPkgs().add("java.util.Date");
 				return "Date";
 			} else if (preferDateType == PreferDateType.LocalDate) {
-				packageList.getPkgs().add("java.times.LocalDate");
-				return "LocalDate";
+				boolean isTime = JavaType.isDateTimeType((jdbcType));
+				if(isTime){
+					packageList.getPkgs().add("java.times.LocalDateTime");
+					return "LocalDateTime";
+				}else{
+					packageList.getPkgs().add("java.times.LocalDate");
+					return "LocalDate";
+				}
+
 			} else {
 				packageList.getPkgs().add("java.sql.Timestamp");
 				return "Timestamp";

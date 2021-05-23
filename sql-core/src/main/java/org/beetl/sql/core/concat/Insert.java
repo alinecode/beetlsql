@@ -15,13 +15,10 @@ public class Insert implements Output {
         valueNode = new InsertValueNode(this);
     }
 
-    public Insert into(String mainTable){
-        this.mainTable = mainTable;
-        return this;
-    }
+
 
     public Insert into(Class clazz){
-        mainTable = ctx.nc.getTableName(clazz);
+        mainTable = ctx.keyWordHandler.getTable(ctx.nc.getTableName(clazz));
         return this;
     }
 
@@ -54,11 +51,7 @@ public class Insert implements Output {
     @Override
     public void toSql(ConcatBuilder sb) {
         sb.append("insert into");
-        if(sb.getCtx().keyWordHandler!=null){
-			sb.append(sb.getCtx().keyWordHandler.getTable(mainTable));
-		}else{
-			sb.append(mainTable);
-		}
+		sb.append(mainTable);
         sb.leftBracket();
         colNode.toSql(sb);
         sb.rightBracket().append(" values").leftBracket();

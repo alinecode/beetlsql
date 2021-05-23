@@ -10,16 +10,39 @@ public class LocalSagaContext extends SagaContext {
 		newTransaction();
 	}
 
+
+
+	@Override
+	public void start(){
+		if(nested.isRoot()){
+			time= System.nanoTime();
+		}
+		nested.enter();
+	}
+
+	/**
+	 * 对于local-saga，gid参数不是需要强制传入。
+	 * @param gid
+	 */
+	@Override
+	public void start(String gid){
+		start();
+		this.gid = gid;
+	}
+
+
+
 	/**
 	 * 回滚所有操作
 	 * 子类可以继承，以多次尝试回滚或者发送到队列（比如数据不可用），延迟回滚
 	 */
 	@Override
 	public void rollback(){
-		super.rollback();
+		nested.exit();
 		if(!nested.isRoot()){
 			return ;
 		}
+
 		try{
 			boolean success = transaction.rollback();
 			//用户可以扩展，提供多次回滚机会而不是只回滚一次
@@ -35,14 +58,12 @@ public class LocalSagaContext extends SagaContext {
 
 
 	public  void commit(){
-		try{
-			super.commit();
-		}finally {
+		super.commit();
+		if(nested.isRoot()){
 			newTransaction();
 		}
-
-
 	}
+
 	@Override
 	public SagaTransaction getTransaction(){
 		return transaction;

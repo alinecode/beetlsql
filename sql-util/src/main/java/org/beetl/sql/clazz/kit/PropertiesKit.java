@@ -9,33 +9,33 @@ public class PropertiesKit {
 	static PropertiesKit propertiesKit = new PropertiesKit();
 	Properties ps = new Properties();
 
-	public PropertiesKit(){
+	public PropertiesKit() {
 		Properties defaultConfig = loadDefaultConfig();
 		Properties extConfig = loadExtConfig();
 		ps.putAll(defaultConfig);
 		ps.putAll(extConfig);
 	}
 
-	public static  PropertiesKit  getInstance(){
+	public static PropertiesKit getInstance() {
 		return propertiesKit;
 	}
 
-	public Properties getPs(){
+	public Properties getPs() {
 		return ps;
 	}
 
-	public String getValue(String name){
+	public String getValue(String name) {
 		return ps.getProperty(name);
 	}
 
-	public Integer getIntValue(String name){
+	public Integer getIntValue(String name) {
 
 		return Integer.parseInt(ps.getProperty(name).trim());
 	}
 
-	public Integer getIntValue(String name,String defaultValue){
+	public Integer getIntValue(String name, String defaultValue) {
 
-		return Integer.parseInt(ps.getProperty(name,defaultValue).trim());
+		return Integer.parseInt(ps.getProperty(name, defaultValue).trim());
 	}
 
 	/***
@@ -45,7 +45,7 @@ public class PropertiesKit {
 	 */
 	static public Properties loadDefaultConfig() {
 		Properties ps = new Properties();
-		InputStream ins =loadIns("/btsql.properties");
+		InputStream ins = loadIns("/btsql.properties");
 		if (ins == null) {
 			throw new IllegalStateException("默认配置文件加载错:找不到 btsql.properties");
 		}
@@ -75,18 +75,16 @@ public class PropertiesKit {
 		return ps;
 	}
 
-	protected  static InputStream loadIns(String resource){
-		if(Thread.currentThread().getContextClassLoader()!=null){
+	protected static InputStream loadIns(String resource) {
+		if (Thread.currentThread().getContextClassLoader() != null) {
 			InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-			if(ins!=null){
+			if (ins != null) {
 				return ins;
 			}
 		}
 
 		InputStream ins = PropertiesKit.class.getResourceAsStream(resource);
 		return ins;
-
 	}
-
 
 }

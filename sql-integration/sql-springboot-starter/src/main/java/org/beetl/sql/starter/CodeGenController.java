@@ -19,11 +19,20 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+/**
+ * 一个方便工具类，使用者可以在集成swagger基础上，增加一个代码生成api
+ * <pre>{@code
+ * @RestController
+ * public class MyCodeGenController extends CodeGenController{}
+ *
+ *
+ * }</pre>
+ * 如上类，确保MyCodeGenController能被springboot扫描到，则swagger api自动增加一个代码生成&预览的api
+ */
 public class CodeGenController {
 
-	@Autowired
-	SQLManager sqlManager;
+	  @Autowired
+	  protected SQLManager sqlManager;
 
 	@ApiOperation(notes = "预览", value = "预览生成的代码")
 	@GetMapping("/beetlsql3/preview")

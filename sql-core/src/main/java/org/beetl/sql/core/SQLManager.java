@@ -13,6 +13,7 @@ import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
@@ -52,7 +53,7 @@ public class SQLManager implements DataAPI {
 	String charset;
 	boolean isProduct = false;
 	MapperBuilder mapperBuilder = null;
-	ThreadLocal<QueryConfig> queryConfigLocal = ThreadLocal.withInitial(() -> new QueryConfig());
+	ThreadLocal<QueryConfig> queryConfigLocal = ThreadLocal.withInitial(QueryConfig::new);
 	private DBStyle dbStyle;
 	private SQLLoader sqlLoader;
 	/*数据库连接管理*/
@@ -124,7 +125,7 @@ public class SQLManager implements DataAPI {
 	/**
 	 * 是否是生产模式:生产模式MetadataManager ，不查看sql文件变化,默认是false
 	 *
-	 * @return
+	 * @return ture表示不检测sql变化
 	 */
 	public boolean isProductMode() {
 		return this.isProduct;
@@ -206,7 +207,6 @@ public class SQLManager implements DataAPI {
 
 
 	}
-
 
 	public SQLManager viewType(Class view) {
 		this.queryConfigLocal.get().setViewClass(view);
@@ -428,7 +428,7 @@ public class SQLManager implements DataAPI {
 				} else {
 					//使用当前sql转化成统计总数sql,page函数完成此功能
 					SQLExecutor script = getScript(sqlId);
-					Map pageParas = script.beforeExecute(Long.class, paras, false);
+					Map pageParas = script.beforeExecute(clazz, paras, false);
 					pageParas.put(PAGE, Boolean.TRUE);
 					totalRow = script.selectUnique(Long.class, pageParas);
 
@@ -469,8 +469,8 @@ public class SQLManager implements DataAPI {
 			list = Collections.EMPTY_LIST;
 		}
 
-		PageResult pageReqeust = totalRequired ? request.of(list, totalRow) : request.of(list);
-		return pageReqeust;
+		PageResult pageRequest = totalRequired ? request.of(list, totalRow) : request.of(list);
+		return pageRequest;
 	}
 
 
@@ -1274,6 +1274,49 @@ public class SQLManager implements DataAPI {
 		}
 
 	}
+
+	/**
+	 * 返回一个流，适合处理超大量数据
+	 * @param p
+	 * @param clazz
+	 * @param <T>
+	 * @return
+	 */
+	@Override
+	public <T> StreamData<T> streamExecute(SQLReady p, Class<T> clazz) {
+		SqlId id = this.sqlIdFactory.buildSql(p.getSql());
+		SQLSource source = new SQLSource(id, p.getSql());
+		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
+		SQLExecutor script = dbStyle.buildExecutor(executeContext);
+		return script.streamExecute(clazz,p);
+
+	}
+
+
+	@Override
+	public <T> StreamData<T> streamExecute(String sqlTemplate, Class<T> clazz,Object para) {
+		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
+		SQLSource source = sqlLoader.queryAutoSQL(id);
+		if (source == null) {
+			source = new SQLSource(id, sqlTemplate);
+			source.setSqlType(SQLType.SELECT);
+			this.sqlLoader.addSQL(id, source);
+		}
+		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
+		SQLExecutor script = dbStyle.buildExecutor(executeContext);
+		return script.stream(clazz,para);
+
+	}
+
+	@Override
+	public <T> StreamData<T> stream(SqlId sqlId, Class<T> clazz, Object paras) {
+		SQLExecutor script = getScript(sqlId);
+		StreamData data = script.stream(clazz,paras);
+		return data;
+	}
+
+
+
 
 	private <T> List<T> executeWithId(SqlId id, SQLReady p, Class<T> clazz) {
 

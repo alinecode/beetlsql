@@ -42,9 +42,14 @@ public class SagaClientContext extends SagaContext {
 	}
 
 	public void start() {
+		//分布式事物，必须提供gid，通常是业务id，如uuid
 		throw new IllegalArgumentException("微服务必须提供gid");
 	}
 
+	/**
+	 * 开启一个分布式的saga事物。
+	 * @param gid 事物id是，通常是业务id，如订单的uuid
+	 */
 	public void start(String gid) {
 		if(!nested.isRoot()){
 			if(!this.gid.equals(gid)){

@@ -1,4 +1,4 @@
-package org.beetlsql.sql.saga.test;
+package org.beetlsql.sql.saga.test.spring;
 
 import org.beetl.sql.saga.common.SagaMapper;
 import org.beetl.sql.saga.common.annotation.SagaUpdateSql;

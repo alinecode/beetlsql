@@ -1,9 +1,8 @@
 package org.beetl.sql.core.db;
 
-public class KingbaseStyle extends MySqlStyle{
+public class KingbaseStyle extends PostgresStyle{
 	public KingbaseStyle(){
 		super();
-		this.keyWordHandler = null;
 	}
     @Override
     public String getName() {
