@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class QueryTest extends BaseTest {
     Query<User> query = null;
@@ -102,6 +103,14 @@ public class QueryTest extends BaseTest {
         String name = null;
         long count  = lambdaQuery.andEq("name",Query.filterEmpty(name)).count();
         Assert.assertEquals(3,count);
+
+
+		count  = lambdaQuery.andEq("name", Optional.ofNullable(name)).count();
+		Assert.assertEquals(3,count);
+
+
+		count  = lambdaQuery.andEq("name", Optional.ofNullable("lijz")).count();
+		Assert.assertEquals(1,count);
     }
 
 

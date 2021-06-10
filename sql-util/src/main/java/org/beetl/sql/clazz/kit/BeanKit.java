@@ -205,6 +205,39 @@ public class BeanKit {
 	}
 
 
+	/**
+	 * 得到某个方法的注解，这个注解又包含了特定的注解expect,如下代码，
+	 * <pre>@{code
+	 *    @MapperExt(DataSourceChange.class)
+	 * 	  public @interface DataSource {
+	 *			String value()
+	 * 	  }
+	 *    @DataSource("crm")
+	 * 	  public void  query(String userId);
+	 *
+	 * 	  //查询方法
+	 * 	  BeanKit.getAnnotation(method,MapperExt.cass) 返回DataSource注解
+	 *
+	 *
+	 * }</pre>
+	 *
+	 * @param m
+	 * @param expect
+	 * @return
+	 */
+	public static Annotation  getAnnotation(Method m, Class expect) {
+		for(Annotation annotation :m.getAnnotations()){
+			Annotation target = annotation.annotationType().getAnnotation(expect);
+			if(target!=null){
+				return annotation;
+			}
+
+		}
+		return null;
+
+	}
+
+
 	public static <T> T newInstance(Class<T> c) {
 		try {
 

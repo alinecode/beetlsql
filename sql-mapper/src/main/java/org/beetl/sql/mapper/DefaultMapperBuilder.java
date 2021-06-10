@@ -85,6 +85,8 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	
 	}
 
+
+
 	@Override
 	public SQLManager getSqlManager() {
 		return sqlManager;
@@ -93,5 +95,13 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	@Override
 	public void setSqlManager(SQLManager sqlManager) {
 		this.sqlManager = sqlManager;
+	}
+
+	public MapperConfigBuilder getMapperConfig() {
+		return mapperConfig;
+	}
+
+	public void setMapperConfig(MapperConfigBuilder mapperConfig) {
+		this.mapperConfig = mapperConfig;
 	}
 }

@@ -26,7 +26,7 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
      * 或者提供给其他自定义的BaseMapper使用
      * @see #addMapperClass(Class)
      */
-    final Map<Method, MapperInvoke> amiMethodMap = new ConcurrentHashMap<>();
+    protected  final Map<Method, MapperInvoke> amiMethodMap = new ConcurrentHashMap<>();
 
 
     public BaseMapperConfigBuilder() {
@@ -47,7 +47,8 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
         }
         MapperMethodParser mapperMethodParser = new MapperMethodParser(entity,mapperClass,method);
         mapperInvoke = mapperMethodParser.parse();
-        amiMethodMap.putIfAbsent(method,wrap(mapperInvoke));
+		mapperInvoke = wrap(mapperInvoke,method);
+        amiMethodMap.putIfAbsent(method,mapperInvoke);
         return mapperInvoke;
     }
 
@@ -80,7 +81,7 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
            }
            Class mapperClass = autoMapper.value();
            MapperInvoke ins = (MapperInvoke)BeanKit.newSingleInstance(mapperClass);
-           map.put(method,wrap(ins));
+           map.put(method,wrap(ins,method));
 
        }
        if(map.isEmpty()){
@@ -105,7 +106,7 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
      * @param old
      * @return
      */
-    protected  MapperInvoke wrap(MapperInvoke old){
+    protected  MapperInvoke wrap(MapperInvoke old,Method method){
         return old;
     }
 

@@ -145,9 +145,10 @@ public class QueryCondition<T> implements QueryConditionI<T> {
             }
             value = ((StrongValue) value).getValue();
         }else if(value instanceof Optional){
-        	if(((Optional)value).isPresent()){
-				value = ((Optional)value).get();
+        	if(!((Optional)value).isPresent()){
+				return ;
 			}
+			value = ((Optional)value).get();
 		}
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
