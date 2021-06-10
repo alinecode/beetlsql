@@ -61,7 +61,8 @@ public class MoreDatabaseTest  extends BaseTest {
 		map.put("a", a);
 		map.put("b", b);
 		SQLManager sqlManager = new ConditionalSQLManager(a, map);
-		UserMapper mapper = sqlManager.getMapper(UserMapper.class);
+		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
+		DeptMapper deptMapper = sqlManager.getMapper(DeptMapper.class);
 
 		UserData user = new UserData();
 		user.setName("hello");
@@ -72,17 +73,27 @@ public class MoreDatabaseTest  extends BaseTest {
 		dept.setName("dept");
 		b.insert(dept);
 
-		UserData dbUser = mapper.getOne(user.getId());
+		UserData dbUser = userMapper.getOne(user.getId());
 		Assert.assertNotNull(dbUser);
 
-		DepartmentData dbDept = mapper.getOneDepartment(dept.getId());
+		DepartmentData dbDept = deptMapper.getOneDepartment(dept.getId());
 		Assert.assertNotNull(dbDept);
 
 	}
 
+	@TargetSQLManager("a")
 	static interface UserMapper extends BaseMapper<UserData>{
 		@Sql("select * from sys_user where id=?")
 		UserData getOne(Integer id);
+
+		@Sql("select * from department where id=?")
+		DepartmentData getOneDepartment(Integer id);
+	}
+
+
+
+	@TargetSQLManager("b")
+	static interface DeptMapper extends BaseMapper<UserData>{
 
 		@Sql("select * from department where id=?")
 		DepartmentData getOneDepartment(Integer id);

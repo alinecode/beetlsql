@@ -4,6 +4,7 @@ import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.annotation.InheritMapper;
 import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
+import org.beetl.sql.mapper.builder.MapperConfigBuilder;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -32,7 +33,7 @@ public class MapperJavaProxy implements InvocationHandler {
     protected Class<?> entityClass;
 
 
-    protected BaseMapperConfigBuilder builder;
+    protected MapperConfigBuilder builder;
 
 
 
@@ -53,7 +54,7 @@ public class MapperJavaProxy implements InvocationHandler {
      * @param sqlManager
      * @param mapperInterface
      */
-    public MapperJavaProxy(BaseMapperConfigBuilder builder, SQLManager sqlManager, Class<?> mapperInterface) {
+    public MapperJavaProxy(MapperConfigBuilder builder, SQLManager sqlManager, Class<?> mapperInterface) {
         super();
         this.sqlManager = sqlManager;
         this.builder = builder;

@@ -65,15 +65,7 @@ public class SQLManager implements DataAPI {
 
 
 	protected SQLManager() {
-		Class c = null;
-		try {
-			//不直接new的原因是因为maven循环依赖引用
-			c = Class.forName("org.beetl.sql.mapper.DefaultMapperBuilder");
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException(e);
-		}
-		mapperBuilder = (MapperBuilder) BeanKit.newInstance(c);
-		mapperBuilder.setSqlManager(this);
+
 
 	}
 
@@ -1586,6 +1578,7 @@ public class SQLManager implements DataAPI {
 	}
 
 	public <T> T getMapper(Class<T> mapperInterface) {
+
 		return mapperBuilder.getMapper(mapperInterface);
 	}
 
@@ -1664,6 +1657,15 @@ public class SQLManager implements DataAPI {
 			throw new IllegalStateException("必须设定一个名字 ");
 		}
 		SQLManagerBuilder.sqlManagerMap.put(this.getName(), this);
+	}
+
+	public MapperBuilder getMapperBuilder() {
+		return mapperBuilder;
+	}
+
+	public void setMapperBuilder(MapperBuilder mapperBuilder) {
+		this.mapperBuilder = mapperBuilder;
+		this.mapperBuilder.setSqlManager(this);
 	}
 
 	public void addSqlManagerInGroup(String name, SQLManager sqlManager) {

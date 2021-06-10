@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.clazz.NameConversion;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
 import org.beetl.sql.clazz.kit.PropertiesKit;
 import org.beetl.sql.core.db.DBStyle;
@@ -90,6 +91,8 @@ public class SQLManagerBuilder {
 
 	BeanProcessor beanProcessor;
 
+	MapperBuilder mapperBuilder  = null;
+
 	/** 拦截器 */
 	private List<Interceptor> interceptorList = new LinkedList<Interceptor>();
 
@@ -143,6 +146,8 @@ public class SQLManagerBuilder {
 		mySqlManager.setNc(myNc);
 		mySqlManager.setInters(myInters);
 		mySqlManager.setMetaDataManager(myMetadataManager);
+		mySqlManager.setMapperBuilder(this.getMapperBuilder());
+
 		if (this.name == null) {
 			this.name = sqlManagerNameGenerator.nextName();
 		}
@@ -158,13 +163,10 @@ public class SQLManagerBuilder {
 		mySqlManager.setSqlIdFactory(mySqlIdFactory);
 		mySqlManager.setClassLoaderKit(myClassLoaderKit);
 
-		dbStyle.config(mySqlManager);
-		//
-		//        if(sqlManagerMap.containsKey(this.name)){
-		//        	throw new IllegalStateException("需要为每一个SQLManager指定一个名称");
-		//		}
-		sqlManagerMap.put(name, mySqlManager);
 
+
+		dbStyle.config(mySqlManager);
+		sqlManagerMap.put(name, mySqlManager);
 		return mySqlManager;
 	}
 
@@ -389,6 +391,26 @@ public class SQLManagerBuilder {
 		return classLoaderKit;
 	}
 
+	public MapperBuilder getMapperBuilder() {
+		if(mapperBuilder==null){
+			Class c = null;
+			try {
+				//不直接new的原因是因为maven循环依赖引用
+				c = Class.forName("org.beetl.sql.mapper.DefaultMapperBuilder");
+			} catch (ClassNotFoundException e) {
+				throw new IllegalStateException(e);
+			}
+			mapperBuilder = (MapperBuilder) BeanKit.newInstance(c);
+
+
+		}
+		return mapperBuilder;
+	}
+
+	public SQLManagerBuilder setMapperBuilder(MapperBuilder mapperBuilder) {
+		this.mapperBuilder = mapperBuilder;
+		return this;
+	}
 
 	public void setClassLoaderKit(ClassLoaderKit classLoaderKit) {
 		this.classLoaderKit = classLoaderKit;

@@ -5,6 +5,7 @@ import org.beetl.sql.core.query.QueryCondition;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author GavinKing
@@ -35,9 +36,13 @@ public interface QueryConditionI<T> {
 
 	Query<T> andIn(String column, StrongValue value);
 
+	Query<T> andIn(String column, Optional value);
+
     Query<T> andNotIn(String column, Collection<?> value);
 
 	Query<T> andNotIn(String column, StrongValue value);
+
+	Query<T> andNotIn(String column, Optional value);
 
     Query<T> andBetween(String column, Object value1, Object value2);
 
@@ -68,9 +73,13 @@ public interface QueryConditionI<T> {
 
     Query<T> orIn(String column, StrongValue value);
 
+	Query<T> orIn(String column, Optional value);
+
     Query<T> orNotIn(String column, Collection<?> value);
 
     Query<T> orNotIn(String column, StrongValue value);
+
+	Query<T> orNotIn(String column, Optional value);
 
     Query<T> orBetween(String column, Object value1, Object value2);
 

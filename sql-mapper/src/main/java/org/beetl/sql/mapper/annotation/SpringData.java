@@ -19,5 +19,4 @@ import java.lang.annotation.Target;
 @Builder(SpringDataBuilder.class)
 public @interface SpringData {
 
-
 }

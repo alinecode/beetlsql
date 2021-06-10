@@ -11,6 +11,7 @@ import org.beetl.sql.core.query.interfacer.StrongValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class QueryCondition<T> implements QueryConditionI<T> {
     public final String AND = "AND";
@@ -143,7 +144,11 @@ public class QueryCondition<T> implements QueryConditionI<T> {
                 return;
             }
             value = ((StrongValue) value).getValue();
-        }
+        }else if(value instanceof Optional){
+        	if(((Optional)value).isPresent()){
+				value = ((Optional)value).get();
+			}
+		}
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
         }
@@ -154,6 +159,8 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         }
     }
 
+
+
     protected void appendInSql(String column, Object value, String opt, String link) {
         //判断是否有效的变量
         if (value instanceof StrongValue) {
@@ -161,11 +168,22 @@ public class QueryCondition<T> implements QueryConditionI<T> {
                 return;
             }
             value = ((StrongValue) value).getValue();
-        }
+        }else if(value instanceof Optional){
+			if(!((Optional)value).isPresent()){
+				return ;
+			}
+			value = ((Optional)value).get();
+		}
+
+        if(!(value instanceof  Collection)){
+        	throw new IllegalArgumentException("期望参数是Collection子类");
+		}
+
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
         }
         this.appendSql(link).appendSql(getCol(column)).appendSql(opt).appendSql(" ( ");
+
         for (Object o : (Collection<?>) value) {
             this.appendSql(" ? ,");
             this.addParam(o);
@@ -184,21 +202,18 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         this.addParam(value[1]);
     }
 
-    //Override
     @Override
     public Query<T> andEq(String column, Object value) {
         appendAndSql(column, value, "=");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andNotEq(String column, Object value) {
         appendAndSql(column, value, "<>");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andGreat(String column, Object value) {
         appendAndSql(column, value, ">");
@@ -212,14 +227,12 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andLess(String column, Object value) {
         appendAndSql(column, value, "<");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andLessEq(String column, Object value) {
         appendAndSql(column, value, "<=");
@@ -261,14 +274,19 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andIn(String column, StrongValue value) {
         appendInSql(column, value, IN, AND);
         return (Query) this;
     }
 
-    //Override
+	@Override
+	public Query<T> andIn(String column, Optional value) {
+		appendInSql(column, value, IN, AND);
+		return (Query) this;
+	}
+
+	//Override
     @Override
     public Query<T> andNotIn(String column, Collection<?> value) {
         appendInSql(column, value, NOT_IN, AND);
@@ -282,49 +300,48 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
+	@Override
+	public Query<T> andNotIn(String column, Optional value) {
+		appendInSql(column, value, NOT_IN, AND);
+		return (Query) this;
+	}
+
     @Override
     public Query<T> andBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, BETWEEN, AND, value1, value2);
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andNotBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, NOT_BETWEEN, AND, value1, value2);
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orEq(String column, Object value) {
         appendOrSql(column, value, "=");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orNotEq(String column, Object value) {
         appendOrSql(column, value, "<>");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orGreat(String column, Object value) {
         appendOrSql(column, value, ">");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orGreatEq(String column, Object value) {
         appendOrSql(column, value, ">=");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orLess(String column, Object value) {
         appendOrSql(column, value, "<");
@@ -338,70 +355,72 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orLike(String column, Object value) {
         appendOrSql(column, value, "LIKE ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orNotLike(String column, Object value) {
         appendOrSql(column, value, "NOT LIKE ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orIsNull(String column) {
         appendOrSql(column, null, "IS NULL ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orIsNotNull(String column) {
         appendOrSql(column, null, "IS NOT NULL ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orIn(String column, Collection<?> value) {
         appendInSql(column, value, IN, OR);
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orIn(String column, StrongValue value) {
         appendInSql(column, value, IN, OR);
         return (Query) this;
     }
 
-    //Override
+	@Override
+	public Query<T> orIn(String column, Optional value) {
+		appendInSql(column, value, IN, OR);
+		return (Query) this;
+	}
+
     @Override
     public Query<T> orNotIn(String column, Collection<?> value) {
         appendInSql(column, value, NOT_IN, OR);
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orNotIn(String column, StrongValue value) {
         appendInSql(column, value, NOT_IN, OR);
         return (Query) this;
     }
 
-    //Override
+	@Override
+	public Query<T> orNotIn(String column, Optional value) {
+		appendInSql(column, value, NOT_IN, OR);
+		return (Query) this;
+	}
+
     @Override
     public Query<T> orBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, BETWEEN, OR, value1, value2);
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orNotBetween(String column, Object value1, Object value2) {
         appendBetweenSql(column, NOT_BETWEEN, OR, value1, value2);
@@ -409,13 +428,11 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
 
-    //Override
     @Override
     public Query<T> and(QueryCondition condition) {
         return manyCondition(condition, AND);
     }
 
-    //Override
     @Override
     public Query<T> or(QueryCondition condition) {
         return manyCondition(condition, OR);
@@ -442,7 +459,6 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
     @Override
     public StringBuilder getSql() {
         if (this.sql == null) {
@@ -451,13 +467,11 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return this.sql;
     }
 
-    //Override
     @Override
     public void setSql(StringBuilder sql) {
         this.sql = sql;
     }
 
-    //Override
     @Override
     public List<Object> getParams() {
         return params;

@@ -3,6 +3,7 @@ package org.beetl.sql.mapper;
 import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
+import org.beetl.sql.mapper.builder.MapperConfigBuilder;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -28,7 +29,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
      * @param sqlManager
      * @param mapperInterface
      */
-    public MapperJava8Proxy(BaseMapperConfigBuilder builder, SQLManager sqlManager, Class<?> mapperInterface) {
+    public MapperJava8Proxy(MapperConfigBuilder builder, SQLManager sqlManager, Class<?> mapperInterface) {
         super(builder,sqlManager,mapperInterface);
     }
 

@@ -15,8 +15,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
- * @see SubQuery
+ *
  * @author xiandafu
+ * @see SubQuery
  */
 public class SubQueryBuilder implements MapperExtBuilder {
 

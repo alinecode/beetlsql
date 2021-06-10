@@ -1125,7 +1125,15 @@ public class ConditionalSQLManager extends  SQLManager {
 
     @Override
     public <T> T getMapper(Class<T> mapperInterface) {
-        return super.getMapper(mapperInterface);
+		TargetSQLManager targetSQLManager = mapperInterface.getAnnotation(TargetSQLManager.class);
+		if(targetSQLManager==null){
+			return defaultSQLManager.getMapper(mapperInterface);
+		}
+		SQLManager sqlManager = sqlManagerMap.get(targetSQLManager.value());
+		if(sqlManager==null){
+			throw new IllegalArgumentException("不能查找到SQLManager "+targetSQLManager);
+		}
+        return sqlManager.getMapper(mapperInterface);
     }
 
 

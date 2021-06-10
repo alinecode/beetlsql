@@ -10,6 +10,7 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -197,6 +198,11 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
+	public LambdaQuery<T> orIn(Property<T, ?> property, Optional value) {
+		appendInSql(getFunctionName(property), value, IN, OR);
+		return this;
+	}
+
     public LambdaQuery<T> orNotIn(Property<T, ?> property, Collection<?> value) {
         appendInSql(getFunctionName(property), value, NOT_IN, OR);
         return this;
@@ -206,6 +212,11 @@ public class LambdaQuery<T> extends Query<T> {
         appendInSql(getFunctionName(property), value, NOT_IN, OR);
         return this;
     }
+
+	public LambdaQuery<T> orNotIn(Property<T, ?> property, Optional value) {
+		appendInSql(getFunctionName(property), value, NOT_IN, OR);
+		return this;
+	}
 
     public LambdaQuery<T> orBetween(Property<T, ?> property, Object value1, Object value2) {
         appendBetweenSql(getFunctionName(property), BETWEEN, OR, value1, value2);
