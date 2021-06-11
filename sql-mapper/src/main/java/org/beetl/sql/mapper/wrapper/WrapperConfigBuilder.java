@@ -46,8 +46,17 @@ public class WrapperConfigBuilder extends BaseMapperConfigBuilder {
 
 		@Override
 		public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
-			executor.before(sm,config);
-			return old.call(sm,entityClass,m,args);
+			WrapperContext wrapperContext = new WrapperContext();
+			wrapperContext.setSqlManager(sm);
+			wrapperContext.setMapperInvoke(old);
+			wrapperContext.setMethod(m);
+			wrapperContext.setConfig(config);
+			wrapperContext.setArgs(args);
+
+			executor.before(wrapperContext);
+			Object ret =  old.call(sm,entityClass,m,args);
+			executor.after(wrapperContext,ret);
+			return ret;
 		}
 	}
 }
