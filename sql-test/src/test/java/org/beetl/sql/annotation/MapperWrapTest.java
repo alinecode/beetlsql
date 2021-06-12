@@ -1,16 +1,12 @@
 package org.beetl.sql.annotation;
 
 import org.beetl.sql.BaseTest;
-import org.beetl.sql.annotation.builder.Builder;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.entity.User;
-import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.DefaultMapperBuilder;
 import org.beetl.sql.mapper.annotation.Sql;
-import org.beetl.sql.mapper.wrapper.MapperWrapper;
-import org.beetl.sql.mapper.wrapper.MapperWrapperExecutor;
-import org.beetl.sql.mapper.wrapper.WrapperConfigBuilder;
-import org.beetl.sql.mapper.wrapper.WrapperContext;
+import org.beetl.sql.mapper.proxy.MapperProxy;
+import org.beetl.sql.mapper.proxy.MapperProxyExecutor;
+import org.beetl.sql.mapper.proxy.MapperProxyConfigBuilder;
+import org.beetl.sql.mapper.proxy.ProxyContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,7 +21,6 @@ public class MapperWrapTest extends BaseTest {
 
     @Test
     public void wrapperTest() {
-		((DefaultMapperBuilder)sqlManager.getMapperBuilder()).setMapperConfig(new WrapperConfigBuilder());
 		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
 		userMapper.selectById(1);
 
@@ -38,7 +33,7 @@ public class MapperWrapTest extends BaseTest {
 	 */
 	public  static  interface  UserMapper<User>{
 
-		@Sql("select * from sys_user where id=? ")
+		@Sql("select * from sys_user1 where id=? ")
 		@Datasource("crm1")
 		User selectById(Integer id);
 
@@ -53,7 +48,7 @@ public class MapperWrapTest extends BaseTest {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = {ElementType.METHOD})
-	@MapperWrapper(DataSourceExecutor.class)
+	@MapperProxy(DataSourceExecutor.class)
 	public @interface Datasource {
 		String value();
 	}
@@ -61,27 +56,28 @@ public class MapperWrapTest extends BaseTest {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = {ElementType.METHOD})
-	@MapperWrapper(LogExecutor.class)
+	@MapperProxy(LogExecutor.class)
 	public @interface Log {
 		String value() default "";
 	}
 
 
 
-	public static class DataSourceExecutor implements MapperWrapperExecutor{
+	public static class DataSourceExecutor implements MapperProxyExecutor {
 
 		@Override
-		public void before(WrapperContext context) {
+		public void before(ProxyContext context) {
 			Datasource datasource = (Datasource)context.getConfig();
 			System.out.println("sql数据源切换"+ datasource.value());
 		}
 	}
 
-	public static class LogExecutor implements MapperWrapperExecutor{
+	public static class LogExecutor implements MapperProxyExecutor {
 
 		@Override
-		public void after(WrapperContext context,Object ret) {
-			System.out.println("日志输出:"+ret);
+		public Object after(ProxyContext context,Object ret) {
+			System.out.println("log "+ret);
+			return ret;
 		}
 	}
 

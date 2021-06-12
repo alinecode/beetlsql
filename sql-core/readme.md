@@ -15,21 +15,3 @@ SQLManager sqlManager = new SQLManager(mysql,loader,source,nc,new Interceptor[]{
 
 # box
 
-
-参考 https://docs.jboss.org/hibernate/search/6.0/reference/en-US/html_single/#search-dsl-query
-
-负责SQL拼接,
-
-```
-Select select =  selectBox();
-select.from(User.class).with("a","b").where("department_id","departmetnId").lmit(1,10);
-
-String sql = select.toString();\\select a,b from User where department_id=#department#;
-
-
-
- Box box  =  jdbcBox();
-select.from(User.class).cols("a","b").where("department_id").is(1);
-List paras = select.getParas(); // [1];
-
-```

@@ -1,4 +1,4 @@
-package org.beetl.sql.mapper.wrapper;
+package org.beetl.sql.mapper.proxy;
 
 import lombok.Data;
 import org.beetl.sql.core.SQLManager;
@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 @Data
-public class WrapperContext {
+public class ProxyContext {
 	SQLManager sqlManager;
 	MapperInvoke mapperInvoke;
 	Method method;

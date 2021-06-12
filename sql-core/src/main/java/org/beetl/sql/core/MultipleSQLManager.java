@@ -1112,12 +1112,13 @@ public class MultipleSQLManager extends  SQLManager {
 
 	@Override
     public SQLManager use(String name){
-        SQLManager sqlManager = group.get(name);
-        if(sqlManager==null){
-            throw new IllegalArgumentException(name);
-        }
-        current.set(sqlManager);
-        return sqlManager;
+//        SQLManager sqlManager = group.get(name);
+//        if(sqlManager==null){
+//            throw new IllegalArgumentException(name);
+//        }
+//        current.set(sqlManager);
+//        return sqlManager;
+		throw new UnsupportedOperationException();
 
     }
 }

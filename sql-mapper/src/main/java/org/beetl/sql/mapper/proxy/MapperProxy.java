@@ -1,4 +1,4 @@
-package org.beetl.sql.mapper.wrapper;
+package org.beetl.sql.mapper.proxy;
 
 import org.beetl.sql.mapper.provider.ProviderMapperExtBuilder;
 import org.beetl.sql.mapper.provider.SqlTemplatePMI;
@@ -15,12 +15,12 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MapperWrapper {
+public @interface MapperProxy {
 
 	/**
 	 *
 	 */
-	Class<? extends MapperWrapperExecutor> value();
+	Class<? extends MapperProxyExecutor> value();
 
 
 

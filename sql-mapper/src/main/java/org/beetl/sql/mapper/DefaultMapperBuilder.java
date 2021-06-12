@@ -6,6 +6,7 @@ import org.beetl.sql.core.MapperBuilder;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
 import org.beetl.sql.mapper.builder.MapperConfigBuilder;
+import org.beetl.sql.mapper.proxy.MapperProxyConfigBuilder;
 
 import java.lang.reflect.Proxy;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	/** The sql manager. */
 	protected SQLManager sqlManager;
 
-	protected MapperConfigBuilder mapperConfig =  new BaseMapperConfigBuilder();
+	protected MapperConfigBuilder mapperConfig =  new MapperProxyConfigBuilder();
 
 
 	public DefaultMapperBuilder() {

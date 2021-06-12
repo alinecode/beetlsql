@@ -1,1 +1,1 @@
-
+mapper方法封装了sqlManager调用

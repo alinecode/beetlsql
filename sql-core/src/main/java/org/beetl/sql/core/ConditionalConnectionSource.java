@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.util.Map;
 
 /**
- * 多个数据源的代理，根据{@link Policy}决定使用哪个数据救援
+ *
+ * 这常用分库，多个数据源的代理，根据{@link Policy}决定使用哪个数据救援。
  * @author xiandafu
  *
  */

@@ -225,9 +225,27 @@ public class BeanKit {
 	 * @param expect
 	 * @return
 	 */
-	public static Annotation  getAnnotation(Method m, Class expect) {
+	public static Annotation  getMethodAnnotation(Method m, Class expect) {
 		for(Annotation annotation :m.getAnnotations()){
 			Annotation target = annotation.annotationType().getAnnotation(expect);
+			if(target!=null){
+				return annotation;
+			}
+
+		}
+		return null;
+
+	}
+
+	/**
+	 * 得到某个类的注解，这个注解必须包含特定的expectAnnotation注解
+	 * @param cls
+	 * @param expectAnnotation
+	 * @return
+	 */
+	public static Annotation  getClassAnnotation(Class cls, Class expectAnnotation) {
+		for(Annotation annotation :cls.getAnnotations()){
+			Annotation target = annotation.annotationType().getAnnotation(expectAnnotation);
 			if(target!=null){
 				return annotation;
 			}

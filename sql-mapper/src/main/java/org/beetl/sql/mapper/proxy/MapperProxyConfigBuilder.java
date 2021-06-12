@@ -1,4 +1,4 @@
-package org.beetl.sql.mapper.wrapper;
+package org.beetl.sql.mapper.proxy;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.Plugin;
@@ -8,9 +8,13 @@ import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+
+/**
+ * 允许在jdk代理基础上，再代理
+ */
 @Plugin
-public class WrapperConfigBuilder extends BaseMapperConfigBuilder {
-	public WrapperConfigBuilder(){
+public class MapperProxyConfigBuilder extends BaseMapperConfigBuilder {
+	public MapperProxyConfigBuilder(){
 		super();
 	}
 
@@ -22,13 +26,18 @@ public class WrapperConfigBuilder extends BaseMapperConfigBuilder {
 	 */
 	@Override
 	protected MapperInvoke wrap(MapperInvoke old, Method method){
-		Annotation config = BeanKit.getAnnotation(method, MapperWrapper.class);
+		Annotation config = null;
+		config = BeanKit.getMethodAnnotation(method, MapperProxy.class);
 		if(config==null){
-			return old;
+			config = BeanKit.getClassAnnotation(method.getDeclaringClass(), MapperProxy.class);
+			if(config==null){
+				return old;
+			}
 		}
 
-		MapperWrapper mapperWrapper = config.annotationType().getAnnotation(MapperWrapper.class);
-		MapperWrapperExecutor executor = BeanKit.newSingleInstance(mapperWrapper.value());
+
+		MapperProxy mapperProxy = config.annotationType().getAnnotation(MapperProxy.class);
+		MapperProxyExecutor executor = BeanKit.newSingleInstance(mapperProxy.value());
 		MapperInvokeWrapper wrapper = new MapperInvokeWrapper(old,config,executor);
 		return wrapper;
 	}
@@ -37,8 +46,8 @@ public class WrapperConfigBuilder extends BaseMapperConfigBuilder {
 	static class MapperInvokeWrapper  extends MapperInvoke{
 		MapperInvoke old ;
 		Annotation config;
-		MapperWrapperExecutor executor;
-        public MapperInvokeWrapper(MapperInvoke old,Annotation config,MapperWrapperExecutor executor){
+		MapperProxyExecutor executor;
+        public MapperInvokeWrapper(MapperInvoke old,Annotation config, MapperProxyExecutor executor){
         	this.old = old;
         	this.config = config;
         	this.executor = executor;
@@ -46,16 +55,16 @@ public class WrapperConfigBuilder extends BaseMapperConfigBuilder {
 
 		@Override
 		public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
-			WrapperContext wrapperContext = new WrapperContext();
-			wrapperContext.setSqlManager(sm);
-			wrapperContext.setMapperInvoke(old);
-			wrapperContext.setMethod(m);
-			wrapperContext.setConfig(config);
-			wrapperContext.setArgs(args);
+			ProxyContext proxyContext = new ProxyContext();
+			proxyContext.setSqlManager(sm);
+			proxyContext.setMapperInvoke(old);
+			proxyContext.setMethod(m);
+			proxyContext.setConfig(config);
+			proxyContext.setArgs(args);
 
-			executor.before(wrapperContext);
+			executor.before(proxyContext);
 			Object ret =  old.call(sm,entityClass,m,args);
-			executor.after(wrapperContext,ret);
+			executor.after(proxyContext,ret);
 			return ret;
 		}
 	}
