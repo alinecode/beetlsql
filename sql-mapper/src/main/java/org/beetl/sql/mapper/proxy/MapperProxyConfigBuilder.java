@@ -11,6 +11,10 @@ import java.lang.reflect.Method;
 
 /**
  * 允许在jdk代理基础上，再代理
+ * 如下代码生成能使得所有mapper调用之前，都会检测是否存在被@MapperProxy 注解的注解
+ * <pre>
+ *     ((DefaultMapperBuilder)sqlManager.getMapperBuilder()).setMapperConfig(new MapperProxyConfigBuilder());
+ * </pre>
  */
 @Plugin
 public class MapperProxyConfigBuilder extends BaseMapperConfigBuilder {

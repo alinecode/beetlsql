@@ -33,7 +33,6 @@ import java.util.Map;
  *
  * @author xiandafu
  * @see  TargetSQLManager
- * @see MultipleSQLManager
  */
 public class ConditionalSQLManager extends  SQLManager {
 
@@ -42,7 +41,7 @@ public class ConditionalSQLManager extends  SQLManager {
     SQLManager defaultSQLManager;
     Map<String,SQLManager> sqlManagerMap = new HashMap<>();
     Conditional conditional = new DefaultConditional();
-    public static interface  Conditional{
+    public  interface  Conditional{
         SQLManager decide(Class pojo,SQLManager defaultSQLManager,Map<String,SQLManager> sqlManagerMap);
     }
 

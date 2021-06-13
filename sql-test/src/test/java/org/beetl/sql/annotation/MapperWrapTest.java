@@ -17,10 +17,13 @@ public class MapperWrapTest extends BaseTest {
     @BeforeClass
     public static void init() {
         initTable(testSqlFile);
-    }
+		((DefaultMapperBuilder)sqlManager.getMapperBuilder()).setMapperConfig(new MapperProxyConfigBuilder());
+
+	}
 
     @Test
     public void wrapperTest() {
+
 		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
 		userMapper.selectById(1);
 
@@ -33,7 +36,7 @@ public class MapperWrapTest extends BaseTest {
 	 */
 	public  static  interface  UserMapper<User>{
 
-		@Sql("select * from sys_user1 where id=? ")
+		@Sql("select * from sys_user where id=? ")
 		@Datasource("crm1")
 		User selectById(Integer id);
 

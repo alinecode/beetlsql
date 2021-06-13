@@ -161,7 +161,7 @@ public class S6MoreDatabase {
 
     protected SQLManager getSQLManager4MultipleTables(){
         SQLManager sqlManager = SampleHelper.getSqlManager();
-        //告诉sqlManager遇到USER_TABLE这个不存在的表不慌，他是个虚表，真实表是user
+        //告诉sqlManager遇到${toTable('sys_user')}这个不存在的表不报错，它是个虚表，真实表是sys_user，beetlsql用于获取表结构信息
         sqlManager.addVirtualTable("sys_user",USER_TABLE);
         BeetlTemplateEngine templateEngine = (BeetlTemplateEngine)sqlManager.getSqlTemplateEngine();
         // 注册一个方法来实现映射到多表的逻辑

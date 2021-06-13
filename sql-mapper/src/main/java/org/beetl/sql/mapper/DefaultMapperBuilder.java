@@ -24,7 +24,8 @@ public class DefaultMapperBuilder implements MapperBuilder {
 	/** The sql manager. */
 	protected SQLManager sqlManager;
 
-	protected MapperConfigBuilder mapperConfig =  new MapperProxyConfigBuilder();
+	protected MapperConfigBuilder mapperConfig =  new BaseMapperConfigBuilder();
+//	protected MapperConfigBuilder mapperConfig =  new MapperProxyConfigBuilder();
 
 
 	public DefaultMapperBuilder() {

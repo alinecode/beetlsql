@@ -27,6 +27,7 @@ import java.sql.Statement;
  * @see ConditionalConnectionSource
  */
 public interface ConnectionSource {
+
 	/**
 	 * 得到一个主库连接
 	 *

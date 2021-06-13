@@ -9,9 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author darren
- * @see  SqlTemplatePMI
- * @see  ProviderMapperExtBuilder
+ * @author lijiazhi(xiadnafu)
+ * @see  MapperProxyConfigBuilder
  */
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
