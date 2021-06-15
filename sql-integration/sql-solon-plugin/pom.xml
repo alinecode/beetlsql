@@ -15,7 +15,7 @@
     <version>3.4.2-RELEASE</version>
 
     <properties>
-        <solon.ver>1.4.9</solon.ver>
+        <solon.ver>1.5.1</solon.ver>
     </properties>
 
     <dependencies>
@@ -28,7 +28,7 @@
 
         <dependency>
             <groupId>org.noear</groupId>
-            <artifactId>solon</artifactId>
+            <artifactId>solon.data</artifactId>
             <version>${solon.ver}</version>
             <scope>provided</scope>
         </dependency>
