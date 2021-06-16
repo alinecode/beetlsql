@@ -103,6 +103,9 @@ public class SQLManagerBuilder {
 
 	Map<String, IDAutoGen> idAutoGenMap = new HashMap<String, IDAutoGen>();
 
+	boolean offsetStartZero = false;
+
+
 	public SQLManagerBuilder(ConnectionSource ds) {
 		this.ds = ds;
 	}
@@ -425,6 +428,12 @@ public class SQLManagerBuilder {
 
 	public SQLManagerBuilder addIdAutoGen(String name, IDAutoGen algorithm){
 		this.idAutoGenMap.put(name,algorithm);
+		return this;
+	}
+
+
+	public SQLManagerBuilder setOffsetStartZero(boolean offsetStartZero) {
+		this.offsetStartZero = offsetStartZero;
 		return this;
 	}
 
