@@ -34,19 +34,19 @@ public class MapperWrapTest extends BaseTest {
 	/**
 	 * 能执行sql前执行Datasource指定的类
 	 */
-	public  static  interface  UserMapper<User>{
+public  static  interface  UserMapper<User>{
 
-		@Sql("select * from sys_user where id=? ")
-		@Datasource("crm1")
-		User selectById(Integer id);
-
-
-		@Sql("select * from sys_user where id=? ")
-		@Log()
-		User selectById2(Integer id);
+	@Sql("select * from sys_user where id=? ")
+	@Datasource("crm1")
+	User selectById(Integer id);
 
 
-	}
+	@Sql("select * from sys_user where id=? ")
+	@Log()
+	User selectById2(Integer id);
+
+
+}
 
 
 	@Retention(RetentionPolicy.RUNTIME)

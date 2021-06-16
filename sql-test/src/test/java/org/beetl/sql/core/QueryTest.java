@@ -105,7 +105,7 @@ public class QueryTest extends BaseTest {
         Assert.assertEquals(3,count);
 
 
-		count  = lambdaQuery.andEq("name", Optional.ofNullable(name)).count();
+		count  = lambdaQuery.andEq(User::getName, Optional.ofNullable(name)).count();
 		Assert.assertEquals(3,count);
 
 

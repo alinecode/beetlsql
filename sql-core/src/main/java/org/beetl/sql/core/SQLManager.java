@@ -1518,10 +1518,10 @@ public class SQLManager implements DataAPI {
 	 * 设置一种id算法用于注解AssignId("xxx"),这样，对于应用赋值主键，交给beetlsql来处理了
 	 *
 	 * @param name
-	 * @param alorithm
+	 * @param algorithm
 	 */
-	public void addIdAutoGen(String name, IDAutoGen alorithm) {
-		this.idAutoGenMap.put(name, alorithm);
+	public void addIdAutoGen(String name, IDAutoGen algorithm) {
+		this.idAutoGenMap.put(name, algorithm);
 	}
 
 	/**

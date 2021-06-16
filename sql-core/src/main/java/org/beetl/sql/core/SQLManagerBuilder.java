@@ -101,6 +101,8 @@ public class SQLManagerBuilder {
 	SQLManagerNameGenerator sqlManagerNameGenerator = new SQLManagerNameGenerator();
 	public static Map<String, SQLManager> sqlManagerMap = new ConcurrentHashMap<>();
 
+	Map<String, IDAutoGen> idAutoGenMap = new HashMap<String, IDAutoGen>();
+
 	public SQLManagerBuilder(ConnectionSource ds) {
 		this.ds = ds;
 	}
@@ -164,6 +166,11 @@ public class SQLManagerBuilder {
 		mySqlManager.setClassLoaderKit(myClassLoaderKit);
 
 
+		if(!idAutoGenMap.isEmpty()) {
+			idAutoGenMap.forEach((id, gen) -> {
+				mySqlManager.addIdAutoGen(id, gen);
+			});
+		}
 
 		dbStyle.config(mySqlManager);
 		sqlManagerMap.put(name, mySqlManager);
@@ -414,6 +421,11 @@ public class SQLManagerBuilder {
 
 	public void setClassLoaderKit(ClassLoaderKit classLoaderKit) {
 		this.classLoaderKit = classLoaderKit;
+	}
+
+	public SQLManagerBuilder addIdAutoGen(String name, IDAutoGen algorithm){
+		this.idAutoGenMap.put(name,algorithm);
+		return this;
 	}
 
 	/**
