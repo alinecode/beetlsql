@@ -1,6 +1,7 @@
 package org.beetl.sql.core.mapping.type;
 
 import lombok.Data;
+import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SqlId;
 
 import java.sql.ResultSet;
@@ -19,8 +20,19 @@ public class ReadTypeParameter {
 	public ResultSetMetaData meta;
 	public int index;
 	public SqlId sqlId;
+	public ExecuteContext executeContext;
 
-	public ReadTypeParameter(SqlId sqlId, String dbName, Class target, ResultSet rs, ResultSetMetaData meta, int index) {
+	/**
+	 *
+	 * @param sqlId
+	 * @param dbName
+	 * @param target 有可能为Null，因为可能转为Map，
+	 * @param rs
+	 * @param meta
+	 * @param index
+	 * @param executeContext
+	 */
+	public ReadTypeParameter(SqlId sqlId, String dbName, Class target, ResultSet rs, ResultSetMetaData meta, int index,ExecuteContext executeContext) {
 		super();
 		this.dbName = dbName;
 		this.target = target;
@@ -28,6 +40,7 @@ public class ReadTypeParameter {
 		this.meta = meta;
 		this.index = index;
 		this.sqlId = sqlId;
+		this.executeContext = executeContext;
 	}
 
 	public boolean isPrimitive() {

@@ -22,6 +22,8 @@ public class EnumKit {
 	/*所有遇到的枚举类的缓存*/
 	private static Cache<Class, EnumConfig> cache = new DefaultCache<>();
 
+
+
 	/**
 	 * 获得枚举，根据EnumMapping 注解，如果没有，则使用枚举名称
 	 * @param c   枚举类

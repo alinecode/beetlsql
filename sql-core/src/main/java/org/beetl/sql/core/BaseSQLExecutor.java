@@ -1019,6 +1019,12 @@ public class BaseSQLExecutor implements SQLExecutor {
 	}
 
 	protected void addMoreParasFromTarget(Class target, Map map) {
+
+		Map extPara = this.executeContext.sqlManager.getSqlManagerExtend().getParaExtend().morePara(this.executeContext);
+		if(extPara!=null){
+			map.putAll(extPara);
+		}
+
 		if (target == null) {
 			return;
 		}

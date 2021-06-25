@@ -66,3 +66,6 @@ CREATE TABLE `product_order` (
 
 
 insert into  product_order values (1,now(),1,0);
+
+
+

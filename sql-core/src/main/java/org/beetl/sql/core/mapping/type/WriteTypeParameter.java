@@ -1,6 +1,7 @@
 package org.beetl.sql.core.mapping.type;
 
 import lombok.Data;
+import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SqlId;
 
 import java.sql.PreparedStatement;
@@ -13,8 +14,9 @@ public class WriteTypeParameter {
 	PreparedStatement ps;
 	int index;
 	SqlId sqlId;
+	ExecuteContext executeContext;
 
-	public WriteTypeParameter(SqlId sqlId, String dbName, int dbType, Class target, PreparedStatement ps , int index) {
+	public WriteTypeParameter(SqlId sqlId, String dbName, int dbType, Class target, PreparedStatement ps , int index,ExecuteContext executeContext) {
 		super();
 		this.dbName = dbName;
 		this.target = target;
@@ -22,6 +24,7 @@ public class WriteTypeParameter {
 		this.ps = ps;
 		this.index = index;
 		this.sqlId = sqlId;
+		this.executeContext = executeContext;
 	}
 
 	public boolean isPrimitive() {

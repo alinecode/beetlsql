@@ -87,16 +87,7 @@ public class QueryTest extends BaseTest {
         Assert.assertEquals(3,users.size());
     }
 
-    /**
-     * Group 在Query中不好用，因为代码里引用了列名字
-     */
-    @Test
-    public void group(){
-        List<Map> users = lambdaQuery.andIsNotNull(User::getId).groupBy(User::getDepartmentId).mapSelect("count(1) as total","department_id");
-        //不确定数据库返回什么类型，因此用Number
-        Number number = (Number)users.get(0).get("total");
-        Assert.assertEquals(1,number.intValue());
-    }
+
 
     @Test
     public void filter(){

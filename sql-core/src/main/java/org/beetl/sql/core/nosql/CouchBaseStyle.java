@@ -1,6 +1,6 @@
 package org.beetl.sql.core.nosql;
 
-import org.beetl.sql.clazz.kit.SpecialKeyWordHandlder;
+import org.beetl.sql.clazz.kit.SpecialKeyWordHandler;
 import org.beetl.sql.core.db.AbstractDBStyle;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.range.LimitWithOffsetRange;
@@ -18,7 +18,7 @@ public class CouchBaseStyle extends AbstractDBStyle {
     public CouchBaseStyle() {
         super();
         rangeSql = new LimitWithOffsetRange(this);
-        this.keyWordHandler = new SpecialKeyWordHandlder();
+        this.keyWordHandler = new SpecialKeyWordHandler();
     }
 
     @Override

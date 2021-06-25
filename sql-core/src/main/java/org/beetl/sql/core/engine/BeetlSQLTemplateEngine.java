@@ -15,7 +15,4 @@ public class BeetlSQLTemplateEngine extends DefaultTemplateEngine {
 	}
 
 
-
-
-
 }

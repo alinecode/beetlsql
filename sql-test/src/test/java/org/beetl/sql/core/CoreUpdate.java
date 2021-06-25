@@ -1,6 +1,9 @@
 package org.beetl.sql.core;
 
+import lombok.Data;
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.annotation.entity.AutoID;
+import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -29,7 +32,31 @@ public class CoreUpdate extends BaseTest {
         Assert.assertEquals(user1.getName(),user.getName());
     }
 
-    @Test
+
+	@Table(name = "order")
+	@Data
+	public static class Order {
+		@AutoID
+		private Integer id;
+
+		private String orderId;
+
+		private String phone;
+
+		private String flag;
+
+		private String state;
+
+		private String callback;
+
+		private Date createTime;
+
+		private Date updateTime;
+
+	}
+
+
+		@Test
     public void testUpdateByTemplate(){
         User template = new User();
         template.setId(1);

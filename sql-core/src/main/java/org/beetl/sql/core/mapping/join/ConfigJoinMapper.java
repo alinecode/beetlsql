@@ -65,7 +65,7 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
         try{
             ResultSetMetaData resultSetMetaData =  resultSet.getMetaData();
             AttrNode root =  parse(ctx,target, resultSetMetaData,config);
-            ReadTypeParameter rtp = new ReadTypeParameter(ctx.sqlId,ctx.sqlManager.getDbStyle().getName(),target,resultSet,resultSetMetaData,1);
+            ReadTypeParameter rtp = new ReadTypeParameter(ctx.sqlId,ctx.sqlManager.getDbStyle().getName(),target,resultSet,resultSetMetaData,1,ctx);
             RenderContext renderContext = new RenderContext();
             renderContext.beanProcessor = ctx.sqlManager.getDefaultBeanProcessors();
             while(resultSet.next()){

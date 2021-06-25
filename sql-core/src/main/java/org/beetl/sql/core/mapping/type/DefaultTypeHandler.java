@@ -8,5 +8,9 @@ public class DefaultTypeHandler extends JavaSqlTypeHandler {
 	public Object getValue(ReadTypeParameter typePara) throws SQLException {
 		return typePara.rs.getObject(typePara.index);
 	}
+	@Override
+	public void setParameter(WriteTypeParameter writeTypeParameter,Object obj)throws SQLException {
+		writeTypeParameter.getPs().setObject(writeTypeParameter.getIndex(),obj);
+	}
 
 }

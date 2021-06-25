@@ -83,6 +83,7 @@ public class ExecuteContext {
     public static ExecuteContext instance(SQLManager sqlManager){
         ExecuteContext executeContext =  new ExecuteContext();
         executeContext.sqlManager = sqlManager;
+        executeContext.beanProcessor = sqlManager.getDefaultBeanProcessors();
         QueryConfig queryConfig = sqlManager.queryConfigLocal.get();
         if(queryConfig!=null){
             executeContext.viewClass = queryConfig.getViewClass();

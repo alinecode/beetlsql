@@ -6,6 +6,11 @@ import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.EnumMapping;
 import org.beetl.sql.annotation.entity.EnumValue;
 import org.beetl.sql.annotation.entity.Table;
+import org.beetl.sql.clazz.EnumKit;
+import org.beetl.sql.core.mapping.BeanProcessor;
+import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
+import org.beetl.sql.core.mapping.type.ReadTypeParameter;
+import org.beetl.sql.core.mapping.type.WriteTypeParameter;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,6 +22,7 @@ import java.util.Map;
  * 枚举验证
  */
 public class EnumSelectTest extends BaseTest {
+
     @BeforeClass
     public static void init(){
         initTable(testSqlFile);
@@ -54,7 +60,6 @@ public class EnumSelectTest extends BaseTest {
 		String sqlTemplate = "select * from sys_user where name=#{name}";
 
 		sqlManager.execute(sqlTemplate,UserData2.class,map);
-
 
 	}
 
@@ -147,6 +152,20 @@ public class EnumSelectTest extends BaseTest {
 	}
 
 
+	public enum Name4{
+		Li("li"),
+		Zhang("zhang");
+		String str;
+		Name4(String str){
+			this.str = str;
+		}
+		public String getStr() {
+			return str;
+		}
+		public void setStr(String str) {
+			this.str = str;
+		}
+	}
 
 
 

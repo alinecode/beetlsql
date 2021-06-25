@@ -106,6 +106,9 @@ public class SQLManagerBuilder {
 	boolean offsetStartZero = false;
 
 
+	SQLManagerExtend sqlManagerExtend;
+
+
 	public SQLManagerBuilder(ConnectionSource ds) {
 		this.ds = ds;
 	}
@@ -167,7 +170,7 @@ public class SQLManagerBuilder {
 		SqlIdFactory mySqlIdFactory = this.getSqlIdFactory();
 		mySqlManager.setSqlIdFactory(mySqlIdFactory);
 		mySqlManager.setClassLoaderKit(myClassLoaderKit);
-
+		mySqlManager.setSqlManagerExtend(this.getSQLManagerExtend());
 
 		if(!idAutoGenMap.isEmpty()) {
 			idAutoGenMap.forEach((id, gen) -> {
@@ -177,6 +180,7 @@ public class SQLManagerBuilder {
 
 		dbStyle.config(mySqlManager);
 		sqlManagerMap.put(name, mySqlManager);
+
 		return mySqlManager;
 	}
 
@@ -437,6 +441,16 @@ public class SQLManagerBuilder {
 		return this;
 	}
 
+	public SQLManagerBuilder setSQLManagerExtend(SQLManagerExtend sqlManagerExtend){
+		this.sqlManagerExtend = sqlManagerExtend;
+		return this;
+	}
+	public SQLManagerExtend getSQLManagerExtend(){
+		if(sqlManagerExtend==null){
+			sqlManagerExtend = new SQLManagerExtend();
+		}
+		return sqlManagerExtend;
+	}
 	/**
 	 * 为每个sqlManager生成一个默认名字,系统最好指定每个sql的名字
 	 */

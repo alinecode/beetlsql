@@ -63,6 +63,8 @@ public class SQLManager implements DataAPI {
 	private MetadataManager metaDataManager;
 	private ClassLoaderKit classLoaderKit = null;
 
+	//一些简单的扩展方式
+	private SQLManagerExtend sqlManagerExtend;
 
 	protected SQLManager() {
 
@@ -1668,6 +1670,11 @@ public class SQLManager implements DataAPI {
 		this.mapperBuilder.setSqlManager(this);
 	}
 
+	public SQLManagerExtend getSqlManagerExtend() {
+		return sqlManagerExtend;
+	}
 
-
+	public void setSqlManagerExtend(SQLManagerExtend sqlManagerExtend) {
+		this.sqlManagerExtend = sqlManagerExtend;
+	}
 }

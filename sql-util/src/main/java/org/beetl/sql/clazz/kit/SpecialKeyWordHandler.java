@@ -1,6 +1,6 @@
 package org.beetl.sql.clazz.kit;
 
-public class SpecialKeyWordHandlder implements KeyWordHandler{
+public class SpecialKeyWordHandler implements KeyWordHandler{
     @Override
     public String getTable(String tableName) {
         return "`"+tableName+"`";

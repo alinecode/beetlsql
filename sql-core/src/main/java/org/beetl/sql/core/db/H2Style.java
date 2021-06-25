@@ -1,5 +1,6 @@
 package org.beetl.sql.core.db;
 
+import org.beetl.sql.clazz.kit.SpecialKeyWordHandler;
 import org.beetl.sql.core.range.OffsetLimitRange;
 import org.beetl.sql.core.range.RangeSql;
 
@@ -13,6 +14,7 @@ public class H2Style extends AbstractDBStyle {
     RangeSql rangeSql = null;
     public H2Style() {
         super();
+        this.keyWordHandler = new SpecialKeyWordHandler();
         rangeSql = new OffsetLimitRange(this);
     }
 

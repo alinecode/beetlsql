@@ -7,10 +7,7 @@ import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.EnumKit;
 import org.beetl.sql.clazz.kit.JavaType;
-import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.SQLManagerBuilder;
-import org.beetl.sql.core.SqlId;
-import org.beetl.sql.core.Tail;
+import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.engine.SQLParameter;
@@ -66,8 +63,6 @@ public class BeanProcessor {
 	/*如果通过handlers找不到匹配的类型处理类，则使用AcceptType寻找*/
 	List<AcceptType> acceptTypeList = new ArrayList<>();
 
-
-
 	protected JavaSqlTypeHandler defaultHandler = new DefaultTypeHandler();
 
 
@@ -105,6 +100,8 @@ public class BeanProcessor {
 		handlers.put(Blob.class, blobTypeHandler);
 		handlers.put(LocalDateTime.class,localDateTimeHandler);
 		handlers.put(LocalDate.class,localDateHandler);
+
+		acceptTypeList.add(new EnumAcceptType());
 
 	}
 
@@ -211,7 +208,7 @@ public class BeanProcessor {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int cols = rsmd.getColumnCount();
 		//		String tableName = nc.getTableName(c);
-		ReadTypeParameter tp = new ReadTypeParameter(sqlId, dbName, null, rs, rsmd, 0);
+		ReadTypeParameter tp = new ReadTypeParameter(sqlId, dbName, null, rs, rsmd, 0,ctx);
 		for (int i = 1; i <= cols; i++) {
 			String columnName = this.getColName(ctx,rsmd,i);
 
@@ -257,14 +254,13 @@ public class BeanProcessor {
 			String name1 = meta.getColumnName(1);
 			String name2 = meta.getColumnName(2);
 			index = name2.equalsIgnoreCase(RangeSql.PAGE_FLAG) ? 1 : 2;
-
 		}
 
 		if (index == 0) {
 			throw new SQLException("Beetlsql查询期望返回一列，返回类型为" + c + " 但返回了" + count + "列，" + sqlId);
 		}
 
-		ReadTypeParameter tp = new ReadTypeParameter(sqlId, dbName, c, rs, meta, index);
+		ReadTypeParameter tp = new ReadTypeParameter(sqlId, dbName, c, rs, meta, index,ctx);
 		JavaSqlTypeHandler handler = this.getHandler(c);
 		if (handler == null) {
 			handler = this.defaultHandler;
@@ -296,8 +292,7 @@ public class BeanProcessor {
 		String dbName = dbStyle.getName();
 		int dbType = dbStyle.getDBType();
 
-
-		ReadTypeParameter tp = new ReadTypeParameter(sqlId, dbName, type, rs, meta, 1);
+		ReadTypeParameter tp = new ReadTypeParameter(sqlId, dbName, type, rs, meta, 1,ctx);
 
 		ClassAnnotation ca = ClassAnnotation.getClassAnnotation(type);
 		Map<String, AttributeConvert> attrMap = null;
@@ -324,24 +319,19 @@ public class BeanProcessor {
 					Object value = noMappingValue(tp);
 					key = nc.getPropertyName(type, key);
 					bean2.set(key, value);
-
 				}
 				continue;
 			}
-
 			//columnToProperty[i]取出对应的在PropertyDescriptor[]中的下标
 			PropertyDescriptor prop = props[columnToProperty[i]];
-
 			Class<?> propType = prop.getPropertyType();
 			Object value = null;
-
 			if(attrMap!=null){
 				convert = attrMap.get(prop.getName());
 			}
 			if(convert!=null){
 				value = convert.toAttr(ctx,type,prop.getName(),rs,i);
 			}else{
-
 				tp.setTarget(propType);
 				JavaSqlTypeHandler handler = this.getHandler(propType);
 				if (handler == null) {
@@ -349,7 +339,6 @@ public class BeanProcessor {
 				}
 				value = handler.getValue(tp);
 			}
-
 			this.callSetter(bean, prop, value, propType);
 		}
 		return bean;
@@ -373,9 +362,10 @@ public class BeanProcessor {
 
 	/**
 	 * 根据setter方法设置值
-	 * @param target
+	 * @param target 目标Bean
 	 * @param prop
-	 * @param value
+	 * @param value 值
+	 * @param type   值类型
 	 * @throws SQLException
 	 */
 	public void callSetter(Object target, PropertyDescriptor prop, Object value, Class<?> type) throws SQLException {
@@ -383,17 +373,6 @@ public class BeanProcessor {
 		Method setter = BeanKit.getWriteMethod(prop, target.getClass());
 		if (setter == null) {
 			return;
-		}
-		if (type.isEnum()) {
-			if (value == null) {
-				return;
-			}
-			Object numValue = EnumKit.getEnumByValue(type, value);
-			if (numValue == null) {
-				throw new SQLException("Cannot set ENUM " + prop.getName() + ": Convert to NULL for value " + value);
-			} else {
-				value = numValue;
-			}
 		}
 		try {
 			setter.invoke(target, value);
@@ -506,7 +485,6 @@ public class BeanProcessor {
 	public void setPreparedStatementPara(ExecuteContext ctx, PreparedStatement ps, List<SQLParameter> objs)
 			throws SQLException {
 
-
 		SqlId sqlId = ctx.sqlId;
 		NameConversion nc = ctx.sqlManager.getNc();
 		DBStyle dbStyle = ctx.sqlManager.getDbStyle();
@@ -514,8 +492,7 @@ public class BeanProcessor {
 		int dbType = dbStyle.getDBType();
 		int i = 0;
 		SQLParameter para = null;
-
-		WriteTypeParameter writeTypeParameter = new WriteTypeParameter(ctx.sqlId,dbName,dbType,ctx.target,ps,0);
+		WriteTypeParameter writeTypeParameter = new WriteTypeParameter(ctx.sqlId,dbName,dbType,ctx.target,ps,0,ctx);
 		try {
 			for (; i < objs.size(); i++) {
 				para = objs.get(i);
@@ -523,32 +500,25 @@ public class BeanProcessor {
 				int jdbcType = para.getJdbcType();
 				if (o == null) {
 					if (jdbcType != 0) {
-						ps.setObject(i + 1, o, jdbcType);
+						ps.setNull(i + 1, jdbcType);
 					} else {
 						ps.setObject(i + 1, o);
 					}
-
 					continue;
 				}
 
 				writeTypeParameter.setIndex(i+1);
 				Class c = o.getClass();
-				if (Enum.class.isAssignableFrom(c)) {
-					o = EnumKit.getValueByEnum(o);
+				JavaSqlTypeHandler handler = this.getHandler(c);
+				if(handler==null){
+					handler = this.defaultHandler;
 				}
-
-				if (jdbcType == 0) {
-					JavaSqlTypeHandler handler = this.getHandler(c);
-					if(handler==null){
-						handler = this.defaultHandler;
-					}
-					handler.setParameter(writeTypeParameter,o);
-				} else {
-					//通常一些特殊的处理
+				if(jdbcType!=0){
 					ps.setObject(i + 1, o, jdbcType);
+				}else{
+					//最常见的情况
+					handler.setParameter(writeTypeParameter,o);
 				}
-
-
 			}
 		} catch (SQLException ex) {
 			throw new SQLException("处理第" + (i + 1) + "个参数错误:" + ex.getMessage(), ex);
@@ -573,9 +543,15 @@ public class BeanProcessor {
 	}
 
 	public void addAcceptType(AcceptType acceptType){
-		this.acceptTypeList.add(acceptType);
+		//总是加到最前
+		this.acceptTypeList.add(0,acceptType);
 	}
 
+	/**
+	 * 得到类型处理器
+	 * @param target
+	 * @return
+	 */
 	public JavaSqlTypeHandler getHandler(Class target){
 		JavaSqlTypeHandler handler = handlers.get(target);
 		if(handler==null&&!this.acceptTypeList.isEmpty()){
@@ -591,6 +567,61 @@ public class BeanProcessor {
 
 	public static interface AcceptType{
 		public JavaSqlTypeHandler isAccept(Class cls);
+	}
+
+	public static class EnumAcceptType implements AcceptType{
+		EnumTypeHandler enumTypeHandler = new EnumTypeHandler();
+		@Override
+		public JavaSqlTypeHandler isAccept(Class cls) {
+			if(Enum.class.isAssignableFrom(cls)){
+				return enumTypeHandler;
+			}else{
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * 处理枚举类
+	 */
+	public static class EnumTypeHandler extends   JavaSqlTypeHandler{
+		@Override
+		public Object getValue(ReadTypeParameter typePara) throws SQLException {
+			Object obj = typePara.getObject();
+			if(obj==null){
+				return null;
+			}
+			if(typePara.target==null){
+				return obj;
+			}
+			//转化成期望的枚举值
+			Enum enumValue =obj2enum(typePara,obj);
+			if (enumValue == null) {
+				throw new SQLException("Cannot set ENUM " + typePara.target + ": Convert to NULL for value " + obj);
+			}
+			return enumValue;
+		}
+
+
+		public void setParameter(WriteTypeParameter writeTypeParameter,Object obj)throws SQLException {
+			Object value = enum2Obj(writeTypeParameter,obj);
+			if(value==null){
+				writeTypeParameter.getPs().setObject(writeTypeParameter.getIndex(),null);
+			}
+			Class target  = value.getClass();
+			JavaSqlTypeHandler handler = writeTypeParameter.getExecuteContext().beanProcessor.getHandler(target);
+			handler.setParameter(writeTypeParameter,value);
+		}
+		protected  Enum obj2enum(ReadTypeParameter typePara,Object obj){
+			SQLManagerExtend sqlManagerExtend = typePara.getExecuteContext().sqlManager.getSqlManagerExtend();
+			Enum enumValue =sqlManagerExtend.getEnumExtend().getEnumByValue(typePara.target,obj);
+			return enumValue;
+		}
+		protected  Object enum2Obj(WriteTypeParameter writeTypeParameter,Object obj){
+			SQLManagerExtend sqlManagerExtend = writeTypeParameter.getExecuteContext().sqlManager.getSqlManagerExtend();
+			Object value = sqlManagerExtend.getEnumExtend().getValueByEnum(obj);
+			return value;
+		}
 	}
 
 	public static class InheritedAcceptType implements AcceptType{
