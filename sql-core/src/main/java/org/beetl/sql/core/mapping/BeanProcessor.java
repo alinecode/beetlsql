@@ -609,7 +609,7 @@ public class BeanProcessor {
 				writeTypeParameter.getPs().setObject(writeTypeParameter.getIndex(),null);
 			}
 			Class target  = value.getClass();
-			JavaSqlTypeHandler handler = writeTypeParameter.getExecuteContext().beanProcessor.getHandler(target);
+			JavaSqlTypeHandler handler = writeTypeParameter.getExecuteContext().sqlManager.getDefaultBeanProcessors().getHandler(target);
 			handler.setParameter(writeTypeParameter,value);
 		}
 		protected  Enum obj2enum(ReadTypeParameter typePara,Object obj){

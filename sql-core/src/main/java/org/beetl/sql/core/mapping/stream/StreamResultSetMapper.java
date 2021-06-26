@@ -1,7 +1,5 @@
 package org.beetl.sql.core.mapping.stream;
 
-import com.sun.org.apache.xalan.internal.xsltc.dom.SimpleResultTreeImpl;
-import lombok.SneakyThrows;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.mapping.ResultSetMapper;
@@ -47,7 +45,7 @@ public class  StreamResultSetMapper<T> implements ResultSetMapper<T> {
         @Override
         public E next() {
             try {
-                E obj = ctx.beanProcessor.toBean(ctx,rs,target);
+                E obj = ctx.customizedBeanProcessor.toBean(ctx,rs,target);
                 return obj;
             } catch (SQLException exception) {
                 throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,exception);

@@ -53,7 +53,7 @@ public class ExecuteContext {
      * 否则，参考RowMapper或者ResultSetMapper；<br/>
 	 * 如果为null，则使用SQLManager的默认的BeanProcessor
      */
-    public BeanProcessor beanProcessor = null;
+    public BeanProcessor customizedBeanProcessor = null;
 
 
     public SQLManager sqlManager;
@@ -83,7 +83,6 @@ public class ExecuteContext {
     public static ExecuteContext instance(SQLManager sqlManager){
         ExecuteContext executeContext =  new ExecuteContext();
         executeContext.sqlManager = sqlManager;
-        executeContext.beanProcessor = sqlManager.getDefaultBeanProcessors();
         QueryConfig queryConfig = sqlManager.queryConfigLocal.get();
         if(queryConfig!=null){
             executeContext.viewClass = queryConfig.getViewClass();

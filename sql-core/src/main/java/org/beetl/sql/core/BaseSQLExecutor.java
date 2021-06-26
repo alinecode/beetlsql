@@ -147,8 +147,8 @@ public class BaseSQLExecutor implements SQLExecutor {
 			rsh = this.dbQuery(conn, sql, jdbcPara);
 
 
-			if (executeContext.beanProcessor != null) {
-				resultList = executeContext.beanProcessor.toBeanList(executeContext, rsh.resultSet, clazz);
+			if (executeContext.customizedBeanProcessor != null) {
+				resultList = executeContext.customizedBeanProcessor.toBeanList(executeContext, rsh.resultSet, clazz);
 
 			} else {
 				ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(clazz);
@@ -420,8 +420,8 @@ public class BaseSQLExecutor implements SQLExecutor {
 
 			T model = null;
 
-			if (executeContext.beanProcessor != null) {
-				resultList = executeContext.beanProcessor.toBeanList(executeContext, rsh.resultSet, clazz);
+			if (executeContext.customizedBeanProcessor != null) {
+				resultList = executeContext.customizedBeanProcessor.toBeanList(executeContext, rsh.resultSet, clazz);
 			} else {
 				ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(clazz);
 				//单行映射
