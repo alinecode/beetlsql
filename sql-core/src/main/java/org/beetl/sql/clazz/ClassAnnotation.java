@@ -9,6 +9,7 @@ import org.beetl.sql.annotation.builder.TargetAdditional;
 import org.beetl.sql.annotation.entity.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.clazz.kit.CaseInsensitiveOrderSet;
 import org.beetl.sql.clazz.kit.DefaultCache;
 import org.beetl.sql.core.mapping.BeanFetch;
 import org.beetl.sql.core.mapping.ResultSetMapper;
@@ -72,7 +73,7 @@ public class ClassAnnotation {
 	/**
 	 * 插入实体时候自动从数据库获取的值，参考{@link Auto} 和 {@link AutoID} {@link SeqID}
 	 */
-	List<String> autoAttrList = null;
+	Set<String> autoAttrList = null;
 	/**
 	 * 用户自定义的注解扩展
 	 */
@@ -225,13 +226,13 @@ public class ClassAnnotation {
 			AutoID autoId = BeanKit.getAnnotation(entityClass, attr, readMethod, AutoID.class);
 			if (autoId != null) {
 				checkAutoAttrList();
-				autoAttrList.add(0, attr);
+				autoAttrList.add(attr);
 			}
 
 			SeqID seqId = BeanKit.getAnnotation(entityClass, attr, readMethod, SeqID.class);
 			if (seqId != null) {
 				checkAutoAttrList();
-				autoAttrList.add(0, attr);
+				autoAttrList.add(attr);
 			}
 
 			InsertIgnore ig = BeanKit.getAnnotation(entityClass, attr, readMethod, InsertIgnore.class);
@@ -317,7 +318,7 @@ public class ClassAnnotation {
 
 	protected void checkAutoAttrList() {
 		if (autoAttrList == null) {
-			autoAttrList = new ArrayList<>(1);
+			autoAttrList = new CaseInsensitiveOrderSet();
 		}
 	}
 

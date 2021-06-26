@@ -30,15 +30,15 @@ import java.util.Set;
 
 public class QuickTest {
 
-	static DataSource dataSource = mysqlDatasource();
-//	private static   DataSource datasource() {
-//		HikariDataSource ds = new HikariDataSource();
-//		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
-//		ds.setUsername("sa");
-//		ds.setPassword("");
-//		ds.setDriverClassName("org.h2.Driver");
-//		return ds;
-//	}
+	static DataSource dataSource = datasource();
+	private static   DataSource datasource() {
+		HikariDataSource ds = new HikariDataSource();
+		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
+		ds.setUsername("sa");
+		ds.setPassword("");
+		ds.setDriverClassName("org.h2.Driver");
+		return ds;
+	}
 	private  static SQLManager getSQLManager(){
 
 		ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
@@ -52,20 +52,20 @@ public class QuickTest {
 
     public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
-		UserMapper userMapper = sqlManager.getMapper(UserMapper.class);
+		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
+//
+//		OrderLog key = new OrderLog();
+//		key.setOrderId(1);
+//		key.setStatus("u");
+//		sqlManager.unique(OrderLog.class,key);
 
 
+		OrderLog orderLog = new OrderLog();
+		orderLog.setOrderId(3);
+		orderLog.setStatus("u");
+		sqlManager.insert(orderLog);
 
-		userMapper.createLambdaQuery().select();
-		System.out.println("down");
-
-
-		userMapper.createLambdaQuery().select();
-		System.out.println("down2");
-
-		userMapper.createLambdaQuery().select();
-		System.out.println("down3");
-
+		sqlManager.deleteById(OrderLog.class,orderLog);
 
 
 

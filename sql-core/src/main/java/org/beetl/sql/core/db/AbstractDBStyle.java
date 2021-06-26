@@ -4,10 +4,7 @@ import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
-import org.beetl.sql.clazz.ClassDesc;
-import org.beetl.sql.clazz.NameConversion;
-import org.beetl.sql.clazz.SQLType;
-import org.beetl.sql.clazz.TableDesc;
+import org.beetl.sql.clazz.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.DefaultKeyWordHandler;
@@ -295,10 +292,16 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Iterator<String> attrs = classDesc.getAttrs().iterator();
 
 		List<String> idCols = classDesc.getIdCols();
+
+		ClassAnnotation classAnnotation = classDesc.getClassAnnotation();
 		while (cols.hasNext() && attrs.hasNext()) {
 			String col = cols.next();
 			String attr = attrs.next();
-			if (classDesc.getClassAnnotation().isInsertIgnore(attr)) {
+			if (classAnnotation.isInsertIgnore(attr)) {
+				continue;
+			}
+
+			if(classAnnotation.getAutoAttrList()!=null&&classAnnotation.getAutoAttrList().contains(attr)){
 				continue;
 			}
 
