@@ -4,6 +4,7 @@ import lombok.Data;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.annotation.builder.*;
 import org.beetl.sql.annotation.entity.Auto;
+import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.ExecuteContext;
@@ -126,7 +127,7 @@ public class BuilderTest extends BaseTest {
     @Table(name="sys_user")
     @Data
     public static class UserEntity{
-        @Auto
+        @AutoID
         Long id ;
         @Encrypt()
         String name;
@@ -137,7 +138,7 @@ public class BuilderTest extends BaseTest {
     @Data
     @BeanEncrypt( attr="name")
     public static class UserEntity2{
-        @Auto
+        @AutoID
         Long id ;
         String name;
     }
@@ -147,7 +148,7 @@ public class BuilderTest extends BaseTest {
     @Data
     @MyUpdateTime
     public static class UserEntity3{
-        @Auto
+        @AutoID
         Long id ;
         String name;
         Date createDate;
@@ -156,7 +157,7 @@ public class BuilderTest extends BaseTest {
 	@Table(name="sys_user")
 	@Data
 	public static class UserEntity4{
-		@Auto
+		@AutoID
 		Long id ;
 		String name;
 		@UpdateTime

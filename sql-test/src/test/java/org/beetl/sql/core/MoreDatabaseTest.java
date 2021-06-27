@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.Data;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.annotation.entity.Auto;
+import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.annotation.entity.TargetSQLManager;
 import org.beetl.sql.core.db.H2Style;
@@ -108,7 +109,7 @@ public class MoreDatabaseTest  extends BaseTest {
 	@Table(name = "sys_user")
 	@TargetSQLManager("a")
 	public static class UserData {
-		@Auto
+		@AutoID
 		private Integer id;
 		private String name;
 		private Integer departmentId;
@@ -121,7 +122,7 @@ public class MoreDatabaseTest  extends BaseTest {
 	@Table(name = "department")
 	@TargetSQLManager("b")
 	public static class DepartmentData {
-		@Auto
+		@AutoID
 		private Integer id;
 		private String name;
 	}
