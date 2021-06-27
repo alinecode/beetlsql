@@ -7,10 +7,7 @@ import org.beetl.sql.annotation.builder.BeanConvert;
 import org.beetl.sql.annotation.builder.Builder;
 import org.beetl.sql.annotation.builder.TargetAdditional;
 import org.beetl.sql.annotation.entity.*;
-import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
-import org.beetl.sql.clazz.kit.CaseInsensitiveOrderSet;
-import org.beetl.sql.clazz.kit.DefaultCache;
+import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.mapping.BeanFetch;
 import org.beetl.sql.core.mapping.ResultSetMapper;
 import org.beetl.sql.core.mapping.RowMapper;
@@ -20,7 +17,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -71,9 +67,26 @@ public class ClassAnnotation {
 	//	Map<String,Annotation> fetechMap;
 
 	/**
-	 * 插入实体时候自动从数据库获取的值，参考{@link Auto} 和 {@link AutoID} {@link SeqID}
+	 * 插入实体时候自动从数据库获取的值，参考{@link Auto}
 	 */
 	Set<String> autoAttrList = null;
+
+	/**
+	 *  {@link AutoID}
+	 */
+	String autoIdAttr = null;
+
+
+	Set<String> seqAttrList = null;
+	/**
+	 * {@link SeqID}
+	 */
+	String seqIdAttr = null;
+
+	/**
+	 * 综合了AutoId和Auto,Seq,SeqId
+	 */
+	transient  String[] keyHolderArray = null;
 	/**
 	 * 用户自定义的注解扩展
 	 */
@@ -225,14 +238,28 @@ public class ClassAnnotation {
 
 			AutoID autoId = BeanKit.getAnnotation(entityClass, attr, readMethod, AutoID.class);
 			if (autoId != null) {
-				checkAutoAttrList();
-				autoAttrList.add(attr);
+				if(this.autoIdAttr!=null){
+					throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"@AutoId 应该只有一个，但出现在"
+							+this.autoIdAttr+" 和 "+attr+" @"+this.entityClass );
+				}
+				this.autoIdAttr = attr;
 			}
+
 
 			SeqID seqId = BeanKit.getAnnotation(entityClass, attr, readMethod, SeqID.class);
 			if (seqId != null) {
-				checkAutoAttrList();
-				autoAttrList.add(attr);
+				if(this.seqIdAttr!=null){
+					throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"@SeqId 应该只有一个，但出现在"
+							+this.autoIdAttr+" 和 "+attr+" @"+this.entityClass );
+				}
+				this.seqIdAttr = attr;
+
+			}
+
+			Seq seq = BeanKit.getAnnotation(entityClass, attr, readMethod, Seq.class);
+			if (seq != null) {
+				checkSeqAttrList();
+				seqAttrList.add(attr);
 			}
 
 			InsertIgnore ig = BeanKit.getAnnotation(entityClass, attr, readMethod, InsertIgnore.class);
@@ -260,6 +287,32 @@ public class ClassAnnotation {
 			}
 		}
 
+
+		makeKeyHolder();
+
+	}
+
+	protected  void makeKeyHolder(){
+		if(autoIdAttr!=null&&seqIdAttr!=null){
+			throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"@SeqId 和 @AutoId 只能有一个@"+entityClass );
+		}
+		List<String> keyHolderList = new ArrayList();
+		if(autoAttrList!=null){
+			keyHolderList.addAll(autoAttrList);
+		}
+		if(this.autoIdAttr!=null){
+			keyHolderList.add(autoIdAttr);
+		}
+
+		if(seqAttrList!=null){
+			keyHolderList.addAll(seqAttrList);
+		}
+
+		if(seqIdAttr!=null){
+			keyHolderList.add(seqIdAttr);
+		}
+
+		keyHolderArray = keyHolderList.toArray(new String[0]);
 	}
 
 
@@ -301,24 +354,19 @@ public class ClassAnnotation {
 
 
 	public String[] getInsertAutoAttrs() {
-		if (autoAttrList == null) {
-			return BeanKit.EMP_STRING_ARRAY;
-		}
-		return autoAttrList.toArray(new String[0]);
-	}
-
-	public String[] getInsertAutoCols(NameConversion nc) {
-		if (this.autoAttrList.isEmpty()) {
-			return null;
-		}
-		return autoAttrList.stream().map(t -> nc.getColName(this.entityClass, t)).collect(Collectors.toList())
-				.toArray(new String[0]);
+		return this.keyHolderArray;
 	}
 
 
 	protected void checkAutoAttrList() {
 		if (autoAttrList == null) {
 			autoAttrList = new CaseInsensitiveOrderSet();
+		}
+	}
+
+	protected void checkSeqAttrList() {
+		if (this.seqAttrList == null) {
+			seqAttrList = new CaseInsensitiveOrderSet();
 		}
 	}
 

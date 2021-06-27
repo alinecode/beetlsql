@@ -6,17 +6,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 指定主键，且主键对应数据库序列
+ * 指定序列
  * <pre>
  *{@code
- *  @SeqId(name="xxx_seq")
+ *  @Seq(name="xxx_seq")
  *  private Long id
  * }
  * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
-public @interface SeqID {
+public @interface Seq {
 	/**
 	 * 在具备序列功能的数据库的序列名称
 	 */
