@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 指定序列
+ * 指定序列,自动生成值
  * <pre>
  *{@code
  *  @Seq(name="xxx_seq")

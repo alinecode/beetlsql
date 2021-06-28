@@ -53,6 +53,31 @@ public class IdTest extends BaseTest {
 	}
 
 
+	@Test
+	public void allTest(){
+
+		BigData data = new BigData();
+		data.setOrderId(1);
+		data.setStatus(2);
+		sqlManager.insert(data);
+		Assert.assertNotNull(data.getDataId());
+		Assert.assertNotNull(data.getLabel());
+
+		BigData key = new BigData();
+		key.setOrderId(data.getOrderId());
+		key.setStatus(data.getStatus());
+
+		BigData ret = sqlManager.unique(BigData.class,key);
+
+		ret.setLabel(10);
+		sqlManager.updateById(ret);
+
+
+
+
+	}
+
+
 
 
 }

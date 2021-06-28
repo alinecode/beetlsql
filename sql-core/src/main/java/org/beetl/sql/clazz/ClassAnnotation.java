@@ -382,4 +382,12 @@ public class ClassAnnotation {
 			attrUpdateIgnores = new HashSet<>();
 		}
 	}
+
+	public boolean isAutoAttr(String attr){
+		return autoAttrList!=null&&autoAttrList.contains(attr);
+	}
+
+	public boolean isSeqAttr(String attr){
+		return seqAttrList!=null&&seqAttrList.contains(attr);
+	}
 }

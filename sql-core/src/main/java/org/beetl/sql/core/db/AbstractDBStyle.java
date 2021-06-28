@@ -3,6 +3,7 @@ package org.beetl.sql.core.db;
 import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
+import org.beetl.sql.annotation.entity.Seq;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.*;
 import org.beetl.sql.clazz.kit.BeanKit;
@@ -301,26 +302,17 @@ public abstract class AbstractDBStyle implements DBStyle {
 				continue;
 			}
 
-			if(classAnnotation.getAutoAttrList()!=null&&classAnnotation.getAutoAttrList().contains(attr)){
+			if(classAnnotation.isAutoAttr(attr)){
 				continue;
 			}
 
-			if (idCols.size() == 1 && idCols.contains(col)) {
-
-				idType = this.getIdType(classDesc.getTargetClass(), attr);
-				if (idType == DBType.ID_AUTO) {
-					continue; //忽略这个字段
-				} else if (idType == DBType.ID_SEQ) {
-
-					SeqID seqId = BeanKit.getAnnotation(classDesc.getTargetClass(), attr,
-							(Method) classDesc.getIdMethods().get(attr), SeqID.class);
-					insert.setConstant(col, this.getSeqValue(seqId.name()));
-
-					continue;
-				} else if (idType == DBType.ID_ASSIGN) {
-					//normal
-				}
+			if(classAnnotation.isSeqAttr(attr)){
+				Seq seq = BeanKit.getAnnotation(classDesc.getTargetClass(), attr
+						, Seq.class);
+				insert.setConstant(col, this.getSeqValue(seq.name()));
+				continue;
 			}
+
 
 			if (attr.equals(classDesc.getClassAnnotation().getVersionProperty())
 					&& classDesc.getClassAnnotation().getInitVersionValue() != -1) {
@@ -330,11 +322,25 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 			}
 
+			if (idCols.contains(col)) {
+				idType = this.getIdType(classDesc.getTargetClass(), attr);
+				if (idType == DBType.ID_AUTO) {
+					continue; //忽略这个字段
+				} else if (idType == DBType.ID_SEQ) {
+					SeqID seqId = BeanKit.getAnnotation(classDesc.getTargetClass(), attr,
+							(Method) classDesc.getIdMethods().get(attr), SeqID.class);
+					insert.setConstant(col, this.getSeqValue(seqId.name()));
+					continue;
+				} else if (idType == DBType.ID_ASSIGN) {
+					//同其他字段一样，
+				}
+			}
+
+
 			if (template) {
 				insert.conditionalSet(col, attr);
 			} else {
 				insert.set(col, attr);
-
 			}
 
 		}
