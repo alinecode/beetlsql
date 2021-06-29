@@ -747,12 +747,14 @@ public class BaseSQLExecutor implements SQLExecutor {
 					continue;
 				}
 				int index = paramConfig.getIndex();
+
 				Object obj = callableStatement.getObject(index);
 				if(obj instanceof  ResultSet){
 					List ret = this.mappingSelect(clazz[i],(ResultSet)obj);
 					callResult.add(paramConfig.getName(),ret);
 				}else{
-					this.m
+					//没有使用BeanProcessor 映射
+					Object ojb = callableStatement.getObject(index,clazz[i]);
 					callResult.add(paramConfig.getName(),obj);
 				}
 				i++;
