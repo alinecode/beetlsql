@@ -88,7 +88,6 @@ public class SQLPlaceholderST extends PlaceholderST {
 					value = format.evaluateValue(value, ctx);
 				}
 
-
 			}
 
 			if (expression instanceof FunctionExpression) {

@@ -8,9 +8,7 @@ import org.beetl.sql.annotation.entity.Table;
 @Data
 @Table(name="order_log")
 public class OrderLog {
-	@AssignID
 	Integer orderId;
-	@AssignID
 	String status;
 	@Auto
 	Integer id;

@@ -9,6 +9,7 @@ public enum SQLType {
     /*一些非内置的sql，sqlManager只提供update的api，可能是delete语句，但调用了update*/
     UPDATE,
     DELETE,
+	CALL, /*存储过程*/
     UNKNOWN;
 
     public boolean isUpdate(){

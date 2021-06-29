@@ -65,7 +65,7 @@ public class QuickTest {
 		orderLog.setStatus("u");
 		sqlManager.insert(orderLog);
 
-		sqlManager.deleteById(OrderLog.class,orderLog);
+//		sqlManager.deleteById(OrderLog.class,orderLog);
 
 
 

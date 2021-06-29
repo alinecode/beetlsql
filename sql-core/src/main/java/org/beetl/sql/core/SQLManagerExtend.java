@@ -10,8 +10,8 @@ import org.beetl.sql.core.extend.ParaExtend;
  */
 @Plugin
 public class SQLManagerExtend {
-    EnumExtend enumExtend = new EnumExtend();
-    ParaExtend paraExtend = new ParaExtend();
+    protected  EnumExtend enumExtend = new EnumExtend();
+	protected ParaExtend paraExtend = new ParaExtend();
 
     public SQLManagerExtend(){
 

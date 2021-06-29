@@ -1,5 +1,7 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.core.call.CallParam;
+import org.beetl.sql.core.call.CallResult;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.mapping.StreamData;
 
@@ -123,6 +125,17 @@ public interface SQLExecutor {
 	int sqlReadyExecuteUpdate(SQLReady p);
 
 	int[] sqlReadyBatchExecuteUpdate(SQLBatchReady batch);
+
+	/**
+	 * 调用存储过程
+	 * @param jdbcCall
+	 * @param paras
+	 * @param clazzs
+	 * @return
+	 */
+	default  CallResult call(String jdbcCall,Map paras,List<CallParam>  params,Class[] clazz,boolean isUpate){
+		throw new UnsupportedOperationException("存储过程不支持");
+	}
 
 	/**
 	 * 执行sql模板，得到sql语句和参数

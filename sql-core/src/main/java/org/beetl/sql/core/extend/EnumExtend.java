@@ -11,5 +11,4 @@ public class EnumExtend {
         return EnumKit.getValueByEnum(en);
     }
 
-
 }

@@ -8,6 +8,8 @@ import org.beetl.sql.clazz.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.StringKit;
+import org.beetl.sql.core.call.CallParam;
+import org.beetl.sql.core.call.CallResult;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.SQLParameter;
@@ -718,6 +720,50 @@ public class BaseSQLExecutor implements SQLExecutor {
 		return rs;
 
 
+	}
+
+	@Override
+	public CallResult call(String jdbcCall, Map paras, List<CallParam>  params,Class[] clazz,boolean isUpate) {
+		Connection conn = null;
+		ResultUpdateHolder ruh = null;
+		InterceptorContext ctx = null;
+		CallableStatement callableStatement = null;
+		try {
+
+			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
+			callableStatement = conn.prepareCall(jdbcCall);
+			for(CallParam paramConfig:params){
+				if(!paramConfig.isIn()){
+					continue;
+				}
+				callableStatement.setObject(paramConfig.getIndex(),paras.get(paramConfig.getName()));
+			}
+			CallResult callResult = new CallResult();
+			callableStatement.execute();
+
+			int i=0;
+			for(CallParam paramConfig:params){
+				if(paramConfig.isIn()){
+					continue;
+				}
+				int index = paramConfig.getIndex();
+				Object obj = callableStatement.getObject(index);
+				if(obj instanceof  ResultSet){
+					List ret = this.mappingSelect(clazz[i],(ResultSet)obj);
+					callResult.add(paramConfig.getName(),ret);
+				}else{
+					this.m
+					callResult.add(paramConfig.getName(),obj);
+				}
+				i++;
+			}
+
+			return callResult;
+		} catch (SQLException e) {
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		} finally {
+			clean(true, conn,callableStatement);
+		}
 	}
 
 	@Override
