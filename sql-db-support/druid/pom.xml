@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.5.0-RELEASE</version>
+        <version>3.5.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>druid</artifactId>
-    <version>3.5.0-RELEASE</version>
+    <version>3.5.1-RELEASE</version>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.calcite.avatica/avatica -->
         <dependency>
