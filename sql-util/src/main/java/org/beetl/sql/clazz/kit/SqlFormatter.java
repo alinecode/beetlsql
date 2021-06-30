@@ -124,17 +124,17 @@ class SqlFormatter {
                     openParen();
                 } else if (")".equals(this.token)) {
                     closeParen();
-                } else if (BEGIN_CLAUSES.contains(this.lcToken)) {
+                } else if (BEGIN_CLAUSES.contains(this.lcToken)&&noEscape()) {
                     beginNewClause();
-                } else if (END_CLAUSES.contains(this.lcToken)) {
+                } else if (END_CLAUSES.contains(this.lcToken)&&noEscape()) {
                     endNewClause();
-                } else if ("select".equals(this.lcToken)) {
+                } else if ("select".equals(this.lcToken)&&noEscape()) {
                     select();
-                } else if (DML.contains(this.lcToken)) {
+                } else if (DML.contains(this.lcToken)&&noEscape()) {
                     updateOrInsertOrDelete();
-                } else if ("values".equals(this.lcToken)) {
+                } else if ("values".equals(this.lcToken)&&noEscape()) {
                     values();
-                } else if ("on".equals(this.lcToken)) {
+                } else if ("on".equals(this.lcToken)&&noEscape()) {
                     on();
                 } else if ((this.afterBetween) && (this.lcToken.equals("and"))) {
                     misc();
@@ -319,5 +319,17 @@ class SqlFormatter {
             }
             this.beginLine = true;
         }
+
+        private boolean noEscape(){
+        	char last = result.charAt(result.length()-1);
+        	//数据库特殊符号
+        	if(last=='`'||last=='['){
+        		return false;
+			}else{
+        		return true;
+			}
+		}
+
+
     }
 }

@@ -90,7 +90,7 @@ public final class PageKit {
     }
     
     public static void main(String[] args){
-    		String sql = "select * from user #abcd# where 1=1 and c=#abc# order #text('acd.123/2')#";
+    		String sql = "select * from `order` where `select`=1";
     		sql = PageKit.getCountSql(sql);
     		System.out.println(sql);
     }

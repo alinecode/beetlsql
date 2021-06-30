@@ -2,25 +2,14 @@ package org.beetl.sql.test;
 
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.core.ReThrowConsoleErrorHandler;
-import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.core.*;
-import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.nosql.TaosStyle;
+import org.beetl.sql.core.page.PageResult;
+import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.gen.SourceBuilder;
-import org.beetl.sql.gen.SourceConfig;
-import org.beetl.sql.gen.simple.ConsoleOnlyProject;
-import org.beetl.sql.gen.simple.EntitySourceBuilder;
-import org.beetl.sql.gen.simple.MDSourceBuilder;
-import org.beetl.sql.gen.simple.MapperSourceBuilder;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * 内部测试新功能或者bug用，所有单元测试参考test目录
@@ -53,21 +42,9 @@ public class QuickTest {
     public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-//
-//		OrderLog key = new OrderLog();
-//		key.setOrderId(1);
-//		key.setStatus("u");
-//		sqlManager.unique(OrderLog.class,key);
 
-
-		OrderLog orderLog = new OrderLog();
-		orderLog.setOrderId(3);
-		orderLog.setStatus("u");
-		sqlManager.insert(orderLog);
-
-		sqlManager.deleteById(OrderLog.class,orderLog);
-
-
+		LambdaQuery<Order> lambdaQuery = sqlManager.lambdaQuery(Order.class);
+		PageResult<Order> pageQuery = lambdaQuery.andEq(Order::getUserId,1).andEq(Order::getUserName,"ab").orderBy("id").page(1,10);
 
     }
 
