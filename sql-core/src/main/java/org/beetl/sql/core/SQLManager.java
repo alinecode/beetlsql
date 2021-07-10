@@ -905,12 +905,28 @@ public class SQLManager implements DataAPI {
 		String tableName = this.nc.getTableName(c);
 		TableDesc table = this.metaDataManager.getTable(tableName);
 		ClassDesc classDesc = table.genClassDesc(this.nc);
+		Object pk = null;
 		List<String> idProperties = classDesc.getIdAttrs();
 		if (idProperties.size() != 1) {
-			throw new BeetlSQLException(BeetlSQLException.ID_EXPECTED_ONE_ERROR, "upsert方法期望只有一个主键");
-
+			int findNullAttr = 0;
+			for(String attr:idProperties){
+				Object attrValue = BeanKit.getBeanProperty(obj, attr);
+				if(attrValue==null){
+					findNullAttr ++;
+				}
+			}
+			if(findNullAttr!=0){
+				if(findNullAttr!=idProperties.size()){
+					throw new BeetlSQLException(BeetlSQLException.ID_VALUE_ERROR,"期望对象 "+obj+"的主键均为空值而不是部分为空值");
+				}
+				pk=null;
+			}else{
+				pk = obj;
+			}
+		}else{
+			 pk = BeanKit.getBeanProperty(obj, idProperties.get(0));
 		}
-		Object pk = BeanKit.getBeanProperty(obj, idProperties.get(0));
+
 		if (pk == null) {
 			//插入
 			if (template) {
@@ -921,6 +937,7 @@ public class SQLManager implements DataAPI {
 
 			return true;
 		}
+
 		Object dbValue = this.single(c, pk);
 		if (dbValue == null) {
 			if (template) {
@@ -1337,7 +1354,7 @@ public class SQLManager implements DataAPI {
 		Long count = null;
 		List<T> list = null;
 		if (pageRequest.isTotalRequired()) {
-			String countSql = PageKit.getCountSql(sql);
+			String countSql = this.getSqlManagerExtend().getPageKit().getCountSql(this.dbStyle.getName(),sql);
 			List<Long> countList = execute(new SQLReady(countSql, p.getArgs()), Long.class);
 			count = countList.get(0);
 			if (count == null || count == 0) {

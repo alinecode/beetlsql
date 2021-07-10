@@ -79,6 +79,8 @@ public class BeetlSQLException extends RuntimeException {
 	 */
 	public static final int 	MAPPER_SQL_LIMIT  = 27;
 
+	public static final int 	PARSE_JDBC_SQL  = 28;
+
 	public static final int 	ERROR  = 99;
 
 	public int code ;

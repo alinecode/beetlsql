@@ -6,11 +6,19 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.5.1-RELEASE</version>
+        <version>3.6.0-RELEASE</version>
     </parent>
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-util</artifactId>
-    <version>3.5.1-RELEASE</version>
+    <version>3.6.0-RELEASE</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>4.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
     
 </project>

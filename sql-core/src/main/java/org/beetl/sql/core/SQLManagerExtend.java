@@ -1,5 +1,6 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.clazz.kit.PageKit;
 import org.beetl.sql.clazz.kit.Plugin;
 import org.beetl.sql.core.extend.EnumExtend;
 import org.beetl.sql.core.extend.ParaExtend;
@@ -10,8 +11,9 @@ import org.beetl.sql.core.extend.ParaExtend;
  */
 @Plugin
 public class SQLManagerExtend {
-    EnumExtend enumExtend = new EnumExtend();
-    ParaExtend paraExtend = new ParaExtend();
+    protected  EnumExtend enumExtend = new EnumExtend();
+	protected ParaExtend paraExtend = new ParaExtend();
+	protected PageKit pageKit = new PageKit();
 
     public SQLManagerExtend(){
 
@@ -23,6 +25,8 @@ public class SQLManagerExtend {
     public EnumExtend getEnumExtend(){
         return enumExtend;
     }
+
+    public PageKit getPageKit(){return pageKit;};
 
 
 }

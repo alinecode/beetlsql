@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 此标注的类或者接口可以用注解扩展，需要参看文档查看如何扩展
+ * 此标注的类或者接口可以用扩展，需要参看源码或者文档查看如何扩展
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(value = {ElementType.TYPE})
