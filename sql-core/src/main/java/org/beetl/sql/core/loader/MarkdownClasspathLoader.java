@@ -1,4 +1,3 @@
-
 package org.beetl.sql.core.loader;
 
 import org.beetl.sql.clazz.SQLType;
@@ -9,7 +8,6 @@ import org.beetl.sql.core.SqlId;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.rmi.UnexpectedException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,13 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Plugin
 public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 
-    protected String sqlRoot = null;
+    protected String sqlRoot;
     protected String charset;
 
     /**
      * 外部sql缓存
      */
-    protected Map<SqlId, SQLSource> sqlSourceMap = new ConcurrentHashMap<SqlId, SQLSource>();
+    protected Map<SqlId, SQLSource> sqlSourceMap = new ConcurrentHashMap<>();
 
     protected SQLSource EMPTY = SQLSource.emptySource();
 
@@ -72,9 +70,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         //从未被加载过
 
         loadFromClassPath(id);
-        source = sqlSourceMap.computeIfAbsent(id, key -> {
-            return EMPTY;
-        });
+        source = sqlSourceMap.computeIfAbsent(id, key -> EMPTY);
         if (source == EMPTY) {
             return null;
         } else {
@@ -87,10 +83,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
     @Override
     public boolean existExternalSource(SqlId id) {
         SQLSource source = queryExternalSource(id);
-        if (source == null) {
-            return false;
-        }
-        return true;
+        return source != null;
     }
 
     /**
@@ -113,12 +106,8 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         //如果db目录中有sql文件，直接使用db目录的文件判断版本（root中的文件会被db中的覆盖）
         URL root = this.getRootFile(id);
         URL db = this.getDBRootFile(id);
-        if (getURLVersion(root) != oldRootVersion || getURLVersion(db) != oldDbVersion) {
-            //如果root目录和db目录只要有一个变化，都认为sql文件变化，重新加载
-            return true;
-        } else {
-            return false;
-        }
+        //如果root目录和db目录只要有一个变化，都认为sql文件变化，重新加载
+        return getURLVersion(root) != oldRootVersion || getURLVersion(db) != oldDbVersion;
 
     }
 
@@ -134,7 +123,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
             return 0L;
         }
 
-        if (url.getProtocol().equals("file")) {
+        if ("file".equals(url.getProtocol())) {
             String path = url.getFile();
             return new File(path).lastModified();
         } else {
@@ -178,9 +167,6 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
             return;
         }
 
-        if (ins == null) {
-            return;
-        }
         String modelName = sqlId.getNamespace();
         long lastModified = getURLVersion(url);
         BufferedReader bf = null;
@@ -224,7 +210,6 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
      * md文件需放在classpath下
      * @param id
      * @return
-     * @throws UnexpectedException
      */
     protected URL getRootFile(SqlId id) {
         URL url = getFilePath(sqlRoot, id);
@@ -246,9 +231,6 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         URL is = this.getFile(filePath0);
         if (is == null) {
             is = this.getFile(filePath1);
-            if (is == null) {
-                return null;
-            }
         }
         return is;
     }
@@ -264,22 +246,18 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         return this.sqlRoot;
     }
 
-	@Override
-	public boolean existNamespace(SqlId id) {
-		URL root = this.getRootFile(id);
-		if(root!=null){
-			return true;
-		}
-		URL db = this.getDBRootFile(id);
-		if(db!=null){
-			return true;
-		}
-
-		return false;
-	}
+    @Override
+    public boolean existNamespace(SqlId id) {
+        URL root = this.getRootFile(id);
+        if (root != null) {
+            return true;
+        }
+        URL db = this.getDBRootFile(id);
+        return db != null;
+    }
 
 
-	public static class SQLFileVersion {
+    public static class SQLFileVersion {
         public URL url;
         //根目录下sql文件版本
         public long root = 0L;
@@ -287,11 +265,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         public long db = 0L;
 
         public boolean isModified(SQLFileVersion newVersion) {
-            if (newVersion.root != root || newVersion.db != db) {
-                return true;
-            } else {
-                return false;
-            }
+            return newVersion.root != root || newVersion.db != db;
         }
     }
 

@@ -29,7 +29,7 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
 
     @Override
     public void init(SQLLoader loader, Properties ps) {
-        beetl = new Beetl(loader,ps);
+        beetl = new Beetl(loader, ps);
 
         Configuration cf = beetl.getGroupTemplate().getConf();
         STATEMENT_START = cf.getStatementStart();
@@ -44,22 +44,22 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
     @Override
     public SQLTemplate getSqlTemplate(SqlId id) {
         Template template = beetl.getGroupTemplate().getTemplate(id);
-        return  new BeetlSQLTemplate(template);
+        return new BeetlSQLTemplate(template);
     }
 
     @Override
-    public SQLTemplate getSqlTemplate(SqlId id, TemplateContext parent){
-        BeetlTemplateContext context = (BeetlTemplateContext)parent;
-        Template template = beetl.getGroupTemplate().getTemplate(id,context.ctx);
-        return  new BeetlSQLTemplate(template);
+    public SQLTemplate getSqlTemplate(SqlId id, TemplateContext parent) {
+        BeetlTemplateContext context = (BeetlTemplateContext) parent;
+        Template template = beetl.getGroupTemplate().getTemplate(id, context.ctx);
+        return new BeetlSQLTemplate(template);
     }
 
 
     @Override
     public SQLErrorInfo validate(String sqlTemplate) {
         StringTemplateResourceLoader templateResourceLoader = new StringTemplateResourceLoader();
-        BeetlException exception = this.beetl.getGroupTemplate().validateTemplate(sqlTemplate,templateResourceLoader);
-        if(exception==null){
+        BeetlException exception = this.beetl.getGroupTemplate().validateTemplate(sqlTemplate, templateResourceLoader);
+        if (exception == null) {
             //没有问题的模板
             return null;
         }
@@ -69,76 +69,71 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
          * BeetlSQLTemplateExceptionHandler
          */
         ErrorInfo error = new ErrorInfo(exception);
-        if(error==null){
-            return null;
-        }
         SQLErrorInfo sqlErrorInfo = new SQLErrorInfo();
-        sqlErrorInfo.setLine(  error.getErrorTokenLine());
-        sqlErrorInfo.setToken( error.getErrorTokenText());
+        sqlErrorInfo.setLine(error.getErrorTokenLine());
+        sqlErrorInfo.setToken(error.getErrorTokenText());
         sqlErrorInfo.setRoot(error.getCause());
         return sqlErrorInfo;
     }
 
     @Override
-    public void genVar(ConcatBuilder concatBuilder,String var) {
-        appendVar(concatBuilder,var);
+    public void genVar(ConcatBuilder concatBuilder, String var) {
+        appendVar(concatBuilder, var);
     }
 
     @Override
     public String appendVar(String express) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(HOLDER_START).append(express).append(HOLDER_END).append(" ");
-        return sb.toString();
+        return HOLDER_START + express + HOLDER_END + " ";
     }
 
     @Override
     public void genTrimStart(ConcatBuilder concatBuilder) {
-        appendStatement(concatBuilder,"trim({suffixOverrides:','}){");
+        appendStatement(concatBuilder, "trim({suffixOverrides:','}){");
     }
 
     @Override
     public void genTrimEnd(ConcatBuilder concatBuilder) {
-        appendStatement(concatBuilder,"}");
+        appendStatement(concatBuilder, "}");
     }
 
     @Override
-    public void genIfNotEmptyStart(ConcatBuilder concatBuilder,String var) {
-        appendStatement(concatBuilder,"if(isNotEmpty("+var+")){");
+    public void genIfNotEmptyStart(ConcatBuilder concatBuilder, String var) {
+        appendStatement(concatBuilder, "if(isNotEmpty(" + var + ")){");
     }
 
     @Override
     public void genIfNotEmptyEnd(ConcatBuilder concatBuilder) {
-        appendStatement(concatBuilder,"}");
+        appendStatement(concatBuilder, "}");
     }
 
     @Override
     public void genTestVar(ConcatBuilder concatBuilder, String var) {
-        appendVar(concatBuilder,"db.testNull("+var+"!,\""+var+"\")");
+        appendVar(concatBuilder, "db.testNull(" + var + "!,\"" + var + "\")");
     }
 
     @Override
     public void genTestVar(ConcatBuilder concatBuilder, String var, String col) {
-        if(col.startsWith("'")){
-            appendVar(concatBuilder,"db.testColNull("+var+",\""+col+"\")") ;
-        }else{
-            appendVar(concatBuilder,"db.testColNull("+var+",'"+col+"')") ;
+        if (col.startsWith("'")) {
+            appendVar(concatBuilder, "db.testColNull(" + var + ",\"" + col + "\")");
+        } else {
+            appendVar(concatBuilder, "db.testColNull(" + var + ",'" + col + "')");
         }
     }
 
     @Override
     public String wrapString(String str) {
-        if(str.startsWith(STATEMENT_START)){
-            return "\\"+str;
-        }else{
+        if (str.startsWith(STATEMENT_START)) {
+            return "\\" + str;
+        } else {
             return str;
         }
     }
 
-    protected void appendVar(ConcatBuilder concatBuilder,String express){
+    protected void appendVar(ConcatBuilder concatBuilder, String express) {
         concatBuilder.append(HOLDER_START).append(express).append(HOLDER_END).append(" ");
     }
 
-    protected void appendStatement(ConcatBuilder concatBuilder,String statement){
+    protected void appendStatement(ConcatBuilder concatBuilder, String statement) {
         concatBuilder.append(STATEMENT_START).append(statement).append(STATEMENT_END);
     }
 
