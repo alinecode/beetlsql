@@ -293,10 +293,8 @@ public class ClassAnnotation {
 	}
 
 	protected  void makeKeyHolder(){
-		if(autoIdAttr!=null&&seqIdAttr!=null){
-			throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"@SeqId 和 @AutoId 只能有一个@"+entityClass );
-		}
-		List<String> keyHolderList = new ArrayList();
+
+		Set<String> keyHolderList = new HashSet();
 		if(autoAttrList!=null){
 			keyHolderList.addAll(autoAttrList);
 		}
