@@ -12,80 +12,85 @@ import org.beetl.sql.clazz.ClassAnnotation;
  * </pre>
  */
 public class KeyHolder {
-	String[] attrNames = null;
-	Object[] values = null;
+    String[] attrNames = null;
+    Object[] values = null;
 
-	public static KeyHolder empty = new KeyHolder();
-	protected KeyHolder(){
+    public static KeyHolder empty = new KeyHolder();
 
-	}
-	public KeyHolder(String[] attrNames){
-		this.attrNames = attrNames;
-	}
-	public KeyHolder(String attrName){
-		this.attrNames = new String[]{attrName};
-	}
+    protected KeyHolder() {
 
-	public int getInt(String attrName){
-		int index = findIndex(attrName);
-		return  ((Number)values[index]).intValue();
-	}
+    }
 
-	/**
-	 * 从class定义中获取数据库返回的值
-	 * @param c
-	 * @return
-	 */
-	public static KeyHolder getKeyHolderByClass(Class c){
-		ClassAnnotation annotation = ClassAnnotation.getClassAnnotation(c);
-		String[] attrs = annotation.getInsertAutoAttrs();
-		return new KeyHolder(attrs);
-	}
-	
-	public Long getLong(String attrName){
-		int index = findIndex( attrName);
-		return  values[index]==null?null:((Number)values[index]).longValue();
-	}
+    public KeyHolder(String[] attrNames) {
+        this.attrNames = attrNames;
+    }
 
-	public String getString(String attrName){
-		int index = findIndex( attrName);
-		return  values[index]==null?null:((Object)values[index]).toString();
-	}
+    public KeyHolder(String attrName) {
+        this.attrNames = new String[]{attrName};
+    }
 
-	public Object getObject(String attrName){
-		int index = findIndex( attrName);
-		return  values[index]==null?null:((Object)values[index]);
-	}
+    public int getInt(String attrName) {
+        int index = findIndex(attrName);
+        return ((Number) values[index]).intValue();
+    }
 
-	private int findIndex(String attrName){
-		if(attrNames.length==1&& attrNames[0].equals(attrName)){
-			return 0;
-		}
-		for(int i = 0; i< attrNames.length; i++){
-			if(attrName.equalsIgnoreCase(attrNames[i])){
-				return i;
-			}
-		}
-		throw new IllegalArgumentException("未找到属性"+attrName);
-	}
+    /**
+     * 从class定义中获取数据库返回的值
+     *
+     * @param c
+     * @return
+     */
+    public static KeyHolder getKeyHolderByClass(Class c) {
+        ClassAnnotation annotation = ClassAnnotation.getClassAnnotation(c);
+        String[] attrs = annotation.getInsertAutoAttrs();
+        return new KeyHolder(attrs);
+    }
 
-	/**
-	 * 是否有自增主健
-	 * @return
-	 */
-	public boolean hasAttr(){
-		return attrNames!=null&&attrNames.length!=0;
-	}
+    public Long getLong(String attrName) {
+        int index = findIndex(attrName);
+        return values[index] == null ? null : ((Number) values[index]).longValue();
+    }
 
-	public String[] getAttrNames(){
-		return this.attrNames;
-	}
+    public String getString(String attrName) {
+        int index = findIndex(attrName);
+        return values[index] == null ? null : values[index].toString();
+    }
 
-	public Object[] getValues() {
-		return values;
-	}
+    public Object getObject(String attrName) {
+        int index = findIndex(attrName);
+        return values[index] == null ? null : values[index];
+    }
 
-	public void setValues(Object[] values) {
-		this.values = values;
-	}
+    private int findIndex(String attrName) {
+        if (attrNames.length == 1 && attrNames[0].equals(attrName)) {
+            return 0;
+        }
+        for (int i = 0; i < attrNames.length; i++) {
+            if (attrName.equalsIgnoreCase(attrNames[i])) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("未找到属性" + attrName);
+    }
+
+    /**
+     * 是否有自增主健
+     *
+     * @return
+     */
+    public boolean hasAttr() {
+        return attrNames != null && attrNames.length != 0;
+    }
+
+    public String[] getAttrNames() {
+        return this.attrNames;
+    }
+
+    public Object[] getValues() {
+        return values;
+    }
+
+    public void setValues(Object[] values) {
+        this.values = values;
+    }
 }
