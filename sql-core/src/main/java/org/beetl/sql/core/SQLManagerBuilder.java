@@ -155,11 +155,7 @@ public class SQLManagerBuilder {
 		mySqlManager.setInters(myInters);
 		mySqlManager.setMetaDataManager(myMetadataManager);
 		mySqlManager.setMapperBuilder(this.getMapperBuilder());
-
-		if (this.name == null) {
-			this.name = sqlManagerNameGenerator.nextName();
-		}
-		mySqlManager.setName(this.name);
+		mySqlManager.setName(this.getName());
 		//TODO 配置文件加载
 		boolean offsetStartZero = Boolean.parseBoolean(myPs.getProperty("OFFSET_START_ZERO", "false"));
 		mySqlManager.offsetStartZero = offsetStartZero;
@@ -262,6 +258,13 @@ public class SQLManagerBuilder {
 	public SQLManagerBuilder setName(String name) {
 		this.name = name;
 		return this;
+	}
+
+	public String getName(){
+		if(name== null){
+			 this.name = sqlManagerNameGenerator.nextName();
+		}
+		return this.name;
 	}
 
 	private Interceptor[] getInters() {
