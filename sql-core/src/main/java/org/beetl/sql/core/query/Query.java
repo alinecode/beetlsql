@@ -50,7 +50,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public LambdaQuery<T> lambda() {
         if (BeanKit.queryLambdasSupport) {
             if (this.sql != null || this.groupBy != null || this.orderBy != null) {
-                throw new UnsupportedOperationException("LamdbaQuery必须在调用其他AP前获取");
+                throw new UnsupportedOperationException("LambdaQuery必须在调用其他AP前获取");
             }
             return new LambdaQuery(this.sqlManager, clazz);
         } else {
@@ -130,9 +130,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
 
     protected <K> List<K> selectByType(Class<K> retType, String... columns) {
-        String column = splicingColumns(columns).toString();
-        if(distinct){
-            column =" DISTINCT "+column;
+        String column = splicingColumns(columns);
+        if (distinct) {
+            column = " DISTINCT " + column;
         }
         StringBuilder sql = assembleSelectSql(column);
         String targetSql = sql.toString();
@@ -185,9 +185,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public int update(Object t) {
         SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_ALL);
         SQLSource sqlSource = sqlManager.getSqlLoader().queryAutoSQL(id);
-        if(sqlSource==null){
+        if (sqlSource == null) {
             sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(clazz);
-            sqlManager.getSqlLoader().addSQL(id,sqlSource);
+            sqlManager.getSqlLoader().addSQL(id, sqlSource);
             sqlSource.setId(id);
         }
         return handlerUpdateSql(t, sqlSource);
@@ -197,9 +197,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public int updateSelective(Object t) {
         SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_ALL);
         SQLSource sqlSource = sqlManager.getSqlLoader().queryAutoSQL(id);
-        if(sqlSource==null){
+        if (sqlSource == null) {
             sqlSource = this.sqlManager.getDbStyle().genUpdateAll(clazz);
-            sqlManager.getSqlLoader().addSQL(id,sqlSource);
+            sqlManager.getSqlLoader().addSQL(id, sqlSource);
             sqlSource.setId(id);
         }
         return handlerUpdateSql(t, sqlSource);
@@ -210,7 +210,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR, "update操作没有输入过滤条件会导致更新所有记录");
         }
 
-        SQLResult result =  this.sqlManager.getSQLResult(sqlSource.getId(),t,true);
+        SQLResult result = this.sqlManager.getSQLResult(sqlSource.getId(), t, true);
 
         List<Object> paraLis = new ArrayList<Object>();
         for (SQLParameter sqlParameter : result.jdbcPara) {
@@ -259,13 +259,13 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return (Long) results.get(0);
     }
 
-	@Override
-	public PageResult<T> pageSimple(PageRequest pageRequest) {
-    	return pageByType(pageRequest,clazz,getSimpleColumns());
-	}
+    @Override
+    public PageResult<T> pageSimple(PageRequest pageRequest) {
+        return pageByType(pageRequest, clazz, getSimpleColumns());
+    }
 
 
-	@Override
+    @Override
     public Query<T> having(QueryCondition condition) {
         // 去除叠加条件中的WHERE
         int i = condition.getSql().indexOf(WHERE);
@@ -335,10 +335,10 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
 
     protected <K> PageResult<K> pageByType(PageRequest pageRequest, Class<K> retType, String... columns) {
-        StringBuilder columnStr = splicingColumns(columns);
+        String columnStr = splicingColumns(columns);
         //此处查询语句不需要设置分页
         this.startRow = null;
-        StringBuilder sql = assembleSelectSql(columnStr.toString());
+        StringBuilder sql = assembleSelectSql(columnStr);
         //检测是否包含groupBy
         if (this.groupBy != null) {
             sql = new StringBuilder("SELECT * FROM (").append(sql).append(") t");
@@ -351,24 +351,24 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return this.sqlManager.execute(sqlReady, retType, pageRequest);
     }
 
-	@Override
-	public PageResult<T> page(PageRequest pageRequest, String... columns) {
-		return pageByType(pageRequest, clazz, columns);
-	}
+    @Override
+    public PageResult<T> page(PageRequest pageRequest, String... columns) {
+        return pageByType(pageRequest, clazz, columns);
+    }
 
-	@Override
-	public <K> PageResult<K> page(PageRequest pageRequest, Class<K> retType, String... columns) {
-		return pageByType(pageRequest,retType,columns);
-	}
+    @Override
+    public <K> PageResult<K> page(PageRequest pageRequest, Class<K> retType, String... columns) {
+        return pageByType(pageRequest, retType, columns);
+    }
 
-	@Override
-	public PageResult<Map> mapPage(PageRequest pageRequest, String... columns) {
-		return pageByType(pageRequest,Map.class,columns);
-	}
+    @Override
+    public PageResult<Map> mapPage(PageRequest pageRequest, String... columns) {
+        return pageByType(pageRequest, Map.class, columns);
+    }
 
-	@Override
+    @Override
     public PageResult<T> page(long pageNumber, long pageSize, String... columns) {
-		PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+        PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int) pageSize);
         return pageByType(pageRequest, clazz, columns);
     }
 
@@ -379,13 +379,13 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public <K> PageResult<K> page(long pageNumber, long pageSize, Class<K> retType, String... columns) {
-		PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+        PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int) pageSize);
         return pageByType(pageRequest, retType, columns);
     }
 
     @Override
     public PageResult<Map> mapPage(long pageNumber, long pageSize, String... columns) {
-		PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int)pageSize);
+        PageRequest pageRequest = DefaultPageRequest.of(pageNumber, (int) pageSize);
         return pageByType(pageRequest, Map.class, columns);
     }
 
@@ -419,9 +419,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         TableDesc desc = sqlManager.getMetaDataManager().getTable(tname);
         CaseInsensitiveHashMap<String, ColDesc> colMap = desc.getColsDetail();
         List<String> cols = new ArrayList<>(colMap.size());
-        for(Map.Entry<String, Object> entry:colMap.entrySet()){
-            int sqlType = ((ColDesc)entry.getValue()).getSqlType();
-            if(!JavaType.isBigType(sqlType)){
+        for (Map.Entry<String, Object> entry : colMap.entrySet()) {
+            int sqlType = ((ColDesc) entry.getValue()).getSqlType();
+            if (!JavaType.isBigType(sqlType)) {
                 cols.add(entry.getKey());
             }
         }
@@ -436,16 +436,16 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      * @param columns
      * @return
      */
-    private StringBuilder splicingColumns(String[] columns) {
+    private String splicingColumns(String[] columns) {
         if (columns == null || columns.length < 1) {
-            return new StringBuilder(ALL_COLUMNS);
+            return ALL_COLUMNS;
         }
         StringBuilder columnStr = new StringBuilder();
         for (String column : columns) {
             columnStr.append(getColTrunk(column)).append(",");
         }
         columnStr.deleteCharAt(columnStr.length() - 1);
-        return columnStr;
+        return columnStr.toString();
     }
 
 
