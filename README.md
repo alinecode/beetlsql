@@ -1,3 +1,5 @@
+[![Maven Central](https://img.shields.io/maven-central/v/com.ibeetl/beetlsql.svg)](https://mvnrepository.com/search?q=g:com.ibeetl%20AND%20beetlsql)
+
 ## 数据访问框架
 
 BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**的数据库访问框架，在一个系统多个库的情况下，提供一致的编写代码方式。支持如下数据平台
@@ -16,7 +18,7 @@ BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着�
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan，woate,darren,蚊子
 * 开发时间:2015-07
 * 网站 http://ibeetl.com
-* qq群 219324263
+* qq群 219324263(满) 252010126
 
 BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetlsql3_guide)
 
