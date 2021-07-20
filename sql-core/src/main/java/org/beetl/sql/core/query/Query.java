@@ -24,7 +24,7 @@ import java.util.Map;
 public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
 
     private static final String ALL_COLUMNS = "*";
-    Class<T> clazz = null;
+    Class<T> clazz;
     StringTemplateResourceLoader tempLoader = new StringTemplateResourceLoader();
 
     public Query(SQLManager sqlManager, Class<T> clazz) {
@@ -147,8 +147,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      * @return
      */
     private StringBuilder assembleSelectSql(String column) {
-        StringBuilder sb = new StringBuilder("SELECT ").append(column).append(" ");
-        sb.append("FROM ").append(getTableName(clazz)).append(" ").append(getSql());
+        StringBuilder sb = new StringBuilder("SELECT ").append(column);
+        sb.append(" FROM ").append(getTableName(clazz)).append(' ').append(getSql());
         sb = addAdditionalPartSql(sb);
         return sb;
     }
@@ -172,12 +172,12 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     private void addGroupAndOrderPartSql(StringBuilder sql) {
         if (this.orderBy != null && this.groupBy != null) {
             //先group by 后 order by 顺序
-            sql.append(groupBy.getGroupBy()).append(" ");
-            sql.append(orderBy.getOrderBy()).append(" ");
+            sql.append(groupBy.getGroupBy()).append(' ');
+            sql.append(orderBy.getOrderBy()).append(' ');
         } else if (this.orderBy != null) {
-            sql.append(orderBy.getOrderBy()).append(" ");
+            sql.append(orderBy.getOrderBy()).append(' ');
         } else if (this.groupBy != null) {
-            sql.append(groupBy.getGroupBy()).append(" ");
+            sql.append(groupBy.getGroupBy()).append(' ');
         }
     }
 
@@ -212,16 +212,14 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
         SQLResult result = this.sqlManager.getSQLResult(sqlSource.getId(), t, true);
 
-        List<Object> paraLis = new ArrayList<Object>();
+        List<Object> paraLis = new ArrayList<>();
         for (SQLParameter sqlParameter : result.jdbcPara) {
             paraLis.add(sqlParameter.value);
         }
         addPreParam(paraLis);
 
-        StringBuilder sb = new StringBuilder(result.jdbcSql);
         //条件
-        sb.append(" ").append(getSql());
-        String targetSql = sb.toString();
+        String targetSql = result.jdbcSql + " " + getSql();
         Object[] paras = paraLis.toArray();
         int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
         this.clear();
@@ -230,8 +228,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public int insert(T t) {
-        int ret = this.sqlManager.insert(t);
-        return ret;
+        return this.sqlManager.insert(t);
     }
 
     @Override
@@ -241,19 +238,14 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public int delete() {
-        StringBuilder sb = new StringBuilder("DELETE FROM ");
-        sb.append(getTableName(clazz)).append(" ").append(getSql());
-        String targetSql = sb.toString();
+        String targetSql = "DELETE FROM " + getTableName(clazz) + " " + getSql();
         Object[] paras = getParams().toArray();
-        int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
-        return row;
+        return this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
     }
 
     @Override
     public long count() {
-        StringBuilder sb = new StringBuilder("SELECT COUNT(1) FROM ");
-        sb.append(getTableName(clazz)).append(" ").append(getSql());
-        String targetSql = sb.toString();
+        String targetSql = "SELECT COUNT(1) FROM " + getTableName(clazz) + " " + getSql();
         Object[] paras = getParams().toArray();
         List results = this.sqlManager.execute(new SQLReady(targetSql, paras), Long.class);
         return (Long) results.get(0);
@@ -395,9 +387,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      *
      * @return
      */
-    private String getSqlErrorTip(String couse) {
+    private String getSqlErrorTip(String cause) {
         return String.format("\n┏━━━━━ SQL语法错误:\n" + "┣SQL：%s\n" + "┣原因：%s\n" + "┣解决办法：您可能需要重新获取一个Query\n" + "┗━━━━━\n",
-                getSql().toString(), couse);
+                getSql().toString(), cause);
     }
 
     /***
@@ -405,9 +397,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      *
      * @return
      */
-    private String getSqlErrorTip(String couse, String solve) {
+    private String getSqlErrorTip(String cause, String solve) {
         return String.format("\n┏━━━━━ SQL语法错误:\n" + "┣SQL：%s\n" + "┣原因：%s\n" + "┣解决办法：" + solve + "\n" + "┗━━━━━\n",
-                getSql().toString(), couse);
+                getSql().toString(), cause);
     }
 
     /***
@@ -442,7 +434,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         }
         StringBuilder columnStr = new StringBuilder();
         for (String column : columns) {
-            columnStr.append(getColTrunk(column)).append(",");
+            columnStr.append(getColTrunk(column)).append(',');
         }
         columnStr.deleteCharAt(columnStr.length() - 1);
         return columnStr.toString();
