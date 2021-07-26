@@ -27,6 +27,9 @@ public  class PageKit {
 			PlainSelect plain = (PlainSelect) select.getSelectBody();
 			plain.setOrderByElements(null);
 			plain.setSelectItems(Arrays.asList(new CountAll()));
+			if (plain.getGroupBy() != null) {
+				return "SELECT COUNT(*) FROM ( " + plain.toString() + " ) a";
+			}
 			return plain.toString();
 		}catch ( JSQLParserException parserException){
     		throw new BeetlSQLException(BeetlSQLException.PARSE_JDBC_SQL,"解析sql错误 "+selectSql,parserException);
