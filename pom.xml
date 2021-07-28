@@ -63,7 +63,6 @@
 			<name>woate</name>
 			<email>woate@qq.com</email>
 		</developer>
-
 		<developer>
 			<name>darren</name>
 			<email>10176523@qq.com</email>
@@ -71,6 +70,10 @@
 		<developer>
 			<name>一日看尽长安花</name>
 			<email>10176523@qq.com</email>
+		</developer>
+		<developer>
+			<name>noear</name>
+			<email>noear@live.cn</email>
 		</developer>
 	</developers>
 
