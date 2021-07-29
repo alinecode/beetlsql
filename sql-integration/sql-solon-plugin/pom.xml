@@ -15,7 +15,7 @@
     <version>3.6.3-RELEASE</version>
 
     <properties>
-        <solon.ver>1.5.1</solon.ver>
+        <solon.ver>1.5.17</solon.ver>
     </properties>
 
     <dependencies>

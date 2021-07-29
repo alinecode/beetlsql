@@ -5,10 +5,10 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.nosql.*;
-import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.core.Aop;
 import org.noear.solon.core.BeanWrap;
+import org.noear.solon.core.ValHolder;
 import org.noear.solon.core.event.EventBus;
 
 import javax.sql.DataSource;
@@ -22,8 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 2020-09-01
  * */
-
 class DbManager {
+    private static final String ATTR_dialect = "dialect";
+    private static final String ATTR_slaves  = "slaves";
+
     private static DbManager _global = new DbManager();
 
     public static DbManager global() {
@@ -41,18 +43,25 @@ class DbManager {
         DbConnectionSource cs = null;
         DataSource master = bw.raw();
 
-        String slaves_str = bw.attrGet("slaves");
+        String slaves_str = bw.attrGet(ATTR_slaves);
 
         if (Utils.isNotEmpty(slaves_str)) {
             String[] slaveAry = slaves_str.split(",");
             DataSource[] slaves = new DataSource[slaveAry.length];
 
             for (int i = 0, len = slaveAry.length; i < len; i++) {
-                slaves[i] = Aop.get(slaveAry[i]);
+                ValHolder<Integer> valHolder = new ValHolder<>(i);
 
-                if (slaves[i] == null) {
-                    throw new RuntimeException("DbManager: This data source does not exist: " + slaveAry[i]);
-                }
+                Aop.getAsyn(slaveAry[i], dsBw -> {
+                    slaves[valHolder.value] = dsBw.raw();
+                });
+
+//                //todo::此处不能用同步，有些源可能还没构建好 //不过异常，没法检查了
+//                slaves[i] = Aop.get(slaveAry[i]);
+//
+//                if (slaves[i] == null) {
+//                    throw new RuntimeException("DbManager: This data source does not exist: " + slaveAry[i]);
+//                }
             }
 
             cs = new DbConnectionSource(master, slaves);
@@ -61,12 +70,11 @@ class DbManager {
         }
 
         SQLManagerBuilder builder = SQLManager.newBuilder(cs);
+        //as bean name
+        String dataSourceId = "ds-" + (bw.name() == null ? "" : bw.name());
+        builder.setName(dataSourceId);
 
         buildStyle(bw, builder);
-
-        if(Solon.cfg().isDebugMode() || Solon.cfg().isFilesMode()){
-            builder.addInterDebug();
-        }
 
         //推到事件中心，用于扩展
         EventBus.push(builder);
@@ -126,7 +134,7 @@ class DbManager {
     }
 
     private void buildStyle(BeanWrap bw, SQLManagerBuilder builder) {
-        String dialect = bw.attrGet("dialect");
+        String dialect = bw.attrGet(ATTR_dialect);
 
         if (Utils.isNotEmpty(dialect)) {
             DBStyle style = null;
