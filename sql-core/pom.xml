@@ -12,6 +12,7 @@
     <artifactId>sql-core</artifactId>
     <version>3.6.3-RELEASE</version>
     <properties>
+        <slf4j.version>1.7.32</slf4j.version>
     </properties>
     <dependencies>
         <dependency>
@@ -19,33 +20,38 @@
             <artifactId>sql-util</artifactId>
             <version>3.6.3-RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
     </dependencies>
     <build>
-       <plugins>
-           <plugin>
-               <artifactId>maven-resources-plugin</artifactId>
-               <executions>
-                   <execution>
-                       <id>copy-properties</id>
-                       <phase>process-sources</phase>
-                       <goals>
-                           <goal>copy-resources</goal>
-                       </goals>
-                       <configuration>
-                           <outputDirectory>${basedir}/target/classes</outputDirectory>
-                           <resources>
-                               <resource>
-                                   <directory>${basedir}/src/main/resources</directory>
-                                   <includes>
-                                       <include>**/*.properties</include>
-                                   </includes>
-                               </resource>
-                           </resources>
-                       </configuration>
-                   </execution>
-               </executions>
-           </plugin>
-       </plugins>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-properties</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/resources</directory>
+                                    <includes>
+                                        <include>**/*.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
