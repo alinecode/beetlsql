@@ -14,28 +14,28 @@ import java.util.List;
 import java.util.Optional;
 
 public class QueryCondition<T> implements QueryConditionI<T> {
-    public final String AND = "AND";
-    public final String OR = "OR";
-    public final String WHERE = "WHERE";
-    public final String IN = "IN";
-    public final String NOT_IN = "NOT IN";
-    public final String BETWEEN = "BETWEEN";
-    public final String NOT_BETWEEN = "NOT BETWEEN";
+    public static final String AND = "AND";
+    public static final String OR = "OR";
+    public static final String WHERE = "WHERE";
+    public static final String IN = "IN";
+    public static final String NOT_IN = "NOT IN";
+    public static final String BETWEEN = "BETWEEN";
+    public static final String NOT_BETWEEN = "NOT BETWEEN";
     public SQLManager sqlManager;
     protected StringBuilder sql = null;
-    protected List<Object> params = new ArrayList<Object>();
+    protected List<Object> params = new ArrayList<>();
     protected Object startRow = null;
     long pageSize = -1;
     protected OrderBy orderBy = null;
     protected GroupBy groupBy = null;
-    protected  boolean distinct = false;
+    protected boolean distinct = false;
 
     protected QueryCondition() {
     }
 
     protected void clear() {
         sql = null;
-        params = new ArrayList<Object>();
+        params = new ArrayList<>();
         startRow = null;
         pageSize = -1;
         orderBy = null;
@@ -58,8 +58,8 @@ public class QueryCondition<T> implements QueryConditionI<T> {
      * @return
      */
     protected String getColTrunk(String colName) {
-		KeyWordHandler keyWordHandler = sqlManager.getDbStyle().getKeyWordHandler();
-		return keyWordHandler!=null?keyWordHandler.getCol(colName):colName;
+        KeyWordHandler keyWordHandler = sqlManager.getDbStyle().getKeyWordHandler();
+        return keyWordHandler != null ? keyWordHandler.getCol(colName) : colName;
     }
 
     /****
@@ -70,14 +70,14 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     public String getTableName(Class<?> c) {
         String tname = sqlManager.getNc().getTableName(c);
         TableDesc desc = sqlManager.getMetaDataManager().getTable(tname);
-        String tabeName2 = desc.getName();
+        String tableName2 = desc.getName();
         AbstractDBStyle style = (AbstractDBStyle) sqlManager.getDbStyle();
-        tabeName2 = style.getSQLTemplateEngine().wrapString(tabeName2);
+        tableName2 = style.getSQLTemplateEngine().wrapString(tableName2);
         if (desc.getSchema() != null) {
             return style.getKeyWordHandler().getTable(desc.getSchema()) + "." + style.getKeyWordHandler()
-                    .getTable(tabeName2);
+                    .getTable(tableName2);
         } else {
-            return style.getKeyWordHandler().getTable(tabeName2);
+            return style.getKeyWordHandler().getTable(tableName2);
         }
     }
 
@@ -144,12 +144,12 @@ public class QueryCondition<T> implements QueryConditionI<T> {
                 return;
             }
             value = ((StrongValue) value).getValue();
-        }else if(value instanceof Optional){
-        	if(!((Optional)value).isPresent()){
-				return ;
-			}
-			value = ((Optional)value).get();
-		}
+        } else if (value instanceof Optional) {
+            if (!((Optional) value).isPresent()) {
+                return;
+            }
+            value = ((Optional) value).get();
+        }
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
         }
@@ -161,7 +161,6 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
 
-
     protected void appendInSql(String column, Object value, String opt, String link) {
         //判断是否有效的变量
         if (value instanceof StrongValue) {
@@ -169,16 +168,16 @@ public class QueryCondition<T> implements QueryConditionI<T> {
                 return;
             }
             value = ((StrongValue) value).getValue();
-        }else if(value instanceof Optional){
-			if(!((Optional)value).isPresent()){
-				return ;
-			}
-			value = ((Optional)value).get();
-		}
+        } else if (value instanceof Optional) {
+            if (!((Optional) value).isPresent()) {
+                return;
+            }
+            value = ((Optional) value).get();
+        }
 
-        if(!(value instanceof  Collection)){
-        	throw new IllegalArgumentException("期望参数是Collection子类");
-		}
+        if (!(value instanceof Collection)) {
+            throw new IllegalArgumentException("期望参数是Collection子类");
+        }
 
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
@@ -221,7 +220,6 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andGreatEq(String column, Object value) {
         appendAndSql(column, value, ">=");
@@ -240,35 +238,30 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andLike(String column, Object value) {
         appendAndSql(column, value, "LIKE ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andNotLike(String column, Object value) {
         appendAndSql(column, value, "NOT LIKE ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andIsNull(String column) {
         appendAndSql(column, null, "IS NULL ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andIsNotNull(String column) {
         appendAndSql(column, null, "IS NOT NULL ");
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andIn(String column, Collection<?> value) {
         appendInSql(column, value, IN, AND);
@@ -281,31 +274,29 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-	@Override
-	public Query<T> andIn(String column, Optional value) {
-		appendInSql(column, value, IN, AND);
-		return (Query) this;
-	}
+    @Override
+    public Query<T> andIn(String column, Optional value) {
+        appendInSql(column, value, IN, AND);
+        return (Query) this;
+    }
 
-	//Override
     @Override
     public Query<T> andNotIn(String column, Collection<?> value) {
         appendInSql(column, value, NOT_IN, AND);
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> andNotIn(String column, StrongValue value) {
         appendInSql(column, value, NOT_IN, AND);
         return (Query) this;
     }
 
-	@Override
-	public Query<T> andNotIn(String column, Optional value) {
-		appendInSql(column, value, NOT_IN, AND);
-		return (Query) this;
-	}
+    @Override
+    public Query<T> andNotIn(String column, Optional value) {
+        appendInSql(column, value, NOT_IN, AND);
+        return (Query) this;
+    }
 
     @Override
     public Query<T> andBetween(String column, Object value1, Object value2) {
@@ -349,7 +340,6 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-    //Override
     @Override
     public Query<T> orLessEq(String column, Object value) {
         appendOrSql(column, value, "<=");
@@ -392,11 +382,11 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-	@Override
-	public Query<T> orIn(String column, Optional value) {
-		appendInSql(column, value, IN, OR);
-		return (Query) this;
-	}
+    @Override
+    public Query<T> orIn(String column, Optional value) {
+        appendInSql(column, value, IN, OR);
+        return (Query) this;
+    }
 
     @Override
     public Query<T> orNotIn(String column, Collection<?> value) {
@@ -410,11 +400,11 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
-	@Override
-	public Query<T> orNotIn(String column, Optional value) {
-		appendInSql(column, value, NOT_IN, OR);
-		return (Query) this;
-	}
+    @Override
+    public Query<T> orNotIn(String column, Optional value) {
+        appendInSql(column, value, NOT_IN, OR);
+        return (Query) this;
+    }
 
     @Override
     public Query<T> orBetween(String column, Object value1, Object value2) {
@@ -477,6 +467,7 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     public List<Object> getParams() {
         return params;
     }
+
     @Override
     public Query<T> distinct() {
         this.distinct = true;
