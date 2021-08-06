@@ -5,6 +5,8 @@ import org.beetl.sql.clazz.TableDesc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +40,7 @@ public class Entity {
 	 * java.lang下的所有类名不在这里，java能自动导入，不需代码生成里提供
 	 */
 
-	List<String> importPackage = new ArrayList<>();
+	Set<String> importPackage = new TreeSet<>();
 
 	/**
 	 * 跟此实体相关的表描述

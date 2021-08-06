@@ -209,6 +209,8 @@ public class SourceConfig {
 			list.add(attribute);
 		}
 		entity.setList(list);
+
+		packageList.getPkgs().add("org.beetl.sql.annotation.entity.*");
 		return entity;
 	}
 

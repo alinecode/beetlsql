@@ -23,7 +23,6 @@ public class MapperSourceBuilder extends BaseTemplateSourceBuilder {
 		super("mapper");
 	}
 
-	//Override
 	@Override
 	public void generate(BaseProject project, SourceConfig config, Entity entity) {
 

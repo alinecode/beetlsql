@@ -4,11 +4,18 @@ package org.beetl.sql.clazz.kit;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.ASTNodeAccessImpl;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.parser.SimpleNode;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 
+import javax.swing.plaf.nimbus.State;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * sql分页辅助工具，最新版采用sqlParser
@@ -18,19 +25,32 @@ import java.util.Arrays;
 @Plugin
 public  class PageKit {
 
-
+	//TODO,考虑使用weakmap;
+	static ConcurrentHashMap<String,String> cache = new ConcurrentHashMap<>();
 
     public  String getCountSql(String dbName,String selectSql) {
     	try{
-			CCJSqlParserManager parserManager = new CCJSqlParserManager();
-			Select select = (Select) parserManager.parse(new StringReader(selectSql));
+			String countSql = cache.get(selectSql);
+			if(countSql!=null){
+				return countSql;
+			}
+			Statement statement = CCJSqlParserUtil.parse(selectSql, parser -> parser.withSquareBracketQuotation(true));
+			if(!(statement instanceof  Select)){
+				throw new BeetlSQLException(BeetlSQLException.PAGE_QUERY_ERROR,"需要Select语句 "+selectSql);
+			}
+			Select select = (Select)statement;
+
 			PlainSelect plain = (PlainSelect) select.getSelectBody();
 			plain.setOrderByElements(null);
 			plain.setSelectItems(Arrays.asList(new CountAll()));
 			if (plain.getGroupBy() != null) {
-				return "SELECT COUNT(*) FROM ( " + plain.toString() + " ) a";
+				countSql =  "SELECT COUNT(*) FROM ( " + plain.toString() + " ) a";
+			}else{
+				countSql =  plain.toString();
 			}
-			return plain.toString();
+			cache.put(selectSql,countSql);
+			return  countSql;
+
 		}catch ( JSQLParserException parserException){
     		throw new BeetlSQLException(BeetlSQLException.PARSE_JDBC_SQL,"解析sql错误 "+selectSql,parserException);
 		}
@@ -39,18 +59,16 @@ public  class PageKit {
     }
     
     public static void main(String[] args) throws JSQLParserException {
-    	String sql = " SELECT \n" + "\t\t\t\ta.visit_log_id,\n" + "\t\t\t\ta.openid,\n" + "\t\t\t\ta.unionid,\n"
-				+ "\t\t\t\ta.goods_def_id,\n" + "\t\t\t\ta.create_time,\n" + "\t\t\t\tb.nickname\n" + "\t\t\tFROM\n"
-				+ "\t\t\t\tvisit_log a\n"
-				+ "\t\t\tLEFT JOIN we_chat_user_info b ON (a.unionid = b.unionid or a.openid = b.openid)\n"
-				+ "\t\t\tWHERE\n" + "\t\t\t\tdatediff(NOW(), a.create_time) <= 14\n" + "\t\t\tAND a.goods_def_id = 1\n"
-				+ "\t\t\tgroup by a.unionid\n" + "\t\t\tORDER BY\n" + "\t\t\t\ta.create_time DESC";
-		CCJSqlParserManager parserManager = new CCJSqlParserManager();
-		Select select = (Select) parserManager.parse(new StringReader(sql));
-		PlainSelect plain = (PlainSelect) select.getSelectBody();
-		plain.setOrderByElements(null);
-		plain.setSelectItems(Arrays.asList(new CountAll()));
-		System.out.println(select.toString());
+    	String sql = "SELECT [id],[dept_id],[dept_name],[name],[description],[sheet_id],[status],[share],[start_date],[end_date],[group_id],[group_name],[created_by],[created_date],[updated_by],[updated_date] FROM [dbo].[t_sheet_main] WHERE [status] IN (  ? , ?  ) AND [dept_id] = ? OR [status] = ? AND [dept_id] <> ? ORDER BY  [created_date]  DESC";
+		PageKit pageKit = new PageKit();
+		long start = System.currentTimeMillis();
+		String countSql = null;
+		for(int i=0;i<10000;i++){
+			 countSql = pageKit.getCountSql("xxx",sql);
+		}
+		System.out.println(System.currentTimeMillis()-start);
+		System.out.println(countSql);
+
     }
     public static  class CountAll  extends AllColumns {
     	public String toString(){

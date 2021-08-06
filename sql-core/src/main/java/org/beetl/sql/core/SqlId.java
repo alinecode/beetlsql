@@ -49,7 +49,7 @@ public class SqlId {
 	}
 
 	/**
-	 * 从一个字符串的sqlId解析得出Identity，通常这个是在sql template 里使用，比如#globalUse("common.whereCondtion")#
+	 * 从一个字符串的sqlId解析得出Identity，通常这个是在sql template 里使用，比如#globalUse("common.whereCondition")#
 	 * @param sqlId
 	 * @return
 	 */

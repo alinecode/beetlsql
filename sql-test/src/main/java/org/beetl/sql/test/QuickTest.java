@@ -20,10 +20,7 @@ import org.beetl.sql.gen.simple.MDSourceBuilder;
 import org.beetl.sql.gen.simple.MapperSourceBuilder;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 内部测试新功能或者bug用，所有单元测试参考test目录
@@ -56,15 +53,15 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		//
-		//		OrderLog key = new OrderLog();
-		//		key.setOrderId(1);
-		//		key.setStatus("u");
-		//		sqlManager.unique(OrderLog.class,key);
+		String sql = "SELECT * FROM ( SELECT * FROM order_log a ORDER BY a.id ) a";
+		PageResult<OrderLog> result = sqlManager.execute(new SQLReady(sql), OrderLog.class, DefaultPageRequest.of(1, 10));
+		PageResult<Map> pageMap = result.convert(orderLog->{
+			Map map = new HashMap();
+			map.put(orderLog.getOrderId(),orderLog.getStatus());
+			return map;
+		});
 
-
-		String sql = "SELECT * FROM ( SELECT * FROM t1 a ORDER BY a.id ) a";
-		PageResult<Map> result = sqlManager.execute(new SQLReady(sql), Map.class, DefaultPageRequest.of(1, 10));
+		System.out.println(pageMap);
 
 
 
