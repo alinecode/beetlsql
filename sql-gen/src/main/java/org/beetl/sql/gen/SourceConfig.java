@@ -239,10 +239,10 @@ public class SourceConfig {
 			} else if (preferDateType == PreferDateType.LocalDate) {
 				boolean isTime = JavaType.isDateTimeType((jdbcType));
 				if(isTime){
-					packageList.getPkgs().add("java.times.LocalDateTime");
+					packageList.getPkgs().add("java.time.LocalDateTime");
 					return "LocalDateTime";
 				}else{
-					packageList.getPkgs().add("java.times.LocalDate");
+					packageList.getPkgs().add("java.time.LocalDate");
 					return "LocalDate";
 				}
 

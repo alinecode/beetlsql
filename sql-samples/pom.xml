@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.6.4-RELEASE</version>
+        <version>3.6.5-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-sample</artifactId>
-    <version>3.6.4-RELEASE</version>
+    <version>3.6.5-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <module>sql-sample-common</module>
@@ -21,7 +21,7 @@
         <module>plugin</module>
     </modules>
     <properties>
-        <beetlsql.version>3.6.4-RELEASE</beetlsql.version>
+        <beetlsql.version>3.6.5-RELEASE</beetlsql.version>
         <mysql.version>8.0.20</mysql.version>
         <testcontainers.version>1.14.2</testcontainers.version>
         <datastax.version>4.6.1</datastax.version>
