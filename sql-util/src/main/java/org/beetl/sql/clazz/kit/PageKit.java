@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author xiandafu
  * @author 比尔盖茨("https://gitee.com/git1700_admin")
  * @since  3.5
- * @see SQLManagerExtend
+ * @see "SQLManagerExtend"
  */
 @Plugin
 public  class PageKit {
@@ -49,6 +49,8 @@ public  class PageKit {
 							plain.setSelectItems(Arrays.asList(new PageKit.CountAll()));
 							plain.setOrderByElements(null);
 							countSql =  plain.toString();
+							cache.put(selectSql,countSql);
+							return countSql;
 						}
 					}
 				}
@@ -56,13 +58,17 @@ public  class PageKit {
 		} catch (JSQLParserException parserException) {
 			//不抛异常，jsqparser有问题，采样默认处理,参考 https://gitee.com/xiandafu/beetlsql/issues/I425LQ
 		}
-		// 默认处理
-		countSql =  "SELECT COUNT(*) FROM ( " + selectSql + " ) a";
-		cache.put(selectSql,countSql);
-		return countSql;
+    	countSql =  buildDefaultSql(selectSql);
+    	return countSql;
 
 
     }
+
+    protected  String buildDefaultSql(String selectSql){
+		String defaultCountSql =  "SELECT COUNT(*) FROM ( " + selectSql + " ) a";
+		cache.put(selectSql,defaultCountSql);
+		return defaultCountSql;
+	}
     
     public static void main(String[] args) throws JSQLParserException {
     	String sql = "SELECT CONVERT(1 USING gbk)";
