@@ -480,13 +480,6 @@ public class BeanKit {
 		return paraType;
 	}
 
-	public static Class[] getMapType(Type type) {
-		if (!(type instanceof ParameterizedType)) {
-			return null;
-		}
-		Class[] paraType = getMapParameterTypeClass(type);
-		return paraType;
-	}
 
 	public static Class getParameterTypeClass(Type t) {
 		if (t instanceof WildcardType || t instanceof TypeVariable) {

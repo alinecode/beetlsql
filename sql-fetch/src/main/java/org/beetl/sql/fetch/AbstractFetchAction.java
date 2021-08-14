@@ -6,6 +6,9 @@ import org.beetl.sql.core.SQLManager;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 实现FetchAction
@@ -24,14 +27,6 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
         return cached;
     }
 
-    public Object queryFromCache(Class target, Object value,PropertyDescriptor idProperty){
-        try {
-            Object key = idProperty.getReadMethod().invoke(value,new Object[0]);
-            return queryFromCache(target,key);
-        } catch (Exception e) {
-            throw new BeetlSQLException(BeetlSQLException.ORM_ERROR,e);
-        }
-    }
 
 	/**
 	 * 判断某个对象是否已经加载
@@ -42,8 +37,7 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
     public Object queryFromCache(SQLManager sqlManager,Object value){
         try {
             Class target = value.getClass();
-            String attr = sqlManager.getClassDesc(target).getIdAttr();
-            Object key  = BeanKit.getBeanProperty(value,attr);
+            Object key  = this.wrapId(sqlManager,value);
             return queryFromCache(target,key);
         } catch (Exception e) {
             throw new BeetlSQLException(BeetlSQLException.ORM_ERROR,e);
@@ -51,9 +45,7 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
     }
 
     public void addCached(SQLManager sqlManager,Object obj){
-        Class target = obj.getClass();
-        String attr = sqlManager.getClassDesc(target).getIdAttr();
-        Object key  = BeanKit.getBeanProperty(obj,attr);
+        Object key  = wrapId(sqlManager,obj);
         addCached(obj,key);
     }
     public void addCached(Object value,Object key){
@@ -94,5 +86,42 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
 	@Override
 	public PropertyDescriptor getOriginProperty(){
     	return this.originProperty;
+	}
+
+	protected Object wrapId(SQLManager sqlManager,Object obj){
+		Class target = obj.getClass();
+		List<String> list  = sqlManager.getClassDesc(target).getIdAttrs();
+		if(list.size()==0){
+			Object key  = BeanKit.getBeanProperty(obj,list.get(0));
+			return key;
+		}
+		//复合主键
+		Ids ids = new Ids();
+		for(String attr:list){
+			Object key  = BeanKit.getBeanProperty(obj,attr);
+			ids.keys.add(key);
+		}
+
+		return ids;
+
+	}
+
+	static class Ids {
+		public List<Object> keys = new ArrayList<>();
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			Ids ids = (Ids) o;
+			return Objects.equals(keys, ids.keys);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(keys);
+		}
 	}
 }

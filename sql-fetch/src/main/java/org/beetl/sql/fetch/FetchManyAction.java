@@ -30,11 +30,9 @@ import java.util.List;
  */
 public class FetchManyAction extends   AbstractFetchAction {
 
-    PropertyDescriptor  idProperty;
     PropertyDescriptor otherTypeFrom;
-    public FetchManyAction(PropertyDescriptor idProperty, PropertyDescriptor otherTypeFrom){
+    public FetchManyAction(PropertyDescriptor otherTypeFrom){
         this.otherTypeFrom = otherTypeFrom;
-        this.idProperty = idProperty;
     }
 
 	@Override
@@ -48,12 +46,11 @@ public class FetchManyAction extends   AbstractFetchAction {
     @Override
     public void execute(ExecuteContext ctx, List list){
         try{
-            Method idReadMethod = idProperty.getReadMethod();
-            Method fromWriteMethod = otherTypeFrom.getWriteMethod();
+
             Method toWriteMethod = this.originProperty.getWriteMethod();
             for(int i=0;i<list.size();i++){
                 Object obj = list.get(i);
-                Object id = idReadMethod.invoke(obj,new Object[0]);
+                Object id =  this.wrapId(ctx.sqlManager, obj) ;
                 Object cached  = queryFromCache(owner,id);
                 // 检测缓存
                 if(cached!=null){

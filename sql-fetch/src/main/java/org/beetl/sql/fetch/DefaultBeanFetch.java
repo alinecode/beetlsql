@@ -44,7 +44,10 @@ public class DefaultBeanFetch implements BeanFetch {
                 fetchContext.setLevel( level);
                 local.set(fetchContext);
             }
-            if(fetchContext.getLevel()==0){
+			/**
+			 * 每次fetch，level递减，为0后不在fetch
+			 */
+			if(fetchContext.getLevel()==0){
                 return ;
             }
 
@@ -68,6 +71,13 @@ public class DefaultBeanFetch implements BeanFetch {
 
 
     }
+
+	/**
+	 * 解析owner，找到需要执行的fetchAction
+	 * @param sqlManager
+	 * @param owner
+	 * @return
+	 */
     protected List<FetchAction> parse(SQLManager sqlManager,Class owner){
         if(fetchConfig.containsKey(owner)){
             return fetchConfig.get(owner);
@@ -92,18 +102,15 @@ public class DefaultBeanFetch implements BeanFetch {
 
 					}else if(annotation instanceof  FetchMany){
 						FetchMany fetchMany = (FetchMany)annotation;
-						PropertyDescriptor beanIdProperty = findIdProperty(owner,sqlManager);
-						PropertyDescriptor toProperty = pd;
-
 						String typeAttr = fetchMany.value();
 						Class classType = pd.getPropertyType();
 						Type type = pd.getReadMethod().getGenericReturnType();
 						if(!List.class.isAssignableFrom(classType)){
-							throw new IllegalStateException("one2Many 类型应该是List");
+							throw new IllegalStateException("one2Many 类型应该是List "+owner+" from 属性 "+pd.getName());
 						}
-						Class targetType = this.getCollectionType(type);
+						Class targetType = BeanKit.getCollectionType(type);
 						PropertyDescriptor otherTypeFrom = BeanKit.getPropertyDescriptor(targetType,typeAttr);
-						FetchManyAction action = new FetchManyAction(beanIdProperty,otherTypeFrom);
+						FetchManyAction action = new FetchManyAction(otherTypeFrom);
 						action.init(owner,targetType,fetchMany,pd);
 						actions.add(action);
 						break;
@@ -135,46 +142,5 @@ public class DefaultBeanFetch implements BeanFetch {
         fetchConfig.put(owner,actions);
         return actions;
     }
-
-
-
-
-    protected  PropertyDescriptor findIdProperty(Class target,SQLManager sqlManager) throws IntrospectionException{
-        List<String> ids  = sqlManager.getClassDesc(target).getIdAttrs();
-        if(ids.size()>1){
-            //
-            throw new UnsupportedOperationException("目前不支持多主键fetch");
-        }
-        return BeanKit.getPropertyDescriptor(target,ids.get(0));
-
-    }
-
-
-    /*TODO,与ReturnTypeParser 代码重复*/
-    public Class getCollectionType(Type type){
-        if(!(type instanceof ParameterizedType) ){
-            throw new IllegalStateException("无泛型类型，无法Fetch");
-        }
-        Class paraType =  getParamterTypeClass(type);
-        if(paraType==null){
-            throw new IllegalStateException("无泛型类型，无法Fetch");
-        }
-        return paraType;
-    }
-
-
-    protected Class getParamterTypeClass(Type t) {
-        if (t instanceof WildcardType || t instanceof TypeVariable) {
-            // 丢失类型
-            return null;
-        } else if (t instanceof ParameterizedType) {
-            return (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
-        } else {
-            throw new UnsupportedOperationException();
-        }
-
-    }
-
-
 
 }
