@@ -57,7 +57,7 @@ public class S3PageSample {
         long count = mapper.allCount();
 
         UserEntity template = new UserEntity();
-        template.setDepartmentId(1);
+        template.setName("lijz");
         UserEntity user1 = mapper.templateOne(template);
 
 
