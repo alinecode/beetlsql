@@ -96,7 +96,10 @@ public interface SQLTemplateEngine {
      * @param concatBuilder
      * @param var
      */
-    public void genTestVar(ConcatBuilder concatBuilder,String var,String col);
+    void genTestVar(ConcatBuilder concatBuilder,String var,String col);
+
+
+    void genTestVarOrDefault(ConcatBuilder concatBuilder,String var,String defaultValue);
 
     /**
      * 模板sql增加一一段字符串，需要考虑到str 不能包含模板的一些特殊符号，主要是定界符

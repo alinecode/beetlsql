@@ -303,33 +303,35 @@ public abstract class AbstractDBStyle implements DBStyle {
 			}
 
 			if(classAnnotation.isAutoAttr(attr)){
+				insert.conditionalSet(col, attr);
 				continue;
 			}
 
 			if(classAnnotation.isSeqAttr(attr)){
 				Seq seq = BeanKit.getAnnotation(classDesc.getTargetClass(), attr
 						, Seq.class);
-				insert.setConstant(col, this.getSeqValue(seq.name()));
+				String seqExpress =  this.getSeqValue(seq.name());
+				insert.conditionalSet(col,attr,seqExpress);
 				continue;
 			}
-
 
 			if (attr.equals(classDesc.getClassAnnotation().getVersionProperty())
 					&& classDesc.getClassAnnotation().getInitVersionValue() != -1) {
 				//版本字段
 				insert.setConstant(col, classDesc.getClassAnnotation().getInitVersionValue() + "");
 				continue;
-
 			}
 
 			if (idCols.contains(col)) {
 				idType = this.getIdType(classDesc.getTargetClass(), attr);
 				if (idType == DBType.ID_AUTO) {
-					continue; //忽略这个字段
+					insert.conditionalSet(col, attr);
+					continue;
 				} else if (idType == DBType.ID_SEQ) {
 					SeqID seqId = BeanKit.getAnnotation(classDesc.getTargetClass(), attr,
 							(Method) classDesc.getIdMethods().get(attr), SeqID.class);
-					insert.setConstant(col, this.getSeqValue(seqId.name()));
+					String seqExpress =  this.getSeqValue(seqId.name());
+					insert.conditionalSet(col,attr,seqExpress);
 					continue;
 				} else if (idType == DBType.ID_ASSIGN) {
 					//同其他字段一样，
@@ -524,6 +526,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 	@Override
 	public String getSeqValue(String seqName) {
+		//子类覆盖
 		throw new UnsupportedOperationException("不支持序列");
 	}
 

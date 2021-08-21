@@ -36,6 +36,13 @@ public class InsertValueNode extends TrimSupport implements Output {
         return this;
     }
 
+	public InsertValueNode conditional(String varName,String defaultValue){
+		InsertDefaultValueEmptyExpress valueExpress = new InsertDefaultValueEmptyExpress(varName,defaultValue);
+		list.add(valueExpress);
+		super.trim = true;
+		return this;
+	}
+
     @Override
     public void toSql(ConcatBuilder sb) {
         if(trim){
@@ -110,6 +117,23 @@ public class InsertValueNode extends TrimSupport implements Output {
            sb.testVar(varName);
         }
     }
+
+
+	/**
+	 * 变量为空，插入一个默认值，如序列,不为空，则使用此值
+	 */
+	public static class InsertDefaultValueEmptyExpress extends  Express{
+		String varName;
+		String defaultValue;
+		public InsertDefaultValueEmptyExpress(String varName,String defaultValue){
+			this.varName = varName;
+			this.defaultValue = defaultValue;
+		}
+		@Override
+		public void toSql(ConcatBuilder sb) {
+			sb.testVarOrDefault(varName,defaultValue);
+		}
+	}
 
 
 }

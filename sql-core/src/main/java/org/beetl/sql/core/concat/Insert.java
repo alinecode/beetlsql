@@ -41,6 +41,13 @@ public class Insert implements Output {
         return this;
     }
 
+
+	public Insert conditionalSet(String col, String varName,String defaultValue){
+		colNode.add(col);
+		valueNode.conditional(varName,defaultValue);
+		return this;
+	}
+
     public String toSql(){
          ConcatBuilder sb = new ConcatBuilder(ctx);
          toSql(sb);

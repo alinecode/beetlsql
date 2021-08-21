@@ -42,7 +42,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 
     @Override
     public int insert(Class clazz, Object paras) {
-        KeyHolder holder = paras instanceof Map ? KeyHolder.empty : KeyHolder.getKeyHolderByClass(paras.getClass());
+        KeyHolder holder = paras instanceof Map ? KeyHolder.empty : KeyHolder.getKeyHolderByClass(paras);
         int ret = insert(paras, holder);
         this.assignKeyHolder(holder, paras);
         return ret;
@@ -248,7 +248,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         InterceptorContext ctx = null;
         try {
             Object firstValue = list.get(0);
-            KeyHolder holder = KeyHolder.getKeyHolderByClass(firstValue.getClass());
+            KeyHolder holder = KeyHolder.getKeyHolderByClass(firstValue);
             for (int k = 0; k < list.size(); k++) {
 
                 Object entity = list.get(k);

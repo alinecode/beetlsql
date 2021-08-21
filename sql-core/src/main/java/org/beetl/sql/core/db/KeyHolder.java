@@ -1,6 +1,11 @@
 package org.beetl.sql.core.db;
 
 import org.beetl.sql.clazz.ClassAnnotation;
+import org.beetl.sql.clazz.kit.BeanKit;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 数据库在插入的时候，因为自增或者序列或者其他机制，自动生成数据，如下假设foo字段是触发器生成字段，插入后需要取回
@@ -40,10 +45,25 @@ public class KeyHolder {
      * @param c
      * @return
      */
-    public static KeyHolder getKeyHolderByClass(Class c) {
+    public static KeyHolder getKeyHolderByClass(Object obj) {
+    	if(obj instanceof Map){
+    		return KeyHolder.empty;
+		}
+    	Class c = obj.getClass();
         ClassAnnotation annotation = ClassAnnotation.getClassAnnotation(c);
         String[] attrs = annotation.getInsertAutoAttrs();
-        return new KeyHolder(attrs);
+        if(attrs.length==0){
+			return KeyHolder.empty;
+		}
+        List<String> list  = new ArrayList();;
+        for(String attr : attrs){
+			Object o = BeanKit.getBeanProperty(obj,attr);
+			if(o==null){
+				list.add(attr);
+			}
+		}
+
+        return attrs.length==list.size()?new KeyHolder(attrs):new KeyHolder(list.toArray(new String[0]));
     }
 
     public Long getLong(String attrName) {

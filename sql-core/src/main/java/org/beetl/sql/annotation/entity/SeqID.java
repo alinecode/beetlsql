@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 指定主键，且主键对应数据库序列
+ * 指定主键，且主键对应数据库序列，如果属性有值，则使用属性的值
  * <pre>
  *{@code
  *  @SeqId(name="xxx_seq")

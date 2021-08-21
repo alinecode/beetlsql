@@ -8,16 +8,16 @@ import org.beetl.core.Function;
  * @author xiandafu
  *
  */
-public class TestColNullFunction implements Function {
+public class TestVarNullFunction implements Function {
 
 	@Override
-	public String call(Object[] paras, Context ctx) {
+	public Object call(Object[] paras, Context ctx) {
 		Object var = paras[0];
-		String col = (String) paras[1];
-		if (var == null) {
-			return "";
+		String defaultValue = (String) paras[1];
+		if (var != null) {
+			return var+",";
 		} else {
-			return col + ",";
+			return defaultValue + ",";
 		}
 
 	}

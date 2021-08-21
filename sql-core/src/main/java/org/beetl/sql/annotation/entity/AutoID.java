@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 标识字段是自增主键
+ * 标识字段是自增主键，如果属性有值，则使用属性的值
  * @author xiandafu
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -69,3 +69,9 @@ insert into  product_order values (1,now(),1,0);
 
 
 
+CREATE SEQUENCE my_sequence
+START WITH 10000
+INCREMENT BY 1;
+
+
+

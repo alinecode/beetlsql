@@ -119,6 +119,13 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
             appendVar(concatBuilder, "db.testColNull(" + var + ",'" + col + "')");
         }
     }
+	@Override
+	public
+	void genTestVarOrDefault(ConcatBuilder concatBuilder,String var,String defaultValue){
+
+    	appendVar(concatBuilder, "db.testVarNull(" + var + ",\"" + defaultValue + "\")");
+
+	}
 
     @Override
     public String wrapString(String str) {
