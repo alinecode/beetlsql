@@ -113,13 +113,21 @@ public interface DataAPI {
 
     <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras);
 
-    <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras);
+	<T> List<T> execute(SqlId sqlId,String sqlTemplate, Class<T> clazz, Object paras);
+
 
     <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras, Object start, long size);
 
+	<T> List<T> execute(SqlId sqlId,String sqlTemplate, Class<T> clazz, Object paras, Object start, long size);
+
     <T> PageResult<T> executePageQuery(String sqlTemplate, Class<T> clazz, Object paras, PageRequest<T> request);
 
+
+	<T> PageResult<T> executePageQuery(SqlId sqlId,String sqlTemplate, Class<T> clazz, Object paras, PageRequest<T> request);
+
     int executeUpdate(String sqlTemplate, Object paras);
+
+	int executeUpdate(SqlId sqlId,String sqlTemplate, Object paras);
 
     <T> List<T> execute(SQLReady p, Class<T> clazz);
     <T> T executeQueryOne(SQLReady p, Class<T> clazz);
@@ -127,6 +135,8 @@ public interface DataAPI {
     <T> StreamData<T> streamExecute(SQLReady p, Class<T> clazz);
 
     <T> StreamData<T> streamExecute(String sqlTemplate, Class<T> clazz,Object para);
+
+	<T> StreamData<T> streamExecute(SqlId sqlId,String sqlTemplate, Class<T> clazz,Object para);
 
     <T> StreamData<T> stream(SqlId sqlId,  Class<T> clazz,Object paras);
 

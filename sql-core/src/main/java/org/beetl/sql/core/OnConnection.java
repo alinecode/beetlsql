@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * @param <T>
  */
 public abstract class OnConnection<T> {
-    protected SQLManager sqlManagaer = null;
+    protected SQLManager sqlManager = null;
 	public abstract T call(Connection conn) throws SQLException ;
 	/**
 	 * 获得数据库连接，默认返回master
@@ -19,11 +19,11 @@ public abstract class OnConnection<T> {
 	public Connection getConn(ConnectionSource cs){
 		return cs.getMasterConn();
 	}
-    public SQLManager getSqlManagaer() {
-        return sqlManagaer;
+    public SQLManager getSqlManager() {
+        return sqlManager;
     }
-    public void setSqlManagaer(SQLManager sqlManagaer) {
-        this.sqlManagaer = sqlManagaer;
+    public void setSqlManager(SQLManager sqlManager) {
+        this.sqlManager = sqlManager;
     }
 	
 }

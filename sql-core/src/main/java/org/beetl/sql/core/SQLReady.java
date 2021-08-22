@@ -1,13 +1,17 @@
 package org.beetl.sql.core;
 
+import lombok.Data;
+
 /**
  * 封装了jdbc 和参数。
  *
  * @author xiandafu
  */
+@Data
 public class SQLReady {
     Object[] args;
     String sql = null;
+    SqlId sqlId = null;
 
     public SQLReady(String sql) {
         this(sql, (Object[])null);
@@ -27,21 +31,11 @@ public class SQLReady {
 
     }
 
-    public Object[] getArgs() {
-        return args;
-    }
+	public SQLReady(SqlId sqlId,String sql, Object... args) {
+    	this(sql,args);
+    	this.sqlId = sqlId;
 
-    public void setArgs(Object[] args) {
-        this.args = args;
-    }
-
-    public String getSql() {
-        return sql;
-    }
-
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
+	}
 
 
 }

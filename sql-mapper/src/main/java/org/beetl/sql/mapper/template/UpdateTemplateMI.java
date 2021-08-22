@@ -22,6 +22,6 @@ public class UpdateTemplateMI extends BaseTemplateMI {
     @Override
     public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
 
-        return sm.executeUpdate(this.getSql(),(Object)getParas(args));
+        return sm.executeUpdate(getSqId(entityClass,m),this.getSql(),(Object)getParas(args));
     }
 }

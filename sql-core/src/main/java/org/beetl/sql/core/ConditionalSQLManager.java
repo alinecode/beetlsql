@@ -836,20 +836,6 @@ public class ConditionalSQLManager extends  SQLManager {
         return sqlManager.getClassDesc(target);
     }
 
-    /**
-     * 直接执行sql查询语句，sql是模板
-     *
-     * @param sqlTemplate
-     * @param clazz
-     * @param paras
-     * @return
-     */
-
-    @Override
-    public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras) {
-        SQLManager sqlManager = decide(clazz);
-       return sqlManager.execute(sqlTemplate,clazz,paras);
-    }
 
     /**
      * 直接执行sql模版语句，sql是模板

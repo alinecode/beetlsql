@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 /**
  * <pre>{@code
  * @Sql("update user set status=? where id=?")
+ * @Update
  * public void update(Integer status,Integer id)
  * }</pre>
  * @author xiandafu
@@ -19,7 +20,7 @@ public class UpdateSqlReadyMI extends BaseSqlReadyMI {
     }
     @Override
     public Object call(SQLManager sm, Class entityClass,  Method m, Object[] args) {
-        SQLReady sqlReady = new SQLReady(this.getSql(),args);
+        SQLReady sqlReady = new SQLReady(getSqId(entityClass,m),this.getSql(),args);
         return sm.executeUpdate(sqlReady);
     }
 }

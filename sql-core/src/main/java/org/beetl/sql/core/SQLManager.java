@@ -1129,19 +1129,32 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras) {
-
-
 		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.queryAutoSQL(id);
+		return execute(id,sqlTemplate,clazz,paras);
+	}
+
+	/**
+	 * 直接执行语句,sql是模板 提供sqlId
+	 * @param sqlId
+	 * @param sqlTemplate
+	 * @param clazz
+	 * @param paras
+	 * @param <T>
+	 * @return
+	 */
+	@Override
+	public <T> List<T> execute(SqlId sqlId, String sqlTemplate, Class<T> clazz, Object paras) {
+		SQLSource source = sqlLoader.queryAutoSQL(sqlId);
 		if (source == null) {
-			source = new SQLSource(id, sqlTemplate);
+			source = new SQLSource(sqlId, sqlTemplate);
 			source.setSqlType(SQLType.SELECT);
-			this.sqlLoader.addSQL(id, source);
+			this.sqlLoader.addSQL(sqlId, source);
 		}
 		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
 		SQLExecutor script = dbStyle.buildExecutor(executeContext);
 		return script.select(clazz, paras);
 	}
+
 
 
 	public TableDesc getTableDesc(String table) {
@@ -1155,28 +1168,7 @@ public class SQLManager implements DataAPI {
 		return desc.genClassDesc(target, this.nc);
 	}
 
-	/**
-	 * 直接执行sql查询语句，sql是模板
-	 *
-	 * @param sqlTemplate
-	 * @param clazz
-	 * @param paras
-	 * @return
-	 */
 
-	@Override
-	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Map paras) {
-		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.queryAutoSQL(id);
-		if (source == null) {
-			source = new SQLSource(id, sqlTemplate);
-			source.setSqlType(SQLType.SELECT);
-			this.sqlLoader.addSQL(id, source);
-		}
-		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
-		SQLExecutor script = dbStyle.buildExecutor(executeContext);
-		return script.select(clazz, paras);
-	}
 
 	/**
 	 * 直接执行sql模版语句，sql是模板
@@ -1191,13 +1183,19 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public <T> List<T> execute(String sqlTemplate, Class<T> clazz, Object paras, Object start, long size) {
-		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate).toPage();
-		SQLSource source = sqlLoader.queryAutoSQL(id);
+		SqlId sqlId = this.sqlIdFactory.buildTemplate(sqlTemplate).toPage();
+		return execute(sqlId,sqlTemplate,clazz,paras,start,size);
+
+	}
+
+	@Override
+	public <T> List<T> execute(SqlId sqlId, String sqlTemplate, Class<T> clazz, Object paras, Object start, long size) {
+		SQLSource source = sqlLoader.queryAutoSQL(sqlId);
 		if (source == null) {
 			String pageSql = this.dbStyle.getRangeSql().toTemplateRange(clazz, sqlTemplate);
-			source = new SQLSource(id, pageSql);
+			source = new SQLSource(sqlId, pageSql);
 			source.setSqlType(SQLType.SELECT);
-			this.sqlLoader.addSQL(id, source);
+			this.sqlLoader.addSQL(sqlId, source);
 		}
 
 		Map pageParas = new HashMap();
@@ -1222,15 +1220,21 @@ public class SQLManager implements DataAPI {
 	@Override
 	public <T> PageResult<T> executePageQuery(String sqlTemplate, Class<T> clazz, Object paras,
 			PageRequest<T> request) {
-		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.queryAutoSQL(id);
+		SqlId sqlId = this.sqlIdFactory.buildTemplate(sqlTemplate);
+		return executePageQuery(sqlId,sqlTemplate,clazz,paras,request);
+	}
+
+	@Override
+	public <T> PageResult<T> executePageQuery(SqlId sqlId, String sqlTemplate, Class<T> clazz, Object paras,
+			PageRequest<T> request) {
+		SQLSource source = sqlLoader.queryAutoSQL(sqlId);
 		if (source == null) {
-			source = new SQLSource(id, sqlTemplate);
+			source = new SQLSource(sqlId, sqlTemplate);
 			source.setSqlType(SQLType.SELECT);
-			this.sqlLoader.addSQL(id, source);
+			this.sqlLoader.addSQL(sqlId, source);
 		}
 
-		return this.pageQuery(id, clazz, paras, request);
+		return this.pageQuery(sqlId, clazz, paras, request);
 	}
 
 
@@ -1243,12 +1247,17 @@ public class SQLManager implements DataAPI {
 	 */
 	@Override
 	public int executeUpdate(String sqlTemplate, Object paras) {
-		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.queryAutoSQL(id);
+		SqlId sqlId = this.sqlIdFactory.buildTemplate(sqlTemplate);
+		return executeUpdate(sqlId,sqlTemplate,paras);
+	}
+
+	@Override
+	public int executeUpdate(SqlId sqlId, String sqlTemplate, Object paras) {
+		SQLSource source = sqlLoader.queryAutoSQL(sqlId);
 		if (source == null) {
-			source = new SQLSource(id, sqlTemplate);
+			source = new SQLSource(sqlId, sqlTemplate);
 			source.setSqlType(SQLType.UPDATE);
-			this.sqlLoader.addSQL(id, source);
+			this.sqlLoader.addSQL(sqlId, source);
 		}
 
 		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
@@ -1274,7 +1283,7 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public <T> T executeQueryOne(SQLReady p, Class<T> clazz) {
-		SqlId id = this.sqlIdFactory.buildSql(p.getSql());
+		SqlId id = p.getSqlId()!=null?p.getSqlId():this.sqlIdFactory.buildSql(p.getSql());
 		List<T> list = executeWithId(id, p, clazz);
 		if (list.isEmpty()) {
 			return null;
@@ -1287,7 +1296,7 @@ public class SQLManager implements DataAPI {
 	}
 
 	/**
-	 * 返回一个流，适合处理超大量数据
+	 * 返回一个流，适合处理超大量数据,此类必须再事务类处理完毕，不能脱离事务管理框架，参考StreamData#next方法，对事务判断
 	 * @param p
 	 * @param clazz
 	 * @param <T>
@@ -1295,7 +1304,7 @@ public class SQLManager implements DataAPI {
 	 */
 	@Override
 	public <T> StreamData<T> streamExecute(SQLReady p, Class<T> clazz) {
-		SqlId id = this.sqlIdFactory.buildSql(p.getSql());
+		SqlId id = p.getSqlId()!=null?p.getSqlId():this.sqlIdFactory.buildSql(p.getSql());
 		SQLSource source = new SQLSource(id, p.getSql());
 		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
 		SQLExecutor script = dbStyle.buildExecutor(executeContext);
@@ -1306,17 +1315,22 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public <T> StreamData<T> streamExecute(String sqlTemplate, Class<T> clazz,Object para) {
-		SqlId id = this.sqlIdFactory.buildTemplate(sqlTemplate);
-		SQLSource source = sqlLoader.queryAutoSQL(id);
+		SqlId sqlId = this.sqlIdFactory.buildTemplate(sqlTemplate);
+		return streamExecute(sqlId,sqlTemplate,clazz,para);
+
+	}
+
+	@Override
+	public <T> StreamData<T> streamExecute(SqlId sqlId, String sqlTemplate, Class<T> clazz, Object para) {
+		SQLSource source = sqlLoader.queryAutoSQL(sqlId);
 		if (source == null) {
-			source = new SQLSource(id, sqlTemplate);
+			source = new SQLSource(sqlId, sqlTemplate);
 			source.setSqlType(SQLType.SELECT);
-			this.sqlLoader.addSQL(id, source);
+			this.sqlLoader.addSQL(sqlId, source);
 		}
 		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
 		SQLExecutor script = dbStyle.buildExecutor(executeContext);
 		return script.stream(clazz,para);
-
 	}
 
 	@Override
@@ -1415,7 +1429,7 @@ public class SQLManager implements DataAPI {
 
 	public <T> T executeOnConnection(OnConnection<T> onConnection) {
 		Connection conn = null;
-		onConnection.setSqlManagaer(this);
+		onConnection.setSqlManager(this);
 		try {
 			conn = onConnection.getConn(getDs());
 			return onConnection.call(conn);
