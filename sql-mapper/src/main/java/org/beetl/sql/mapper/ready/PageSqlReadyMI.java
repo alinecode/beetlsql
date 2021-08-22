@@ -23,7 +23,7 @@ public class PageSqlReadyMI extends BaseSqlReadyMI {
     @Override
     public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
        Object[] newArgs = paramsHolder.getArgsExcludePageRequest(args);
-       SQLReady sqlReady = new SQLReady(getSqId(entityClass,m),sql,newArgs);
+       SQLReady sqlReady = new SQLReady(getSqId(sm,entityClass,m),sql,newArgs);
        PageResult pageResult =sm.execute(sqlReady,targetType,(PageRequest)args[paramsHolder.getPageRequestIndex()]);
        if(pageResultRequired){
            return pageResult;

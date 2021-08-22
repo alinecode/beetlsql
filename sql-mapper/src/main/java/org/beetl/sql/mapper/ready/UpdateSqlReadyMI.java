@@ -20,7 +20,7 @@ public class UpdateSqlReadyMI extends BaseSqlReadyMI {
     }
     @Override
     public Object call(SQLManager sm, Class entityClass,  Method m, Object[] args) {
-        SQLReady sqlReady = new SQLReady(getSqId(entityClass,m),this.getSql(),args);
+        SQLReady sqlReady = new SQLReady(getSqId(sm,entityClass,m),this.getSql(),args);
         return sm.executeUpdate(sqlReady);
     }
 }

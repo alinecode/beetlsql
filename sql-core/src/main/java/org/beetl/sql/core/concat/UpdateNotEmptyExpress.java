@@ -13,8 +13,8 @@ public class UpdateNotEmptyExpress extends Express {
     @Override
     public void toSql(ConcatBuilder sb) {
         sb.appendIfNotEmptyStart(name);
-        express.toSql(sb);
         sb.comma();
+        express.toSql(sb);
         sb.appendIfNotEmptyEnd();
     }
 

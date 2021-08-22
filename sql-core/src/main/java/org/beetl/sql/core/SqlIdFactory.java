@@ -27,7 +27,7 @@ public class SqlIdFactory {
 	}
 
 
-	protected SqlId createId(Class entity, String id) {
+	public SqlId createId(Class entity, String id) {
 		String className = getNamespace(entity);
 		SqlId sqlId = SqlId.of(className, id);
 		sqlId.managedType = SqlId.ManagedType.resource;

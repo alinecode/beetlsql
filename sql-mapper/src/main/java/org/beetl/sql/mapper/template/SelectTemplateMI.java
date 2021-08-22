@@ -17,7 +17,7 @@ public class SelectTemplateMI extends BaseTemplateMI {
     }
     @Override
     public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
-        List list = sm.execute(getSqId(entityClass,m),templateSql,targetType,(Object)getParas(args));
+        List list = sm.execute(getSqId(sm,entityClass,m),templateSql,targetType,(Object)getParas(args));
         if(isSingle){
             return list.isEmpty()?null:list.get(0);
         }else{

@@ -54,9 +54,9 @@ public class BaseTest {
         builder.setNc(new UnderlinedNameConversion());
         builder.setDbStyle(new H2Style());
 //        builder.setInters(new Interceptor[]{new DebugInterceptor()});
-//        builder.setInters(new Interceptor[]{new SimpleDebugInterceptor()});
+        builder.setInters(new Interceptor[]{new SimpleDebugInterceptor()});
         // slf4j-beetlsql-log
-		builder.setInters(new Interceptor[]{new Slf4JLogInterceptor()});
+//		builder.setInters(new Interceptor[]{new Slf4JLogInterceptor()});
         sqlManager = builder.build();
     }
 

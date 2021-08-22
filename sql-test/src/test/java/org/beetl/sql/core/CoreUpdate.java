@@ -79,6 +79,8 @@ public class CoreUpdate extends BaseTest {
         User dbUser = sqlManager.single(User.class,user.getId());
         Assert.assertEquals(user.getName(),dbUser.getName());
 
+
+
     }
 
 	@Test
@@ -93,6 +95,12 @@ public class CoreUpdate extends BaseTest {
 		Assert.assertEquals(user.getName(),dbUser.getName());
 		Assert.assertNull(dbUser.getCreateDate());
 
+
+		User user2 = new User();
+		user2.setId(5);
+		user2.setDepartmentId(2);
+		user2.setCreateDate(new Date());
+		sqlManager.updateTemplateById(user2);
 	}
 
 

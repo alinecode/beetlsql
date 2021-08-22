@@ -28,7 +28,7 @@ public class BatchSqlReadyMI extends BaseSqlReadyMI {
             throw new UnsupportedOperationException("期望第一个参数是List<Object[]>类型");
         }
         List<Object[]> list = (List)args[0];
-        SQLBatchReady sqlBatchReady = new SQLBatchReady(getSqId(entityClass,m),this.getSql(),list);
+        SQLBatchReady sqlBatchReady = new SQLBatchReady(getSqId(sm,entityClass,m),this.getSql(),list);
         return sm.executeBatchUpdate(sqlBatchReady);
     }
 }

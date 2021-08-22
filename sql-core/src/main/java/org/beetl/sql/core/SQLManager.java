@@ -1277,7 +1277,7 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public <T> List<T> execute(SQLReady p, Class<T> clazz) {
-		SqlId id = this.sqlIdFactory.buildSql(p.getSql());
+		SqlId id = p.getSqlId()!=null?p.getSqlId():this.sqlIdFactory.buildSql(p.getSql());
 		return executeWithId(id, p, clazz);
 	}
 
@@ -1383,7 +1383,7 @@ public class SQLManager implements DataAPI {
 		Object offset = pageRequest.getStart(offsetStartZero);
 		String pageSql = this.dbStyle.getRangeSql().toRange(sql, offset, pageSize);
 
-		SqlId id = this.sqlIdFactory.buildSql(p.getSql());
+		SqlId id = p.getSqlId()!=null?p.getSqlId():this.sqlIdFactory.buildSql(p.getSql());
 		id.type = SqlId.Type.page;
 		list = executeWithId(id, new SQLReady(pageSql, p.getArgs()), clazz);
 		return pageRequest.isTotalRequired() ? pageRequest.of(list, count) : pageRequest.of(list);
@@ -1400,7 +1400,7 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public int executeUpdate(SQLReady p) {
-		SqlId id = this.sqlIdFactory.buildSql(p.getSql());
+		SqlId id = p.getSqlId()!=null?p.getSqlId():this.sqlIdFactory.buildSql(p.getSql());
 		SQLSource source = new SQLSource(id, p.getSql());
 		source.setSqlType(SQLType.UPDATE);
 		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
@@ -1411,7 +1411,7 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public int[] executeBatchUpdate(SQLBatchReady batch) {
-		SqlId id = this.sqlIdFactory.buildSql(batch.getSql());
+		SqlId id = batch.getSqlId()!=null?batch.getSqlId():this.sqlIdFactory.buildSql(batch.getSql());
 		SQLSource source = new SQLSource(id, batch.getSql());
 		source.setSqlType(SQLType.UPDATE);
 		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);

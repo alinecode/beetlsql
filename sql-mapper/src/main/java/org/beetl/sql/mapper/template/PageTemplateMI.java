@@ -29,7 +29,7 @@ public class PageTemplateMI extends SelectTemplateMI {
     @Override
     public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
         PageRequest pageRequest = (PageRequest) args[holder.getPageRequestIndex()];
-        PageResult pageResult = sm.executePageQuery(getSqId(entityClass,m),this.getSql(), this.targetType, getParas(args), pageRequest);
+        PageResult pageResult = sm.executePageQuery(getSqId(sm,entityClass,m),this.getSql(), this.targetType, getParas(args), pageRequest);
         if (pageResultRequired) {
             return pageResult;
         } else {

@@ -47,7 +47,11 @@ public class IdTest extends BaseTest {
 		data.setSn("abc");
 		sqlManager.insert(data);
 		Assert.assertNotNull(data.getId());
-		System.out.println(data);
+
+		Device data2 = new Device();
+		sqlManager.insertTemplate(data2);
+		Assert.assertNotNull(data2.getId());
+
 
 	}
 

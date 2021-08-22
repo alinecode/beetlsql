@@ -21,7 +21,7 @@ public class TestVarNullFunction implements Function {
 			try{
 				ctx.byteWriter.writeString("?");
 			} catch (IOException e) {
-				//不可能发声
+				//不可能发生
 				throw new RuntimeException(e);
 			}
 			List list = (List) ctx.getGlobal("_paras");
