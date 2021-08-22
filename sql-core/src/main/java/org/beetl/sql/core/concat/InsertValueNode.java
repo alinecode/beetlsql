@@ -49,6 +49,9 @@ public class InsertValueNode extends TrimSupport implements Output {
             sb.appendTrimStart();
             for(int i=0;i<list.size();i++){
                 Express express = list.get(i);
+				if(i!=0&& !(express instanceof  AutoCommaAppend)){
+					sb.comma();
+				}
                 express.toSql(sb);
 
             }
@@ -56,7 +59,7 @@ public class InsertValueNode extends TrimSupport implements Output {
         }else{
             for(int i=0;i<list.size();i++){
                 Express express = list.get(i);
-                if(i!=0){
+                if(i!=0&&!(express instanceof  AutoCommaAppend)){
                     sb.comma();
                 }
                 express.toSql(sb);
@@ -76,9 +79,7 @@ public class InsertValueNode extends TrimSupport implements Output {
         @Override
         public void toSql(ConcatBuilder sb) {
             sb.appendVar(varName);
-			if(node.trim){
-				sb.comma();
-			}
+
         }
     }
 
@@ -93,9 +94,7 @@ public class InsertValueNode extends TrimSupport implements Output {
         @Override
         public void toSql(ConcatBuilder sb) {
             sb.append(sql);
-            if(node.trim){
-            	sb.comma();
-			}
+
         }
     }
 
@@ -107,7 +106,7 @@ public class InsertValueNode extends TrimSupport implements Output {
         }
     }
 
-    public static class InsertValueEmptyExpress extends  Express{
+    public static class InsertValueEmptyExpress extends  Express implements AutoCommaAppend{
         String varName;
         public InsertValueEmptyExpress(String varName){
             this.varName = varName;

@@ -20,7 +20,7 @@ public class KeyHolder {
     String[] attrNames = null;
     Object[] values = null;
 
-    public static KeyHolder empty = new KeyHolder();
+    public static KeyHolder empty = new KeyHolder(new String[0]);
 
     protected KeyHolder() {
 

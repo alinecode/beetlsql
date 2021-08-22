@@ -12,7 +12,7 @@ public  class WhereNode   implements Output {
 
 
     public WhereNode andEq(String name, String varName){
-        WhereConditionExpress node = new WhereConditionExpress(this);
+        WhereConditionExpress node = new WhereConditionExpress();
         node.init("=","and",name);
         node.tplValue(varName);
         whereList.add(node);
@@ -29,13 +29,21 @@ public  class WhereNode   implements Output {
 
 
     public WhereNode andIfNotEmpty(String name, String varName){
-        WhereConditionExpress node = new WhereConditionExpress(this);
+        WhereConditionExpress node = new WhereConditionExpress();
         node.init("=","and",name);
         node.tplValue(varName);
         NotEmptyExpress notEmptyExpress = new NotEmptyExpress(varName,node);
         whereList.add(notEmptyExpress);
         return this;
     }
+
+	public LoopExpress loop(String collection, String varName){
+		LoopExpress loopExpress = new LoopExpress(collection,varName);
+		whereList.add(loopExpress);
+		return loopExpress;
+	}
+
+
 
     @Override
     public void toSql(ConcatBuilder sb) {

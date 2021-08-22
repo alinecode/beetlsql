@@ -53,15 +53,18 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		String sql = "SELECT * FROM ( SELECT * FROM order_log a ORDER BY a.id ) a";
-		PageResult<OrderLog> result = sqlManager.execute(new SQLReady(sql), OrderLog.class, DefaultPageRequest.of(1, 10));
-		PageResult<Map> pageMap = result.convert(orderLog->{
-			Map map = new HashMap();
-			map.put(orderLog.getOrderId(),orderLog.getStatus());
-			return map;
-		});
+		SQLSource sqlSource = sqlManager.getDbStyle().genSelectByIds(OrderLog.class,null);
 
-		System.out.println(pageMap);
+		OrderLog orderLog = new OrderLog();
+		orderLog.setOrderId(1);
+		orderLog.setStatus("u");
+
+		OrderLog orderLog2 = new OrderLog();
+		orderLog2.setOrderId(2);
+		orderLog2.setStatus("u");
+		List<OrderLog> query = Arrays.asList(orderLog,orderLog2);
+		List<OrderLog> list = sqlManager.selectByIds(OrderLog.class,query);
+		System.out.println(sqlSource.getTemplate());
 
 
 

@@ -464,11 +464,25 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.genClassDesc(cls, nameConversion);
 		List<String> colIds = classDesc.getIdCols();
-		if (colIds.size() > 1) {
-			throw new BeetlSQLException(BeetlSQLException.GEN_CODE_ERROR, "不支持联合主键");
+		if (colIds.size() == 1) {
+			//通常情况
+			String colId = colIds.get(0);
+			node.andIn(colId, "ids");
+			return ;
+		}else{
+			//转化成循环 (ID1=#{id1} and ID2=#{id2}) or (ID1=#{id.id1} and ID2=#{id.id2})
+			LoopExpress loopExpress = node.loop("ids","id");
+			List<String>  attrIds =  classDesc.getIdAttrs();
+			for(int i=0;i<colIds.size();i++){
+				String col = colIds.get(i);
+				String attr = attrIds.get(i);
+				loopExpress.addTpl(col,attr);
+			}
 		}
-		String colId = colIds.get(0);
-		node.andIn(colId, "ids");
+
+
+
+
 
 	}
 

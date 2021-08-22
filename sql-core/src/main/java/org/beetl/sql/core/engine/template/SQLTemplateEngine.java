@@ -68,8 +68,10 @@ public interface SQLTemplateEngine {
      * </pre>
      * @param concatBuilder
      */
-    public void genTrimStart(ConcatBuilder concatBuilder);
-    public void genTrimEnd(ConcatBuilder concatBuilder);
+    void genTrimStart(ConcatBuilder concatBuilder);
+
+	void genTrimStart(ConcatBuilder concatBuilder,String keyword);
+    void genTrimEnd(ConcatBuilder concatBuilder);
 
     /**
      *
@@ -82,8 +84,10 @@ public interface SQLTemplateEngine {
      * @param concatBuilder
      * @param var
      */
-    public void genIfNotEmptyStart(ConcatBuilder concatBuilder,String var);
-    public void genIfNotEmptyEnd(ConcatBuilder concatBuilder);
+    void genIfNotEmptyStart(ConcatBuilder concatBuilder,String var);
+    void genIfNotEmptyEnd(ConcatBuilder concatBuilder);
+    void genForStart(ConcatBuilder concatBuilder,String collection,String var);
+	void genForEnd(ConcatBuilder concatBuilder);
 
     /**
      * 如果某个变量存在，且不为空，输出此变量

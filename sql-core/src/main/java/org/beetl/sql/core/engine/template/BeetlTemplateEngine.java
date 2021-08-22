@@ -88,10 +88,15 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
 
     @Override
     public void genTrimStart(ConcatBuilder concatBuilder) {
-        appendStatement(concatBuilder, "trim({suffixOverrides:','}){");
+		genTrimStart(concatBuilder, ",");
     }
 
-    @Override
+	@Override
+	public void genTrimStart(ConcatBuilder concatBuilder, String keyword) {
+		appendStatement(concatBuilder, "trim({prefixOverrides:'"+keyword+"'}){");
+	}
+
+	@Override
     public void genTrimEnd(ConcatBuilder concatBuilder) {
         appendStatement(concatBuilder, "}");
     }
@@ -106,7 +111,18 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
         appendStatement(concatBuilder, "}");
     }
 
-    @Override
+	@Override
+	public void genForStart(ConcatBuilder concatBuilder, String collection, String var) {
+    	String express = "for("+var+" in "+collection+"){";
+		appendStatement(concatBuilder, express);
+	}
+
+	@Override
+	public void genForEnd(ConcatBuilder concatBuilder) {
+		appendStatement(concatBuilder, "}");
+	}
+
+	@Override
     public void genTestVar(ConcatBuilder concatBuilder, String var) {
         appendVar(concatBuilder, "db.testNull(" + var + "!,\"" + var + "\")");
     }

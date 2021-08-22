@@ -17,7 +17,7 @@ public class TestColNullFunction implements Function {
 		if (var == null) {
 			return "";
 		} else {
-			return col + ",";
+			return ","+col ;
 		}
 
 	}

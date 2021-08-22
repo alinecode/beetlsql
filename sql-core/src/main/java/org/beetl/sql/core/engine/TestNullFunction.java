@@ -22,7 +22,7 @@ public class TestNullFunction implements Function {
 		}
 		try {
 			//多余的逗号将被trim去掉
-			ctx.byteWriter.writeString("?,");
+			ctx.byteWriter.writeString(",?");
 			List list = (List) ctx.getGlobal("_paras");
 			list.add(new SQLParameter(paraName, arg));
 			return "";

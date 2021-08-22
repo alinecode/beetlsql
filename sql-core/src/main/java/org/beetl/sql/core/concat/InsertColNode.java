@@ -41,24 +41,30 @@ public class InsertColNode  extends  TrimSupport implements Output {
             sb.appendTrimStart();
             for(int i=0;i<list.size();i++){
                 Express express = list.get(i);
+				if(!(express instanceof AutoCommaAppend)&&(i!=0)){
+					sb.comma();
+				}
                 express.toSql(sb);
+
             }
             sb.appendTrimEnd();
 
         }else{
             for(int i=0;i<list.size();i++){
                 Express express = list.get(i);
-                if(i!=0){
-                    sb.comma();
-                }
+				if(!(express instanceof AutoCommaAppend)&&i!=0){
+					sb.comma();
+				}
                 express.toSql(sb);
+
             }
+
 
         }
 
     }
 
-    public static class InsertColEmptyExpress extends  Express{
+    public static class InsertColEmptyExpress extends  Express implements AutoCommaAppend{
         String col;
         String varName;
         public InsertColEmptyExpress(String col,String varName){
@@ -68,6 +74,7 @@ public class InsertColNode  extends  TrimSupport implements Output {
         @Override
         public void toSql(ConcatBuilder sb) {
             sb.testVar(varName,col);
+
         }
     }
 

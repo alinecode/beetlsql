@@ -6,15 +6,12 @@ package org.beetl.sql.core.concat;
  */
 public class WhereConditionExpress extends Express {
 
-    WhereNode where;
-
     String colName;
     String varName;
     String cond;
     String opt;
 
-    public WhereConditionExpress(WhereNode where){
-        this.where = where;
+    public WhereConditionExpress(){
     }
 
     public void init(String cond, String opt, String name){
@@ -23,9 +20,8 @@ public class WhereConditionExpress extends Express {
         this.colName = name;
     }
 
-    public WhereNode tplValue(String varName){
+    public void tplValue(String varName){
         this.varName = varName;
-        return where;
     }
 
     @Override

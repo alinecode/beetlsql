@@ -94,6 +94,11 @@ public class  ConcatBuilder  {
         ctx.templateEngine.genTrimStart(this);
         return this;
     }
+	public ConcatBuilder appendTrimStart(String keyword){
+		this.cr();
+		ctx.templateEngine.genTrimStart(this,keyword);
+		return this;
+	}
 
     public ConcatBuilder appendTrimEnd(){
         this.cr();
@@ -112,6 +117,18 @@ public class  ConcatBuilder  {
         ctx.templateEngine.genIfNotEmptyEnd(this);
         return this;
     }
+
+    public ConcatBuilder appendForStart(String collection,String var){
+		this.cr();
+		ctx.templateEngine.genForStart(this,collection,var);
+		return this;
+	}
+
+	public ConcatBuilder appendForEnd(){
+		this.cr();
+		ctx.templateEngine.genForEnd(this);
+		return this;
+	}
 
 
 
