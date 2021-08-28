@@ -65,7 +65,7 @@ public class Slf4JLogInterceptor implements Interceptor {
     }
 
     public static String formatSql(String sql) {
-        return sql.replaceAll("--.*", "").replaceAll("\\n", "").replaceAll("\\s+", " ");
+        return sql.replaceAll("--.*", "").replaceAll(" ?\r?\n", " ");
     }
 
     /**
@@ -120,7 +120,7 @@ public class Slf4JLogInterceptor implements Interceptor {
         SQLType sqlType = ctx.getExecuteContext().sqlSource.sqlType;
         Object result = ctx.getExecuteContext().executeResult;
         if (sqlType.isUpdate()) {
-            sb.append("├ 更新:\t[");
+            sb.append("└ 更新:\t[");
             if (result.getClass().isArray()) {
                 int[] ret = (int[]) result;
                 for (int i = 0; i < ret.length; i++) {
