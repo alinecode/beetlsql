@@ -82,5 +82,18 @@ public class VersionUpdate extends BaseTest {
 	}
 
 
+	@Test
+	public void rawUpdateById(){
+		ProductOrder order = sqlManager.unique(ProductOrder.class,1);
+		long version = order.getVersion();
+		order.setCreateDate(new Date());
+		order.setStatus(0);
+		sqlManager.updateRawById(order);
+		order = sqlManager.unique(ProductOrder.class,1);
+		Assert.assertEquals(version,order.getVersion().longValue());
+
+	}
+
+
 
 }

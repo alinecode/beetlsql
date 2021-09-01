@@ -49,7 +49,7 @@ public class SagaUpdateByIdAMI extends MapperInvoke {
 		@Override
 		public boolean call() {
 			SQLManager sm = getSQLManager(sqlManagerName);
-			int count = sm.updateById(obj);
+			int count = sm.updateRawById(obj);
 			if(count==0){
 				return false;
 			}

@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.7.0-RELEASE</version>
+        <version>3.8.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>mysql</artifactId>
-    <version>3.7.0-RELEASE</version>
+    <version>3.8.0-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>mysql</groupId>

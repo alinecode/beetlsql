@@ -91,6 +91,8 @@ public interface DataAPI {
 
     int updateById(Object obj);
 
+    int updateRawById(Object obj);
+
     int updateTemplateById(Object obj);
 
     int updateTemplateById(Class c, Map paras);

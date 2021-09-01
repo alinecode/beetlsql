@@ -295,7 +295,11 @@ public class SQLManager implements DataAPI {
 				sqlType = SQLType.UPDATE;
 				break;
 			}
-
+			case UPDATE_RAW_BY_ID: {
+				tempSource = this.dbStyle.genUpdateRawById(cls);
+				sqlType = SQLType.UPDATE;
+				break;
+			}
 			case UPDATE_TEMPLATE_BY_ID: {
 				tempSource = this.dbStyle.genUpdateTemplate(cls);
 				sqlType = SQLType.UPDATE;
@@ -972,6 +976,18 @@ public class SQLManager implements DataAPI {
 	public int updateById(Object obj) {
 		Class target = obj.getClass();
 		SQLExecutor script = getScript(target, UPDATE_BY_ID);
+		return script.update(target, obj);
+	}
+
+	/**
+	 * 同updateById，但忽略@Version，@UpdateIgnore注解
+	 * @param obj
+	 * @return
+	 */
+	@Override
+	public int updateRawById(Object obj) {
+		Class target = obj.getClass();
+		SQLExecutor script = getScript(target, UPDATE_RAW_BY_ID);
 		return script.update(target, obj);
 	}
 

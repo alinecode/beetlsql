@@ -191,6 +191,17 @@ public abstract class AbstractDBStyle implements DBStyle {
 		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
 	}
 
+
+	@Override
+	public SQLSource genUpdateRawById(Class<?> cls) {
+		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = this.metadataManager.getTable(tableName);
+		ClassDesc classDesc = table.genClassDesc(cls, nameConversion);
+		Update update = getRawUpdate(cls);
+		appendIdCondition(cls, update);
+		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
+	}
+
 	@Override
 	public SQLSource genUpdateAbsolute(Class<?> cls) {
 		//无条件更新所有，需要谨慎使用，子类可以抛出异常禁止这类方法调用
@@ -409,6 +420,27 @@ public abstract class AbstractDBStyle implements DBStyle {
 			if (prop.equals(classDesc.getClassAnnotation().getVersionProperty())) {
 				//版本字段
 				update.assignVersion(col);
+				continue;
+			}
+			update.assign(col).tplValue(prop);
+
+		}
+		return update;
+	}
+
+	protected Update getRawUpdate(Class<?> cls) {
+		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = this.metadataManager.getTable(tableName);
+		ClassDesc classDesc = table.genClassDesc(cls, nameConversion);
+		Update update = this.createConcatContext().update().from(cls);
+		Iterator<String> cols = classDesc.getInCols().iterator();
+		Iterator<String> properties = classDesc.getAttrs().iterator();
+		List<String> idCols = classDesc.getIdCols();
+		while (cols.hasNext() && properties.hasNext()) {
+			String col = cols.next();
+			String prop = properties.next();
+			if (idCols.contains(col)) {
+				//主键不更新
 				continue;
 			}
 			update.assign(col).tplValue(prop);

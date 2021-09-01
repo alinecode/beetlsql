@@ -16,6 +16,7 @@ public enum AutoSQLEnum {
     SELECT_ALL("$selectAll"),
     UPDATE_ALL("$updateAll"),
     UPDATE_BY_ID("$updateById"),
+	UPDATE_RAW_BY_ID("$updateRawById"),
     UPDATE_TEMPLATE_BY_ID("$updateTemplateById"),
     INSERT("$insert"),
     INSERT_TEMPLATE("$insertTemplate"),
