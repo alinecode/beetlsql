@@ -210,6 +210,10 @@ public class PageQuery<T> implements PageRequest, PageResult {
 	public boolean isTotalRequired() {
 		return this.totalRow==-1;
 	}
+	@Override
+	public boolean isListRequired() {
+		return true;
+	}
 
 	@Override
 	public PageResult of(List result) {

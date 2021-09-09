@@ -14,6 +14,7 @@ public class DefaultPageRequest<T> implements PageRequest<T> {
     int pageSize = 20;
     String orderBy;
     boolean totalRequired;
+    boolean listRequired;
 
     /**
      * 从1开始
@@ -26,6 +27,7 @@ public class DefaultPageRequest<T> implements PageRequest<T> {
         request.pageNumber = page;
         request.pageSize = pageSize;
         request.totalRequired = true;
+        request.listRequired = true;
         return request;
     }
 
@@ -34,10 +36,18 @@ public class DefaultPageRequest<T> implements PageRequest<T> {
         request.pageNumber = page;
         request.pageSize = pageSize;
         request.totalRequired = totalRequired;
+        request.listRequired = true;
         return request;
     }
 
-
+    public static PageRequest of(long page,int pageSize,boolean totalRequired,boolean listRequired){
+        DefaultPageRequest request = new DefaultPageRequest();
+        request.pageNumber = page;
+        request.pageSize = pageSize;
+        request.totalRequired = totalRequired;
+        request.listRequired = listRequired;
+        return request;
+    }
 
     @Override
     public PageResult of(List<T> result) {
