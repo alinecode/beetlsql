@@ -23,6 +23,10 @@ public class DBType {
 	public static final int DB_ALIYUN_POLARDB = 13;
 
     public static final int DB_DERBY = 20;
+    /**
+     * 成熟开源MPP数据库
+     */
+    public static final int DB_GREENPLUM = 21;
 
     /*NOSQL 数据库，从100开始*/
     public static final int DB_CASSANDRA = 101;
