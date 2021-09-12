@@ -40,7 +40,11 @@ public class DSTransactionManager {
 					e = ex;
 				} finally {
 					try {
-						conn.close();
+						if(!conn.isClosed()){
+							//关闭前恢复为自动提交，因为是使用连接池，连接并没关闭，会影响后续使用
+							conn.setAutoCommit(true);
+							conn.close();
+						}
 					} catch (SQLException ex) {
 						System.err.println("commit error of connection " + conn + " " + ex.getMessage());
 					}
@@ -70,7 +74,11 @@ public class DSTransactionManager {
 					e = ex;
 				} finally {
 					try {
-						conn.close();
+						if(!conn.isClosed()){
+							//关闭前恢复为自动提交，因为是使用连接池，连接并没关闭，会影响后续使用
+							conn.setAutoCommit(true);
+							conn.close();
+						}
 					} catch (SQLException ex) {
 						// TODO Auto-generated catch block
 						ex.printStackTrace();

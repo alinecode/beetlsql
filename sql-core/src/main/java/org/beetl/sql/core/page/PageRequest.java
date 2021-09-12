@@ -33,6 +33,14 @@ public interface PageRequest<T>  extends  java.io.Serializable{
      */
      boolean isTotalRequired();
 
+    /**
+     * 不进行列表查询<br/>
+     * 对于比较慢的分页查询场景，有时我们会将列表和总数统计分为两个请求分别获取，
+     * 这样可以分别请求列表或总数
+     * @return
+     */
+     boolean isListRequired();
+
     //不推荐，兼容beetlsql2
     default Object getParas(){
         return null;

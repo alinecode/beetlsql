@@ -445,7 +445,7 @@ public class SQLManager implements DataAPI {
 			}
 		}
 
-		if (totalRow == null || totalRow != 0) {
+		if ((totalRow == null || totalRow != 0)&&request.isListRequired()) {
 
 			long size = request.getPageSize();
 			Object start = request.getStart(this.offsetStartZero);
@@ -1387,21 +1387,24 @@ public class SQLManager implements DataAPI {
 			String countSql = this.getSqlManagerExtend().getPageKit().getCountSql(this.dbStyle.getName(),sql);
 			List<Long> countList = execute(new SQLReady(countSql, p.getArgs()), Long.class);
 			count = countList.get(0);
-			if (count == null || count == 0) {
+			if (count == null || count == 0 || !pageRequest.isListRequired()) {
 				list = new ArrayList<>();
 				return pageRequest.of(list, 0L);
 			}
 
 
 		}
+		if(pageRequest.isListRequired()){
+			long pageSize = pageRequest.getPageSize();
+			Object offset = pageRequest.getStart(offsetStartZero);
+			String pageSql = this.dbStyle.getRangeSql().toRange(sql, offset, pageSize);
 
-		long pageSize = pageRequest.getPageSize();
-		Object offset = pageRequest.getStart(offsetStartZero);
-		String pageSql = this.dbStyle.getRangeSql().toRange(sql, offset, pageSize);
-
-		SqlId id = p.getSqlId()!=null?p.getSqlId():this.sqlIdFactory.buildSql(p.getSql());
-		id.type = SqlId.Type.page;
-		list = executeWithId(id, new SQLReady(pageSql, p.getArgs()), clazz);
+			SqlId id = p.getSqlId()!=null?p.getSqlId():this.sqlIdFactory.buildSql(p.getSql());
+			id.type = SqlId.Type.page;
+			list = executeWithId(id, new SQLReady(pageSql, p.getArgs()), clazz);
+		}else{
+			list = Collections.EMPTY_LIST;
+		}
 		return pageRequest.isTotalRequired() ? pageRequest.of(list, count) : pageRequest.of(list);
 
 
