@@ -20,6 +20,7 @@ import org.beetl.sql.gen.simple.MDSourceBuilder;
 import org.beetl.sql.gen.simple.MapperSourceBuilder;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
@@ -53,21 +54,15 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		SQLSource sqlSource = sqlManager.getDbStyle().genSelectByIds(OrderLog.class,null);
 
 		OrderLog orderLog = new OrderLog();
-		orderLog.setOrderId(1);
-		orderLog.setStatus("u");
+		orderLog.setOrderId(2);
+		orderLog.setStatus("uu");
+		orderLog.setCreateDate(OffsetDateTime.now());
+		sqlManager.insert(orderLog);
 
-		OrderLog orderLog2 = new OrderLog();
-		orderLog2.setOrderId(2);
-		orderLog2.setStatus("u");
-		List<OrderLog> query = Arrays.asList(orderLog,orderLog2);
-		List<OrderLog> list = sqlManager.selectByIds(OrderLog.class,query);
-		System.out.println(sqlSource.getTemplate());
-
-
-
+		OrderLog log2 = sqlManager.unique(OrderLog.class,orderLog);
+		System.out.println(log2.getCreateDate());
 
 
 	}

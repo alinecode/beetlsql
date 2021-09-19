@@ -36,7 +36,7 @@ public interface AttributeConvert {
 	 * @param cls
 	 * @param name 属性名
 	 * @param pojo  传入的Pojo
-	 * @return
+	 * @return 返回值必须是jdbc能识别的类型，如Java的原始类型
 	 */
 	default Object toDb(ExecuteContext ctx, Class cls, String name, Object pojo) {
 		return BeanKit.getBeanProperty(pojo, name);

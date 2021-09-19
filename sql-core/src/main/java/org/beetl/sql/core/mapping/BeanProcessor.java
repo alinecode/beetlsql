@@ -23,7 +23,9 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.*;
+import java.util.Date;
 
 /**
  * ResultSet处理类，负责转换到Bean或者Map，可以通过SQLManagerBuilder设置一个自定义的BeanProcessor
@@ -101,8 +103,8 @@ public class BeanProcessor {
 		handlers.put(LocalDateTime.class,localDateTimeHandler);
 		handlers.put(LocalDate.class,localDateHandler);
 
+		acceptTypeList.add(new TemporalAcceptType(dateTypeHandler));
 		acceptTypeList.add(new EnumAcceptType());
-
 	}
 
 	/**
@@ -484,7 +486,6 @@ public class BeanProcessor {
 	 */
 	public void setPreparedStatementPara(ExecuteContext ctx, PreparedStatement ps, List<SQLParameter> objs)
 			throws SQLException {
-
 		SqlId sqlId = ctx.sqlId;
 		NameConversion nc = ctx.sqlManager.getNc();
 		DBStyle dbStyle = ctx.sqlManager.getDbStyle();
@@ -575,6 +576,31 @@ public class BeanProcessor {
 		public JavaSqlTypeHandler isAccept(Class cls) {
 			if(Enum.class.isAssignableFrom(cls)){
 				return enumTypeHandler;
+			}else{
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * 如果jdbc取值支持Temporal，
+	 * @see "https://gitee.com/xiandafu/beetlsql/issues/I4AKMM"
+	 */
+	public static class TemporalAcceptType implements AcceptType{
+
+		TemporalTypeHandler temporalHandler ;
+		DateTypeHandler dateTypeHandler;
+		public TemporalAcceptType(DateTypeHandler dateTypeHandler){
+			this.dateTypeHandler = dateTypeHandler;
+			temporalHandler = new TemporalTypeHandler();
+		}
+
+		@Override
+		public JavaSqlTypeHandler isAccept(Class cls) {
+			if(Temporal.class.isAssignableFrom(cls)){
+				return temporalHandler;
+			}if(Date.class.isAssignableFrom(cls)){
+				return dateTypeHandler;
 			}else{
 				return null;
 			}

@@ -5,6 +5,8 @@ import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.Auto;
 import org.beetl.sql.annotation.entity.Table;
 
+import java.time.OffsetDateTime;
+
 @Data
 @Table(name="order_log")
 public class OrderLog {
@@ -14,4 +16,6 @@ public class OrderLog {
 	String status;
 	@Auto
 	Integer id;
+
+	OffsetDateTime createDate;
 }

@@ -12,8 +12,6 @@ import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
-import org.beetl.sql.ext.SnowflakeIDAutoGen;
-import org.beetl.sql.ext.UUIDAutoGen;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
@@ -140,8 +138,7 @@ public class SqlManagerFactoryBean
 		for (Map.Entry<String, TagFactory> entry : tagFactorys.entrySet()) {
 			beetlTemplateEngine.getBeetl().getGroupTemplate().registerTagFactory(entry.getKey(), entry.getValue());
 		}
-		tempSQLManager.addIdAutoGen("simple", new SnowflakeIDAutoGen());
-		tempSQLManager.addIdAutoGen("uuid", new UUIDAutoGen());
+
 
 		for (Map.Entry<String, IDAutoGen> entry : this.idAutoGens.entrySet()) {
 			tempSQLManager.addIdAutoGen(entry.getKey(), entry.getValue());

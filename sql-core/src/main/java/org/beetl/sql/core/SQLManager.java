@@ -756,7 +756,7 @@ public class SQLManager implements DataAPI {
 	 * 插入一行记录
 	 *
 	 * @param clazz 对应的表
-	 * @param paras 对应的数据，可以是map
+	 * @param paras 对应的数据，可以是map,也可以是pojo
 	 * @return
 	 */
 

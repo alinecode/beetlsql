@@ -13,7 +13,10 @@ import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.meta.MetadataManager;
+import org.beetl.sql.ext.UUIDAutoGen22;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.SnowflakeIDAutoGen;
+import org.beetl.sql.ext.UUIDAutoGen;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,6 +106,7 @@ public class SQLManagerBuilder {
 
 	Map<String, IDAutoGen> idAutoGenMap = new HashMap<String, IDAutoGen>();
 
+
 	boolean offsetStartZero = false;
 
 
@@ -168,11 +172,7 @@ public class SQLManagerBuilder {
 		mySqlManager.setClassLoaderKit(myClassLoaderKit);
 		mySqlManager.setSqlManagerExtend(this.getSQLManagerExtend());
 
-		if(!idAutoGenMap.isEmpty()) {
-			idAutoGenMap.forEach((id, gen) -> {
-				mySqlManager.addIdAutoGen(id, gen);
-			});
-		}
+
 
 		dbStyle.config(mySqlManager);
 		sqlManagerMap.put(name, mySqlManager);
@@ -183,6 +183,29 @@ public class SQLManagerBuilder {
 	private void check() {
 		if (this.ds == null) {
 			throw new IllegalArgumentException("不能创建SQLManager,至少需要提供 ConnectionSource");
+		}
+	}
+
+	private void addDefaultIdGen(SQLManager mySqlManager){
+
+		//如果用户未提供，则提供默认实现
+		if(!idAutoGenMap.containsKey("uuid")){
+			idAutoGenMap.put("uuid",new UUIDAutoGen());
+		}
+
+		if(!idAutoGenMap.containsKey("simple")){
+			idAutoGenMap.put("simple",new SnowflakeIDAutoGen());
+		}
+
+		if(!idAutoGenMap.containsKey("uuid22")){
+			idAutoGenMap.put("uuid22",new UUIDAutoGen22());
+		}
+
+
+		if(!idAutoGenMap.isEmpty()) {
+			idAutoGenMap.forEach((id, gen) -> {
+				mySqlManager.addIdAutoGen(id, gen);
+			});
 		}
 	}
 
