@@ -22,6 +22,8 @@ BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着�
 
 BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetlsql3_guide)
 
+社区提供的文档 https://beetlsql-doc.vercel.app/
+
 ```xml
 <dependency>
     <groupId>com.ibeetl</groupId>
