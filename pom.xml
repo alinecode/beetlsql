@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql-all</artifactId>
-	<version>3.10.0-RELEASE</version>
+	<version>3.10.1-RELEASE</version>
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
@@ -82,6 +82,10 @@
 		<developerConnection>scm:git@git.oschina.net:xiandafu/beetlsql.git</developerConnection>
 		<url>https://git.oschina.net/xiandafu/beetlsql</url>
 	</scm>
+    <issueManagement>
+        <system>gitee</system>
+        <url>https://gitee.com/xiandafu/beetlsql/issues</url>
+    </issueManagement>
 
 	<properties>
 		<java-version>1.8</java-version>
@@ -95,7 +99,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-            <version>3.6.1.RELEASE</version>
+            <version>3.7.0.RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 

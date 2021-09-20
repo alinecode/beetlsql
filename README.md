@@ -4,7 +4,7 @@
 
 BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**的数据库访问框架，在一个系统多个库的情况下，提供一致的编写代码方式。支持如下数据平台
 
-* 传统数据库：MySQL,MariaDB,Oralce,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
+* 传统数据库：MySQL(国内兼容MySQL协议的各种大数据库),MariaDB,Oralce,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
 * 大数据：HBase，ClickHouse，Cassandar，Hive
 * 物联网时序数据库：Machbase，TD-Engine，IotDB
 * SQL查询引擎:Drill,Presto，Druid

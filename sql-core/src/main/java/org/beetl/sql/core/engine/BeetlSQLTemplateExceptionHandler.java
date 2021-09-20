@@ -1,6 +1,7 @@
 package org.beetl.sql.core.engine;
 
 import org.beetl.core.ConsoleErrorHandler;
+import org.beetl.core.GroupTemplate;
 import org.beetl.core.Resource;
 import org.beetl.core.ResourceLoader;
 import org.beetl.core.exception.BeetlException;
@@ -13,14 +14,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
-	//Override
 	@Override
-	public void processExcption(BeetlException ex, Writer writer) {
+	public void processException(BeetlException ex, GroupTemplate gt, Writer writer) {
 		ErrorInfo error = new ErrorInfo(ex);
 
 		int line = error.getErrorTokenLine();
 
-		SqlTemplateResource resource = (SqlTemplateResource) ex.gt.getResourceLoader().getResource(ex.resource.getId());
+		SqlTemplateResource resource = (SqlTemplateResource) gt.getResourceLoader().getResource(ex.resource.getId());
 		int startLine = resource.getLine();
 
 		StringBuilder sb = new StringBuilder(">>").append(getDateTime()).append(":").append(error.getType()).append(":")
@@ -32,7 +32,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 			println(writer, ex.getMessage());
 		}
 
-		ResourceLoader resLoader = ex.gt.getResourceLoader();
+		ResourceLoader resLoader = gt.getResourceLoader();
 		//潜在问题，此时可能得到是一个新的模板，不过可能性很小，忽略！
 
 		String content = null;
@@ -63,7 +63,7 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 			println(writer, "  调用栈:");
 			for (int i = 0; i < error.getResourceCallStack().size(); i++) {
 				Object errorId = error.getResourceCallStack().get(i).getId();
-				SqlTemplateResource errorResource = (SqlTemplateResource) ex.gt.getResourceLoader()
+				SqlTemplateResource errorResource = (SqlTemplateResource) gt.getResourceLoader()
 						.getResource(errorId);
 				startLine = errorResource.getLine();
 				println(writer, "  " + errorId + " 行：" + (error.getTokenCallStack().get(i).line + startLine));
