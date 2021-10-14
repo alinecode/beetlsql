@@ -3,6 +3,7 @@ package org.beetl.sql.core.query.interfacer;
 
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
+import org.beetl.sql.core.query.QueryCondition;
 
 import java.util.List;
 import java.util.Map;
@@ -176,4 +177,11 @@ public interface QueryExecuteI<M> {
 	 * @return
 	 */
 	PageResult<Map> mapPage(long pageNumber, long pageSize, String... columns);
+
+	/***
+	 * 使用Condition覆盖当前对象的所有条件
+	 * @param condition
+	 * @return
+	 */
+	QueryExecuteI useCondition(QueryCondition condition);
 }

@@ -557,4 +557,15 @@ public class LambdaQuery<T> extends Query<T> {
 
     public interface Property<T, R> extends Function<T, R>, Serializable {
     }
+
+    @Override
+    public LambdaQuery<T> useCondition(QueryCondition condition){
+        sql = condition.sql;
+        params = condition.params;
+        startRow = condition.startRow;
+        pageSize = condition.pageSize;
+        orderBy = condition.orderBy;
+        groupBy = condition.groupBy;
+        return this;
+    }
 }
