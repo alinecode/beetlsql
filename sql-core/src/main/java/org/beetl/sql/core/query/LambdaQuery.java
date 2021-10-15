@@ -198,10 +198,10 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
-	public LambdaQuery<T> orIn(Property<T, ?> property, Optional value) {
-		appendInSql(getFunctionName(property), value, IN, OR);
-		return this;
-	}
+    public LambdaQuery<T> orIn(Property<T, ?> property, Optional value) {
+        appendInSql(getFunctionName(property), value, IN, OR);
+        return this;
+    }
 
     public LambdaQuery<T> orNotIn(Property<T, ?> property, Collection<?> value) {
         appendInSql(getFunctionName(property), value, NOT_IN, OR);
@@ -213,10 +213,10 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
-	public LambdaQuery<T> orNotIn(Property<T, ?> property, Optional value) {
-		appendInSql(getFunctionName(property), value, NOT_IN, OR);
-		return this;
-	}
+    public LambdaQuery<T> orNotIn(Property<T, ?> property, Optional value) {
+        appendInSql(getFunctionName(property), value, NOT_IN, OR);
+        return this;
+    }
 
     public LambdaQuery<T> orBetween(Property<T, ?> property, Object value1, Object value2) {
         appendBetweenSql(getFunctionName(property), BETWEEN, OR, value1, value2);
@@ -556,5 +556,16 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     public interface Property<T, R> extends Function<T, R>, Serializable {
+    }
+
+    @Override
+    public LambdaQuery<T> useCondition(QueryCondition condition) {
+        sql = condition.sql;
+        params = condition.params;
+        startRow = condition.startRow;
+        pageSize = condition.pageSize;
+        orderBy = condition.orderBy;
+        groupBy = condition.groupBy;
+        return this;
     }
 }

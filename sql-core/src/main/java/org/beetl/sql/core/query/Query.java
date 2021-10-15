@@ -240,7 +240,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     public int delete() {
         String targetSql = "DELETE FROM " + getTableName(clazz) + " " + getSql();
         Object[] paras = getParams().toArray();
-        return this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
+        int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
+        this.clear();
+        return row;
     }
 
     @Override
@@ -492,6 +494,17 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
                 return value;
             }
         };
+    }
+
+    @Override
+    public Query<T> useCondition(QueryCondition condition) {
+        sql = condition.sql;
+        params = condition.params;
+        startRow = condition.startRow;
+        pageSize = condition.pageSize;
+        orderBy = condition.orderBy;
+        groupBy = condition.groupBy;
+        return this;
     }
 
 }
