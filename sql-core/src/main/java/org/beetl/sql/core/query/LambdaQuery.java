@@ -14,7 +14,15 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * @author xiandafu
+ * 用于方便的构造简单的sql操作，复杂的sql操作建议直接使用sql语句
+ * <pre>@{code
+ *     LambdaQuery<User> query = ... ;
+ *     List<User> list = query.andEq(User::getName,"lijz").select();
+ *
+ * }</pre>
+ * LambdaQuery 相对于Query，够能方便支持重构，通过User::getName这种形式获取列名。
+ * @author GavinKing
+ * @author lijiazhi
  */
 public class LambdaQuery<T> extends Query<T> {
 
@@ -560,12 +568,7 @@ public class LambdaQuery<T> extends Query<T> {
 
     @Override
     public LambdaQuery<T> useCondition(QueryCondition condition) {
-        sql = condition.sql;
-        params = condition.params;
-        startRow = condition.startRow;
-        pageSize = condition.pageSize;
-        orderBy = condition.orderBy;
-        groupBy = condition.groupBy;
+        super.useCondition(condition);
         return this;
     }
 }

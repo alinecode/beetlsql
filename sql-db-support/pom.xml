@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.10.1-RELEASE</version>
+        <version>3.11.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-db-support</artifactId>
-    <version>3.10.1-RELEASE</version>
+    <version>3.11.0-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <module>mysql</module>
@@ -22,7 +22,7 @@
 <!--        <module>couchbase</module>-->
 <!--        <module>voltdb</module>-->
 <!--        <module>clickhouse</module>-->
-        <module>taos</module>
+<!--        <module>taos</module>-->
 <!--        <module>hbase</module>-->
 <!--        <module>hive</module>-->
 <!--        <module>machbase</module>-->
@@ -32,6 +32,7 @@
 <!--        <module>opengauss</module>-->
 <!--        <module>kingbase</module>-->
 <!--        <module>iotdb</module>-->
+         <module>gbase8s</module>
 
     </modules>
     <dependencies>
@@ -43,7 +44,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.10.1-RELEASE</version>
+            <version>3.11.0-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 

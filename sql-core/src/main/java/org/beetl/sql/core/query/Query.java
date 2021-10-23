@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 用于方便的构造简单的sql操作，复杂的sql操作建议直接使用sql语句
+ * <pre>@{code
+ *     Query<User> query = ... ;
+ *     List<User> list = query.andEq("name","lijz").select();
+ *
+ * }</pre>
  * @author GavinKing
  */
 public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
@@ -250,6 +256,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         String targetSql = "SELECT COUNT(1) FROM " + getTableName(clazz) + " " + getSql();
         Object[] paras = getParams().toArray();
         List results = this.sqlManager.execute(new SQLReady(targetSql, paras), Long.class);
+        this.clear();
         return (Long) results.get(0);
     }
 
@@ -496,14 +503,19 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         };
     }
 
-    @Override
+	/**
+	 * 重用，比如在count前，调用此方法会获取count的参数，此参数可以用于select
+	 * @param condition
+	 * @return
+	 */
+	@Override
     public Query<T> useCondition(QueryCondition condition) {
-        sql = condition.sql;
-        params = condition.params;
+        sql = new StringBuilder(condition.sql);
+        params = new ArrayList<>(condition.params);
         startRow = condition.startRow;
         pageSize = condition.pageSize;
-        orderBy = condition.orderBy;
-        groupBy = condition.groupBy;
+        orderBy = new OrderBy(condition.orderBy.sb.toString());
+        groupBy = new GroupBy(condition.groupBy.sb.toString());
         return this;
     }
 

@@ -9,7 +9,7 @@ import java.util.Properties;
 
 /**
  * 模板引擎，可以采用其他模板引擎来执行sql模板，默认是用Beetl，
- * 因为Beetl的执行速度快，错误提示友好，最主要的原因是我写的
+ * 因为Beetl的执行速度快，错误提示友好，最主要的原因是我写的:)
  *
  * @author xiandafu
  */

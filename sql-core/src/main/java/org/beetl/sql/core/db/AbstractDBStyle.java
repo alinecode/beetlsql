@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * 按照mysql来的，oralce需要重载insert，page方法
+ *  标识了sql的共性和不同
  *
  * @author xiandafu
  */

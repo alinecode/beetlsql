@@ -11,4 +11,10 @@ public class OrderBy {
 		sb.setLength(sb.length() - 1);
 		return sb.toString();
 	}
+
+	public OrderBy(){
+	}
+	protected OrderBy(String  sql){
+		this.sb = new StringBuilder(sql);
+	}
 }

@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class MySqlStyle extends AbstractDBStyle {
 
-    RangeSql rangeSql = null;
+    protected RangeSql rangeSql = null;
 
     public MySqlStyle() {
 

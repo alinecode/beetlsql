@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
@@ -11,17 +10,16 @@
     </parent>
 
     <groupId>com.ibeetl</groupId>
-    <artifactId>druid</artifactId>
+    <artifactId>gbase8s</artifactId>
     <version>3.11.0-RELEASE</version>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.apache.calcite.avatica/avatica -->
         <dependency>
-            <groupId>org.apache.calcite.avatica</groupId>
-            <artifactId>avatica</artifactId>
-            <version>1.17.0</version>
+            <groupId>gbase8s</groupId>
+            <artifactId>gbase8s</artifactId>
+            <version>whaterver</version>
+            <scope>system</scope>
+            <systemPath>/Users/lijiazhi/git/beetlsql/lib/gbasedbtjdbc_3.3.0_2.jar</systemPath>
         </dependency>
-
     </dependencies>
-
 
 </project>

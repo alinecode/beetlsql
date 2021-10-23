@@ -21,7 +21,8 @@ public class DBType {
     public static final int DB_KINGBASE = 11;
     public static final int DB_TAOS = 12;
 	public static final int DB_ALIYUN_POLARDB = 13;
-
+	public static final int DB_GREATSQL = 14;
+	public static final int DB_GBASE8S = 15;
     public static final int DB_DERBY = 20;
     /**
      * 成熟开源MPP数据库

@@ -23,5 +23,12 @@ public class GroupBy {
 		return this;
 	}
 
+	public GroupBy(){
+
+	}
+	public GroupBy(String str){
+		sb = new StringBuilder(str);
+	}
+
 
 }
