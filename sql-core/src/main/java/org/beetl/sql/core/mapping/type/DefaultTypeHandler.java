@@ -2,6 +2,10 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.SQLException;
 
+/**
+ * 没有匹配的处理器情况下，使用此处理器
+ * @author lijiazhi
+ */
 public class DefaultTypeHandler extends JavaSqlTypeHandler {
 
 	@Override

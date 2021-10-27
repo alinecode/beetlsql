@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * 必须调用{@link org.beetl.sql.core.SQLManager#addIdAutoGen} 来使用
  * @see org.beetl.sql.annotation.entity.AssignID
- * @author xiandafu
+ * @author lijiazhi
  */
 public class SnowflakeIDAutoGen implements IDAutoGen<Long> {
 

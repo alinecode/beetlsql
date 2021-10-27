@@ -172,7 +172,7 @@ public class SQLManagerBuilder {
 		mySqlManager.setClassLoaderKit(myClassLoaderKit);
 		mySqlManager.setSqlManagerExtend(this.getSQLManagerExtend());
 
-
+		addDefaultIdGen(mySqlManager);
 
 		dbStyle.config(mySqlManager);
 		sqlManagerMap.put(name, mySqlManager);

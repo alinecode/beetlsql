@@ -551,9 +551,12 @@ public class BeanProcessor {
 	/**
 	 * 得到类型处理器
 	 * @param target
-	 * @return
+	 * @return 如果target为null，则返回默认处理器
 	 */
 	public JavaSqlTypeHandler getHandler(Class target){
+		if(target==null){
+			return this.defaultHandler;
+		}
 		JavaSqlTypeHandler handler = handlers.get(target);
 		if(handler==null&&!this.acceptTypeList.isEmpty()){
 			for(AcceptType acceptType:acceptTypeList){
