@@ -59,7 +59,7 @@ public class QuickTest {
 		orderLog.setOrderId(2);
 		orderLog.setStatus("uu");
 		orderLog.setCreateDate(OffsetDateTime.now());
-		sqlManager.insert(orderLog);
+		sqlManager.insertTemplate(orderLog);
 
 		OrderLog log2 = sqlManager.unique(OrderLog.class,orderLog);
 		System.out.println(log2.getCreateDate());

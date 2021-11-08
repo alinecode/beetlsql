@@ -67,6 +67,7 @@ public class ConcatContext {
         ConcatContext ctx = new ConcatContext();
         ctx.nc = nc;
         ctx.templateEngine = templateEngine;
+        ctx.keyWordHandler = keyWordHandler;
 
         return ctx;
     }
@@ -87,4 +88,8 @@ public class ConcatContext {
     public void setKeyWordHandler(KeyWordHandler keyWordHandler) {
         this.keyWordHandler = keyWordHandler;
     }
+
+	public KeyWordHandler getKeyWordHandler() {
+		return keyWordHandler;
+	}
 }

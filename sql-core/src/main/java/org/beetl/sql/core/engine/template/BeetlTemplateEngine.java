@@ -129,10 +129,12 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
 
     @Override
     public void genTestVar(ConcatBuilder concatBuilder, String var, String col) {
+
         if (col.startsWith("'")) {
             appendVar(concatBuilder, "db.testColNull(" + var + ",\"" + col + "\")");
         } else {
-            appendVar(concatBuilder, "db.testColNull(" + var + ",'" + col + "')");
+        	String colName = concatBuilder.getCtx().getKeyWordHandler().getCol(col);
+            appendVar(concatBuilder, "db.testColNull(" + var + ",'" + colName + "')");
         }
     }
 	@Override

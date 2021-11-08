@@ -638,10 +638,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 	protected ConcatContext createConcatContext() {
 		ConcatContext concatContext = ConcatContext
-				.createTemplateContext(this.nameConversion, this.getKeyWordHandler(), sqlTemplateEngine);
-		if (this.keyWordHandler != null) {
-			concatContext.setKeyWordHandler(this.keyWordHandler);
-		}
+				.createTemplateContext(this.nameConversion,
+						this.keyWordHandler != null?this.getKeyWordHandler():new DefaultKeyWordHandler(), sqlTemplateEngine);
 		return concatContext;
 	}
 
