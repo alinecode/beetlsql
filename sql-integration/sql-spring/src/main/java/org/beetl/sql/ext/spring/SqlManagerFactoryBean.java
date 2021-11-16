@@ -57,6 +57,8 @@ public class SqlManagerFactoryBean
 
 	/**sqlManager名称**/
 	protected String name;
+
+	protected boolean dev;
 	/**
 	 * BeetlSql核心类
 	 */
@@ -124,6 +126,7 @@ public class SqlManagerFactoryBean
 		builder.setInters(interceptors);
 		builder.setDbStyle(dbStyle);
 		builder.setSqlLoader(this.sqlLoader);
+		builder.setProduct(!dev);
 		if (name != null) {
 			builder.setName(name);
 		}
@@ -212,5 +215,11 @@ public class SqlManagerFactoryBean
 		this.interceptors = interceptors;
 	}
 
+	public boolean isDev() {
+		return dev;
+	}
 
+	public void setDev(boolean dev) {
+		this.dev = dev;
+	}
 }

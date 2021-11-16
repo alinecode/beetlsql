@@ -17,8 +17,7 @@ public class StringSqlTemplateLoader implements ResourceLoader<SqlId> {
 
 	@Override
 	public Resource getResource(SqlId id) {
-		SQLSource source = sqlLoader.querySQL(id);
-		return new SqlTemplateResource(id, source, this);
+		return new SqlTemplateResource(id, this);
 	}
 
 	@Override

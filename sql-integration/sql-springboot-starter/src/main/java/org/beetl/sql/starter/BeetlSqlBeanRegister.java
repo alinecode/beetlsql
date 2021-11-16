@@ -146,10 +146,13 @@ public class BeetlSqlBeanRegister
 		bdb.addPropertyValue("cs", new RuntimeBeanReference(name+"BeetlSqlDataSourceBean"));
 		bdb.addPropertyValue("dbStyle", (DBStyle)ObjectUtil.tryInstance(config.getDbStyle(),classLoader));
 		bdb.addPropertyValue("interceptors", config.dev ? new Interceptor[] { new DebugInterceptor() } : new Interceptor[0]);
+		bdb.addPropertyValue("dev", config.dev );
+
 		bdb.addPropertyValue("sqlLoader", loader);
 		bdb.addPropertyValue("nc", (NameConversion) ObjectUtil.tryInstance(config.getNameConversion(),classLoader));
 		bdb.addPropertyValue("extProperties", ps);
 		bdb.addPropertyValue("name", name);
+
 
 		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 		if(!scan){

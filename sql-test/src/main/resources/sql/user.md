@@ -1,7 +1,7 @@
 select
 ===
 
-select count(1)+1 from sys_user
+select * from order_log where id = 1
  
 count
 ===

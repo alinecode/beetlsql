@@ -89,6 +89,8 @@ public class SQLManagerBuilder {
 	 * 生产模式配置，用于控制某些优化措施
 	 */
 	private boolean isProduct = false;
+	/*兼容旧版配置*/
+	private boolean apiProductSetFlag = false;
 
 	SQLTemplateEngine sqlTemplateEngine;
 
@@ -125,8 +127,6 @@ public class SQLManagerBuilder {
 
 		SQLManager mySqlManager = new SQLManager();
 
-		mySqlManager.isProduct = isProduct;
-		mySqlManager.charset = charset;
 
 		DBStyle myDbStyle = this.getDbStyle();
 		SQLLoader mySqlLoader = this.getSqlLoader();
@@ -134,6 +134,11 @@ public class SQLManagerBuilder {
 		Interceptor[] myInters = this.getInters();
 		//BeetlSQL配置，在btsql.properties,btsql-ext.properties扩展
 		Properties myPs = this.getBeetlPs();
+		//老的配置方式，做兼容
+
+
+		mySqlManager.isProduct = getProduct();
+		mySqlManager.charset = charset;
 
 		SQLTemplateEngine mysSqlTemplateEngine = this.getSqlTemplateEngine();
 
@@ -149,6 +154,7 @@ public class SQLManagerBuilder {
 		if (mySqlLoader instanceof AbstractClassPathSQLLoader) {
 			((AbstractClassPathSQLLoader) mySqlLoader).setClassLoaderKit(myClassLoaderKit);
 		}
+		mySqlLoader.setProduct(mySqlManager.isProduct );
 
 		//设置sqlManger
 		mySqlManager.setDs(ds);
@@ -477,6 +483,24 @@ public class SQLManagerBuilder {
 		}
 		return sqlManagerExtend;
 	}
+
+	public void setProduct(boolean product) {
+		this.isProduct = product;
+		this.apiProductSetFlag = true;
+	}
+
+	public boolean getProduct(){
+		if(this.apiProductSetFlag){
+			return this.isProduct;
+		}else{
+			return Boolean.parseBoolean(this.beetlPs.getProperty("PRODUCT_MODE"));
+		}
+
+
+	}
+
+
+
 	/**
 	 * 为每个sqlManager生成一个默认名字,系统最好指定每个sql的名字
 	 */

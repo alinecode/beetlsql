@@ -11,35 +11,34 @@ import java.io.Reader;
 
 public class SqlTemplateResource extends Resource<SqlId> {
 
-	SQLSource source;
+	int line = 0;
 
-	public SqlTemplateResource(SqlId id, SQLSource source, ResourceLoader loader) {
+	public SqlTemplateResource(SqlId id, ResourceLoader loader) {
 		super(id, loader);
-		this.source = source;
 
 	}
 
 	@Override
 	public Reader openReader() {
-		return new NoneBlockStringReader(source.getTemplate());
+		StringSqlTemplateLoader l = (StringSqlTemplateLoader) this.resourceLoader;
+		SQLLoader loader = l.getSqlLLoader();
+		SQLSource newResource = loader.querySQL(id);
+		this.line = newResource.getLine();
+		return new NoneBlockStringReader(newResource.getTemplate());
 	}
 
 	@Override
 	public boolean isModified() {
+
 		StringSqlTemplateLoader l = (StringSqlTemplateLoader) this.resourceLoader;
 		SQLLoader loader = l.getSqlLLoader();
-		return loader.isModified(source.getId());
+		return loader.isModified(id);
 
-	}
-
-	public String getTemplate() {
-		return source.getTemplate();
 	}
 
 	public int getLine() {
-		return source.getLine();
+		return this.line;
 	}
-
 
 
 }

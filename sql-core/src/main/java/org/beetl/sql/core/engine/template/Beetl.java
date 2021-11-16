@@ -17,19 +17,18 @@ public class Beetl {
 	public Beetl(SQLLoader loader, Properties ps) {
 		try {
 			this.ps = ps;
-			boolean product = Boolean.parseBoolean(ps.getProperty("PRODUCT_MODE"));
+
 			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader);
 			Configuration cfg = new Configuration(ps);
 			gt = new GroupTemplate(resourceLoader, cfg);
-			if(product){
-				loader.setProduct(product);
-			}
+			//会被SQLManagerBuilder的setProduct覆盖
+
 			String charset = ps.getProperty("CHARSET");
 			if (StringKit.isBlank(charset)) {
 				charset = Charset.defaultCharset().name();
 
 			}
-			System.out.println("BeetlSQL 运行在 product=" + product + ",md charset=" + charset);
+
 			//对isBlank参数增加安全输出控制，如果不存在在，为空，返回true
 			AntlrProgramBuilder.safeParameters.add("isBlank");
 

@@ -47,6 +47,7 @@ public class QuickTest {
 		builder.setNc(new UnderlinedNameConversion());
 		builder.setInters(new Interceptor[]{new DebugInterceptor()});
 		builder.setDbStyle(new MySqlStyle());
+		builder.setProduct(false);
 		SQLManager sqlManager = builder.build();
 		return sqlManager;
 	}
@@ -55,14 +56,13 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
-		OrderLog orderLog = new OrderLog();
-		orderLog.setOrderId(2);
-		orderLog.setStatus("uu");
-		orderLog.setCreateDate(OffsetDateTime.now());
-		sqlManager.insertTemplate(orderLog);
+		List<OrderLog> orderLogs = sqlManager.select(SqlId.of("user","select"),OrderLog.class,new HashMap<>());
+		System.out.println(orderLogs.size());
 
-		OrderLog log2 = sqlManager.unique(OrderLog.class,orderLog);
-		System.out.println(log2.getCreateDate());
+		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
+
+		orderLogs = orderLogMapper.select();
+		System.out.println(orderLogs.size());
 
 
 	}
