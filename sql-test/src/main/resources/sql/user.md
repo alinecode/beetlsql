@@ -1,7 +1,7 @@
 select
 ===
 
-select * from order_log where id = 1
+select * from order_log where id = #{ck()}
  
 count
 ===

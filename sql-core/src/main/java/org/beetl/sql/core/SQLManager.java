@@ -1471,6 +1471,31 @@ public class SQLManager implements DataAPI {
 		}
 	}
 
+	/**
+	 * 强制使用某个数据源，DBRunner.MasterRunner，DBRunner.SlaveRunner或者继承DBRunner自定义.
+	 *
+	 * 如下代码的，在主从库下，强制查询走主库
+	 * <pre>
+	 *    sqlManager.forceDataSource(new DBRunner.MasterRunner(){
+	 *    		public void run(SQLManager sqlManager){
+	 *          	sqlManager.select .....
+	 *          }
+	 *    )
+	 * </pre>
+	 * 如下代码，强制更新从库
+	 * <pre>
+	 *    sqlManager.forceDataSource(new DBRunner.SlaveRunner(){
+	 *    		public void run(SQLManager sqlManager){
+	 *          	sqlManager.update()
+	 *          }
+	 *    )
+	 * </pre>
+	 * @param runner
+	 */
+	public <T> T  forceDataSource(DBRunner<T> runner){
+		return runner.start(this);
+	}
+
 
 	public SQLLoader getSqlLoader() {
 		return sqlLoader;

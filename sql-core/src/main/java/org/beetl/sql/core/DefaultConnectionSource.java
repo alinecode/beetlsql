@@ -76,7 +76,7 @@ public class DefaultConnectionSource implements ConnectionSource {
 			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_CONNECTION, e);
 		}
 	}
-
+	@Override
 	public DataSource getMasterSource() {
 		return master;
 	}
@@ -95,7 +95,7 @@ public class DefaultConnectionSource implements ConnectionSource {
 		return this.getMasterConn();
 	}
 
-
+	@Override
 	public DataSource[] getSlaves() {
 		return slaves;
 	}

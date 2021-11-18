@@ -2,6 +2,7 @@ package org.beetl.sql.core;
 
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,6 +29,13 @@ import java.sql.Statement;
  */
 public interface ConnectionSource {
 
+
+	ThreadLocal<DataSource> forceDs = new ThreadLocal<DataSource>(){
+		protected DataSource initialValue() {
+			return null;
+		}
+
+	};
 	/**
 	 * 得到一个主库连接
 	 *
@@ -92,6 +100,27 @@ public interface ConnectionSource {
 			}
 
 		}
+	}
+
+	default  DataSource getMasterSource(){
+		throw new UnsupportedOperationException("不支持数据源");
+	}
+
+
+
+	default  DataSource[] getSlaves(){
+		throw new UnsupportedOperationException("不支持数据源");
+	}
+
+	default void forceBegin(DataSource dataSource){
+		forceDs.set(dataSource);
+	}
+	default void forceEnd(){
+		forceDs.set(null);
+	}
+
+	default  DataSource getForceDataSource(){
+		return forceDs.get();
 	}
 
 
