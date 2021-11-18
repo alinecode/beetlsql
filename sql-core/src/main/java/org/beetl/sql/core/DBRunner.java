@@ -18,16 +18,30 @@ public abstract   class DBRunner<T> {
     protected  abstract  DataSource getTargetDataSource(SQLManager sqlManager);
 
     public <T> T  start(SQLManager sm){
-        DataSource ds = getTargetDataSource(sm);
-        sm.getDs().forceBegin(ds);
-        T t = run(sm);
-        sm.getDs().forceEnd();
-        return t;
+    	try{
+			DataSource ds = getTargetDataSource(sm);
+			sm.getDs().forceBegin(ds);
+			T t = run(sm);
+			return t;
+		}finally {
+			sm.getDs().forceEnd();
+		}
+
     }
 
+	/**
+	 * 子类需要实现此方法，可以使用此SQLManager或者任何SQLManager生成的Mapper来访问数据库
+	 * @param sm
+	 * @param <T>
+	 * @return
+	 */
     abstract public <T> T  run(SQLManager sm);
 
-    public  abstract  static  class MasterDBRunner<T>  extends DBRunner<T>{
+	/**
+	 * 强制使用主数据源
+	 * @param <T>
+	 */
+	public  abstract  static  class MasterDBRunner<T>  extends DBRunner<T>{
 
         protected   DataSource getTargetDataSource(SQLManager sqlManager){
             DataSource ds =  sqlManager.getDs().getMasterSource();
@@ -36,7 +50,11 @@ public abstract   class DBRunner<T> {
 
     }
 
-    public  abstract  static  class SlaveDBRunner<T>  extends DBRunner<T>{
+	/**
+	 * 强制使用第一个从库
+	 * @param <T>
+	 */
+	public  abstract  static  class SlaveDBRunner<T>  extends DBRunner<T>{
 
         protected   DataSource getTargetDataSource(SQLManager sqlManager){
             DataSource[] ds =  sqlManager.getDs().getSlaves();
@@ -47,4 +65,29 @@ public abstract   class DBRunner<T> {
         }
 
     }
+
+	/**
+	 * 遍历所有slave，并执行
+	 */
+	public abstract  static class EachSlaveDbRunner extends DBRunner<Object>{
+		protected    DataSource getTargetDataSource(SQLManager sqlManager){
+			throw new UnsupportedOperationException();
+		}
+
+		public Object start(SQLManager sm){
+			try{
+				DataSource[] slaves =  sm.getDs().getSlaves();
+				for(DataSource ds:slaves){
+					sm.getDs().forceBegin(ds);
+					run(sm);
+					sm.getDs().forceEnd();
+				}
+				return null;
+
+			}finally {
+				sm.getDs().forceEnd();
+			}
+
+		}
+	}
 }

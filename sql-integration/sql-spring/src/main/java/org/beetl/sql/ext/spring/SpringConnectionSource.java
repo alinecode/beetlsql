@@ -31,6 +31,13 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 
 	@Override
 	public Connection getConn(ExecuteContext ctx, boolean isUpdate){
+		if(getForceDataSource()!=null){
+			try {
+				return getForceDataSource().getConnection();
+			} catch (SQLException e) {
+				throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_CONNECTION, e);
+			}
+		}
 		DataSource ds = null;
 		if (this.slaves == null || this.slaves.length == 0) {
 			return this.getWriteConn(ctx);
