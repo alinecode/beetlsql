@@ -1,6 +1,7 @@
 package org.beetl.sql.core.engine.template;
 
 import org.beetl.core.Template;
+import org.beetl.core.io.SoftReferenceWriter;
 import org.beetl.sql.clazz.kit.Plugin;
 
 import java.util.Map;
@@ -28,7 +29,11 @@ import java.util.Map;
 
     @Override
     public String render() {
-        return template.render();
+		try(SoftReferenceWriter writer = SoftReferenceWriter.local()){
+			template.renderTo(writer);
+			return writer.toString();
+		}
+
     }
 
     @Override
