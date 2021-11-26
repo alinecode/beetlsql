@@ -44,7 +44,7 @@ public  class PageKit {
 				PlainSelect plain = (PlainSelect) select.getSelectBody();
 				if (plain.getFromItem() != null) {// 有from
 					// 判断select是否仅存在net.sf.jsqlparser.schema.Column类型
-					if (plain.getSelectItems().stream().allMatch(item -> ((item instanceof SelectExpressionItem) && (((SelectExpressionItem) item).getExpression() instanceof Column)))) {
+					if (plain.getSelectItems().stream().allMatch(item -> isAllColumns(item)||isColumn(item))) {
 						if (plain.getDistinct() == null && plain.getGroupBy() == null && plain.getLimit() == null) {// 非DISTINCT, 非groupBy, 非limit
 							plain.setSelectItems(Arrays.asList(new PageKit.CountAll()));
 							plain.setOrderByElements(null);
@@ -57,12 +57,27 @@ public  class PageKit {
 			}
 		} catch (JSQLParserException parserException) {
 			//不抛异常，jsqparser有问题，采样默认处理,参考 https://gitee.com/xiandafu/beetlsql/issues/I425LQ
+//			parserException.printStackTrace();
 		}
     	countSql =  buildDefaultSql(selectSql);
     	return countSql;
 
 
     }
+
+	protected  boolean isAllColumns(SelectItem item){
+		return item instanceof  AllColumns;
+	}
+
+	protected  boolean isColumn(SelectItem item){
+		if(!(item instanceof SelectExpressionItem)){
+			return false;
+		}
+		SelectExpressionItem selectExpressionItem = (SelectExpressionItem)item;
+		return selectExpressionItem.getExpression() instanceof Column;
+	}
+
+
 
     protected  String buildDefaultSql(String selectSql){
 		String defaultCountSql =  "SELECT COUNT(*) FROM ( " + selectSql + " ) a";
