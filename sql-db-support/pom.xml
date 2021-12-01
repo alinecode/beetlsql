@@ -33,6 +33,7 @@
 <!--        <module>kingbase</module>-->
 <!--        <module>iotdb</module>-->
          <module>gbase8s</module>
+<!--        <module>oracle</module>-->
 
     </modules>
     <dependencies>
