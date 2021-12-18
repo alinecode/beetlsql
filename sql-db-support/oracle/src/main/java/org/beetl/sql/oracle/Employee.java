@@ -4,7 +4,7 @@ import lombok.Data;
 import org.beetl.sql.annotation.entity.Table;
 
 import java.sql.Timestamp;
-import java.sql.Date;
+import java.util.Date;
 
 @Table(name="hr.employees")
 @Data

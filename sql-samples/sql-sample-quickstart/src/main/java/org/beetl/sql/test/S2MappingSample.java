@@ -44,13 +44,13 @@ public class S2MappingSample {
     public static void main(String[] args) throws Exception {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S2MappingSample mappingSample = new S2MappingSample(sqlManager);
-        mappingSample.column();
-        mappingSample.toMap();
-        mappingSample.view();
-        mappingSample.mappingProvider();
+//        mappingSample.column();
+//        mappingSample.toMap();
+//        mappingSample.view();
+//        mappingSample.mappingProvider();
         mappingSample.jsonConfig();
-        mappingSample.autoMapping();
-        mappingSample.myAttributeAnnotation();
+//        mappingSample.autoMapping();
+//        mappingSample.myAttributeAnnotation();
     }
 
     /**
@@ -99,7 +99,7 @@ public class S2MappingSample {
      */
     public void jsonConfig() {
         String sql = "select d.id id,d.name name ,u.id u_id,u.name u_name " +
-                " from department d join sys_user u on d.id=u.department_id  where d.id=?";
+                " from department d  left join sys_user u on d.id=u.department_id  where d.id=?";
         Integer deptId = 1;
         SQLReady ready = new SQLReady(sql,new Object[]{deptId});
         List<DepartmentInfo> list = sqlManager.execute(ready,DepartmentInfo.class);

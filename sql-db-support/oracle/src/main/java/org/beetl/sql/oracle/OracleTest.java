@@ -28,14 +28,8 @@ public class OracleTest {
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
         builder.setDbStyle(new OracleStyle());
         SQLManager sqlManager = builder.build();
-		Set<String> tables = sqlManager.getMetaDataManager().allTable();
 
 
-//		List<Employee> list = sqlManager.all(Employee.class);
-//		System.out.println(list);
-
-//		Employee employee = sqlManager.unique(Employee.class,100);
-//		System.out.println(employee.getHireDate());
 		long time = System.currentTimeMillis();
 		Date start = new Date(time-100);
 		Date end = new Date(time+100);

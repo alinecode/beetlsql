@@ -18,9 +18,16 @@ public class MapperSourceBuilder extends BaseTemplateSourceBuilder {
 	 */
 	public static  String mapperPath = "mapper.btl";
 
+	String suffix ;
 
 	public MapperSourceBuilder() {
 		super("mapper");
+		this.suffix = "Mapper";
+	}
+
+	public MapperSourceBuilder(String suffix) {
+		super("mapper");
+		this.suffix = suffix;
 	}
 
 	@Override
@@ -28,7 +35,7 @@ public class MapperSourceBuilder extends BaseTemplateSourceBuilder {
 
 
 		Template template = groupTemplate.getTemplate(mapperPath);
-		String mapperClass = entity.getName() + "Dao";
+		String mapperClass = entity.getName() + suffix;
 		template.binding("className", mapperClass);
 		template.binding("package", project.getBasePackage(this.name));
 		template.binding("entityClass", entity.getName());
@@ -36,7 +43,7 @@ public class MapperSourceBuilder extends BaseTemplateSourceBuilder {
 		String entityPkg = project.getBasePackage("entity");
 		String mapperHead =  entityPkg + ".*" ;
 		template.binding("imports", Arrays.asList(mapperHead));
-		Writer writer = project.getWriterByName(this.name,entity.getName()+"Dao.java");
+		Writer writer = project.getWriterByName(this.name,entity.getName()+suffix+".java");
 		template.renderTo(writer);
 
 

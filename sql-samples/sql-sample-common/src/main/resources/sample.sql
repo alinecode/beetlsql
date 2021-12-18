@@ -11,7 +11,7 @@ CREATE TABLE `department` (
 
 INSERT INTO `department` VALUES (1, '部门1');
 INSERT INTO `department` VALUES (2, '部门2');
-
+INSERT INTO `department` VALUES (3, '部门3');
 -- ----------------------------
 -- Table structure for role
 -- ----------------------------

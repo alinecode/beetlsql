@@ -6,11 +6,11 @@
 
     <groupId>com.ibeetl</groupId>
     <artifactId>oracle</artifactId>
-    <version>3.12.2-RELEASE</version>
+    <version>3.12.3-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.12.2-RELEASE</version>
+        <version>3.12.3-RELEASE</version>
     </parent>
 
     <properties>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
-            <version>21.3.0.0</version>
+            <version>19.8.0.0</version>
         </dependency>
     </dependencies>
 

@@ -59,7 +59,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
      *  SimpleJoinMappper 颜色
      * @return
      */
-    @Sql("select u.id ,u.name  ,d.id `dept.id`,d.name `dept.name` " +
+    @Sql("select u.id ,u.name  ,d.id `dept.id`,d.name `dept.name` ,1 age" +
              " from sys_user u  left join department d on d.id=u.department_id")
      List<S2MappingSample.MyUserView> allUserView();
 
