@@ -239,7 +239,7 @@ public class MapperMethodParser {
 		if(!(t instanceof ParameterizedType) ){
 			return defaultRetType;
 		}
-		Class type = BeanKit.getParameterTypeClass(method.getReturnType());
+		Class type = BeanKit.getParameterTypeClass(method.getGenericReturnType());
 		return type!=null?type:this.defaultRetType;
 	}
 

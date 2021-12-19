@@ -6,11 +6,11 @@
 
     <groupId>com.ibeetl</groupId>
     <artifactId>oracle</artifactId>
-    <version>3.12.3-RELEASE</version>
+    <version>3.12.4-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.12.3-RELEASE</version>
+        <version>3.12.4-RELEASE</version>
     </parent>
 
     <properties>
