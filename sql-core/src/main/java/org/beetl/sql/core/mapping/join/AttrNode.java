@@ -13,8 +13,11 @@ import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.*;
 
+import static org.beetl.sql.core.mapping.join.ConfigJoinMapper.NULL_NODE;
+
 /**
  * 结果集ResultSet分析后得出的树，AttrNode代表了一个节点，包含了同层的所有属性，比如u.u_id, u.u_name,
+ * 可与通过运行 S2MappingSample的jsonConfig来调试理解过程
  */
 public   class AttrNode{
     /**
@@ -111,6 +114,11 @@ public   class AttrNode{
      */
     public  void visit (ConfigJoinMapper.RenderContext renderContext, ExecuteContext ctx, ReadTypeParameter rtp) throws Exception{
         ConfigJoinMapper.NodeValue nodeValue = getNodeValueFromResultSet(renderContext,ctx,rtp);
+        if(nodeValue==NULL_NODE){
+			return ;
+		}
+
+
         ConfigJoinMapper.Grid grid = renderContext.grid;
         if(grid.contain(this,nodeValue.key)){
             //此数据已经被映成对象
@@ -153,10 +161,12 @@ public   class AttrNode{
     //从ResultSet中获取值
     ConfigJoinMapper.NodeValue getNodeValueFromResultSet(ConfigJoinMapper.RenderContext renderContext, ExecuteContext ctx, ReadTypeParameter rtp) throws SQLException {
         if(colMap.isEmpty()){
-            throw new IllegalArgumentException("无法映射对象"+this.target+" 没有结果集映射值,无法识别是否重复 ");
+			//无配置，则不映射
+            return NULL_NODE;
         }
         Map<String,Object> map = new HashMap<>();
         BeanProcessor beanProcessor = renderContext.beanProcessor;
+        boolean allNull = true;
         for(Map.Entry<Integer,String> entry:colMap.entrySet()){
             rtp.setIndex(entry.getKey());
 			PropertyDescriptor ps = propertyMap.get(entry.getValue());
@@ -166,9 +176,16 @@ public   class AttrNode{
                 sqlTypeHandler = beanProcessor.getDefaultHandler();
             }
             Object value = sqlTypeHandler.getValue(rtp);
+            if(value!=null){
+				allNull = false;
+			}
             String attr = entry.getValue();
             map.put(attr,value);
         }
+        //如果当前层级的值都是null，则不创建当前层级对象
+        if(allNull){
+			return NULL_NODE;
+		}
         ConfigJoinMapper.NodeValue nodeValue = new ConfigJoinMapper.NodeValue(map);
         return nodeValue;
     }

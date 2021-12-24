@@ -4,23 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.ibeetl</groupId>
+    <artifactId>oracle</artifactId>
+    <version>3.12.4-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
         <version>3.12.4-RELEASE</version>
     </parent>
 
-    <groupId>com.ibeetl</groupId>
-    <artifactId>drill</artifactId>
-    <version>3.12.4-RELEASE</version>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.apache.drill.exec/drill-jdbc-all -->
+        <!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
         <dependency>
-            <groupId>org.apache.drill.exec</groupId>
-            <artifactId>drill-jdbc-all</artifactId>
-            <version>1.16.0</version>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.8.0.0</version>
         </dependency>
     </dependencies>
 
-    
 </project>

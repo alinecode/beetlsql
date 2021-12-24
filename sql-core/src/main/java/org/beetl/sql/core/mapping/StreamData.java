@@ -20,7 +20,7 @@ import java.util.stream.StreamSupport;
  * @param <T>
  * @author xiandafu
  */
-public class StreamData<T> {
+public class 	StreamData<T> {
     ResultSet rs;
     ExecuteContext ctx;
     Class<T> clazz;

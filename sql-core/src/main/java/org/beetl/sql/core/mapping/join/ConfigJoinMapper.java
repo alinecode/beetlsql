@@ -116,6 +116,10 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
         BeanProcessor beanProcessor = null;
     }
 
+	/**
+	 * 没有足够信息映射
+	 */
+	static NodeValue NULL_NODE = new NodeValue();
     /**
      * 执行节点得到一堆值
      */
@@ -125,6 +129,7 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
         //value对应的真实对象
         ObjectWrapper objectWrapper;
 
+		NodeValue(){}
         /**
          * 如果无key，则是使用属性本生
          * @param values

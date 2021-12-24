@@ -9,6 +9,8 @@ import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.entity.User;
+import org.beetl.sql.mapper.BaseMapper;
+import org.beetl.sql.mapper.annotation.Sql;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -115,6 +117,23 @@ public class StreamTest extends BaseTest {
 
     }
 
+	@Test
+	public void testMapper() throws SQLException {
+		//stream操作必须再事务里使用，以期望能stream结束后，事物自动关闭数据库链接，而不是beetlsql
+		DSTransactionManager.start();
+
+		StreamUserMapper streamUserMapper = sqlManager.getMapper(StreamUserMapper.class);
+		long expected = sqlManager.allCount(User.class);
+		final AtomicLong total = new AtomicLong();
+		StreamData<User> streamData = streamUserMapper.streamSelect();
+		streamData.foreach(user -> {
+			total.incrementAndGet();
+		});
+		Assert.assertEquals(expected,total.get());
+		DSTransactionManager.commit();
+
+	}
+
     @RowProvider(MyRowMapper.class)
     @Table(name="sys_user")
    public static class MyUser extends  User{
@@ -126,6 +145,11 @@ public class StreamTest extends BaseTest {
        public Object mapRow(ExecuteContext ctx, Object obj, ResultSet rs, int rowNum, Annotation config) throws SQLException {
            return obj;
        }
+   }
+
+   public static interface  StreamUserMapper extends BaseMapper<User>{
+    	@Sql("select * from sys_user")
+    	StreamData<User> streamSelect();
    }
 
 

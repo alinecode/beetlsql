@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.12.0-RELEASE</version>
+        <version>3.12.4-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-db-support</artifactId>
-    <version>3.12.0-RELEASE</version>
+    <version>3.12.4-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <module>mysql</module>
@@ -32,7 +32,8 @@
 <!--        <module>opengauss</module>-->
 <!--        <module>kingbase</module>-->
 <!--        <module>iotdb</module>-->
-         <module>gbase8s</module>
+<!--         <module>gbase8s</module>-->
+<!--        <module>oracle</module>-->
 
     </modules>
     <dependencies>
@@ -44,7 +45,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.12.0-RELEASE</version>
+            <version>3.12.4-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 

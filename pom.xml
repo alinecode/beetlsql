@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql-all</artifactId>
-	<version>3.12.0-RELEASE</version>
+	<version>3.12.4-RELEASE</version>
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
@@ -30,13 +30,13 @@
         <module>sql-saga</module>
         <module>sql-test</module>
         <!-- 例子 -->
-        <module>sql-samples</module>
+<!--        <module>sql-samples</module>-->
 		<!-- 打包到一起 -->
 		<module>beetlsql</module>
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar，可以 -->
 		<module>sql-integration</module>
         <!-- 性能测试，包含了jpa，myabtis等国内外框架,可以-->
-        <module>sql-jmh</module>
+<!--        <module>sql-jmh</module>-->
         <!-- 验证多库支持 ,集成太多的数据库lib，默认去掉-->
 <!--		<module>sql-db-support</module>-->
 
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetl</artifactId>
-            <version>3.9.0.RELEASE</version>
+            <version>3.9.1.RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 
