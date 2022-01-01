@@ -50,6 +50,7 @@ public class Update extends WhereNode {
 	}
 
 
+
     public Update notEmptyAssign(String varName, String col){
         UpdateValueExpress updateValueExpress = new UpdateValueExpress(this).col(col);
         updateValueExpress.tplValue(varName);

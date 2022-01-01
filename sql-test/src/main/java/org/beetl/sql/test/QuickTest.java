@@ -56,13 +56,9 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
-		List<OrderLog> orderLogs = sqlManager.select(SqlId.of("user","select"),OrderLog.class,new HashMap<>());
-		System.out.println(orderLogs.size());
+		SQLSource sqlSource = sqlManager.getDbStyle().genInsertTemplate(OrderLog.class);
+		System.out.println(sqlSource.getTemplate());
 
-		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
-
-		orderLogs = orderLogMapper.select();
-		System.out.println(orderLogs.size());
 
 
 	}

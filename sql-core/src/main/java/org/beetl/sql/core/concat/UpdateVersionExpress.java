@@ -19,10 +19,11 @@ public class UpdateVersionExpress extends Express {
     @Override
     public void toSql(ConcatBuilder sb) {
         String col1 = sb.ctx.keyWordHandler.getCol(col);
-        sb.append(col1).assign().append(col1).append("+1");
-        if(update.trim){
-        	//牵强代码，如果是templateUpdate，则需要补充","
-        	sb.comma();
+		if(update.trim){
+			//牵强代码，如果是templateUpdate，则需要补充","
+			sb.comma();
 		}
+        sb.append(col1).assign().append(col1).append("+1");
+
     }
 }
