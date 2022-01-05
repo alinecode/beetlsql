@@ -103,11 +103,17 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         long oldRootVersion = source.getVersion().root;
         long oldDbVersion = source.getVersion().db;
 
-        //如果db目录中有sql文件，直接使用db目录的文件判断版本（root中的文件会被db中的覆盖）
-        URL root = this.getRootFile(id);
-        URL db = this.getDBRootFile(id);
-        //如果root目录和db目录只要有一个变化，都认为sql文件变化，重新加载
-        return getURLVersion(root) != oldRootVersion || getURLVersion(db) != oldDbVersion;
+        if(oldRootVersion!=0){
+        	//认为这个sqlId是root的md文件
+			URL root = this.getRootFile(id);
+			return getURLVersion(root) != oldDbVersion;
+		}else if(oldDbVersion!=0) {
+			URL db = this.getDBRootFile(id);
+			return  getURLVersion(db) != oldDbVersion;
+		}else{
+        	//均为0，md在jar文件，不包含版本变化
+        	return false ;
+		}
 
     }
 
@@ -256,7 +262,9 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         return db != null;
     }
 
-
+	/**
+	 * 记录sql的版本号，如果为0，表示无版本，比如md文件在jar里
+	 */
     public static class SQLFileVersion {
         public URL url;
         //根目录下sql文件版本

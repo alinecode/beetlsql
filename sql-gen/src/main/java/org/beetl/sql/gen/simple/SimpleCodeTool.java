@@ -4,21 +4,19 @@ import org.beetl.core.ReThrowConsoleErrorHandler;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.DBStyle;
-import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.gen.BaseProject;
 import org.beetl.sql.gen.SourceBuilder;
 import org.beetl.sql.gen.SourceConfig;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 快速生成代码到控制台的类
  */
-public class SimpleCodeGenTool {
+public class SimpleCodeTool {
 	BaseProject project = new StringOnlyProject();
 	SQLManager sqlManager;
 	String jdbcUrl;
@@ -28,18 +26,25 @@ public class SimpleCodeGenTool {
 	DBStyle dbStyle;
 	NameConversion nameConversion;
 
-	public SimpleCodeGenTool(String jdbcUrl,String jdbcDriver,String userName,String passwd, DBStyle dbStyle,NameConversion nameConversion){
+	public SimpleCodeTool(String jdbcUrl,String jdbcDriver,String userName,String passwd, DBStyle dbStyle,NameConversion nameConversion){
 		this.jdbcUrl = jdbcUrl;
 		this.jdbcDriver = jdbcDriver;
 		this.userName = userName;
 		this.passwd = passwd;
 		this.dbStyle = dbStyle;
 		this.nameConversion = nameConversion;
+		initSQLManager();
 	}
 
-	public SimpleCodeGenTool(String jdbcUrl,String jdbcDriver,String userName,String passwd){
+	public SimpleCodeTool(String jdbcUrl,String jdbcDriver,String userName,String passwd){
 		this(jdbcUrl,jdbcDriver,userName,passwd,new MySqlStyle(),new UnderlinedNameConversion());
 	}
+
+	public SimpleCodeTool(SQLManager sqlManager){
+		this.sqlManager = sqlManager;
+	}
+
+
 
 	public String code(String table){
 
@@ -57,7 +62,7 @@ public class SimpleCodeGenTool {
 		//如果有错误，抛出异常而不是继续运行1
 		EntitySourceBuilder.getGroupTemplate().setErrorHandler(new ReThrowConsoleErrorHandler() );
 		config.gen(table,project);
-		return ((StringOnlyProject)project).toString();
+		return ((StringOnlyProject)project).getContent();
 	}
 
 	/**

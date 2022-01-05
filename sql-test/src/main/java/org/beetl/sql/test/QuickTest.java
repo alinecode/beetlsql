@@ -14,10 +14,7 @@ import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.gen.SourceBuilder;
 import org.beetl.sql.gen.SourceConfig;
-import org.beetl.sql.gen.simple.ConsoleOnlyProject;
-import org.beetl.sql.gen.simple.EntitySourceBuilder;
-import org.beetl.sql.gen.simple.MDSourceBuilder;
-import org.beetl.sql.gen.simple.MapperSourceBuilder;
+import org.beetl.sql.gen.simple.*;
 
 import javax.sql.DataSource;
 import java.time.OffsetDateTime;
@@ -46,7 +43,7 @@ public class QuickTest {
 		SQLManagerBuilder builder = new SQLManagerBuilder(source);
 		builder.setNc(new UnderlinedNameConversion());
 		builder.setInters(new Interceptor[]{new DebugInterceptor()});
-		builder.setDbStyle(new MySqlStyle());
+		builder.setDbStyle(new H2Style());
 		builder.setProduct(false);
 		SQLManager sqlManager = builder.build();
 		return sqlManager;
@@ -56,10 +53,9 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
-		SQLSource sqlSource = sqlManager.getDbStyle().genInsertTemplate(OrderLog.class);
-		System.out.println(sqlSource.getTemplate());
-
-
+		SimpleCodeTool simpleCodeTool = new SimpleCodeTool(sqlManager);
+		String str = simpleCodeTool.code("order_log");
+		System.out.println(str);
 
 	}
 

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.Throughput)
 @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 2, time = 10, timeUnit = TimeUnit.SECONDS)
 @Threads(1)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -58,58 +58,58 @@ public class JMHMain {
 
 
     /*   JDBC,基准，有些方法性能飞快    */
-    @Benchmark
-    public void jdbcInsert() {
-        jdbcService.addEntity();
-    }
-
-    @Benchmark
-    public void jdbcSelectById() {
-        jdbcService.getEntity();
-    }
-
-    @Benchmark
-    public void jdbcExecuteJdbc() {
-        jdbcService.executeJdbcSql();
-    }
-
-
-    /* mybatis */
-    @Benchmark
-    public void mybatisInsert() {
-        myBatisSpringService.addEntity();
-    }
-
-    @Benchmark
-    public void mybatisSelectById() {
-        myBatisSpringService.getEntity();
-    }
-
-    @Benchmark
-    public void mybatisLambdaQuery() {
-        myBatisSpringService.lambdaQuery();
-    }
-
-    @Benchmark
-    public void mybatisExecuteTemplate() {
-        myBatisSpringService.executeTemplateSql();
-    }
-
-    @Benchmark
-    public void mybatisFile() {
-        myBatisSpringService.sqlFile();
-    }
-
-    @Benchmark
-    public void mybatisPageQuery() {
-        myBatisSpringService.pageQuery();
-    }
-
-    @Benchmark
-    public void mybatisComplexMapping() {
-        myBatisSpringService.complexMapping();
-    }
-
+//    @Benchmark
+//    public void jdbcInsert() {
+//        jdbcService.addEntity();
+//    }
+//
+//    @Benchmark
+//    public void jdbcSelectById() {
+//        jdbcService.getEntity();
+//    }
+//
+//    @Benchmark
+//    public void jdbcExecuteJdbc() {
+//        jdbcService.executeJdbcSql();
+//    }
+//
+//
+//    /* mybatis */
+//    @Benchmark
+//    public void mybatisInsert() {
+//        myBatisSpringService.addEntity();
+//    }
+//
+//    @Benchmark
+//    public void mybatisSelectById() {
+//        myBatisSpringService.getEntity();
+//    }
+//
+//    @Benchmark
+//    public void mybatisLambdaQuery() {
+//        myBatisSpringService.lambdaQuery();
+//    }
+//
+//    @Benchmark
+//    public void mybatisExecuteTemplate() {
+//        myBatisSpringService.executeTemplateSql();
+//    }
+//
+//    @Benchmark
+//    public void mybatisFile() {
+//        myBatisSpringService.sqlFile();
+//    }
+//
+//    @Benchmark
+//    public void mybatisPageQuery() {
+//        myBatisSpringService.pageQuery();
+//    }
+//
+//    @Benchmark
+//    public void mybatisComplexMapping() {
+//        myBatisSpringService.complexMapping();
+//    }
+//
 
     /*   BeetlSQL    */
     @Benchmark
@@ -159,73 +159,73 @@ public class JMHMain {
     }
 
 
-    /*   Spring Data JPA    */
-    @Benchmark
-    public void jpaInsert() {
-        springService.addEntity();
-    }
-
-    @Benchmark
-    public void jpaSelectById() {
-        springService.getEntity();
-    }
-
-    @Benchmark
-    public void jpaExecuteJdbc() {
-        springService.executeJdbcSql();
-    }
-
-    /*实际上JPA并不支持template，但勉强用HQl来测试*/
-    @Benchmark
-    public void jpaExecuteTemplate() {
-        springService.executeTemplateSql();
-    }
-
-    @Benchmark
-    public void jpaOne2Many() {
-        springService.one2Many();
-    }
-
-    @Benchmark
-    public void jpaPageQuery() {
-        springService.pageQuery();
-    }
-
-    /*   Weed3    */
-    @Benchmark
-    public void weedInsert() {
-        weedService.addEntity();
-    }
-
-    @Benchmark
-    public void weedSelectById() {
-        weedService.getEntity();
-    }
-
-    @Benchmark
-    public void weedLambdaQuery() {
-        weedService.lambdaQuery();
-    }
-
-    @Benchmark
-    public void weedExecuteJdbc() {
-        weedService.executeJdbcSql();
-    }
-
-    @Benchmark
-    public void weedExecuteTemplate() {
-        weedService.executeTemplateSql();
-    }
-
-    @Benchmark
-    public void weedFile() {
-        weedService.sqlFile();
-    }
-
-    @Benchmark
-    public void weedPageQuery() {
-        weedService.pageQuery();
-    }
+//    /*   Spring Data JPA    */
+//    @Benchmark
+//    public void jpaInsert() {
+//        springService.addEntity();
+//    }
+//
+//    @Benchmark
+//    public void jpaSelectById() {
+//        springService.getEntity();
+//    }
+//
+//    @Benchmark
+//    public void jpaExecuteJdbc() {
+//        springService.executeJdbcSql();
+//    }
+//
+//    /*实际上JPA并不支持template，但勉强用HQl来测试*/
+//    @Benchmark
+//    public void jpaExecuteTemplate() {
+//        springService.executeTemplateSql();
+//    }
+//
+//    @Benchmark
+//    public void jpaOne2Many() {
+//        springService.one2Many();
+//    }
+//
+//    @Benchmark
+//    public void jpaPageQuery() {
+//        springService.pageQuery();
+//    }
+//
+//    /*   Weed3    */
+//    @Benchmark
+//    public void weedInsert() {
+//        weedService.addEntity();
+//    }
+//
+//    @Benchmark
+//    public void weedSelectById() {
+//        weedService.getEntity();
+//    }
+//
+//    @Benchmark
+//    public void weedLambdaQuery() {
+//        weedService.lambdaQuery();
+//    }
+//
+//    @Benchmark
+//    public void weedExecuteJdbc() {
+//        weedService.executeJdbcSql();
+//    }
+//
+//    @Benchmark
+//    public void weedExecuteTemplate() {
+//        weedService.executeTemplateSql();
+//    }
+//
+//    @Benchmark
+//    public void weedFile() {
+//        weedService.sqlFile();
+//    }
+//
+//    @Benchmark
+//    public void weedPageQuery() {
+//        weedService.pageQuery();
+//    }
 
 
     public static void main(String[] args) throws RunnerException {
