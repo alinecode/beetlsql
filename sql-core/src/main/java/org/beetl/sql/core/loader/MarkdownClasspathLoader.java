@@ -106,7 +106,7 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
         if(oldRootVersion!=0){
         	//认为这个sqlId是root的md文件
 			URL root = this.getRootFile(id);
-			return getURLVersion(root) != oldDbVersion;
+			return getURLVersion(root) != oldRootVersion;
 		}else if(oldDbVersion!=0) {
 			URL db = this.getDBRootFile(id);
 			return  getURLVersion(db) != oldDbVersion;
