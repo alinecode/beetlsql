@@ -69,11 +69,9 @@ public class SchemaMetadataManager implements MetadataManager {
 	 */
 	@Override
 	public boolean existTable(String tableName) {
-		TableDesc t = getTable(tableName);
-		return t!=null;
+		TableDesc table =getTableFromMap(tableName);
+		return table!=null;
 	}
-
-
 
 
 	@Override

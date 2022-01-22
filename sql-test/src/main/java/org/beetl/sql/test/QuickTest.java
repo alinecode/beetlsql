@@ -14,7 +14,10 @@ import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.gen.SourceBuilder;
 import org.beetl.sql.gen.SourceConfig;
-import org.beetl.sql.gen.simple.*;
+import org.beetl.sql.gen.simple.ConsoleOnlyProject;
+import org.beetl.sql.gen.simple.EntitySourceBuilder;
+import org.beetl.sql.gen.simple.MDSourceBuilder;
+import org.beetl.sql.gen.simple.MapperSourceBuilder;
 
 import javax.sql.DataSource;
 import java.time.OffsetDateTime;
@@ -52,10 +55,11 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-
-		SimpleCodeTool simpleCodeTool = new SimpleCodeTool(sqlManager);
-		String str = simpleCodeTool.code("order_log");
-		System.out.println(str);
+		OrderLog para = new OrderLog();
+		para.setOrderId(1);
+		List list = sqlManager.select(SqlId.of("user","select"),OrderLog.class,para);
+		System.out.println(list);
+		sqlManager.select(SqlId.of("user","select"),OrderLog.class,para);
 
 	}
 

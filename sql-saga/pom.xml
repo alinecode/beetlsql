@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.12.7-RELEASE</version>
+        <version>3.12.10-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-saga</artifactId>
-    <version>3.12.7-RELEASE</version>
+    <version>3.12.10-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <!-- 多库Saga事务支持 -->

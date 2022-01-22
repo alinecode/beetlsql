@@ -1,7 +1,7 @@
 condition
 ===
 
-    order_id =#{orderId}
+    order_id !=#{orderId}
 
 select
 ===
