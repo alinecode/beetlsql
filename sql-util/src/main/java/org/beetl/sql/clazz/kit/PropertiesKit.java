@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * 获取BeetlSQL的专属配置文件：btl.properties与btl-ext.properties
+ * @author 一日看尽长安花
+ */
 public class PropertiesKit {
 
-	static PropertiesKit propertiesKit = new PropertiesKit();
+	final static PropertiesKit propertiesKit = new PropertiesKit();
 	Properties ps = new Properties();
 
 	public PropertiesKit() {

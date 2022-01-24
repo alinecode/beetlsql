@@ -5,16 +5,29 @@ import org.beetl.sql.clazz.TableDesc;
 import java.util.Set;
 
 /**
- * 描述数据库表，视图信息
+ * 描述数据库表，视图的元数据信息
+ * @see java.sql.DatabaseMetaData
  */
 public interface MetadataManager {
-     boolean existTable(String tableName);
+	/**
+	 * 是否存在某表
+	 */
+	boolean existTable(String tableName);
 
-     TableDesc getTable(String name);
+	/**
+	 * 获取对应表描述信息
+	 */
+	TableDesc getTable(String name);
 
-     Set<String> allTable();
+	/**
+	 * 所有表的名称集合
+	 */
+	Set<String> allTable();
 
-     void addTableVirtual(String realTable, String virtual);
+	/**
+	 * 增加一个虚拟表对应
+	 */
+	void addTableVirtual(String realTable, String virtual);
 
 }
 

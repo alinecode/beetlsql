@@ -20,8 +20,7 @@ import java.util.Map;
 public class EnumKit {
 
 	/*所有遇到的枚举类的缓存*/
-	private static Cache<Class, EnumConfig> cache = new DefaultCache<>();
-
+	private static final Cache<Class, EnumConfig> cache = new DefaultCache<>();
 
 
 	/**
@@ -180,7 +179,7 @@ public class EnumKit {
 			Enum[] temporaryConstants = getEnumValues(entityClass);
 			for (Enum e : temporaryConstants) {
 
-				Object key = m.invoke(e, new Object[]{});
+				Object key = m.invoke(e);
 				map.put(key, e);
 				map2.put(e, key);
 			}
@@ -197,8 +196,14 @@ public class EnumKit {
 	 * 枚举名称和值的对应关系
 	 */
 	public static class EnumConfig {
-		Map<Object, Enum> map = new HashMap<Object, Enum>();
-		Map<Enum, Object> dbMap = new HashMap(); // db
+		/**
+		 * 一般用于数据库获取的值转成java的枚举映射
+		 */
+		Map<Object, Enum> map;
+		/**
+		 * 一般用于从java的枚举转数据库字段
+		 */
+		Map<Enum, Object> dbMap;
 
 		public EnumConfig(Map<Object, Enum> map, Map<Enum, Object> dbMap) {
 			this.map = map;
@@ -242,7 +247,7 @@ public class EnumKit {
 		private String name;
 		private int value;
 
-		private Color(String name, int value) {
+		Color(String name, int value) {
 			this.name = name;
 			this.value = value;
 		}

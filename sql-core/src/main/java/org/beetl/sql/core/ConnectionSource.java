@@ -38,8 +38,6 @@ public interface ConnectionSource {
 	};
 	/**
 	 * 得到一个主库连接
-	 *
-	 * @return
 	 */
 	Connection getMasterConn();
 
@@ -47,8 +45,6 @@ public interface ConnectionSource {
 	/**
 	 * 得到一个获取数据库metadata，如果是分库分表，或者主从，需要给出一个能获得数据库信息的链接
 	 * 通常这是 主库。如果你只有一个数据，那就同{@code #getMaster}
-	 *
-	 * @return
 	 */
 	Connection getMetaData();
 
@@ -58,31 +54,29 @@ public interface ConnectionSource {
 	 *
 	 * @param ctx      执行上下文
 	 * @param isUpdate 是否更新数据
-	 * @return
 	 */
 	Connection getConn(ExecuteContext ctx, boolean isUpdate);
 
 	/**
-	 * 是否是事务环境，这个是与web框架整合的框架，通常web框架都有api可以得到是否还在事务环境。
-	 * 如果不是，则beetlsql可以自主管理事务，否则，交给web框架管理。
+	 * 是否是事务环境，这个是与web框架整合的框架，通常web框架都有api可以得到是否还在事务环境。<br/>
+	 * 如果不是，则beetlsql可以自主管理事务，否则，交给web框架管理。<br/>
 	 *
-	 * 通常web框架集成，这个返还true，则beetlsql不在，做提交事务的事情，交给web框架统一管理
+	 * 通常web框架集成，这个返还true，则beetlsql不在做提交事务的事情，交给web框架统一管理<br/>
 	 *
-	 * @return
 	 */
 	boolean isTransaction();
 
 
-	default void applyStatementSetting(ExecuteContext ctx,Connection conn,Statement statement) throws SQLException {
+	default void applyStatementSetting(ExecuteContext ctx, Connection conn, Statement statement) throws SQLException {
 
 	}
 
 
-	default void applyConnectionSetting(ExecuteContext ctx,Connection conn){
+	default void applyConnectionSetting(ExecuteContext ctx, Connection conn) {
 
 	}
 
-	default void closeConnection(Connection conn,ExecuteContext ctx,boolean isUpdate){
+	default void closeConnection(Connection conn, ExecuteContext ctx, boolean isUpdate) {
 		if (!isTransaction()) {
 			try {
 
@@ -122,7 +116,5 @@ public interface ConnectionSource {
 	default  DataSource getForceDataSource(){
 		return forceDs.get();
 	}
-
-
 
 }

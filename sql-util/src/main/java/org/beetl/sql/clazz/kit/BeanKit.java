@@ -472,6 +472,11 @@ public class BeanKit {
 	}
 
 
+	/**
+	 * 返回集合中的元素类型
+	 * @param type
+	 * @return
+	 */
 	public static Class getCollectionType(Type type) {
 		if (!(type instanceof ParameterizedType)) {
 			return null;
@@ -490,7 +495,7 @@ public class BeanKit {
 
 	public static Class getParameterTypeClass(Type t) {
 		if (t instanceof WildcardType || t instanceof TypeVariable) {
-			// 丢失类型
+			// 表示使用了泛型的不确定写法：<?>, <? extends Number>, <T>
 			return null;
 		} else if (t instanceof ParameterizedType) {
 			Type[] types = ((ParameterizedType) t).getActualTypeArguments();
@@ -499,8 +504,10 @@ public class BeanKit {
 			}
 			Type type = types[0];
 			if (type instanceof ParameterizedType) {
+				/*集合的元素还是集合*/
 				return (Class) ((ParameterizedType) type).getRawType();
 			} else if (type instanceof Class) {
+				/*集合的元素是确定值*/
 				return (Class) types[0];
 			} else if (type instanceof TypeVariable) {
 				//未定义，则返回null。则通过mapper接口，而不是方法来判断范型类型
@@ -515,6 +522,12 @@ public class BeanKit {
 
 	}
 
+	/**
+	 * 获取Map的泛型参数
+	 *
+	 * @param t t
+	 * @return {@link Class}[] 位置0 是左边泛型，位置1 是右边泛型
+	 */
 	public static Class[] getMapParameterTypeClass(Type t) {
 		if (t instanceof WildcardType || t instanceof TypeVariable) {
 			// 丢失类型
@@ -552,6 +565,12 @@ public class BeanKit {
 	}
 
 
+	/**
+	 * 简单说获取继承BaseMapper接口时，在泛型中写的实体类
+	 *
+	 * @param mapperInterface 用户实现的BaseMapper接口
+	 * @return {@link Class}
+	 */
 	public static Class getMapperEntity(Class mapperInterface) {
 		if (mapperInterface.isInterface()) {
 			Type[] faces = mapperInterface.getGenericInterfaces();

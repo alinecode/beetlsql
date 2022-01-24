@@ -1,7 +1,8 @@
 package org.beetl.sql.core.db;
 
 public class DBType {
-    public static final int ID_UNKNOWN = -1;
+	/*支持的id类型*/
+	public static final int ID_UNKNOWN = -1;
     public static final int ID_ASSIGN = 1;
     public static final int ID_AUTO = 2;
     public static final int ID_SEQ = 3;

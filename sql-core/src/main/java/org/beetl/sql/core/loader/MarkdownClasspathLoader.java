@@ -265,17 +265,20 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
 	/**
 	 * 记录sql的版本号，如果为0，表示无版本，比如md文件在jar里
 	 */
-    public static class SQLFileVersion {
-        public URL url;
-        //根目录下sql文件版本
-        public long root = 0L;
-        //具体db下的
-        public long db = 0L;
+	public static class SQLFileVersion {
+		/**
+		 * sql资源URL表示
+		 */
+		public URL url;
+		/** 根目录下sql文件版本 */
+		public long root = 0L;
+		/** 具体db下的 */
+		public long db = 0L;
 
-        public boolean isModified(SQLFileVersion newVersion) {
-            return newVersion.root != root || newVersion.db != db;
-        }
-    }
+		public boolean isModified(SQLFileVersion newVersion) {
+			return newVersion.root != root || newVersion.db != db;
+		}
+	}
 
     protected SQLFileParser getParser(String modelName, BufferedReader br) throws IOException {
         MarkdownParser parser = new MarkdownParser(modelName, br);

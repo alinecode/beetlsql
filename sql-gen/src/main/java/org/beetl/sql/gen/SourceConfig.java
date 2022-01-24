@@ -45,15 +45,15 @@ public class SourceConfig {
 	/**
 	 * 对应的日期类型
 	 */
-	public static enum PreferDateType{
-		Date,Timestamp,LocalDate
+	public enum PreferDateType {
+		Date, Timestamp, LocalDate
 	}
 
 	/**
 	 * 对应的浮点数生成类型
 	 */
-	public static enum PreferDoubleType{
-		Double,BigDecimal
+	public enum PreferDoubleType {
+		Double, BigDecimal
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class SourceConfig {
 	//采用java.util.Date 还是 java.util.Timestamp
 	protected PreferDateType preferDateType = PreferDateType.Date;
 
-	protected  boolean ignoreDbCatalog = true;
+	protected boolean ignoreDbCatalog = true;
 
 	/**
 	 * 扩展属性，可以在SourceBuilder中使用
@@ -82,34 +82,34 @@ public class SourceConfig {
 	 */
 	private String encoding = "UTF-8";
 
-	SQLManager sqlManager ;
+	SQLManager sqlManager;
 
 
 	SourceBuilder entityBuilder = new EntitySourceBuilder();
-	SourceBuilder mapperBuilder = new  MapperSourceBuilder();
-	SourceBuilder mdBuilder = new  MDSourceBuilder();
+	SourceBuilder mapperBuilder = new MapperSourceBuilder();
+	SourceBuilder mdBuilder = new MDSourceBuilder();
 
 	/***
 	 * 使用BeetlSQL默认的的SourceBuilder,参考{@link #addDefault}
 	 * @param sqlManager
 	 *
 	 */
-	public SourceConfig(SQLManager sqlManager,boolean addDefault){
+	public SourceConfig(SQLManager sqlManager, boolean addDefault) {
 		this.sqlManager = sqlManager;
-		if(addDefault){
+		if (addDefault) {
 			addDefault();
 		}
 	}
 
-	public SourceConfig(SQLManager sqlManager,List<SourceBuilder> sourceBuilder) {
-		this(sqlManager,false);
+	public SourceConfig(SQLManager sqlManager, List<SourceBuilder> sourceBuilder) {
+		this(sqlManager, false);
 		this.sourceBuilder = sourceBuilder;
 
 	}
 
-	public SourceConfig(SQLManager sqlManager,List<SourceBuilder> sourceBuilder, PreferDoubleType preferDoubleType,
+	public SourceConfig(SQLManager sqlManager, List<SourceBuilder> sourceBuilder, PreferDoubleType preferDoubleType,
 			PreferDateType preferDateType) {
-		this(sqlManager,sourceBuilder);
+		this(sqlManager, sourceBuilder);
 		this.preferDoubleType = preferDoubleType;
 		this.preferDateType = preferDateType;
 	}
@@ -120,31 +120,28 @@ public class SourceConfig {
 	 * MapperSourceBuilder 生成mapper
 	 * MDSourceBuilder 生成md实例文件
 	 */
-	 public  void addDefault(){
+	public void addDefault() {
 		this.sourceBuilder.add(entityBuilder);
 		this.sourceBuilder.add(mapperBuilder);
 		this.sourceBuilder.add(mdBuilder);
 	}
 
-	public void removeEntityBuilder(){
+	public void removeEntityBuilder() {
 		sourceBuilder.remove(entityBuilder);
 	}
 
-	public void removeMapperBuilder(){
+	public void removeMapperBuilder() {
 		sourceBuilder.remove(mapperBuilder);
 	}
 
 
-
-	public void removeMdBuilder(){
+	public void removeMdBuilder() {
 		sourceBuilder.remove(mdBuilder);
 	}
 
-	public void addSourceBuilder(SourceBuilder builder){
+	public void addSourceBuilder(SourceBuilder builder) {
 		sourceBuilder.add(builder);
 	}
-
-
 
 
 	/**
@@ -152,15 +149,15 @@ public class SourceConfig {
 	 * @param tableName
 	 * @param project
 	 */
-	public void gen(String tableName, BaseProject project){
+	public void gen(String tableName, BaseProject project) {
 		TableDesc tableDesc = sqlManager.getMetaDataManager().getTable(tableName);
 		PackageList packageList = new PackageList();
-		Entity entity = toEntity(tableDesc,packageList);
+		Entity entity = toEntity(tableDesc, packageList);
 		entity.setTableDesc(tableDesc);
 		entity.setImportPackage(packageList.getPkgs());
-		for(SourceBuilder sourceBuilder :sourceBuilder){
-			if(sourceBuilder.isSupport(this,entity)){
-				sourceBuilder.generate(project,this,entity);
+		for (SourceBuilder sourceBuilder : sourceBuilder) {
+			if (sourceBuilder.isSupport(this, entity)) {
+				sourceBuilder.generate(project, this, entity);
 			}
 		}
 	}
@@ -170,31 +167,29 @@ public class SourceConfig {
 	 * @param project
 	 * @param sourceFilter 过滤器
 	 */
-	public void genAll(BaseProject project, SourceFilter sourceFilter){
+	public void genAll(BaseProject project, SourceFilter sourceFilter) {
 		MetadataManager metadataManager = sqlManager.getMetaDataManager();
 		Set<String> tables = new TreeSet();
 		tables.addAll(metadataManager.allTable());
-		tables.forEach(tableName->{
-			if(sourceFilter!=null){
-				if(!sourceFilter.accept(metadataManager,tableName)){
-					return ;
+		tables.forEach(tableName -> {
+			if (sourceFilter != null) {
+				if (!sourceFilter.accept(metadataManager, tableName)) {
+					return;
 				}
 			}
-			gen(tableName,project);
-
-		}
-		);
+			gen(tableName, project);
+		});
 	}
 
 	/**
 	 * 生成 {@code SQLManager} 包含的所有表和视图的代码
 	 * @param project
 	 */
-	public void genAll(BaseProject project){
-		this.genAll(project,null);
+	public void genAll(BaseProject project) {
+		this.genAll(project, null);
 	}
 
-	protected Entity toEntity(TableDesc tableDesc,PackageList packageList){
+	protected Entity toEntity(TableDesc tableDesc, PackageList packageList) {
 		Entity entity = new Entity();
 		entity.setComment(tableDesc.getRemark());
 		entity.setCatalog(tableDesc.getCatalog());
@@ -202,10 +197,10 @@ public class SourceConfig {
 		entity.setName(sqlManager.getNc().getClassName(tableDesc.getName()));
 
 		ArrayList<Attribute> list = new ArrayList<>();
-		CaseInsensitiveHashMap<String, ColDesc> cols =  tableDesc.getColsDetail();
-		for(Map.Entry colInfo:cols.entrySet()){
-			ColDesc colDesc = (ColDesc)colInfo.getValue();
-			Attribute attribute = toAttribute(tableDesc,colDesc,packageList);
+		CaseInsensitiveHashMap<String, ColDesc> cols = tableDesc.getColsDetail();
+		for (Map.Entry colInfo : cols.entrySet()) {
+			ColDesc colDesc = (ColDesc) colInfo.getValue();
+			Attribute attribute = toAttribute(tableDesc, colDesc, packageList);
 			list.add(attribute);
 		}
 		entity.setList(list);
@@ -214,7 +209,7 @@ public class SourceConfig {
 		return entity;
 	}
 
-	protected  Attribute toAttribute(TableDesc tableDesc,ColDesc colDesc,PackageList packageList){
+	protected Attribute toAttribute(TableDesc tableDesc, ColDesc colDesc, PackageList packageList) {
 		Attribute attribute = new Attribute();
 		attribute.setAuto(colDesc.isAuto());
 		attribute.setColName(colDesc.getColName());
@@ -222,14 +217,14 @@ public class SourceConfig {
 		String javaType = JavaType.mapping.get(colDesc.getSqlType());
 		attribute.setJavaType(javaType);
 		attribute.setName(sqlManager.getNc().getPropertyName(colDesc.getColName()));
-		attribute.setJavaType(getJavaType(colDesc,packageList));
-		if(tableDesc.getIdNames().contains(colDesc.getColName())){
+		attribute.setJavaType(getJavaType(colDesc, packageList));
+		if (tableDesc.getIdNames().contains(colDesc.getColName())) {
 			attribute.setId(true);
 		}
 		return attribute;
 	}
 
-	protected String getJavaType(ColDesc desc,PackageList packageList) {
+	protected String getJavaType(ColDesc desc, PackageList packageList) {
 		int jdbcType = desc.getSqlType();
 		if (JavaType.isDateType(jdbcType)) {
 
@@ -238,7 +233,7 @@ public class SourceConfig {
 				return "Date";
 			} else if (preferDateType == PreferDateType.LocalDate) {
 				boolean isTime = JavaType.isDateTimeType((jdbcType));
-				if(isTime){
+				if (isTime) {
 					packageList.getPkgs().add("java.time.LocalDateTime");
 					return "LocalDateTime";
 				}else{
@@ -254,7 +249,7 @@ public class SourceConfig {
 
 
 		String type = JavaType.getType(desc.getSqlType(), desc.getSize(), desc.getDigit());
-		if (preferDoubleType==PreferDoubleType.BigDecimal&& type.equals("Double")) {
+		if (preferDoubleType == PreferDoubleType.BigDecimal && type.equals("Double")) {
 			packageList.getPkgs().add("java.math.BigDecimal");
 			type = "BigDecimal";
 		}
