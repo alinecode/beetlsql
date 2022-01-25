@@ -198,7 +198,7 @@ public class S09JsonMappingSample {
 	}
 
 	private static final String USER5_MAPPING =
-			"{\n" + "    \"id\": \"id\",\n" + "    \"name\": \"name\",\n" + "    \"create_time\": \"createTime\",\n"
+			"{\n" + "    \"id\": \"id\",\n" + "    \"name\": \"name\",\n" + "    \"createTime\": \"create_time\",\n"
 					+ "    \"depts\": {\n" + "        \"id\": \"dept_id\",\n" + "        \"name\": \"dept_name\"\n"
 					+ "    },\n" + "    \"roles\": {\n" + "        \"id\": \"role_id\",\n"
 					+ "        \"name\": \"role_name\"\n" + "    }\n" + "}";
