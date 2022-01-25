@@ -27,7 +27,7 @@ public class ClassLoaderKit {
 
 	public Class loadClass(String className) {
 		for (int i = 0; i < otherLoaders.size(); i++) {
-			ClassLoader loader = (ClassLoader) otherLoaders.get(i);
+			ClassLoader loader = otherLoaders.get(i);
 			try {
 				Class c = loader.loadClass(className);
 			} catch (Exception ex) {
@@ -40,7 +40,7 @@ public class ClassLoaderKit {
 
 	public InputStream loadResource(String resource) {
 		for (int i = 0; i < otherLoaders.size(); i++) {
-			ClassLoader loader = (ClassLoader) otherLoaders.get(i);
+			ClassLoader loader = otherLoaders.get(i);
 			InputStream inputStream = loader.getResourceAsStream(resource);
 			if (inputStream != null) {
 				return inputStream;
@@ -51,7 +51,7 @@ public class ClassLoaderKit {
 
 	public URL loadResourceAsURL(String resource) {
 		for (int i = 0; i < otherLoaders.size(); i++) {
-			ClassLoader loader = (ClassLoader) otherLoaders.get(i);
+			ClassLoader loader = otherLoaders.get(i);
 			URL url = loader.getResource(resource);
 			if (url != null) {
 				return url;

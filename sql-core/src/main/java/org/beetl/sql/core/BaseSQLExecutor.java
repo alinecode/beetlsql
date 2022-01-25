@@ -555,7 +555,7 @@ public class BaseSQLExecutor implements SQLExecutor {
             //单行映射
             RowMapper rowMapper =
                     executeContext.rowMapper != null ? executeContext.rowMapper : classAnnotation.getRowMapper();
-            //结果集映
+            //结果集映射
             ResultSetMapper resultSetMapper = executeContext.resultMapper != null ?
                     executeContext.resultMapper :
                     classAnnotation.getResultSetMapper();

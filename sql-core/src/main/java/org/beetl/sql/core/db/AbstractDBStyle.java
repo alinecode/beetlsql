@@ -57,7 +57,6 @@ public abstract class AbstractDBStyle implements DBStyle {
 		offsetStartZero = Boolean.parseBoolean(ps.getProperty("OFFSET_START_ZERO", "false").trim());
 	}
 
-
 	@Override
 	public NameConversion getNameConversion() {
 		return nameConversion;
@@ -67,7 +66,6 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public void setNameConversion(NameConversion nameConversion) {
 		this.nameConversion = nameConversion;
 	}
-
 
 	@Override
 	public SQLSource genSelectById(Class<?> cls, Class viewType) {

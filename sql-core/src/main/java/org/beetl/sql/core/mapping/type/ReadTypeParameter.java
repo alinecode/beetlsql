@@ -9,7 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 /**
- * ResetSet 转化成 class的辅助对象
+ * ResetSet 转化成 class的辅助对象，每个列对应的参数信息
  * @author xiandafu
  */
 @Data
@@ -32,7 +32,8 @@ public class ReadTypeParameter {
 	 * @param index
 	 * @param executeContext
 	 */
-	public ReadTypeParameter(SqlId sqlId, String dbName, Class target, ResultSet rs, ResultSetMetaData meta, int index,ExecuteContext executeContext) {
+	public ReadTypeParameter(SqlId sqlId, String dbName, Class target, ResultSet rs, ResultSetMetaData meta, int index,
+			ExecuteContext executeContext) {
 		super();
 		this.dbName = dbName;
 		this.target = target;
@@ -54,8 +55,5 @@ public class ReadTypeParameter {
 	public Object getObject() throws SQLException {
 		return rs.getObject(index);
 	}
-
-
-
 
 }

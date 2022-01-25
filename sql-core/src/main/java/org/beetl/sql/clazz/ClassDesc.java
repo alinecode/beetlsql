@@ -17,120 +17,135 @@ import java.util.Set;
  *
  */
 public class ClassDesc {
-	protected Class targetClass ;
-	protected TableDesc  table;
+	/**
+	 * 实体类
+	 */
+	protected Class targetClass;
+	/**
+	 * 关联的数据库表信息
+	 */
+	protected TableDesc table;
+	/**
+	 * 命名转换
+	 */
 	protected NameConversion nc;
+	/**
+	 * 实体类的属性名
+	 */
 	protected Set<String> properties = new CaseInsensitiveOrderSet<String>();
-	//记录table和pojo的交集
-	protected Set<String> cols =  new CaseInsensitiveOrderSet<String>();
+	/* 记录table和pojo的交集 */
+	protected Set<String> cols = new CaseInsensitiveOrderSet<String>();
 
-	//主健
-	protected List<String> idProperties =  new ArrayList<String>(3);
-	protected List<String> idCols =  new ArrayList<String>(3);
-	//id方法
-	protected Map<String,Object> idMethods = new CaseInsensitiveHashMap<String,Object>();
+	/**
+	 * 主健属性和主键字段
+	 * */
+	protected List<String> idProperties = new ArrayList<String>(3);
+	protected List<String> idCols = new ArrayList<String>(3);
+	/**
+	 * id的getter/setter方法
+	 * */
+	protected Map<String, Object> idMethods = new CaseInsensitiveHashMap<String, Object>();
 
-	//class关注的所有注解
+	/**
+	 * 当前实体类的所有注解信息
+	 * */
 	protected ClassAnnotation ca = null;
-	
-	public ClassDesc(Class c,TableDesc table,NameConversion nc){
-		this.targetClass = c ;
+
+	public ClassDesc(Class c, TableDesc table, NameConversion nc) {
+		this.targetClass = c;
 		ca = ClassAnnotation.getClassAnnotation(c);
-		PropertyDescriptor[] ps =ca.getPropertyDescriptor(c);
+		PropertyDescriptor[] ps = ca.getPropertyDescriptor(c);
 
 		Set<String> ids = table.getIdNames();
-		CaseInsensitiveHashMap<String,PropertyDescriptor> tempMap = new CaseInsensitiveHashMap<String,PropertyDescriptor>();
+		CaseInsensitiveHashMap<String, PropertyDescriptor> tempMap = new CaseInsensitiveHashMap<String, PropertyDescriptor>();
 
-		for(PropertyDescriptor p:ps){
+		for (PropertyDescriptor p : ps) {
 			//所有属性必须有getter和setter
-			if(p.getReadMethod()!=null&& BeanKit.getWriteMethod(p, c)!=null){
+			if (p.getReadMethod() != null && BeanKit.getWriteMethod(p, c) != null) {
 				String property = p.getName();
-               	String col = nc.getColName(c, property);
-               	if(col!=null){
-               		tempMap.put(col, p);
-               	}
+				String col = nc.getColName(c, property);
+				if (col != null) {
+					tempMap.put(col, p);
+				}
 			}
 		}
-		
-		
+
+
 		//取交集
-		for(String col :table.getCols()){
-			if(tempMap.containsKey(col)){
+		for (String col : table.getCols()) {
+			if (tempMap.containsKey(col)) {
 				cols.add(col);
-				PropertyDescriptor p = (PropertyDescriptor)tempMap.get(col);
+				PropertyDescriptor p = (PropertyDescriptor) tempMap.get(col);
 				properties.add(p.getName());
 				Method readMethod = p.getReadMethod();
 				Class retType = readMethod.getReturnType();
 
 
-				if(ids.contains(col)){
+				if (ids.contains(col)) {
 					//保持同一个顺序
 					idProperties.add(p.getName());
 					idCols.add(col);
-					idMethods.put(p.getName(),readMethod);
+					idMethods.put(p.getName(), readMethod);
 
 				}
-				
+
 			}
 		}
-		
-		
-		
+
+
 	}
+
 	/**
 	 * 用于代码生成，一个虚拟的ClassDesc，
 	 * @param table
 	 * @param nc
 	 */
-	protected ClassDesc(TableDesc table,NameConversion nc){
-		this.table = table ;
-		this.nc = nc ;
-		for(String colName:table.getCols()){
+	protected ClassDesc(TableDesc table, NameConversion nc) {
+		this.table = table;
+		this.nc = nc;
+		for (String colName : table.getCols()) {
 			String prop = nc.getPropertyName(colName);
 			this.properties.add(prop);
-			ColDesc  colDes = table.getColDesc(colName);
+			ColDesc colDes = table.getColDesc(colName);
 			this.cols.add(colName);
 		}
-		for(String name:table.getIdNames()){
+		for (String name : table.getIdNames()) {
 			this.idProperties.add(nc.getPropertyName(name));
 		}
-		
-		
+
+
 	}
 
-	public ClassDesc buildVirtualClass(TableDesc table,NameConversion nc){
-		return new ClassDesc(table,nc);
+	public ClassDesc buildVirtualClass(TableDesc table, NameConversion nc) {
+		return new ClassDesc(table, nc);
 	}
 
 
-
-
-
-	public List<String> getIdAttrs(){
+	public List<String> getIdAttrs() {
 		return this.idProperties;
 	}
 
-	public String getIdAttr(){
-		if(this.idProperties.size()>1){
+	public String getIdAttr() {
+		if (this.idProperties.size() > 1) {
 			throw new UnsupportedOperationException("不支持多主键");
 		}
 		return idProperties.get(0);
 	}
-	
-	public List<String> getIdCols(){
+
+	public List<String> getIdCols() {
 		return idCols;
 	}
-	
-	public Set<String>  getAttrs(){
+
+	public Set<String> getAttrs() {
 		return properties;
 	}
-	
 
-	
-	public  Set<String>  getInCols(){
+
+	public Set<String> getInCols() {
 		return this.cols;
 	}
-	public Map<String,Object> getIdMethods() {
+
+	public Map<String, Object> getIdMethods() {
 		return this.idMethods;
 	}
 
@@ -138,15 +153,11 @@ public class ClassDesc {
 	 * 修正拼写错误
 	 * @return ClassAnnotation
 	 */
-	public ClassAnnotation getClassAnnotation(){
+	public ClassAnnotation getClassAnnotation() {
 		return ca;
 	}
-
 
 	public Class getTargetClass() {
 		return targetClass;
 	}
-
-
-
 }

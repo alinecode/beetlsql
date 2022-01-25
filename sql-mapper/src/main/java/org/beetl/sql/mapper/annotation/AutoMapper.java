@@ -7,20 +7,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用来标记方法，表示此方法的实现类
+ * 指定接口方法由哪个{@link MapperInvoke} 实现类代理调用
  */
 @Target({java.lang.annotation.ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AutoMapper {
-
-
 
 	/**
 	 * 用于指定实现
 	 * @return MapperInvoke的实现类
 	 *
 	 */
-	Class<? extends MapperInvoke> value() ;
-
+	Class<? extends MapperInvoke> value();
 
 }

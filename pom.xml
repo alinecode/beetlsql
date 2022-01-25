@@ -1,234 +1,240 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ibeetl</groupId>
-	<artifactId>beetlsql-all</artifactId>
-	<version>3.12.10-RELEASE</version>
-	<name>com.ibeetl:beetlsql</name>
-	<url>http://maven.apache.org</url>
-	<description>java DAO tool</description>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ibeetl</groupId>
+    <artifactId>beetlsql-all</artifactId>
+    <version>3.12.10-RELEASE</version>
+    <name>com.ibeetl:beetlsql</name>
+    <url>http://maven.apache.org</url>
+    <description>java DAO tool</description>
     <packaging>pom</packaging>
-	<licenses>
-		<license>
-			<name>The "BSD license</name>
-			<url>http://opensource.org/licenses/BSD-3-Clause</url>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The "BSD license</name>
+            <url>http://opensource.org/licenses/BSD-3-Clause</url>
+        </license>
+    </licenses>
 
     <modules>
-		<!--核心功能 -->
+        <!--核心功能 -->
         <module>sql-core</module>
         <!-- mapper 功能 -->
         <module>sql-mapper</module>
         <!-- 工具包 -->
-		<module>sql-util</module>
+        <module>sql-util</module>
         <!-- 一对多，多对多等映射实现 -->
-		<module>sql-fetch</module>
+        <module>sql-fetch</module>
         <!-- 代码生成，文档生成 -->
         <module>sql-gen</module>
         <!-- saga事务实现和事务管理器实现 -->
         <module>sql-saga</module>
         <module>sql-test</module>
         <!-- 例子 -->
-<!--        <module>sql-samples</module>-->
-		<!-- 打包到一起 -->
-		<module>beetlsql</module>
-		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar，可以 -->
-		<module>sql-integration</module>
+        <!--        <module>sql-samples</module>-->
+        <!-- 打包到一起 -->
+        <module>beetlsql</module>
+        <!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar，可以 -->
+        <module>sql-integration</module>
         <!-- 性能测试，包含了jpa，myabtis等国内外框架,可以-->
-<!--        <module>sql-jmh</module>-->
+        <!--        <module>sql-jmh</module>-->
         <!-- 验证多库支持 ,集成太多的数据库lib，默认去掉-->
-<!--		<module>sql-db-support</module>-->
+        <!--		<module>sql-db-support</module>-->
 
     </modules>
 
-	<developers>
-		<developer>
-			<name>李家智(闲大赋)</name>
-			<email>xiandafu@126.com</email>
-		</developer>
-		<developer>
-			<name>Gavin·King</name>
-			<email>393922808@qq.com</email>
-		</developer>
-		<developer>
-			<name>Sue</name>
-			<email>15377535802@qq.com</email>
-		</developer>
-		<developer>
-			<name>zhoupan</name>
-			<email>370267858@qq.com</email>
-		</developer>
-		<developer>
-			<name>woate</name>
-			<email>woate@qq.com</email>
-		</developer>
-		<developer>
-			<name>darren</name>
-			<email>10176523@qq.com</email>
-		</developer>
-		<developer>
-			<name>一日看尽长安花</name>
-			<email>10176523@qq.com</email>
-		</developer>
-		<developer>
-			<name>noear</name>
-			<email>noear@live.cn</email>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <name>李家智(闲大赋)</name>
+            <email>xiandafu@126.com</email>
+        </developer>
+        <developer>
+            <name>Gavin·King</name>
+            <email>393922808@qq.com</email>
+        </developer>
+        <developer>
+            <name>Sue</name>
+            <email>15377535802@qq.com</email>
+        </developer>
+        <developer>
+            <name>zhoupan</name>
+            <email>370267858@qq.com</email>
+        </developer>
+        <developer>
+            <name>woate</name>
+            <email>woate@qq.com</email>
+        </developer>
+        <developer>
+            <name>darren</name>
+            <email>10176523@qq.com</email>
+        </developer>
+        <developer>
+            <name>noear</name>
+            <email>noear@live.cn</email>
+        </developer>
+    </developers>
 
-	<scm>
-		<connection>scm:git@git.oschina.net:xiandafu/beetlsql.git</connection>
-		<developerConnection>scm:git@git.oschina.net:xiandafu/beetlsql.git</developerConnection>
-		<url>https://git.oschina.net/xiandafu/beetlsql</url>
-	</scm>
+    <scm>
+        <connection>scm:git@git.oschina.net:xiandafu/beetlsql.git</connection>
+        <developerConnection>scm:git@git.oschina.net:xiandafu/beetlsql.git</developerConnection>
+        <url>https://git.oschina.net/xiandafu/beetlsql</url>
+    </scm>
     <issueManagement>
         <system>gitee</system>
         <url>https://gitee.com/xiandafu/beetlsql/issues</url>
     </issueManagement>
 
-	<properties>
-		<java-version>1.8</java-version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<spring.version>4.2.3.RELEASE</spring.version>
-		<aspectj.version>1.6.11</aspectj.version>
-	</properties>
+    <properties>
+        <java-version>1.8</java-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring.version>4.2.3.RELEASE</spring.version>
+        <aspectj.version>1.6.11</aspectj.version>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.ibeetl</groupId>
-			<artifactId>beetl</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl</artifactId>
             <version>3.9.2.RELEASE</version>
-			<scope>compile</scope>
-		</dependency>
+            <scope>compile</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.16.18</version>
-			<scope>compile</scope>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.18</version>
+            <scope>compile</scope>
             <optional>true</optional>
-		</dependency>
+        </dependency>
 
 
-		<!-- junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
 
 
-
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-core</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
-	<build>
-
-		<plugins>
-
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.2</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
                     <parameters>true</parameters>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.3</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>snapshots</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
-				<configuration>
-<!--					<skip>true</skip>-->
-				</configuration>
-			</plugin>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.20.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>snapshots</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <!--					<skip>true</skip>-->
+                </configuration>
+            </plugin>
 
-			<!-- Source -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<configuration>
-					<charset>utf-8</charset>
-					<encoding>utf-8</encoding>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <charset>utf-8</charset>
+                    <encoding>utf-8</encoding>
                     <additionalparam>-Xdoclint:none</additionalparam>
-					<quiet>true</quiet>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+                    <quiet>true</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 
-	</build>
+    </build>
 
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>releases</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>releases</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 
 </project>

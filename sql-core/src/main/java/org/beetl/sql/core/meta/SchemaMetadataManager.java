@@ -22,25 +22,44 @@ import java.util.Set;
 @Plugin
 public class SchemaMetadataManager implements MetadataManager {
 
-	protected ConnectionSource ds = null;
+	/**
+	 * 数据连接源
+	 */
+	protected ConnectionSource ds;
+	/**
+	 * 表名与表描述信息存储 {@code <String,Object>}
+	 */
 	protected ThreadSafeCaseInsensitiveHashMap tableInfoMap = null;
-	protected TableDesc NOT_EXIST = new TableDesc("$$$NOT_EXIST","");
+	/**
+	 * 给定一个默认不存在的表的描述
+	 */
+	protected TableDesc NOT_EXIST = new TableDesc("$$$NOT_EXIST", "");
+	/**
+	 * 对应数据库供应商
+	 */
 	protected DBStyle style;
+	/**
+	 * 默认模式
+	 */
 	protected String defaultSchema;
+	/**
+	 * 默认目录
+	 */
 	protected String defaultCatalog;
 	protected String dbName = null;
 
-	//是否检查列是否自增，目前通过异常判断驱动不支持
+	/**
+	 * 是否检查列是否自增，目前通过异常判断驱动不支持
+	 * */
 	boolean checkAuto = true;
 
 	/**
 	 * 真表-假表，用于可能的分表分库，比如user表不存在，user001,user00存在
 	 * 因此user001->user
 	 */
-
 	ThreadSafeCaseInsensitiveHashMap tableVirtual = new ThreadSafeCaseInsensitiveHashMap();
 
-	
+
 	public SchemaMetadataManager(ConnectionSource ds, DBStyle style) {
 		super();
 		this.ds = ds;
