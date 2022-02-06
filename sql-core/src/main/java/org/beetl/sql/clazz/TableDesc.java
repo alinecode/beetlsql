@@ -3,7 +3,6 @@ package org.beetl.sql.clazz;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.clazz.kit.CaseInsensitiveOrderSet;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,17 +11,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * 数据库表或者视图信息
  * @author xiandafu
  * @see ClassDesc
+ * @see java.sql.ResultSetMetaData
  */
 public class TableDesc {
 
 	/**
-	 * 数据表
+	 * BeetlSQL中的数据表名
 	 */
 	private String name;
 	/**
-	 * 主键
+	 * 主键列名集合
 	 */
-	private Set<String> idNames= new CaseInsensitiveOrderSet<String>();
+	private final Set<String> idNames = new CaseInsensitiveOrderSet<String>();
 
 	/**
 	 * 数据表注释,注意，并不是所有JDBC都默认能取得注释，可能需要一些数据库厂商特定的配置
@@ -30,27 +30,27 @@ public class TableDesc {
 
 	private String remark = null;
 	/**
-	 * 列名
+	 * 列名集合
 	 */
-	private Set<String> cols = new CaseInsensitiveOrderSet<String>();
-	
+	private final Set<String> cols = new CaseInsensitiveOrderSet<String>();
 
-	//跟table相关的类，必须线程安全，是懒加载的
-	private Map<Class,ClassDesc> classes = new ConcurrentHashMap<>();
+
+	/** 跟table相关的类，必须线程安全，是懒加载的 */
+	private final Map<Class, ClassDesc> classes = new ConcurrentHashMap<>();
 
 	/**
 	 * table 列的详细描述
 	 */
-	private CaseInsensitiveHashMap<String,ColDesc> colsDetail = new CaseInsensitiveHashMap<String,ColDesc>();
-	//table所在的schema
-	private String schema ;
-	//tables所在的catalog
+	private final CaseInsensitiveHashMap<String, ColDesc> colsDetail = new CaseInsensitiveHashMap<String, ColDesc>();
+	/** table所在的schema */
+	private String schema;
+	/** tables所在的catalog */
 	private String catalog;
 
 	//如果不为空，则标识这个表不存在，来源于realTableName
 	private String realTableName;
-	
-	public TableDesc(String name, String remark){
+
+	public TableDesc(String name, String remark) {
 		this.name = name;
 		this.remark = remark;
 	}
@@ -90,8 +90,6 @@ public class TableDesc {
 	public Set<String> getCols() {
 		return cols;
 	}
-
-
 
 	public String getRemark() {
 		return remark;

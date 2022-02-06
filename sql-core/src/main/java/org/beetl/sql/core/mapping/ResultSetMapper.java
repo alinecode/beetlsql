@@ -14,17 +14,17 @@ import java.util.List;
  * @param <T>
  * @see ResultProvider
  * @see org.beetl.sql.annotation.entity.ProviderConfig
- * @see SimpleJoinMappper
+ * @see org.beetl.sql.core.mapping.join.ConfigJoinMapper
  *
  */
 public interface ResultSetMapper<T> {
-    /**
-     * 将数据库查询结果集ResultSet映射到一个对象上，对象通过target指定
-     * @param ctx
-     * @param target
-     * @param resultSet
-     * @param config  实现了ProviderConfig注解的注解，如果没有，则为空
-     * @return List<T>
-     */
+	/**
+	 * 将数据库查询结果集ResultSet映射到一个对象上，对象通过target指定
+	 * @param ctx 执行上下文
+	 * @param target ResultSet中每一行对应的目标类
+	 * @param resultSet
+	 * @param config  实现了ProviderConfig注解的注解，如果没有，则为空
+	 * @return List<T>
+	 */
     List<T> mapping(ExecuteContext ctx, Class target, ResultSet resultSet, Annotation config) throws SQLException;
 }

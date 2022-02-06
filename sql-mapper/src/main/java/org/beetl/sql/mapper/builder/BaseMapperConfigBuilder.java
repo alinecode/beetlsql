@@ -23,33 +23,36 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
 
     /**
      * 用户添加自定义方法
-     * 或者提供给其他自定义的BaseMapper使用
-     * @see #addMapperClass(Class)
-     */
-    protected  final Map<Method, MapperInvoke> amiMethodMap = new ConcurrentHashMap<>();
+	 * 或者提供给其他自定义的BaseMapper使用
+	 * @see #addMapperClass(Class)
+	 */
+	protected final Map<Method, MapperInvoke> amiMethodMap = new ConcurrentHashMap<>();
 
 
-    public BaseMapperConfigBuilder() {
-        init();
-    }
+	public BaseMapperConfigBuilder() {
+		init();
+	}
 
-    /**
-     * 获取方法对应的 Ami 处理类
-     *
-     * @param method 方法
-     * @return Ami处理类
-     */
-    @Override
-    public MapperInvoke getAmi(Class entity, Class mapperClass, Method method){
-        MapperInvoke mapperInvoke =  amiMethodMap.get(method);
-        if(mapperInvoke!=null){
-            return mapperInvoke;
-        }
-        MapperMethodParser mapperMethodParser = new MapperMethodParser(entity,mapperClass,method);
-        mapperInvoke = mapperMethodParser.parse();
-		mapperInvoke = wrap(mapperInvoke,method);
-        amiMethodMap.putIfAbsent(method,mapperInvoke);
-        return mapperInvoke;
+	/**
+	 * 解析调用的接口方法所对应的 MapperInvoke 类
+	 *
+	 * @param entity 接口实体类
+	 * @param mapperClass BaseMapper接口或子接口
+	 * @param method 调用的接口方法
+	 *
+	 * @return {@link MapperInvoke}
+	 */
+	@Override
+	public MapperInvoke getAmi(Class entity, Class mapperClass, Method method) {
+		MapperInvoke mapperInvoke = amiMethodMap.get(method);
+		if (mapperInvoke != null) {
+			return mapperInvoke;
+		}
+		MapperMethodParser mapperMethodParser = new MapperMethodParser(entity, mapperClass, method);
+		mapperInvoke = mapperMethodParser.parse();
+		mapperInvoke = wrap(mapperInvoke, method);
+		amiMethodMap.putIfAbsent(method, mapperInvoke);
+		return mapperInvoke;
     }
 
 
@@ -60,10 +63,6 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
         addMapperClass(BaseMapper.class);
     }
 
-    /**
-     * 解析类，注解有@AutoMapper的方法将被添加
-     * @param c
-     */
     @Override
     public void addMapperClass(Class c){
         scanBaseMapper(c);

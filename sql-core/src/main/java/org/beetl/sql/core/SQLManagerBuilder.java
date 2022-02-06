@@ -13,10 +13,10 @@ import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.meta.MetadataManager;
-import org.beetl.sql.ext.UUIDAutoGen22;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.SnowflakeIDAutoGen;
 import org.beetl.sql.ext.UUIDAutoGen;
+import org.beetl.sql.ext.UUIDAutoGen22;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,7 +74,7 @@ public class SQLManagerBuilder {
 	private NameConversion nc;
 
 	/** 数据库连接管理,包含主从，或者其他逻辑，比如多租户 */
-	private ConnectionSource ds;
+	private final ConnectionSource ds;
 
 	/*
 	 * 数据库元数据
@@ -83,7 +83,7 @@ public class SQLManagerBuilder {
 
 	private SqlIdFactory sqlIdFactory;
 
-	private String charset = "UTF-8";
+	private final String charset = "UTF-8";
 
 	/**
 	 * 生产模式配置，用于控制某些优化措施
@@ -99,7 +99,7 @@ public class SQLManagerBuilder {
 	MapperBuilder mapperBuilder  = null;
 
 	/** 拦截器 */
-	private List<Interceptor> interceptorList = new LinkedList<Interceptor>();
+	private final List<Interceptor> interceptorList = new LinkedList<Interceptor>();
 
 	private ClassLoaderKit classLoaderKit = null;
 
@@ -145,7 +145,7 @@ public class SQLManagerBuilder {
 		//设置dbStyle
 		myDbStyle.setNameConversion(myNc);
 		myDbStyle.init(mysSqlTemplateEngine, myPs);
-
+		//		初始化元数据管理器
 		MetadataManager myMetadataManager = dbStyle.initMetadataManager(ds);
 		ClassLoaderKit myClassLoaderKit = this.getClassLoaderKit();
 
@@ -166,13 +166,14 @@ public class SQLManagerBuilder {
 		mySqlManager.setMetaDataManager(myMetadataManager);
 		mySqlManager.setMapperBuilder(this.getMapperBuilder());
 		mySqlManager.setName(this.getName());
-		//TODO 配置文件加载
+
 		boolean offsetStartZero = Boolean.parseBoolean(myPs.getProperty("OFFSET_START_ZERO", "false"));
 		mySqlManager.offsetStartZero = offsetStartZero;
 		dbStyle.setOffsetStartZero(offsetStartZero);
-		//其他个性化设置
+		//其他个性化设置：结果集后置处理
 		BeanProcessor myBeanProcessor = this.getBeanProcessor();
 		mySqlManager.setDefaultBeanProcessors(myBeanProcessor);
+		// SqlId生成工厂
 		SqlIdFactory mySqlIdFactory = this.getSqlIdFactory();
 		mySqlManager.setSqlIdFactory(mySqlIdFactory);
 		mySqlManager.setClassLoaderKit(myClassLoaderKit);
@@ -505,7 +506,7 @@ public class SQLManagerBuilder {
 	 * 为每个sqlManager生成一个默认名字,系统最好指定每个sql的名字
 	 */
 	static class SQLManagerNameGenerator {
-
+		//		TODO D 考虑扩大命名生成的范围，不仅仅提供给SQLmanager，也可以提供其它的类的命名生成
 		AtomicInteger count = null;
 
 		public String nextName() {

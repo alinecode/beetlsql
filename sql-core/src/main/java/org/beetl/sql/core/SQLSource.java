@@ -3,6 +3,9 @@ package org.beetl.sql.core;
 import org.beetl.sql.clazz.SQLType;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader.SQLFileVersion;
 
+/**
+ *
+ */
 public class SQLSource {
 
 	public SqlId id;
@@ -30,9 +33,9 @@ public class SQLSource {
 		this.template = template;
 	}
 
-	public static SQLSource emptySource(){
+	public static SQLSource emptySource() {
 		SQLSource sqlSource = new SQLSource();
-		sqlSource.template="empty";
+		sqlSource.template = "empty";
 		return sqlSource;
 	}
 
@@ -52,7 +55,6 @@ public class SQLSource {
 		this.template = template;
 	}
 
-	
 	public SqlId getId() {
 		return id;
 	}

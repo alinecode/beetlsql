@@ -2,7 +2,6 @@ package org.beetl.sql.mapper;
 
 import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.mapper.builder.BaseMapperConfigBuilder;
 import org.beetl.sql.mapper.builder.MapperConfigBuilder;
 
 import java.lang.invoke.MethodHandles;
@@ -84,6 +83,7 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
         }
 
         if (method.isDefault()) {
+			/*java8以后的接口允许default实现，使用者提供了默认实现的情况下直接调用*/
             return invokeDefaultMethod(proxy,method,args);
 
         }

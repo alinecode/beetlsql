@@ -9,166 +9,220 @@ import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.mapping.join.JsonConfigMapper;
 import org.beetl.sql.sample.SampleHelper;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * 演示使用json配置复杂映射
  */
 public class S09JsonMappingSample {
-    SQLManager sqlManager;
+	SQLManager sqlManager;
 
-    public S09JsonMappingSample(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
-    }
+	public S09JsonMappingSample(SQLManager sqlManager) {
+		this.sqlManager = sqlManager;
+	}
 
-    public static void main(String[] args) {
-        SQLManager sqlManager = SampleHelper.getSqlManager();
-        S09JsonMappingSample sample = new S09JsonMappingSample(sqlManager);
-        sample.selectUser();
-        sample.selectDept();
-        sample.selectUserByMdConfig();
-        sample.selectUserByDynamicMdConfig();
-        sample.selectUserByDynamicMdConfig2();
-    }
+	public static void main(String[] args) throws SQLException {
+		SQLManager sqlManager = SampleHelper.getSqlManager();
+		S09JsonMappingSample sample = new S09JsonMappingSample(sqlManager);
+		//        sample.selectUser();
+		sample.selectUserInfo5();
+		//        sample.selectDept();
+		//		        sample.selectUserByMdConfig();
+		sample.selectUserByDynamicMdConfig();
+		//        sample.selectUserByDynamicMdConfig2();
+		//        sample.selectUserByDynamicMdConfig2();
+		//        sample.selectUserByDynamicMdConfig2();
 
-    public void selectUser(){
-        String sql = "select u.*,u.name as dept_name from sys_user u " +
-                "left  join department d on u.department_id= d.id where u.id=? ";
+	}
 
-        List<UserInfo> users = sqlManager.execute(new SQLReady(sql,1),UserInfo.class);
-        UserInfo info= users.get(0);
-        System.out.println(info.getDeptName());
-    }
+	public void testNullMapping() throws SQLException {
+		/*测试用户3一个不存在的部门进行 null的映射，预打印结果查看*/
+		PreparedStatement statement = sqlManager.getDs().getMasterConn().prepareStatement(
+				"SELECT\n" + "  u.id,\n" + "  u.name,\n" + "  u.create_time,\n" + "  d.id dept_id,\n"
+						+ "  d.name dept_name,\n" + "  r.id role_id,\n" + "  r.name role_name\n" + "FROM sys_user u\n"
+						+ "  LEFT JOIN department d\n" + "    ON u.department_id = d.id\n"
+						+ "  LEFT JOIN user_role ur\n" + "    ON ur.user_id = u.id\n" + "  LEFT JOIN role r\n"
+						+ "    ON r.id = ur.role_id\n" + "WHERE u.id = 3");
+		ResultSet resultSet = statement.executeQuery();
+		SampleHelper.printResultSet(resultSet);
+	}
 
-    public void selectDept(){
-        String sql = "select d.id id,d.name name ,u.id u_id,u.name u_name " +
-                " from department d join sys_user u on d.id=u.department_id  where d.id in (?,?)";
-        Integer deptId = 1;
-		Integer deptId2 =2 ;
-        SQLReady ready = new SQLReady(sql,new Object[]{deptId,deptId2});
-        List<DepartmentInfo> list = sqlManager.execute(ready,DepartmentInfo.class);
-        System.out.println(list.toString());
+	public void selectUserInfo5() {
+		/*测试null值的测试*/
+		String sql = "SELECT\n" + "  u.id,\n" + "  u.name,\n" + "  u.create_time,\n" + "  d.id dept_id,\n"
+				+ "  d.name dept_name,\n" + "  r.id role_id,\n" + "  r.name role_name\n" + "FROM sys_user u\n"
+				+ "  LEFT JOIN department d\n" + "    ON u.department_id = d.id\n" + "  LEFT JOIN user_role ur\n"
+				+ "    ON ur.user_id = u.id\n" + "  LEFT JOIN role r\n" + "    ON r.id = ur.role_id\n"
+				+ "WHERE u.id = ?";
 
+		List<UserInfo5> users = sqlManager.execute(new SQLReady(sql, 3), UserInfo5.class);
+		System.out.println(users);
+	}
 
+	public void selectUser() {
+		String sql = "select u.*,u.name as dept_name from sys_user u "
+				+ "left  join department d on u.department_id= d.id where u.id=? ";
 
-    }
+		List<UserInfo> users = sqlManager.execute(new SQLReady(sql, 1), UserInfo.class);
+		UserInfo info = users.get(0);
+		System.out.println(info.getDeptName());
+	}
 
-    /**
-     * 映射配置放到文件里，类似mybatis
-     */
-    public void selectUserByMdConfig(){
-        String sql = "select u.*,u.name as dept_name from sys_user u " +
-                "left  join department d on u.department_id= d.id where u.id=? ";
-
-        List<UserInfo2> users = sqlManager.execute(new SQLReady(sql,1),UserInfo2.class);
-        UserInfo2 info= users.get(0);
-        System.out.println(info.getDeptName());
-    }
-
-    /**
-     * 映射配置放到sql文件里，通过调用脚本函数jsonMapping，传入配置id
-     *
-     * 参考 jsonConfig.md#userConfig
-     */
-    public void selectUserByDynamicMdConfig(){
-        SqlId selectById = SqlId.of("jsonConfig","selectUser");
-        UserInfo3 para = new UserInfo3();
-        para.setId(1);
-        List<UserInfo3> users = sqlManager.select(selectById,UserInfo3.class,para);
-        UserInfo3 info= users.get(0);
-        System.out.println(info.getDeptName());
-    }
-
-    /**
-     * 另外一个较为复杂的例子,参考 jsonConfig.md#userDetailConfig
-     */
-    public void selectUserByDynamicMdConfig2(){
-        SqlId selectById = SqlId.of("jsonConfig","selectUserDetail");
-        List ids = Arrays.asList(1,2);
-        Map paras = new HashMap();
-		paras.put("ids",ids);
-        List<UserInfo4> users = sqlManager.select(selectById,UserInfo4.class,paras);
-        UserInfo4 info= users.get(0);
-        System.out.println(info.getDept().getName());
-        System.out.println(info.getRoles());
-
-    }
+	public void selectDept() {
+		String sql = "select d.id id,d.name name ,u.id u_id,u.name u_name "
+				+ " from department d join sys_user u on d.id=u.department_id  where d.id in (?,?)";
+		Integer deptId = 1;
+		Integer deptId2 = 2;
+		SQLReady ready = new SQLReady(sql, deptId, deptId2);
+		List<DepartmentInfo> list = sqlManager.execute(ready, DepartmentInfo.class);
+		System.out.println(list.toString());
 
 
+	}
 
-    /**
-     * key为属性，value为列名
-     */
-    private static final String USER_MAPPING = "{'id':'id','name':'name','deptName':'dept_name'}";
+	/**
+	 * 映射配置放到文件里，类似mybatis
+	 */
+	public void selectUserByMdConfig() {
+		String sql = "select u.*,u.name as dept_name from sys_user u "
+				+ "left  join department d on u.department_id= d.id where u.id=? ";
 
-    /**
-     * 左链接，合并
-     */
-    private static final String DEPT_MAPPING = "{'id':'id','name':'name','users':{'id':'u_id','name':'u_name'}}";
+		List<UserInfo2> users = sqlManager.execute(new SQLReady(sql, 1), UserInfo2.class);
+		UserInfo2 info = users.get(0);
+		System.out.println(info.getDeptName());
+	}
 
-    @Data
-    @ResultProvider(JsonConfigMapper.class)
-    @JsonMapper(DEPT_MAPPING)
-    public static class DepartmentInfo {
-        Integer id;
-        String name;
-        List<UserInfo> users;
-    }
+	/**
+	 * 映射配置放到sql文件里，通过调用脚本函数jsonMapping，传入配置id
+	 *
+	 * 参考 jsonConfig.md#userConfig
+	 */
+	public void selectUserByDynamicMdConfig() {
+		SqlId selectById = SqlId.of("jsonConfig", "selectUser");
+		UserInfo3 para = new UserInfo3();
+		para.setId(1);
+		List<UserInfo3> users = sqlManager.select(selectById, UserInfo3.class, para);
+		UserInfo3 info = users.get(0);
+		System.out.println(info.getDeptName());
+	}
+
+	/**
+	 * 另外一个较为复杂的例子,参考 jsonConfig.md#userDetailConfig
+	 */
+	public void selectUserByDynamicMdConfig2() {
+		SqlId selectById = SqlId.of("jsonConfig", "selectUserDetail");
+		List ids = Arrays.asList(1, 2);
+		Map paras = new HashMap();
+		paras.put("ids", ids);
+		List<UserInfo4> users = sqlManager.select(selectById, UserInfo4.class, paras);
+		UserInfo4 info = users.get(0);
+		System.out.println(info.getDept().getName());
+		System.out.println(info.getRoles());
+
+	}
+
+
+	/**
+	 * 左链接，合并
+	 */
+	private static final String DEPT_MAPPING = "{'id':'id','name':'name','users':{'id':'u_id','name':'u_name'}}";
+
+	@Data
+	@ResultProvider(JsonConfigMapper.class)
+	@JsonMapper(DEPT_MAPPING)
+	public static class DepartmentInfo {
+		Integer id;
+		String name;
+		List<UserInfo> users;
+	}
+
+	/**
+	 * key为属性，value为列名
+	 */
+	private static final String USER_MAPPING = "{'id':'id','name':'name','deptName':'dept_name'}";
 
 	/**
 	 * BeetlSQL会自动映射，除非你需要配置说明映射规则
 	 */
 	@Data
-    @ResultProvider(JsonConfigMapper.class)
-    @JsonMapper(USER_MAPPING)
-    public static class UserInfo {
-        Integer id;
-        String name;
-        String deptName;
-    }
+	@ResultProvider(JsonConfigMapper.class)
+	@JsonMapper(USER_MAPPING)
+	public static class UserInfo {
+		Integer id;
+		String name;
+		String deptName;
+	}
 
 
-    @Data
-    @ResultProvider(JsonConfigMapper.class)
-    //配置放到文件里
-    @JsonMapper(resource="jsonConfig.userConfig")
-    public static class UserInfo2 {
-        Integer id;
-        String name;
-        String deptName;
-    }
+	@Data
+	@ResultProvider(JsonConfigMapper.class)
+	//配置放到文件里
+	@JsonMapper(resource = "jsonConfig.userConfig")
+	public static class UserInfo2 {
+		Integer id;
+		String name;
+		String deptName;
+	}
 
-    /**
-     * 配置来源于模板执行的时候的生成的变量,参考 jsonConfig.md#userConfig
-     */
-    @Data
-    @ResultProvider(JsonConfigMapper.class)
-    public static class UserInfo3 {
-        Integer id;
-        String name;
-        String deptName;
-    }
+	/**
+	 * 配置来源于模板执行的时候的生成的变量,参考 jsonConfig.md#userConfig
+	 */
+	@Data
+	@ResultProvider(JsonConfigMapper.class)
+	public static class UserInfo3 {
+		Integer id;
+		String name;
+		String deptName;
+	}
 
-    /**
-     * 一个更复杂例子,用户包含部门和多个角色，参考 jsonConfig.md#userDetailConfig
+	/**
+	 * 一个更复杂例子,用户包含部门和多个角色，参考 jsonConfig.md#userDetailConfig
 	 * 自动根据属性映射
-     */
-    @Data
-    @ResultProvider(JsonConfigMapper.class)
-    public static class UserInfo4 {
-        Integer id;
-        String name;
-        DepartmentInfo dept;
-        List<RoleInfo> roles;
-    }
+	 */
+	@Data
+	@ResultProvider(JsonConfigMapper.class)
+	public static class UserInfo4 {
+		Integer id;
+		String name;
+		DepartmentInfo dept;
+		List<RoleInfo> roles;
+	}
 
-    @Data
-    public static class RoleInfo{
-        private Integer id;
-        private String name;
-    }
+	@Data
+	public static class RoleInfo {
+		private Integer id;
+		private String name;
+	}
 
+	private static final String USER5_MAPPING =
+			"{\n" + "    \"id\": \"id\",\n" + "    \"name\": \"name\",\n" + "    \"createTime\": \"create_time\",\n"
+					+ "    \"depts\": {\n" + "        \"id\": \"dept_id\",\n" + "        \"name\": \"dept_name\"\n"
+					+ "    },\n" + "    \"roles\": {\n" + "        \"id\": \"role_id\",\n"
+					+ "        \"name\": \"role_name\"\n" + "    }\n" + "}";
+
+	@Data
+	@ResultProvider(JsonConfigMapper.class)
+	@JsonMapper(USER5_MAPPING)
+	public static class UserInfo5 {
+		Integer id;
+		String name;
+		Date createTime;
+		List<DeptInfo5> depts;
+		List<RoleInfo5> roles;
+	}
+
+	@Data
+	public static class DeptInfo5 {
+		Integer id;
+		String name;
+	}
+
+	@Data
+	public static class RoleInfo5 {
+		Integer id;
+		String name;
+	}
 }
