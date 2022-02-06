@@ -56,11 +56,13 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		OrderLog para = new OrderLog();
-		para.setOrderId(1);
-		List list = sqlManager.select(SqlId.of("user","select"),OrderLog.class,para);
-		System.out.println(list);
-		sqlManager.select(SqlId.of("user","select"),OrderLog.class,para);
+		para.setOrderId(4);
+		para.setCreateTime(new Date());
+		sqlManager.insert(para);
+		OrderLog orderLog = sqlManager.unique(OrderLog.class,para.getOrderId());
+		System.out.println(orderLog);
 
+		sqlManager.all(OrderLog.class);
 	}
 
 

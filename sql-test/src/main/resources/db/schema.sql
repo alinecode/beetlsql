@@ -4,6 +4,7 @@ CREATE TABLE `order_log` (
 
        `age` int(1) AUTO_INCREMENT,
        `version` int(255) ,
+       `create_time` long,
       PRIMARY KEY (`order_id`)
 ) ;
 
