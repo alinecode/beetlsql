@@ -1,6 +1,7 @@
 package org.beetl.sql.core.mapper;
 
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.annotation.entity.JsonMapper;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.page.DefaultPageRequest;
