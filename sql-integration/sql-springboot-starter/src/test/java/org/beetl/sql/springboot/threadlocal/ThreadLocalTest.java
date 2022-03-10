@@ -3,6 +3,7 @@ package org.beetl.sql.springboot.threadlocal;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.ext.DBInitHelper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,13 @@ public class ThreadLocalTest {
     }
 
 
+	@Test
+	public void testWithAnnotation(){
+		long dbCount1 = dynamicService.test1();
+		long dbCount2 = dynamicService.test2();
+		Assert.assertNotEquals(dbCount1,dbCount2);
+	}
+
 
     /*以下代码初始化数据库用*/
 	@Autowired
@@ -38,6 +46,6 @@ public class ThreadLocalTest {
 	@Before
 	public void init(){
 		DBInitHelper.executeSqlScript(sqlManager1,"db/schema.sql");
-		DBInitHelper.executeSqlScript(sqlManager2,"db/schema.sql");
+		DBInitHelper.executeSqlScript(sqlManager2,"db/schema2.sql");
 	}
 }

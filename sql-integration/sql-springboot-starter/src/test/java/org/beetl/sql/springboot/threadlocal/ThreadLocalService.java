@@ -18,8 +18,7 @@ public class ThreadLocalService {
 
 	@Autowired
     UserInfoMapper mapper;
-	//混合多数据源，spring 不支持全局事务,如果想具备事务功能，可以参考saga模块
-	@Transactional(propagation = Propagation.NEVER)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void test(){
 		use("sqlManager1");
 
@@ -36,6 +35,27 @@ public class ThreadLocalService {
 		Assert.assertEquals(info1.getName(),info2.getName());
 
 
+		use("sqlManager1");
+		long count = mapper.allCount();
+		use("sqlManager2");
+		long count2 = mapper.allCount();
+		Assert.assertTrue(count!=count2);
+		System.out.println(count+" "+count2);
+
+	}
+
+
+
+	@Use("sqlManager2")
+	public long test2(){
+		return mapper.allCount();
+
+	}
+
+
+	@Use("sqlManager1")
+	public long test1(){
+		return mapper.allCount();
 	}
 
 	protected  void use(String sqlManager){
