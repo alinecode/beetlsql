@@ -75,10 +75,15 @@ public class BeetlSqlBeanRegister
 		configs.entrySet().forEach(entry->{
 			String sqlManagerName = entry.getKey();
 			BeetlSqlConfig.SQLManagerConfig config = entry.getValue();
-			if(config.dynamicCondition==null){
-				registerSQLManager(registry,sqlManagerName,config,classLoader,true);
-			}else{
+			if(config.dynamicCondition!=null){
 				registerDynamicSQLManager(registry,sqlManagerName,config,classLoader);
+
+			}else if(config.threadlocal!=null){
+				registerThreadLocalSQLManager(registry,sqlManagerName,config,classLoader);
+			}
+			else {
+				//通常情况
+				registerSQLManager(registry,sqlManagerName,config,classLoader,true);
 			}
 
 
@@ -108,6 +113,42 @@ public class BeetlSqlBeanRegister
 		bdb.addPropertyValue("all", managersList);
 		bdb.addPropertyValue("defaultSQLManager",managersList.get(0));
 		bdb.addPropertyValue("conditional", config.dynamicCondition);
+		bdb.addPropertyValue("name", name);
+		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
+
+
+		BeetlSqlClassPathScanner scanner = new BeetlSqlClassPathScanner(registry);
+		// this check is needed in Spring 3.1
+		if (resourceLoader != null) {
+			scanner.setResourceLoader(resourceLoader);
+		}
+
+		scanner.setSqlManagerFactoryBeanName(name);
+		scanner.setSuffix(config.getDaoSuffix());
+		scanner.registerFilters();
+		scanner.scan(config.getBasePackage().split(","));
+
+	}
+
+	protected void registerThreadLocalSQLManager(BeanDefinitionRegistry registry,String name,BeetlSqlConfig.SQLManagerConfig config,ClassLoader classLoader){
+
+		String[] sqlManagers = config.threadlocal.split(",");
+		BeetlSqlConfig.SQLManagerConfig defaultSQLManagerConfig = BeetlSqlConfig.SQLManagerConfig.initDefault(env);
+
+		List<String> managersList = new ArrayList<>();
+
+		for(String sqlManager:sqlManagers){
+			BeetlSqlConfig.SQLManagerConfig sqlManagerConfig =
+					new BeetlSqlConfig.SQLManagerConfig(env,sqlManager,defaultSQLManagerConfig);
+			//初始化每一个sqlManager
+			registerSQLManager(registry,sqlManager,sqlManagerConfig,classLoader,false);
+			managersList.add(sqlManager);
+		}
+
+
+		BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(ThreadLocalSqlManagerFactoryBean4Sb.class);
+
+		bdb.addPropertyValue("all", managersList);
 		bdb.addPropertyValue("name", name);
 		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 

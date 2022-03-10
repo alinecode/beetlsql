@@ -56,6 +56,8 @@ public class BeetlSqlConfig {
 
         String dynamicSqlManager;
         String dynamicCondition;
+        String threadlocal;
+        String interceptor;
 
 
 
@@ -71,6 +73,7 @@ public class BeetlSqlConfig {
             String nameConversion = env.getProperty(prefix+".nameConversion", "org.beetl.sql.core.UnderlinedNameConversion");
             String dbStyle = env.getProperty(prefix+".dbStyle", "org.beetl.sql.core.db.MySqlStyle");
             boolean dev = env.getProperty(prefix+".dev", Boolean.class, true);
+            String interceptor = env.getProperty(prefix+".interceptor", String.class,"org.beetl.sql.ext.DebugInterceptor");
             SQLManagerConfig defaultConfig = new  SQLManagerConfig();
             defaultConfig.setBasePackage(basePackage);
             defaultConfig.setDaoSuffix(daoSuffix);
@@ -79,7 +82,7 @@ public class BeetlSqlConfig {
             defaultConfig.setDbStyle(dbStyle);
             defaultConfig.setDev(dev);
             defaultConfig.setSqlFileCharset(sqlFileCharset);
-
+            defaultConfig.setInterceptor(interceptor);
             return defaultConfig;
 
         }
@@ -99,6 +102,12 @@ public class BeetlSqlConfig {
                 dev = env.getProperty(prefix+".dev", Boolean.class,defaultConfig.isDev());
                 return ;
             }
+            threadlocal = env.getProperty(prefix+".threadlocal");
+
+            if(dynamicSqlManager!=null&&threadlocal!=null){
+                throw new IllegalArgumentException("dynamic和threadlocal 只能二选一");
+            }
+
             basePackage = env.getProperty(prefix+".basePackage", defaultConfig.getBasePackage());
             daoSuffix = env.getProperty(prefix+".daoSuffix", defaultConfig.getDaoSuffix());
             sqlPath = env.getProperty(prefix+".sqlPath", defaultConfig.getSqlPath());
@@ -107,9 +116,14 @@ public class BeetlSqlConfig {
             dbStyle = env.getProperty(prefix+".dbStyle", defaultConfig.getDbStyle());
             dev = env.getProperty(prefix+".dev", Boolean.class,defaultConfig.isDev());
             ds = env.getProperty(prefix+".ds");
-            if(ds==null){
-                throw new NullPointerException(prefix+".ds 不能为空");
+            interceptor = env.getProperty(prefix+".interceptor", defaultConfig.getInterceptor());
+
+            if(!(dynamicSqlManager!=null||threadlocal!=null)){
+                if(ds==null){
+                    throw new NullPointerException(prefix+".ds 不能为空");
+                }
             }
+
         }
     }
 }

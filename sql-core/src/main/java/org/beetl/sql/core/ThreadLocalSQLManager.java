@@ -27,12 +27,12 @@ import java.util.Map;
 
 
 /**
- * 根据sqlManager操作的pojo的class定义来决定使用哪个SQLManager
- * 比如，物联网应用，时序数据可以入mysql库，随着数据增多，可以考虑到用时nosql，而不需要更改任何代码
+ * 代理了多个sqlManager
+ * 根据ThreadLocalSQLManager.locals 里存放的sqlManager来操作
+ *
  *
  *
  * @author xiandafu
- * @see  TargetSQLManager
  */
 public class ThreadLocalSQLManager extends  SQLManager {
 
@@ -42,10 +42,13 @@ public class ThreadLocalSQLManager extends  SQLManager {
     Map<String,SQLManager> sqlManagerMap = new HashMap<>();
 
 
-    public ThreadLocalSQLManager( Map<String,SQLManager> sqlManagerMap) {
+
+    public ThreadLocalSQLManager( Map<String,SQLManager> sqlManagerMap,MapperBuilder mapperBuilder,ClassLoaderKit classLoaderKit) {
        super();
 
        this.sqlManagerMap = sqlManagerMap;
+       this.setMapperBuilder(mapperBuilder);
+       this.setClassLoaderKit(classLoaderKit);
     }
 
 
@@ -74,12 +77,7 @@ public class ThreadLocalSQLManager extends  SQLManager {
 
     @Override
     public <T> LambdaQuery<T> lambdaQuery(Class<T> clazz) {
-        if (BeanKit.queryLambdasSupport) {
-            SQLManager sqlManager = decide();
-            return new LambdaQuery<T>(sqlManager, clazz);
-        } else {
-            throw new UnsupportedOperationException("需要Java8以上");
-        }
+        return super.lambdaQuery(clazz);
     }
 
     @Override
@@ -1083,7 +1081,7 @@ public class ThreadLocalSQLManager extends  SQLManager {
 
     @Override
     public <T> T getMapper(Class<T> mapperInterface) {
-        return decide().getMapper(mapperInterface);
+        return  super.getMapper(mapperInterface);
     }
 
 
@@ -1091,7 +1089,7 @@ public class ThreadLocalSQLManager extends  SQLManager {
 
     @Override
     public ClassLoaderKit getClassLoaderKit() {
-       return this.decide().getClassLoaderKit();
+       return super.getClassLoaderKit();
     }
 
     /**
@@ -1101,7 +1099,7 @@ public class ThreadLocalSQLManager extends  SQLManager {
      */
     @Override
     public void setClassLoaderKit(ClassLoaderKit classLoaderKit) {
-        decide().setClassLoaderKit(classLoaderKit);
+        super.setClassLoaderKit(classLoaderKit);
     }
 
     /**
