@@ -58,6 +58,15 @@ public class ThreadLocalService {
 		return mapper.allCount();
 	}
 
+
+	/**
+	 * 如果没有使用use，则使用默认
+	 * @return
+	 */
+	public long testDefault(){
+		return mapper.allCount();
+	}
+
 	protected  void use(String sqlManager){
 		ThreadLocalSQLManager.locals.set(sqlManager);
 	}

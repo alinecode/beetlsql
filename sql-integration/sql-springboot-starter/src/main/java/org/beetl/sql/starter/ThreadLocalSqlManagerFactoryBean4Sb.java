@@ -53,15 +53,18 @@ public class ThreadLocalSqlManagerFactoryBean4Sb
 
 
 		HashMap<String, SQLManager> allManager = new HashMap<>();
+		SQLManager defaultSQLManager = null;
 		for(String sqlManagerName:all){
 			SQLManager sqlManager = applicationContext.getBean(sqlManagerName,SQLManager.class);
+			if(defaultSQLManager==null){
+				defaultSQLManager = sqlManager;
+			}
 			allManager.put(sqlManagerName,sqlManager);
 
 		}
 		MapperBuilder mapperBuilder = new DefaultMapperBuilder();
 		ClassLoaderKit classLoaderKit = new ClassLoaderKit();
-		ThreadLocalSQLManager temp  = new ThreadLocalSQLManager(allManager,mapperBuilder,classLoaderKit);
-
+		ThreadLocalSQLManager temp  = new ThreadLocalSQLManager(defaultSQLManager,allManager,mapperBuilder,classLoaderKit);
 		temp.setName(name);
 		temp.register();
 		conditionalSQLManager = temp;

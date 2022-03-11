@@ -32,6 +32,13 @@ public class ThreadLocalTest {
 		Assert.assertNotEquals(dbCount1,dbCount2);
 	}
 
+	@Test
+	public void testWithDefault(){
+		long dbCount1 = dynamicService.testDefault();
+		long dbCount2 = dynamicService.test2();
+		Assert.assertNotEquals(dbCount1,dbCount2);
+	}
+
 
     /*以下代码初始化数据库用*/
 	@Autowired
