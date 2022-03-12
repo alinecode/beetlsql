@@ -17,6 +17,9 @@ public class ThreadLocalService {
 	SQLManager sqlManager;
 
 	@Autowired
+	ThreadLocalService self;
+
+	@Autowired
     UserInfoMapper mapper;
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void test(){
@@ -66,6 +69,19 @@ public class ThreadLocalService {
 	public long testDefault(){
 		return mapper.allCount();
 	}
+
+	@Use("sqlManager1")
+	public void testNested(){
+		long count1 = mapper.allCount();
+		long count2 = self.test2();
+		//回到"sqlManager1"
+		long count1_1 = mapper.allCount();
+		//使用默认
+		long defaultCont = self.testDefault();
+	}
+
+
+
 
 	protected  void use(String sqlManager){
 		ThreadLocalSQLManager.locals.set(sqlManager);

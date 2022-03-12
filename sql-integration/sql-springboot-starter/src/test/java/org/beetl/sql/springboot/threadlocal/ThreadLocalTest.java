@@ -40,6 +40,12 @@ public class ThreadLocalTest {
 	}
 
 
+	@Test
+	public void testWithNested(){
+		dynamicService.testNested();
+	}
+
+
     /*以下代码初始化数据库用*/
 	@Autowired
 	@Qualifier("sqlManager1")

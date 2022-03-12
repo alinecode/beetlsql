@@ -6,14 +6,14 @@
 
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
-    <version>3.12.11-RELEASE</version>
+    <version>3.13.0-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.12.11-RELEASE</version>
+        <version>3.13.0-RELEASE</version>
     </parent>
     <properties>
-        <beetlsql.version>3.12.11-RELEASE</beetlsql.version>
+        <beetlsql.version>3.13.0-RELEASE</beetlsql.version>
     </properties>
     <dependencies>
         <dependency>
