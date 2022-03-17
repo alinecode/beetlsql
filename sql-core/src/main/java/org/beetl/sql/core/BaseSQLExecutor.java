@@ -117,7 +117,7 @@ public class BaseSQLExecutor implements SQLExecutor {
     protected <T> T selectSingle(Map<String, Object> map, Class<T> target) {
         // 是否翻页来限定，一般调用这个方法，都可能是因为只有一条？
         List<T> result = select(target, map);
-        if (result.size() > 0) {
+        if (!result.isEmpty()) {
             return result.get(0);
         }
         return null;
@@ -279,7 +279,6 @@ public class BaseSQLExecutor implements SQLExecutor {
                 if (holder.hasAttr()) {
                     ResultSet keysSet = ps.getGeneratedKeys();
                     String[] attrs = holder.getAttrNames();
-                    Object[] values = new Object[holder.getAttrNames().length];
                     int index = 0;
                     while (keysSet.next()) {
                         Object entity = list.get(index);
@@ -307,7 +306,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 
     @Override
     public int[] updateBatch(Class<?> target, List<?> list) {
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return new int[0];
         }
         Connection conn = null;
@@ -744,8 +743,6 @@ public class BaseSQLExecutor implements SQLExecutor {
     }
 
     protected int insert(Object paras, KeyHolder holder) {
-
-
         Connection conn = null;
         ResultUpdateHolder ruh = null;
         InterceptorContext ctx = null;
@@ -759,10 +756,13 @@ public class BaseSQLExecutor implements SQLExecutor {
             sql = executeContext.sqlResult.jdbcSql;
             jdbcPara = executeContext.sqlResult.jdbcPara;
             conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
-            String[] cols = holder.hasAttr() ? this.getKeyHolderCols(holder, paras.getClass()) : null;
+            boolean holderHasAttr = holder.hasAttr();
+            String[] cols = holderHasAttr ? this.getKeyHolderCols(holder, paras.getClass()) : null;
             ruh = this.dbUpdateWithHolder(conn, sql, jdbcPara, cols);
+            if (holderHasAttr) {
+                this.handleHolder(ruh.statement, holder);
+            }
             int ret = (Integer) ruh.resultSet;
-            this.handleHolder(ruh.statement, holder);
             executeContext.executeResult = ret;
             this.callInterceptorAsAfter(ctx, ret);
             return ret;
@@ -841,27 +841,24 @@ public class BaseSQLExecutor implements SQLExecutor {
     }
 
     /**
-     * 处理插入数据库后，数据库自动生成值赋值给Holder
+     * 插入单条数据后，数据库自动生成值赋值给Holder
      *
-     * @param ps
-     * @param holder
-     * @throws SQLException
+     * @param ps     Statement
+     * @param holder KeyHolder
+     * @throws SQLException if a database access error occurs
+     *                      or this method is called on a closed <code>Statement</code>
      */
     protected void handleHolder(Statement ps, KeyHolder holder) throws SQLException {
-        if (!holder.hasAttr()) {
-            return;
-        }
         ResultSet rs = ps.getGeneratedKeys();
-        Object[] values = new Object[holder.getAttrNames().length];
-        while (rs.next()) {
-            for (int i = 0; i < values.length; i++) {
+        if (rs.next()) {
+            int length = holder.getAttrNames().length;
+            Object[] values = new Object[length];
+            for (int i = 0; i < length; i++) {
                 values[i] = rs.getObject(i + 1);
             }
-            break;
+            holder.setValues(values);
         }
-        holder.setValues(values);
         rs.close();
-
     }
 
     /**
