@@ -73,7 +73,7 @@ public class BeetlSqlConfig {
             String nameConversion = env.getProperty(prefix+".nameConversion", "org.beetl.sql.core.UnderlinedNameConversion");
             String dbStyle = env.getProperty(prefix+".dbStyle", "org.beetl.sql.core.db.MySqlStyle");
             boolean dev = env.getProperty(prefix+".dev", Boolean.class, true);
-            String interceptor = env.getProperty(prefix+".interceptor", String.class,"org.beetl.sql.ext.DebugInterceptor");
+            String interceptor = env.getProperty(prefix+".interceptor", String.class);
             SQLManagerConfig defaultConfig = new  SQLManagerConfig();
             defaultConfig.setBasePackage(basePackage);
             defaultConfig.setDaoSuffix(daoSuffix);

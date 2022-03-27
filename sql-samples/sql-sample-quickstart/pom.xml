@@ -6,18 +6,18 @@
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-sample-quickstart</artifactId>
-    <version>3.13.0-RELEASE</version>
+    <version>3.13.1-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-sample</artifactId>
-        <version>3.13.0-RELEASE</version>
+        <version>3.13.1-RELEASE</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-sample-common</artifactId>
-            <version>3.13.0-RELEASE</version>
+            <version>3.13.1-RELEASE</version>
         </dependency>
     </dependencies>
-    
+
 </project>
