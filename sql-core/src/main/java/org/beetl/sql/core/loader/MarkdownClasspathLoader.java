@@ -183,6 +183,10 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
             SQLFileParser parser = this.getParser(modelName, bf);
             SQLSource source = null;
             while ((source = parser.next()) != null) {
+                if(sqlSourceMap.containsKey(source.getId())){
+                    //存在的不再重新加载，监测到变化重新加载时都已经提前移除
+                    continue;
+                }
                 source.sqlType = SQLType.UNKNOWN;
                 SQLFileVersion version = new SQLFileVersion();
                 version.url = url;
