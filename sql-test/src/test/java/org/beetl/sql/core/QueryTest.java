@@ -105,6 +105,19 @@ public class QueryTest extends BaseTest {
     }
 
 
+	@Test
+	public void group(){
+		Query<User> query = sqlManager.query(User.class);
+		List<User> list = query
+				.andIn("id", Arrays.asList(1, 2))
+				.groupBy("name")
+				.select();
+		Assert.assertEquals(2,list.size());
+
+
+	}
+
+
 
 
 

@@ -30,7 +30,7 @@ public class MDDocBuilder extends BaseTemplateSourceBuilder {
 		template.binding("comment", entity.getComment());
 		template.binding("colsMap", entity.getTableDesc().getColsDetail());
 		template.binding("table", entity.getTableDesc());
-		String mdFileName = StringKit.toLowerCaseFirstOne(entity.getName())+".doc..md";
+		String mdFileName = StringKit.toLowerCaseFirstOne(entity.getName())+".doc.md";
 		Writer writer = project.getWriterByName(this.name,mdFileName);
 		template.renderTo(writer);
 

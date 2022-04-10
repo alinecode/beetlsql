@@ -40,12 +40,12 @@ public class ThreadLocalSQLManager extends  SQLManager {
 
 
     Map<String,SQLManager> sqlManagerMap = new HashMap<>();
+	SQLManager defaultSqlManager;
 
 
-
-    public ThreadLocalSQLManager( Map<String,SQLManager> sqlManagerMap,MapperBuilder mapperBuilder,ClassLoaderKit classLoaderKit) {
+    public ThreadLocalSQLManager( SQLManager defaultSqlManager,Map<String,SQLManager> sqlManagerMap,MapperBuilder mapperBuilder,ClassLoaderKit classLoaderKit) {
        super();
-
+       this.defaultSqlManager = defaultSqlManager;
        this.sqlManagerMap = sqlManagerMap;
        this.setMapperBuilder(mapperBuilder);
        this.setClassLoaderKit(classLoaderKit);
@@ -60,7 +60,7 @@ public class ThreadLocalSQLManager extends  SQLManager {
         String current = locals.get();
         SQLManager sqlManager = sqlManagerMap.get(current);
         if(sqlManager==null){
-        	throw new IllegalStateException("未指定sqlManager "+current);
+        	return defaultSqlManager;
 		}
         return sqlManager;
     }

@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-
 public class ThreadLocalService {
 	@Autowired
 	@Qualifier("proxySqlManager")
 	SQLManager sqlManager;
+
+	@Autowired
+	ThreadLocalService self;
 
 	@Autowired
     UserInfoMapper mapper;
@@ -57,6 +59,28 @@ public class ThreadLocalService {
 	public long test1(){
 		return mapper.allCount();
 	}
+
+
+	/**
+	 * 如果没有使用use，则使用默认
+	 * @return
+	 */
+	public long testDefault(){
+		return mapper.allCount();
+	}
+
+	@Use("sqlManager1")
+	public void testNested(){
+		long count1 = mapper.allCount();
+		long count2 = self.test2();
+		//回到"sqlManager1"
+		long count1_1 = mapper.allCount();
+		//使用默认
+		long defaultCont = self.testDefault();
+	}
+
+
+
 
 	protected  void use(String sqlManager){
 		ThreadLocalSQLManager.locals.set(sqlManager);

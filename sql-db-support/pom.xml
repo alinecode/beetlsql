@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.12.11-RELEASE</version>
+        <version>3.13.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-db-support</artifactId>
-    <version>3.12.11-RELEASE</version>
+    <version>3.13.1-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <module>mysql</module>
@@ -45,11 +45,11 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.12.11-RELEASE</version>
+            <version>3.13.1-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 
     </dependencies>
 
-    
+
 </project>

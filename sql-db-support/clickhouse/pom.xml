@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.12.11-RELEASE</version>
+        <version>3.13.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>clickhouse</artifactId>
-    <version>3.12.11-RELEASE</version>
+    <version>3.13.1-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>ru.yandex.clickhouse</groupId>
@@ -20,5 +20,5 @@
             <version>0.2.4</version>
         </dependency>
     </dependencies>
-    
+
 </project>
