@@ -36,6 +36,8 @@ public abstract class AbstractDBStyle implements DBStyle {
 	protected KeyWordHandler keyWordHandler = new DefaultKeyWordHandler();
 	SQLTemplateEngine sqlTemplateEngine = null;
 
+	protected  SQLManager sqlManager = null;
+
 	public static AssignID DEFAULT_ASSIGNID = null;
 
 	@Data
@@ -72,6 +74,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		ConcatContext concatContext = this.createConcatContext();
 		Select select = concatContext.select();
 		appendIdCondition(cls, select);
+		appendLogicFlagCondition(cls,select);
 		select.from(cls);
 		if (viewType != null) {
 			select.all(cls, viewType);
@@ -86,6 +89,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		ConcatContext concatContext = this.createConcatContext();
 		Select select = concatContext.select();
 		appendJoinInIdsCondition(cls, select);
+		appendLogicFlagCondition(cls,select);
 		select.from(cls);
 		if (viewType != null) {
 			select.all(cls, viewType);
@@ -102,6 +106,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Select select = concatContext.select();
 		select.count().from(cls);
 		appendIdCondition(cls, select);
+		appendLogicFlagCondition(cls,select);
 		return new SQLTableSource(select.toSql(),SQLType.SELECT);
 
 	}
@@ -124,7 +129,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		} else {
 			select.all(cls, viewType).from(cls);
 		}
-
+		appendLogicFlagCondition(cls,select);
 		getSelectTemplate(cls, select);
 		return new SQLTableSource(select.toSql(),SQLType.SELECT);
 	}
@@ -133,6 +138,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public SQLSource genSelectCountByTemplate(Class<?> cls) {
 		ConcatContext concatContext = this.createConcatContext();
 		Select select = concatContext.select();
+		appendLogicFlagCondition(cls,select);
 		select.count().from(cls);
 		getSelectTemplate(cls, select);
 		return new SQLTableSource(select.toSql(),SQLType.SELECT);
@@ -172,6 +178,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 			select.all(cls, viewType);
 		}
 
+		appendLogicFlagCondition(cls,select);
 		String sql = select.toSql();
 		return new SQLTableSource(sql,SQLType.SELECT);
 	}
@@ -184,6 +191,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 		Update update = getUpdate(cls);
 		appendIdCondition(cls, update);
+		appendLogicFlagCondition(cls,update);
 		appendVersion(classDesc, update);
 
 		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
@@ -194,9 +202,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public SQLSource genUpdateRawById(Class<?> cls) {
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
-		ClassDesc classDesc = table.genClassDesc(cls, nameConversion);
 		Update update = getRawUpdate(cls);
 		appendIdCondition(cls, update);
+		appendLogicFlagCondition(cls,update);
 		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
 	}
 
@@ -216,6 +224,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 		Update update = this.createConcatContext().update().from(cls);
 		appendIdCondition(cls, update);
+		appendLogicFlagCondition(cls,update);
 		appendVersion(classDesc, update);
 
 
@@ -272,6 +281,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 			update.notEmptyAssign(prop, col);
 
 		}
+		appendLogicFlagCondition(cls,update);
 		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
 	}
 
@@ -379,7 +389,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	}
 
 
-	protected void getSelectTemplate(Class<?> cls, WhereNode wHereNode) {
+	protected void getSelectTemplate(Class<?> cls, WhereNode whereNode) {
 
 		String tableName = nameConversion.getTableName(cls);
 		TableDesc table = this.metadataManager.getTable(tableName);
@@ -391,7 +401,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		while (cols.hasNext() && attrs.hasNext()) {
 			String col = cols.next();
 			String attr = attrs.next();
-			wHereNode.andIfNotEmpty(col, attr);
+			whereNode.andIfNotEmpty(col, attr);
 
 		}
 	}
@@ -483,9 +493,29 @@ public abstract class AbstractDBStyle implements DBStyle {
 				properId = propertyIt.next();
 				node.andEq(colId, properId);
 			}
+
 		}
 
 	}
+
+	protected void appendLogicFlagCondition(Class<?> cls, WhereNode node) {
+		if(!sqlManager.isQueryLogicDeleteEnable()){
+			return ;
+		}
+		String tableName = nameConversion.getTableName(cls);
+		TableDesc table = metadataManager.getTable(tableName);
+		ClassDesc classDesc = table.genClassDesc(cls, nameConversion);
+		if (classDesc.getClassAnnotation().getLogicDeleteAttrName() == null) {
+			return ;
+		}
+
+		String col = this.nameConversion.getColName(cls, classDesc.getClassAnnotation().getLogicDeleteAttrName());
+		Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
+
+		node.andConstNotEq(col,String.valueOf(value));
+
+	}
+
 
 
 	protected void appendJoinInIdsCondition(Class<?> cls, WhereNode node) {
@@ -662,7 +692,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 
 	@Override
 	public void config(SQLManager sqlManager) {
-
+			this.sqlManager = sqlManager;
 	}
 
 }

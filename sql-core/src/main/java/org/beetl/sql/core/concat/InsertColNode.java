@@ -90,9 +90,6 @@ public class InsertColNode  extends  TrimSupport implements Output {
 		public void toSql(ConcatBuilder sb) {
 			String col1 = sb.getCtx().keyWordHandler.getCol(col);
 			sb.append(col1);
-			if(colNode.trim){
-				sb.comma();
-			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 package org.beetl.sql.mapper;
 
+import org.beetl.core.fun.MethodInvoker;
 import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.builder.MapperConfigBuilder;
@@ -7,6 +8,7 @@ import org.beetl.sql.mapper.builder.MapperConfigBuilder;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
@@ -102,8 +104,8 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
     protected  Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable{
         //https://dzone.com/articles/correct-reflective-access-to-interface-default-methods
         //https://gist.github.com/lukaseder/f47f5a0d156bf7b80b67da9d14422d4a
-        //如何优化？
-        if (JavaType.JAVA_MAJOR_VERSION <= 8) {
+        if (JavaType.JAVA_MAJOR_VERSION >= 7||JavaType.JAVA_MAJOR_VERSION <=15
+        ) {
             final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class);
             constructor.setAccessible(true);
 
@@ -113,17 +115,23 @@ public class MapperJava8Proxy extends  MapperJavaProxy {
                     .unreflectSpecial(method, clazz)
                     .bindTo(proxy)
                     .invokeWithArguments(args);
-        } else {
-            //高于java8？
-            return MethodHandles.lookup()
-                    .findSpecial(
-                            method.getDeclaringClass(),
-                            method.getName(),
-                            MethodType.methodType(method.getReturnType(), new Class[0]),
-                            method.getDeclaringClass()
-                    ).bindTo(proxy)
-                    .invokeWithArguments(args);
+
+        }else{
+            ////https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8253870
+            Method[] ms = InvocationHandler.class.getMethods();
+            //JDK16新增
+            Method newInvokeDefaultMethod = null;
+            for(Method call:ms){
+                if(call.getName().equals("invokeDefault")){
+                    return call.invoke(null,proxy,method,args);
+                }
+            }
+            //不可能发生
+            throw new UnsupportedOperationException("当前Java版本 "+JavaType.JAVA_MAJOR_VERSION+" 未找到invokeDefault");
+
         }
+
+
     }
 
 

@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import javax.annotation.Resource;
+
 import java.lang.reflect.Method;
 import java.util.List;
 

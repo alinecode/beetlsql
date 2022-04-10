@@ -1,7 +1,9 @@
 package org.beetl.sql.core.query;
 
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.sql.clazz.ClassDesc;
 import org.beetl.sql.clazz.ColDesc;
+import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.*;
@@ -155,8 +157,26 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     private StringBuilder assembleSelectSql(String column) {
         StringBuilder sb = new StringBuilder("SELECT ").append(column);
         sb.append(" FROM ").append(getTableName(clazz)).append(' ').append(getSql());
+        appendLogicDelete(sb);
         sb = addAdditionalPartSql(sb);
         return sb;
+    }
+
+    private void appendLogicDelete(StringBuilder sb){
+        if(!sqlManager.isQueryLogicDeleteEnable()) {
+            return ;
+        }
+        NameConversion nameConversion = sqlManager.getNc();
+        String tableName = nameConversion.getTableName(clazz);
+        TableDesc table = sqlManager.getMetaDataManager().getTable(tableName);
+        ClassDesc classDesc = table.genClassDesc(clazz, nameConversion);
+        if (classDesc.getClassAnnotation().getLogicDeleteAttrName() == null) {
+            return ;
+        }
+        String col = nameConversion.getColName(clazz, classDesc.getClassAnnotation().getLogicDeleteAttrName());
+        Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
+        sb.append(" AND ").append(col).append("!=").append(value);
+
     }
 
     /**

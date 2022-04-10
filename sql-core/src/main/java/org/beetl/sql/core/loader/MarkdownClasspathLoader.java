@@ -316,5 +316,12 @@ public class MarkdownClasspathLoader extends AbstractClassPathSQLLoader {
     public void setCharset(String charset) {
         this.charset = charset;
     }
+
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        sqlSourceMap.clear();
+    }
 }
 

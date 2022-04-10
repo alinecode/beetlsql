@@ -29,5 +29,12 @@ public interface MetadataManager {
 	 */
 	void addTableVirtual(String realTable, String virtual);
 
+	/**
+	 * 重新加载数据库定义
+	 */
+	 default  void refresh(){
+
+	 }
+
 }
 

@@ -77,6 +77,9 @@ public class SQLManager implements DataAPI {
 	//一些简单的扩展方式
 	private SQLManagerExtend sqlManagerExtend;
 
+	//如果开启，那beetlsql的内置查询和修改语句，包括Query，结果都忽略被逻辑删除的部分，默认不开启
+	private boolean queryLogicDeleteEnable = false;
+
 	protected SQLManager() {
 
 
@@ -1757,5 +1760,22 @@ public class SQLManager implements DataAPI {
 
 	public void setSqlManagerExtend(SQLManagerExtend sqlManagerExtend) {
 		this.sqlManagerExtend = sqlManagerExtend;
+	}
+
+	public boolean isQueryLogicDeleteEnable() {
+		return queryLogicDeleteEnable;
+	}
+
+	public void setQueryLogicDeleteEnable(boolean queryLogicDeleteEnable) {
+		this.queryLogicDeleteEnable = queryLogicDeleteEnable;
+	}
+
+	/**
+	 * 清空sqlmanager，只能适用于开发模式，比如数据库在线调整后，生成的sql，缓存的数据库定义发生变化
+	 */
+	public void refresh(){
+		this.metaDataManager.refresh();
+		this.getSqlLoader().refresh();
+		this.getSqlTemplateEngine().clear();
 	}
 }

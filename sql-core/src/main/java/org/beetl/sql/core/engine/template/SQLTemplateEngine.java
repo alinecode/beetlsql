@@ -115,4 +115,8 @@ public interface SQLTemplateEngine {
         return str;
     }
 
+    default  void clear(){
+
+    }
+
 }

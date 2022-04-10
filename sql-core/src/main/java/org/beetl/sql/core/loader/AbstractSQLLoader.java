@@ -113,5 +113,8 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 		return id.getNamespace().replace('.', '/');
 	}
 
-
+	@Override
+	public void refresh() {
+		autoGenSourceMap.clear();
+	}
 }

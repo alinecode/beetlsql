@@ -13,11 +13,11 @@ import java.util.Date;
 public class ProductOrder {
     @AutoID
     Integer id;
-    Date createDate;
     @Version(1)
     Long version;
     @LogicDelete(1)
     Integer status;
+    Date createDate;
 
 }
 

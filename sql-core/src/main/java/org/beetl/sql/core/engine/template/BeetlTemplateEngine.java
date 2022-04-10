@@ -165,4 +165,9 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
     public Beetl getBeetl() {
         return beetl;
     }
+
+    @Override
+    public void clear(){
+        this.getBeetl().getGroupTemplate().getProgramCache().clearAll();
+    }
 }

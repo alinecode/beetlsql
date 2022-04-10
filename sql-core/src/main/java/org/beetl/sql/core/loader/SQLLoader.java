@@ -78,4 +78,6 @@ import org.beetl.sql.core.db.DBStyle;
 	 String getPathBySqlId(SqlId id);
 
 	 BeetlSQLException getException(SqlId id);
+
+	 void refresh();
  }
