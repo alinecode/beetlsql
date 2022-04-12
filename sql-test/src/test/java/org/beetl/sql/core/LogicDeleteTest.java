@@ -70,6 +70,7 @@ public class LogicDeleteTest extends BaseTest {
 		template.setId(order.getId());
 		int queryCount = sqlManager.template(template).size();
 		Assert.assertEquals(0,queryCount);
+		
 
 		//恢复默认值
 		sqlManager.refresh();
