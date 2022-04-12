@@ -131,7 +131,7 @@ public class MarkdownParser implements SQLFileParser {
 			String s = str.trim();
 			if(s.startsWith("```")||s.startsWith("~~~")){
 				//忽略以code block开头的符号
-				continue;
+				break;
 			}
 			sb.append(str).append(lineSeparator);
 		}
