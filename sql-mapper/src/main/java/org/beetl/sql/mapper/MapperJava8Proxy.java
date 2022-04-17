@@ -111,16 +111,8 @@ public class MapperJava8Proxy extends MapperJavaProxy {
 					.bindTo(proxy)
 					.invokeWithArguments(args);
 		} else {
-			// https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8253870
-			Method[] ms = InvocationHandler.class.getMethods();
-			// JDK16新增InvocationHandler.invokeDefault()
-			for (Method call : ms) {
-				if ("invokeDefault".equals(call.getName())) {
-					return call.invoke(null, proxy, method, args);
-				}
-			}
-			//不可能发生
-			throw new UnsupportedOperationException("当前Java版本 " + JavaType.JAVA_MAJOR_VERSION + " 未找到invokeDefault");
+			Method invoke = JavaType.invokeDefaultMethod;
+			return invoke.invoke(null, proxy, method, args);
 		}
 	}
 

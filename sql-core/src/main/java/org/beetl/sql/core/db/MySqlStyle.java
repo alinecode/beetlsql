@@ -19,11 +19,11 @@ import java.util.List;
  */
 public class MySqlStyle extends AbstractDBStyle {
 
-    protected RangeSql rangeSql = null;
+	protected RangeSql rangeSql = null;
 
-    public MySqlStyle() {
+	public MySqlStyle() {
 
-        rangeSql = new OffsetLimitRange(this);
+		rangeSql = new OffsetLimitRange(this);
 		this.keyWordHandler = new KeyWordHandler() {
 			@Override
 			public String getTable(String tableName) {
@@ -32,49 +32,53 @@ public class MySqlStyle extends AbstractDBStyle {
 			}
 			@Override
 			public String getCol(String colName) {
-                return StringKit.addEscape(colName,'`');
+				//mysql的json查找
+				if(colName.indexOf('>')!=-1){
+					return colName;
+				}
+				return StringKit.addEscape(colName,'`');
 
 			}
 
 		};
-    }
+	}
 
 
 
-    @Override
-    public int getIdType(Class c,String idProperty) {
-    	 	List<Annotation> ans = BeanKit.getAllAnnotation(c, idProperty);
-        int idType = DBType.ID_AUTO; //默认是自增长
+	@Override
+	public int getIdType(Class c,String idProperty) {
+		List<Annotation> ans = BeanKit.getAllAnnotation(c, idProperty);
+		int idType = DBType.ID_AUTO; //默认是自增长
 
-        for (Annotation an : ans) {
-            if (an instanceof AutoID) {
-                idType = DBType.ID_AUTO;
-                break;// 优先
-            } else if (an instanceof SeqID) {
-                //my sql not support
-            } else if (an instanceof AssignID) {
-                idType = DBType.ID_ASSIGN;
-            }
-        }
+		for (Annotation an : ans) {
+			if (an instanceof AutoID) {
+				idType = DBType.ID_AUTO;
+				break;// 优先
+			} else if (an instanceof SeqID) {
+				//my sql not support
+			} else if (an instanceof AssignID) {
+				idType = DBType.ID_ASSIGN;
+			}
+		}
 
-        return idType;
+		return idType;
 
-    }
+	}
 
-    @Override
-    public String getName() {
-        return "mysql";
-    }
+	@Override
+	public String getName() {
+		return "mysql";
+	}
 
-    @Override
-    public int getDBType() {
-        return DBType.DB_MYSQL;
-    }
+	@Override
+	public int getDBType() {
+		return DBType.DB_MYSQL;
+	}
 
-    @Override
-    public RangeSql getRangeSql() {
-        return this.rangeSql;
-    }
+	@Override
+	public RangeSql getRangeSql() {
+		return this.rangeSql;
+	}
 
 
 
