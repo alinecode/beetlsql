@@ -1,10 +1,20 @@
-[![Maven Central](https://img.shields.io/maven-central/v/com.ibeetl/beetlsql.svg)](https://mvnrepository.com/search?q=g:com.ibeetl%20AND%20beetlsql)
+<p align="center">
+	<img alt="logo" src="https://gitee.com/xiandafu/beetlsql/raw/master/doc/bee-logo.png" width="120" height="120">
+</p>
+<p align="center">
+	<a href="http://ibeetl.com/">http://ibeetl.com</a> 
+</p>
+<p align="center">
+	<a href="https://mvnrepository.com/search?q=g:com.ibeetl%20AND%20beetlsql"><img src="https://img.shields.io/maven-central/v/com.ibeetl/beetlsql.svg"></a>
+	<a href="https://www.oracle.com/java/technologies/downloads/"><img src="https://img.shields.io/badge/JDK-8+-red.svg"></a>
+	<a href="https://gitee.com/xiandafu/beetlsql/blob/master/LICENSE"><img src="https://img.shields.io/:license-BSD%203-green.svg?style=flat-square"></a>
+</p>
 
-## 数据访问框架
+## 简介
 
 BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**的数据库访问框架，在一个系统多个库的情况下，提供一致的编写代码方式。支持如下数据平台
 
-* 传统数据库：MySQL(国内兼容MySQL协议的各种大数据库),MariaDB,Oralce,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
+* 传统数据库：MySQL(国内兼容MySQL协议的各种大数据库),MariaDB,Oracle,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
 * 大数据：HBase，ClickHouse，Cassandar，Hive
 * 物联网时序数据库：Machbase，TD-Engine，IotDB
 * SQL查询引擎:Drill,Presto，Druid
@@ -20,9 +30,10 @@ BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着�
 * 网站 http://ibeetl.com
 * qq群 219324263(满) 252010126
 
+## 文档
 BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetlsql3_guide)
 
-社区提供的文档 https://beetlsql-doc.vercel.app/
+社区提供的文档 https://beetlsql-doc.vercel.app
 
 ```xml
 <dependency>
@@ -32,7 +43,7 @@ BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetl
 </dependency>
 ```
 
- [BeetlSQL 2.x 使用说明，旧版本](README2.md)
+[BeetlSQL 2.x 使用说明，旧版本](README2.md)
 ```xml
 <dependency>
     <groupId>com.ibeetl</groupId>
@@ -59,10 +70,11 @@ BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetl
 ##  编译源码
 
 
-```java
+```bash
 git clone https://gitee.com/xiandafu/beetlsql
 mvn clean package
-mvn clean install #如果想修改源码
+# 如果想修改源码
+mvn clean install 
 ```
 
 注意：BeetlSQL3 集成了Spring，以及支持大数据等，就算配置了国内镜像，也可能需要很长时间下载大数据依赖包，为了让编译快速通过，你需要进入pom.xml ，屏蔽sql-integration,sql-db-support,sql-jmh三个模块
@@ -73,16 +85,16 @@ mvn clean install #如果想修改源码
 <module>sql-core</module>
 <module>sql-mapper</module>
 <module>sql-util</module>
-<module>sql-fetech</module>
+<module>sql-fetch</module>
 <!-- 打包到一起 -->
 <module>beetlsql</module>
 <module>sql-gen</module>
 <module>sql-test</module>
 <module>sql-samples</module>
 <!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->
-<!--		<module>sql-integration</module>-->
+<!--	<module>sql-integration</module>-->
 <!--    <module>sql-jmh</module>-->
-<!--		<module>sql-db-support</module>-->
+<!--	<module>sql-db-support</module>-->
 </modules>
  ```
 
@@ -435,7 +447,7 @@ public @interface Jackson {
 /**
  * 组合注解，给相关操作添加额外的租户信息，从而实现根据租户分表或者分库
  */
-@Retention(RetentionPolicy.RUNTIM@
+@Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.TYPE})
 @Builder(TenantContext.class)
 public @interface Tenant {
