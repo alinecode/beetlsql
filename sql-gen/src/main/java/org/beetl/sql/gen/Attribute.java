@@ -27,8 +27,19 @@ public class Attribute {
 	 */
 	private String comment;
 
+	/**
+	 * abc-> getAbc
+	 * URL -> getURL
+	 * xOrder->getxOrder
+	 * @return
+	 */
 	public String getMethodName() {
-		return name.length() > 2 ? StringKit.toUpperCaseFirstOne(name) : name;
+
+		if (name.length() > 1 && Character.isUpperCase(name.charAt(1))) {
+			return name;
+		}else{
+			return StringKit.toUpperCaseFirstOne(name);
+		}
 	}
 
 }
