@@ -156,13 +156,14 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      */
     private StringBuilder assembleSelectSql(String column) {
         StringBuilder sb = new StringBuilder("SELECT ").append(column);
-        sb.append(" FROM ").append(getTableName(clazz)).append(' ').append(getSql());
-        appendLogicDelete(sb);
+        StringBuilder  whereSql= getSql();
+        sb.append(" FROM ").append(getTableName(clazz)).append(' ').append(whereSql);
+        appendLogicDelete(sb, whereSql.length()==0);
         sb = addAdditionalPartSql(sb);
         return sb;
     }
 
-    private void appendLogicDelete(StringBuilder sb){
+    private void appendLogicDelete(StringBuilder sb,boolean whereAppend){
         if(!sqlManager.isQueryLogicDeleteEnable()) {
             return ;
         }
@@ -175,6 +176,9 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         }
         String col = nameConversion.getColName(clazz, classDesc.getClassAnnotation().getLogicDeleteAttrName());
         Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
+        if(whereAppend){
+        	sb.append(" WHERE 1=1 ");
+		}
         sb.append(" AND ").append(col).append("!=").append(value);
 
     }
