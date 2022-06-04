@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * http://www.cnblogs.com/shishm/archive/2012/01/30/2332142.html
+ * <a href="http://www.cnblogs.com/shishm/archive/2012/01/30/2332142.html">java.sql.Types，数据库字段类型，java数据类型的对应关系</a>
  *
  * @author lijiazhi
  * @author linziguan@live.com 2016-12-08 丰富JavaType功能，可以javaType与jdbcType之间互相转换
@@ -38,44 +38,54 @@ public class JavaType {
 	public static Map<String, Integer> jdbcTypeNames = new HashMap<String, Integer>();
 	public static Map<Integer, String> jdbcTypeId2Names = new HashMap<Integer, String>();
 
-	public static final int JAVA_MAJOR_VERSION = getJavaMajorVersion();
+	public static final int JAVA_MAJOR_VERSION;
 
-	//java16支持调用default method的方法
+	/**
+	 * java16+ 支持调用default method的方法
+	 */
 	public static Method invokeDefaultMethod = null;
 
-	static int getJavaMajorVersion() {
-		int majorVersion = 8;
-		final String javaVersion = System.getProperty("java.version");
-		final String[] parts = javaVersion.split("\\.");
-		//link: http://openjdk.java.net/jeps/223
-		boolean isJep223;
+
+	/*
+	 * 获取 Java 版本号
+	 * http://openjdk.java.net/jeps/223
+	 * 1.8.x  = 8
+	 * 11.x   = 11
+	 * 17.x   = 17
+	 */
+	static {
+		int majorVersion;
 		try {
-			final int token = Integer.parseInt(parts[0]);
-			isJep223 = token != 1;
-			majorVersion =  isJep223 ? token : Integer.parseInt(parts[1]);
-		} catch (final Exception e) {
+			String version = System.getProperty("java.specification.version");
+			if (version.startsWith("1.")) {
+				version = version.substring(2);
+			}
+			majorVersion = Integer.parseInt(version);
+		} catch (Throwable ignored) {
 			majorVersion = 8;
 		}
+		JAVA_MAJOR_VERSION = majorVersion;
+	}
 
-		if(majorVersion>=16){
+	/*
+	 * JDK16+ 新增InvocationHandler.invokeDefault()
+	 */
+	static {
+		if (JAVA_MAJOR_VERSION >= 16) {
 			// https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8253870
 			Method[] ms = InvocationHandler.class.getMethods();
-			// JDK16新增InvocationHandler.invokeDefault()
+
 			for (Method call : ms) {
 				if ("invokeDefault".equals(call.getName())) {
 					invokeDefaultMethod = call;
 					break;
 				}
 			}
-			if(invokeDefaultMethod==null){
+			if (invokeDefaultMethod == null) {
 				//不可能发生
 				throw new UnsupportedOperationException("当前Java版本 " + JavaType.JAVA_MAJOR_VERSION + " 未找到invokeDefault");
 			}
 		}
-
-		return majorVersion;
-
-
 	}
 
 	public static boolean isJdk8() {
