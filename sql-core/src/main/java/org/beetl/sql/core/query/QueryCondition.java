@@ -30,6 +30,10 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     protected GroupBy groupBy = null;
     protected boolean distinct = false;
 
+    protected  String tableName;
+    //提醒表名是虚拟表，需要表达式计算真实表名
+    boolean asVirtual =false;
+
     protected QueryCondition() {
     }
 
@@ -68,7 +72,15 @@ public class QueryCondition<T> implements QueryConditionI<T> {
      * @return
      */
     public String getTableName(Class<?> c) {
-        String tname = sqlManager.getNc().getTableName(c);
+    	if(this.tableName!=null){
+    		return this.tableName;
+		}
+		String tname = sqlManager.getNc().getTableName(c);
+    	if(asVirtual){
+    		tname = sqlManager.getSqlTemplateEngine().runTemplate(tname,null);
+		}
+
+
         TableDesc desc = sqlManager.getMetaDataManager().getTable(tname);
         String tableName2 = desc.getName();
         AbstractDBStyle style = (AbstractDBStyle) sqlManager.getDbStyle();
@@ -429,7 +441,19 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return manyCondition(condition, OR);
     }
 
-    private Query<T> manyCondition(QueryCondition condition, String link) {
+	@Override
+	public Query<T> asTable(String tableName) {
+		this.tableName = tableName;
+		return (Query)this;
+	}
+
+	@Override
+	public Query<T> virtualTable() {
+    	asVirtual=true;
+		return (Query)this;
+	}
+
+	private Query<T> manyCondition(QueryCondition condition, String link) {
         if (!(condition instanceof QueryCondition)) {
             throw new BeetlSQLException(BeetlSQLException.QUERY_CONDITION_ERROR, "连接条件必须是一个 QueryCondition 类型");
         }

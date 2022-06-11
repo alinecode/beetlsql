@@ -1,7 +1,10 @@
 package org.beetl.sql.springboot.simple;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.beetl.core.Context;
+import org.beetl.core.Function;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,18 @@ public class SimpleDataSourceConfig {
             public void customize(String sqlMangerName, SQLManager manager) {
             	//初始化sql，这里也可以对sqlManager进行修改
 				DBInitHelper.executeSqlScript(manager,"db/schema.sql");
+				//演示一个虚拟表
+				manager.addVirtualTable("department",Department.virtual_table);
+				BeetlTemplateEngine templateEngine = (BeetlTemplateEngine)manager.getSqlTemplateEngine();
+				// 注册一个方法来实现映射到多表的逻辑
+				templateEngine.getBeetl().getGroupTemplate().registerFunction("toTable", new Function(){
+					@Override
+					public Object call(Object[] paras, Context ctx) {
+						String tableName = (String)paras[0];
+						return tableName;
+
+					}
+				});
             }
         };
     }

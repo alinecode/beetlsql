@@ -49,4 +49,11 @@ public class SimpleTest {
 
 
 	}
+
+
+	@Test
+	public void toTable(){
+		service.toTable();
+
+	}
 }

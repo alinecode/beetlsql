@@ -5,6 +5,7 @@ import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.concat.ConcatBuilder;
 import org.beetl.sql.core.loader.SQLLoader;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -39,6 +40,7 @@ public interface SQLTemplateEngine {
         return getSqlTemplate(id);
     }
 
+    String  runTemplate(String template, Map paras);
 
     /**
      * 校验模板是否正确

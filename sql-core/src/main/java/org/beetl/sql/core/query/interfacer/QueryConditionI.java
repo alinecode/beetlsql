@@ -103,6 +103,19 @@ public interface QueryConditionI<T> {
 
     Query<T> or(QueryCondition condition);
 
+	/**
+	 * 指定一个表名字，而不是T对应的表
+	 * @param tableName
+	 * @return
+	 */
+	Query<T> asTable(String tableName);
+
+	/**
+	 * 指示表名是个表达式，需要映射成真实表
+	 * @return
+	 */
+	Query<T> virtualTable();
+
 
     /**
      * 获取sql

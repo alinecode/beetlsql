@@ -302,6 +302,17 @@ public class LambdaQuery<T> extends Query<T> {
         super.and(condition);
         return this;
     }
+	@Override
+	public LambdaQuery<T> asTable(String tableName){
+    	super.asTable(tableName);
+    	return this;
+	}
+
+	@Override
+	public LambdaQuery<T> virtualTable() {
+		super.virtualTable();
+		return this;
+	}
 
     @Override
     public LambdaQuery<T> or(QueryCondition condition) {

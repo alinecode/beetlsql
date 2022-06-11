@@ -10,6 +10,7 @@ import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.concat.ConcatBuilder;
 import org.beetl.sql.core.loader.SQLLoader;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -54,8 +55,20 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
         return new BeetlSQLTemplate(template);
     }
 
+	@Override
+	public String runTemplate(String template, Map paras) {
+		Template beetlTemplate = beetl.getGroupTemplate().getTemplate(template,tempLoader);
+		if(paras!=null){
+			beetlTemplate.binding(paras);
+		}
+		//TODO,如何打印出错误
+		String str = beetlTemplate.render();
+		return str;
 
-    @Override
+	}
+
+
+	@Override
     public SQLErrorInfo validate(String sqlTemplate) {
         StringTemplateResourceLoader templateResourceLoader = new StringTemplateResourceLoader();
         BeetlException exception = this.beetl.getGroupTemplate().validateTemplate(sqlTemplate, templateResourceLoader);

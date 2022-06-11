@@ -2,10 +2,12 @@ package org.beetl.sql.springboot.simple;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.springboot.UserInfo;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -60,6 +62,24 @@ public class SimpleService {
 			throw new IllegalStateException("timeout");
 		}
 
+
+	}
+
+
+	/**
+	 * 一个虚拟表的测试，用于分表
+	 */
+	@Transactional
+	public void toTable(){
+		Department dept = sqlManager.single(Department.class,1);
+		String sql =  "select * from ${toTable('department')} where id = 1";
+		List<Department> list1 = sqlManager.execute(sql,Department.class,null);
+		//使用真实的一个表
+		List<Department> list2 = sqlManager.lambdaQuery(Department.class).asTable("department")
+				.andEq(Department::getId,1).select();
+		//高速Query类，这个是是个虚拟表
+		List<Department> list3 = sqlManager.lambdaQuery(Department.class).virtualTable()
+				.andEq(Department::getId,1).select();
 
 	}
 }
