@@ -81,5 +81,15 @@ public class SimpleService {
 		List<Department> list3 = sqlManager.lambdaQuery(Department.class).virtualTable()
 				.andEq(Department::getId,1).select();
 
+		Department dataValue = new Department();
+		dataValue.setId(10);
+		dataValue.setName("hello");
+		sqlManager.insert(dataValue);
+
+		dataValue.setId(11);
+		DepartmentMapper departmentMapper = sqlManager.getMapper(DepartmentMapper.class);
+		departmentMapper.insert(dataValue);
+
+
 	}
 }
