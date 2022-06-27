@@ -7,8 +7,6 @@ import org.beetl.sql.mapper.annotation.Sql;
 import org.beetl.sql.mapper.annotation.SqlResource;
 import org.beetl.sql.mapper.annotation.Template;
 
-import javax.annotation.Resource;
-
 @SqlResource("user")
 public interface UserStreamDao  extends BaseMapper<User> {
 	@Sql("select * from sys_user where age!=?")
