@@ -50,5 +50,13 @@ import java.lang.reflect.Method;
  * @author xiandafu
  */
 public abstract class MapperInvoke {
+	/**
+	 *
+	 * @param sm
+	 * @param entityClass 此方法所在的mapper的映射类，通常是方法不能确定映射类型时候，采用
+	 * @param m
+	 * @param args
+	 * @return
+	 */
     public abstract Object call(SQLManager sm, Class entityClass, Method m, Object[] args);
 }
