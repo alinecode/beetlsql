@@ -1,5 +1,6 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.core.call.CallReady;
 import org.beetl.sql.core.engine.template.SQLErrorInfo;
 import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.PageRequest;

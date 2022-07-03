@@ -8,6 +8,10 @@ import org.beetl.sql.clazz.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.StringKit;
+import org.beetl.sql.core.call.CallArg;
+import org.beetl.sql.core.call.CallReady;
+import org.beetl.sql.core.call.InArg;
+import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.DBType;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.SQLParameter;
@@ -723,11 +727,11 @@ public class BaseSQLExecutor implements SQLExecutor {
 		try {
 			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
 			call = conn.prepareCall(callReady.getSql());
-			List<CallReady.CallArg> list = callReady.getArgs();
+			List<CallArg> list = callReady.getArgs();
 
-			for(CallReady.CallArg arg:list){
-				if(arg instanceof CallReady.InArg){
-					CallReady.InArg inArg  = ((CallReady.InArg) arg);
+			for(CallArg arg:list){
+				if(arg instanceof InArg){
+					InArg inArg  = ((InArg) arg);
 					if(inArg.hasJdbcType()){
 						call.setObject(arg.getIndex(),inArg,inArg.getJdbcType());
 					}else{
@@ -735,7 +739,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 					}
 
 				}else{
-					CallReady.OutArg outArg = (CallReady.OutArg)arg;
+					OutArg outArg = (OutArg)arg;
 					if(outArg.hasJdbcType()){
 						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
 					}else{
@@ -765,12 +769,12 @@ public class BaseSQLExecutor implements SQLExecutor {
 		try {
 			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
 			call = conn.prepareCall(callReady.getSql());
-			List<CallReady.CallArg> list = callReady.getArgs();
+			List<CallArg> list = callReady.getArgs();
 			BeanProcessor beanProcessor = this.getBeanProcessor();
 
-			for(CallReady.CallArg arg:list){
-				if(arg instanceof CallReady.InArg){
-					CallReady.InArg inArg  = ((CallReady.InArg) arg);
+			for(CallArg arg:list){
+				if(arg instanceof InArg){
+					InArg inArg  = ((InArg) arg);
 					if(inArg.hasJdbcType()){
 						call.setObject(arg.getIndex(),inArg,inArg.getJdbcType());
 					}else{
@@ -779,7 +783,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 					}
 
 				}else{
-					CallReady.OutArg outArg = (CallReady.OutArg)arg;
+					OutArg outArg = (OutArg)arg;
 					if(outArg.hasJdbcType()){
 						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
 					}else{
@@ -787,7 +791,7 @@ public class BaseSQLExecutor implements SQLExecutor {
 						if(sqlTypeHandler==null){
 							throw new UnsupportedOperationException("需要指示jdbc type"+arg.getIndex());
 						}
-						outArg.setJdbcType(sqlTypeHandler.jdbcType());
+
 						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
 					}
 				}
@@ -818,10 +822,10 @@ public class BaseSQLExecutor implements SQLExecutor {
 			executeContext.executeResult = resultList;
 			resultList = (List) this.afterBean(resultList);
 			//处理out部分
-			for(CallReady.CallArg arg:list){
-				if(arg instanceof CallReady.OutArg){
-					if(arg instanceof CallReady.OutArg) {
-						CallReady.OutArg outArg = (CallReady.OutArg) arg;
+			for(CallArg arg:list){
+				if(arg instanceof OutArg){
+					if(arg instanceof OutArg) {
+						OutArg outArg = (OutArg) arg;
 						Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
 						outArg.setOutValue(value);
 					}

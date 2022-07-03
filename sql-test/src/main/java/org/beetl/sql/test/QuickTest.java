@@ -2,26 +2,13 @@ package org.beetl.sql.test;
 
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.core.ReThrowConsoleErrorHandler;
-import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.core.*;
+import org.beetl.sql.core.call.CallReady;
+import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.H2Style;
-import org.beetl.sql.core.db.MySqlStyle;
-import org.beetl.sql.core.nosql.TaosStyle;
-import org.beetl.sql.core.page.DefaultPageRequest;
-import org.beetl.sql.core.page.PageResult;
-import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.gen.SourceBuilder;
-import org.beetl.sql.gen.SourceConfig;
-import org.beetl.sql.gen.simple.ConsoleOnlyProject;
-import org.beetl.sql.gen.simple.EntitySourceBuilder;
-import org.beetl.sql.gen.simple.MDSourceBuilder;
-import org.beetl.sql.gen.simple.MapperSourceBuilder;
 
 import javax.sql.DataSource;
-import java.sql.*;
-import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
@@ -56,7 +43,7 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		CallReady callReady = new CallReady("CALL test.mytest(?,?)");
-		callReady.add(new CallReady.OutArg(Integer.class)).add(new CallReady.OutArg(String.class));
+		callReady.add(new OutArg(Integer.class)).add(new OutArg(String.class));
 		List<User> users = sqlManager.executeCall(callReady,User.class);
 		Integer cout = (Integer)callReady.getOutValue(1);
 		String ret = (String)callReady.getOutValue(2);
