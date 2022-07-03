@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Types;
 
 public class TimeTypeHandler extends JavaSqlTypeHandler {
 
@@ -15,6 +16,11 @@ public class TimeTypeHandler extends JavaSqlTypeHandler {
 	@Override
 	public void setParameter(WriteTypeParameter writeTypeParameter,Object obj)throws SQLException {
 		writeTypeParameter.getPs().setTime(writeTypeParameter.getIndex(),(Time) obj);
+	}
+
+	@Override
+	public int jdbcType() {
+		return Types.TIME;
 	}
 
 }

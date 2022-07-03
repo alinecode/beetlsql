@@ -15,6 +15,7 @@ import org.beetl.sql.core.engine.template.SQLTemplate;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.mapping.*;
+import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
 import org.beetl.sql.core.meta.MetadataManager;
 
 import java.lang.annotation.Annotation;
@@ -714,7 +715,130 @@ public class BaseSQLExecutor implements SQLExecutor {
 
     }
 
-    @Override
+	@Override
+	public int executeCall(CallReady callReady) {
+
+		Connection conn = null;
+		CallableStatement  call  = null;
+		try {
+			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
+			call = conn.prepareCall(callReady.getSql());
+			List<CallReady.CallArg> list = callReady.getArgs();
+
+			for(CallReady.CallArg arg:list){
+				if(arg instanceof CallReady.InArg){
+					CallReady.InArg inArg  = ((CallReady.InArg) arg);
+					if(inArg.hasJdbcType()){
+						call.setObject(arg.getIndex(),inArg,inArg.getJdbcType());
+					}else{
+						call.setObject(arg.getIndex(),inArg);
+					}
+
+				}else{
+					CallReady.OutArg outArg = (CallReady.OutArg)arg;
+					if(outArg.hasJdbcType()){
+						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
+					}else{
+						//@ TODO ,根据outType 判断
+					}
+				}
+			}
+
+			int ret  = call.executeUpdate();
+
+
+			return ret;
+
+		} catch (SQLException e) {
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		} finally {
+			clean(true, conn, call);
+		}
+
+
+	}
+
+	@Override
+	public <T> List<T> executeCall(CallReady callReady, Class<T> clazz) {
+		Connection conn = null;
+		CallableStatement  call  = null;
+		try {
+			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
+			call = conn.prepareCall(callReady.getSql());
+			List<CallReady.CallArg> list = callReady.getArgs();
+			BeanProcessor beanProcessor = this.getBeanProcessor();
+
+			for(CallReady.CallArg arg:list){
+				if(arg instanceof CallReady.InArg){
+					CallReady.InArg inArg  = ((CallReady.InArg) arg);
+					if(inArg.hasJdbcType()){
+						call.setObject(arg.getIndex(),inArg,inArg.getJdbcType());
+					}else{
+
+						call.setObject(arg.getIndex(),inArg.getArg());
+					}
+
+				}else{
+					CallReady.OutArg outArg = (CallReady.OutArg)arg;
+					if(outArg.hasJdbcType()){
+						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
+					}else{
+						JavaSqlTypeHandler sqlTypeHandler = beanProcessor.getHandler(outArg.getOutType());
+						if(sqlTypeHandler==null){
+							throw new UnsupportedOperationException("需要指示jdbc type"+arg.getIndex());
+						}
+						outArg.setJdbcType(sqlTypeHandler.jdbcType());
+						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
+					}
+				}
+			}
+
+			ResultSet ret  = call.executeQuery();
+			List<T> resultList = null;
+			ClassAnnotation classAnnotation = ClassAnnotation.getClassAnnotation(clazz);
+			//单行映射
+			RowMapper rowMapper =
+					executeContext.rowMapper != null ? executeContext.rowMapper : classAnnotation.getRowMapper();
+			//结果集映射
+			ResultSetMapper resultSetMapper = executeContext.resultMapper != null ?
+					executeContext.resultMapper :
+					classAnnotation.getResultSetMapper();
+			//映射方式三选一
+			if (resultSetMapper != null) {
+				resultList = resultSetMapper
+						.mapping(executeContext, clazz, ret, classAnnotation.getMapperConfig());
+			} else if (rowMapper != null) {
+
+				resultList = new RowMapperResultSetExt<T>(rowMapper, beanProcessor)
+						.handleResultSet(executeContext, ret, clazz, classAnnotation.getMapperConfig());
+			} else {
+				//默认方式
+				resultList = mappingSelect(clazz, ret);
+			}
+			executeContext.executeResult = resultList;
+			resultList = (List) this.afterBean(resultList);
+			//处理out部分
+			for(CallReady.CallArg arg:list){
+				if(arg instanceof CallReady.OutArg){
+					if(arg instanceof CallReady.OutArg) {
+						CallReady.OutArg outArg = (CallReady.OutArg) arg;
+						Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
+						outArg.setOutValue(value);
+					}
+				}
+			}
+
+			return resultList;
+
+		} catch (SQLException e) {
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		} finally {
+			clean(true, conn, call);
+		}
+
+	}
+
+	@Override
     public ExecuteContext getExecuteContext() {
         return executeContext;
     }

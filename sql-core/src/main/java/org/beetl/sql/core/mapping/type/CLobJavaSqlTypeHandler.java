@@ -3,6 +3,7 @@ package org.beetl.sql.core.mapping.type;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class CLobJavaSqlTypeHandler extends JavaSqlTypeHandler {
 	@Override
@@ -18,5 +19,10 @@ public class CLobJavaSqlTypeHandler extends JavaSqlTypeHandler {
 	public void setParameter(WriteTypeParameter writeTypeParameter,Object obj)throws SQLException {
 		//TODO 需要确认是否这样，还是有更好的办法
 		writeTypeParameter.getPs().setClob(writeTypeParameter.getIndex(),(Clob)obj);
+	}
+
+	@Override
+	public int jdbcType() {
+		return Types.CLOB;
 	}
 }

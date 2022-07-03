@@ -1447,6 +1447,22 @@ public class SQLManager implements DataAPI {
 		return script.sqlReadyBatchExecuteUpdate(batch);
 	}
 
+	@Override
+	public int executeCall(CallReady callReady) {
+		return 0;
+	}
+
+	@Override
+	public <T> List<T> executeCall(CallReady callReady, Class<T> clazz) {
+		SqlId id = callReady.getSqlId()!=null?callReady.getSqlId():this.sqlIdFactory.buildSql(callReady.getSql());
+		SQLSource source = new SQLSource(id, callReady.getSql());
+		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
+
+		SQLExecutor script = dbStyle.buildExecutor(executeContext);
+		return script.executeCall(callReady,clazz);
+
+	}
+
 
 	/**
 	 * 自己用Connection执行jdbc，通常用于存储过程调用，或者需要自己完全控制的jdbc

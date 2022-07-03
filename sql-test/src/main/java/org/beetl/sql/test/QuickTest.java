@@ -55,25 +55,37 @@ public class QuickTest {
 
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
-		sqlManager.executeOnConnection(new OnConnection<Object>() {
-			@Override
-			public Object call(Connection conn) throws SQLException {
-				CallableStatement  call = conn.prepareCall("CALL test.mytest(?,?)");
-				call.registerOutParameter(1, Types.INTEGER);
-				call.registerOutParameter(2, Types.VARCHAR);
-				ResultSet resultSet = call.executeQuery();
-				int cout = call.getInt(1);
-				String ret = call.getString(2);
-				System.out.println(cout);
-				System.out.println(ret);
-				while (resultSet.next()){
-					System.out.println(resultSet.getObject(1));
+		CallReady callReady = new CallReady("CALL test.mytest(?,?)");
+		callReady.add(new CallReady.OutArg(Integer.class)).add(new CallReady.OutArg(String.class));
+		List<User> users = sqlManager.executeCall(callReady,User.class);
+		Integer cout = (Integer)callReady.getOutValue(1);
+		String ret = (String)callReady.getOutValue(2);
+		System.out.println(cout);
+		System.out.println(ret);
+		System.out.println(users);
 
-				}
 
-				return null;
-			}
-		});
+
+
+//		sqlManager.executeOnConnection(new OnConnection<Object>() {
+//			@Override
+//			public Object call(Connection conn) throws SQLException {
+//				CallableStatement  call = conn.prepareCall("CALL test.mytest(?,?)");
+//				call.registerOutParameter(1, Types.INTEGER);
+//				call.registerOutParameter(2, Types.VARCHAR);
+//				ResultSet resultSet = call.executeQuery();
+//				int cout = call.getInt(1);
+//				String ret = call.getString(2);
+//				System.out.println(cout);
+//				System.out.println(ret);
+//				while (resultSet.next()){
+//					System.out.println(resultSet.getObject(1));
+//
+//				}
+//
+//				return null;
+//			}
+//		});
 	}
 
 

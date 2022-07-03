@@ -12,4 +12,12 @@ public abstract class JavaSqlTypeHandler {
 	public void setParameter(WriteTypeParameter writeTypeParameter,Object obj)throws SQLException {
 		writeTypeParameter.getPs().setObject(writeTypeParameter.getIndex(),obj);
 	}
+
+	/**
+	 * 可能的jdbc类型
+	 * @return
+	 */
+	public   int jdbcType(){
+		return Integer.MAX_VALUE;
+	}
 }

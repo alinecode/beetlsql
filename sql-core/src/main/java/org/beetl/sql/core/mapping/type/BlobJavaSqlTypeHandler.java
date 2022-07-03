@@ -1,9 +1,6 @@
 package org.beetl.sql.core.mapping.type;
 
-import java.sql.Blob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class BlobJavaSqlTypeHandler extends JavaSqlTypeHandler {
 	@Override
@@ -11,6 +8,11 @@ public class BlobJavaSqlTypeHandler extends JavaSqlTypeHandler {
 		ResultSet rs = typePara.rs;
 		Blob a = rs.getBlob(typePara.index);
 		return a;
+	}
+
+	@Override
+	public int jdbcType() {
+		return Types.BLOB;
 	}
 
 	public void setParameter(PreparedStatement ps, Object obj, int index)throws SQLException {

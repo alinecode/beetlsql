@@ -51,4 +51,9 @@ public class CharArrayTypeHandler extends JavaSqlTypeHandler {
 		writeTypeParameter.getPs().setString(writeTypeParameter.getIndex(),str);
 	}
 
+	@Override
+	public int jdbcType() {
+		return Types.CLOB;
+	}
+
 }

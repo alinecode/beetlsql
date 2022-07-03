@@ -124,6 +124,25 @@ public interface SQLExecutor {
 
 	int[] sqlReadyBatchExecuteUpdate(SQLBatchReady batch);
 
+
+	/**
+	 * 执行存储过程，返回更新结果
+	 * @param callReady
+	 * @return
+	 */
+	int executeCall(CallReady callReady);
+
+	/**
+	 * 执行存储过程，返回查询结果
+	 * @param callReady
+	 * @param clazz
+	 * @param <T>
+	 * @return
+	 */
+	<T> List<T> executeCall(CallReady callReady,Class<T> clazz);
+
+
+
 	/**
 	 * 执行sql模板，得到sql语句和参数
 	 * @param parasMap

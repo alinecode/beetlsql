@@ -4,6 +4,7 @@ import org.beetl.sql.core.db.DBType;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 
 public class DateTypeHandler extends JavaSqlTypeHandler {
 
@@ -35,10 +36,10 @@ public class DateTypeHandler extends JavaSqlTypeHandler {
 
 	}
 
-
-
-
-
+	@Override
+	public int jdbcType() {
+		return Types.DATE;
+	}
 
 
 }

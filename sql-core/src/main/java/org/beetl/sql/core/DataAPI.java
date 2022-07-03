@@ -147,4 +147,20 @@ public interface DataAPI {
     int executeUpdate(SQLReady p);
 
     int[] executeBatchUpdate(SQLBatchReady batch);
+
+	/**
+	 * 执行存储过程，返回更新结果
+	 * @param callReady
+	 * @return
+	 */
+	int executeCall(CallReady callReady);
+
+	/**
+	 * 执行存储过程，返回查询结果
+	 * @param callReady
+	 * @param clazz
+	 * @param <T>
+	 * @return
+	 */
+    <T> List<T> executeCall(CallReady callReady,Class<T> clazz);
 }

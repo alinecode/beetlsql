@@ -51,4 +51,9 @@ public class StringTypeHandler extends JavaSqlTypeHandler {
 		writeTypeParameter.getPs().setString(writeTypeParameter.getIndex(),(String)obj);
 	}
 
+	@Override
+	public int jdbcType() {
+		return Types.VARCHAR;
+	}
+
 }

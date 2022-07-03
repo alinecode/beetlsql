@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -22,4 +23,9 @@ public class LocalDateTypeHandler extends JavaSqlTypeHandler {
         Timestamp time = new Timestamp(ts);
         writeTypeParameter.getPs().setTimestamp(writeTypeParameter.getIndex(),time);
     }
+
+	@Override
+	public int jdbcType() {
+		return Types.DATE;
+	}
 }

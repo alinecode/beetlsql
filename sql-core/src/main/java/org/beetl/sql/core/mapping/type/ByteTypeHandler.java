@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class ByteTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
@@ -31,6 +32,11 @@ public class ByteTypeHandler extends JavaSqlTypeHandler implements PrimitiveValu
 	@Override
 	public void setParameter(WriteTypeParameter writeTypeParameter,Object obj)throws SQLException {
 		writeTypeParameter.getPs().setByte(writeTypeParameter.getIndex(),(byte)obj);
+	}
+
+	@Override
+	public int jdbcType() {
+		return Types.BIT;
 	}
 
 }

@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class DoubleTypeHandler extends JavaSqlTypeHandler implements PrimitiveValue {
 
@@ -38,6 +39,10 @@ public class DoubleTypeHandler extends JavaSqlTypeHandler implements PrimitiveVa
 		writeTypeParameter.getPs().setDouble(writeTypeParameter.getIndex(),(Double)obj);
 	}
 
+	@Override
+	public int jdbcType() {
+		return Types.DOUBLE;
+	}
 
 
 }

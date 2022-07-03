@@ -2,6 +2,7 @@ package org.beetl.sql.core.mapping.type;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 public class LocalDateTimeTypeHandler extends JavaSqlTypeHandler {
@@ -16,4 +17,9 @@ public class LocalDateTimeTypeHandler extends JavaSqlTypeHandler {
         Timestamp time = Timestamp.valueOf(ts);
         writeTypeParameter.getPs().setTimestamp(writeTypeParameter.getIndex(),time);
     }
+
+	@Override
+	public int jdbcType() {
+		return Types.TIMESTAMP_WITH_TIMEZONE;
+	}
 }
