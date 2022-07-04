@@ -12,7 +12,7 @@ public class CallReady {
 	String sql;
 	int index ;
 	SqlId sqlId = null;
-	List<CallArg> args = new ArrayList();
+	List<CallArg> args = new ArrayList(32);
 
 	/**
 	 * 构造一个无出参，入参的存储过程
@@ -57,6 +57,22 @@ public class CallReady {
 		args.add(callArg);
 		callArg.setIndex(index);
 		index++;
+		return this;
+	}
+
+	/**
+	 * 指定，从1开始。 建议使用add(CallArg callArg), 此方法而主要给mapper实现调用
+	 * @param index
+	 * @param callArg
+	 * @return
+	 */
+	public CallReady add(int index,CallArg callArg){
+//		if(args.size()<index){
+//			//TODO,未来考虑动态增加args，目前32个参数，应该够了
+//			throw new IllegalArgumentException("不支持,最大允许"+args.size()+" 实际是 "+index);
+//		}
+		args.add(index-1,callArg);
+		callArg.setIndex(index);
 		return this;
 	}
 

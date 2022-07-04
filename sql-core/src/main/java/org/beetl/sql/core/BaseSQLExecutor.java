@@ -727,30 +727,20 @@ public class BaseSQLExecutor implements SQLExecutor {
 		try {
 			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
 			call = conn.prepareCall(callReady.getSql());
-			List<CallArg> list = callReady.getArgs();
+			configCall(call,callReady);
 
-			for(CallArg arg:list){
-				if(arg instanceof InArg){
-					InArg inArg  = ((InArg) arg);
-					if(inArg.hasJdbcType()){
-						call.setObject(arg.getIndex(),inArg,inArg.getJdbcType());
-					}else{
-						call.setObject(arg.getIndex(),inArg);
-					}
-
-				}else{
-					OutArg outArg = (OutArg)arg;
-					if(outArg.hasJdbcType()){
-						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
-					}else{
-						//@ TODO ,根据outType 判断
+			int ret  = call.executeUpdate();
+			//处理out部分
+			for(CallArg arg:callReady.getArgs()){
+				if(arg instanceof OutArg){
+					if(arg instanceof OutArg) {
+						OutArg outArg = (OutArg) arg;
+						Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
+						outArg.setOutValue(value);
+						break;
 					}
 				}
 			}
-
-			int ret  = call.executeUpdate();
-
-
 			return ret;
 
 		} catch (SQLException e) {
@@ -766,36 +756,13 @@ public class BaseSQLExecutor implements SQLExecutor {
 	public <T> List<T> executeCall(CallReady callReady, Class<T> clazz) {
 		Connection conn = null;
 		CallableStatement  call  = null;
+		BeanProcessor beanProcessor = this.getBeanProcessor();
 		try {
-			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
+			//存储过程认为都是update
+			conn = executeContext.sqlManager.getDs().getConn(executeContext, false);
 			call = conn.prepareCall(callReady.getSql());
-			List<CallArg> list = callReady.getArgs();
-			BeanProcessor beanProcessor = this.getBeanProcessor();
 
-			for(CallArg arg:list){
-				if(arg instanceof InArg){
-					InArg inArg  = ((InArg) arg);
-					if(inArg.hasJdbcType()){
-						call.setObject(arg.getIndex(),inArg,inArg.getJdbcType());
-					}else{
-
-						call.setObject(arg.getIndex(),inArg.getArg());
-					}
-
-				}else{
-					OutArg outArg = (OutArg)arg;
-					if(outArg.hasJdbcType()){
-						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
-					}else{
-						JavaSqlTypeHandler sqlTypeHandler = beanProcessor.getHandler(outArg.getOutType());
-						if(sqlTypeHandler==null){
-							throw new UnsupportedOperationException("需要指示jdbc type"+arg.getIndex());
-						}
-
-						call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
-					}
-				}
-			}
+			configCall(call,callReady);
 
 			ResultSet ret  = call.executeQuery();
 			List<T> resultList = null;
@@ -822,12 +789,13 @@ public class BaseSQLExecutor implements SQLExecutor {
 			executeContext.executeResult = resultList;
 			resultList = (List) this.afterBean(resultList);
 			//处理out部分
-			for(CallArg arg:list){
+			for(CallArg arg:callReady.getArgs()){
 				if(arg instanceof OutArg){
 					if(arg instanceof OutArg) {
 						OutArg outArg = (OutArg) arg;
 						Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
 						outArg.setOutValue(value);
+						break;
 					}
 				}
 			}
@@ -841,6 +809,39 @@ public class BaseSQLExecutor implements SQLExecutor {
 		}
 
 	}
+
+	protected  void configCall(CallableStatement  call,CallReady callReady) throws SQLException {
+		List<CallArg> list = callReady.getArgs();
+		BeanProcessor beanProcessor = this.getBeanProcessor();
+
+		for(CallArg arg:list){
+			if(arg instanceof InArg){
+				InArg inArg  = ((InArg) arg);
+				if(inArg.hasJdbcType()){
+					call.setObject(arg.getIndex(),inArg,inArg.getJdbcType());
+				}else{
+
+					call.setObject(arg.getIndex(),inArg.getArg());
+				}
+
+			}else{
+				OutArg outArg = (OutArg)arg;
+				if(outArg.hasJdbcType()){
+					call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
+				}else{
+					JavaSqlTypeHandler sqlTypeHandler = beanProcessor.getHandler(outArg.getOutType());
+					if(sqlTypeHandler==null){
+						throw new UnsupportedOperationException("需要指示jdbc type"+arg.getIndex());
+					}
+
+					call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
+				}
+			}
+		}
+
+	}
+
+
 
 	@Override
     public ExecuteContext getExecuteContext() {

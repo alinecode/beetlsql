@@ -1450,7 +1450,12 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public int executeCall(CallReady callReady) {
-		return 0;
+		SqlId id = callReady.getSqlId()!=null?callReady.getSqlId():this.sqlIdFactory.buildSql(callReady.getSql());
+		SQLSource source = new SQLSource(id, callReady.getSql());
+		ExecuteContext executeContext = ExecuteContext.instance(this).initSQLSource(source);
+
+		SQLExecutor script = dbStyle.buildExecutor(executeContext);
+		return script.executeCall(callReady);
 	}
 
 	@Override

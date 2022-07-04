@@ -1,6 +1,7 @@
 package org.beetl.sql.mapper.annotation;
 
 import org.beetl.sql.annotation.builder.Builder;
+import org.beetl.sql.mapper.call.CallBuilder;
 import org.beetl.sql.mapper.provider.ProviderMapperExtBuilder;
 
 import java.lang.annotation.Retention;
@@ -15,7 +16,7 @@ import java.lang.annotation.Target;
  */
 @Target({java.lang.annotation.ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Builder(ProviderMapperExtBuilder.class)
+@Builder(CallBuilder.class)
 public @interface Call {
 
 

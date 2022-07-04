@@ -16,13 +16,12 @@ import java.lang.annotation.Target;
  *     @Call("....")
  *      public List<User> call(@CallIndex(1) Integer id,@CallIndex(2) String name)
  *  }</pre>
- * @author zhoupan.
  * @author xiandafu
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER,ElementType.FIELD})
 public @interface CallIndex {
 	int value();
 	//非必须
-	int jdbcType() ;
+	int jdbcType() default  Integer.MAX_VALUE;
 }

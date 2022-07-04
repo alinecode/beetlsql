@@ -19,7 +19,7 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = mysqlDatasource();
+	static DataSource dataSource = datasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -42,14 +42,25 @@ public class QuickTest {
 
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
-		CallReady callReady = new CallReady("CALL test.mytest(?,?)");
-		callReady.add(new OutArg(Integer.class)).add(new OutArg(String.class));
-		List<User> users = sqlManager.executeCall(callReady,User.class);
-		Integer cout = (Integer)callReady.getOutValue(1);
-		String ret = (String)callReady.getOutValue(2);
-		System.out.println(cout);
-		System.out.println(ret);
-		System.out.println(users);
+
+		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
+
+		OutHolder outHolder = new OutHolder();
+		String name = "cb";
+		List<OrderLog> list = orderLogMapper.callSample(name,outHolder);
+
+
+
+
+
+//		CallReady callReady = new CallReady("CALL test.mytest(?,?)");
+//		callReady.add(new OutArg(Integer.class)).add(new OutArg(String.class));
+//		List<User> users = sqlManager.executeCall(callReady,User.class);
+//		Integer cout = (Integer)callReady.getOutValue(1);
+//		String ret = (String)callReady.getOutValue(2);
+//		System.out.println(cout);
+//		System.out.println(ret);
+//		System.out.println(users);
 
 
 
