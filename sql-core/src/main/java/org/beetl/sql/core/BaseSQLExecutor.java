@@ -732,13 +732,11 @@ public class BaseSQLExecutor implements SQLExecutor {
 			int ret  = call.executeUpdate();
 			//处理out部分
 			for(CallArg arg:callReady.getArgs()){
-				if(arg instanceof OutArg){
-					if(arg instanceof OutArg) {
-						OutArg outArg = (OutArg) arg;
-						Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
-						outArg.setOutValue(value);
-						break;
-					}
+				if(arg instanceof OutArg) {
+					OutArg outArg = (OutArg) arg;
+					Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
+					outArg.setOutValue(value);
+					break;
 				}
 			}
 			return ret;
@@ -790,13 +788,11 @@ public class BaseSQLExecutor implements SQLExecutor {
 			resultList = (List) this.afterBean(resultList);
 			//处理out部分
 			for(CallArg arg:callReady.getArgs()){
-				if(arg instanceof OutArg){
-					if(arg instanceof OutArg) {
-						OutArg outArg = (OutArg) arg;
-						Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
-						outArg.setOutValue(value);
-						break;
-					}
+				if(arg instanceof OutArg) {
+					OutArg outArg = (OutArg) arg;
+					Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
+					outArg.setOutValue(value);
+					break;
 				}
 			}
 
@@ -831,10 +827,9 @@ public class BaseSQLExecutor implements SQLExecutor {
 				}else{
 					JavaSqlTypeHandler sqlTypeHandler = beanProcessor.getHandler(outArg.getOutType());
 					if(sqlTypeHandler==null){
-						throw new UnsupportedOperationException("需要指示jdbc type"+arg.getIndex());
+						throw new UnsupportedOperationException("不能根据"+outArg.getOutType()+" 判断出参类型，需要指示jdbc type"+arg.getIndex());
 					}
-
-					call.registerOutParameter(arg.getIndex(),outArg.getJdbcType());
+					call.registerOutParameter(arg.getIndex(),sqlTypeHandler.jdbcType());
 				}
 			}
 		}

@@ -7,10 +7,14 @@ import org.beetl.sql.core.SqlId;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 描述一个存储过程的sql和对应的入参和出餐
+ */
 @Data
 public class CallReady {
 	String sql;
 	int index ;
+	//非必须
 	SqlId sqlId = null;
 	List<CallArg> args = new ArrayList(32);
 

@@ -93,9 +93,9 @@ public class CallMapperSelectInvoke extends MapperInvoke {
 		}else{
 			List list  = (List)sm.executeCall(callReady,entityClass);
 			if(isSingle){
-				return list.size()==0?null:list.get(0);
+				ret =  list.size()==0?null:list.get(0);
 			}else{
-				return list;
+				ret = list;
 			}
 		}
 

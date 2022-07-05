@@ -4,6 +4,7 @@ package org.beetl.sql.test;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.call.CallReady;
+import org.beetl.sql.core.call.InArg;
 import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DebugInterceptor;
@@ -19,7 +20,7 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = datasource();
+	static DataSource dataSource = mysqlDatasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -46,20 +47,25 @@ public class QuickTest {
 		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
 
 		OutHolder outHolder = new OutHolder();
-		String name = "cb";
-		List<OrderLog> list = orderLogMapper.callSample(name,outHolder);
 
-
-
-
-
-//		CallReady callReady = new CallReady("CALL test.mytest(?,?)");
-//		callReady.add(new OutArg(Integer.class)).add(new OutArg(String.class));
-//		List<User> users = sqlManager.executeCall(callReady,User.class);
-//		Integer cout = (Integer)callReady.getOutValue(1);
-//		String ret = (String)callReady.getOutValue(2);
-//		System.out.println(cout);
+		List<OrderLog> list = orderLogMapper.callSample(1,outHolder);
+		System.out.println(outHolder.getName());
 //		System.out.println(ret);
+		System.out.println(list);
+
+
+
+
+//		CallReady callReady = new CallReady("call test.selectStu(?,?)");
+//		callReady.add(new InArg(1));
+//		OutArg nameOut = new OutArg(String.class);
+//		callReady.add(nameOut);
+////		callReady.add(new OutArg(Integer.class)).add(new OutArg(String.class));
+//		List<OrderLog> users = sqlManager.executeCall(callReady,OrderLog.class);
+//		String name = (String)nameOut.getOutValue();
+//
+//		System.out.println(name);
+////		System.out.println(ret);
 //		System.out.println(users);
 
 
@@ -103,7 +109,7 @@ public class QuickTest {
 		//    public static String driver = "com.mysql.jdbc.Driver";
 		public static String driver = "com.mysql.cj.jdbc.Driver";
 		public static String dbName = "test";
-		public static String password = "strongpassword";
+		public static String password = "123456";
 		public static String userName = "root";
 		public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true";
 	}

@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS `order_log`;
 CREATE TABLE `order_log` (
-      `order_id` int(11) NOT NULL ,
+      `order_id` int(11) NOT NULL AUTO_INCREMENT,
 
-       `age` int(1) AUTO_INCREMENT,
+       `age` int(1) ,
        `version` int(255) ,
        `create_time` long,
       PRIMARY KEY (`order_id`)

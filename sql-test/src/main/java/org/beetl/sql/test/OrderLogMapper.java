@@ -11,6 +11,6 @@ import java.util.List;
 @SqlResource("user")
 public interface OrderLogMapper extends BaseMapper<OrderLog> {
 
-	@Call("cal abdc(?,?,?)")
-	List<OrderLog> callSample(@CallIndex(1) String name,@CallOutBean  OutHolder outHolder);
+	@Call("call test.selectStu(?,?)")
+	List<OrderLog> callSample(@CallIndex(1) int id,@CallOutBean  OutHolder outHolder);
 }
