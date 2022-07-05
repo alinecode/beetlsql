@@ -46,12 +46,16 @@ public class QuickTest {
 
 		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
 
-		OutHolder outHolder = new OutHolder();
+		String abc = orderLogMapper.sayHello("ak");
 
-		int ret =  orderLogMapper.update(1,outHolder);
-		System.out.println(outHolder.getName());
+		System.out.println(abc);
+
+//		OutHolder outHolder = new OutHolder();
+//
+//		int ret =  orderLogMapper.update(1,outHolder);
+//		System.out.println(outHolder.getName());
+////		System.out.println(ret);
 //		System.out.println(ret);
-		System.out.println(ret);
 
 //		List<OrderLog> list = orderLogMapper.callSample(1,outHolder);
 //		System.out.println(outHolder.getName());
@@ -114,7 +118,7 @@ public class QuickTest {
 		//    public static String driver = "com.mysql.jdbc.Driver";
 		public static String driver = "com.mysql.cj.jdbc.Driver";
 		public static String dbName = "test";
-		public static String password = "123456";
+		public static String password = "strongpassword";
 		public static String userName = "root";
 		public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true";
 	}

@@ -14,4 +14,8 @@ public interface OrderLogMapper extends BaseMapper<OrderLog> {
 	@Call("call test.updateStu(?,?)")
 	@Update
 	int update(int id, @CallOutBean  OutHolder outHolder);
+
+	@Call("{? = call hello(?)}")
+	@Select
+	String sayHello(String name);
 }
