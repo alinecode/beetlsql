@@ -2,7 +2,7 @@ package org.beetl.sql.mapper.call;
 
 import lombok.Data;
 import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.mapper.annotation.CallIndex;
+import org.beetl.sql.mapper.annotation.CallParam;
 import org.beetl.sql.mapper.annotation.CallOutBean;
 
 import java.beans.IntrospectionException;
@@ -34,8 +34,8 @@ public class CallParameterParser {
 				continue;
 			}
 
-			CallIndex callIndex = parameter.getAnnotation(CallIndex.class);
-			addCallInParameter(parameter,i,callIndex);
+			CallParam callparam = parameter.getAnnotation(CallParam.class);
+			addCallInParameter(parameter,i, callparam);
 			i++;
 		}
 
@@ -52,13 +52,13 @@ public class CallParameterParser {
 				if(ps.getReadMethod().getDeclaringClass()==Object.class){
 					continue;
 				}
-				CallIndex callIndexAnno = BeanKit.getAnnotation(type,ps.getName(),CallIndex.class);
-				if(callIndexAnno==null){
+				CallParam callParamAnno = BeanKit.getAnnotation(type,ps.getName(), CallParam.class);
+				if(callParamAnno ==null){
 					continue;
 				}
 
-				Integer jdbcType = callIndexAnno.jdbcType();
-				Integer callOutIndex = callIndexAnno.value();
+				Integer jdbcType = callParamAnno.jdbcType();
+				Integer callOutIndex = callParamAnno.value();
 				if(callOutIndex==null){
 					throw new IllegalArgumentException("需要指明索引 "+type+" 属性 "+ps.getName());
 				}
@@ -76,16 +76,16 @@ public class CallParameterParser {
 
 	}
 
-	void addCallInParameter(Parameter parameter,int paramIndex,CallIndex callIndexAnno){
+	void addCallInParameter(Parameter parameter, int paramIndex, CallParam callParamAnno){
 		Integer jdbcType;
 		Class type;
 		Integer callInIndex;
-		if(callIndexAnno==null){
+		if(callParamAnno ==null){
 			jdbcType = null;
 			callInIndex = paramIndex+1;
 		}else{
-			jdbcType = callIndexAnno.jdbcType();
-			callInIndex = callIndexAnno.value();
+			jdbcType = callParamAnno.jdbcType();
+			callInIndex = callParamAnno.value();
 			if(callInIndex==null){
 				callInIndex = paramIndex+1;
 			}
@@ -93,7 +93,7 @@ public class CallParameterParser {
 
 		type = parameter.getType();
 		inConfig.getArgPositionMap().put(paramIndex,callInIndex);
-		inConfig.getArgJdbcTypeMap().put(paramIndex,jdbcType==Integer.MAX_VALUE?null:jdbcType);
+		inConfig.getArgJdbcTypeMap().put(paramIndex,jdbcType==null||jdbcType==Integer.MAX_VALUE?null:jdbcType);
 		inConfig.getArgType().put(paramIndex,type);
 
 	}

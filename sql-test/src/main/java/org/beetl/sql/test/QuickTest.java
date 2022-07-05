@@ -48,10 +48,15 @@ public class QuickTest {
 
 		OutHolder outHolder = new OutHolder();
 
-		List<OrderLog> list = orderLogMapper.callSample(1,outHolder);
+		int ret =  orderLogMapper.update(1,outHolder);
 		System.out.println(outHolder.getName());
 //		System.out.println(ret);
-		System.out.println(list);
+		System.out.println(ret);
+
+//		List<OrderLog> list = orderLogMapper.callSample(1,outHolder);
+//		System.out.println(outHolder.getName());
+////		System.out.println(ret);
+//		System.out.println(list);
 
 
 

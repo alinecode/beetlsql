@@ -14,13 +14,13 @@ import java.lang.annotation.Target;
  *  与下面是一样的
  *  <pre>@{code
  *     @Call("....")
- *      public List<User> call(@CallIndex(1) Integer id,@CallIndex(2) String name)
+ *      public List<User> call(@CallParam(1) Integer id,@CallParam(2) String name)
  *  }</pre>
  * @author xiandafu
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER,ElementType.FIELD})
-public @interface CallIndex {
+public @interface CallParam {
 	int value();
 	//非必须
 	int jdbcType() default  Integer.MAX_VALUE;
