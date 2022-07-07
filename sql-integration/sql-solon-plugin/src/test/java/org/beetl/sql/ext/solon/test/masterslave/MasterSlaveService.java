@@ -1,9 +1,9 @@
 package org.beetl.sql.ext.solon.test.masterslave;
 
+import org.beetl.sql.ext.solon.test.UserInfo;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.ext.solon.Db;
-import org.beetl.sql.ext.solon.test.UserInfo;
-import org.noear.solon.extend.aspect.annotation.Service;
+import org.noear.solon.aspect.annotation.Service;
 import org.noear.solon.data.annotation.Tran;
 
 /**
@@ -15,7 +15,7 @@ public class MasterSlaveService {
     SQLManager sqlManager;
 
     @Db
-    MasterSlaveUserInfoMapper userInfoMapper;
+   MasterSlaveUserInfoMapper userInfoMapper;
 
     @Tran
     public void test(){
