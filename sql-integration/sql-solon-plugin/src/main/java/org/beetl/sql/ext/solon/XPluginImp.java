@@ -1,12 +1,9 @@
 package org.beetl.sql.ext.solon;
 
 import org.beetl.sql.core.SQLManager;
-import org.noear.solon.SolonApp;
+import org.noear.solon.Solon;
 import org.noear.solon.Utils;
-import org.noear.solon.core.Aop;
-import org.noear.solon.core.BeanWrap;
-import org.noear.solon.core.Plugin;
-import org.noear.solon.core.VarHolder;
+import org.noear.solon.core.*;
 
 import javax.sql.DataSource;
 
@@ -18,88 +15,97 @@ import javax.sql.DataSource;
  * @since 2020-09-01
  * */
 public class XPluginImp implements Plugin {
-    @Override
-    public void start(SolonApp app) {
-        //监听事件
-        app.onEvent(BeanWrap.class, new DsEventListener());
+	@Override
+	public void start(AopContext context) {
+		//监听事件
+		Solon.app().onEvent(BeanWrap.class, new DsEventListener());
 
-        Aop.context().beanBuilderAdd(Db.class, (clz, wrap, anno) -> {
-            if (clz.isInterface() == false) {
-                return;
-            }
+		//for @Deprecated
+		context.beanBuilderAdd(Db.class, (clz, wrap, anno) -> {
+			builderAddDo(clz, wrap, anno.value());
+		});
 
-            if (Utils.isEmpty(anno.value())) {
-                Aop.getAsyn(DataSource.class, (dsBw) -> {
-                    create0(clz, dsBw);
-                });
-            } else {
-                Aop.getAsyn(anno.value(), (dsBw) -> {
-                    if (dsBw.raw() instanceof DataSource) {
-                        create0(clz, dsBw);
-                    }
-                });
-            }
-        });
+		context.beanInjectorAdd(Db.class, (varH, anno) -> {
+			injectorAddDo(varH, anno.value());
+		});
 
-        Aop.context().beanInjectorAdd(Db.class, (varH, anno) -> {
-            if (Utils.isEmpty(anno.value())) {
-                Aop.getAsyn(DataSource.class, (dsBw) -> {
-                    inject0(anno, varH, dsBw);
-                });
-            } else {
-                Aop.getAsyn(anno.value(), (dsBw) -> {
-                    if (dsBw.raw() instanceof DataSource) {
-                        inject0(anno, varH, dsBw);
-                    }
-                });
-            }
-        });
+		//初始化管理器（主要为了生成动态管理器）
+		//
+		context.beanOnloaded((ctx) -> {
+			BeanWrap defBw = ctx.getWrap(DataSource.class);
 
-        //初始化管理器（主要为了生成动态管理器）
-        //
-        Aop.context().beanOnloaded(() -> {
-            BeanWrap defBw = Aop.context().getWrap(DataSource.class);
+			if (defBw != null) {
+				DbManager.global().dynamicBuild(defBw);
 
-            if (defBw != null) {
-                DbManager.global().dynamicBuild(defBw);
+				if (DbManager.global().dynamicGet() != null) {
+					ctx.wrapAndPut(SQLManager.class, DbManager.global().dynamicGet());
+				}
+			}
+		});
+	}
 
-                if (DbManager.global().dynamicGet() != null) {
-                    Aop.wrapAndPut(SQLManager.class, DbManager.global().dynamicGet());
-                }
-            }
-        });
-    }
+	private void builderAddDo(Class<?> clz, BeanWrap wrap, String annoValue) {
+		if (clz.isInterface() == false) {
+			return;
+		}
 
-    private void create0(Class<?> clz, BeanWrap dsBw) {
-        Object raw = DbManager.global().get(dsBw).getMapper(clz);
+		if (Utils.isEmpty(annoValue)) {
+			wrap.context().getWrapAsyn(DataSource.class, (dsBw) -> {
+				create0(clz, dsBw);
+			});
+		} else {
+			wrap.context().getWrapAsyn(annoValue, (dsBw) -> {
+				if (dsBw.raw() instanceof DataSource) {
+					create0(clz, dsBw);
+				}
+			});
+		}
+	}
 
-        if (raw != null) {
-            Aop.wrapAndPut(clz, raw);
-        }
-    }
+	private void injectorAddDo(VarHolder varH, String annoValue) {
+		if (Utils.isEmpty(annoValue)) {
+			varH.context().getWrapAsyn(DataSource.class, (dsBw) -> {
+				inject0(varH, dsBw, annoValue);
+			});
+		} else {
+			varH.context().getWrapAsyn(annoValue, (dsBw) -> {
+				if (dsBw.raw() instanceof DataSource) {
+					inject0(varH, dsBw, annoValue);
+				}
+			});
+		}
+	}
 
-    /**
-     * 字段注入
-     */
-    private void inject0(Db anno, VarHolder varH, BeanWrap dsBw) {
-        SQLManager tmp = DbManager.global().get(dsBw);
+	private void create0(Class<?> clz, BeanWrap dsBw) {
+		Object raw = DbManager.global().get(dsBw).getMapper(clz);
 
-        if (varH.getType().isInterface()) {
-            Object mapper = tmp.getMapper(varH.getType());
+		if (raw != null) {
+			dsBw.context().wrapAndPut(clz, raw);
+		}
+	}
 
-            varH.setValue(mapper);
-            return;
-        }
+	/**
+	 * 字段注入
+	 */
+	private void inject0(VarHolder varH, BeanWrap dsBw, String annoValue) {
+		SQLManager tmp = DbManager.global().get(dsBw);
 
-        if (SQLManager.class.isAssignableFrom(varH.getType())) {
-            if (Utils.isNotEmpty(anno.value())) {
-                varH.setValue(tmp);
-            } else {
-                Aop.getAsyn(SQLManager.class, (bw2) -> {
-                    varH.setValue(bw2.raw());
-                });
-            }
-            return;
-        }
-    }
+		if (varH.getType().isInterface()) {
+			Object mapper = tmp.getMapper(varH.getType());
+
+			varH.setValue(mapper);
+			return;
+		}
+
+		if (SQLManager.class.isAssignableFrom(varH.getType())) {
+			if (Utils.isNotEmpty(annoValue)) {
+				varH.setValue(tmp);
+			} else {
+				dsBw.context().getWrapAsyn(SQLManager.class, (bw2) -> {
+					varH.setValue(bw2.raw());
+				});
+			}
+			return;
+		}
+	}
 }
