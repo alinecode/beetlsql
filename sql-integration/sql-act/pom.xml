@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-integration</artifactId>
-        <version>3.15.0-RELEASE</version>
+        <version>3.15.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-act</artifactId>
-    <version>3.15.0-RELEASE</version>
+    <version>3.15.1-RELEASE</version>
     <properties>
         <act-sql-common.version>1.6.0</act-sql-common.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

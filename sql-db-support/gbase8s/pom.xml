@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.15.0-RELEASE</version>
+        <version>3.15.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>gbase8s</artifactId>
-    <version>3.15.0-RELEASE</version>
+    <version>3.15.1-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>gbase8s</groupId>
