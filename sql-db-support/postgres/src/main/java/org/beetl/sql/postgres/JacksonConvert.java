@@ -93,9 +93,9 @@ public class JacksonConvert implements AttributeConvert {
 
 
 	@Override
-	public  String toAutoSqlPart(DBStyle dbStyle, AutoSQLEnum autoSQLEnum, String name){
+	public  String toAutoSqlPart(DBStyle dbStyle, Class cls,AutoSQLEnum autoSQLEnum, String name){
 		if(dbStyle instanceof PostgresStyle){
-			return "#{"+name+"}::JSON";
+			return "$$::JSON";
 		}
 		return null;
 

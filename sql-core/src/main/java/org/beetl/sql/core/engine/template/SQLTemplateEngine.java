@@ -59,6 +59,7 @@ public interface SQLTemplateEngine {
      */
     public void genVar(ConcatBuilder concatBuilder,String var);
 
+
     public String appendVar(String epxression);
 
     /**

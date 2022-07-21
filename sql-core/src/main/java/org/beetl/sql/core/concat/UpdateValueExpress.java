@@ -36,6 +36,10 @@ public class UpdateValueExpress extends Express {
 		if(realVar!=null){
 			String col1 = sb.ctx.keyWordHandler.getCol(col);
 			sb.append(col1).assign();
+			//得到一个属性在sql语句的片段，name->#{name}
+			String express = sb.getVarString(varName);
+			//替换模板，比如$$:JSON, 替换成#{name}::JSON
+			realVar = realVar.replace("$$",express);
 			sb.append(realVar);
 		}else{
 			//通常情况下

@@ -71,6 +71,10 @@ public class  ConcatBuilder  {
         ctx.templateEngine.genVar(this,var);
         return this;
     }
+
+	public String getVarString(String var){
+		return ctx.templateEngine.appendVar(var);
+	}
     public ConcatBuilder testVar(String varName,String col){
         ctx.templateEngine.genTestVar(this,varName,col);
         return this;

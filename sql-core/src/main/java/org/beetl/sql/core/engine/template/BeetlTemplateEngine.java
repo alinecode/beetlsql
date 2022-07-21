@@ -6,8 +6,10 @@ import org.beetl.core.Template;
 import org.beetl.core.exception.BeetlException;
 import org.beetl.core.exception.ErrorInfo;
 import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.concat.ConcatBuilder;
+import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.loader.SQLLoader;
 
 import java.util.Map;
@@ -94,7 +96,9 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
         appendVar(concatBuilder, var);
     }
 
-    @Override
+
+
+	@Override
     public String appendVar(String express) {
         return HOLDER_START + express + HOLDER_END + " ";
     }
@@ -140,9 +144,16 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
         appendVar(concatBuilder, "db.testNull(" + var + "!,\"" + var + "\")");
     }
 
+	/**
+	 *
+	 * @param concatBuilder
+	 * @param var
+	 * @param realVa
+	 * @see org.beetl.sql.annotation.builder.AttributeConvert#toAutoSqlPart(DBStyle, AutoSQLEnum, String)
+	 */
 	@Override
 	public void genTestRealVar(ConcatBuilder concatBuilder, String var, String realVa) {
-		String newHolder = realVa.replace("#{"+var+"}","?");
+		String newHolder = realVa.replace("$$","?");
 		appendVar(concatBuilder, "db.testNull(" + var + "!,\"" + var + "\",\""+newHolder+"\")");
 	}
 

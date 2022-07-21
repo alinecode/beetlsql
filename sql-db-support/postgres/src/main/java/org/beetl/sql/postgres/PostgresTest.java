@@ -17,20 +17,9 @@ public class PostgresTest {
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
         builder.setDbStyle(new PostgresStyle());
         SQLManager sqlManager = builder.build();
-		sqlManager.deleteById(JsonDataEntity.class,"3");
 
-		JsonDataEntity jsonDataEntity = new JsonDataEntity();
-		jsonDataEntity.setId("3");
-		Color color = new Color();
-		color.setAb("3433");
-		jsonDataEntity.setJsonData(color);
-		sqlManager.updateTemplateById(jsonDataEntity);
-
-
-		JsonDataEntity jsonDataEntity4 = new JsonDataEntity();
-		jsonDataEntity.setId("4");
-		jsonDataEntity.setJsonData(color);
-		sqlManager.insertTemplate(jsonDataEntity);
+		MyView view = sqlManager.single(MyView.class,"1");
+		System.out.println(view);
 
     }
 
