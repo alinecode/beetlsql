@@ -59,6 +59,7 @@ public interface SQLTemplateEngine {
      */
     public void genVar(ConcatBuilder concatBuilder,String var);
 
+
     public String appendVar(String epxression);
 
     /**
@@ -97,6 +98,8 @@ public interface SQLTemplateEngine {
      * @param var
      */
     public void genTestVar(ConcatBuilder concatBuilder,String var);
+
+	public void genTestRealVar(ConcatBuilder concatBuilder,String var,String realVal);
     /**
      * 如果某个变量存在，且不为空，输出列名
      * @param concatBuilder

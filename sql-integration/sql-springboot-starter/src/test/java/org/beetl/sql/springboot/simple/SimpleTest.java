@@ -22,6 +22,11 @@ public class SimpleTest {
 		service.test();
     }
 
+
+	@Test
+	public void reflect(){
+		service.reflect();
+	}
 	@Test
 	public void exception(){
     	UserInfo info = service.queryUser(1);

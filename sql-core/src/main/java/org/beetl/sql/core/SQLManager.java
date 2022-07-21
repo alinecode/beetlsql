@@ -333,6 +333,7 @@ public class SQLManager implements DataAPI {
 				break;
 			}
 			case DELETE_TEMPLATE_BY_ID:
+				//不支持按照模型删除，风险太大的API，改成byId
 				tempSource = this.dbStyle.genDeleteById(cls);
 				sqlType = SQLType.DELETE;
 				break;
@@ -730,6 +731,7 @@ public class SQLManager implements DataAPI {
 	 */
 
 	@Override
+	@Deprecated //这种API不安全，目前实际上按照id来删除
 	public int deleteObject(Object obj) {
 		Class target = obj.getClass();
 		SQLExecutor script = getScript(target, DELETE_TEMPLATE_BY_ID);

@@ -42,6 +42,13 @@ public class Insert implements Output {
     }
 
 
+	public Insert conditionalSetWIthReal(String col, String varName,String realVar){
+		colNode.conditional(col,varName);
+		valueNode.conditionalWithReal(varName,realVar);
+		return this;
+	}
+
+
 	public Insert conditionalSet(String col, String varName,String defaultValue){
 		colNode.add(col);
 		valueNode.conditional(varName,defaultValue);
