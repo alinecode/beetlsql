@@ -1,10 +1,8 @@
-package org.beetl.sql.mysql;
+package org.beetl.sql.postgres;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
-import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.db.PostgresStyle;
-import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;

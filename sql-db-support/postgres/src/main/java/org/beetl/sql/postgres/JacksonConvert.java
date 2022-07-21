@@ -1,4 +1,4 @@
-package org.beetl.sql.mysql;
+package org.beetl.sql.postgres;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,7 +10,6 @@ import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.PostgresStyle;
 

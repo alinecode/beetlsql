@@ -1,4 +1,4 @@
-package org.beetl.sql.mysql;
+package org.beetl.sql.postgres;
 
 import lombok.Data;
 
