@@ -140,7 +140,13 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
         appendVar(concatBuilder, "db.testNull(" + var + "!,\"" + var + "\")");
     }
 
-    @Override
+	@Override
+	public void genTestRealVar(ConcatBuilder concatBuilder, String var, String realVa) {
+		String newHolder = realVa.replace("#{"+var+"}","?");
+		appendVar(concatBuilder, "db.testNull(" + var + "!,\"" + var + "\",\""+newHolder+"\")");
+	}
+
+	@Override
     public void genTestVar(ConcatBuilder concatBuilder, String var, String col) {
 
         if (col.startsWith("'")) {

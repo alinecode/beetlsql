@@ -10,6 +10,7 @@ import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -20,7 +21,7 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = mysqlDatasource();
+	static DataSource dataSource = datasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -45,13 +46,11 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 
 		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
+		Class c  = orderLogMapper.getClass();
+		System.out.println(Arrays.asList(c.getMethods()));
+		Method method = c.getMethod("all",new Class[]{});
+		method.invoke(orderLogMapper,new Object[]{});
 
-		OutHolder outHolder = new OutHolder();
-
-		int ret =  orderLogMapper.update(1,outHolder);
-		System.out.println(outHolder.getName());
-//		System.out.println(ret);
-		System.out.println(ret);
 
 //		List<OrderLog> list = orderLogMapper.callSample(1,outHolder);
 //		System.out.println(outHolder.getName());
@@ -109,6 +108,8 @@ public class QuickTest {
 		// ds.setAutoCommit(false);
 		return ds;
 	}
+
+
 
 	public static class MysqlDBConfig {
 		//    public static String driver = "com.mysql.jdbc.Driver";

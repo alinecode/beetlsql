@@ -36,6 +36,13 @@ public class InsertValueNode extends TrimSupport implements Output {
         return this;
     }
 
+	public InsertValueNode conditionalWithReal(String varName,String real){
+		InsertValueEmptyExpress valueExpress = new InsertValueEmptyExpress(varName,real);
+		list.add(valueExpress);
+		super.trim = true;
+		return this;
+	}
+
 	public InsertValueNode conditional(String varName,String defaultValue){
 		InsertDefaultValueEmptyExpress valueExpress = new InsertDefaultValueEmptyExpress(varName,defaultValue);
 		list.add(valueExpress);
@@ -108,12 +115,23 @@ public class InsertValueNode extends TrimSupport implements Output {
 
     public static class InsertValueEmptyExpress extends  Express implements AutoCommaAppend{
         String varName;
+		String real;
         public InsertValueEmptyExpress(String varName){
             this.varName = varName;
         }
+
+		public InsertValueEmptyExpress(String varName,String real){
+			this.varName = varName;
+			this.real = real;
+		}
         @Override
         public void toSql(ConcatBuilder sb) {
-           sb.testVar(varName);
+			if(real!=null){
+				sb.testRealVar(varName,real);
+			}else{
+				sb.testVar(varName);
+			}
+
         }
     }
 

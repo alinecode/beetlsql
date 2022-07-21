@@ -1,15 +1,13 @@
 package org.beetl.sql.core.db;
 
 import lombok.Data;
+import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Seq;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.*;
-import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.BeetlSQLException;
-import org.beetl.sql.clazz.kit.DefaultKeyWordHandler;
-import org.beetl.sql.clazz.kit.KeyWordHandler;
+import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.concat.*;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
@@ -232,6 +230,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Iterator<String> properties = classDesc.getAttrs().iterator();
 
 		List<String> idCols = classDesc.getIdCols();
+
+		Map<String, AttributeConvert> attributeConvertMap = classDesc.getClassAnnotation().getExtAnnotation().getAttributeConvertMap();
+
 		while (cols.hasNext() && properties.hasNext()) {
 			String col = cols.next();
 			String prop = properties.next();
@@ -245,6 +246,14 @@ public abstract class AbstractDBStyle implements DBStyle {
 				//版本字段
 				update.assignVersion(col);
 				continue;
+			}
+			if(attributeConvertMap.containsKey(prop)){
+				AttributeConvert attributeConvert = attributeConvertMap.get(prop);
+				String real = attributeConvert.toAutoSqlPart(this,AutoSQLEnum.UPDATE_TEMPLATE_BY_ID,prop);
+				if(real!=null){
+					update.notEmptyAssign(prop, col,real);
+					continue;
+				}
 			}
 			update.notEmptyAssign(prop, col);
 
@@ -314,6 +323,10 @@ public abstract class AbstractDBStyle implements DBStyle {
 		List<String> idCols = classDesc.getIdCols();
 
 		ClassAnnotation classAnnotation = classDesc.getClassAnnotation();
+
+
+		Map<String, AttributeConvert> attributeConvertMap = classDesc.getClassAnnotation().getExtAnnotation().getAttributeConvertMap();
+
 		while (cols.hasNext() && attrs.hasNext()) {
 			String col = cols.next();
 			String attr = attrs.next();
@@ -358,9 +371,29 @@ public abstract class AbstractDBStyle implements DBStyle {
 			}
 
 
+
+
 			if (template) {
+				if(attributeConvertMap.containsKey(attr)){
+					AttributeConvert attributeConvert = attributeConvertMap.get(attr);
+					String real = attributeConvert.toAutoSqlPart(this, AutoSQLEnum.INSERT_TEMPLATE,attr);
+					if(real!=null){
+						insert.conditionalSetWIthReal(col, attr,real);
+						continue;
+					}
+
+				}
 				insert.conditionalSet(col, attr);
 			} else {
+				if(attributeConvertMap.containsKey(attr)){
+					AttributeConvert attributeConvert = attributeConvertMap.get(attr);
+					String expressProp = attributeConvert.toAutoSqlPart(this, AutoSQLEnum.INSERT,attr);
+					if(expressProp!=null){
+						insert.set(col, expressProp);
+						continue;
+					}
+
+				}
 				insert.set(col, attr);
 			}
 
@@ -414,6 +447,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 		Iterator<String> cols = classDesc.getInCols().iterator();
 		Iterator<String> properties = classDesc.getAttrs().iterator();
 		List<String> idCols = classDesc.getIdCols();
+		Map<String, AttributeConvert> attributeConvertMap = classDesc.getClassAnnotation().getExtAnnotation().getAttributeConvertMap();
 		while (cols.hasNext() && properties.hasNext()) {
 			String col = cols.next();
 			String prop = properties.next();
@@ -429,6 +463,15 @@ public abstract class AbstractDBStyle implements DBStyle {
 				//版本字段
 				update.assignVersion(col);
 				continue;
+			}
+			if(attributeConvertMap.containsKey(prop)){
+				AttributeConvert attributeConvert = attributeConvertMap.get(prop);
+				String expressProp = attributeConvert.toAutoSqlPart(this, AutoSQLEnum.UPDATE_BY_ID,prop);
+				if(expressProp!=null){
+					update.assignConstants(col,expressProp);
+					continue;
+				}
+
 			}
 			update.assign(col).tplValue(prop);
 

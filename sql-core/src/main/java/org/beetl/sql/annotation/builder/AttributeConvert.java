@@ -1,14 +1,20 @@
 package org.beetl.sql.annotation.builder;
 
+import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.Plugin;
 import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.db.AbstractDBStyle;
+import org.beetl.sql.core.db.DBStyle;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
  * 用于注解扩展，任何注解的builder 提供了此类子类，那么属性在映射pojo和result时候，使用此机制
+ * 如果实现 toAutoSqlPart，则代码生成的时候，此返回值作为代码参数的一部分。
+ *
  *
  * 参考{@ UpdateTime}
  * @param <ATTR>  Bean的属性类型
@@ -56,6 +62,17 @@ public interface AttributeConvert {
 	default Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
 
 		return rs.getObject(index);
+	}
+
+	/**
+	 * 如果返回不为null的字符串，则认为在自动生成sql语句的片段时候，使用返回值作为属性引用而不是属性本生
+	 * @param dbStyle
+	 * @param autoSQLEnum
+	 * @param name
+	 * @return
+	 */
+	default  String toAutoSqlPart(DBStyle dbStyle,AutoSQLEnum autoSQLEnum, String name){
+		return null;
 	}
 
 

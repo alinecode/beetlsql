@@ -4,9 +4,12 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.springboot.UserInfo;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +21,9 @@ public class SimpleService {
 	@Autowired
 	SimpleUserInfoMapper userInfoMapper;
 
+	@Autowired
+	ApplicationContext applicationContext;
+
 	@Transactional
 	public void test(){
 		sqlManager.single(UserInfo.class,1);
@@ -26,6 +32,21 @@ public class SimpleService {
 
 		userInfoMapper.createLambdaQuery().select();
 		userInfoMapper.createLambdaQuery().select();
+	}
+
+
+	@Transactional
+	public void reflect(){
+		Object userInfoMapper = applicationContext.getBean(SimpleUserInfoMapper.class);
+		Class cls = userInfoMapper.getClass();
+		System.out.println(Arrays.asList(cls.getMethods()));
+		try {
+			Method method  = cls.getMethod("insert",new Class[]{Object.class});
+			System.out.println(method);
+//			method.invoke(userInfoMapper);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Transactional

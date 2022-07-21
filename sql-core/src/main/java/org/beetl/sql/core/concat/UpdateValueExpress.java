@@ -10,6 +10,7 @@ public class UpdateValueExpress extends Express {
     Update update;
     String varName;
     String col;
+	String realVar;
 
     public UpdateValueExpress(Update update){
         this.update = update;
@@ -19,6 +20,10 @@ public class UpdateValueExpress extends Express {
         this.col = colName;
         return this;
     }
+	public UpdateValueExpress real(String realVar){
+		this.realVar = realVar;
+		return this;
+	}
 
     public Update tplValue(String varName){
 
@@ -28,8 +33,16 @@ public class UpdateValueExpress extends Express {
 
     @Override
     public void toSql(ConcatBuilder sb) {
-        String col1 = sb.ctx.keyWordHandler.getCol(col);
-        sb.append(col1).assign();
-        sb.appendVar(varName);
+		if(realVar!=null){
+			String col1 = sb.ctx.keyWordHandler.getCol(col);
+			sb.append(col1).assign();
+			sb.append(realVar);
+		}else{
+			//通常情况下
+			String col1 = sb.ctx.keyWordHandler.getCol(col);
+			sb.append(col1).assign();
+			sb.appendVar(varName);
+		}
+
     }
 }

@@ -5,4 +5,5 @@ CREATE TABLE `user2` (
      `day` timestamp,
      `create_ts` bigint DEFAULT NULL,
      PRIMARY KEY (`id`)
+
 ) ENGINE=InnoDB AUTO_INCREMENT=104245 DEFAULT CHARSET=utf8 COMMENT='用户信息';
