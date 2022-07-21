@@ -18,7 +18,7 @@ import java.util.Map;
 public class ClassExtAnnotation {
     private TargetAdditional targetAdditional;
     private Annotation additionalAnnotation;
-    private Map<String, AttributeConvert>  attributeConvertMap ;
+    private Map<String, AttributeConvert>  attributeConvertMap = new HashMap<>() ;
     private BeanConvert beanConvert;
     private Annotation beanConvertAnnotation;
 

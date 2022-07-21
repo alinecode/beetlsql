@@ -1,15 +1,16 @@
 package org.beetl.sql.clazz;
 
+import org.beetl.sql.annotation.entity.AssignID;
+import org.beetl.sql.annotation.entity.AutoID;
+import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.clazz.kit.CaseInsensitiveOrderSet;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 找到bean定义和数据库定义共有的部分，作为实际操作的sql语句
@@ -53,10 +54,24 @@ public class ClassDesc {
 
 	public ClassDesc(Class c, TableDesc table, NameConversion nc) {
 		this.targetClass = c;
+		this.nc = nc;
 		ca = ClassAnnotation.getClassAnnotation(c);
 		PropertyDescriptor[] ps = ca.getPropertyDescriptor(c);
 
 		Set<String> ids = table.getIdNames();
+		if(ids.isEmpty()){
+			Table tableAnnotation = (Table)c.getAnnotation(Table.class);
+			if(tableAnnotation!=null){
+				if(tableAnnotation.isView()){
+					//如果是视图，则使用c定义的主键
+					ids =findIdByAnnotation(c,ps);
+					if(!ids.isEmpty()){
+						ids.forEach( id->table.addIdName(id));
+					}
+
+				}
+			}
+		}
 		CaseInsensitiveHashMap<String, PropertyDescriptor> tempMap = new CaseInsensitiveHashMap<String, PropertyDescriptor>();
 
 		for (PropertyDescriptor p : ps) {
@@ -159,5 +174,19 @@ public class ClassDesc {
 
 	public Class getTargetClass() {
 		return targetClass;
+	}
+
+	public Set<String> findIdByAnnotation(Class cls,PropertyDescriptor[] ps){
+		Set<String> idCols = new HashSet<>();
+		for(PropertyDescriptor pd:ps){
+			String name = pd.getName();
+			List<Annotation>  list = BeanKit.getAllAnnotation(cls,name);
+			for(Annotation annotation:list){
+				if(annotation instanceof AssignID){
+					idCols.add(nc.getColName(cls,name));
+				}
+			}
+		}
+		return idCols;
 	}
 }

@@ -1,14 +1,20 @@
 package org.beetl.sql.annotation.builder;
 
+import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.Plugin;
 import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.db.AbstractDBStyle;
+import org.beetl.sql.core.db.DBStyle;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
  * 用于注解扩展，任何注解的builder 提供了此类子类，那么属性在映射pojo和result时候，使用此机制
+ * 如果实现 toAutoSqlPart，则代码生成的时候，此返回值作为代码参数的一部分。
+ *
  *
  * 参考{@ UpdateTime}
  * @param <ATTR>  Bean的属性类型
@@ -56,6 +62,25 @@ public interface AttributeConvert {
 	default Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
 
 		return rs.getObject(index);
+	}
+
+	/**
+	 * 如果返回不为null的字符串，则认为在自动生成sql语句的片段时候，使用返回值是一个表达式模板作为属性引用。
+	 * 其中属性使用符号$$代替。比如，
+	 * 1 )在postgres自动生成的insert语句中，需要转成json格式，返回
+	 * "$$::JSON",则生成sql片段的时候，根据类型，生成的是 #{attrName}::JSON, 或者“?::JSON”
+	 *  $$将会被代替成适合的sql片段
+	 * 2) 任意数据库，想使用额外的函数，cast($$),则生成sql片段时候，返回cast(#{attrName} 或者 cast(?)
+	 *
+	 *
+	 *
+	 * @param dbStyle
+	 * @param autoSQLEnum
+	 * @param name
+	 * @return
+	 */
+	default  String toAutoSqlPart(DBStyle dbStyle,Class cls,AutoSQLEnum autoSQLEnum, String name){
+		return null;
 	}
 
 

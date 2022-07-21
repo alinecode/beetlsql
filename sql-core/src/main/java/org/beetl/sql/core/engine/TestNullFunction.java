@@ -22,7 +22,13 @@ public class TestNullFunction implements Function {
 		}
 		try {
 			//多余的逗号将被trim去掉
-			ctx.byteWriter.writeString(",?");
+			if(paras.length==3){
+				//比如"?::JSON",针对自定义转化，参考AttributeConvert#toAutoTemplateSqlPart
+				ctx.byteWriter.writeString(","+paras[2]);
+			}else{
+				ctx.byteWriter.writeString(",?");
+			}
+
 			List list = (List) ctx.getGlobal("_paras");
 			list.add(new SQLParameter(paraName, arg));
 			return "";
