@@ -68,10 +68,10 @@ public class ClassDesc {
 					if(!ids.isEmpty()){
 						ids.forEach( id->table.addIdName(id));
 					}
-
 				}
 			}
 		}
+
 		CaseInsensitiveHashMap<String, PropertyDescriptor> tempMap = new CaseInsensitiveHashMap<String, PropertyDescriptor>();
 
 		for (PropertyDescriptor p : ps) {
@@ -85,22 +85,16 @@ public class ClassDesc {
 			}
 		}
 
-
 		//取交集
 		for (String col : table.getCols()) {
 			if (tempMap.containsKey(col)) {
-				cols.add(col);
 				PropertyDescriptor p = (PropertyDescriptor) tempMap.get(col);
-				properties.add(p.getName());
-				Method readMethod = p.getReadMethod();
-				Class retType = readMethod.getReturnType();
-
-
+				String attrName = p.getName();
+				addAttribute(col,attrName);
 				if (ids.contains(col)) {
-					//保持同一个顺序
-					idProperties.add(p.getName());
-					idCols.add(col);
-					idMethods.put(p.getName(), readMethod);
+					addIdAttribute(col,attrName);
+					Method readMethod = p.getReadMethod();
+					idMethods.put(attrName, readMethod);
 
 				}
 
@@ -108,6 +102,17 @@ public class ClassDesc {
 		}
 
 
+	}
+
+	private void addIdAttribute(String col,String attr){
+		//保持同一个顺序
+		idProperties.add(attr);
+		idCols.add(col);
+	}
+	private void addAttribute(String col,String attr){
+		//dsfsdf
+		properties.add(attr);
+		cols.add(col);
 	}
 
 	/**
@@ -177,7 +182,7 @@ public class ClassDesc {
 	}
 
 	public Set<String> findIdByAnnotation(Class cls,PropertyDescriptor[] ps){
-		Set<String> idCols = new HashSet<>();
+		Set<String> idCols = new CaseInsensitiveOrderSet <>();
 		for(PropertyDescriptor pd:ps){
 			String name = pd.getName();
 			List<Annotation>  list = BeanKit.getAllAnnotation(cls,name);

@@ -45,14 +45,8 @@ public class QuickTest {
 
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
-		System.out.println(sqlManager.all(QuickUser.class));
-		QuickUser user = new QuickUser();
-		Date d = getDate("2022-6-11");
-		String sql = "select * from user where create_date<=#{date}";
-		Map map = new HashMap();
-		map.put("date",d);
-		List<QuickUser> users = sqlManager.execute(sql,QuickUser.class,map);
-		System.out.println(users.size());
+		System.out.println(sqlManager.single(UserView.class,1));
+		UserView userView = new UserView();
 
 	}
 
