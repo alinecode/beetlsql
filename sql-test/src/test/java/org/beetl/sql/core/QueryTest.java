@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.entity.User;
@@ -86,6 +87,12 @@ public class QueryTest extends BaseTest {
         List<User> users = lambdaQuery.limit(1,5).select();
         Assert.assertEquals(3,users.size());
     }
+
+	@Test
+	public void page2(){
+		PageResult<User> page = lambdaQuery.andLike(User::getName,"%li%").page(1,10);
+		Assert.assertEquals(1,page.getTotalPage());
+	}
 
 
 

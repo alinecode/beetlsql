@@ -58,7 +58,7 @@ public class DB2SqlStyle extends AbstractDBStyle {
 
     @Override
     public RangeSql getRangeSql() {
-        return null;
+        return db2Range;
     }
 
     //IBM驱动对插入null 严格遵守了jdbc规范，需要指定类型，参考BeanProcessor.setPreparedStatementPara
@@ -73,7 +73,7 @@ public class DB2SqlStyle extends AbstractDBStyle {
         return appendExpress( fieldName +",jdbc='"+ type+"'") + ",";
 
     }
-    
+
     @Override
     public String getSeqValue(String seqName) {
 		return "NEXT VALUE FOR "+ seqName+" ";

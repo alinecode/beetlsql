@@ -10,6 +10,8 @@ import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -43,62 +45,25 @@ public class QuickTest {
 
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
+		System.out.println(sqlManager.all(QuickUser.class));
+		QuickUser user = new QuickUser();
+		Date d = getDate("2022-6-11");
+		String sql = "select * from user where create_date<=#{date}";
+		Map map = new HashMap();
+		map.put("date",d);
+		List<QuickUser> users = sqlManager.execute(sql,QuickUser.class,map);
+		System.out.println(users.size());
 
-		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
+	}
 
-		String abc = orderLogMapper.sayHello("ak");
-
-		System.out.println(abc);
-
-//		OutHolder outHolder = new OutHolder();
-//
-//		int ret =  orderLogMapper.update(1,outHolder);
-//		System.out.println(outHolder.getName());
-////		System.out.println(ret);
-//		System.out.println(ret);
-
-//		List<OrderLog> list = orderLogMapper.callSample(1,outHolder);
-//		System.out.println(outHolder.getName());
-////		System.out.println(ret);
-//		System.out.println(list);
-
-
-
-
-//		CallReady callReady = new CallReady("call test.selectStu(?,?)");
-//		callReady.add(new InArg(1));
-//		OutArg nameOut = new OutArg(String.class);
-//		callReady.add(nameOut);
-////		callReady.add(new OutArg(Integer.class)).add(new OutArg(String.class));
-//		List<OrderLog> users = sqlManager.executeCall(callReady,OrderLog.class);
-//		String name = (String)nameOut.getOutValue();
-//
-//		System.out.println(name);
-////		System.out.println(ret);
-//		System.out.println(users);
-
-
-
-
-//		sqlManager.executeOnConnection(new OnConnection<Object>() {
-//			@Override
-//			public Object call(Connection conn) throws SQLException {
-//				CallableStatement  call = conn.prepareCall("CALL test.mytest(?,?)");
-//				call.registerOutParameter(1, Types.INTEGER);
-//				call.registerOutParameter(2, Types.VARCHAR);
-//				ResultSet resultSet = call.executeQuery();
-//				int cout = call.getInt(1);
-//				String ret = call.getString(2);
-//				System.out.println(cout);
-//				System.out.println(ret);
-//				while (resultSet.next()){
-//					System.out.println(resultSet.getObject(1));
-//
-//				}
-//
-//				return null;
-//			}
-//		});
+	private static Date getDate(String str){
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			return sd.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
@@ -118,7 +83,7 @@ public class QuickTest {
 		//    public static String driver = "com.mysql.jdbc.Driver";
 		public static String driver = "com.mysql.cj.jdbc.Driver";
 		public static String dbName = "test";
-		public static String password = "strongpassword";
+		public static String password = "123456";
 		public static String userName = "root";
 		public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true";
 	}
