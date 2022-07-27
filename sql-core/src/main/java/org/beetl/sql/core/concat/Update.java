@@ -60,6 +60,15 @@ public class Update extends WhereNode {
         return this;
     }
 
+	public Update notEmptyAssign(String varName, String col,String realVar){
+		UpdateValueExpress updateValueExpress = new UpdateValueExpress(this).col(col).real(realVar);
+		updateValueExpress.tplValue(varName);
+		UpdateNotEmptyExpress notEmptyExpress = new UpdateNotEmptyExpress(varName, updateValueExpress);
+		updateList.add(notEmptyExpress);
+		trim = true;
+		return this;
+	}
+
 
     @Override
     public void toSql(ConcatBuilder sb) {

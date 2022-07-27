@@ -20,6 +20,12 @@ import java.lang.annotation.Target;
 public @interface Table {
 	String name();
 
+	/**
+	 * 是否是视图。填写true，那么对象代表的主键从@AssignId中获取到
+	 * @return
+	 */
+	boolean isView() default  false;
+
 }
 
 
