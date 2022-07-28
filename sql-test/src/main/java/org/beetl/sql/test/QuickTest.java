@@ -45,8 +45,9 @@ public class QuickTest {
 
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
-		System.out.println(sqlManager.single(UserView.class,1));
-		UserView userView = new UserView();
+
+		sqlManager.unique(UserView.class,"1");
+
 
 	}
 

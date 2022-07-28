@@ -4,6 +4,7 @@ import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.clazz.kit.CaseInsensitiveOrderSet;
 
@@ -59,18 +60,21 @@ public class ClassDesc {
 		PropertyDescriptor[] ps = ca.getPropertyDescriptor(c);
 
 		Set<String> ids = table.getIdNames();
-		if(ids.isEmpty()){
-			Table tableAnnotation = (Table)c.getAnnotation(Table.class);
-			if(tableAnnotation!=null){
-				if(tableAnnotation.isView()){
-					//如果是视图，则使用c定义的主键
-					ids =findIdByAnnotation(c,ps);
-					if(!ids.isEmpty()){
-						ids.forEach( id->table.addIdName(id));
-					}
+
+		Table tableAnnotation = (Table)c.getAnnotation(Table.class);
+		if(tableAnnotation!=null){
+			if(tableAnnotation.assignId()){
+				//使用pojo定义的assignId，忽略数据库定义
+				ids =findIdColByAnnotation(c,ps);
+				if(ids.isEmpty()){
+					throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND,"使用@Table(assignId=true) in "+c+" 但是未发现@AssingId");
 				}
+				table.getIdNames().clear();
+				ids.forEach( id->table.addIdName(id));
 			}
 		}
+
+
 
 		CaseInsensitiveHashMap<String, PropertyDescriptor> tempMap = new CaseInsensitiveHashMap<String, PropertyDescriptor>();
 
@@ -181,7 +185,7 @@ public class ClassDesc {
 		return targetClass;
 	}
 
-	public Set<String> findIdByAnnotation(Class cls,PropertyDescriptor[] ps){
+	public Set<String> findIdColByAnnotation(Class cls,PropertyDescriptor[] ps){
 		Set<String> idCols = new CaseInsensitiveOrderSet <>();
 		for(PropertyDescriptor pd:ps){
 			String name = pd.getName();
