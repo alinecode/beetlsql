@@ -4,7 +4,7 @@ import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.Table;
 
-@Table(name="my_test",assignId = true)
+@Table(name="my_test", assignID = true)
 @Data
 public class MyTestEntity {
 	@AssignID

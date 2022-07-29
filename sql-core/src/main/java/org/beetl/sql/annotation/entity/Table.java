@@ -29,9 +29,10 @@ public @interface Table {
 
 	/**
 	 * 是否使用pojo定义的id，通常用于视图需要一个id，或者某些表有自己的id，但期望通过此POJO申明的id做一些single，unique查询
+	 * 当assignID为true的时候。beetlsql忽略数据库的id定义，以POJO定义为准
 	 * @return
 	 */
-	boolean assignId() default  false;
+	boolean assignID() default  false;
 }
 
 

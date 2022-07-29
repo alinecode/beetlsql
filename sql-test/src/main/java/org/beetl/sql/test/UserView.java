@@ -5,7 +5,7 @@ import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.Column;
 import org.beetl.sql.annotation.entity.Table;
 
-@Table(name="user_view",isView = true,assignId = true)
+@Table(name="user_view",isView = true, assignID = true)
 @Data
 public class UserView {
 	@Column("id")

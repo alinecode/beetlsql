@@ -1,7 +1,6 @@
 package org.beetl.sql.clazz;
 
 import org.beetl.sql.annotation.entity.AssignID;
-import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
@@ -63,7 +62,7 @@ public class ClassDesc {
 
 		Table tableAnnotation = (Table)c.getAnnotation(Table.class);
 		if(tableAnnotation!=null){
-			if(tableAnnotation.assignId()){
+			if(tableAnnotation.assignID()){
 				//使用pojo定义的assignId，忽略数据库定义
 				ids =findIdColByAnnotation(c,ps);
 				if(ids.isEmpty()){
