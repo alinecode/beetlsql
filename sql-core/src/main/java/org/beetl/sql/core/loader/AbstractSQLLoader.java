@@ -1,5 +1,6 @@
 package org.beetl.sql.core.loader;
 
+import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.db.DBStyle;
@@ -116,5 +117,19 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 	@Override
 	public void refresh() {
 		autoGenSourceMap.clear();
+	}
+
+	@Override
+	public BeetlSQLException getException(SqlId sqlId){
+		String path = getPathBySqlId(sqlId);
+
+
+		String envInfo = path + ".md(sql)" + " sqlLoader:" + this;
+		if (existNamespace(sqlId)) {
+			envInfo = envInfo + ",文件找到，但没有对应的sqlId";
+		} else {
+			envInfo = envInfo + ",未找到对应的sql文件";
+		}
+		return new  BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL, "未能找到" + sqlId + "对应的sql,搜索路径:" + envInfo);
 	}
 }

@@ -8,7 +8,6 @@ import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
-import org.beetl.sql.core.loader.AbstractClassPathSQLLoader;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.core.mapping.BeanProcessor;
@@ -43,7 +42,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </ul>
  * <p>
  * <BR>
- * create time : 2017-04-28 14:44
+ *
+ * 一旦SQLManager 被创建出来，可以调用set相关方法重新修改，但如下俩个方法比较特殊
+ * <ul>
+ *     <li>customizedStyle(DBStyle newDbStyle)  定义一个新的dbStyle</li>
+ *     <li>customizedSQLLoader(SQLLoader newSqlLoader)  定义一个新的sqlloader，如加载文件系统的sql</li>
+ * </ul>
  *
  * @author luoyizhu@gmail.com,xiandafu@126.com
  */
@@ -151,8 +155,8 @@ public class SQLManagerBuilder {
 
 		//设置sqlloader
 		mySqlLoader.setDbStyle(myDbStyle);
-		if (mySqlLoader instanceof AbstractClassPathSQLLoader) {
-			((AbstractClassPathSQLLoader) mySqlLoader).setClassLoaderKit(myClassLoaderKit);
+		if (mySqlLoader instanceof MarkdownClasspathLoader) {
+			((MarkdownClasspathLoader) mySqlLoader).setClassLoaderKit(myClassLoaderKit);
 		}
 		mySqlLoader.setProduct(mySqlManager.isProduct );
 

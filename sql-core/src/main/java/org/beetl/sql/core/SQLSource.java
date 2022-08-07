@@ -1,7 +1,8 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.clazz.SQLType;
-import org.beetl.sql.core.loader.MarkdownClasspathLoader.SQLFileVersion;
+import org.beetl.sql.core.loader.SQLFileVersion;
+
 
 /**
  *

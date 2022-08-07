@@ -10,6 +10,7 @@ import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.concat.ConcatBuilder;
 import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.engine.StringSqlTemplateLoader;
 import org.beetl.sql.core.loader.SQLLoader;
 
 import java.util.Map;
@@ -44,7 +45,13 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
         HOLDER_END = cf.getPlaceholderEnd();
     }
 
-    @Override
+	@Override
+	public void customizedSQLLoader(SQLLoader loader) {
+		StringSqlTemplateLoader stringSqlTemplateLoader = new StringSqlTemplateLoader(loader);
+		beetl.getGroupTemplate().setResourceLoader(stringSqlTemplateLoader);
+	}
+
+	@Override
     public SQLTemplate getSqlTemplate(SqlId id) {
         Template template = beetl.getGroupTemplate().getTemplate(id);
         return new BeetlSQLTemplate(template);

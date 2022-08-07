@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * 演示如实如何实现TypeHandler转化BigInteger，和JsonNode，以及RowMapper，xml定义的ResultSetMapper，这些提供了灵活的映射
@@ -158,8 +157,8 @@ public class MappingSample {
      */
     @Table(name="sys_user")
     @Data
-    @ResultProvider(SimpleXMLMapping.class)
-    @XmlMapping(path="user.xml")
+    @ResultProvider(SimpleXMLMapping.class) //映射类
+    @XmlMapping(path= "userMapping.xml") //映射类参数
     public static class User3{
         Integer id;
         String userName;

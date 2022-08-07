@@ -1,5 +1,7 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.clazz.kit.BeetlSQLException;
+
 import java.util.Objects;
 
 /**
@@ -148,6 +150,9 @@ public class SqlId {
 	 */
 	protected String[] parseId(String id) {
 		int index = id.lastIndexOf('.');
+		if(index==-1){
+			throw new BeetlSQLException(BeetlSQLException.ERROR,"sqlId 格式是namespace.sql");
+		}
 		return new String[]{id.substring(0, index), id.substring(index + 1)};
 	}
 

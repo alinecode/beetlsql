@@ -23,6 +23,13 @@ public interface SQLTemplateEngine {
      */
     public void init(SQLLoader loader, Properties ps);
 
+	/**
+	 * 重新指定加载器
+	 * @param loader
+	 *
+	 */
+	public void customizedSQLLoader(SQLLoader loader);
+
     /**
      * 根据sqlId得到模板
      * @param id
