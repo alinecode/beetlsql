@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ShardApplication.class)
-@Transactional
 public class ShardTest {
 	@Autowired
 	SQLManager sqlManager;
