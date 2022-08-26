@@ -29,6 +29,12 @@ public class Insert implements Output {
         return this;
     }
 
+	public Insert setWithReal(String col, String varName,String realVar){
+		colNode.add(col);
+		valueNode.add(varName,realVar);
+		return this;
+	}
+
     public Insert setConstant(String col, String sql){
         colNode.addConstants(col);
         valueNode.addConstants(sql);

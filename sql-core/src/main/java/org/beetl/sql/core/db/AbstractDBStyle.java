@@ -249,9 +249,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 			}
 			if(attributeConvertMap.containsKey(prop)){
 				AttributeConvert attributeConvert = attributeConvertMap.get(prop);
-				String real = attributeConvert.toAutoSqlPart(this,cls,AutoSQLEnum.UPDATE_TEMPLATE_BY_ID,prop);
-				if(real!=null){
-					update.notEmptyAssign(prop, col,real);
+				String express = attributeConvert.toAutoSqlPart(this,cls,AutoSQLEnum.UPDATE_TEMPLATE_BY_ID,prop);
+				if(express!=null){
+					update.notEmptyAssign(express, col,prop);
 					continue;
 				}
 			}
@@ -387,9 +387,9 @@ public abstract class AbstractDBStyle implements DBStyle {
 			} else {
 				if(attributeConvertMap.containsKey(attr)){
 					AttributeConvert attributeConvert = attributeConvertMap.get(attr);
-					String expressProp = attributeConvert.toAutoSqlPart(this, cls,AutoSQLEnum.INSERT,attr);
-					if(expressProp!=null){
-						insert.set(col, expressProp);
+					String expression = attributeConvert.toAutoSqlPart(this, cls,AutoSQLEnum.INSERT,attr);
+					if(expression!=null){
+						insert.setWithReal(col, expression,attr);
 						continue;
 					}
 
@@ -468,7 +468,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 				AttributeConvert attributeConvert = attributeConvertMap.get(prop);
 				String expressProp = attributeConvert.toAutoSqlPart(this, cls,AutoSQLEnum.UPDATE_BY_ID,prop);
 				if(expressProp!=null){
-					update.assignConstants(col,expressProp);
+					update.assign(col).real(prop).tplValue(expressProp);
 					continue;
 				}
 

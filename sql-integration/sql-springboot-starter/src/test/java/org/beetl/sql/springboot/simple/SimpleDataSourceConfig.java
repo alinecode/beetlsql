@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.engine.StringSqlTemplateLoader;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.starter.SQLManagerCustomize;
@@ -53,6 +54,12 @@ public class SimpleDataSourceConfig {
 
 					}
 				});
+				FileSQLLoader fileSQLLoader = new FileSQLLoader("d:/temp/sql","UTF-8");
+				manager.setSqlLoader(fileSQLLoader);
+           		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine)manager.getSqlTemplateEngine();
+				StringSqlTemplateLoader stringSqlTemplateLoader = new StringSqlTemplateLoader(fileSQLLoader);
+				beetlTemplateEngine.getBeetl().getGroupTemplate().setResourceLoader(stringSqlTemplateLoader);
+
             }
         };
     }

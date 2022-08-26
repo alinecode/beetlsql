@@ -17,7 +17,13 @@ public class SimpleTest {
 	@Autowired
 	SimpleService service;
 
-    @Test
+	@Test
+	public void testFromSQL(){
+		service.loadSql();
+	}
+
+
+	@Test
     public void test(){
 		service.test();
     }

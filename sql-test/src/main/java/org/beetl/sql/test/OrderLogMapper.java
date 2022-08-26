@@ -18,4 +18,7 @@ public interface OrderLogMapper extends BaseMapper<OrderLog> {
 	@Call("{? = call hello(?)}")
 	@Select
 	String sayHello(String name);
+
+
+	List<OrderLog> select(List<Long> ids);
 }

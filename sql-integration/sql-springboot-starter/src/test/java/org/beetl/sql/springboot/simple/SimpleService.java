@@ -25,6 +25,11 @@ public class SimpleService {
 	ApplicationContext applicationContext;
 
 	@Transactional
+	public void loadSql(){
+		userInfoMapper.select();
+	}
+
+	@Transactional
 	public void test(){
 		sqlManager.single(UserInfo.class,1);
 		userInfoMapper.single(1);

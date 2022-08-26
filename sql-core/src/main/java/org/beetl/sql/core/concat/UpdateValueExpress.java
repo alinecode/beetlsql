@@ -31,20 +31,20 @@ public class UpdateValueExpress extends Express {
         return update;
     }
 
+
     @Override
     public void toSql(ConcatBuilder sb) {
+		String col1 = sb.ctx.keyWordHandler.getCol(col);
+		sb.append(col1).assign();
 		if(realVar!=null){
-			String col1 = sb.ctx.keyWordHandler.getCol(col);
-			sb.append(col1).assign();
 			//得到一个属性在sql语句的片段，name->#{name}
-			String express = sb.getVarString(varName);
+			String express = sb.getVarString(realVar);
 			//替换模板，比如$$:JSON, 替换成#{name}::JSON
-			realVar = realVar.replace("$$",express);
-			sb.append(realVar);
+			varName = varName.replace("$$",express);
+			sb.append(varName);
 		}else{
 			//通常情况下
-			String col1 = sb.ctx.keyWordHandler.getCol(col);
-			sb.append(col1).assign();
+
 			sb.appendVar(varName);
 		}
 

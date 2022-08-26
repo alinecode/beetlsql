@@ -7,6 +7,7 @@ import org.beetl.sql.core.call.CallReady;
 import org.beetl.sql.core.call.InArg;
 import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.H2Style;
+import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
@@ -22,13 +23,14 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = mysqlDatasource();
+	static DataSource dataSource = datasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
 		ds.setUsername("sa");
 		ds.setPassword("");
 		ds.setDriverClassName("org.h2.Driver");
+
 		return ds;
 	}
 	private  static SQLManager getSQLManager(){
@@ -45,8 +47,11 @@ public class QuickTest {
 
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
+		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
+		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
+		logMapper.select(new ArrayList<>());
 
-		sqlManager.unique(UserView.class,"1");
+		logMapper.select(Arrays.asList(1L,2L));
 
 
 	}

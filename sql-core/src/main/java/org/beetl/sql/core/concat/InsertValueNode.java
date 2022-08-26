@@ -24,6 +24,11 @@ public class InsertValueNode extends TrimSupport implements Output {
         list.add(valueExpress);
     }
 
+	public void add(String varName,String real){
+		ValueExpress valueExpress = new ValueExpress(this,varName,real);
+		list.add(valueExpress);
+	}
+
     public void addConstants(String sql){
         ConstantExpress constantExpress = new ConstantExpress(this,sql);
         list.add(constantExpress);
@@ -79,13 +84,27 @@ public class InsertValueNode extends TrimSupport implements Output {
     static class ValueExpress extends Express {
         String varName;
 		InsertValueNode node;
+		String real;
         public ValueExpress(InsertValueNode node,String varName){
             this.varName = varName;
             this.node = node;
         }
+		public ValueExpress(InsertValueNode node,String varName,String real){
+			this.varName = varName;
+			this.node = node;
+			this.real = real;
+		}
         @Override
         public void toSql(ConcatBuilder sb) {
-            sb.appendVar(varName);
+			if(real!=null){
+				String express = sb.getVarString(real);
+				varName = varName.replace("$$",express);
+				sb.append(varName);
+				return ;
+			}
+			sb.appendVar(varName);
+
+
 
         }
     }

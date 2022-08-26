@@ -17,4 +17,7 @@ public class JsonDataEntity {
 	@Column("json_data")
 	Color jsonData;
 
+	@Column("create_ts")
+	Long createTs;
+
 }
