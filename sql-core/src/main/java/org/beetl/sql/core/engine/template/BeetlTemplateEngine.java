@@ -28,8 +28,8 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
 
     public String STATEMENT_START;// 定界符开始符号
     public String STATEMENT_END;// 定界符结束符号
-    public String HOLDER_START;// 站位符开始符号
-    public String HOLDER_END;// 站位符结束符号
+    public String HOLDER_START;// 占位符开始符号
+    public String HOLDER_END;// 占位符结束符号
 
     @Override
     public void init(SQLLoader loader, Properties ps) {
