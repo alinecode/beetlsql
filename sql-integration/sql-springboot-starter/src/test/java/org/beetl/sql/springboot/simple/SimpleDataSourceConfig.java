@@ -54,11 +54,6 @@ public class SimpleDataSourceConfig {
 
 					}
 				});
-				FileSQLLoader fileSQLLoader = new FileSQLLoader("d:/temp/sql","UTF-8");
-				manager.setSqlLoader(fileSQLLoader);
-           		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine)manager.getSqlTemplateEngine();
-				StringSqlTemplateLoader stringSqlTemplateLoader = new StringSqlTemplateLoader(fileSQLLoader);
-				beetlTemplateEngine.getBeetl().getGroupTemplate().setResourceLoader(stringSqlTemplateLoader);
 
             }
         };
