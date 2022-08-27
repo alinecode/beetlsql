@@ -17,6 +17,7 @@ import org.beetl.sql.mapper.ready.UpdateSqlReadyMI;
 import org.beetl.sql.mapper.stream.StreamSqlIdMI;
 import org.beetl.sql.mapper.stream.StreamSqlReadyMI;
 import org.beetl.sql.mapper.stream.StreamTemplateSqlMI;
+import org.beetl.sql.mapper.template.BatchUpdateTemplateMI;
 import org.beetl.sql.mapper.template.PageTemplateMI;
 import org.beetl.sql.mapper.template.SelectTemplateMI;
 import org.beetl.sql.mapper.template.UpdateTemplateMI;
@@ -209,7 +210,10 @@ public class MapperMethodParser {
 			}
 		} else if (action instanceof Update) {
 			return new UpdateTemplateMI(sqlTemplate, paramsHolder);
-		} else {
+		} else if(action instanceof  BatchUpdate){
+			return new BatchUpdateTemplateMI(sqlTemplate, paramsHolder);
+		}
+		else {
 			throw new UnsupportedOperationException("不支持 " + action);
 		}
 	}
