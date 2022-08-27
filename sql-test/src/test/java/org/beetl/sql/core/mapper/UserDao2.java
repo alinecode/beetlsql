@@ -2,9 +2,12 @@ package org.beetl.sql.core.mapper;
 
 import org.beetl.sql.entity.User;
 import org.beetl.sql.mapper.BaseMapper;
+import org.beetl.sql.mapper.annotation.BatchUpdate;
 import org.beetl.sql.mapper.annotation.Param;
 import org.beetl.sql.mapper.annotation.Root;
 import org.beetl.sql.mapper.annotation.Template;
+
+import java.util.List;
 
 /**
  * 参数命名
@@ -31,6 +34,11 @@ public interface UserDao2 extends BaseMapper<User> {
 
     @Template("select * from sys_user where id=#{id}")
     public User queryByName7(@Param("u1") @Root User  user,@Root User root);
+
+
+	@Template("update sys_user set name=#{name} where id = #{id}")
+	@BatchUpdate
+	public int[] batchTemplateUpdate(List<User> pars);
 
 	/**
 	 * 限制Mapper的Sql或者Template注解的sql语句长度，以增强维护性

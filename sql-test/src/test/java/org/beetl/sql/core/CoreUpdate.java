@@ -173,6 +173,25 @@ public class CoreUpdate extends BaseTest {
 
     }
 
+	@Test
+	public void batchTemplateUpdate(){
+
+		String template = "update sys_user set name=#{name} where id = #{id}";
+		User user1 = new User();
+		user1.setName("a");
+		user1.setId(1);
+
+		User user2 = new User();
+		user2.setName("b");
+		user2.setId(2);
+		List<User> users = Arrays.asList(user1,user2);
+
+		sqlManager.executeBatchTemplateUpdate(template,users);
+
+		sqlManager.executeBatchTemplateUpdate(template,users);
+
+	}
+
 
 
 

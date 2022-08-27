@@ -21,6 +21,7 @@ import org.junit.Test;
 
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -182,6 +183,21 @@ public class Mapper2Test extends BaseTest {
 
 		Assert.fail();
 
+	}
+
+
+	@Test
+	public void testTemplateBatchUpdate(){
+		UserDao2 dao = sqlManager.getMapper(UserDao2.class);
+		User user1 = new User();
+		user1.setName("a");
+		user1.setId(1);
+
+		User user2 = new User();
+		user2.setName("b");
+		user2.setId(2);
+		List<User> users = Arrays.asList(user1,user2);
+		dao.batchTemplateUpdate(users);
 	}
 
 

@@ -1453,6 +1453,20 @@ public class SQLManager implements DataAPI {
 	}
 
 	@Override
+	public int[] executeBatchTemplateUpdate(String template, List<?> list) {
+		SqlId sqlId = this.sqlIdFactory.buildTemplate(template);
+		SQLSource source = sqlLoader.queryAutoSQL(sqlId);
+		if (source == null) {
+			source = new SQLSource(sqlId, template);
+			source.setSqlType(SQLType.UPDATE);
+			this.sqlLoader.addSQL(sqlId, source);
+		}
+
+		return this.updateBatch(sqlId,list);
+
+	}
+
+	@Override
 	public int executeCall(CallReady callReady) {
 		SqlId id = callReady.getSqlId()!=null?callReady.getSqlId():this.sqlIdFactory.buildSql(callReady.getSql());
 		SQLSource source = new SQLSource(id, callReady.getSql());

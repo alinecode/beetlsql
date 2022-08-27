@@ -149,6 +149,8 @@ public interface DataAPI {
 
     int[] executeBatchUpdate(SQLBatchReady batch);
 
+	int[] executeBatchTemplateUpdate(String template,List<?> list);
+
 	/**
 	 * 执行存储过程，返回更新结果
 	 * @param callReady
