@@ -1,5 +1,7 @@
 package org.beetl.sql.ext;
 
+import org.beetl.ext.fn.StringUtil;
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.DefaultConnectionSource;
 import org.beetl.sql.core.SQLManager;
 
@@ -46,6 +48,9 @@ public class DBInitHelper {
 
 	private static void executeSql(Connection conn,String[] sqls) throws SQLException {
 		for(String sql:sqls){
+			if(StringKit.isBlank(sql)){
+				continue;
+			}
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
 			ps.close();

@@ -172,6 +172,27 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         }
     }
 
+	protected boolean isValidateValue(Object value){
+		if (value instanceof StrongValue) {
+			if (!((StrongValue) value).isEffective()) {
+				return true;
+			}else{
+				return false;
+			}
+
+		} else if (value instanceof Optional) {
+			if (!((Optional) value).isPresent()) {
+				return true;
+			}else{
+				return false;
+			}
+
+		}
+
+		return true;
+	}
+
+
 
     protected void appendInSql(String column, Object value, String opt, String link) {
         //判断是否有效的变量
@@ -205,6 +226,10 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     protected void appendBetweenSql(String column, String opt, String link, Object... value) {
+		if(isValidateValue(value[0])||isValidateValue(value[1])){
+			return ;
+		}
+
         if (getSql().indexOf(WHERE) < 0) {
             link = WHERE;
         }

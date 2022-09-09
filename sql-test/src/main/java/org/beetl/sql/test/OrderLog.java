@@ -22,5 +22,7 @@ public class OrderLog {
 	@Date2Long
 	Date createTime;
 
+	String status;
+
 
 }

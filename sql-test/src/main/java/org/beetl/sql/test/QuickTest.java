@@ -7,6 +7,7 @@ import org.beetl.sql.core.call.CallReady;
 import org.beetl.sql.core.call.InArg;
 import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.H2Style;
+import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -23,7 +24,7 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = datasource();
+	static DataSource dataSource = mysqlDatasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -49,9 +50,12 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
-		logMapper.select(new ArrayList<>());
-
-		logMapper.select(Arrays.asList(1L,2L));
+		LambdaQuery<OrderLog> query = sqlManager.lambdaQuery(OrderLog.class);
+		query.andIn(OrderLog::getStatus,Arrays.asList("a","b")).select();
+		logMapper.selectByStatus(Arrays.asList("a","b"));
+//		logMapper.select(new ArrayList<>());
+//
+//		logMapper.select(Arrays.asList(1L,2L));
 
 
 	}

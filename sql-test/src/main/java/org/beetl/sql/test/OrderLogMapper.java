@@ -21,4 +21,7 @@ public interface OrderLogMapper extends BaseMapper<OrderLog> {
 
 
 	List<OrderLog> select(List<Long> ids);
+
+	@Template("select * from order_log where status in ( ${join(status)} )")
+	List<OrderLog> selectByStatus(List<String> status);
 }
