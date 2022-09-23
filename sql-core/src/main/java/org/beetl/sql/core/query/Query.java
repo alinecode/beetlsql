@@ -538,8 +538,13 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         params = new ArrayList<>(condition.params);
         startRow = condition.startRow;
         pageSize = condition.pageSize;
-        orderBy = new OrderBy(condition.orderBy.sb.toString());
-        groupBy = new GroupBy(condition.groupBy.sb.toString());
+		if(condition.orderBy!=null){
+			orderBy = new OrderBy(condition.orderBy.sb.toString());
+		}
+       	if(condition.groupBy!=null){
+			groupBy = new GroupBy(condition.groupBy.sb.toString());
+		}
+
         return this;
     }
 

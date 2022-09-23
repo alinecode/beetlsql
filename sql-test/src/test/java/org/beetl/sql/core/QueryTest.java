@@ -4,6 +4,7 @@ import org.beetl.sql.BaseTest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
+import org.beetl.sql.core.query.QueryCondition;
 import org.beetl.sql.entity.User;
 import org.junit.Assert;
 import org.junit.Before;
@@ -114,12 +115,30 @@ public class QueryTest extends BaseTest {
 
 	@Test
 	public void group(){
+
 		Query<User> query = sqlManager.query(User.class);
 		List<User> list = query
 				.andIn("id", Arrays.asList(1, 2))
 				.groupBy("name")
 				.select();
 		Assert.assertEquals(2,list.size());
+
+
+	}
+
+
+
+	@Test
+	public void reuse(){
+
+		QueryCondition<User> condition = sqlManager.query(User.class);
+		condition.andIn("id", Arrays.asList(1, 2));
+		Query<User> newQuery = sqlManager.query(User.class).useCondition(condition);
+		long count = newQuery.count();
+
+		List<User> users = sqlManager.query(User.class).useCondition(condition).limit(1,10).select();
+		Assert.assertEquals(2,count);
+		Assert.assertEquals(2,users.size());
 
 
 	}

@@ -29,8 +29,12 @@ import java.util.Map;
 
     @Override
     public String render() {
-    	String sql = template.render();
-		return sql;
+		try(SoftReferenceWriter sw = SoftReferenceWriter.local()){
+			template.renderTo(sw);
+			String sql = sw.toString();
+			return sql;
+		}
+
     }
 
     @Override
