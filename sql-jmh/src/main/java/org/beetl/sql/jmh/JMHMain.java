@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit;
  * 性能测试入口,数据是Throughput，越大越好
  */
 @BenchmarkMode(Mode.Throughput)
-@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
 @Threads(1)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

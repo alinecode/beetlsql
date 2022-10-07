@@ -64,82 +64,45 @@ public interface BaseService {
 
  进入JMHMain，运行即可。如果你有新的测试方法，可以暂时屏蔽其他测试方法
 
-# 最新结果 2022-08-07 
+# 最新结果 2022-10-07 
 
 ```
 Benchmark                         Mode  Cnt     Score   Error   Units
-JMHMain.beetlsqlComplexMapping   thrpt    2   261.097          ops/ms
-JMHMain.beetlsqlExecuteJdbc      thrpt    2   545.487          ops/ms
-JMHMain.beetlsqlExecuteTemplate  thrpt    2   468.580          ops/ms
-JMHMain.beetlsqlFile             thrpt    2   475.087          ops/ms
-JMHMain.beetlsqlInsert           thrpt    2   260.108          ops/ms
-JMHMain.beetlsqlLambdaQuery      thrpt    2   296.364          ops/ms
-JMHMain.beetlsqlOne2Many         thrpt    2   132.043          ops/ms
-JMHMain.beetlsqlPageQuery        thrpt    2   230.195          ops/ms
-JMHMain.beetlsqlSelectById       thrpt    2   458.701          ops/ms
-JMHMain.jdbcExecuteJdbc          thrpt    2  1182.139          ops/ms
-JMHMain.jdbcInsert               thrpt    2   335.903          ops/ms
-JMHMain.jdbcSelectById           thrpt    2  1164.131          ops/ms
-JMHMain.jpaExecuteJdbc           thrpt    2   124.374          ops/ms
-JMHMain.jpaExecuteTemplate       thrpt    2   150.468          ops/ms
-JMHMain.jpaInsert                thrpt    2    88.970          ops/ms
-JMHMain.jpaOne2Many              thrpt    2   109.989          ops/ms
-JMHMain.jpaPageQuery             thrpt    2   133.352          ops/ms
-JMHMain.jpaSelectById            thrpt    2   359.050          ops/ms
-JMHMain.mybatisComplexMapping    thrpt    2   117.422          ops/ms
-JMHMain.mybatisExecuteTemplate   thrpt    2   251.915          ops/ms
-JMHMain.mybatisFile              thrpt    2   192.212          ops/ms
-JMHMain.mybatisInsert            thrpt    2   167.225          ops/ms
-JMHMain.mybatisLambdaQuery       thrpt    2    12.453          ops/ms
-JMHMain.mybatisPageQuery         thrpt    2    76.006          ops/ms
-JMHMain.mybatisSelectById        thrpt    2   265.810          ops/ms
-JMHMain.weedExecuteJdbc          thrpt    2   424.919          ops/ms
-JMHMain.weedExecuteTemplate      thrpt    2   464.600          ops/ms
-JMHMain.weedFile                 thrpt    2   498.603          ops/ms
-JMHMain.weedInsert               thrpt    2   248.010          ops/ms
-JMHMain.weedLambdaQuery          thrpt    2   383.933          ops/ms
-JMHMain.weedPageQuery            thrpt    2   249.315          ops/ms
-JMHMain.weedSelectById           thrpt    2   401.897          ops/ms
+JMHMain.beetlsqlComplexMapping   thrpt    2   217.418          ops/ms
+JMHMain.beetlsqlExecuteJdbc      thrpt    2   501.621          ops/ms
+JMHMain.beetlsqlExecuteTemplate  thrpt    2   429.457          ops/ms
+JMHMain.beetlsqlFile             thrpt    2   428.673          ops/ms
+JMHMain.beetlsqlInsert           thrpt    2   252.065          ops/ms
+JMHMain.beetlsqlLambdaQuery      thrpt    2   268.247          ops/ms
+JMHMain.beetlsqlOne2Many         thrpt    2   119.450          ops/ms
+JMHMain.beetlsqlPageQuery        thrpt    2   207.616          ops/ms
+JMHMain.beetlsqlSelectById       thrpt    2   400.748          ops/ms
+JMHMain.jdbcExecuteJdbc          thrpt    2   997.115          ops/ms
+JMHMain.jdbcInsert               thrpt    2   341.021          ops/ms
+JMHMain.jdbcSelectById           thrpt    2  1056.166          ops/ms
+JMHMain.jpaExecuteJdbc           thrpt    2   110.642          ops/ms
+JMHMain.jpaExecuteTemplate       thrpt    2   134.947          ops/ms
+JMHMain.jpaInsert                thrpt    2    64.890          ops/ms
+JMHMain.jpaOne2Many              thrpt    2    98.547          ops/ms
+JMHMain.jpaPageQuery             thrpt    2   114.931          ops/ms
+JMHMain.jpaSelectById            thrpt    2   326.087          ops/ms
+JMHMain.mybatisComplexMapping    thrpt    2   108.084          ops/ms
+JMHMain.mybatisExecuteTemplate   thrpt    2   204.084          ops/ms
+JMHMain.mybatisFile              thrpt    2   165.927          ops/ms
+JMHMain.mybatisInsert            thrpt    2   138.675          ops/ms
+JMHMain.mybatisLambdaQuery       thrpt    2    10.413          ops/ms
+JMHMain.mybatisPageQuery         thrpt    2    65.887          ops/ms
+JMHMain.mybatisSelectById        thrpt    2   198.970          ops/ms
+JMHMain.weedExecuteJdbc          thrpt    2   366.112          ops/ms
+JMHMain.weedExecuteTemplate      thrpt    2   402.302          ops/ms
+JMHMain.weedFile                 thrpt    2   430.715          ops/ms
+JMHMain.weedInsert               thrpt    2   209.032          ops/ms
+JMHMain.weedLambdaQuery          thrpt    2   343.186          ops/ms
+JMHMain.weedPageQuery            thrpt    2   234.511          ops/ms
+JMHMain.weedSelectById           thrpt    2   372.200          ops/ms
 
 ```
 
-# (2021-11-21)
- 
-有些dao并不支持一些特性，所以并未出现在下面列表，比如JDBC不支持自动翻页查询，MyBatis不支持one2Many等
-```
-Benchmark                         Mode  Cnt     Score   Error   Units
-JMHMain.beetlsqlComplexMapping   thrpt    2   226.834          ops/ms
-JMHMain.beetlsqlExecuteJdbc      thrpt    2   510.638          ops/ms
-JMHMain.beetlsqlExecuteTemplate  thrpt    2   461.694          ops/ms
-JMHMain.beetlsqlFile             thrpt    2   467.866          ops/ms
-JMHMain.beetlsqlInsert           thrpt    2   273.023          ops/ms
-JMHMain.beetlsqlLambdaQuery      thrpt    2   285.992          ops/ms
-JMHMain.beetlsqlOne2Many         thrpt    2   125.105          ops/ms
-JMHMain.beetlsqlPageQuery        thrpt    2   215.244          ops/ms
-JMHMain.beetlsqlSelectById       thrpt    2   447.269          ops/ms
-JMHMain.jdbcExecuteJdbc          thrpt    2  1120.869          ops/ms
-JMHMain.jdbcInsert               thrpt    2   355.742          ops/ms
-JMHMain.jdbcSelectById           thrpt    2  1153.968          ops/ms
-JMHMain.jpaExecuteJdbc           thrpt    2   109.625          ops/ms
-JMHMain.jpaExecuteTemplate       thrpt    2   138.528          ops/ms
-JMHMain.jpaInsert                thrpt    2    71.405          ops/ms
-JMHMain.jpaOne2Many              thrpt    2   103.901          ops/ms
-JMHMain.jpaPageQuery             thrpt    2   119.841          ops/ms
-JMHMain.jpaSelectById            thrpt    2   344.053          ops/ms
-JMHMain.mybatisComplexMapping    thrpt    2   101.239          ops/ms
-JMHMain.mybatisExecuteTemplate   thrpt    2   212.812          ops/ms
-JMHMain.mybatisFile              thrpt    2   137.140          ops/ms
-JMHMain.mybatisInsert            thrpt    2   150.837          ops/ms
-JMHMain.mybatisLambdaQuery       thrpt    2    14.421          ops/ms
-JMHMain.mybatisPageQuery         thrpt    2    64.915          ops/ms
-JMHMain.mybatisSelectById        thrpt    2   222.265          ops/ms
-JMHMain.weedExecuteJdbc          thrpt    2   430.943          ops/ms
-JMHMain.weedExecuteTemplate      thrpt    2   430.418          ops/ms
-JMHMain.weedFile                 thrpt    2   493.588          ops/ms
-JMHMain.weedInsert               thrpt    2   241.865          ops/ms
-JMHMain.weedLambdaQuery          thrpt    2   441.746          ops/ms
-JMHMain.weedPageQuery            thrpt    2   252.932          ops/ms
-JMHMain.weedSelectById           thrpt    2   434.757          ops/ms
-```
+
 JDBC作为基准测试，在不考虑JDBC的情况下，BeetlSQL性能比MyBatis和JPA都好很多 
 另外BeetlSQL支持全部9个场景的测试
