@@ -1,13 +1,14 @@
-package org.beetl.sql.ext.solon;
+package org.noear.solon.extend.beetlsql;
 
 import org.beetl.sql.core.ConditionalSQLManager;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
 import org.beetl.sql.core.db.*;
 import org.beetl.sql.core.nosql.*;
+import org.noear.solon.Solon;
 import org.noear.solon.Utils;
-import org.noear.solon.core.Aop;
 import org.noear.solon.core.BeanWrap;
+import org.noear.solon.core.Props;
 import org.noear.solon.core.ValHolder;
 import org.noear.solon.core.event.EventBus;
 
@@ -15,81 +16,32 @@ import javax.sql.DataSource;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 /**
  * SQLManager 工具
  *
  * @author noear
  * @since 2020-09-01
  * */
-class DbManager {
+public class DbManager {
+    private static final String TAG = "beetlsql";
+
     private static final String ATTR_dialect = "dialect";
-    private static final String ATTR_slaves  = "slaves";
-
-    private static DbManager _global = new DbManager();
-
-    public static DbManager global() {
-        return _global;
-    }
+    private static final String ATTR_slaves = "slaves";
+    private static final String ATTR_dev = "dev";
 
 
-    private final Map<String, SQLManager> cached = new ConcurrentHashMap<>();
-    private ConditionalSQLManager dynamic;
+    private static final Map<String, SQLManager> cached = new ConcurrentHashMap<>();
+    private static ConditionalSQLManager dynamic;
 
-    /**
-     * 构建
-     */
-    private SQLManager build(BeanWrap bw) {
-        DbConnectionSource cs = null;
-        DataSource master = bw.raw();
-
-        String slaves_str = bw.attrGet(ATTR_slaves);
-
-        if (Utils.isNotEmpty(slaves_str)) {
-            String[] slaveAry = slaves_str.split(",");
-            DataSource[] slaves = new DataSource[slaveAry.length];
-
-            for (int i = 0, len = slaveAry.length; i < len; i++) {
-                ValHolder<Integer> valHolder = new ValHolder<>(i);
-
-                Aop.getAsyn(slaveAry[i], dsBw -> {
-                    slaves[valHolder.value] = dsBw.raw();
-                });
-
-//                //todo::此处不能用同步，有些源可能还没构建好 //不过异常，没法检查了
-//                slaves[i] = Aop.get(slaveAry[i]);
-//
-//                if (slaves[i] == null) {
-//                    throw new RuntimeException("DbManager: This data source does not exist: " + slaveAry[i]);
-//                }
-            }
-
-            cs = new DbConnectionSource(master, slaves);
-        } else {
-            cs = new DbConnectionSource(master, null);
-        }
-
-        SQLManagerBuilder builder = SQLManager.newBuilder(cs);
-        //as bean name
-        String dataSourceId = "ds-" + (bw.name() == null ? "" : bw.name());
-        builder.setName(dataSourceId);
-
-        buildStyle(bw, builder);
-
-        //推到事件中心，用于扩展
-        EventBus.push(builder);
-
-        return builder.build();
-    }
 
     /**
      * 获取动态管理器
      */
-    public ConditionalSQLManager dynamicGet() {
+    public static ConditionalSQLManager dynamicGet() {
         return dynamic;
     }
 
-    public void dynamicBuild(BeanWrap def) {
+    public static void dynamicBuild(BeanWrap def) {
         SQLManager master = get(def);
         if (master == null) {
             for (Map.Entry<String, SQLManager> kv : cached.entrySet()) {
@@ -103,22 +55,27 @@ class DbManager {
         }
     }
 
+    public static SQLManager get(String dsName) {
+        BeanWrap dsWrap = Solon.context().getWrap(dsName);
+        return get(dsWrap);
+    }
+
     /**
      * 获取管理器
      */
-    public SQLManager get(BeanWrap bw) {
-        if (bw == null) {
+    public static SQLManager get(BeanWrap dsWrap) {
+        if (dsWrap == null) {
             return null;
         }
 
-        SQLManager tmp = cached.get(bw.name());
+        SQLManager tmp = cached.get(dsWrap.name());
         if (tmp == null) {
-            synchronized (bw.name().intern()) {
-                tmp = cached.get(bw.name());
+            synchronized (dsWrap.name().intern()) {
+                tmp = cached.get(dsWrap.name());
                 if (tmp == null) {
-                    tmp = build(bw);
+                    tmp = build(dsWrap);
 
-                    cached.put(bw.name(), tmp);
+                    cached.put(dsWrap.name(), tmp);
                 }
             }
         }
@@ -129,13 +86,82 @@ class DbManager {
     /**
      * 注册管理器
      */
-    public void reg(BeanWrap bw) {
+    public static void reg(BeanWrap bw) {
         get(bw);
     }
 
-    private void buildStyle(BeanWrap bw, SQLManagerBuilder builder) {
-        String dialect = bw.attrGet(ATTR_dialect);
+    /**
+     * 构建
+     */
+    private static SQLManager build(BeanWrap bw) {
+        DbConnectionSource cs = null;
+        DataSource master = bw.raw();
+        Props dsProps;
 
+        if (Utils.isNotEmpty(bw.name())) {
+            dsProps = bw.context().getProps().getProp(TAG + "." + bw.name());
+        } else {
+            dsProps = new Props();
+        }
+
+        //从库
+        String slaves_str = dsProps.get(ATTR_slaves);
+        dsProps.remove(ATTR_slaves);
+        if (Utils.isEmpty(slaves_str)) {
+            slaves_str = bw.attrGet(ATTR_slaves);
+        }
+
+        if (Utils.isNotEmpty(slaves_str)) {
+            String[] slaveAry = slaves_str.split(",");
+            DataSource[] slaves = new DataSource[slaveAry.length];
+
+            for (int i = 0, len = slaveAry.length; i < len; i++) {
+                ValHolder<Integer> valHolder = new ValHolder<>(i);
+
+                //todo::此处不能用同步，有些源可能还没构建好 //不过异常，没法检查了
+                bw.context().getWrapAsyn(slaveAry[i], dsBw -> {
+                    slaves[valHolder.value] = dsBw.raw();
+                });
+            }
+
+            cs = new DbConnectionSource(master, slaves);
+        } else {
+            cs = new DbConnectionSource(master, null);
+        }
+
+        //方言
+        String dialect_str = dsProps.get(ATTR_dialect);
+        dsProps.remove(ATTR_dialect);
+        if (Utils.isEmpty(slaves_str)) {
+            dialect_str = bw.attrGet(ATTR_dialect);
+        }
+
+        SQLManagerBuilder builder = SQLManager.newBuilder(cs);
+        //as bean name
+        String dataSourceId = "ds-" + (bw.name() == null ? "" : bw.name());
+        builder.setName(dataSourceId);
+
+        //支持特性加持
+        buildStyle(builder, dialect_str);
+
+        //支持配置注入
+        if (dsProps.size() > 0) {
+            //处理调试模式
+            if (dsProps.getBool(ATTR_dev, false)) {
+                builder.addInterDebug();
+            }
+            dsProps.remove(ATTR_dev);
+
+            Utils.injectProperties(builder, dsProps);
+        }
+
+        //推到事件中心，用于扩展
+        EventBus.push(builder);
+
+        return builder.build();
+    }
+
+    private static void buildStyle(SQLManagerBuilder builder, String dialect) {
         if (Utils.isNotEmpty(dialect)) {
             DBStyle style = null;
 
