@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.19.1-RELEASE</version>
+        <version>3.19.2-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>opengauss</artifactId>
-    <version>3.19.1-RELEASE</version>
+    <version>3.19.2-RELEASE</version>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <!-- 不要升级版本，目前只有这个版本能连上 -->

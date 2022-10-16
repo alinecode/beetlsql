@@ -54,9 +54,9 @@ INSERT INTO `sys_user` VALUES (3, 'bear', 5, NULL); -- 用户3 测试null值映�
 INSERT INTO `sys_user` VALUES (4, 'mike', 1, NULL);
 INSERT INTO `sys_user` VALUES (5, 'lisan', 1, NULL);
 INSERT INTO `sys_user` VALUES (6, 'xb', 1, NULL);
-INSERT INTO `sys_user` VALUES (7, 'duanwu', 2, NULL);
+INSERT INTO `sys_user` VALUES (7, 'duanwu', 9, NULL);
 INSERT INTO `sys_user` VALUES (8, 'fenh', 1, NULL);
-INSERT INTO `sys_user` VALUES (9, 'lj', 2, NULL);
+INSERT INTO `sys_user` VALUES (9, 'lj', 9, NULL);
 INSERT INTO `sys_user` VALUES (10, 'gshen', 1, NULL);
 INSERT INTO `sys_user` VALUES (11, 'lihui', 1, NULL);
 COMMIT;

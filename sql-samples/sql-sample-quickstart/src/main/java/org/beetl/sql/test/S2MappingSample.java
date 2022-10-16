@@ -100,7 +100,7 @@ public class S2MappingSample {
     public void jsonConfig() {
         String sql = "select d.id id,d.name name ,u.id u_id,u.name u_name " +
                 " from department d  left join sys_user u on d.id=u.department_id  where d.id=?";
-        Integer deptId = 1;
+        Integer deptId = 2;
         SQLReady ready = new SQLReady(sql,new Object[]{deptId});
         List<DepartmentInfo> list = sqlManager.execute(ready,DepartmentInfo.class);
         System.out.println(list.toString());
