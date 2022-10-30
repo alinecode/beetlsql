@@ -24,7 +24,7 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = mysqlDatasource();
+	static DataSource dataSource = datasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -50,9 +50,10 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
-		LambdaQuery<OrderLog> query = sqlManager.lambdaQuery(OrderLog.class);
-		query.andIn(OrderLog::getStatus,Arrays.asList("a","b")).select();
-		logMapper.selectByStatus(Arrays.asList("a","b"));
+		List<OrderLog> list = logMapper.select(Arrays.asList(1L,2L));
+		System.out.println(list);
+		list = logMapper.select(new ArrayList<>());
+		System.out.println(list);
 //		logMapper.select(new ArrayList<>());
 //
 //		logMapper.select(Arrays.asList(1L,2L));

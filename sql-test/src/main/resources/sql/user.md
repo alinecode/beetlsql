@@ -3,7 +3,7 @@ select
 
 ```sql
     select *  from order_log where 1=1 
-    -- @ if(!isEmpty(ids)){
+    -- @ if(!isEmpty(A)){
         and order_id in ( #{join(ids)} )
     -- @ }
 ```

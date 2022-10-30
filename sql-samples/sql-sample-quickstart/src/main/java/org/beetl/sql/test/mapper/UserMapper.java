@@ -56,7 +56,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
 
 
     /**
-     *  SimpleJoinMappper 颜色
+     *  SimpleJoinMappper 映射
      * @return
      */
     @Sql("select u.id ,u.name  ,d.id `dept.id`,d.name `dept.name` ,1 age" +

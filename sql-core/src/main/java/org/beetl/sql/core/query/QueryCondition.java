@@ -226,7 +226,7 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     protected void appendBetweenSql(String column, String opt, String link, Object... value) {
-		if(isValidateValue(value[0])||isValidateValue(value[1])){
+		if(!isValidateValue(value[0])||!isValidateValue(value[1])){
 			return ;
 		}
 

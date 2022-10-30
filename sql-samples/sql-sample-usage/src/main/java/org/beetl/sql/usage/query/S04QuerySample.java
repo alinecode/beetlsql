@@ -34,15 +34,16 @@ public class S04QuerySample {
     public static void main(String[] args) {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S04QuerySample sample = new S04QuerySample(sqlManager);
-        sample.basic();
-        sample.order();
-        sample.like();
-        sample.in();
-        sample.selectSingle();
-        sample.page();
-        sample.orAnd();
-        sample.filterEmpty();
-        sample.groupBy();
+//        sample.basic();
+//        sample.order();
+//        sample.like();
+//        sample.in();
+//        sample.selectSingle();
+//        sample.page();
+//        sample.orAnd();
+        sample.andBetween();
+//        sample.filterEmpty();
+//        sample.groupBy();
 
 
     }
@@ -124,6 +125,17 @@ public class S04QuerySample {
                 .or(query.condition().andEq(UserEntity::getId, 1).andEq(UserEntity::getDepartmentId,1));
         List<UserEntity> list = query.select();
     }
+
+	/**
+	 * where xx or ( xxx and yy);
+	 */
+	public void andBetween(){
+		LambdaQuery<UserEntity> query = sqlManager.lambdaQuery(UserEntity.class);
+		LambdaQuery condition = query.condition().andBetween(UserEntity::getId, 1,3);
+		query.andEq(UserEntity::getId, 2)
+				.and(condition);
+		List<UserEntity> list = query.select();
+	}
 
     /**
      * 如果变量为空，则忽略

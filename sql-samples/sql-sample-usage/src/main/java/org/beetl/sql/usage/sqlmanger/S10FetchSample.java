@@ -10,6 +10,7 @@ import org.beetl.sql.fetch.annotation.FetchOne;
 import org.beetl.sql.sample.SampleHelper;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 演示使用@Fetch 自动抓取，可以参考S5Fetch。 这里演示一个嵌套多层抓取
@@ -56,7 +57,21 @@ public class S10FetchSample {
         @FetchOne("departmentId")
         private DepartmentData dept;
 
-    }
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			UserData userData = (UserData) o;
+			return id.equals(userData.id);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(id);
+		}
+	}
 
 
     @Data
@@ -68,6 +83,21 @@ public class S10FetchSample {
         private String name;
         @FetchMany("departmentId")
         private List<UserData> users;
-    }
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			DepartmentData that = (DepartmentData) o;
+			return id.equals(that.id);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(id);
+		}
+	}
 
 }

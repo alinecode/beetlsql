@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.19.2-RELEASE</version>
+        <version>3.19.3-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>polarDB</artifactId>
-    <version>3.19.2-RELEASE</version>
+    <version>3.19.3-RELEASE</version>
 
     <dependencies>
         <dependency>
