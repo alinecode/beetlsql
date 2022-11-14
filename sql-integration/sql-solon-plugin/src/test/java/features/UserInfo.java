@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test;
+package features;
 
 import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;

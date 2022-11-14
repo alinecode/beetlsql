@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.dynamic;
+package features.masterslave;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,13 +7,13 @@ import org.noear.solon.test.SolonJUnit4ClassRunner;
 import org.noear.solon.test.SolonTest;
 
 @RunWith(SolonJUnit4ClassRunner.class)
-@SolonTest(DynamicApp.class)
-public class DynamicTest {
+@SolonTest(MasterSlaveApp.class)
+public class MasterSlaveTest {
     @Inject
-    DynamicService single;
+    MasterSlaveService service;
 
     @Test
     public void test(){
-        single.test();
+        service.test();
     }
 }

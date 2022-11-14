@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.masterslave;
+package features.masterslave;
 
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 @Configuration
 public class MasterDataSourceConfig {
 
-    @Bean(attrs = "slaveDs1,slaveDs2")
+    @Bean(name = "db1", typed = true)
     public DataSource master(@Inject("${db1}") HikariDataSource ds) {
         return ds;
     }

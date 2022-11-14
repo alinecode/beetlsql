@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.dynamic;
+package features.dynamic;
 
 import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;
@@ -6,9 +6,9 @@ import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.annotation.entity.TargetSQLManager;
 
 @Table(name="user")
-@TargetSQLManager("ds1")
+@TargetSQLManager("ds2")
 @Data
-public class UserInfoInDs1 {
+public class UserInfoInDs2 {
     @AssignID
     private Integer id;
     private String name;

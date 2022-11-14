@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.dynamic;
+package features.dynamic;
 
 import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.annotation.Sql;

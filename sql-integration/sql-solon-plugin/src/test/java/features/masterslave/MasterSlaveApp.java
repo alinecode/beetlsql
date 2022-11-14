@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.masterslave;
+package features.masterslave;
 
 
 import org.noear.solon.Solon;
