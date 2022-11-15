@@ -1,6 +1,6 @@
-package org.beetl.sql.ext.solon.test.simple;
+package features.simple;
 
-import org.beetl.sql.ext.solon.test.UserInfo;
+import features.UserInfo;
 import org.beetl.sql.mapper.BaseMapper;
 
 public interface SimpleUserInfoMapper extends BaseMapper<UserInfo> {

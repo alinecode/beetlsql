@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.masterslave;
+package features.simple;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,10 +7,10 @@ import org.noear.solon.test.SolonJUnit4ClassRunner;
 import org.noear.solon.test.SolonTest;
 
 @RunWith(SolonJUnit4ClassRunner.class)
-@SolonTest(MasterSlaveApp.class)
-public class MasterSlaveTest {
+@SolonTest(SimpleApp.class)
+public class SimpleTest {
     @Inject
-    MasterSlaveService service;
+    SimpleService service;
 
     @Test
     public void test(){

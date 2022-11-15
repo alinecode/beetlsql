@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.dynamic;
+package features.dynamic;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.noear.solon.annotation.Bean;

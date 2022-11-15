@@ -1,4 +1,4 @@
-package org.beetl.sql.ext.solon.test.simple;
+package features.simple;
 
 
 import org.noear.solon.Solon;
