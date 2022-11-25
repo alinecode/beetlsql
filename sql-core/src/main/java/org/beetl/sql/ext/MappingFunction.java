@@ -43,7 +43,7 @@ public class MappingFunction implements Function {
 
     private String getParentId(Context ctx) {
         String id = (String) ctx.getGlobal("_id");
-        int index = id.lastIndexOf(".");
+		int index = id.lastIndexOf('.');
         String file = id.substring(0, index);
         return file;
     }

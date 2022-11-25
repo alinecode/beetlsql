@@ -110,7 +110,7 @@ public class IotDbStyle extends AbstractDBStyle {
 			protected  String getColName(ExecuteContext ctx, ResultSetMetaData rsmd, int col) throws SQLException{
 				/*iotdb会返回STORAGE GROUP，需要排除*/
 				String colName = super.getColName(ctx,rsmd,col);
-				int index =colName.lastIndexOf(".");
+				int index = colName.lastIndexOf('.');
 				if(index==-1){
 					return colName;
 				}else{
