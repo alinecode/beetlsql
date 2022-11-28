@@ -140,12 +140,12 @@ public class SchemaMetadataManager implements MetadataManager {
 		}else{
 			 desc = (TableDesc) tableInfoMap.get(tableName);
 		}
-	   
-		if(desc==NOT_EXIST){
+
+		if (desc == NOT_EXIST) {
 			return null;
-		}else if(desc==null){
-			int index = tableName.indexOf(".");
-			if(index!=-1){
+		} else if (desc == null) {
+			int index = tableName.indexOf('.');
+			if (index != -1) {
 				//
 				String schema = tableName.substring(0, index);
 				String table = tableName.substring(index+1);

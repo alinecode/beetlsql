@@ -165,10 +165,9 @@ public class DbManager {
         if (Utils.isNotEmpty(dialect)) {
             DBStyle style = null;
 
-            if (dialect.indexOf(".") > 0) {
-                style = Utils.newInstance(dialect);
-
-            } else {
+			if (dialect.indexOf('.') > 0) {
+				style = Utils.newInstance(dialect);
+			} else {
                 dialect = dialect.toLowerCase();
 
                 switch (dialect) {
