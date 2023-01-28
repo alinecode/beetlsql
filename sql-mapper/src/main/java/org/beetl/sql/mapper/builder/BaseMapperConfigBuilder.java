@@ -9,6 +9,7 @@ import org.beetl.sql.mapper.annotation.AutoMapper;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,7 +27,7 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
 	 * 或者提供给其他自定义的BaseMapper使用
 	 * @see #addMapperClass(Class)
 	 */
-	protected final Map<Method, MapperInvoke> amiMethodMap = new ConcurrentHashMap<>();
+	protected final Map<MapperInvokeKey, MapperInvoke> amiMethodMap = new ConcurrentHashMap<>();
 
 
 	public BaseMapperConfigBuilder() {
@@ -44,17 +45,28 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
 	 */
 	@Override
 	public MapperInvoke getAmi(Class entity, Class mapperClass, Method method) {
-		MapperInvoke mapperInvoke = amiMethodMap.get(method);
+		MapperInvokeKey key =  new MapperInvokeKey(method);
+		return searchAmi(entity,mapperClass,key);
+    }
+
+	@Override
+	public MapperInvoke getInheritAmi(Class entity, Class mapperClass, Method method){
+		MapperInvokeKey key =  new MapperInvokeKey(mapperClass,method);
+		return searchAmi(entity,mapperClass,key);
+
+	}
+
+	protected  MapperInvoke searchAmi(Class entity,Class mapperClass,MapperInvokeKey key){
+		MapperInvoke mapperInvoke = amiMethodMap.get(key);
 		if (mapperInvoke != null) {
 			return mapperInvoke;
 		}
-		MapperMethodParser mapperMethodParser = new MapperMethodParser(entity, mapperClass, method);
+		MapperMethodParser mapperMethodParser = new MapperMethodParser(entity, mapperClass, key.m);
 		mapperInvoke = mapperMethodParser.parse();
-		mapperInvoke = wrap(mapperInvoke, method);
-		amiMethodMap.putIfAbsent(method, mapperInvoke);
+		mapperInvoke = wrap(mapperInvoke, key.m);
+		amiMethodMap.putIfAbsent(key, mapperInvoke);
 		return mapperInvoke;
-    }
-
+	}
 
     /**
      * 添加一个baseMapper类，可以添加任意多的BaseMapper，比如有些Basemapper有crud，而有些只有查询
@@ -71,7 +83,7 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
 
 
     protected void scanBaseMapper(Class c){
-        HashMap<Method, MapperInvoke> map = new HashMap<>();
+        HashMap<MapperInvokeKey, MapperInvoke> map = new HashMap<>();
        Method[] methods =  c.getMethods();
        for(Method method:methods){
            AutoMapper autoMapper = method.getAnnotation(AutoMapper.class);
@@ -80,7 +92,7 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
            }
            Class mapperClass = autoMapper.value();
            MapperInvoke ins = (MapperInvoke)BeanKit.newSingleInstance(mapperClass);
-           map.put(method,wrap(ins,method));
+           map.put(new MapperInvokeKey(method),wrap(ins,method));
 
        }
        if(map.isEmpty()){
@@ -110,7 +122,35 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
     }
 
 
+	public static class MapperInvokeKey{
 
+		public Class c;
+		public Method m;
+		public MapperInvokeKey(Class c,Method m){
+			this.c = c;
+			this.m = m;
+		}
+
+		public MapperInvokeKey(Method m){
+
+			this.m = m;
+		}
+
+
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			MapperInvokeKey that = (MapperInvokeKey) o;
+			return Objects.equals(c, that.c) && m.equals(that.m);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(c, m);
+		}
+	}
 
 
 

@@ -53,7 +53,7 @@ utf8
 implementByChild
 ===
 
-    select * from sys_user  where id =1;
+    select * from sys_user  where id =#{id};
 
 streamTest
 ===

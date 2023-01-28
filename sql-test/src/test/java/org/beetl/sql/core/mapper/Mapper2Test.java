@@ -1,5 +1,6 @@
 package org.beetl.sql.core.mapper;
 
+import lombok.Data;
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.annotation.entity.JsonMapper;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
@@ -203,14 +204,35 @@ public class Mapper2Test extends BaseTest {
 
     @Test
     public void mapperInheritMapper(){
+		/*测试继承BaseMapper，使用 @InheritMapper */
+		{
+			MyTestUserMapper dao = sqlManager.getMapper(MyTestUserMapper.class);
+			User query = new User();
+			query.setId(1);
+			try{
+				List<User> list = dao.implementByChild(query);
+				Object item   = list.get(0);
+				Assert.assertEquals(item.getClass(),User.class);
+			}catch(RuntimeException re){
+				re.printStackTrace();
+				Assert.fail();
+			}
+		}
 
-        MyTestUserMapper dao = sqlManager.getMapper(MyTestUserMapper.class);
-        try{
-            dao.implementByChild();
-        }catch(RuntimeException re){
-            re.printStackTrace();
-            Assert.fail();
-        }
+
+		{
+			MyTestAdminUserMapper dao = sqlManager.getMapper(MyTestAdminUserMapper.class);
+			AdminUser query = new AdminUser();
+			query.setId(1);
+			try{
+				List<AdminUser> list = dao.implementByChild(query);
+				Object item   = list.get(0);
+				Assert.assertEquals(item.getClass(),AdminUser.class);
+			}catch(RuntimeException re){
+				re.printStackTrace();
+				Assert.fail();
+			}
+		}
 
 
 
@@ -234,13 +256,23 @@ public class Mapper2Test extends BaseTest {
 
     public static interface  CommonMapper<T> extends BaseMapper{
         @InheritMapper
-        public List<T> implementByChild();
+        public List<T> implementByChild(T t);
     }
 
     @SqlResource("user")
     public static interface  MyTestUserMapper extends CommonMapper<User>{
 
     }
+
+	@SqlResource("admin")
+	public static interface  MyTestAdminUserMapper extends CommonMapper<AdminUser>{
+
+	}
+
+	@Data
+	public static class AdminUser extends  User{
+
+	}
 
 
 

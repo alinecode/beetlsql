@@ -50,10 +50,18 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
-		List<OrderLog> list = logMapper.select(Arrays.asList(1L,2L));
-		System.out.println(list);
-		list = logMapper.select(new ArrayList<>());
-		System.out.println(list);
+
+		OrderLog  orderLog = new OrderLog();
+		orderLog.setAge(12);
+		orderLog.setStatus("b");
+		logMapper.insertTemplate(orderLog);
+
+		System.out.println(orderLog.getOrderId());
+//
+//		List<OrderLog> list = logMapper.select(Arrays.asList(1L,2L));
+//		System.out.println(list);
+//		list = logMapper.select(new ArrayList<>());
+//		System.out.println(list);
 //		logMapper.select(new ArrayList<>());
 //
 //		logMapper.select(Arrays.asList(1L,2L));

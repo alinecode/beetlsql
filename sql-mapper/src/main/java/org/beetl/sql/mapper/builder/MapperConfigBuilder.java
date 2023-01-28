@@ -15,6 +15,11 @@ public interface MapperConfigBuilder {
 	 */
 	MapperInvoke getAmi(Class entity, Class mapperClass, Method method);
 
+	default  MapperInvoke getInheritAmi(Class entity, Class mapperClass, Method method){
+		//兼容以前对MapperConfigBuilder扩展的，尽管这个扩展在遇到@InheritMapper时候，会有问题，see "https://gitee.com/xiandafu/beetlsql/issues/I6B7AN"
+		return getAmi(entity,mapperClass,method);
+	}
+
 	/**
 	 * 从实现BaseMapper的接口的所有方法中找@AutoMapper注解指定的MapperInvoke实现并添加
 	 *

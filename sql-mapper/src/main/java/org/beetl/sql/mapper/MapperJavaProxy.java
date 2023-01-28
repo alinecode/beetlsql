@@ -135,8 +135,8 @@ public class MapperJavaProxy implements InvocationHandler {
 			Class caller = method.getDeclaringClass();
 			invoke = builder.getAmi(entityClass, caller, method);
 		} else {
-			/*继承BaseMapper的接口覆写了BaseMapper中的相应方法*/
-			invoke = builder.getAmi(entityClass, this.mapperInterface, method);
+			/* 不适用method所在的类，而使用传入的mapperInterface构造invoke，这样对应的sqlResource，entity*/
+			invoke = builder.getInheritAmi(entityClass, this.mapperInterface, method);
 		}
 		Object ret = invoke.call(this.sqlManager, this.entityClass, method, args);
 		return ret;
