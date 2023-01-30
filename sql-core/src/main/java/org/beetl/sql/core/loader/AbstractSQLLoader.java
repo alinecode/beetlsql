@@ -67,9 +67,7 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 			return false;
 		}
 		boolean isModified = isExternalSourceModified(id);
-		if (isModified) {
-			removeExternalSource(id);
-		}
+
 		return isModified;
 
 	}

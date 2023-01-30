@@ -19,6 +19,13 @@ import org.beetl.sql.core.db.DBStyle;
 	  */
 	 SQLSource querySQL(SqlId id);
 
+	/**
+	 * 同querySQL，但总是加载新的sql
+	 * @param id
+	 * @return
+	 */
+	SQLSource loadSQL(SqlId id);
+
 	 /**
 	  * 查询自动生成，或者Java提供的Sql
 	  * @param id

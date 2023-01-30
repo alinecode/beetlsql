@@ -57,6 +57,21 @@ public abstract class PathLoader extends AbstractSQLLoader {
 
     }
 
+	@Override
+	public  SQLSource loadSQL(SqlId id){
+		if(autoGenSourceMap.containsKey(id)){
+			return autoGenSourceMap.get(id);
+		}
+		loadFromClassPath(id);
+		SQLSource source = sqlSourceMap.computeIfAbsent(id, key -> EMPTY);
+		if (source == EMPTY) {
+			return null;
+		} else {
+			return source;
+		}
+
+	}
+
     @Override
     public SQLSource queryExternalSource(SqlId id) {
         SQLSource source = sqlSourceMap.get(id);
@@ -183,10 +198,6 @@ public abstract class PathLoader extends AbstractSQLLoader {
             SQLFileParser parser = this.getParser(modelName, bf);
             SQLSource source = null;
             while ((source = parser.next()) != null) {
-                if(sqlSourceMap.containsKey(source.getId())){
-                    //存在的不再重新加载，监测到变化重新加载时都已经提前移除
-                    continue;
-                }
                 source.sqlType = SQLType.UNKNOWN;
                 SQLFileVersion version = new SQLFileVersion();
                 version.url = url;
