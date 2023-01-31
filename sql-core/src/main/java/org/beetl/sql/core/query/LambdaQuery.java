@@ -61,22 +61,34 @@ public class LambdaQuery<T> extends Query<T> {
 
     }
 
+    /**
+     * 大于
+     */
     public LambdaQuery<T> andGreat(Property<T, ?> property, Object value) {
         super.appendAndSql(getFunctionName(property), value, ">");
         return this;
 
     }
 
+    /**
+     * 大于等于
+     */
     public LambdaQuery<T> andGreatEq(Property<T, ?> property, Object value) {
         appendAndSql(getFunctionName(property), value, ">=");
         return this;
     }
 
+    /**
+     * 小于
+     */
     public LambdaQuery<T> andLess(Property<T, ?> property, Object value) {
         appendAndSql(getFunctionName(property), value, "<");
         return this;
     }
 
+    /**
+     * 小于等于
+     */
     public LambdaQuery<T> andLessEq(Property<T, ?> property, Object value) {
         appendAndSql(getFunctionName(property), value, "<=");
         return this;
@@ -156,21 +168,33 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
+    /**
+     * 大于
+     */
     public LambdaQuery<T> orGreat(Property<T, ?> property, Object value) {
         appendOrSql(getFunctionName(property), value, ">");
         return this;
     }
 
+    /**
+     * 大于等于
+     */
     public LambdaQuery<T> orGreatEq(Property<T, ?> property, Object value) {
         appendOrSql(getFunctionName(property), value, ">=");
         return this;
     }
 
+    /**
+     * 小于
+     */
     public LambdaQuery<T> orLess(Property<T, ?> property, Object value) {
         appendOrSql(getFunctionName(property), value, "<");
         return this;
     }
 
+    /**
+     * 小于等于
+     */
     public LambdaQuery<T> orLessEq(Property<T, ?> property, Object value) {
         appendOrSql(getFunctionName(property), value, "<=");
         return this;
@@ -393,24 +417,36 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
+    /**
+     * 大于
+     */
     @Override
     public LambdaQuery<T> andGreat(String column, Object value) {
         super.andGreat(column, value);
         return this;
     }
 
+    /**
+     * 大于等于
+     */
     @Override
     public LambdaQuery<T> andGreatEq(String column, Object value) {
         super.andGreatEq(column, value);
         return this;
     }
 
+    /**
+     * 小于
+     */
     @Override
     public LambdaQuery<T> andLess(String column, Object value) {
         super.andLess(column, value);
         return this;
     }
 
+    /**
+     * 小于等于
+     */
     @Override
     public LambdaQuery<T> andLessEq(String column, Object value) {
         super.andLessEq(column, value);
@@ -489,24 +525,36 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
+    /**
+     * 大于
+     */
     @Override
     public LambdaQuery<T> orGreat(String column, Object value) {
         super.orGreat(column, value);
         return this;
     }
 
+    /**
+     * 大于等于
+     */
     @Override
     public LambdaQuery<T> orGreatEq(String column, Object value) {
         super.orGreatEq(column, value);
         return this;
     }
 
+    /**
+     * 小于
+     */
     @Override
     public LambdaQuery<T> orLess(String column, Object value) {
         super.orLess(column, value);
         return this;
     }
 
+    /**
+     * 小于等于
+     */
     @Override
     public LambdaQuery<T> orLessEq(String column, Object value) {
         super.orLessEq(column, value);
