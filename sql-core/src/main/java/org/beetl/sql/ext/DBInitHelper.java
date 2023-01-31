@@ -21,6 +21,7 @@ public class DBInitHelper {
 		Connection conn = null;
 		DefaultConnectionSource defaultConnectionSource = null;
 		try{
+			defaultConnectionSource = (DefaultConnectionSource)sqlManager.getDs();
 			InputStream ins = sqlManager.getClassLoaderKit().loadResource(sqlFile);
 			if(ins==null){
 				throw new IllegalArgumentException("sql script 不存在 "+sqlFile);
@@ -30,7 +31,6 @@ public class DBInitHelper {
 			ins.read(bs);
 			String str = new String(bs,"UTF-8");
 			String[] sqls = str.split(";");
-			defaultConnectionSource = (DefaultConnectionSource)sqlManager.getDs();
 			conn = defaultConnectionSource.getMasterConn();
 			executeSql(conn,sqls);
 			if(defaultConnectionSource.getSlaves()!=null){
@@ -38,6 +38,7 @@ public class DBInitHelper {
 					executeSql(salve.getConnection(),sqls);
 				}
 			}
+			sqlManager.getMetaDataManager().refresh();
 
 		}catch(Exception ex){
 			throw new RuntimeException(ex);

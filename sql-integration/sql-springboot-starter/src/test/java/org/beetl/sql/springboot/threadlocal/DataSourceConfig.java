@@ -30,7 +30,7 @@ public class DataSourceConfig {
 		ds.setUsername(env.getProperty("spring.datasource.username"));
 		ds.setPassword(env.getProperty("spring.datasource.password"));
 		ds.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        ds.setMaximumPoolSize(1);
+        ds.setMaximumPoolSize(2);
         ds.setPoolName(name);
 		return ds;
 	}

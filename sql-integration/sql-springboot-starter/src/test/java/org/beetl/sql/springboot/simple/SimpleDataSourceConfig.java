@@ -29,7 +29,7 @@ public class SimpleDataSourceConfig {
         ds.setUsername(env.getProperty("spring.datasource.username"));
         ds.setPassword(env.getProperty("spring.datasource.password"));
         ds.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        ds.setMaximumPoolSize(1);
+        ds.setMaximumPoolSize(2);
         return ds;
     }
 
@@ -41,9 +41,11 @@ public class SimpleDataSourceConfig {
             @Override
             public void customize(String sqlMangerName, SQLManager manager) {
             	//初始化sql，这里也可以对sqlManager进行修改
-				DBInitHelper.executeSqlScript(manager,"db/schema.sql");
-				//演示一个虚拟表
+
 				manager.addVirtualTable("department",Department.virtual_table);
+				DBInitHelper.executeSqlScript(manager,"db/schema.sql");
+				manager.refresh();
+				//演示一个虚拟表
 				BeetlTemplateEngine templateEngine = (BeetlTemplateEngine)manager.getSqlTemplateEngine();
 				// 注册一个方法来实现映射到多表的逻辑
 				templateEngine.getBeetl().getGroupTemplate().registerFunction("toTable", new Function(){

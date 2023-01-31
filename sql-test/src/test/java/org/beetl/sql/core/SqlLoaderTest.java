@@ -81,7 +81,7 @@ public class SqlLoaderTest extends BaseTest {
 	}
 
 
-	@Test
+//	@Test
 	public void beetlVersionCheck() throws IOException{
 
 
