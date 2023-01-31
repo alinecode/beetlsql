@@ -11,157 +11,78 @@ import java.util.Optional;
  * @author GavinKing
  */
 public interface QueryConditionI<T> {
-	/**
-	 * <pre>
-	 *     column=value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
     Query<T> andEq(String column, Object value);
 
-	/**
-	 * <pre>
-	 *     column!=value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
     Query<T> andNotEq(String column, Object value);
-	/**
-	 * <pre>
-	 *     column>value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
+    /**
+     * 大于
+     */
     Query<T> andGreat(String column, Object value);
-	/**
-	 * <pre>
-	 *     column>=value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
+    /**
+     * 大于等于
+     */
     Query<T> andGreatEq(String column, Object value);
-	/**
-	 * <pre>
-	 *     column<value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
+    /**
+     * 小于
+     */
     Query<T> andLess(String column, Object value);
-	/**
-	 * <pre>
-	 *     column<=value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
+    /**
+     * 小于等于
+     */
     Query<T> andLessEq(String column, Object value);
-	/**
-	 * <pre>
-	 *     column like value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
     Query<T> andLike(String column, Object value);
-	/**
-	 * <pre>
-	 *     column not like value
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
     Query<T> andNotLike(String column, Object value);
 
-	/**
-	 * <pre>
-	 *     column is null
-	 * </pre>
-	 * @param column
-	 * @return
-	 */
     Query<T> andIsNull(String column);
 
-	/**
-	 * <pre>
-	 *     column is not null
-	 * </pre>
-	 * @param column
-	 * @return
-	 */
     Query<T> andIsNotNull(String column);
-	/**
-	 * <pre>
-	 *     column in {value...}
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
     Query<T> andIn(String column, Collection<?> value);
 
 	Query<T> andIn(String column, StrongValue value);
 
 	Query<T> andIn(String column, Optional value);
-	/**
-	 * <pre>
-	 *     column not in {value...}
-	 * </pre>
-	 * @param column
-	 * @param value
-	 * @return
-	 */
+
     Query<T> andNotIn(String column, Collection<?> value);
 
 	Query<T> andNotIn(String column, StrongValue value);
 
 	Query<T> andNotIn(String column, Optional value);
 
-	/**
-	 * <pre>
-	 *     column betwwen value1 and value2
-	 * </pre>
-	 * @param column
-	 * @param value1
-	 * @param value2
-	 * @return
-	 */
     Query<T> andBetween(String column, Object value1, Object value2);
 
-	/**
-	 * <pre>
-	 *     column not betwwen value1 and value2
-	 * </pre>
-	 * @param column
-	 * @param value1
-	 * @param value2
-	 * @return
-	 */
     Query<T> andNotBetween(String column, Object value1, Object value2);
 
-	
+
     Query<T> orEq(String column, Object value);
 
     Query<T> orNotEq(String column, Object value);
 
+    /**
+     * 大于
+     */
     Query<T> orGreat(String column, Object value);
 
+    /**
+     * 大于等于
+     */
     Query<T> orGreatEq(String column, Object value);
 
+    /**
+     * 小于
+     */
     Query<T> orLess(String column, Object value);
 
+    /**
+     * 小于等于
+     */
     Query<T> orLessEq(String column, Object value);
 
     Query<T> orLike(String column, Object value);
