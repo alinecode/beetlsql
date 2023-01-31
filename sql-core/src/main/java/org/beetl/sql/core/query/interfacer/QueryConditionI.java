@@ -16,12 +16,24 @@ public interface QueryConditionI<T> {
 
     Query<T> andNotEq(String column, Object value);
 
+    /**
+     * 大于
+     */
     Query<T> andGreat(String column, Object value);
 
+    /**
+     * 大于等于
+     */
     Query<T> andGreatEq(String column, Object value);
 
+    /**
+     * 小于
+     */
     Query<T> andLess(String column, Object value);
 
+    /**
+     * 小于等于
+     */
     Query<T> andLessEq(String column, Object value);
 
     Query<T> andLike(String column, Object value);
@@ -53,12 +65,24 @@ public interface QueryConditionI<T> {
 
     Query<T> orNotEq(String column, Object value);
 
+    /**
+     * 大于
+     */
     Query<T> orGreat(String column, Object value);
 
+    /**
+     * 大于等于
+     */
     Query<T> orGreatEq(String column, Object value);
 
+    /**
+     * 小于
+     */
     Query<T> orLess(String column, Object value);
 
+    /**
+     * 小于等于
+     */
     Query<T> orLessEq(String column, Object value);
 
     Query<T> orLike(String column, Object value);
