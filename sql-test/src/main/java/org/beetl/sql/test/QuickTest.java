@@ -57,6 +57,8 @@ public class QuickTest {
 		logMapper.insertTemplate(orderLog);
 
 		System.out.println(orderLog.getOrderId());
+
+		sqlManager.lambdaQuery(OrderLog.class).andIsNotNull(OrderLog::getOrderId);
 //
 //		List<OrderLog> list = logMapper.select(Arrays.asList(1L,2L));
 //		System.out.println(list);

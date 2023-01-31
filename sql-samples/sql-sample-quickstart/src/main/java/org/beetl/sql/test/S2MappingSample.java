@@ -48,8 +48,8 @@ public class S2MappingSample {
 //        mappingSample.toMap();
 //        mappingSample.view();
 //        mappingSample.mappingProvider();
-        mappingSample.jsonConfig();
-//        mappingSample.autoMapping();
+//        mappingSample.jsonConfig();
+        mappingSample.autoMapping();
 //        mappingSample.myAttributeAnnotation();
     }
 
@@ -112,8 +112,11 @@ public class S2MappingSample {
      * 使用json 配置来映射，类似mybatis的xml配置
      */
     public void autoMapping() {
-        List<MyUserView> list = mapper.allUserView();
-        System.out.println(list);
+//        List<MyUserView> list = mapper.allUserView();
+//        System.out.println(list);
+
+		List<S2MappingSample.MyUserView2> list2 = mapper.allUserView2();
+		System.out.println(list2);
 
     }
 
@@ -206,6 +209,18 @@ public class S2MappingSample {
         DepartmentEntity dept;
     }
 
+	/**
+	 * 加入Coder注解
+	 */
+	@Data
+	@ResultProvider(AutoJsonMapper.class)
+	public static class MyUserView2 {
+		Integer id;
+		@Coder
+		String name;
+		DepartmentEntity dept;
+	}
+
 
 
     public static class MyRowMapper implements RowMapper<TestUser> {
@@ -241,6 +256,13 @@ public class S2MappingSample {
     }
 
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value = {ElementType.METHOD, ElementType.FIELD})
+	@Builder(CoderConvert.class)
+	public static @interface Coder {
+
+	}
+
     /**
      * 自定义一个注解，实现把属性字段加密存入数据库，取出的时候解密
      */
@@ -261,6 +283,21 @@ public class S2MappingSample {
             return new String(java.util.Base64.getDecoder().decode(value),utf8);
         }
     }
+
+
+	/**
+	 * 自定义一个注解，实现把属性字段加密存入数据库，取出的时候解密
+	 */
+	public static class CoderConvert  implements AttributeConvert {
+		Charset utf8  = Charset.forName("UTF-8");
+
+
+		@Override
+		public  Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws SQLException {
+			String value  = rs.getString(index);
+			return value+" hello,"+System.currentTimeMillis();
+		}
+	}
 
 
 }

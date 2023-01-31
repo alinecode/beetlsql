@@ -44,8 +44,8 @@ public class S1QuickStart {
 //        quickStart.executeTemplate();
 //        quickStart.query();
 //        quickStart.mapper();
-        quickStart.sqlResource();
-//        quickStart.stream();
+//        quickStart.sqlResource();
+        quickStart.stream();
     }
 
     /**
@@ -205,6 +205,11 @@ public class S1QuickStart {
 			System.out.println(user.getName());
 		});
 
+		//通过query获得stream
+		streamData = sqlManager.lambdaQuery(UserEntity.class).stream();
+		streamData.foreach(user -> {
+			System.out.println(user.getName());
+		});
 		DSTransactionManager.commit();
 
 	}

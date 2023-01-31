@@ -1,6 +1,8 @@
 package org.beetl.sql.core.mapping.join;
 
 
+import org.beetl.sql.annotation.builder.AttributeConvert;
+import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ExecuteContext;
@@ -44,6 +46,9 @@ public class AttrNode {
 	 * ResultSet列索引->对应字段属性名
 	 */
 	public Map<Integer, String> colMap = new HashMap<>();
+
+	Map<String, AttributeConvert> attrConvertMap = new HashMap<>();
+
 	/**
 	 * 属性名->字段的PropertyDescriptor
 	 */
@@ -65,6 +70,11 @@ public class AttrNode {
 	 */
 	public void initNode(Class<?> target, Map<String, Object> jsonMapping, Map<String, Integer> columnIndexMap) {
 		this.target = target;
+		ClassAnnotation an = ClassAnnotation.getClassAnnotation(target);
+
+		if (an.isContainExtAnnotation()) {
+			attrConvertMap = an.getExtAnnotation().getAttributeConvertMap();
+		}
 		for (Map.Entry<String, Object> entry : jsonMapping.entrySet()) {
 			String attr = entry.getKey();
 			Object value = entry.getValue();
@@ -186,6 +196,15 @@ public class AttrNode {
 		BeanProcessor beanProcessor = renderContext.beanProcessor;
 		boolean allNull = true;
 		for (Map.Entry<Integer, String> entry : colMap.entrySet()) {
+			String attr = entry.getValue();
+
+			AttributeConvert attributeConvert = attrConvertMap.get(attr);
+			if(attributeConvert!=null){
+				Object value = attributeConvert.toAttr(ctx,this.target,attr,rtp.rs,rtp.index);
+				map.put(attr, value);
+				continue;
+			}
+
 			rtp.setIndex(entry.getKey());
 			PropertyDescriptor ps = propertyMap.get(entry.getValue());
 			Class propertyType = ps.getPropertyType();
@@ -197,8 +216,10 @@ public class AttrNode {
 			if (value != null) {
 				allNull = false;
 			}
-			String attr = entry.getValue();
+
+
 			map.put(attr, value);
+
 		}
 		//如果当前层级的值都是null，则不创建当前层级对象
 		if (allNull) {

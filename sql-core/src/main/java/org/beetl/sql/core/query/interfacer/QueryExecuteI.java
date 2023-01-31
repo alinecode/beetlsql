@@ -1,6 +1,7 @@
 package org.beetl.sql.core.query.interfacer;
 
 
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.QueryCondition;
@@ -21,6 +22,12 @@ public interface QueryExecuteI<M> {
 	List<M> select(String... columns);
 
 	List<M> select();
+
+	/**
+	 * 适合大量数据的查询
+	 * @return
+	 */
+	StreamData<M> stream();
 
 	/**
 	 * 查询简单字段

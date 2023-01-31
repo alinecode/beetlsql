@@ -118,14 +118,15 @@ public abstract class PathLoader extends AbstractSQLLoader {
         long oldRootVersion = source.getVersion().root;
         long oldDbVersion = source.getVersion().db;
 
-        if(oldRootVersion!=0){
-        	//认为这个sqlId是root的md文件
-			URL root = this.getRootFile(id);
-			return getURLVersion(root) != oldRootVersion;
-		}else if(oldDbVersion!=0) {
+        if(oldDbVersion!=0) {
 			URL db = this.getDBRootFile(id);
 			return  getURLVersion(db) != oldDbVersion;
-		}else{
+		}else  if(oldRootVersion!=0){
+			//认为这个sqlId是root的md文件
+			URL root = this.getRootFile(id);
+			return getURLVersion(root) != oldRootVersion;
+		}
+		else{
         	//均为0，md在jar文件，不包含版本变化
         	return false ;
 		}

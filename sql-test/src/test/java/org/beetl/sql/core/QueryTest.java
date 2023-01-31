@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
@@ -11,10 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.SQLException;
+import java.util.*;
 
 public class QueryTest extends BaseTest {
     Query<User> query = null;
@@ -143,6 +142,24 @@ public class QueryTest extends BaseTest {
 
 	}
 
+
+	@Test
+	public void stream() throws SQLException {
+		//模拟事务环境
+		DSTransactionManager.start();
+		Query<User> query = sqlManager.query(User.class);
+		StreamData<User> list = query
+				.andIn("id", Arrays.asList(1, 2))
+				.groupBy("name")
+				.stream();
+		List allData = new ArrayList();
+		list.foreach( user -> {
+			allData.add(user);
+		});
+
+		Assert.assertEquals(2,allData.size());
+		DSTransactionManager.commit();
+	}
 
 
 

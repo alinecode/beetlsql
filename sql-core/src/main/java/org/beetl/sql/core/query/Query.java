@@ -8,6 +8,7 @@ import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.engine.SQLParameter;
+import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
@@ -77,7 +78,21 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return selectByType(clazz);
     }
 
-    @Override
+	@Override
+	public StreamData<T> stream() {
+		String column = splicingColumns(null);
+		if (distinct) {
+			column = " DISTINCT " + column;
+		}
+		StringBuilder sql = assembleSelectSql(column);
+		String targetSql = sql.toString();
+		Object[] paras = getParams().toArray();
+		StreamData<T> streamData = this.sqlManager.streamExecute(new SQLReady(targetSql, paras), clazz);
+		this.clear();
+		return streamData;
+	}
+
+	@Override
     public List<T> selectSimple() {
         return selectByType(clazz, getSimpleColumns());
     }
@@ -149,6 +164,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         this.clear();
         return list;
     }
+
+
 
     /***
      * 组装查询的sql语句

@@ -47,10 +47,10 @@ public class S6MoreDatabase {
     public static void main(String[] args) throws Exception {
 
         S6MoreDatabase moreSource = new S6MoreDatabase();
-        moreSource.conditional();
-        moreSource.masterSlave();
+//        moreSource.conditional();
+//        moreSource.masterSlave();
         moreSource.multipleTables();
-        moreSource.multipleDataBaseAndTables();
+//        moreSource.multipleDataBaseAndTables();
     }
 
     /**
@@ -121,6 +121,9 @@ public class S6MoreDatabase {
     public void multipleTables(){
 
         SQLManager sqlManager = getSQLManager4MultipleTables();
+
+		sqlManager.lambdaQuery(MyUser.class).virtualTable().andEq(MyUser::getId,1).select();
+
         //使用user表
         sqlManager.deleteById(MyUser.class,199);
         MyUser user = new MyUser();
@@ -169,6 +172,9 @@ public class S6MoreDatabase {
 
             @Override
             public Object call(Object[] paras, Context ctx) {
+				if(1==1){
+					throw new UnsupportedOperationException();
+				}
                 String tableName = (String)paras[0];
                 Integer id = (Integer)paras[1];
                 //使用分表逻辑
