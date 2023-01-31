@@ -251,24 +251,36 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
+    /**
+     * 大于
+     */
     @Override
     public Query<T> andGreat(String column, Object value) {
         appendAndSql(column, value, ">");
         return (Query) this;
     }
 
+    /**
+     * 大于等于
+     */
     @Override
     public Query<T> andGreatEq(String column, Object value) {
         appendAndSql(column, value, ">=");
         return (Query) this;
     }
 
+    /**
+     * 小于
+     */
     @Override
     public Query<T> andLess(String column, Object value) {
         appendAndSql(column, value, "<");
         return (Query) this;
     }
 
+    /**
+     * 小于等于
+     */
     @Override
     public Query<T> andLessEq(String column, Object value) {
         appendAndSql(column, value, "<=");
@@ -359,24 +371,36 @@ public class QueryCondition<T> implements QueryConditionI<T> {
         return (Query) this;
     }
 
+    /**
+     * 大于
+     */
     @Override
     public Query<T> orGreat(String column, Object value) {
         appendOrSql(column, value, ">");
         return (Query) this;
     }
 
+    /**
+     * 大于等于
+     */
     @Override
     public Query<T> orGreatEq(String column, Object value) {
         appendOrSql(column, value, ">=");
         return (Query) this;
     }
 
+    /**
+     * 小于
+     */
     @Override
     public Query<T> orLess(String column, Object value) {
         appendOrSql(column, value, "<");
         return (Query) this;
     }
 
+    /**
+     * 小于等于
+     */
     @Override
     public Query<T> orLessEq(String column, Object value) {
         appendOrSql(column, value, "<=");
