@@ -23,6 +23,7 @@ public class XPluginImp implements Plugin {
             DbManager.reg(bw);
         });
 
+
         //for new
         context.beanBuilderAdd(org.beetl.sql.solon.annotation.Db.class, (clz, wrap, anno) -> {
             builderAddDo(clz, wrap, anno.value());
@@ -31,7 +32,6 @@ public class XPluginImp implements Plugin {
         context.beanInjectorAdd(org.beetl.sql.solon.annotation.Db.class, (varH, anno) -> {
             injectorAddDo(varH, anno.value());
         });
-
 
 
         //初始化管理器（主要为了生成动态管理器）
