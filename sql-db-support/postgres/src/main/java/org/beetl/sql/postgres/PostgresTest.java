@@ -6,6 +6,7 @@ import org.beetl.sql.core.db.PostgresStyle;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
+import java.util.Set;
 
 public class PostgresTest {
 
@@ -17,14 +18,8 @@ public class PostgresTest {
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
         builder.setDbStyle(new PostgresStyle());
         SQLManager sqlManager = builder.build();
-		Color color = new Color();
-		color.setAb("a");
-		color.setDesc("c");
-		JsonDataEntity jsonDataEntity = new JsonDataEntity();
-		jsonDataEntity.setJsonData(color);
-		jsonDataEntity.setId("b");
-		jsonDataEntity.setCreateTs(1L);
-		sqlManager.updateTemplateById(jsonDataEntity);
+		Set<String> set = sqlManager.getMetaDataManager().allTable();
+		System.out.println(set);
 
 
 //		sqlManager.updateById(jsonDataEntity);
@@ -35,9 +30,9 @@ public class PostgresTest {
 
     public static DataSource datasource() {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:postgresql://127.0.0.1:5455/postgres");
-        ds.setUsername("postgresUser");
-        ds.setPassword("postgresPW");
+        ds.setJdbcUrl("jdbc:postgresql://127.0.0.1:5432/postgres");
+        ds.setUsername("postgres");
+        ds.setPassword("12345678");
         ds.setDriverClassName("org.postgresql.Driver");
         return ds;
     }

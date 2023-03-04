@@ -4,6 +4,9 @@ import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.meta.MetadataManager;
+import org.beetl.sql.core.meta.SchemaMetadataManager;
 import org.beetl.sql.core.range.RangeSql;
 
 import java.lang.annotation.Annotation;
@@ -37,6 +40,16 @@ public class PostgresStyle extends AbstractDBStyle {
 
 		return idType;
 
+	}
+
+	@Override
+	public MetadataManager initMetadataManager(ConnectionSource cs) {
+		metadataManager = new SchemaMetadataManager(cs, this) {
+			protected String[] getScope(String catalog,String schema){
+				return new String[] { "TABLE","VIEW" ,"PARTITIONED TABLE"};
+			}
+		};
+		return metadataManager;
 	}
 
 

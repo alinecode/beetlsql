@@ -67,7 +67,7 @@ public class SchemaMetadataManager implements MetadataManager {
 		this.dbName = style.getName();
 		//获取数据库schema
 		initDefaultSchema();
-	
+
 	}
 
 	public SchemaMetadataManager(ConnectionSource ds, String defaultSchema, String defaultCatalog, DBStyle style) {
@@ -82,7 +82,7 @@ public class SchemaMetadataManager implements MetadataManager {
 
 	/***
 	 * 表是否在数据库中
-	 * 
+	 *
 	 * @param tableName
 	 * @return
 	 */
@@ -95,7 +95,7 @@ public class SchemaMetadataManager implements MetadataManager {
 
 	@Override
 	public TableDesc getTable(String name){
-		TableDesc table =getTableFromMap(name);		
+		TableDesc table =getTableFromMap(name);
 		if(table==null){
 			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST,"table \""+name+"\" not exist");
 		}
@@ -106,7 +106,7 @@ public class SchemaMetadataManager implements MetadataManager {
 
 		return table;
 	}
-	
+
 	@Override
 	public Set<String> allTable(){
 		if(tableInfoMap ==null){
@@ -135,7 +135,7 @@ public class SchemaMetadataManager implements MetadataManager {
 					this.initMetadata();
 					desc =  (TableDesc) tableInfoMap.get(tableName);
 				}
-				
+
 			}
 		}else{
 			 desc = (TableDesc) tableInfoMap.get(tableName);
@@ -150,11 +150,11 @@ public class SchemaMetadataManager implements MetadataManager {
 				String schema = tableName.substring(0, index);
 				String table = tableName.substring(index+1);
 				return initOtherSchemaTable(schema,table);
-				
+
 			}else{
 				return null;
 			}
-			
+
 		}else{
 			return desc;
 		}
@@ -241,17 +241,17 @@ public class SchemaMetadataManager implements MetadataManager {
 			}
 		}
 	}
-	
+
 	private synchronized void initMetadata(){
 		ThreadSafeCaseInsensitiveHashMap tempMap = new ThreadSafeCaseInsensitiveHashMap();
 		Connection conn=null;
 		try {
 			conn =  ds.getMetaData();
 			DatabaseMetaData dbmd =  conn.getMetaData();
-			
+
 			String catalog = this.defaultCatalog;
 			String schema = this.defaultSchema;
-			
+
 			String namePattern = this.getTableNamePattern(dbmd);
 			ResultSet rs = dbmd.getTables(catalog,schema, namePattern,
 					getScope(catalog,schema));
@@ -303,11 +303,11 @@ public class SchemaMetadataManager implements MetadataManager {
 			//通过前缀判断catalog或者schema，依赖于数据库不同而不同
 			String catalog = this.getDbCatalog(tablePrefix);
 			String schema = this.getDbSchema(tablePrefix);
-			
+
 			ResultSet rs = null;
 			rs = dbmd.getTables(catalog,schema, getDbTableName(table),
 					getScope(catalog,schema));
-		
+
 			TableDesc desc  = null;
 			while(rs.next()){
 				String  name = rs.getString("TABLE_NAME");
@@ -324,19 +324,19 @@ public class SchemaMetadataManager implements MetadataManager {
 				tableInfoMap.put(schema+"."+table,NOT_EXIST);
 				return null;
 			}
-			
-			
+
+
 		} catch (SQLException e) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
 		}finally{
 			close(conn);
 		}
 	}
-	
+
 	protected void close(Connection conn){
 		this.ds.closeConnection(conn,null,false);
 	}
-	
+
 	protected void initDefaultSchema(){
 
 		if(defaultSchema==null){
@@ -363,14 +363,14 @@ public class SchemaMetadataManager implements MetadataManager {
 		}catch(Throwable e) {
 			// jdbc低版本不支持
 		}
-		
+
 		try{
 			this.defaultSchema =  conn.getSchema();
 		}catch(Throwable e){
 			// jdbc低版本不支持，设置默认值
 			setDBDefaultSchema(conn);
 		}
-		
+
 	}
 
 	/**
@@ -395,12 +395,12 @@ public class SchemaMetadataManager implements MetadataManager {
 		return new String[] { "TABLE","VIEW" };
 	}
 	/**
-	 * 
+	 *
 	 * 按照我理解，对于访问表xx.yyy, 不同数据库有不同的catalog和schema
 	 */
-	
+
 	/**
-	 * 
+	 *
 	 * @param namespace
 	 * @return
 	 */
@@ -431,7 +431,7 @@ public class SchemaMetadataManager implements MetadataManager {
 				return "%";
 			}
 		}
-	
+
 		return null;
 	}
 	protected String getDbSchema(String namespace){
@@ -443,7 +443,7 @@ public class SchemaMetadataManager implements MetadataManager {
 			return namespace;
 		}
 	}
-	
+
 	private String getDbCatalog(String schema){
 		if(dbName.equals("mysql")){
 			return schema;
@@ -451,7 +451,7 @@ public class SchemaMetadataManager implements MetadataManager {
 			return null;
 		}
 	}
-	
+
 	private String getDbTableName(String name){
 		if(dbName.equals("oracle")){
 			return name.toUpperCase();
@@ -492,5 +492,7 @@ public class SchemaMetadataManager implements MetadataManager {
 
 
 	}
+
+
 
 }

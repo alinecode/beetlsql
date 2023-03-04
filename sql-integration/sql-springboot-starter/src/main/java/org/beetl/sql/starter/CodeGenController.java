@@ -29,6 +29,7 @@ import java.util.List;
  * }</pre>
  * 如上类，确保MyCodeGenController能被springboot扫描到，则swagger api自动增加一个代码生成&预览的api
  */
+@RestController
 public class CodeGenController {
 
 	  @Autowired
