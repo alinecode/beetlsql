@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.core.engine.SQLParameter;
+import org.beetl.sql.core.engine.template.TemplateContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,10 @@ public class SQLResult {
      */
     public List<SQLParameter> jdbcPara;
 
+	/**
+	 * sql模板渲染过程中的变量
+	 */
+	public TemplateContext templateContext ;
 
 	public SQLResult(){
 
@@ -56,5 +61,5 @@ public class SQLResult {
 		}
 		return paras;
 	}
-	
+
  }

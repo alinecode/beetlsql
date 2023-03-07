@@ -1198,6 +1198,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         SQLResult result = new SQLResult();
         result.jdbcSql = jdbcSql;
         result.jdbcPara = jdbcPara;
+        result.templateContext = t.getContext();
         return result;
     }
 
