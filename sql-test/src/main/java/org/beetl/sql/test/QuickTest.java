@@ -2,6 +2,7 @@ package org.beetl.sql.test;
 
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.call.CallReady;
 import org.beetl.sql.core.call.InArg;
@@ -49,12 +50,9 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
+		SQLExecutor sqlExecutor = sqlManager.getScript(OrderLog.class, AutoSQLEnum.SELECT_BY_ID);
 		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
-		Map map = new HashMap();
-		map.put("ids",Arrays.asList(1L));
-		SQLResult sqlResult = sqlManager.getSQLResult(SqlId.of("user.select"),map);
-		Object a = sqlResult.templateContext.getVar("a");
-		System.out.println(a);
+		OrderLog log = logMapper.unique(1);
 //
 //		List<OrderLog> list = logMapper.select(Arrays.asList(1L,2L));
 //		System.out.println(list);

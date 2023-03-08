@@ -197,6 +197,7 @@ public class AttrNode {
 		boolean allNull = true;
 		for (Map.Entry<Integer, String> entry : colMap.entrySet()) {
 			String attr = entry.getValue();
+			rtp.setIndex(entry.getKey());
 
 			AttributeConvert attributeConvert = attrConvertMap.get(attr);
 			if(attributeConvert!=null){
@@ -205,7 +206,6 @@ public class AttrNode {
 				continue;
 			}
 
-			rtp.setIndex(entry.getKey());
 			PropertyDescriptor ps = propertyMap.get(entry.getValue());
 			Class propertyType = ps.getPropertyType();
 			JavaSqlTypeHandler sqlTypeHandler = beanProcessor.getHandler(propertyType);
