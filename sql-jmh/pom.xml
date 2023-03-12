@@ -9,11 +9,11 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.20.2-RELEASE</version>
+        <version>3.20.3-RELEASE</version>
     </parent>
 
     <properties>
-        <beetlsql.version>3.20.2-RELEASE</beetlsql.version>
+        <beetlsql.version>3.20.3-RELEASE</beetlsql.version>
         <jmh.version>1.25</jmh.version>
         <spring.version>5.2.8.RELEASE</spring.version>
         <spring.data.jpa.version>2.3.3.RELEASE</spring.data.jpa.version>
@@ -93,13 +93,13 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
-            <version>3.5.2</version>
+            <version>3.5.3.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>weed3</artifactId>
-            <version>3.4.27</version>
+            <version>3.4.33</version>
         </dependency>
 
     </dependencies>
