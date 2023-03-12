@@ -1,8 +1,12 @@
 package org.beetl.sql.fetch;
 
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.engine.DynamicFetchEnableOnFunction;
 import org.beetl.sql.core.query.Query;
+import org.beetl.sql.fetch.annotation.FetchMany;
+import org.beetl.sql.fetch.annotation.FetchOne;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
@@ -40,13 +44,23 @@ public class FetchManyAction extends   AbstractFetchAction {
 	@Override
 	public void init(Class owner, Class target, Annotation config, PropertyDescriptor originProperty){
 		super.init(owner, target, config, originProperty);
+		FetchMany fetchMany = (FetchMany)config;
+		enableOn = fetchMany.enableOn();
 		if(otherTypeFrom==null){
 			throw new IllegalArgumentException("未正确指定FetchMany的属性 "+owner+" to "+target);
 		}
 
 	}
+
     @Override
     public void execute(ExecuteContext ctx, List list){
+		if(StringKit.isNotBlank(enableOn)){
+			Object v = ctx.getContextPara(enableOn);
+			if(v!= DynamicFetchEnableOnFunction.value){
+				return ;
+			}
+		}
+
         try{
             Method idReadMethod = idProperty.getReadMethod();
             Method fromWriteMethod = otherTypeFrom.getWriteMethod();

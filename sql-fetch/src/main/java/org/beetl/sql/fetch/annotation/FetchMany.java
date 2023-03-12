@@ -34,6 +34,7 @@ public @interface FetchMany {
 	 */
 	String value();
 
+	String enableOn() default  "";
 
 
 }

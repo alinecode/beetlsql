@@ -17,6 +17,7 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
 	PropertyDescriptor originProperty;
 	Class owner;
 	Class target;
+	String enableOn ;
 
     public Object queryFromCache(Class target,Object key){
         FetchContext context  = DefaultBeanFetch.local.get();
@@ -88,6 +89,7 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
     	this.target = target;
     	this.annotation = config;
     	this.originProperty = originProperty;
+
 
 	}
 

@@ -1,11 +1,16 @@
 package org.beetl.sql.fetch;
 
+import org.beetl.ext.fn.StringUtil;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.engine.DynamicFetchEnableOnFunction;
+import org.beetl.sql.fetch.annotation.FetchOne;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,6 +36,14 @@ public class FetchOneAction extends AbstractFetchAction {
 
     PropertyDescriptor from;
 
+	@Override
+	public void init(Class owner, Class target, Annotation config, PropertyDescriptor originProperty){
+		super.init(owner,target,config,originProperty);
+		FetchOne fetchOne = (FetchOne)config;
+		enableOn = fetchOne.enableOn();
+
+	}
+
     /**
      * 以User例子来说
      *
@@ -50,6 +63,13 @@ public class FetchOneAction extends AbstractFetchAction {
      */
     @Override
     public void execute(ExecuteContext ctx, List list) {
+    	if(StringKit.isNotBlank(enableOn)){
+    		Object v = ctx.getContextPara(enableOn);
+    		if(v!= DynamicFetchEnableOnFunction.value){
+    			return ;
+			}
+		}
+
         try {
             Method fromReadMethod = from.getReadMethod();
             Method toWriteMethod = this.originProperty.getWriteMethod();

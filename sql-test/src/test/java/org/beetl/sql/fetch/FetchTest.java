@@ -1,14 +1,18 @@
 package org.beetl.sql.fetch;
 
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.core.SqlId;
 import org.beetl.sql.entity.fetch.Customer;
 import org.beetl.sql.entity.fetch.CustomerOrder;
 import org.beetl.sql.entity.fetch.CustomerOrder2;
+import org.beetl.sql.entity.fetch.CustomerOrder3;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FetchTest extends BaseTest {
     @Before
@@ -64,6 +68,22 @@ public class FetchTest extends BaseTest {
 	}
 
 
+	/**
+	 * 验证动态配置是否映射，参考"sysOrder.md"
+	 */
+	@Test
+	public void testEnable(){
+    	Map map = new HashMap<>();
+    	map.put("id",1);
+
+		CustomerOrder3 customerOrder = sqlManager.selectSingle(SqlId.of("sysOrder","dynamicFetchOrder1"),map, CustomerOrder3.class);
+		Assert.assertNotNull("not null",customerOrder.getCustomer());
+
+
+		customerOrder = sqlManager.selectSingle(SqlId.of("sysOrder","dynamicFetchOrder2"),map, CustomerOrder3.class);
+		Assert.assertNull("should  null",customerOrder.getCustomer());
+
+    }
 
 
 }

@@ -68,6 +68,13 @@ public class DefaultBeanFetch implements BeanFetch {
 
 
     }
+
+	/**
+	 * 获取目标类有多少属性需要Fetch
+	 * @param sqlManager
+	 * @param owner
+	 * @return
+	 */
     protected List<FetchAction> parse(SQLManager sqlManager,Class owner){
         if(fetchConfig.containsKey(owner)){
             return fetchConfig.get(owner);
@@ -108,7 +115,7 @@ public class DefaultBeanFetch implements BeanFetch {
 						actions.add(action);
 						break;
 					}
-					//额外扩展
+					//额外扩展,如果注解包含了Builder，且其类为FetchAction子类
 					Builder builder = annotation.annotationType().getAnnotation(Builder.class);
 					if(builder!=null){
 						Class extFetchCls = builder.value();

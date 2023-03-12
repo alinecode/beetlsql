@@ -21,7 +21,7 @@ import java.util.Map;
  * @see org.beetl.sql.core.mapping.join.JsonConfigMapper
  */
 public class MappingFunction implements Function {
-	private static final StringWriter STRING_WRITER = new StringWriter();
+
 	private static final StringTemplateResourceLoader STRING_TEMPLATE_RESOURCE_LOADER = new StringTemplateResourceLoader();
 
 	@Override
@@ -34,6 +34,7 @@ public class MappingFunction implements Function {
 		if (sqlSegmentId == null || sqlSegmentId.length() == 0) {
 			throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND, namespace + ".md文件下的jsonMapping存在无参数");
 		}
+		StringWriter stringWriter = new StringWriter();
 		Map inputParas = ctx.globalVar;
 		if (paras.length == 2) {
 			/*第二个参数可以给规则传值，需要附合beetl规则*/
@@ -55,7 +56,7 @@ public class MappingFunction implements Function {
 		//beetl独有
 		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine) executeContext.sqlManager.getSqlTemplateEngine();
 		GroupTemplate gt = beetlTemplateEngine.getBeetl().getGroupTemplate();
-		Map rsMap = gt.runScript(json, inputParas, STRING_WRITER, STRING_TEMPLATE_RESOURCE_LOADER);
+		Map rsMap = gt.runScript(json, inputParas, stringWriter, STRING_TEMPLATE_RESOURCE_LOADER);
 
 		/*json字符作为脚本执行后，返回的是Map*/
 		Map config = (Map) rsMap.get("return");
