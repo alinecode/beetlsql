@@ -1,0 +1,9 @@
+<sql id="" xmlns:b="http://ibeetl.com">
+	<b:if test="a==" >
+		and test >1
+	</b:if>
+	<b:foreach collect ="abc" vars="name">
+
+	</b:foreach>
+	<b:gobalInclude id="abc"/>
+</sql>
