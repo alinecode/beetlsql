@@ -1,9 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <sql id="" xmlns:b="http://ibeetl.com">
-	<b:if test="a==" >
+	<!-- sdfsdf -->
+	<![CDATA[
+	dfdf
+	]]>
+	<if test="a==" >
 		and test >1
-	</b:if>
-	<b:foreach collect ="abc" vars="name">
 
-	</b:foreach>
-	<b:gobalInclude id="abc"/>
+	</if>
+	<foreach collect ="abc" vars="name">
+
+	</foreach>
+	<gobalInclude id="abc"/>
 </sql>

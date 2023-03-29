@@ -1,8 +1,6 @@
 package org.beetl.sql.xml;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -40,10 +38,50 @@ public class XMLLoader {
 			int len = sqlList.getLength();
 			for(int i=0;i<len;i++){
 				Node node = sqlList.item(i);
-				node.get
-				System.out.println(node.getTextContent());
+				StringBuilder sb = new StringBuilder();
+				parseSqlNode(node,sb);
+				System.out.println(sb);
 			}
 
 
+	}
+	private static void parseSqlNode(Node parent,StringBuilder sb){
+		NodeList sqlList = parent.getChildNodes();
+		for(int i=0;i<sqlList.getLength();i++){
+			Node node = sqlList.item(i);
+			if(node.getNodeType()==Node.COMMENT_NODE){
+				continue;
+			}else if(node.getNodeType()==Node.CDATA_SECTION_NODE){
+				sb.append(node.getTextContent());
+				continue;
+			}else if(node.getNodeType()==Node.ELEMENT_NODE){
+				genNodeContent(node,sb);
+			}else if(node.getNodeType()==Node.TEXT_NODE){
+				sb.append(node.getTextContent());
+
+			}
+
+		}
+	}
+
+	private static void genNodeContent(Node node,StringBuilder sb){
+		String nodeName ="b:"+node.getNodeName();
+		sb.append("<").append(nodeName);
+		NamedNodeMap namedNodeMap = node.getAttributes();
+		for(int i=0;i<namedNodeMap.getLength();i++){
+			Node attrNode = namedNodeMap.item(i);
+			if(attrNode.getNodeType()==Node.ATTRIBUTE_NODE) {
+				Attr attr = (Attr) attrNode;
+				sb.append(" ").append(attr.getName()).append("=").append('"').append(attr.getValue()).append('"');
+			}
+
+		}
+		if(!node.hasChildNodes()){
+			sb.append("/>");
+			return ;
+		}
+		sb.append(">");
+		parseSqlNode(node,sb);
+		sb.append("</").append(nodeName).append(">");
 	}
 }
