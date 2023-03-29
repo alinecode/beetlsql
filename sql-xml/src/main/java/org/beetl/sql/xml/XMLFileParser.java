@@ -1,5 +1,6 @@
 package org.beetl.sql.xml;
 
+import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.loader.SQLFileParser;
@@ -24,6 +25,11 @@ public class XMLFileParser implements SQLFileParser {
 	public XMLFileParser(String modelName, Reader reader){
 		this.modelName = modelName;
 		this.reader =reader;
+		try {
+			init();
+		} catch (Exception e) {
+			throw new BeetlSQLException(BeetlSQLException.CANNOT_GET_SQL,"解析xml错 "+modelName+" error:"+e.getMessage(),e);
+		}
 
 	}
 
@@ -52,8 +58,9 @@ public class XMLFileParser implements SQLFileParser {
 		if(list.size()==i){
 			return null ;
 		}
+		SQLSource sqlSource = list.get(i);
 		i++;
-		return list.get(i);
+		return sqlSource;
 	}
 
 	private static void parseSqlNode(Node parent, StringBuilder sb){
@@ -64,11 +71,12 @@ public class XMLFileParser implements SQLFileParser {
 				continue;
 			}else if(node.getNodeType()==Node.CDATA_SECTION_NODE){
 				sb.append(node.getTextContent());
-				continue;
 			}else if(node.getNodeType()==Node.ELEMENT_NODE){
 				genNodeContent(node,sb);
 			}else if(node.getNodeType()==Node.TEXT_NODE){
 				sb.append(node.getTextContent());
+			}else{
+				continue;
 			}
 
 		}
