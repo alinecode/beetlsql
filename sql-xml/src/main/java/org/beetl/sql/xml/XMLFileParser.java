@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,14 +82,25 @@ public class XMLFileParser implements SQLFileParser {
 	}
 
 	private static void genNodeContent(Node node,StringBuilder sb){
-		String nodeName ="b:"+node.getNodeName();
+		String nodeName ="s:"+node.getNodeName();
 		sb.append("<").append(nodeName);
 		NamedNodeMap namedNodeMap = node.getAttributes();
 		for(int i=0;i<namedNodeMap.getLength();i++){
 			Node attrNode = namedNodeMap.item(i);
 			if(attrNode.getNodeType()==Node.ATTRIBUTE_NODE) {
 				Attr attr = (Attr) attrNode;
-				sb.append(" ").append(attr.getName()).append("=").append('"').append(attr.getValue()).append('"');
+				String name = attr.getName();
+				String value = attr.getValue();
+
+				if(!XMLBeetlSQL.holderSet.contains( node.getNodeName()+"_"+name)){
+					sb.append(" ").append(attr.getName()).append("=").append('"').append(value).append('"');
+				}else{
+					//beetl表达式，比如<if test="a==1" > 翻译成 <s:if test="#{a==1}"
+					value = parseValue(value);
+					sb.append(" ").append(attr.getName()).append("=").append("\"#{").append(value).append("}\"");
+
+				}
+
 			}
 
 		}
@@ -101,5 +111,15 @@ public class XMLFileParser implements SQLFileParser {
 		sb.append(">");
 		parseSqlNode(node,sb);
 		sb.append("</").append(nodeName).append(">");
+	}
+
+	/**
+	 * xml中不支持&&，因此需要使用and ，在这里把and替换成beetl识别的||
+	 * @param value
+	 */
+	private static String parseValue(String value){
+		//TODO,优化，
+		value = value.replace("and","&&").replace("or","||");
+		return value;
 	}
 }

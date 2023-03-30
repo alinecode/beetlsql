@@ -1,0 +1,234 @@
+package org.beetl.sql.xml;
+
+import org.beetl.core.*;
+import org.beetl.core.resource.StringTemplateResourceLoader;
+import org.beetl.core.tag.GeneralVarTagBinding;
+import org.beetl.core.tag.Tag;
+import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.engine.TrimTag;
+import org.beetl.sql.core.engine.WhereTag;
+import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class XMLBeetlSQL {
+	public static Set<String> holderSet = new HashSet<>();
+	static{
+		//这些标签+属性名需要使用beetl表达式 比如<if test="a" > 变成 <if test=#{a} >
+		holderSet.add("if_test");
+		holderSet.add("foreach_items");
+		holderSet.add("bind_value");
+	}
+	public static void support(SQLManager sqlManager){
+		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
+		GroupTemplate gt = beetlSQLTemplateEngine.getBeetl().getGroupTemplate();
+		//支持xml标签
+//		gt.getConf().setHtmlTagSupport(true);
+//		gt.getConf().setHtmlTagFlag("s:");
+//		gt.getConf().setHtmlTagBindingAttribute("var");
+//		gt.getConf().build();
+
+		String htmlTagStart = "<s:" ;
+		String  htmlTagEnd = "</s:";
+		Configuration.HtmlTagHolder tagHolder = new Configuration.HtmlTagHolder(htmlTagStart,htmlTagEnd,"var",true);
+		gt.getConf().setTagConf(tagHolder);
+		registerXMLTag(gt);
+	}
+
+	private static void registerXMLTag(GroupTemplate groupTemplate){
+		groupTemplate.registerTag("if", IfTag.class);
+		groupTemplate.registerTag("include", Include.class);
+		groupTemplate.registerTag("isNotEmpty", isNotEmpty.class);
+		groupTemplate.registerTag("isEmpty", isEmpty.class);
+		groupTemplate.registerTag("isBlank", isBlank.class);
+		groupTemplate.registerTag("isNotBlank", isNotBlank.class);
+		groupTemplate.registerTag("foreach", Foreach.class);
+		groupTemplate.registerTag("bind", BindTag.class);
+		groupTemplate.registerTag("trim", TrimTag.class);
+		groupTemplate.registerTag("where", XMLWhereTag.class);
+	}
+
+	public static class XMLWhereTag extends WhereTag {
+
+		@Override
+		protected void initTrimArgs(Object[] args) {
+			this.prefix = "WHERE";
+			this.prefixOverrides = new String[]{"AND ", "OR "};
+		}
+	}
+
+	/**
+	 * 定义一个变量，变量的名称是export属性决定，参考beetl的
+	 */
+	public static class BindTag extends GeneralVarTagBinding {
+		@Override
+		public void render() {
+			Object value = this.getAttributeValue("value");
+			this.binds(value);
+		}
+	}
+
+
+	public static class isEmpty extends  GeneralEmptyTag{
+		protected   String getFunction(){
+			return "isEmpty";
+		}
+	}
+
+	public static class isNotEmpty extends  GeneralEmptyTag{
+		protected   String getFunction(){
+			return "isNotEmpty";
+		}
+	}
+
+	public static class isNotBlank extends  GeneralEmptyTag{
+		protected   String getFunction(){
+			return "isNotBlank";
+		}
+	}
+
+	public static class isBlank extends  GeneralEmptyTag{
+		protected   String getFunction(){
+			return "isBlank";
+		}
+	}
+
+	public static abstract class GeneralEmptyTag extends Tag{
+		//TODO,应该使用beetlsql的groupTemplate
+		static GroupTemplate scriptGt  = new GroupTemplate();
+		static StringTemplateResourceLoader stringTemplateResourceLoader = new StringTemplateResourceLoader();
+		@Override
+		public void render() {
+			String express =  (String)getHtmlAttribute("value");
+			StringWriter sw = new StringWriter();
+			Map paras = (Map)ctx.globalVar;
+			String function = getFunction();
+			Map ret = scriptGt.runScript("return "+function+"("+express+");",paras,sw,stringTemplateResourceLoader);
+			if(ret.isEmpty()){
+				throw new BeetlSQLException(BeetlSQLException.ERROR,"执行表达式错误 "+express+" error:"+sw.toString());
+			}
+			Boolean o = (Boolean)ret.get("return");
+			if(o){
+				doBodyRender();
+			}
+		}
+
+		protected  abstract String getFunction();
+
+	}
+
+	public static class Include extends  Tag{
+
+		@Override
+		public void render() {
+			//复用已经有的方法,useFunction,globalUseFunction,忽略可添加额外参数功能，
+			String id = (String)super.getHtmlAttribute("refid");
+			Function include = null;
+			Object[] paras = null;
+			if(id.lastIndexOf(".")==-1){
+				include = gt.getFunction("use");
+				paras = new Object[]{id};
+
+
+			}else{
+				include = gt.getFunction("globalUse");
+				paras = new Object[]{id};
+			}
+
+			ByteWriter writer = ctx.byteWriter;
+			ByteWriter tempWriter = ctx.byteWriter.getTempWriter(writer);
+			ctx.byteWriter = tempWriter;
+			include.call(new Object[]{id},ctx);
+			ctx.byteWriter = writer;
+			try {
+				ctx.byteWriter.fill(tempWriter);
+			} catch (IOException e) {
+				//ingore
+				throw new IllegalStateException(e);
+			}
+
+		}
+	}
+
+	public static class IfTag extends Tag{
+
+		public IfTag(){
+
+		}
+
+		@Override
+		public void render() {
+
+			if (!containHtmlAttribute("test")) {
+				throw new IllegalArgumentException("缺少 test属性");
+			}
+			Object value = this.getHtmlAttribute("test");
+			if (!(value instanceof Boolean)) {
+				throw new IllegalArgumentException("期望test表达式运算结果是boolean类型");
+			}
+			if ((Boolean) value) {
+				this.doBodyRender();
+			}
+
+
+		}
+	}
+
+	public static class Foreach extends GeneralVarTagBinding {
+
+		@Override
+		public void render() {
+			if (!this.containHtmlAttribute("items")) {
+				throw new IllegalArgumentException(this.getHtmlTagName() + " 期望 items属性");
+			}
+			Object value = this.getAttributeValue("items");
+			if (value == null) {
+				return ;
+			}
+
+			//第三个是绑定的列表
+			boolean containStatus = false;
+			String str = (String) this.args[2];
+			if (str.indexOf(',') != -1) {
+				containStatus = true;
+			}
+
+			ILoopStatus it = GeneralLoopStatus.getIteratorStatus(value);
+			if (it == null) {
+				throw new RuntimeException("期望数组或者集合，实际类型是:" + value.getClass());
+			}
+			try{
+				if(this.containHtmlAttribute("open")){
+					ctx.byteWriter.writeString((String)this.getAttributeValue("open"));
+				}
+
+				boolean haSeparator = containHtmlAttribute("separator");
+				String separator = (String)getAttributeValue("separator");
+				while (it.hasNext()) {
+					Object item = it.next();
+					if (containStatus) {
+						this.binds(item, it);
+					} else {
+						this.binds(item);
+					}
+					this.doBodyRender();
+					if(haSeparator&&!it.isLast()){
+						ctx.byteWriter.writeString(separator);
+					}
+				}
+
+				if(this.containHtmlAttribute("close")){
+					ctx.byteWriter.writeString((String)this.getAttributeValue("close"));
+				}
+			}catch (IOException ioe){
+				//ignore
+			}
+
+		}
+	}
+}

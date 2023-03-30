@@ -9,9 +9,11 @@ import org.beetl.sql.ext.DebugInterceptor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class QuickXMLTest {
+public class QuickXMLTestBeetlSQL {
 	static HikariDataSource dataSource;
 	static SQLManager sqlManager;
 	@BeforeClass
@@ -23,7 +25,8 @@ public class QuickXMLTest {
 
 	@Test
 	public void testXMLLoader(){
-		XML.support(sqlManager);
+		XMLBeetlSQL.support(sqlManager);
+
 		List<User> list = sqlManager.select(SqlId.of("user.select"),User.class);
 	}
 

@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<sql id="select">
-	<!-- 测试sql -->
-	select * from sys_user where 1=1
-	<if test="${has(user)}" >
-		and name=#{user.name}
-	</if>
+<beetlsql>
+	<sql id="select">
+		<!-- 测试sql -->
+		select * from sys_user
+		<where>
+			<if test="has(user) and user.name=='a'">
+				and name='3'
+			</if>
 
-</sql>
+			<bind value="1+99" export="newValue"/>
+
+			<isNotEmpty value="'1'">
+				and name='5'
+			</isNotEmpty>
+			and name = #{newValue}
+			and name in
+			<foreach items="[1,2,3]" var="id,status" open="(" close=")" separator=",">
+				#{id+status.index}
+			</foreach>
+
+			<include refid="commonWhere"/>
+		</where>
+	</sql>
+
+	<sql id="commonWhere">
+		and name='bdfdsf'
+	</sql>
+
+
+</beetlsql>
+
