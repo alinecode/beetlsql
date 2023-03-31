@@ -28,25 +28,22 @@ public class XMLBeetlSQL {
 		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
 		GroupTemplate gt = beetlSQLTemplateEngine.getBeetl().getGroupTemplate();
 		//支持xml标签
-//		gt.getConf().setHtmlTagSupport(true);
-//		gt.getConf().setHtmlTagFlag("s:");
-//		gt.getConf().setHtmlTagBindingAttribute("var");
-//		gt.getConf().build();
-
 		String htmlTagStart = "<s:" ;
 		String  htmlTagEnd = "</s:";
 		Configuration.HtmlTagHolder tagHolder = new Configuration.HtmlTagHolder(htmlTagStart,htmlTagEnd,"var",true);
 		gt.getConf().setTagConf(tagHolder);
 		registerXMLTag(gt);
+		// xml标签实现类，所有xml标记都被beetl转化为标签函数 htmltag(){...}
+		gt.registerTag("htmltag", XMLTagSupportWrapper.class);
 	}
 
 	private static void registerXMLTag(GroupTemplate groupTemplate){
 		groupTemplate.registerTag("if", IfTag.class);
 		groupTemplate.registerTag("include", Include.class);
-		groupTemplate.registerTag("isNotEmpty", isNotEmpty.class);
-		groupTemplate.registerTag("isEmpty", isEmpty.class);
+		groupTemplate.registerTag("isNotEmpty", IsNotEmpty.class);
+		groupTemplate.registerTag("isEmpty", IsEmpty.class);
 		groupTemplate.registerTag("isBlank", isBlank.class);
-		groupTemplate.registerTag("isNotBlank", isNotBlank.class);
+		groupTemplate.registerTag("isNotBlank", IsNotBlank.class);
 		groupTemplate.registerTag("foreach", Foreach.class);
 		groupTemplate.registerTag("bind", BindTag.class);
 		groupTemplate.registerTag("trim", TrimTag.class);
@@ -74,19 +71,19 @@ public class XMLBeetlSQL {
 	}
 
 
-	public static class isEmpty extends  GeneralEmptyTag{
+	public static class IsEmpty extends  GeneralEmptyTag{
 		protected   String getFunction(){
 			return "isEmpty";
 		}
 	}
 
-	public static class isNotEmpty extends  GeneralEmptyTag{
+	public static class IsNotEmpty extends  GeneralEmptyTag{
 		protected   String getFunction(){
 			return "isNotEmpty";
 		}
 	}
 
-	public static class isNotBlank extends  GeneralEmptyTag{
+	public static class IsNotBlank extends  GeneralEmptyTag{
 		protected   String getFunction(){
 			return "isNotBlank";
 		}
@@ -99,8 +96,7 @@ public class XMLBeetlSQL {
 	}
 
 	public static abstract class GeneralEmptyTag extends Tag{
-		//TODO,应该使用beetlsql的groupTemplate
-		static GroupTemplate scriptGt  = new GroupTemplate();
+
 		static StringTemplateResourceLoader stringTemplateResourceLoader = new StringTemplateResourceLoader();
 		@Override
 		public void render() {
@@ -108,7 +104,7 @@ public class XMLBeetlSQL {
 			StringWriter sw = new StringWriter();
 			Map paras = (Map)ctx.globalVar;
 			String function = getFunction();
-			Map ret = scriptGt.runScript("return "+function+"("+express+");",paras,sw,stringTemplateResourceLoader);
+			Map ret = gt.runScript("return "+function+"("+express+");",paras,sw,stringTemplateResourceLoader);
 			if(ret.isEmpty()){
 				throw new BeetlSQLException(BeetlSQLException.ERROR,"执行表达式错误 "+express+" error:"+sw.toString());
 			}

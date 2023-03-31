@@ -16,6 +16,9 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 解析xml文件。解析过程中，也对xml做某些调整以适应beetl的html tag
+ */
 public class XMLFileParser implements SQLFileParser {
 	String modelName;
 	Reader reader;
@@ -62,7 +65,7 @@ public class XMLFileParser implements SQLFileParser {
 		return sqlSource;
 	}
 
-	private static void parseSqlNode(Node parent, StringBuilder sb){
+	private  void parseSqlNode(Node parent, StringBuilder sb){
 		NodeList sqlList = parent.getChildNodes();
 		for(int i=0;i<sqlList.getLength();i++){
 			Node node = sqlList.item(i);
@@ -81,7 +84,7 @@ public class XMLFileParser implements SQLFileParser {
 		}
 	}
 
-	private static void genNodeContent(Node node,StringBuilder sb){
+	private  void genNodeContent(Node node,StringBuilder sb){
 		String nodeName ="s:"+node.getNodeName();
 		sb.append("<").append(nodeName);
 		NamedNodeMap namedNodeMap = node.getAttributes();
@@ -117,9 +120,9 @@ public class XMLFileParser implements SQLFileParser {
 	 * xml中不支持&&，因此需要使用and ，在这里把and替换成beetl识别的||
 	 * @param value
 	 */
-	private static String parseValue(String value){
+	private  String parseValue(String value){
 		//TODO,优化，
-		value = value.replace("and","&&").replace("or","||");
+		value = value.replace(" and ","&&").replace(" or ","||");
 		return value;
 	}
 }

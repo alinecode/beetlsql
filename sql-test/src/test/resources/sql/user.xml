@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beetlsql>
+	<sql id="testIf">
+		select * from sys_user where 1=1
+		<ifc test="name!=null">
+			and name=#{name}
+		</ifc>
+	</sql>
+	<sql id="testIsNotEmpty">
+		select * from sys_user where 1=1
+		<isNotEmpty value="name">
+			and name=#{name}
+		</isNotEmpty>
+	</sql>
+	<sql id="testIsBlank">
+		select * from sys_user where 1=1
+		<isBlank value="name">
+			and name='lijz'
+		</isBlank>
+	</sql>
+
+	<sql id="testForeach">
+		select * from sys_user where 1=1 and id in
+		<foreach items="ids" var="id,status" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</sql>
+
+	<sql id="testInclude">
+		select * from sys_user where 1=1
+		<include refid="idList"/>
+	</sql>
+
+	<sql id="idList">
+		and id = #{id}
+	</sql>
+
+	<sql id="testWhere">
+		select * from sys_user
+		<where>
+			and 1=1
+		</where>
+	</sql>
+	<sql id="testTrim">
+		select * from sys_user
+		<trim prefix="where" prefixOverrides="and | or">
+			 name='lijz'
+		</trim>
+	</sql>
+
+	<sql id="testBind">
+		select * from sys_user
+		<bind value="id+1" export="newValue"/>
+		where id=#{newValue}
+
+	</sql>
+
 	<sql id="select">
+		<!-- 测试sql -->
+		select * from sys_user
+		<where>
+			<if test="has(user) and user.name=='a'">
+				and name='3'
+			</if>
+
+			<bind value="1+99" export="newValue"/>
+
+			<isNotEmpty value="'1'">
+				and name='5'
+			</isNotEmpty>
+			and name = #{newValue}
+			and name in
+			<foreach items="[1,2,3]" var="id,status" open="(" close=")" separator=",">
+				#{id+status.index}
+			</foreach>
+
+			<include refid="commonWhere"/>
+		</where>
+	</sql>
+	<sql id="testAll">
 		<!-- 测试sql -->
 		select * from sys_user
 		<where>
