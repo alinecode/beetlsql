@@ -28,8 +28,8 @@ public class XMLBeetlSQL {
 		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
 		GroupTemplate gt = beetlSQLTemplateEngine.getBeetl().getGroupTemplate();
 		//支持xml标签
-		String htmlTagStart = "<s:" ;
-		String  htmlTagEnd = "</s:";
+		String htmlTagStart = "<b:" ;
+		String  htmlTagEnd = "</b:";
 		Configuration.HtmlTagHolder tagHolder = new Configuration.HtmlTagHolder(htmlTagStart,htmlTagEnd,"var",true);
 		gt.getConf().setTagConf(tagHolder);
 		registerXMLTag(gt);

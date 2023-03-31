@@ -1,5 +1,6 @@
 package org.beetl.sql.xml;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
@@ -76,7 +77,9 @@ public class XMLFileParser implements SQLFileParser {
 			}else if(node.getNodeType()==Node.ELEMENT_NODE){
 				genNodeContent(node,sb);
 			}else if(node.getNodeType()==Node.TEXT_NODE){
-				sb.append(node.getTextContent());
+				String str = node.getTextContent();
+				str = StringEscapeUtils.unescapeXml(str);
+				sb.append(str);
 			}else{
 				continue;
 			}
@@ -85,7 +88,8 @@ public class XMLFileParser implements SQLFileParser {
 	}
 
 	private  void genNodeContent(Node node,StringBuilder sb){
-		String nodeName ="s:"+node.getNodeName();
+		String nodeName ="b:"+node.getNodeName();
+//		String nodeName =node.getNodeName();
 		sb.append("<").append(nodeName);
 		NamedNodeMap namedNodeMap = node.getAttributes();
 		for(int i=0;i<namedNodeMap.getLength();i++){
@@ -124,5 +128,10 @@ public class XMLFileParser implements SQLFileParser {
 		//TODO,优化，
 		value = value.replace(" and ","&&").replace(" or ","||");
 		return value;
+	}
+
+	 public static void main(String[] args) {
+		String xml = "a &lt; 343";
+		System.out.println(StringEscapeUtils.unescapeXml(xml));
 	}
 }

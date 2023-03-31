@@ -2,9 +2,9 @@
 <beetlsql>
 	<sql id="testIf">
 		select * from sys_user where 1=1
-		<ifc test="name!=null">
-			and name=#{name}
-		</ifc>
+		<if test="name!=null">
+			and name &lt;#{name}
+		</if>
 	</sql>
 	<sql id="testIsNotEmpty">
 		select * from sys_user where 1=1
