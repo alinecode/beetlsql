@@ -111,8 +111,8 @@ public class SqlLoaderTest extends BaseTest {
 
 	private void modify() throws IOException {
 		String rootPath = System.getProperty("user.dir")+File.separator+"target"+File.separator+"test-classes/sql/druid";
-		File old = new File(rootPath,"user.md");
-		File backup = new File(rootPath,"user.md.backup");
+		File old = new File(rootPath,"user-h2.md");
+		File backup = new File(rootPath,"user-h2.md.backup");
 		FileUtils.copyFile(old,backup);
 		File newFile = new File(rootPath,"user-newversion.txt");
 		FileUtils.copyFile(newFile,old);
@@ -122,8 +122,8 @@ public class SqlLoaderTest extends BaseTest {
 
 	private void reset() throws IOException {
 		String rootPath = System.getProperty("user.dir")+File.separator+"target"+File.separator+"test-classes/sql/druid";
-		File old = new File(rootPath,"user.md");
-		File backup = new File(rootPath,"user.md.backup");
+		File old = new File(rootPath,"user-h2.md");
+		File backup = new File(rootPath,"user-h2.md.backup");
 		FileUtils.copyFile(backup,old);
 
 	}

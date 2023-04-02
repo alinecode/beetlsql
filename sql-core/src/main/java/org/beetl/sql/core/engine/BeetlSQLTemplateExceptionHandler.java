@@ -37,20 +37,21 @@ public class BeetlSQLTemplateExceptionHandler extends ConsoleErrorHandler {
 					.append((String)id);
 			 res = new StringTemplateResource((String)id,null);
 		}else{
-			SqlTemplateResource resource = (SqlTemplateResource) gt.getResourceLoader().getResource(ex.resource.getId());
-			startLine = resource.getLine();
+			res = (SqlTemplateResource)resLoader.getResource(ex.resource.getId());
+			startLine = ((SqlTemplateResource) res).getLine();
 
 			 sb = new StringBuilder(">>").append(getDateTime()).append(":").append(error.getType()).append(":")
 					.append(error.getErrorTokenText()).append(" 位于").append(line + startLine - 1).append("行").append(" 资源:")
 					.append(getResourceName(ex.resource.getId()));
-			 res = resLoader.getResource(ex.resource.getId());
 		}
-
 
 
 		if (ex.getMessage() != null) {
-			println(writer, ex.getMessage());
+			sb.append(",错误原因:");
+			sb.append(ex.getMessage());
 		}
+
+		println(writer,sb.toString());
 
 		try {
 			//显示前后三行的内容

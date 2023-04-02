@@ -11,24 +11,23 @@ import java.io.Reader;
 
 public class SqlTemplateResource extends Resource<SqlId> {
 
-	int line = 0;
+	SQLSource newResource;
 
 	public SqlTemplateResource(SqlId id, ResourceLoader loader) {
 		super(id, loader);
+		StringSqlTemplateLoader l = (StringSqlTemplateLoader) loader;
+		SQLLoader sqlLoader = l.getSqlLLoader();
+		newResource = sqlLoader.loadSQL(id);
 
 	}
 
 	@Override
 	public Reader openReader() {
-		StringSqlTemplateLoader l = (StringSqlTemplateLoader) this.resourceLoader;
-		SQLLoader loader = l.getSqlLLoader();
 
-		SQLSource newResource = loader.loadSQL(id);
 		if(newResource==null){
 			//loadSQL会返回空，但beetlsql调用到这里的时候，先调用了SQLManager.getScript,在那里先过滤一次了
-			throw new IllegalArgumentException("should not hapeen here.");
+			throw new IllegalArgumentException("should not happen here.");
 		}
-		this.line = newResource.getLine();
 		return new NoneBlockStringReader(newResource.getTemplate());
 	}
 
@@ -37,12 +36,13 @@ public class SqlTemplateResource extends Resource<SqlId> {
 
 		StringSqlTemplateLoader l = (StringSqlTemplateLoader) this.resourceLoader;
 		SQLLoader loader = l.getSqlLLoader();
-		return loader.isModified(id);
+		boolean isModified =  loader.isModified(id);
+		return isModified;
 
 	}
 
 	public int getLine() {
-		return this.line;
+		return newResource!=null?newResource.line:0;
 	}
 
 

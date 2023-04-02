@@ -2,8 +2,8 @@
 <beetlsql>
 	<sql id="testIf">
 		select * from sys_user where 1=1
-		<if test="name!=null">
-			and name &lt;#{name}
+		<if test="name!===null">
+			and name = #{name}
 		</if>
 	</sql>
 	<sql id="testIsNotEmpty">

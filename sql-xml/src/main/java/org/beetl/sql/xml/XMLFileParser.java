@@ -52,6 +52,7 @@ public class XMLFileParser implements SQLFileParser {
 			SQLSource sqlSource = new SQLSource();
 			sqlSource.id = SqlId.of(modelName,id);
 			sqlSource.template = sb.toString();
+			sqlSource.setLine(1);
 			list.add(sqlSource);
 		}
 
