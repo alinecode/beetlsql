@@ -52,14 +52,7 @@ public class QuickTest {
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
 		List<User> users = sqlManager.select(SqlId.of("user.select"),User.class);
-//
-//		List<OrderLog> list = logMapper.select(Arrays.asList(1L,2L));
-//		System.out.println(list);
-//		list = logMapper.select(new ArrayList<>());
-//		System.out.println(list);
-//		logMapper.select(new ArrayList<>());
-//
-//		logMapper.select(Arrays.asList(1L,2L));
+		users = sqlManager.select(SqlId.of("user.select"),User.class);
 
 
 	}
