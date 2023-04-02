@@ -50,9 +50,8 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		SQLExecutor sqlExecutor = sqlManager.getScript(OrderLog.class, AutoSQLEnum.SELECT_BY_ID);
-		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
-		OrderLog log = logMapper.unique(1);
+
+		List<User> users = sqlManager.select(SqlId.of("user.select"),User.class);
 //
 //		List<OrderLog> list = logMapper.select(Arrays.asList(1L,2L));
 //		System.out.println(list);

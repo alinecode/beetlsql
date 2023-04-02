@@ -34,8 +34,8 @@ public class MarkdownParser implements SQLFileParser {
 		this.br = br;
 		skipHeader();
 	}
-	
-	
+
+
 	protected void skipHeader() throws IOException{
 		while(true){
 			String line = nextLine();
@@ -45,7 +45,7 @@ public class MarkdownParser implements SQLFileParser {
 			if(line.startsWith("===")){
 				return ;
 			}
-			
+
 		}
 	}
 
@@ -62,9 +62,12 @@ public class MarkdownParser implements SQLFileParser {
 			return null;
 		}
 		int sqlLine = this.linNumber;
+		if(lastLine.equals("```")||lastLine.equals("~~~")){
+			sqlLine++;
+		}
 		String sql = readSql();
 		SqlId newId = SqlId.of(namepspace,sqlId);
-		
+
 		SQLSource source = new SQLSource(newId,sql);
 		source.setLine(sqlLine);
 
@@ -80,29 +83,19 @@ public class MarkdownParser implements SQLFileParser {
 			if(status==END){
 				return ;
 			}
+
 			line = line.trim();
-			if(!findComment&&line.length()==0){
+			if(line.length()==0){
 				continue ;
 			}
-			if(!inBody&&line.startsWith("*")){
-				//注释符号
-				findComment = true;
+			if(line.startsWith("*")){
 				continue;
 			}else {
-				String s = line.trim();
-				if(s.length()==0){
-					continue;
-				}
-				else if(s.startsWith("```")||s.startsWith("~~~")){
-					//忽略以code block开头的符号
-					inBody = true;
-					continue;
-				}else{
-					//注释结束
-					return ;
-				}
-				
+				//正文内容
+				inBody = true;
+				return ;
 			}
+
 		}
 	}
 
@@ -111,18 +104,18 @@ public class MarkdownParser implements SQLFileParser {
 		list.add(lastLine);
 		while(true){
 			String line = nextLine();
-			
+
 			if(status==END){
 				return getBuildSql(list);
 			}
-			
+
 			if(line.startsWith("===")){
 				//删除下一个sqlId表示
 				list.remove(list.size()-1);
 				return getBuildSql(list);
 			}
 			list.add(line);
-			
+
 		}
 	}
 	protected String getBuildSql(List<String> list){
@@ -131,7 +124,7 @@ public class MarkdownParser implements SQLFileParser {
 			String s = str.trim();
 			if(s.startsWith("```")||s.startsWith("~~~")){
 				//忽略以code block开头的符号
-				break;
+				continue;
 			}
 			sb.append(str).append(lineSeparator);
 		}
@@ -147,7 +140,7 @@ public class MarkdownParser implements SQLFileParser {
 		linNumber++;
 		if(line==null){
 			status = END;
-			
+
 		}
 		//保存最后读的俩行
 		penultimateLine = lastLine;

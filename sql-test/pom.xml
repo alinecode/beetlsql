@@ -27,6 +27,11 @@
             <artifactId>beetlsql</artifactId>
             <version>${beetlsql.version}</version>
         </dependency>
+		<dependency>
+			<groupId>com.ibeetl</groupId>
+			<artifactId>sql-xml</artifactId>
+			<version>${beetlsql.version}</version>
+		</dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
