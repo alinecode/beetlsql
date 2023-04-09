@@ -40,6 +40,12 @@ public class XMLBeetlSQL {
 		gt.registerTag("htmltag", XMLTagSupportWrapper.class);
 	}
 
+	public static void registerTag(SQLManager sqlManager,String name,Tag tag){
+		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
+		GroupTemplate gt = beetlSQLTemplateEngine.getBeetl().getGroupTemplate();
+		gt.registerTag("name", IfTag.class);
+	}
+
 	private static void registerXMLTag(GroupTemplate groupTemplate){
 		groupTemplate.registerTag("if", IfTag.class);
 		groupTemplate.registerTag("include", Include.class);
