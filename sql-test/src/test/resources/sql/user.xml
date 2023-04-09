@@ -104,6 +104,26 @@
 		and name='bdfdsf'
 	</sql>
 
+	<resultMap id="simpleMap">
+		<result property="id" column="id"/>
+		<result property="myName" column="user_name"/>
+	</resultMap>
+
+	<resultMap id="complexMap">
+		<result property="id" column="id"/>
+		<association property="info" >
+			<result property="name" column="name"/>
+			<result property="age" column="age"/>
+		</association>
+	</resultMap>
+
+	<resultMap id="complexListMap">
+		<result property="id" column="id"/>
+		<collection property="listInfo" >
+			<result property="name" column="name"/>
+			<result property="age" column="age"/>
+		</collection>
+	</resultMap>
 
 </beetlsql>
 

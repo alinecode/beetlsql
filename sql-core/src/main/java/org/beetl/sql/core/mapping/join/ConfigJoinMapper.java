@@ -85,7 +85,10 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
 
 		} catch (SQLException ex) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, ex);
-		} catch (Exception ex) {
+		}catch (BeetlSQLException ex){
+			throw  ex;
+		}
+		catch (Exception ex) {
 			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, ex);
 		}
 	}

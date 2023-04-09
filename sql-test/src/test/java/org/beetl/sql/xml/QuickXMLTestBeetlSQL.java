@@ -1,6 +1,8 @@
 package org.beetl.sql.xml;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Data;
+import org.beetl.sql.annotation.entity.ResultProvider;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.entity.User;
@@ -107,6 +109,32 @@ public class QuickXMLTestBeetlSQL {
 
 	}
 
+	@Test
+	public void testSimpleXMLMapping(){
+
+		String sql = "select id,name user_name from sys_user";
+		List<MyXMLSimpleUser> list = sqlManager.execute(new SQLReady(sql),MyXMLSimpleUser.class);
+		Assert.assertTrue(list.get(0) instanceof MyXMLSimpleUser );
+
+	}
+
+	@Test
+	public void testComplexXMLMapping(){
+
+		String sql = "select id,name,age from sys_user";
+		List<MyXMLComplexUser> list = sqlManager.execute(new SQLReady(sql),MyXMLComplexUser.class);
+		Assert.assertTrue(list.get(0) instanceof MyXMLComplexUser );
+
+	}
+
+	@Test
+	public void testComplexXMLListMapping(){
+
+		String sql = "select id,name,age from sys_user";
+		List<MyXMLComplexListUser> list = sqlManager.execute(new SQLReady(sql),MyXMLComplexListUser.class);
+		Assert.assertTrue(list.get(0) instanceof MyXMLComplexListUser );
+
+	}
 
 	public static void datasource() {
 		dataSource = new HikariDataSource();
@@ -131,6 +159,43 @@ public class QuickXMLTestBeetlSQL {
 		sqlManager = builder.build();
 		DBInitHelper.executeSqlScript(sqlManager,"db/db-init.sql");
 	}
+
+
+	@ResultProvider(XMLConfigMapper.class)
+	@XMLMapper(resource="user.simpleMap")
+	@Data
+	public static class MyXMLSimpleUser {
+		private Long id;
+		private String myName;
+	}
+
+
+	@ResultProvider(XMLConfigMapper.class)
+	@XMLMapper(resource="user.complexMap")
+	@Data
+	public static class MyXMLComplexUser {
+		private Long id;
+		private MyXMLComplexUserInfo info;
+	}
+
+	@ResultProvider(XMLConfigMapper.class)
+	@XMLMapper(resource="user.complexListMap")
+	@Data
+	public static class MyXMLComplexListUser {
+		private Long id;
+		private List<MyXMLComplexUserInfo> listInfo;
+	}
+
+
+	@Data
+	public static class MyXMLComplexUserInfo {
+		private String name;
+		private Integer age;
+	}
+
+
+
+
 
 
 }

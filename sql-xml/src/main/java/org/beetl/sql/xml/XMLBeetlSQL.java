@@ -16,6 +16,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * sqlManager支持xml，需要调用support方法
+ */
 public class XMLBeetlSQL {
 	public static Set<String> holderSet = new HashSet<>();
 	static{
@@ -153,10 +156,6 @@ public class XMLBeetlSQL {
 
 	public static class IfTag extends Tag{
 
-		public IfTag(){
-
-		}
-
 		@Override
 		public void render() {
 
@@ -170,8 +169,6 @@ public class XMLBeetlSQL {
 			if ((Boolean) value) {
 				this.doBodyRender();
 			}
-
-
 		}
 	}
 
