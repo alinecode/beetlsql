@@ -68,6 +68,10 @@ public interface UserMapper extends BaseMapper<UserEntity> {
 			" from sys_user u  left join department d on d.id=u.department_id")
 	List<S2MappingSample.MyUserView2> allUserView2();
 
+	@Sql("select u.id ,u.name " +
+			" from sys_user u  left join department d on d.id=u.department_id")
+	List<S2MappingSample.MyUserView2> allUserView3();
+
     /**
      * 翻页查询,调用user.md#pageQuery
      * @param deptId

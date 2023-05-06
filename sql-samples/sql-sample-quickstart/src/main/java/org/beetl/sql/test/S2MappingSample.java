@@ -112,11 +112,13 @@ public class S2MappingSample {
      * 使用json 配置来映射，类似mybatis的xml配置
      */
     public void autoMapping() {
-//        List<MyUserView> list = mapper.allUserView();
-//        System.out.println(list);
+
 
 		List<S2MappingSample.MyUserView2> list2 = mapper.allUserView2();
 		System.out.println(list2);
+
+		List<S2MappingSample.MyUserView2> list3 = mapper.allUserView3();
+		System.out.println(list3);
 
     }
 

@@ -47,6 +47,36 @@ public class JsonMappingTest extends BaseTest {
     }
 
 
+	@Test
+	public void recursion(){
+		{
+			String sql = "select u.id ,u.name  , 1 `f.id` ,'test' `f.name`  " +
+					" from sys_user u where u.id= ? ";
+			SQLReady ready = new SQLReady(sql,1);
+			List<UserFriendView> list = sqlManager.execute(ready,UserFriendView.class);
+			Assert.assertEquals(1,list.size());
+
+			UserFriendView view = list.get(0);
+
+			Assert.assertEquals("test",view.getF().getName());
+		}
+		{
+			String sql = "select u.id ,u.name  , 1 `f.id` ,'test' `f.name`  " +
+					",2 `f.f.id` ,'test2' `f.f.name`"+
+					" from sys_user u where u.id= ? ";
+			SQLReady ready = new SQLReady(sql,1);
+			List<UserFriendView> list = sqlManager.execute(ready,UserFriendView.class);
+			Assert.assertEquals(1,list.size());
+
+			UserFriendView view = list.get(0);
+			UserFriendView friendView = view.getF().getF();
+			Assert.assertEquals("test2",friendView.getName());
+
+		}
+
+	}
+
+
     @Data
     @ResultProvider(JsonConfigMapper.class)
     @JsonMapper(
@@ -71,6 +101,17 @@ public class JsonMappingTest extends BaseTest {
         String name;
         DepartmentEntity dept;
     }
+
+	/**
+	 * 嵌套循环
+	 */
+	@Data
+	@ResultProvider(AutoJsonMapper.class)
+	public static class UserFriendView {
+		Integer id;
+		String name;
+		UserFriendView f;
+	}
 
     @Table(name="department")
     @Data

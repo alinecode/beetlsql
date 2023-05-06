@@ -51,9 +51,9 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
-		List<User> users = sqlManager.select(SqlId.of("user.select"),User.class);
-		users = sqlManager.select(SqlId.of("user.select"),User.class);
+		List<QuickSubUser> users = sqlManager.select(SqlId.of("user.select"),QuickSubUser.class);
 
+	
 
 	}
 

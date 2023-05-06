@@ -4,6 +4,7 @@ import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
 import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.SqlId;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -24,10 +25,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AutoJsonMapper extends JsonConfigMapper {
 
     protected static Map<AutoKey,AttrNode> cache = new ConcurrentHashMap<>();
+	static int MAX_DEPTH = 5;
     @Override
     protected AttrNode parse(ExecuteContext ctx, Class target, ResultSetMetaData rsmd, Annotation config) throws Exception {
         NameConversion nc = ctx.sqlManager.getNc();
-        AutoKey key = new AutoKey(target,nc);
+        AutoKey key = new AutoKey(target,ctx.sqlId);
         AttrNode root = cache.get(key);
         if(root==null){
             Map columnIndex = this.getColumnIndex(rsmd);
@@ -40,9 +42,14 @@ public class AutoJsonMapper extends JsonConfigMapper {
         }
         return root;
     }
-
-    protected void getMappingByJson(String prefix,NameConversion nc,Map<String,Object> configMap,Class target) throws IntrospectionException {
-        PropertyDescriptor[] pds = BeanKit.propertyDescriptors(target);
+	protected void getMappingByJson(String prefix,NameConversion nc,Map<String,Object> configMap,Class target) throws IntrospectionException {
+		getMappingByJson(prefix,nc,configMap,target,0);
+	}
+    protected void getMappingByJson(String prefix,NameConversion nc,Map<String,Object> configMap,Class target,int level) throws IntrospectionException {
+        if(level>MAX_DEPTH){
+			return ;
+		}
+		PropertyDescriptor[] pds = BeanKit.propertyDescriptors(target);
         for(PropertyDescriptor pd:pds){
             Class type = pd.getPropertyType();
             if(type==java.lang.Class.class){
@@ -67,7 +74,9 @@ public class AutoJsonMapper extends JsonConfigMapper {
             }
 
             Map<String,Object> childConfig = new HashMap<>();
-            getMappingByJson(configCol,nc,childConfig,childType);
+			level++;
+            getMappingByJson(configCol,nc,childConfig,childType,level);
+			level--;
             configMap.put(attr,childConfig);
         }
 
@@ -82,31 +91,31 @@ public class AutoJsonMapper extends JsonConfigMapper {
         return prefix+"."+col;
     }
 
-    static class AutoKey {
-        Class target;
-        NameConversion nameConversion;
+	static class AutoKey {
+		Class target;
+		SqlId sqlId;
 
-        public AutoKey(Class target, NameConversion nameConversion) {
-            this.target = target;
-            this.nameConversion = nameConversion;
-        }
+		public AutoKey(Class target, SqlId sqlId) {
+			this.target = target;
+			this.sqlId = sqlId;
+		}
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            AutoKey autoKey = (AutoKey) o;
-            return target.equals(autoKey.target) &&
-                    nameConversion.equals(autoKey.nameConversion);
-        }
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
+			if (o == null || getClass() != o.getClass()) {
+				return false;
+			}
+			AutoKey autoKey = (AutoKey) o;
+			return target.equals(autoKey.target) &&
+					sqlId.equals(autoKey.sqlId);
+		}
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(target, nameConversion);
-        }
-    }
+		@Override
+		public int hashCode() {
+			return Objects.hash(target, sqlId);
+		}
+	}
 }
