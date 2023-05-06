@@ -227,9 +227,24 @@ public class StringKit {
 	public static boolean isEmpty(String str) {
 		return str == null || str.length() == 0;
 	}
+	public static boolean isEmpty(CharSequence str) {
+		return str == null || str.length() == 0;
+	}
 	public static String trim(String str) {
 		return str == null ? null : str.trim();
 	}
+	public static CharSequence trim(CharSequence cs) {
+        int len = cs.length();
+        int st = 0;
+
+        while ((st < len) && (cs.charAt(st) <= ' ')) {
+            st++;
+        }
+        while ((st < len) && (cs.charAt(len - 1) <= ' ')) {
+            len--;
+        }
+        return ((st > 0) || (len < cs.length())) ? cs.subSequence(st, len) : cs;
+    }
 	
 	public static String[] split(String str, char separatorChar) {
 		return splitWorker(str, separatorChar, false);

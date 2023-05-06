@@ -1,9 +1,11 @@
 package org.beetl.sql.core.mapping.type;
 
 
+import org.beetl.sql.clazz.kit.HexUtil;
 import org.beetl.sql.clazz.kit.LobKit;
 
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
 
 public class StringTypeHandler extends JavaSqlTypeHandler {
@@ -39,7 +41,25 @@ public class StringTypeHandler extends JavaSqlTypeHandler {
 					return rs.getString(index);
 
 			}
-		} else {
+		} else if (typePara.dbName.equals("dameng")){
+			int type = typePara.meta.getColumnType(index);
+			switch (type) {
+				case Types.BLOB: {
+					String s = rs.getString(index);
+					if(s!=null) {
+						try {
+							return new String(HexUtil.decodeHex(s),"UTF-8");
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
+					}else {
+						return s;
+					}
+				}
+				default:
+					return rs.getString(index);
+			}
+		}  else {
 			//认为其他数据库都支持直接通过jdbc获取字符串，如果不是这样，需要扩展StringTypeHandler
 			return rs.getString(index);
 		}
