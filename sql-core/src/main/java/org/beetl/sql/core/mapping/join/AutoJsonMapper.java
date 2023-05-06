@@ -24,23 +24,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AutoJsonMapper extends JsonConfigMapper {
 
-    protected static Map<AutoKey,AttrNode> cache = new ConcurrentHashMap<>();
-	static int MAX_DEPTH = 5;
+	public static int MAX_DEPTH = 4;
     @Override
     protected AttrNode parse(ExecuteContext ctx, Class target, ResultSetMetaData rsmd, Annotation config) throws Exception {
-        NameConversion nc = ctx.sqlManager.getNc();
-        AutoKey key = new AutoKey(target,ctx.sqlId);
-        AttrNode root = cache.get(key);
-        if(root==null){
-            Map columnIndex = this.getColumnIndex(rsmd);
-            Map<String,Object> configMap = new CaseInsensitiveHashMap<>();
-            String prefix = "";
-            getMappingByJson(prefix,nc,configMap,target);
-            root =  new AttrNode(null);
-            root.initNode(target,configMap,columnIndex);
-            cache.put(key,root);
-        }
-        return root;
+		NameConversion nc = ctx.sqlManager.getNc();
+		Map columnIndex = this.getColumnIndex(rsmd);
+		Map<String,Object> configMap = new CaseInsensitiveHashMap<>();
+		String prefix = "";
+		int level=0;
+		getMappingByJson(prefix,nc,configMap,target,level);
+		AttrNode root =  new AttrNode(null);
+		root.initNode(target,configMap,columnIndex);
+		return root;
     }
 	protected void getMappingByJson(String prefix,NameConversion nc,Map<String,Object> configMap,Class target) throws IntrospectionException {
 		getMappingByJson(prefix,nc,configMap,target,0);
@@ -87,35 +82,8 @@ public class AutoJsonMapper extends JsonConfigMapper {
         if(prefix.length()==0){
             return col;
         }
-
         return prefix+"."+col;
     }
 
-	static class AutoKey {
-		Class target;
-		SqlId sqlId;
 
-		public AutoKey(Class target, SqlId sqlId) {
-			this.target = target;
-			this.sqlId = sqlId;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-			AutoKey autoKey = (AutoKey) o;
-			return target.equals(autoKey.target) &&
-					sqlId.equals(autoKey.sqlId);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(target, sqlId);
-		}
-	}
 }
