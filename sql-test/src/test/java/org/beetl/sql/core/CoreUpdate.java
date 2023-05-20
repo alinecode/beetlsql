@@ -5,6 +5,7 @@ import org.beetl.sql.BaseTest;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.entity.User;
+import org.beetl.sql.ext.DebugInterceptor;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -154,41 +155,54 @@ public class CoreUpdate extends BaseTest {
         Assert.assertEquals("abcd",user2.getName());
 
     }
-    @Test
-    public void batchBatchUpdate(){
 
-        /*只批量更新部分字段数据*/
-        User user1 = new User();
-        user1.setName("abc");
-        user1.setId(1);
-
-        User user2 = new User();
-        user2.setDepartmentId(2);
-        user2.setId(2);
-
-        List list = Arrays.asList(user1,user2);
-        sqlManager.updateBatchTemplateById(User.class,list);
-        user1 = sqlManager.unique(User.class,1);
-        Assert.assertEquals("abc",user1.getName());
-
-    }
 
 	@Test
 	public void batchTemplateUpdate(){
+		{
+			//内部分成俩组，验证输出了2条sql语句 setBatchLogOneByOne(false);
+			User user1 = new User();
+			user1.setName("a");
+			user1.setId(1);
 
-		String template = "update sys_user set name=#{name} where id = #{id}";
-		User user1 = new User();
-		user1.setName("a");
-		user1.setId(1);
+			User user2 = new User();
+			user2.setName("b");
+			user2.setId(2);
 
-		User user2 = new User();
-		user2.setName("b");
-		user2.setId(2);
-		List<User> users = Arrays.asList(user1,user2);
+			User user3 = new User();
+			user3.setName("c");
+			user3.setDepartmentId(1);
+			user3.setId(3);
 
-		sqlManager.executeBatchTemplateUpdate(template,users);
+			sqlManager.setInters(new DebugInterceptor[]{new DebugInterceptor()});
+			List<User> users = Arrays.asList(user1,user2,user3);
+			sqlManager.setBatchLogOneByOne(false);
+			sqlManager.updateBatchTemplateById(User.class,users);
+		}
+		{
+			//按照每条打印 setBatchLogOneByOne(true);
+			String template = "update sys_user set name=#{name} where id = #{id}";
+			User user1 = new User();
+			user1.setName("a");
+			user1.setId(1);
 
-		sqlManager.executeBatchTemplateUpdate(template,users);
+			User user2 = new User();
+			user2.setName("b");
+			user2.setId(2);
+			sqlManager.setInters(new DebugInterceptor[]{new DebugInterceptor()});
+			sqlManager.setBatchLogOneByOne(true);
+			List<User> users = Arrays.asList(user1,user2);
+			sqlManager.executeBatchTemplateUpdate(template,users);
+		}
+
+
+	}
+
+
+	@Test
+	public void batchTemplateUpdateById(){
+
+
 
 	}
 

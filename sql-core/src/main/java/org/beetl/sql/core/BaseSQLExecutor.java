@@ -26,6 +26,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
+import java.util.function.IntFunction;
 
 /**
  * 面向传统数据库的 sql 执行引擎
@@ -315,66 +316,126 @@ public class BaseSQLExecutor implements SQLExecutor {
             return new int[0];
         }
         Connection conn = null;
-        InterceptorContext lastCtx = null;
-        int[] jdbcRets = new int[list.size()];
-        // 执行jdbc
+		InterceptorContext ctx = new InterceptorContext(executeContext);
         try {
-            //记录不同sql对应的PreparedStatement
-            Map<String, PreparedStatement> batchPs = new HashMap<>();
-            //上下文
-            Map<String, InterceptorContext> batchCtx = new HashMap<>();
-            //不同sql产生的批处理结果，汇总到jdbcRets
-            Map<String, List<Integer>> batchRet = new HashMap<>();
+			GroupBatchExecutor groupBatchExecutor = new GroupBatchExecutor();
+			SQLResult result = null;
             conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
             for (int k = 0; k < list.size(); k++) {
                 if (list.get(k) == null) {
                     throw new NullPointerException("列表 " + k + "参数为空");
                 }
                 Map<String, Object> paras = this.beforeExecute(target, list.get(k), true);
-                SQLResult result = run(paras);
-                List<SQLParameter> objs = result.jdbcPara;
-                PreparedStatement ps = batchPs.get(result.jdbcSql);
-                List<Integer> rets = batchRet.get(result.jdbcSql);
-                InterceptorContext ctx = batchCtx.get(result.jdbcSql);
+				result = run(paras);
+
+                PreparedStatement ps = groupBatchExecutor.containSql(result.jdbcSql);
                 if (ps == null) {
                     ps = conn.prepareStatement(result.jdbcSql);
-                    this.applyStatementSetting(executeContext, conn, ps);
-                    ctx = new InterceptorContext(executeContext);
-                    rets = new ArrayList<>();
-                    batchCtx.put(result.jdbcSql, ctx);
-                    batchPs.put(result.jdbcSql, ps);
-                    batchRet.put(result.jdbcSql, rets);
                 }
+				this.applyStatementSetting(executeContext, conn, ps);
+				this.setPreparedStatementPara(ps, result.jdbcPara);
+				ps.addBatch();
+				groupBatchExecutor.addSql(result,ps);
+            }
 
-                this.setPreparedStatementPara(ps, objs);
-                ps.addBatch();
-                rets.add(k);
-            }
-            //执行
-            for (Map.Entry<String, PreparedStatement> entry : batchPs.entrySet()) {
-                PreparedStatement ps = entry.getValue();
-                lastCtx = batchCtx.get(entry.getKey());
-                List<Integer> rets = batchRet.get(entry.getKey());
-                //不调用this.callInterceptorAsBefore()
-                for (Interceptor in : executeContext.sqlManager.getInters()) {
-                    in.before(lastCtx);
-                }
-                int[] rs = ps.executeBatch();
-                for (int i = 0; i < rs.length; i++) {
-                    int realIndex = rets.get(i);
-                    jdbcRets[realIndex] = rs[i];
-                }
-                executeContext.executeResult = rs;
-                this.callInterceptorAsAfter(lastCtx, rs);
-            }
+			return groupBatchExecutor.executeBatch(executeContext,ctx,executeContext.sqlManager.isBatchLogOneByOne());
+
         } catch (SQLException e) {
-            this.callInterceptorAsException(lastCtx, e);
+            this.callInterceptorAsException(ctx, e);
             throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
         } finally {
             clean(executeContext, conn);
         }
-        return jdbcRets;
+
     }
+
+	static class GroupBatchExecutor {
+		Map<String, PreparedStatement> batchPs = new HashMap<>();
+
+		//记录不同sql对应的参数，这里的SQLParameter是特殊的SQLParameter。
+		Map<String, List<SQLParameter>> batchParameter = new HashMap<>();
+
+		List<Integer> allRet = new ArrayList<>();
+
+
+		public void addSql(SQLResult result,PreparedStatement ps){
+			String sql = result.jdbcSql;
+			if(!batchPs.keySet().contains(sql)){
+
+				batchPs.put(sql, ps);
+				batchParameter.put(sql, new ArrayList<SQLParameter>());
+			}
+
+			SQLParameter specialParameter = new SQLParameter(result.jdbcPara);
+			batchParameter.get(result.jdbcSql).add(specialParameter);
+			return ;
+		}
+		public PreparedStatement containSql(String sql){
+			return batchPs.get(sql);
+		}
+
+		public int[] executeBatch(ExecuteContext executeContext,InterceptorContext ctx,boolean singleUpdate ) throws SQLException{
+
+			for (Map.Entry<String, PreparedStatement> entry : batchPs.entrySet()) {
+				PreparedStatement ps = entry.getValue();
+				String sql = entry.getKey();
+				executeContext.sqlResult.jdbcSql = sql;
+				if(singleUpdate){
+					//模拟单条打印,有些系统需要跟踪每个sql语句和执行参数,这会导致较多的输出日志
+					int[] rs = new int[0];
+					List<SQLParameter> list = batchParameter.get(sql);
+					for(int i=0;i<list.size();i++){
+						SQLParameter sqlParameter = list.get(i);
+						executeContext.sqlResult.jdbcPara = (List<SQLParameter>)sqlParameter.value;
+						for (Interceptor in : executeContext.sqlManager.getInters()) {
+							in.before(ctx);
+						}
+						if(rs.length==0){
+							rs = ps.executeBatch();
+							addRet(rs);
+
+						}
+
+						executeContext.executeResult = rs[i];
+						for (Interceptor in : executeContext.sqlManager.inters) {
+							in.after(ctx);
+						}
+					}
+
+				}else{
+					//只打印第一组参数和执行结果，大多数情况如此
+					SQLParameter sqlParameter = batchParameter.get(sql).get(0);
+					List<SQLParameter> sqlParameters = (List<SQLParameter>)sqlParameter.value;
+					executeContext.sqlResult.jdbcPara = (List<SQLParameter>)sqlParameter.value;
+					for (Interceptor in : executeContext.sqlManager.getInters()) {
+						in.before(ctx);
+					}
+					int[] rs = ps.executeBatch();
+					addRet(rs);
+					executeContext.executeResult = rs[0];
+					for (Interceptor in : executeContext.sqlManager.inters) {
+						in.after(ctx);
+					}
+				}
+
+
+
+			}
+			return allRet();
+		}
+
+		public void addRet(int[] rets){
+			for(int i=0;i<rets.length;i++){
+				allRet.add(rets[i]);
+			}
+		}
+
+		public int[] allRet(){
+			int[] ints = allRet.stream().mapToInt(Integer::valueOf).toArray();
+			return ints;
+		}
+	}
+
 
     @Override
     public int[] updateBatch(List<?> list) {

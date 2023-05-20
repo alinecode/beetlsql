@@ -118,6 +118,8 @@ public class SQLManagerBuilder {
 
 	SQLManagerExtend sqlManagerExtend;
 
+	boolean batchLogOneByOne =false;
+
 
 	public SQLManagerBuilder(ConnectionSource ds) {
 		this.ds = ds;
@@ -170,7 +172,7 @@ public class SQLManagerBuilder {
 		mySqlManager.setMetaDataManager(myMetadataManager);
 		mySqlManager.setMapperBuilder(this.getMapperBuilder());
 		mySqlManager.setName(this.getName());
-
+		mySqlManager.setBatchLogOneByOne(batchLogOneByOne);
 		boolean offsetStartZero = Boolean.parseBoolean(myPs.getProperty("OFFSET_START_ZERO", "false"));
 		mySqlManager.offsetStartZero = offsetStartZero;
 		dbStyle.setOffsetStartZero(offsetStartZero);
@@ -475,6 +477,18 @@ public class SQLManagerBuilder {
 
 	public SQLManagerBuilder setOffsetStartZero(boolean offsetStartZero) {
 		this.offsetStartZero = offsetStartZero;
+		return this;
+	}
+
+	/**
+	 * batch 操作 的日志有俩种输出模式，一种是只输出第一条，一种是逐条输出,逐条输出主要用于审计功能
+	 *
+	 * 默认为false，只输出第一条
+	 * @param oneByOne
+	 * @return
+	 */
+	public SQLManagerBuilder setBatchLogOneByOne(boolean oneByOne){
+		this.batchLogOneByOne = oneByOne;
 		return this;
 	}
 

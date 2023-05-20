@@ -1,5 +1,7 @@
 package org.beetl.sql.core.engine;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,6 +35,16 @@ public class SQLParameter {
 		this.value = value;
 		this.type = NAME_UNKONW;
 
+	}
+
+
+	/**
+	 * batch操作的特殊情况处理
+	 * @param value
+	 */
+	public SQLParameter(List<SQLParameter> value) {
+		this.value = value;
+		this.type = NAME_UNKONW;
 	}
 
 	public SQLParameter(String expression, Object value, int type) {
@@ -74,5 +86,15 @@ public class SQLParameter {
 	@Override
 	public int hashCode() {
 		return Objects.hash(value, expression, type, jdbcType);
+	}
+
+	public static class  BatchDebugParameter  extends SQLParameter{
+		public BatchDebugParameter() {
+			super(null);
+		}
+		public void addBatch(List<SQLParameter> oneBatch){
+			List<List<SQLParameter>> listValue =  (List<List<SQLParameter>>)value;
+			listValue.add(oneBatch);
+		}
 	}
 }

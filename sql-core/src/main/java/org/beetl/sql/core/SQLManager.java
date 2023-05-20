@@ -83,6 +83,10 @@ public class SQLManager implements DataAPI {
 	//如果开启，那beetlsql的内置查询和修改语句，包括Query，结果都忽略被逻辑删除的部分，默认不开启
 	private boolean queryLogicDeleteEnable = false;
 
+
+
+	private boolean batchLogOneByOne = false;
+
 	protected SQLManager() {
 
 
@@ -1639,6 +1643,15 @@ public class SQLManager implements DataAPI {
 	public void setInters(Interceptor[] inters) {
 		this.inters = inters;
 	}
+
+	public void setBatchLogOneByOne(boolean oneByOne) {
+		this.batchLogOneByOne = oneByOne;
+	}
+
+	public boolean isBatchLogOneByOne() {
+		return this.batchLogOneByOne;
+	}
+
 
 	/**
 	 * 设置一种id算法用于注解AssignId("xxx"),这样，对于应用赋值主键，交给beetlsql来处理了
