@@ -87,7 +87,7 @@ public class CoreUpdate extends BaseTest {
 	@Test
 	public void insertTemplate(){
 		User user = new User();
-		user.setId(5);
+		user.setId(15);
 		user.setName("newName");
 		user.setDepartmentId(1);
 		sqlManager.insertTemplate(user);
@@ -98,7 +98,7 @@ public class CoreUpdate extends BaseTest {
 
 
 		User user2 = new User();
-		user2.setId(5);
+		user2.setId(15);
 		user2.setDepartmentId(2);
 		user2.setCreateDate(new Date());
 		sqlManager.updateTemplateById(user2);
