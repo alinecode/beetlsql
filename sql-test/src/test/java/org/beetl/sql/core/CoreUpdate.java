@@ -120,6 +120,7 @@ public class CoreUpdate extends BaseTest {
         user2.setCreateDate(new Date());
 
         List list = Arrays.asList(user,user2);
+		sqlManager.setBatchLogOneByOne(false);
         sqlManager.insertBatch(User.class,list);
 		Assert.assertNotNull(user2.getId());
         long newCount = sqlManager.allCount(User.class);
@@ -147,13 +148,12 @@ public class CoreUpdate extends BaseTest {
     public void batchSQLBatchReady(){
         SQLBatchReady sqlBatchReady = new SQLBatchReady("update sys_user set name=? where id = ?",
                 Arrays.asList(new Object[]{"abc",1},new Object[]{"abcd",2}));
+		sqlManager.setBatchLogOneByOne(true);
         sqlManager.executeBatchUpdate(sqlBatchReady);
-
         User user = sqlManager.unique(User.class,1);
         User user2 = sqlManager.unique(User.class,2);
         Assert.assertEquals("abc",user.getName());
         Assert.assertEquals("abcd",user2.getName());
-
     }
 
 

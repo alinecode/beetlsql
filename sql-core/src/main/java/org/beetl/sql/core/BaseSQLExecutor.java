@@ -251,7 +251,8 @@ public class BaseSQLExecutor implements SQLExecutor {
         PreparedStatement ps = null;
         Connection conn = null;
         // 执行jdbc
-        InterceptorContext ctx = null;
+        InterceptorContext ctx = new InterceptorContext(executeContext);
+		GroupBatchExecutor groupBatchExecutor = new GroupBatchExecutor();
         try {
             Object firstValue = list.get(0);
             KeyHolder holder = KeyHolder.getKeyHolderByClass(firstValue);
@@ -278,9 +279,10 @@ public class BaseSQLExecutor implements SQLExecutor {
 
                 this.setPreparedStatementPara(ps, objs);
                 ps.addBatch();
+				groupBatchExecutor.addSql(result,ps);
 
             }
-            rs = ps.executeBatch();
+			rs = groupBatchExecutor.executeBatch(executeContext,ctx,executeContext.sqlManager.isBatchLogOneByOne());
             if (executeContext.sqlManager.getDbStyle().batchGeneratedKeysSupport()) {
                 if (holder.hasAttr()) {
                     ResultSet keysSet = ps.getGeneratedKeys();
@@ -298,8 +300,6 @@ public class BaseSQLExecutor implements SQLExecutor {
                 }
             }
 
-            this.executeContext.executeResult = rs;
-            this.callInterceptorAsAfter(ctx, rs);
 
         } catch (SQLException e) {
             this.callInterceptorAsException(ctx, e);
@@ -746,12 +746,11 @@ public class BaseSQLExecutor implements SQLExecutor {
         if (args.isEmpty()) {
             return new int[0];
         }
-        InterceptorContext ctx = null;
+        InterceptorContext ctx = new InterceptorContext(executeContext);
         Connection conn = null;
         PreparedStatement ps = null;
-        int[] rs = null;
+		GroupBatchExecutor groupBatchExecutor = new GroupBatchExecutor();
         try {
-
             for (int i = 0; i < args.size(); i++) {
                 Object[] jdbcArgs = args.get(i);
                 SQLResult sqlResult = new SQLResult(batch.sql, jdbcArgs);
@@ -764,18 +763,19 @@ public class BaseSQLExecutor implements SQLExecutor {
                 }
                 this.setPreparedStatementPara(ps, sqlResult.jdbcPara);
                 ps.addBatch();
+				groupBatchExecutor.addSql(sqlResult, ps);
 
             }
-            rs = ps.executeBatch();
-            executeContext.executeResult = rs;
-            this.callInterceptorAsAfter(ctx, rs);
+
+			int[] ret = groupBatchExecutor.executeBatch(executeContext,ctx,executeContext.sqlManager.isBatchLogOneByOne());
+			return ret;
         } catch (SQLException e) {
             this.callInterceptorAsException(ctx, e);
             throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
         } finally {
             clean(true, conn, ps);
         }
-        return rs;
+
 
 
     }
