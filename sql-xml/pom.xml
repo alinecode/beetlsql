@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>com.ibeetl</groupId>
 		<artifactId>beetlsql-all</artifactId>
-		<version>3.23.0-RELEASE</version>
+		<version>3.23.1-RELEASE</version>
 	</parent>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>sql-xml</artifactId>
-	<version>3.23.0-RELEASE</version>
+	<version>3.23.1-RELEASE</version>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
