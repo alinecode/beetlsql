@@ -1,7 +1,9 @@
 package org.beetl.sql.core.query;
 
+import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.interfacer.StrongValue;
 
@@ -36,7 +38,7 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     public List<T> select(Property<T, ?>... cols) {
-        String[] colArray = this.getFunctionName(cols);
+        String[] colArray = this.getColumnNames(cols);
         return super.select(colArray);
 
     }
@@ -46,17 +48,17 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
     public PageResult<T> page(long pageNumber, long pageSize, Property<T, ?>... cols) {
-        String[] colArray = this.getFunctionName(cols);
+        String[] colArray = this.getColumnNames(cols);
         return super.page(pageNumber, pageSize, colArray);
     }
 
     public LambdaQuery<T> andEq(Property<T, ?> property, Object value) {
-        super.andEq(getFunctionName(property), value);
+        super.andEq(getColumnName(property), value);
         return this;
     }
 
     public LambdaQuery<T> andNotEq(Property<T, ?> property, Object value) {
-        super.andNotEq(getFunctionName(property), value);
+        super.andNotEq(getColumnName(property), value);
         return this;
 
     }
@@ -65,7 +67,7 @@ public class LambdaQuery<T> extends Query<T> {
      * 大于
      */
     public LambdaQuery<T> andGreat(Property<T, ?> property, Object value) {
-        super.appendAndSql(getFunctionName(property), value, ">");
+        super.appendAndSql(getColumnName(property), value, ">");
         return this;
 
     }
@@ -74,7 +76,7 @@ public class LambdaQuery<T> extends Query<T> {
      * 大于等于
      */
     public LambdaQuery<T> andGreatEq(Property<T, ?> property, Object value) {
-        appendAndSql(getFunctionName(property), value, ">=");
+        appendAndSql(getColumnName(property), value, ">=");
         return this;
     }
 
@@ -82,7 +84,7 @@ public class LambdaQuery<T> extends Query<T> {
      * 小于
      */
     public LambdaQuery<T> andLess(Property<T, ?> property, Object value) {
-        appendAndSql(getFunctionName(property), value, "<");
+        appendAndSql(getColumnName(property), value, "<");
         return this;
     }
 
@@ -90,37 +92,37 @@ public class LambdaQuery<T> extends Query<T> {
      * 小于等于
      */
     public LambdaQuery<T> andLessEq(Property<T, ?> property, Object value) {
-        appendAndSql(getFunctionName(property), value, "<=");
+        appendAndSql(getColumnName(property), value, "<=");
         return this;
     }
 
     public LambdaQuery<T> andLike(Property<T, ?> property, Object value) {
-        appendAndSql(getFunctionName(property), value, "LIKE ");
+        appendAndSql(getColumnName(property), value, "LIKE ");
         return this;
     }
 
     public LambdaQuery<T> andNotLike(Property<T, ?> property, Object value) {
-        appendAndSql(getFunctionName(property), value, "NOT LIKE ");
+        appendAndSql(getColumnName(property), value, "NOT LIKE ");
         return this;
     }
 
     public LambdaQuery<T> andIsNull(Property<T, ?> property) {
-        appendAndSql(getFunctionName(property), null, "IS NULL ");
+        appendAndSql(getColumnName(property), null, "IS NULL ");
         return this;
     }
 
     public LambdaQuery<T> andIsNotNull(Property<T, ?> property) {
-        appendAndSql(getFunctionName(property), null, "IS NOT NULL ");
+        appendAndSql(getColumnName(property), null, "IS NOT NULL ");
         return this;
     }
 
     public LambdaQuery<T> andIn(Property<T, ?> property, Collection<?> value) {
-        appendInSql(getFunctionName(property), value, IN, AND);
+        appendInSql(getColumnName(property), value, IN, AND);
         return this;
     }
 
     public LambdaQuery<T> andNotIn(Property<T, ?> property, Collection<?> value) {
-        appendInSql(getFunctionName(property), value, NOT_IN, AND);
+        appendInSql(getColumnName(property), value, NOT_IN, AND);
         return this;
     }
 
@@ -132,7 +134,7 @@ public class LambdaQuery<T> extends Query<T> {
      * @return
      */
     public LambdaQuery<T> andIn(Property<T, ?> property, StrongValue value) {
-        appendInSql(getFunctionName(property), value, IN, AND);
+        appendInSql(getColumnName(property), value, IN, AND);
         return this;
     }
 
@@ -144,27 +146,27 @@ public class LambdaQuery<T> extends Query<T> {
      * @return
      */
     public LambdaQuery<T> andNotIn(Property<T, ?> property, StrongValue value) {
-        appendInSql(getFunctionName(property), value, NOT_IN, AND);
+        appendInSql(getColumnName(property), value, NOT_IN, AND);
         return this;
     }
 
     public LambdaQuery<T> andBetween(Property<T, ?> property, Object value1, Object value2) {
-        appendBetweenSql(getFunctionName(property), BETWEEN, AND, value1, value2);
+        appendBetweenSql(getColumnName(property), BETWEEN, AND, value1, value2);
         return this;
     }
 
     public LambdaQuery<T> andNotBetween(Property<T, ?> property, Object value1, Object value2) {
-        appendBetweenSql(getFunctionName(property), NOT_BETWEEN, AND, value1, value2);
+        appendBetweenSql(getColumnName(property), NOT_BETWEEN, AND, value1, value2);
         return this;
     }
 
     public LambdaQuery<T> orEq(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "=");
+        appendOrSql(getColumnName(property), value, "=");
         return this;
     }
 
     public LambdaQuery<T> orNotEq(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "<>");
+        appendOrSql(getColumnName(property), value, "<>");
         return this;
     }
 
@@ -172,7 +174,7 @@ public class LambdaQuery<T> extends Query<T> {
      * 大于
      */
     public LambdaQuery<T> orGreat(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, ">");
+        appendOrSql(getColumnName(property), value, ">");
         return this;
     }
 
@@ -180,7 +182,7 @@ public class LambdaQuery<T> extends Query<T> {
      * 大于等于
      */
     public LambdaQuery<T> orGreatEq(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, ">=");
+        appendOrSql(getColumnName(property), value, ">=");
         return this;
     }
 
@@ -188,7 +190,7 @@ public class LambdaQuery<T> extends Query<T> {
      * 小于
      */
     public LambdaQuery<T> orLess(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "<");
+        appendOrSql(getColumnName(property), value, "<");
         return this;
     }
 
@@ -196,93 +198,93 @@ public class LambdaQuery<T> extends Query<T> {
      * 小于等于
      */
     public LambdaQuery<T> orLessEq(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "<=");
+        appendOrSql(getColumnName(property), value, "<=");
         return this;
     }
 
     public LambdaQuery<T> orLike(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "LIKE ");
+        appendOrSql(getColumnName(property), value, "LIKE ");
         return this;
     }
 
     public LambdaQuery<T> orNotLike(Property<T, ?> property, Object value) {
-        appendOrSql(getFunctionName(property), value, "NOT LIKE ");
+        appendOrSql(getColumnName(property), value, "NOT LIKE ");
         return this;
     }
 
     public LambdaQuery<T> orIsNull(Property<T, ?> property) {
-        appendOrSql(getFunctionName(property), null, "IS NULL ");
+        appendOrSql(getColumnName(property), null, "IS NULL ");
         return this;
     }
 
     public LambdaQuery<T> orIsNotNull(Property<T, ?> property) {
-        appendOrSql(getFunctionName(property), null, "IS NOT NULL ");
+        appendOrSql(getColumnName(property), null, "IS NOT NULL ");
         return this;
     }
 
     public LambdaQuery<T> orIn(Property<T, ?> property, Collection<?> value) {
-        appendInSql(getFunctionName(property), value, IN, OR);
+        appendInSql(getColumnName(property), value, IN, OR);
         return this;
     }
 
     public LambdaQuery<T> orIn(Property<T, ?> property, StrongValue value) {
-        appendInSql(getFunctionName(property), value, IN, OR);
+        appendInSql(getColumnName(property), value, IN, OR);
         return this;
     }
 
     public LambdaQuery<T> orIn(Property<T, ?> property, Optional value) {
-        appendInSql(getFunctionName(property), value, IN, OR);
+        appendInSql(getColumnName(property), value, IN, OR);
         return this;
     }
 
     public LambdaQuery<T> orNotIn(Property<T, ?> property, Collection<?> value) {
-        appendInSql(getFunctionName(property), value, NOT_IN, OR);
+        appendInSql(getColumnName(property), value, NOT_IN, OR);
         return this;
     }
 
     public LambdaQuery<T> orNotIn(Property<T, ?> property, StrongValue value) {
-        appendInSql(getFunctionName(property), value, NOT_IN, OR);
+        appendInSql(getColumnName(property), value, NOT_IN, OR);
         return this;
     }
 
     public LambdaQuery<T> orNotIn(Property<T, ?> property, Optional value) {
-        appendInSql(getFunctionName(property), value, NOT_IN, OR);
+        appendInSql(getColumnName(property), value, NOT_IN, OR);
         return this;
     }
 
     public LambdaQuery<T> orBetween(Property<T, ?> property, Object value1, Object value2) {
-        appendBetweenSql(getFunctionName(property), BETWEEN, OR, value1, value2);
+        appendBetweenSql(getColumnName(property), BETWEEN, OR, value1, value2);
         return this;
     }
 
     public LambdaQuery<T> orNotBetween(Property<T, ?> property, Object value1, Object value2) {
-        appendBetweenSql(getFunctionName(property), NOT_BETWEEN, OR, value1, value2);
+        appendBetweenSql(getColumnName(property), NOT_BETWEEN, OR, value1, value2);
         return this;
     }
 
     public LambdaQuery<T> groupBy(Property<T, ?> property) {
-        super.groupBy(getFunctionName(property));
+        super.groupBy(getColumnName(property));
 
         return this;
     }
 
     public LambdaQuery<T> orderBy(Property<T, ?> property) {
-        super.orderBy(getFunctionName(property));
+        super.orderBy(getColumnName(property));
         return this;
     }
 
     public LambdaQuery<T> asc(Property<T, ?> property) {
-        super.asc(getFunctionName(property));
+        super.asc(getColumnName(property));
 
         return this;
     }
 
     public LambdaQuery<T> desc(Property<T, ?> property) {
-        super.desc(getFunctionName(property));
+        super.desc(getColumnName(property));
         return this;
     }
 
-    private String getFunctionName(Property<T, ?> property) {
+	public String getColumnName(Property<T, ?> property) {
         try {
             Method declaredMethod = property.getClass().getDeclaredMethod("writeReplace");
             declaredMethod.setAccessible(Boolean.TRUE);
@@ -303,11 +305,11 @@ public class LambdaQuery<T> extends Query<T> {
 
     }
 
-    private String[] getFunctionName(Property<T, ?>... funs) {
-        String[] cols = new String[funs.length];
+	public String[] getColumnNames(Property<T, ?>... properties) {
+        String[] cols = new String[properties.length];
         int i = 0;
-        for (Property<T, ?> property : funs) {
-            cols[i++] = this.getFunctionName(property);
+        for (Property<T, ?> property : properties) {
+            cols[i++] = this.getColumnName(property);
         }
         return cols;
 
