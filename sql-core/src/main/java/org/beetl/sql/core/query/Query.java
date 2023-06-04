@@ -502,18 +502,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return new StrongValue() {
             @Override
             public boolean isEffective() {
-                if (value == null) {
-                    return false;
-                }
-                //校验空值
-                if (value instanceof String) {
-                    return !"".equals(value);
-                }
-
-                if (value instanceof Collection) {
-                    return !((Collection) value).isEmpty();
-                }
-                return true;
+				return validate(value);
             }
 
             @Override
@@ -543,6 +532,62 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             }
         };
     }
+
+	/**
+	 * 用于like查询中的非空判断
+	 *
+	 * @param value 值
+	 * @return StrongValue
+	 */
+	public static StrongValue filterLikeEmpty(Object value) {
+		return filterLikeEmpty(value, true, true);
+	}
+
+	/**
+	 * 用于like查询中的非空判断
+	 *
+	 * @param value     值
+	 * @param leftLike  左边补%
+	 * @param rightLike 右补%
+	 * @return StrongValue
+	 */
+	public static StrongValue filterLikeEmpty(Object value, boolean leftLike, boolean rightLike) {
+		return new StrongValue() {
+			@Override
+			public boolean isEffective() {
+				return validate(value);
+			}
+
+			@Override
+			public Object getValue() {
+				Object likeExpr = value;
+				if (leftLike) {
+					likeExpr = "%" + likeExpr;
+				}
+				if (rightLike) {
+					likeExpr = likeExpr + "%";
+				}
+				return likeExpr;
+			}
+		};
+	}
+
+	/**
+	 * 校验参数是否有效
+	 */
+	private static boolean validate(Object value){
+		if (value == null) {
+			return false;
+		}
+		//校验空值
+		if (value instanceof String) {
+			return !"".equals(value);
+		}
+		if (value instanceof Collection) {
+			return !((Collection) value).isEmpty();
+		}
+		return true;
+	}
 
 	/**
 	 * 重用，比如在count前，调用此方法会获取count的参数，此参数可以用于select
