@@ -17,8 +17,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
 public @interface AssignID {
+	/**
+	 * 某个ID算法
+	 * @return
+	 */
 	String value() default "";
 
+	/**
+	 * 如果算法有额外的参数需要使用，可以通过此传入，
+	 * @return
+	 * @see IDAutoGen
+	 */
 	String param() default "";
 }
 

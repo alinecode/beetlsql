@@ -18,11 +18,15 @@ import java.util.Map;
  */
 public class SnowflakeIDAutoGen implements IDAutoGen<Long> {
 
-	SnowflakeIDWorker defaultWork = new SnowflakeIDWorker(0, 0);
+	SnowflakeIDWorker defaultWork = null;
 	Map<String, SnowflakeIDWorker> map = null;
 
 	public SnowflakeIDAutoGen() {
+		this(0,0);
+	}
 
+	public SnowflakeIDAutoGen(long workId,long datacenterId) {
+		defaultWork = new SnowflakeIDWorker(workId, datacenterId);
 	}
 
 	public SnowflakeIDAutoGen(Map<String, SnowflakeIDWorker> map) {

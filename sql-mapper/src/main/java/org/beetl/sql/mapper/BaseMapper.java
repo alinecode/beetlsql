@@ -237,43 +237,5 @@ public interface BaseMapper<T> {
 	@AutoMapper(GetTargetEntityAMI.class)
 	Class<T> getTargetEntity();
 
-	/**
-	 * 根据主键，清空实体属性。复合主键暂不支持
-	 *
-	 * @param keys       主键集合
-	 * @param properties 实体属性
-	 * @return int
-	 */
-	default int clearFields(List<?> keys, LambdaQuery.Property<T, ?>... properties) {
-		if (keys == null || keys.isEmpty()) {
-			throw new BeetlSQLException(BeetlSQLException.ID_VALUE_ERROR, "主键不能为空");
-		}
-		Class<T> entityClass = this.getTargetEntity();
-		SQLManager sqlManager = this.getSQLManager();
-		LambdaQuery<T> query = sqlManager.lambdaQuery(entityClass);
-		String tableName = sqlManager.getNc().getTableName(entityClass);
-		if (tableName == null || "".equals(tableName)) {
-			throw new BeetlSQLException(BeetlSQLException.TABLE_NOT_EXIST, "表名不存在");
-		}
-		Set<String> pkCols = sqlManager.getTableDesc(tableName).getIdNames();
-		if (pkCols == null || pkCols.isEmpty()) {
-			throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND, "主键列不存在");
-		}
-		//复合主键暂不支持
-		query.andIn(pkCols.toArray()[0]+"", keys);
-		StringBuilder sql = new StringBuilder();
-		sql.append("UPDATE ");
-		sql.append(tableName.toUpperCase()).append(" SET ");
-		String updateCols = "";
-		String[] columns = query.getColumnNames(properties);
-		for (String column : columns) {
-			String setCol = column + "=NULL";
-			updateCols += "".equals(updateCols) ? setCol : "," + setCol;
-		}
-		sql.append(updateCols).append(" ");
-		sql.append(query.getSql());
-		SQLReady sqlReady = new SQLReady(sql.toString(), keys.toArray());
-		return sqlManager.executeUpdate(sqlReady);
-	}
 
 }

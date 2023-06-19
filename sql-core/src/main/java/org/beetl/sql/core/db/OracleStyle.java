@@ -3,6 +3,9 @@ package org.beetl.sql.core.db;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.meta.MetadataManager;
+import org.beetl.sql.core.meta.SchemaMetadataManager;
 import org.beetl.sql.core.range.RangeSql;
 import org.beetl.sql.core.range.RowNumRange;
 
@@ -54,6 +57,16 @@ public class OracleStyle extends AbstractDBStyle {
     @Override
     public String getSeqValue(String seqName) {
 		return seqName+".nextval";
+	}
+
+	@Override
+	public MetadataManager initMetadataManager(ConnectionSource cs) {
+		metadataManager = new SchemaMetadataManager(cs, this) {
+			protected String[] getScope(String catalog,String schema){
+				return new String[] { "TABLE","VIEW" ,"SYNONYM"};
+			}
+		};
+		return metadataManager;
 	}
 
 
