@@ -1644,6 +1644,11 @@ public class SQLManager implements DataAPI {
 		this.inters = inters;
 	}
 
+	/**
+	 * 默认为false，当批处理sql的时候，默认只传递给Interceptor 第一条sql以及相应的参数，设置为true后
+	 * 将逐一传递给Interceptor
+	 * @param oneByOne
+	 */
 	public void setBatchLogOneByOne(boolean oneByOne) {
 		this.batchLogOneByOne = oneByOne;
 	}
