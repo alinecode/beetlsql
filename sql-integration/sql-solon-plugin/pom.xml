@@ -15,7 +15,7 @@
     <version>3.23.4-RELEASE</version>
 
     <properties>
-        <solon.ver>2.4.0</solon.ver>
+        <solon.version>2.4.0</solon.version>
     </properties>
 
     <dependencies>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon.data</artifactId>
-            <version>${solon.ver}</version>
+            <version>${solon.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -37,14 +37,14 @@
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon-lib</artifactId>
-            <version>${solon.ver}</version>
+            <version>${solon.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon-test</artifactId>
-            <version>${solon.ver}</version>
+            <version>${solon.version}</version>
             <scope>test</scope>
         </dependency>
 
