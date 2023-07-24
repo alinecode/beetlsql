@@ -3,6 +3,7 @@ package org.beetl.sql.gen.simple;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.resource.ClasspathResourceLoader;
+import org.beetl.sql.core.engine.template.BeetlSQLTemplateSecurityManager;
 import org.beetl.sql.gen.SourceBuilder;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.io.IOException;
  * @see "http://ibeetl.com"
  */
 public abstract  class BaseTemplateSourceBuilder extends SourceBuilder {
-	
+
 	static  protected GroupTemplate groupTemplate = initTemplateEngine();
 	public BaseTemplateSourceBuilder(String name){
 		super(name);
@@ -33,6 +34,7 @@ public abstract  class BaseTemplateSourceBuilder extends SourceBuilder {
 			throw new IllegalStateException(e);
 		}
 		GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, cfg);
+		groupTemplate.setNativeSecurity(new BeetlSQLTemplateSecurityManager());
 		return groupTemplate;
 	}
 

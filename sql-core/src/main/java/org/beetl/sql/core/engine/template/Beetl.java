@@ -28,7 +28,7 @@ public class Beetl {
 				charset = Charset.defaultCharset().name();
 
 			}
-
+			gt.setNativeSecurity(new BeetlSQLTemplateSecurityManager());
 			//对isBlank参数增加安全输出控制，如果不存在在，为空，返回true
 			AntlrProgramBuilder.safeParameters.add("isBlank");
 
