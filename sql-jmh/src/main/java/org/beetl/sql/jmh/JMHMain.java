@@ -1,6 +1,7 @@
 package org.beetl.sql.jmh;
 
 import org.beetl.sql.jmh.beetl.BeetlSQLService;
+import org.beetl.sql.jmh.flex.FlexInitializer;
 import org.beetl.sql.jmh.jdbc.JdbcService;
 import org.beetl.sql.jmh.jpa.SpringBoot;
 import org.beetl.sql.jmh.jpa.SpringService;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.Throughput)
 @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Threads(1)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -53,6 +54,9 @@ public class JMHMain {
 
         weedService = new WeedService();
         weedService.init();
+
+		//see https://gitee.com/mybatis-flex/mybatis-benchmark
+		FlexInitializer.init();
 
     }
 
@@ -159,7 +163,7 @@ public class JMHMain {
     }
 
 
-//    /*   Spring Data JPA    */
+   /*   Spring Data JPA    */
     @Benchmark
     public void jpaInsert() {
         springService.addEntity();
@@ -227,8 +231,44 @@ public class JMHMain {
         weedService.pageQuery();
     }
 
+	/* flex orm */
+	@Benchmark
+	public void flexSelectById() {
+		FlexInitializer.selectOne();
+	}
 
-    public static void main(String[] args) throws RunnerException {
+	@Benchmark
+	public void flexInsert() {
+		FlexInitializer.insert();
+	}
+
+	@Benchmark
+	public void flexPageQuery() {
+		FlexInitializer.paginate();
+	}
+
+	@Benchmark
+	public void flexFile() {
+		FlexInitializer.sqlFile();
+	}
+
+	@Benchmark
+	public void flexJdbc() {
+		FlexInitializer.executeJdbcSql();
+	}
+
+	@Benchmark
+	public void flexExecuteTemplate() {
+		FlexInitializer.executeTemplateSql();
+	}
+
+	@Benchmark
+	public void flexComplexMapping() {
+		FlexInitializer.complexMapping();
+	}
+
+
+	public static void main(String[] args) throws RunnerException {
 
 //          test();
         Options opt = new

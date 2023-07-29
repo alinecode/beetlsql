@@ -21,6 +21,10 @@ public class PageParamKit {
         return start + (offsetStartZero ? 1 : 0);
     }
 
+	public static long oracleOffset12(boolean offsetStartZero, long start) {
+		return mysqlOffset(offsetStartZero,start);
+	}
+
     public static long oraclePageEnd(long offset, long pageSize) {
         return offset + pageSize;
     }

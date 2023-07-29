@@ -36,12 +36,14 @@ public class OracleTest {
 			String sql = "SELECT e.* FROM scott.EMP e  ";
 			PageRequest pageRequest = DefaultPageRequest.of(1,5);
 			PageResult<Employee> list = sqlManager.execute(new SQLReady(sql),Employee.class,pageRequest);
+			System.out.println(list);
 		}
 
 		{
 			String sql = "SELECT #{page()} FROM scott.EMP e  ";
 			PageRequest pageRequest = DefaultPageRequest.of(1,10);
 			PageResult<Employee> list = sqlManager.executePageQuery(sql,Employee.class,null,pageRequest);
+			System.out.println(list);
 		}
 
 

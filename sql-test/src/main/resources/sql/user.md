@@ -1,5 +1,6 @@
 select
 ===
-	select *  from order_log where 1=1 
+	select *  from order_log 
+	#{globalUse("common.where")}
 	
 	
