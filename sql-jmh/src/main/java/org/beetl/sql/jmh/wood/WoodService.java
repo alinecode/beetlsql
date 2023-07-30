@@ -1,21 +1,21 @@
-package org.beetl.sql.jmh.weed;
+package org.beetl.sql.jmh.wood;
 
 import org.beetl.sql.jmh.BaseService;
 import org.beetl.sql.jmh.DataSourceHelper;
-import org.beetl.sql.jmh.weed.mapper.WeedSQLUserMapper;
-import org.beetl.sql.jmh.weed.model.WeedSQLSysUser;
-import org.beetl.sql.jmh.weed.model.WeedSysCustomer;
-import org.noear.weed.BaseMapper;
-import org.noear.weed.DbContext;
+import org.beetl.sql.jmh.wood.mapper.WoodSQLUserMapper;
+import org.beetl.sql.jmh.wood.model.WoodSQLSysUser;
+import org.beetl.sql.jmh.wood.model.WoodSysCustomer;
+import org.noear.wood.BaseMapper;
+import org.noear.wood.DbContext;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class WeedService implements BaseService {
-    WeedSQLUserMapper userMapper;
-    BaseMapper<WeedSysCustomer> customerMapper;
+public class WoodService implements BaseService {
+    WoodSQLUserMapper userMapper;
+    BaseMapper<WoodSysCustomer> customerMapper;
     AtomicInteger idGen = new AtomicInteger(1000);
 
     DbContext db;
@@ -24,14 +24,14 @@ public class WeedService implements BaseService {
         DataSource dataSource = DataSourceHelper.ins();
 
         this.db = new DbContext("user", dataSource);
-        this.userMapper = db.mapper(WeedSQLUserMapper.class);
-        this.customerMapper = db.mapperBase(WeedSysCustomer.class);
+        this.userMapper = db.mapper(WoodSQLUserMapper.class);
+        this.customerMapper = db.mapperBase(WoodSysCustomer.class);
     }
 
 
     @Override
     public void addEntity() {
-        WeedSQLSysUser sqlSysUser = new WeedSQLSysUser();
+        WoodSQLSysUser sqlSysUser = new WoodSQLSysUser();
         sqlSysUser.setId(idGen.getAndIncrement());
         sqlSysUser.setCode("abc");
 
@@ -48,22 +48,22 @@ public class WeedService implements BaseService {
 
     @Override
     public void lambdaQuery() {
-        List<WeedSQLSysUser> list = userMapper.selectList(wq -> wq.whereEq(WeedSQLSysUser::getId, 1));
+        List<WoodSQLSysUser> list = userMapper.selectList(wq -> wq.whereEq(WoodSQLSysUser::getId, 1));
     }
 
     @Override
     public void executeJdbcSql() {
-        WeedSQLSysUser user = userMapper.selectById2(1);
+        WoodSQLSysUser user = userMapper.selectById2(1);
     }
 
     @Override
     public void executeTemplateSql() {
-        WeedSQLSysUser user = userMapper.selectTemplateById(1);
+        WoodSQLSysUser user = userMapper.selectTemplateById(1);
     }
 
     @Override
     public void sqlFile() {
-        WeedSQLSysUser user = userMapper.userSelect(1);
+        WoodSQLSysUser user = userMapper.userSelect(1);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class WeedService implements BaseService {
 
     @Override
     public void pageQuery() {
-        List<WeedSQLSysUser> list = userMapper.queryPage("用户一", 1, 5);
+        List<WoodSQLSysUser> list = userMapper.queryPage("用户一", 1, 5);
         long count = userMapper.selectCount(wq->wq.whereEq("code","用户一"));
     }
 
@@ -87,7 +87,7 @@ public class WeedService implements BaseService {
     //模式2
     //
     public void addEntity2() throws SQLException{
-        WeedSQLSysUser sqlSysUser = new WeedSQLSysUser();
+        WoodSQLSysUser sqlSysUser = new WoodSQLSysUser();
         sqlSysUser.setId(idGen.getAndIncrement());
         sqlSysUser.setCode("abc");
 
@@ -98,13 +98,13 @@ public class WeedService implements BaseService {
         return db.table("sys_user")
                 .whereEq("id",1)
                 .select("*")
-                .getList(WeedSQLSysUser.class);
+                .getList(WoodSQLSysUser.class);
     }
 
     public void pageQuery2() throws SQLException {
-        List<WeedSQLSysUser> list = db.table("sys_user")
+        List<WoodSQLSysUser> list = db.table("sys_user")
                 .whereEq("code", "用户一")
                 .limit(1, 5)
-                .select("*").getList(WeedSQLSysUser.class);
+                .select("*").getList(WoodSQLSysUser.class);
     }
 }
