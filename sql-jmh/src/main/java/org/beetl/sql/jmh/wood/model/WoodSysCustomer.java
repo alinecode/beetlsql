@@ -1,13 +1,13 @@
-package org.beetl.sql.jmh.weed.model;
+package org.beetl.sql.jmh.wood.model;
 
 
 import lombok.Data;
-import org.noear.weed.annotation.PrimaryKey;
-import org.noear.weed.annotation.Table;
+import org.noear.wood.annotation.PrimaryKey;
+import org.noear.wood.annotation.Table;
 
 @Data
 @Table("sys_customer")
-public class WeedSysCustomer {
+public class WoodSysCustomer {
     @PrimaryKey
     private Integer id;
     private String code;

@@ -7,7 +7,7 @@ import org.beetl.sql.jmh.jpa.SpringBoot;
 import org.beetl.sql.jmh.jpa.SpringService;
 import org.beetl.sql.jmh.mybatis.MyBatisSpringBoot;
 import org.beetl.sql.jmh.mybatis.MyBatisSpringService;
-import org.beetl.sql.jmh.weed.WeedService;
+import org.beetl.sql.jmh.wood.WoodService;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -32,7 +32,7 @@ public class JMHMain {
     BeetlSQLService beetlSQLService = null;
     SpringService springService = null;
     MyBatisSpringService myBatisSpringService = null;
-    WeedService weedService = null;
+    WoodService woodService = null;
 
     @Setup
     public void init() {
@@ -52,8 +52,8 @@ public class JMHMain {
         myBatisSpringBoot.init();
         myBatisSpringService = myBatisSpringBoot.getService();
 
-        weedService = new WeedService();
-        weedService.init();
+        woodService = new WoodService();
+        woodService.init();
 
 		//see https://gitee.com/mybatis-flex/mybatis-benchmark
 		FlexInitializer.init();
@@ -195,40 +195,40 @@ public class JMHMain {
         springService.pageQuery();
     }
 
-    /*   Weed3    */
+    /*   Wood    */
     @Benchmark
-    public void weedInsert() {
-        weedService.addEntity();
+    public void woodInsert() {
+        woodService.addEntity();
     }
 
     @Benchmark
-    public void weedSelectById() {
-        weedService.getEntity();
+    public void woodSelectById() {
+        woodService.getEntity();
     }
 
     @Benchmark
-    public void weedLambdaQuery() {
-        weedService.lambdaQuery();
+    public void woodLambdaQuery() {
+        woodService.lambdaQuery();
     }
 
     @Benchmark
-    public void weedExecuteJdbc() {
-        weedService.executeJdbcSql();
+    public void woodExecuteJdbc() {
+        woodService.executeJdbcSql();
     }
 
     @Benchmark
-    public void weedExecuteTemplate() {
-        weedService.executeTemplateSql();
+    public void woodExecuteTemplate() {
+        woodService.executeTemplateSql();
     }
 
     @Benchmark
-    public void weedFile() {
-        weedService.sqlFile();
+    public void woodFile() {
+        woodService.sqlFile();
     }
 
     @Benchmark
-    public void weedPageQuery() {
-        weedService.pageQuery();
+    public void woodPageQuery() {
+        woodService.pageQuery();
     }
 
 	/* flex orm */
