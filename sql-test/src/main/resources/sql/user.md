@@ -1,6 +1,6 @@
 select
 ===
-	select *  from order_log 
+	select #{page("*")}  from order_log 
 	#{globalUse("common.where")}
 	
 	

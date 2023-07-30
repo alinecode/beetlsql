@@ -64,6 +64,15 @@ import org.beetl.sql.core.db.DBStyle;
 	  */
 	 void addSQL(SqlId id, SQLSource source);
 
+
+	/**
+	 * 新增一个指定标识的SQL资源，为通过POJO生成的内置SQL
+	 *
+	 * @param id 指定SqlId
+	 * @param source 新增SQL资源
+	 */
+	void addAutoGenSQL(SqlId id, SQLSource source);
+
 	 /**
 	  * 获取数据库方言配置
 	  * @return DBStyle

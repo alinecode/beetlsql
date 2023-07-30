@@ -87,6 +87,17 @@ public class EnumKit {
 	}
 
 	/**
+	 * 自定义枚举类与的数据库数字关系
+	 * @param c
+	 * @param config
+	 */
+	public static void init(Class c,EnumConfig config) {
+		cache.putIfAbsent(c,config);
+
+	}
+
+
+	/**
 	 * 使用枚举名称作为值
 	 * @param c
 	 * @return

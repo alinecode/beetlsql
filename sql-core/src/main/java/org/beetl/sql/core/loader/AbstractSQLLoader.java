@@ -23,6 +23,11 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 	 */
 	protected Map<SqlId, SQLSource> autoGenSourceMap = new ConcurrentHashMap<SqlId, SQLSource>();
 
+	/**
+	 * 通过sql文件或者用户拼接的sql
+	 */
+	protected Map<SqlId, SQLSource> sqlSourceMap = new ConcurrentHashMap<>();
+
 
 	public abstract SQLSource queryExternalSource(SqlId id);
 
@@ -94,6 +99,11 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 
 	@Override
 	public void addSQL(SqlId id, SQLSource source) {
+		sqlSourceMap.put(id, source);
+	}
+
+	@Override
+	public void addAutoGenSQL(SqlId id, SQLSource source){
 		autoGenSourceMap.put(id, source);
 	}
 

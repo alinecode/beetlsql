@@ -234,7 +234,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         SQLSource sqlSource = sqlManager.getSqlLoader().queryAutoSQL(id);
         if (sqlSource == null) {
             sqlSource = this.sqlManager.getDbStyle().genUpdateAbsolute(clazz);
-            sqlManager.getSqlLoader().addSQL(id, sqlSource);
+            sqlManager.getSqlLoader().addAutoGenSQL(id, sqlSource);
             sqlSource.setId(id);
         }
         return handlerUpdateSql(t, sqlSource);
@@ -246,7 +246,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         SQLSource sqlSource = sqlManager.getSqlLoader().queryAutoSQL(id);
         if (sqlSource == null) {
             sqlSource = this.sqlManager.getDbStyle().genUpdateAll(clazz);
-            sqlManager.getSqlLoader().addSQL(id, sqlSource);
+            sqlManager.getSqlLoader().addAutoGenSQL(id, sqlSource);
             sqlSource.setId(id);
         }
         return handlerUpdateSql(t, sqlSource);

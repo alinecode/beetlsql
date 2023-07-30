@@ -34,7 +34,7 @@ public abstract class PathLoader extends AbstractSQLLoader {
     /**
      * 外部sql缓存
      */
-    protected Map<SqlId, SQLSource> sqlSourceMap = new ConcurrentHashMap<>();
+
 
     protected SQLSource EMPTY = SQLSource.emptySource();
 

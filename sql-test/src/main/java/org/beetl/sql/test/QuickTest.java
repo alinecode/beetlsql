@@ -8,6 +8,9 @@ import org.beetl.sql.core.call.CallReady;
 import org.beetl.sql.core.call.InArg;
 import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.H2Style;
+import org.beetl.sql.core.page.DefaultPageRequest;
+import org.beetl.sql.core.page.PageRequest;
+import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
@@ -50,10 +53,11 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-
-		List<QuickSubUser> users = sqlManager.select(SqlId.of("user.select"),QuickSubUser.class);
-		users = sqlManager.select(SqlId.of("user.select"),QuickSubUser.class);
-
+		PageRequest pageRequest = DefaultPageRequest.of(1,10);
+		PageResult<QuickSubUser> users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
+		System.out.println(users);
+		users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
+		System.out.println(users);
 
 	}
 
