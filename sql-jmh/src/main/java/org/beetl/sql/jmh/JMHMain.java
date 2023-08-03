@@ -80,6 +80,10 @@ public class JMHMain {
     public void jdbcExecuteJdbc() {
         jdbcService.executeJdbcSql();
     }
+	@Benchmark
+	public void jdbcGetAll() {
+		jdbcService.getAll();
+	}
 
 
     /* mybatis */
@@ -117,6 +121,10 @@ public class JMHMain {
     public void mybatisComplexMapping() {
         myBatisSpringService.complexMapping();
     }
+	@Benchmark
+	public void mybatisGetAll() {
+		myBatisSpringService.getAll();
+	}
 
 
     /*   BeetlSQL    */
@@ -165,6 +173,10 @@ public class JMHMain {
     public void beetlsqlComplexMapping() {
         beetlSQLService.complexMapping();
     }
+	@Benchmark
+	public void beetlsqlGetAll() {
+		beetlSQLService.getAll();
+	}
 
 
    /*   Spring Data JPA    */
@@ -198,6 +210,10 @@ public class JMHMain {
     public void jpaPageQuery() {
         springService.pageQuery();
     }
+	@Benchmark
+	public void jpaGetAll() {
+		springService.getAll();
+	}
 
     /*   Wood    */
     @Benchmark
@@ -234,6 +250,10 @@ public class JMHMain {
     public void woodPageQuery() {
         woodService.pageQuery();
     }
+	@Benchmark
+	public void woodGetAll() {
+		woodService.getAll();
+	}
 
 	/* flex orm */
 	@Benchmark
@@ -269,6 +289,10 @@ public class JMHMain {
 	@Benchmark
 	public void flexComplexMapping() {
 		FlexInitializer.complexMapping();
+	}
+	@Benchmark
+	public void flexGetAll() {
+		FlexInitializer.getAll();
 	}
 
 	/*   easy-query    */
@@ -316,6 +340,10 @@ public class JMHMain {
 	@Benchmark
 	public void easyQueryComplexMapping() {
 		easyQueryService.complexMapping();
+	}
+	@Benchmark
+	public void easyQueryGetAll() {
+		easyQueryService.getAll();
 	}
 	public static void main(String[] args) throws RunnerException {
 

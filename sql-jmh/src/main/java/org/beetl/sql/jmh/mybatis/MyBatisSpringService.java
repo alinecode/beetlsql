@@ -54,7 +54,7 @@ public class MyBatisSpringService implements BaseService {
 
     @Override
     public void sqlFile() {
-       
+
         MyBatisSysUser user = myBatisUserRepository.selectUser(1);
     }
 
@@ -79,4 +79,9 @@ public class MyBatisSpringService implements BaseService {
         MyBatisSysCustomerView view = myBatisUserRepository.selectView(1);
         view.getOrder().size();
     }
+
+	@Override
+	public void getAll() {
+		List<MyBatisSysUser> myBatisSysUsers = myBatisUserRepository.selectEntities();
+	}
 }

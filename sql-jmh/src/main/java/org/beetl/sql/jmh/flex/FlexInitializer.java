@@ -71,6 +71,14 @@ public class FlexInitializer {
 	}
 
 
+	public static List<FlexSysUser> getAll() {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
+			return mapper.selectAll();
+		}
+	}
+
+
 
 	public static void executeJdbcSql() {
 		throw new UnsupportedOperationException();

@@ -103,4 +103,9 @@ public class EasyQueryService implements BaseService {
 		easyQuerySysCustomer.getOrder().get(0);
 
 	}
+
+	@Override
+	public void getAll() {
+		List<EasyQuerySysUser> list = easyQuery.queryable(EasyQuerySysUser.class).toList();
+	}
 }
