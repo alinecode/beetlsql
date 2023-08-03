@@ -28,11 +28,14 @@ public class IdTest extends BaseTest {
 		data.setData("abc");
 		sqlManager.insert(data);
 		Assert.assertNotNull(data.getId());
+		UUID testUUID = UUID.fromString(data.getId());
 		DeviceData data2 = new DeviceData();
 		data2.setData("abce");
 		String uuid = "2429fcc5-f47e-4189-abe1-16301d1e9828";
 		data2.setId(uuid);
 		sqlManager.insert(data2);
+
+
 
 
 
