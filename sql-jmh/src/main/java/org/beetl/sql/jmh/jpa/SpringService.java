@@ -27,6 +27,26 @@ public class SpringService implements BaseService {
         JpaSysUser user = new JpaSysUser();
         user.setId(idGen.getAndIncrement());
         user.setCode("abc");
+		user.setCode1("abc");
+		user.setCode2("abc");
+		user.setCode3("abc");
+		user.setCode4("abc");
+		user.setCode5("abc");
+		user.setCode6("abc");
+		user.setCode7("abc");
+		user.setCode8("abc");
+		user.setCode9("abc");
+		user.setCode10("abc");
+		user.setCode11("abc");
+		user.setCode12("abc");
+		user.setCode13("abc");
+		user.setCode14("abc");
+		user.setCode15("abc");
+		user.setCode16("abc");
+		user.setCode17("abc");
+		user.setCode18("abc");
+		user.setCode19("abc");
+		user.setCode20("abc");
         jpaUserMapper.save(user);
 
     }

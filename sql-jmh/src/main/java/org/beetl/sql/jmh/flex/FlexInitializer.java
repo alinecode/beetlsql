@@ -46,6 +46,26 @@ public class FlexInitializer {
 			FlexSysUser flexSysUser = new FlexSysUser();
 			flexSysUser.setId(id.incrementAndGet());
 			flexSysUser.setCode("abc");
+			flexSysUser.setCode1("abc");
+			flexSysUser.setCode2("abc");
+			flexSysUser.setCode3("abc");
+			flexSysUser.setCode4("abc");
+			flexSysUser.setCode5("abc");
+			flexSysUser.setCode6("abc");
+			flexSysUser.setCode7("abc");
+			flexSysUser.setCode8("abc");
+			flexSysUser.setCode9("abc");
+			flexSysUser.setCode10("abc");
+			flexSysUser.setCode11("abc");
+			flexSysUser.setCode12("abc");
+			flexSysUser.setCode13("abc");
+			flexSysUser.setCode14("abc");
+			flexSysUser.setCode15("abc");
+			flexSysUser.setCode16("abc");
+			flexSysUser.setCode17("abc");
+			flexSysUser.setCode18("abc");
+			flexSysUser.setCode19("abc");
+			flexSysUser.setCode20("abc");
 			mapper.insert(flexSysUser);
 		}
 	}
