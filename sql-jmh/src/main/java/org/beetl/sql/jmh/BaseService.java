@@ -47,5 +47,7 @@ public interface BaseService {
      */
     public void complexMapping();
 
+	public void getAll();
+
 
 }
