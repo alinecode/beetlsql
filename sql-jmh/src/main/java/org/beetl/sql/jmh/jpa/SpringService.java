@@ -76,4 +76,9 @@ public class SpringService implements BaseService {
     public void complexMapping() {
         throw new UnsupportedOperationException();
     }
+
+	@Override
+	public void getAll() {
+		List<JpaSysUser> all = jpaUserMapper.findAll();
+	}
 }

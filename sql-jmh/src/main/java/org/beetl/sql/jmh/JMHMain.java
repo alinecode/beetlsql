@@ -1,6 +1,7 @@
 package org.beetl.sql.jmh;
 
 import org.beetl.sql.jmh.beetl.BeetlSQLService;
+import org.beetl.sql.jmh.easyquery.EasyQueryService;
 import org.beetl.sql.jmh.flex.FlexInitializer;
 import org.beetl.sql.jmh.jdbc.JdbcService;
 import org.beetl.sql.jmh.jpa.SpringBoot;
@@ -33,6 +34,7 @@ public class JMHMain {
     SpringService springService = null;
     MyBatisSpringService myBatisSpringService = null;
     WoodService woodService = null;
+    EasyQueryService easyQueryService = null;
 
     @Setup
     public void init() {
@@ -57,6 +59,8 @@ public class JMHMain {
 
 		//see https://gitee.com/mybatis-flex/mybatis-benchmark
 		FlexInitializer.init();
+		easyQueryService=new EasyQueryService();
+		easyQueryService.init();
 
     }
 
@@ -76,6 +80,10 @@ public class JMHMain {
     public void jdbcExecuteJdbc() {
         jdbcService.executeJdbcSql();
     }
+	@Benchmark
+	public void jdbcGetAll() {
+		jdbcService.getAll();
+	}
 
 
     /* mybatis */
@@ -113,6 +121,10 @@ public class JMHMain {
     public void mybatisComplexMapping() {
         myBatisSpringService.complexMapping();
     }
+	@Benchmark
+	public void mybatisGetAll() {
+		myBatisSpringService.getAll();
+	}
 
 
     /*   BeetlSQL    */
@@ -161,6 +173,10 @@ public class JMHMain {
     public void beetlsqlComplexMapping() {
         beetlSQLService.complexMapping();
     }
+	@Benchmark
+	public void beetlsqlGetAll() {
+		beetlSQLService.getAll();
+	}
 
 
    /*   Spring Data JPA    */
@@ -194,6 +210,10 @@ public class JMHMain {
     public void jpaPageQuery() {
         springService.pageQuery();
     }
+	@Benchmark
+	public void jpaGetAll() {
+		springService.getAll();
+	}
 
     /*   Wood    */
     @Benchmark
@@ -230,6 +250,10 @@ public class JMHMain {
     public void woodPageQuery() {
         woodService.pageQuery();
     }
+	@Benchmark
+	public void woodGetAll() {
+		woodService.getAll();
+	}
 
 	/* flex orm */
 	@Benchmark
@@ -266,8 +290,61 @@ public class JMHMain {
 	public void flexComplexMapping() {
 		FlexInitializer.complexMapping();
 	}
+	@Benchmark
+	public void flexGetAll() {
+		FlexInitializer.getAll();
+	}
+
+	/*   easy-query    */
+	@Benchmark
+	public void easyQueryInsert() {
+		easyQueryService.addEntity();
+	}
+
+	@Benchmark
+	public void easyQuerySelectById() {
+		easyQueryService.getEntity();
+	}
+
+	@Benchmark
+	public void easyQueryLambdaQuery() {
+		easyQueryService.lambdaQuery();
+	}
+
+	@Benchmark
+	public void easyQueryExecuteJdbc() {
+		easyQueryService.executeJdbcSql();
+	}
+
+//	@Benchmark
+//	public void easyQueryExecuteTemplate() {
+//		easyQueryService.executeTemplateSql();
+//	}
+//
+//	@Benchmark
+//	public void easyQueryFile() {
+//		easyQueryService.sqlFile();
+//	}
+
+	@Benchmark
+	public void easyQueryPageQuery() {
+		easyQueryService.pageQuery();
+	}
 
 
+	@Benchmark
+	public void easyQueryOne2Many() {
+		easyQueryService.one2Many();
+	}
+
+	@Benchmark
+	public void easyQueryComplexMapping() {
+		easyQueryService.complexMapping();
+	}
+	@Benchmark
+	public void easyQueryGetAll() {
+		easyQueryService.getAll();
+	}
 	public static void main(String[] args) throws RunnerException {
 
 //          test();

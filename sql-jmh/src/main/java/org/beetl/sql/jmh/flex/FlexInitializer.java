@@ -57,7 +57,7 @@ public class FlexInitializer {
             FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
 			QueryWrapper queryWrapper = new QueryWrapper()
 				.where(FLEX_SYS_USER.CODE.eq("用户一"));
-            return mapper.paginate(1, 10, queryWrapper);
+            return mapper.paginate(1, 5, queryWrapper);
         }
     }
 
@@ -67,6 +67,14 @@ public class FlexInitializer {
 			QueryWrapper queryWrapper = new QueryWrapper();
 			queryWrapper.where(FLEX_SYS_USER.ID.eq(1));
 			return mapper.selectListByQuery(queryWrapper);
+		}
+	}
+
+
+	public static List<FlexSysUser> getAll() {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
+			return mapper.selectAll();
 		}
 	}
 

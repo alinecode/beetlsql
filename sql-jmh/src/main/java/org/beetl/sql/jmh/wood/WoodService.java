@@ -83,7 +83,13 @@ public class WoodService implements BaseService {
         throw new UnsupportedOperationException();
     }
 
-    //
+	@Override
+	public void getAll() {
+		List<WoodSQLSysUser> woodSQLSysUsers = userMapper.selectList(o -> {
+		});
+	}
+
+	//
     //模式2
     //
     public void addEntity2() throws SQLException{

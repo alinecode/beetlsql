@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JdbcService  implements BaseService {
@@ -109,4 +110,37 @@ public class JdbcService  implements BaseService {
     public void complexMapping() {
         throw new UnsupportedOperationException();
     }
+
+	@Override
+	public void getAll() {
+
+		Connection conn  = null;
+		ArrayList<BeetlSQLSysUser> beetlSQLSysUsers = new ArrayList<>();
+		try{
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement("select id,code from sys_user");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				int id = rs.getInt(1);
+				String code = rs.getString(2);
+				BeetlSQLSysUser beetlSQLSysUser = new BeetlSQLSysUser();
+				beetlSQLSysUser.setId(id);
+				beetlSQLSysUser.setCode(code);
+				beetlSQLSysUsers.add(beetlSQLSysUser);
+			}
+
+
+
+		}catch(SQLException ex){
+			throw new RuntimeException(ex);
+		}finally {
+			if(conn!=null){
+				try {
+					conn.close();
+				} catch (SQLException sqlException) {
+					sqlException.printStackTrace();
+				}
+			}
+		}
+	}
 }
