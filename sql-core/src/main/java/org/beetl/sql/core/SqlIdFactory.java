@@ -35,7 +35,7 @@ public class SqlIdFactory {
 	}
 
 	protected String getNamespace(Class entity) {
-		return StringKit.toLowerCaseFirstOne(entity.getName());
+		return entity.getName();
 	}
 
 

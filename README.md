@@ -79,7 +79,7 @@ mvn clean install
 
 注意：BeetlSQL3 集成了Spring，以及支持大数据等，就算配置了国内镜像，也可能需要很长时间下载大数据依赖包，为了让编译快速通过，你需要进入pom.xml ，屏蔽sql-integration,sql-db-support,sql-jmh三个模块
 
- ```xml
+ ```
 <modules>
 <!--核心功能 -->
 <module>sql-core</module>
@@ -91,6 +91,8 @@ mvn clean install
 <module>sql-gen</module>
 <module>sql-test</module>
 <module>sql-samples</module>
+<module>sql-xml</module>	
+<module>sql-saga</module>		
 <!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar -->
 <!--	<module>sql-integration</module>-->
 <!--    <module>sql-jmh</module>-->
@@ -191,7 +193,7 @@ List<UserEntity> entities = query.andEq(UserEntity::getDepartmentId,1)
                     .andIsNotNull(UserEntity::getName).select();
 
 ```
-### 例子5 把数十行SQL放到sql文件里维护
+### 例子5 把数十行SQL放到sql文件里维护,默认支持markdown格式，也支持XML的mybatis语法
 ```java
 //访问user.md#select
 SqlId id = SqlId.of("user","select");

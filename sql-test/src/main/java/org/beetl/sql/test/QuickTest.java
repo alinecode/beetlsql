@@ -54,10 +54,11 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		PageRequest pageRequest = DefaultPageRequest.of(1,10);
-		PageResult<QuickSubUser> users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
-		System.out.println(users);
-		users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
-		System.out.println(users);
+		sqlManager.all(OrderLog.class);
+//		PageResult<QuickSubUser> users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
+//		System.out.println(users);
+//		users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
+//		System.out.println(users);
 
 	}
 
