@@ -100,4 +100,9 @@ public class BeetlSQLService  implements BaseService {
         BeetlSqlSysCustomerView view = views.get(0);
         view.getOrder().get(0);
     }
+
+	@Override
+	public void getAll() {
+		List<BeetlSQLSysUser> all = beetlSQLUserMapper.all();
+	}
 }
