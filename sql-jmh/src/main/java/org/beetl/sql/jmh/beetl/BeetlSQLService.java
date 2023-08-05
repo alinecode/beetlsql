@@ -39,6 +39,26 @@ public class BeetlSQLService  implements BaseService {
         BeetlSQLSysUser beetlSQLSysUser = new BeetlSQLSysUser();
         beetlSQLSysUser.setId(idGen.getAndIncrement());
         beetlSQLSysUser.setCode("abc");
+		beetlSQLSysUser.setCode1("abc");
+		beetlSQLSysUser.setCode2("abc");
+		beetlSQLSysUser.setCode3("abc");
+		beetlSQLSysUser.setCode4("abc");
+		beetlSQLSysUser.setCode5("abc");
+		beetlSQLSysUser.setCode6("abc");
+		beetlSQLSysUser.setCode7("abc");
+		beetlSQLSysUser.setCode8("abc");
+		beetlSQLSysUser.setCode9("abc");
+		beetlSQLSysUser.setCode10("abc");
+		beetlSQLSysUser.setCode11("abc");
+		beetlSQLSysUser.setCode12("abc");
+		beetlSQLSysUser.setCode13("abc");
+		beetlSQLSysUser.setCode14("abc");
+		beetlSQLSysUser.setCode15("abc");
+		beetlSQLSysUser.setCode16("abc");
+		beetlSQLSysUser.setCode17("abc");
+		beetlSQLSysUser.setCode18("abc");
+		beetlSQLSysUser.setCode19("abc");
+		beetlSQLSysUser.setCode20("abc");
         beetlSQLUserMapper.insert(beetlSQLSysUser);
     }
 

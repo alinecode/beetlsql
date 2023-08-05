@@ -47,6 +47,26 @@ public class EasyQueryService implements BaseService {
 		EasyQuerySysUser easyQuerySysUser = new EasyQuerySysUser();
 		easyQuerySysUser.setId(idGen.getAndIncrement());
 		easyQuerySysUser.setCode("abc");
+		easyQuerySysUser.setCode1("abc");
+		easyQuerySysUser.setCode2("abc");
+		easyQuerySysUser.setCode3("abc");
+		easyQuerySysUser.setCode4("abc");
+		easyQuerySysUser.setCode5("abc");
+		easyQuerySysUser.setCode6("abc");
+		easyQuerySysUser.setCode7("abc");
+		easyQuerySysUser.setCode8("abc");
+		easyQuerySysUser.setCode9("abc");
+		easyQuerySysUser.setCode10("abc");
+		easyQuerySysUser.setCode11("abc");
+		easyQuerySysUser.setCode12("abc");
+		easyQuerySysUser.setCode13("abc");
+		easyQuerySysUser.setCode14("abc");
+		easyQuerySysUser.setCode15("abc");
+		easyQuerySysUser.setCode16("abc");
+		easyQuerySysUser.setCode17("abc");
+		easyQuerySysUser.setCode18("abc");
+		easyQuerySysUser.setCode19("abc");
+		easyQuerySysUser.setCode20("abc");
 		easyQuery.insertable(easyQuerySysUser).executeRows();
 	}
 
@@ -79,9 +99,9 @@ public class EasyQueryService implements BaseService {
 	@Override
 	public void one2Many() {
 		EasyQuerySysCustomer sysUser = easyQuery.queryable(EasyQuerySysCustomer.class)
-			.whereById(1)
 			.include(o -> o.many(EasyQuerySysCustomer::getOrder))
-			.firstOrNull();
+			.where(o->o.eq(EasyQuerySysCustomer::getId,1))
+			.firstOrNull(EasyQuerySysCustomer.class);
 		int size = sysUser.getOrder().size();
 	}
 

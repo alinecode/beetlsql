@@ -34,7 +34,26 @@ public class WoodService implements BaseService {
         WoodSQLSysUser sqlSysUser = new WoodSQLSysUser();
         sqlSysUser.setId(idGen.getAndIncrement());
         sqlSysUser.setCode("abc");
-
+		sqlSysUser.setCode1("abc");
+		sqlSysUser.setCode2("abc");
+		sqlSysUser.setCode3("abc");
+		sqlSysUser.setCode4("abc");
+		sqlSysUser.setCode5("abc");
+		sqlSysUser.setCode6("abc");
+		sqlSysUser.setCode7("abc");
+		sqlSysUser.setCode8("abc");
+		sqlSysUser.setCode9("abc");
+		sqlSysUser.setCode10("abc");
+		sqlSysUser.setCode11("abc");
+		sqlSysUser.setCode12("abc");
+		sqlSysUser.setCode13("abc");
+		sqlSysUser.setCode14("abc");
+		sqlSysUser.setCode15("abc");
+		sqlSysUser.setCode16("abc");
+		sqlSysUser.setCode17("abc");
+		sqlSysUser.setCode18("abc");
+		sqlSysUser.setCode19("abc");
+		sqlSysUser.setCode20("abc");
         userMapper.insert(sqlSysUser, false);
     }
 
