@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.Throughput)
 @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 3, time = 3, timeUnit = TimeUnit.SECONDS)
 @Threads(1)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

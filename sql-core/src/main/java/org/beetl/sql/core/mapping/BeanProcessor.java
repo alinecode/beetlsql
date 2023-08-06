@@ -144,7 +144,7 @@ public class BeanProcessor {
 	}
 
 	/**
-	 * 将ResultSet映射为一个POJO对象 
+	 * 将ResultSet映射为一个POJO对象
 	 * @param rs
 	 * @param type
 	 * @return
@@ -160,7 +160,7 @@ public class BeanProcessor {
 	}
 
 	/**
-	 * 将ResultSet映射为一个List&lt;POJO&gt;集合 
+	 * 将ResultSet映射为一个List&lt;POJO&gt;集合
 	 * @param rs
 	 * @param type
 	 * @return
@@ -172,7 +172,7 @@ public class BeanProcessor {
 		if (!rs.next()) {
 			return new ArrayList<T>(0);
 		}
-		List<T> results = new ArrayList<T>();
+		List<T> results = newList();
 		PropertyDescriptor[] props = this.propertyDescriptors(type);
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int[] columnToProperty = this.mapColumnsToProperties(ctx,type, rsmd, props);
@@ -183,6 +183,14 @@ public class BeanProcessor {
 
 		return results;
 
+	}
+
+	/**
+	 * 为结果集返回一个List
+	 * @return
+	 */
+	protected  List newList(){
+		return new ArrayList();
 	}
 
 
@@ -372,10 +380,11 @@ public class BeanProcessor {
 	 */
 	public void callSetter(Object target, PropertyDescriptor prop, Object value, Class<?> type) throws SQLException {
 
-		Method setter = BeanKit.getWriteMethod(prop, target.getClass());
+		Method setter = prop.getWriteMethod();
 		if (setter == null) {
 			return;
 		}
+
 		try {
 			setter.invoke(target, value);
 		} catch (IllegalArgumentException e) {
@@ -390,7 +399,7 @@ public class BeanProcessor {
 
 
 	/**
-	 * 反射对象 
+	 * 反射对象
 	 * @param c
 	 * @return
 	 * @throws SQLException
@@ -401,7 +410,7 @@ public class BeanProcessor {
 
 	}
 
-	/**根据class取得属性描述PropertyDescriptor  
+	/**根据class取得属性描述PropertyDescriptor
 	 *
 	 * @param c
 	 * @return
@@ -439,34 +448,50 @@ public class BeanProcessor {
 		int cols = rsmd.getColumnCount();
 		int[] columnToProperty = new int[cols + 1];
 		Arrays.fill(columnToProperty, PROPERTY_NOT_FOUND);
-		//TODO 性能优化？
-		for (int col = 1; col <= cols; col++) {
-			String columnName = getColName(ctx,rsmd,col);
-			String expectedProperty = nc.getPropertyName(c, columnName);
-			for (int i = 0; i < props.length; i++) {
 
-				if (props[i].getName().equalsIgnoreCase(expectedProperty)) {
-					if(viewType==null){
-						//大部分情况下
-						columnToProperty[col] = i;
-					}else{
-						//检测此属性是否属于此列
-						View viewAnnotation = BeanKit.getAnnotation(c,props[i].getName(),props[i].getReadMethod(), View.class);
-						if(viewAnnotation==null){
-							continue;
-						}
-						if(!BeanKit.containViewType(viewAnnotation.value(),viewType)){
-							continue;
-						}
-						columnToProperty[col] = PROPERTY_IGNORE;;
-					}
-					break;
-				}
+		Map<String,ColMapping> property2Column = new HashMap<>(columnToProperty.length);
+		for (int col = 1; col <= cols; col++) {
+			String columnName = getColName(ctx, rsmd, col);
+			String expectedProperty = nc.getPropertyName(c, columnName);
+			property2Column.put(expectedProperty,new ColMapping(columnName,col));
+		}
+
+		for (int i = 0; i < props.length; i++) {
+			ColMapping colMapping =  property2Column.get(props[i].getName());
+			if(colMapping==null){
+				continue;
 			}
+			int col = colMapping.index;
+			if(viewType==null){
+				//大部分情况
+				columnToProperty[col] = i;
+			}
+			else{
+				//检测此属性是否属于此列
+				View viewAnnotation = BeanKit.getAnnotation(c,props[i].getName(),props[i].getReadMethod(), View.class);
+				if(viewAnnotation==null){
+					continue;
+				}
+				if(!BeanKit.containViewType(viewAnnotation.value(),viewType)){
+					continue;
+				}
+				columnToProperty[col] = PROPERTY_IGNORE;;
+			}
+
 		}
 
 		return columnToProperty;
 
+	}
+
+	protected  static class ColMapping{
+
+		String col;
+		int index;
+		public ColMapping(String col,int index){
+			this.col = col;
+			this.index = index;
+		}
 	}
 
 	protected  String getColName(ExecuteContext ctx,ResultSetMetaData rsmd,int col) throws SQLException{

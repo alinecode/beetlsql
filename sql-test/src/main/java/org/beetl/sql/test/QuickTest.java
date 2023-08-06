@@ -1,17 +1,12 @@
 package org.beetl.sql.test;
 
 
+import com.beetl.sql.pref.PerformanceConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.core.*;
-import org.beetl.sql.core.call.CallReady;
-import org.beetl.sql.core.call.InArg;
-import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
-import org.beetl.sql.core.page.PageResult;
-import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -54,11 +49,10 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		PageRequest pageRequest = DefaultPageRequest.of(1,10);
+		PerformanceConfig performanceConfig = new PerformanceConfig();
+		performanceConfig.config(sqlManager);
 		sqlManager.all(OrderLog.class);
-//		PageResult<QuickSubUser> users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
-//		System.out.println(users);
-//		users = sqlManager.pageQuery(SqlId.of("user.select"),QuickSubUser.class,null,pageRequest);
-//		System.out.println(users);
+
 
 	}
 

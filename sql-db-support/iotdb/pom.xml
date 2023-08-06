@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.23.7-RELEASE</version>
+        <version>3.23.9-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>iotdb</artifactId>
-    <version>3.23.7-RELEASE</version>
+    <version>3.23.9-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>org.apache.iotdb</groupId>

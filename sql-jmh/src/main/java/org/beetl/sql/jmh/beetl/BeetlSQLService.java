@@ -1,5 +1,6 @@
 package org.beetl.sql.jmh.beetl;
 
+import com.beetl.sql.pref.PerformanceConfig;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.page.DefaultPageRequest;
@@ -32,6 +33,9 @@ public class BeetlSQLService  implements BaseService {
         sqlManager = builder.build();
 
         this.beetlSQLUserMapper = sqlManager.getMapper(BeetlSQLUserMapper.class);
+
+		PerformanceConfig performanceConfig = new PerformanceConfig();
+		performanceConfig.config(sqlManager);
     }
 
     @Override
@@ -75,7 +79,9 @@ public class BeetlSQLService  implements BaseService {
 
     @Override
     public void executeJdbcSql() {
-        BeetlSQLSysUser user =  beetlSQLUserMapper.selectById(1);
+		String sql =  "select * from sys_user where id = ?";
+		SQLReady sqlReady = new SQLReady(sql,1);
+        BeetlSQLSysUser user =  sqlManager.execute(sqlReady,BeetlSQLSysUser.class).get(0);
     }
 
     @Override

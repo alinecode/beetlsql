@@ -9,6 +9,8 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.TrimTag;
 import org.beetl.sql.core.engine.WhereTag;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
+import org.beetl.sql.ext.PluginExtConfig;
+
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -17,9 +19,23 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * sqlManager支持xml，需要调用support方法
+ * sqlManager支持xml，需要调用support方法。
+ *
+ * xml语法高仿mybatis语法，支持但不限于
+ * if,where,include,foreach,bind，trim
+ * 提供额外的xml包括
+ * isEmpty，isNotEmpty，isBlank，isNotBlank
+ * <pre>
+ * XMLBeetlSQL xmlSupport = new XMLBeetlSQL();
+ * xmlSupport.config(sqlManager);
+ *
+ *
+ * </pre>
+ *
+ * @see "QuickXMLTestBeetlSQL"
  */
-public class XMLBeetlSQL {
+public class XMLBeetlSQL implements PluginExtConfig
+{
 	public static Set<String> holderSet = new HashSet<>();
 	static{
 		//这些标签+属性名需要使用beetl表达式 比如<if test="a" > 变成 <if test=#{a} >
@@ -27,7 +43,8 @@ public class XMLBeetlSQL {
 		holderSet.add("foreach_items");
 		holderSet.add("bind_value");
 	}
-	public static void support(SQLManager sqlManager){
+	@Override
+	public void config(SQLManager sqlManager) {
 		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
 		GroupTemplate gt = beetlSQLTemplateEngine.getBeetl().getGroupTemplate();
 		//支持xml标签
@@ -40,13 +57,13 @@ public class XMLBeetlSQL {
 		gt.registerTag("htmltag", XMLTagSupportWrapper.class);
 	}
 
-	public static void registerTag(SQLManager sqlManager,String name,Tag tag){
+	public  void registerTag(SQLManager sqlManager,String name,Tag tag){
 		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
 		GroupTemplate gt = beetlSQLTemplateEngine.getBeetl().getGroupTemplate();
 		gt.registerTag("name", IfTag.class);
 	}
 
-	private static void registerXMLTag(GroupTemplate groupTemplate){
+	private  void registerXMLTag(GroupTemplate groupTemplate){
 		groupTemplate.registerTag("if", IfTag.class);
 		groupTemplate.registerTag("include", Include.class);
 		groupTemplate.registerTag("isNotEmpty", IsNotEmpty.class);
@@ -59,7 +76,9 @@ public class XMLBeetlSQL {
 		groupTemplate.registerTag("where", XMLWhereTag.class);
 	}
 
-	public static class XMLWhereTag extends WhereTag {
+
+
+	public  class XMLWhereTag extends WhereTag {
 
 		@Override
 		protected void initTrimArgs(Object[] args) {

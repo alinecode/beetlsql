@@ -20,11 +20,13 @@ import java.util.Map;
 public class QuickXMLTestBeetlSQL {
 	static HikariDataSource dataSource;
 	static SQLManager sqlManager;
+
+	static XMLBeetlSQL xmlBeetlSQL = new XMLBeetlSQL();
 	@BeforeClass
 	public static void start() {
 		datasource();
 		initSQLManager();
-		XMLBeetlSQL.support(sqlManager);
+		xmlBeetlSQL.config(sqlManager);
 	}
 
 

@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Data
 @Table(name="order_log")
-@ResultProvider(AutoJsonMapper.class)
+//@ResultProvider(AutoJsonMapper.class)
 public class OrderLog {
 	@AutoID
 	Integer orderId;

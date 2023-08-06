@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ibeetl</groupId>
 	<artifactId>beetlsql-all</artifactId>
-	<version>3.23.7-RELEASE</version>
+	<version>3.23.9-RELEASE</version>
 	<name>com.ibeetl:beetlsql</name>
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
@@ -29,7 +29,7 @@
         <!-- saga事务实现和事务管理器实现 -->
         <module>sql-saga</module>
         <module>sql-test</module>
-        <module>sql-xml</module>
+        <module>sql-ext</module>
         <!-- 例子 -->
 <!--        <module>sql-samples</module>-->
 		<!-- 打包到一起 -->
