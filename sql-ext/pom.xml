@@ -7,10 +7,10 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.23.9-RELEASE</version>
+        <version>3.23.10-RELEASE</version>
     </parent>
     <artifactId>sql-ext</artifactId>
-    <version>3.23.9-RELEASE</version>
+    <version>3.23.10-RELEASE</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>sql-xml</module>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>sql-core</artifactId>
-			<version>3.23.9-RELEASE</version>
+			<version>3.23.10-RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
