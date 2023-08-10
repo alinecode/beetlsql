@@ -3,6 +3,8 @@ package org.beetl.sql.test;
 
 import com.beetl.sql.pref.PerformanceConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.beetl.sql.clazz.ClassDesc;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.page.DefaultPageRequest;
@@ -11,6 +13,8 @@ import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,11 +52,17 @@ public class QuickTest {
 	public static void main(String[] args) throws Exception {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		PageRequest pageRequest = DefaultPageRequest.of(1,10);
-		PerformanceConfig performanceConfig = new PerformanceConfig();
-		performanceConfig.config(sqlManager);
-		sqlManager.all(OrderLog.class);
 
+		PropertyDescriptor[] ps = BeanKit.propertyDescriptors(OrderLog.class);
+		Field[] fields = OrderLog.class.getDeclaredFields();
+		for(PropertyDescriptor p:ps){
+			System.out.println(p);
+			System.out.println(p.getName()+":"+BeanKit.getFieldNameByPropertyName(fields,p.getName()));
+		}
+
+		ClassDesc classDesc = sqlManager.getClassDesc(OrderLog.class);
+		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
+		System.out.println(orderLog);
 
 	}
 

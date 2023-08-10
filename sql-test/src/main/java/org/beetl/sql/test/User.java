@@ -10,4 +10,6 @@ public class User {
 	String name ;
 	@AssignID
 	Integer id;
+	String aBc;
+
 }

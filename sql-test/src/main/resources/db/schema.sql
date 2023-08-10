@@ -4,14 +4,15 @@ CREATE TABLE `order_log` (
 
        `age` int(1) ,
        `version` int(255) ,
+       `a_bc` varchar(255) ,
        `create_time` long,
        `status` char(1),
       PRIMARY KEY (`order_id`)
 ) ;
 
-INSERT INTO `order_log` (order_id,version,status) VALUES (1, 100,'a');
-INSERT INTO `order_log` (order_id,version,status)  VALUES (2, 101,'b');
-INSERT INTO `order_log` (order_id,version,status)  VALUES (3, 102,'b');
+INSERT INTO `order_log` (order_id,version,status,a_bc) VALUES (1, 100,'a','a');
+INSERT INTO `order_log` (order_id,version,status,a_bc)  VALUES (2, 101,'b','a');
+INSERT INTO `order_log` (order_id,version,status,a_bc)  VALUES (3, 102,'b','a');
 
 
 

@@ -311,9 +311,11 @@ public class BeanKit {
 		if (t != null) {
 			return t;
 		} else {
+
 			try {
 				while (c != null) {
 					Field[] fs = c.getDeclaredFields();
+					property = getFieldNameByPropertyName(fs,property);
 					for (Field f : fs) {
 						if (!f.getName().equals(property)) {
 							continue;
@@ -330,6 +332,27 @@ public class BeanKit {
 			}
 
 		}
+	}
+
+	/**
+	 *  see https://www.jianshu.com/p/bef7b73e5062
+	 * @param fs
+	 * @param propertyName
+	 * @return
+	 */
+	public static String getFieldNameByPropertyName(Field[] fs,String propertyName){
+		if(propertyName.length()>1){
+			if(Character.isUpperCase(propertyName.charAt(0))&&Character.isUpperCase(propertyName.charAt(1))){
+
+				for(Field f:fs){
+					if(f.getName().equalsIgnoreCase(propertyName)){
+						return f.getName();
+					}
+				}
+			}
+		}
+
+		return propertyName;
 	}
 
 	public static <T extends Annotation> T getAnnotation(Class c, String property, Class<T> annotationClass) {
