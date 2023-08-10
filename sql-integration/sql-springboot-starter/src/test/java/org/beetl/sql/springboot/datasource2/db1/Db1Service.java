@@ -11,17 +11,20 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class Db1Service {
-	@Autowired
+	@Autowired(required = false)
 	@Qualifier("sqlManager1")
 	SQLManager sqlManager;
 
-	@Autowired
+	@Autowired(required = false)
 	Db1Mapper userInfoMapper;
 
 
 
 	@Transactional
 	public UserInfo queryUser(Integer id){
+		if(sqlManager==null){
+			return null;
+		}
 		return sqlManager.single(UserInfo.class,id);
 
 	}

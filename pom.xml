@@ -35,7 +35,7 @@
 		<!-- 打包到一起 -->
 		<module>beetlsql</module>
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar，可以去掉 -->
-<!--		<module>sql-integration</module>-->
+		<module>sql-integration</module>
         <!-- 性能测试，包含了jpa，myabtis等国内外框架,可以去掉-->
 <!--        <module>sql-jmh</module>-->
         <!-- 验证多库支持 ,集成太多的数据库lib，默认去掉-->

@@ -37,6 +37,9 @@ public class BeetlSqlConfig {
 		}
         for(String s:allSqlManangerNames){
             SQLManagerConfig sqlManagerConfig = new SQLManagerConfig(env,s,defaultConfig);
+			if(sqlManagerConfig.isDisable()){
+				continue;
+			}
             configs.put(s,sqlManagerConfig);
         }
 
@@ -59,6 +62,7 @@ public class BeetlSqlConfig {
         String threadlocal;
         String interceptor;
 
+		boolean disable = false;
 
 
         public SQLManagerConfig(){}
@@ -90,6 +94,15 @@ public class BeetlSqlConfig {
 
         public SQLManagerConfig(Environment env,String sqlManagerName,SQLManagerConfig defaultConfig){
             String prefix =PREFIX+"."+sqlManagerName;
+			String disableOnPropertyName = env.getProperty(prefix+".disableOn");
+			if(disableOnPropertyName!=null){
+				//当存在某属性的时候，此sqlManager配置不生效
+				boolean isExist = env.containsProperty(disableOnPropertyName);
+				if(isExist){
+					disable = true;
+					return ;
+				}
+			}
             dynamicSqlManager = env.getProperty(prefix+".dynamic");
             if(!StringKit.isEmpty(dynamicSqlManager)){
                 dynamicCondition = env.getProperty(prefix+".dynamic.condition");
