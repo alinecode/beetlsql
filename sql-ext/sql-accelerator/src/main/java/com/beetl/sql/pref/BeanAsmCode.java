@@ -16,10 +16,9 @@ public class BeanAsmCode {
 	static  final  String supperName  = BeanPropertyWrite.class.getName().replace('.','/');
 
 	public static byte[] genCode(Class bean) throws Exception {
-		String[] supperInterface = new String[]{supperName};
 		ClassWriter classWriter = new ClassWriter(0);
 		classWriter.visit(V1_8, ACC_PUBLIC | ACC_SUPER, getAsmClassName(getWriteClassName(bean)), null,
-				"java/lang/Object", supperInterface);
+			supperName, null);
 		genConstruct(classWriter);
 		genPropertyWrite(classWriter,bean);
 		classWriter.visitEnd();
@@ -39,58 +38,72 @@ public class BeanAsmCode {
 		methodVisitor.visitVarInsn(ASTORE, 4);
 		methodVisitor.visitVarInsn(ILOAD, 1);
 		PropertyDescriptor[] ps = BeanKit.propertyDescriptors(bean);
-		Map<Integer,Label> switchLabelMap = new HashMap<>();
 		List<Label> switchLabelList = new ArrayList<>(ps.length);
 		Map<Label,PropertyDescriptor> propertyDescriptorMap = new HashMap<>();
-		int i=0;
-		for(PropertyDescriptor p:ps){
+		List<Integer> labelIndex = new ArrayList<>();
+
+		for(int i=0;i<ps.length;i++){
+			PropertyDescriptor p = ps[i];
 			if(p.getWriteMethod()==null){
 				continue;
 			}
 			Label label = new Label();
-			switchLabelMap.put(i++,label);
+			labelIndex.add(i);
 			switchLabelList.add(label);
 			propertyDescriptorMap.put(label,p);
 		}
+
 		Label labelEnd = new Label();
-		methodVisitor.visitTableSwitchInsn(1, switchLabelList.size(), labelEnd,
-				switchLabelList.toArray(new Label[0]));
-		i =0;
+		Label labelDefault = new Label();
+
+		methodVisitor.visitLookupSwitchInsn(labelDefault, labelIndex.stream().mapToInt(Integer::valueOf).toArray(),
+			switchLabelList.toArray(new Label[0]));
+
+		boolean isFirst = true;
 		for(Label label:switchLabelList){
 			PropertyDescriptor propertyDescriptor = propertyDescriptorMap.get(label);
 			methodVisitor.visitLabel(label);
-			if (i==0) {
-				methodVisitor.visitFrame(Opcodes.F_APPEND, 1, new Object[]{beanAsmName}, 0, null);
+			if (isFirst) {
+				methodVisitor.visitFrame(Opcodes.F_APPEND, 1,  new Object[]{beanAsmName}, 0, null);
+				isFirst = false;
 			} else {
 				methodVisitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+
 			}
 			methodVisitor.visitVarInsn(ALOAD, 4);
 			methodVisitor.visitVarInsn(ALOAD, 3);
-
-			methodVisitor.visitTypeInsn(CHECKCAST, "java/lang/String");
+			String typeAsmName = getAsmClassName(propertyDescriptor.getPropertyType().getName());
+			methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
 			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getWriteMethod().getName(),
-					"(Ljava/lang/String;)V", false);
-			if(i!=switchLabelList.size()-1){
-				methodVisitor.visitJumpInsn(GOTO, labelEnd);
-			}
-
-			i++;
+					"(L"+typeAsmName+";)V", false);
+			methodVisitor.visitJumpInsn(GOTO, labelEnd);
 
 		}
+		//default:throwException(index,obj)
+		methodVisitor.visitLabel(labelDefault);
+		methodVisitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+		methodVisitor.visitVarInsn(ALOAD, 0);
+		methodVisitor.visitVarInsn(ILOAD, 1);
+		methodVisitor.visitVarInsn(ALOAD, 2);
+		methodVisitor.visitMethodInsn(INVOKEVIRTUAL, supperName, "throwException",
+			"(ILjava/lang/Object;)V", false);
+
 
 		methodVisitor.visitLabel(labelEnd);
 		methodVisitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		methodVisitor.visitInsn(RETURN);
-		methodVisitor.visitMaxs(2, 5);
+		methodVisitor.visitMaxs(3, 5);
 		methodVisitor.visitEnd();
 
 	}
 
 	protected  static  void genConstruct(ClassWriter classWriter){
+
 		MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		methodVisitor.visitCode();
 		methodVisitor.visitVarInsn(ALOAD, 0);
-		methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+		methodVisitor.visitMethodInsn(INVOKESPECIAL, supperName, "<init>", "()V",
+			false);
 		methodVisitor.visitInsn(RETURN);
 		methodVisitor.visitMaxs(1, 1);
 		methodVisitor.visitEnd();

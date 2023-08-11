@@ -416,7 +416,7 @@ public class BeanProcessor {
 	 * @return
 	 * @throws SQLException
 	 */
-	private PropertyDescriptor[] propertyDescriptors(Class<?> c) throws SQLException {
+	protected PropertyDescriptor[] propertyDescriptors(Class<?> c) throws SQLException {
 
 		try {
 			return BeanKit.propertyDescriptors(c);

@@ -1,17 +1,22 @@
 package com.ibeetl.sql.pref;
 
-public class BeanASMProcessor {
+import com.beetl.sql.pref.BeanPropertyWrite;
+
+import java.math.BigDecimal;
+
+public class BeanASMProcessor  extends BeanPropertyWrite {
 	public void setValue(int index,Object obj,Object attrValue){
 		TestBean testBean = (TestBean)obj;
 		switch (index){
-			case 1:testBean.setCol1((String)attrValue);break;
+			case 1:testBean.setCol1((Integer)attrValue);break;
 			case 2:testBean.setCol2((String)attrValue);break;
 			case 3:testBean.setCol3((String)attrValue);break;
 			case 4:testBean.setCol4((String)attrValue);break;
-			case 5:testBean.setCol5((String)attrValue);break;
-			case 6:testBean.setCol6((String)attrValue);break;
-			case 7:testBean.setCol7((String)attrValue);break;
-			case 8:testBean.setCol8((String)attrValue);break;
+			case 51:testBean.setCol5((String)attrValue);break;
+			case 78:testBean.setCol6((String)attrValue);break;
+			case 33:testBean.setCol7((BigDecimal) attrValue);break;
+			case 99:testBean.setCol8((Integer)attrValue);break;
+			default:throwException(index,obj);
 		}
 
 	}
