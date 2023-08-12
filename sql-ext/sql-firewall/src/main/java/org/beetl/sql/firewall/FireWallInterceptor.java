@@ -40,6 +40,10 @@ public class FireWallInterceptor implements Interceptor {
 			}
 		}
 		Statement statement = null;
+		if(ctx.getExecuteContext().sqlId.isPage()){
+			//跳过sql解析
+			return ;
+		}
 		try {
 			 statement  = CCJSqlParserUtil.parse(sql, parser -> parser.withSquareBracketQuotation(true));
 		} catch (JSQLParserException e) {

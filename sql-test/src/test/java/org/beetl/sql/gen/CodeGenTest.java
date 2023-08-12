@@ -47,6 +47,7 @@ public class CodeGenTest extends BaseTest {
 		SourceBuilder docBuilder = new MDDocBuilder();
 
 		sourceBuilder.add(entityBuilder);
+		sourceBuilder.add(entityBuilder2);
 		sourceBuilder.add(mapperBuilder);
 		sourceBuilder.add(mdBuilder);
 		sourceBuilder.add(docBuilder);

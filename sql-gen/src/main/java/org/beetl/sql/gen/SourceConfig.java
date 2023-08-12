@@ -56,6 +56,8 @@ public class SourceConfig {
 		Double, BigDecimal
 	}
 
+	String entityParentClass = "java.lang.Object";
+
 	/**
 	 * 配置好的代码生成器，默认有Entity,Mapper,MD
 	 */
@@ -154,6 +156,7 @@ public class SourceConfig {
 		PackageList packageList = new PackageList();
 		Entity entity = toEntity(tableDesc, packageList);
 		entity.setTableDesc(tableDesc);
+		entity.setParentClass(this.entityParentClass);
 		entity.setImportPackage(packageList.getPkgs());
 		for (SourceBuilder sourceBuilder : sourceBuilder) {
 			if (sourceBuilder.isSupport(this, entity)) {

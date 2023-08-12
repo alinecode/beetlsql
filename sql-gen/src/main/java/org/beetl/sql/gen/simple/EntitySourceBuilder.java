@@ -34,6 +34,8 @@ public class EntitySourceBuilder extends BaseTemplateSourceBuilder {
 		template.binding("attrs", entity.getList());
 		template.binding("className", entity.getName());
 		template.binding("table", entity.getTableName());
+		template.binding("parentClass", entity.getParentClass());
+
 		if(!config.isIgnoreDbCatalog()){
 			template.binding("catalog",entity.getCatalog());
 		}

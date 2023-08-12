@@ -30,6 +30,10 @@ public class Entity {
 	 * 表的备注，<b>注意</b> 有些数据库不支持，或者需要jdbc url配置才能获取表注释
 	 */
 	String comment;
+
+	String parentClass;
+
+
 	/**
 	 * 所有属性
 	 */

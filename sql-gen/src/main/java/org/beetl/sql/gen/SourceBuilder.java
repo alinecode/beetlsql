@@ -9,7 +9,7 @@ package org.beetl.sql.gen;
  * @see org.beetl.sql.gen.simple.BaseTemplateSourceBuilder
  *
  */
-public abstract class SourceBuilder {
+public abstract class SourceBuilder  {
 	/**
 	 * 此代码生成的名称
 	 */

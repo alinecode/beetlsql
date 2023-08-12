@@ -8,7 +8,7 @@ import ${impCls};
 */
 
 @Table(name="${has(catalog)?(catalog+".")}${table}")
-public class ${className} implements java.io.Serializable {
+public class ${className} extends ${parentClass} {
 	<%include("pojoAttribute.btl"){}%>
 
 }

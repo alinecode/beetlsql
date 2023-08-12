@@ -16,6 +16,7 @@
 		<module>sql-xml</module>
 		<module>sql-accelerator</module>
 		<module>sql-firewall</module>
+		<module>sql-dynamic-table</module>
 	</modules>
 	<dependencies>
 		<dependency>

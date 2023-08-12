@@ -61,12 +61,17 @@ public class UpdateTimeConvert implements AttributeConvert {
 	@Override
 	public  Object toAttr(ExecuteContext ctx, Class cls, String name, ResultSet rs, int index) throws
 			SQLException {
+
 		Class dateType = BeanKit.getPropertyDescriptor(cls,name).getPropertyType();
 		Object now;
+
 		if (LocalDateTime.class == dateType) {
-			now = rs.getTimestamp(index).toLocalDateTime();
+			Timestamp ts = rs.getTimestamp(index);
+			return rs.wasNull()?null:ts.toLocalDateTime();
+
 		} else if (LocalDate.class == dateType) {
-			now =rs.getTimestamp(index).toLocalDateTime().toLocalDate();
+			Timestamp ts = rs.getTimestamp(index);
+			return rs.wasNull()?null:ts.toLocalDateTime().toLocalDate();
 		} else if(Timestamp.class == dateType){
 			now = rs.getTimestamp(index);
 		}else if(java.sql.Date.class == dateType){
