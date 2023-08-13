@@ -4,6 +4,7 @@ import com.beetl.sql.pref.BeanAsmCode;
 import com.beetl.sql.pref.BeanPropertyWrite;
 import com.beetl.sql.pref.BeanPropertyWriteFactory;
 import org.beetl.ow2.asm.ClassReader;
+import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ public class BeanASMTest {
 		try{
 			beanPropertyWrite.setValue(199,bean,"hello");
 			Assert.fail();
-		}catch (IllegalArgumentException e){
+		}catch (BeetlSQLException e){
 
 		}
 

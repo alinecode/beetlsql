@@ -21,22 +21,29 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DynamicTableLoader<T> {
-	SQLManager sqlManager;
-	Map<String,Class<? extends  T>> cache = new ConcurrentHashMap<>();
+/**
+ * 根据表名，是用gen模块生成entity代码并编译成java类
+ * @param <T>
+ */
+public class DynamicEntityLoader<T> {
+	protected SQLManager sqlManager;
+	protected  Map<String,Class<? extends  T>> cache = new ConcurrentHashMap<>();
 
-	private static Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
-	private  static Map<String, JavaFileObject> fileObjectMap = new ConcurrentHashMap<>();
+	private  final Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
+
+	//存放entity源码，不需要，未来删除
+	private  static  Map<String, JavaFileObject> fileObjectMap = new ConcurrentHashMap<>();
+
+	protected String pkg;
+	protected Class<T> baseClass;
+
+	protected ByteClassLoader loader = null;
 
 
-	private String pkg;
-	private String baseObject;
+	public DynamicEntityLoader(SQLManager sqlManager){
 
-	public DynamicTableLoader(SQLManager sqlManager){
-
-		this(sqlManager,"com.test001",(Class<T>)BaseObject.class);
+		this(sqlManager,"com.test001",(Class<T>) BaseEntity.class);
 	}
-	ByteClassLoader loader = null;
 
 
 	/**
@@ -45,32 +52,40 @@ public class DynamicTableLoader<T> {
 	 * @param pkg  动态表生成java类的包名
 	 * @param clazz 动态表生成java类的父类，如BaseObject，也可以是别的任何类
 	 */
-	public DynamicTableLoader(SQLManager sqlManager,String pkg,Class<T> clazz){
+	public DynamicEntityLoader(SQLManager sqlManager,String pkg,Class<T> clazz){
 		this.sqlManager = sqlManager;
 		this.pkg = pkg;
-		this.baseObject = clazz.getName();
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader() != null
+		this.baseClass = clazz;
+		ClassLoader defaultClassLoader = Thread.currentThread().getContextClassLoader() != null
 			? Thread.currentThread().getContextClassLoader()
 			: GroupTemplate.class.getClassLoader();
-		loader = new ByteClassLoader(classLoader);
+		this.loader = new ByteClassLoader(defaultClassLoader);
 	}
 
-	public Class<? extends  T> getDynamicClass(String table){
+	public DynamicEntityLoader(SQLManager sqlManager,String pkg,Class<T> clazz,ClassLoader classLoader){
+		this.sqlManager = sqlManager;
+		this.pkg = pkg;
+		this.baseClass = clazz;
+		this.loader = new ByteClassLoader(classLoader);
+	}
+
+	public Class<? extends  T> getDynamicEntity(String table){
+		return getDynamicEntity(table,baseClass);
+	}
+
+	public Class<? extends  T> getDynamicEntity(String table,Class<T> clazz){
 		Class<? extends  T> c = cache.get(table);
 		if(c!=null){
 			return c;
 		}
-		c = cache.computeIfAbsent(table, new Function<String, Class<? extends T>>() {
-			@Override
-			public Class<? extends T> apply(String s) {
-				Class<? extends  T> newCLass =  compile(s);
-				return newCLass;
-			}
+		c = cache.computeIfAbsent(table, s -> {
+			Class<? extends  T> newCLass =  compile(s,clazz.getName());
+			return newCLass;
 		});
 		return c;
 	}
 
-	protected Class<? extends  T> compile(String table){
+	protected Class<? extends  T> compile(String table,String baseObject){
 		List<SourceBuilder> sourceBuilder = new ArrayList<>();
 		SourceBuilder entityBuilder = new EntitySourceBuilder();
 		sourceBuilder.add(entityBuilder);
@@ -115,9 +130,6 @@ public class DynamicTableLoader<T> {
 
 		JavaFileManager javaFileManager =
 			new TmpJavaFileManager(compiler.getStandardFileManager(compileCollector, null, null));
-
-		// 从源码字符串中匹配类名
-
 
 		// 把源码字符串构造成JavaFileObject，供编译使用
 		JavaFileObject sourceJavaFileObject = new TmpJavaFileObject(className, javaCode);

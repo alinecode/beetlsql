@@ -8,6 +8,8 @@ import org.beetl.core.fun.ObjectUtil;
  * 用户自定义对象
  */
 public  class Office  {
+
+
 	public void setValue(String attrName,Object value){
 		MethodInvoker methodInvoker = ObjectUtil.getInvokder(this.getClass(),attrName);
 		if(methodInvoker==null){

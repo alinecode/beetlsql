@@ -2,11 +2,8 @@ package com.beetl.sql.dynamic;
 
 import org.beetl.core.fun.MethodInvoker;
 import org.beetl.core.fun.ObjectUtil;
-import org.beetl.sql.clazz.kit.BeanKit;
 
-import java.lang.reflect.Method;
-
-public class BaseObject  {
+public class BaseEntity {
 	public void setValue(String attrName,Object value){
 		MethodInvoker methodInvoker = ObjectUtil.getInvokder(this.getClass(),attrName);
 		if(methodInvoker==null){

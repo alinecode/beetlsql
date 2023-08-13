@@ -7,13 +7,13 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-saga</artifactId>
-        <version>3.23.10-RELEASE</version>
+        <version>3.23.11-RELEASE</version>
     </parent>
     <packaging>pom</packaging>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-saga-microservice</artifactId>
-    <version>3.23.10-RELEASE</version>
+    <version>3.23.11-RELEASE</version>
     <modules>
         <!-- 参考demo实现 -->
         <module>sql-saga-client</module>

@@ -17,16 +17,16 @@ for(int i=0;i<max;i++){
 }
 
 //生成DynamicTableLoader实例，注意必须是单例子
-DynamicTableLoader<BaseObject> dynamicTableLoader = new DynamicTableLoader(sqlManager);
+DynamicEntityLoader<BaseEntity> dynamicEntityLoader = new DynamicEntityLoader(sqlManager);
 
 for(int i=0;i<max;i++){
 	// 获得动态表对应的java类
-	Class<? extends BaseObject> c = dynamicTableLoader.getDynamicClass("my_table"+i);
+	Class<? extends BaseEntity> c = dynamicEntityLoader.getDynamicClass("my_table"+i);
 	//查询动态表的总数
 	long  count = sqlManager.allCount(c);
 	System.out.println(count);
 	//插入数据到动态表
-	BaseObject obj = c.newInstance();
+	BaseEntity obj = c.newInstance();
 	obj.setValue("id",1);
 	obj.setValue("name","hello");
 	sqlManager.insert(obj);
@@ -45,12 +45,23 @@ public  class Office {
 ```
 然后初始化dynamicTableLoader
 ```
-DynamicTableLoader<Office> dynamicTableLoader = new DynamicTableLoader(sqlManager,"com.temp",Office.class);
+DynamicEntityLoader<Office> dynamicEntityLoader = new DynamicEntityLoader(sqlManager,"com.temp",Office.class);
 
 ```
+
+或者
+```java
+DynamicEntityLoader<BaseEntity> dynamicEntityLoader = new DynamicEntityLoader(sqlManager);
+//指定父类
+Class<? extends Office> c = dynamicEntityLoader.getDynamicClass("order_log",Office.class);
+
+Class<? extends NyCommonOffice> c2 = dynamicEntityLoader.getDynamicClass("order_log",NyCommonOffice.class);
+
+```
+
 这样生成的类的父类是Office对象
 ```
-Class<? extends Office> c = dynamicTableLoader.getDynamicClass("order_log");
+Class<? extends Office> c = dynamicEntityLoader.getDynamicClass("order_log");
 Office office = sqlManager.unique(c,1);
 System.out.println(office.getValue("orderId"));
 System.out.println(office.getValue("age"));
@@ -59,3 +70,6 @@ office.setValue("age",1);
 sqlManager.updateById(office);
 
 ```
+
+
+

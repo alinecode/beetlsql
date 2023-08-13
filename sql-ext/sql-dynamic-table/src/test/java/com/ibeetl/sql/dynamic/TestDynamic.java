@@ -1,7 +1,7 @@
 package com.ibeetl.sql.dynamic;
 
-import com.beetl.sql.dynamic.BaseObject;
-import com.beetl.sql.dynamic.DynamicTableLoader;
+import com.beetl.sql.dynamic.BaseEntity;
+import com.beetl.sql.dynamic.DynamicEntityLoader;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
@@ -39,17 +39,17 @@ public class TestDynamic {
 	public void testDynamic(){
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/dynamic-schema.sql");
-		DynamicTableLoader<BaseObject> dynamicTableLoader = new DynamicTableLoader(sqlManager);
-		Class<? extends BaseObject> c = dynamicTableLoader.getDynamicClass("order_log");
-		BaseObject baseObject = sqlManager.unique(c,1);
-		System.out.println(baseObject.getValue("orderId"));
-		System.out.println(baseObject.getValue("age"));
+		DynamicEntityLoader<BaseEntity> dynamicEntityLoader = new DynamicEntityLoader(sqlManager);
+		Class<? extends BaseEntity> c = dynamicEntityLoader.getDynamicEntity("order_log");
+		BaseEntity baseEntity = sqlManager.unique(c,1);
+		System.out.println(baseEntity.getValue("orderId"));
+		System.out.println(baseEntity.getValue("age"));
 
-		baseObject.setValue("age",1);
-		sqlManager.updateById(baseObject);
+		baseEntity.setValue("age",1);
+		sqlManager.updateById(baseEntity);
 
-		Class<? extends BaseObject> c2 = dynamicTableLoader.getDynamicClass("order_log");
-		List<BaseObject> list = (List<BaseObject>) sqlManager.all(c2);
+		Class<? extends BaseEntity> c2 = dynamicEntityLoader.getDynamicEntity("order_log",BaseEntity.class);
+		List<BaseEntity> list = (List<BaseEntity>) sqlManager.all(c2);
 		System.out.println(list.size());
 
 	}
@@ -69,18 +69,18 @@ public class TestDynamic {
 		}
 
 
-		DynamicTableLoader<BaseObject> dynamicTableLoader = new DynamicTableLoader(sqlManager);
+		DynamicEntityLoader<BaseEntity> dynamicEntityLoader = new DynamicEntityLoader(sqlManager);
 
 		for(int i=0;i<max;i++){
-			Class<? extends BaseObject> c = dynamicTableLoader.getDynamicClass("my_table"+i);
+			Class<? extends BaseEntity> c = dynamicEntityLoader.getDynamicEntity("my_table"+i);
 			long  count = sqlManager.allCount(c);
 			System.out.println(count);
 		}
 
 
 		for(int i=0;i<max;i++){
-			Class<? extends BaseObject> c = dynamicTableLoader.getDynamicClass("my_table"+i);
-			BaseObject obj = c.newInstance();
+			Class<? extends BaseEntity> c = dynamicEntityLoader.getDynamicEntity("my_table"+i);
+			BaseEntity obj = c.newInstance();
 			obj.setValue("id",1);
 			obj.setValue("name","hello");
 			sqlManager.insert(obj);
@@ -98,9 +98,9 @@ public class TestDynamic {
 	public void testCustomized(){
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/dynamic-schema.sql");
-		DynamicTableLoader<Office> dynamicTableLoader = new DynamicTableLoader(sqlManager,"com.my",Office.class);
+		DynamicEntityLoader<Office> dynamicEntityLoader = new DynamicEntityLoader(sqlManager,"com.my",Office.class);
 
-		Class<? extends Office> c = dynamicTableLoader.getDynamicClass("order_log");
+		Class<? extends Office> c = dynamicEntityLoader.getDynamicEntity("order_log");
 		Office office = sqlManager.unique(c,1);
 		System.out.println(office.getValue("orderId"));
 		System.out.println(office.getValue("age"));
