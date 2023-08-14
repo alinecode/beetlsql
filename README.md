@@ -20,7 +20,7 @@ BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**
 * SQL查询引擎:Drill,Presto，Druid
 * 内存数据库:ignite，CouchBase
 
-BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是俩着的综合，BeetlSQL远大理想是对标甚至超越Spring Data，是实现数据访问统一的框架，无论是传统数据库，还是大数据，还是查询引擎或者时序库，内存数据库。
+BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是二者的综合，BeetlSQL远大理想是对标甚至超越Spring Data，是实现数据访问统一的框架，无论是传统数据库，还是大数据，还是查询引擎或者时序库，内存数据库。
 
 > 直接在线试用BeetlSQL http://121.42.237.11:8080/beetlsql_online/
 
