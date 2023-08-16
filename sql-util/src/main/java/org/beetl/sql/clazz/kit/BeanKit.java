@@ -25,31 +25,12 @@ public class BeanKit {
 
 	public static boolean queryLambdasSupport = JavaType.isJdk8();
 
-	private static final Map<Class, Method> tailBeans = new ConcurrentHashMap<Class, Method>();
-
-	private static Method NULL = null;
-
-	public static String[] EMP_STRING_ARRAY = new String[0];
-	public static Object[] EMP_OBJECT_ARRAY = new Object[0];
-
-	static ClassLoader classLoader = Thread.currentThread().getContextClassLoader() != null ?
-			Thread.currentThread().getContextClassLoader() :
-			GroupTemplate.class.getClassLoader();
-
-	static {
-		try {
-			NULL = Object.class.getMethod("toString");
-		} catch (Exception e) {
-			// 可能发生
-			throw new IllegalStateException(e);
-		}
-	}
-
+	static Map<Class,Map<String,Field>> classFields = new ConcurrentHashMap<>();
+	static Map<Class,Map<String,PropertyDescriptor>> classProperty = new ConcurrentHashMap<>();
 	/**
 	 * 一个通常的class对应的实例的缓存
 	 */
 	public static Cache classInsCache = new DefaultCache();
-
 	public static PropertyDescriptor[] propertyDescriptors(Class<?> c) throws IntrospectionException {
 
 		BeanInfo beanInfo = null;
@@ -58,19 +39,57 @@ public class BeanKit {
 
 	}
 
-	public static PropertyDescriptor getPropertyDescriptor(Class c, String attr) {
-		try {
-			PropertyDescriptor[] ps = propertyDescriptors(c);
-			for (PropertyDescriptor p : ps) {
-				if (p.getName().equals(attr)) {
-					return p;
-				}
+	public static Map<String,Field> getClassFields(Class c){
+		Map<String,Field> map  = classFields.get(c);
+		if(map!=null){
+			return map;
+		}
+		CaseInsensitiveHashMap fieldMap = new CaseInsensitiveHashMap();
+		for(Field field: c.getDeclaredFields()){
+			String name = field.getName();
+			fieldMap.put(name,field);
+		}
+		classFields.put(c,fieldMap);
+		return fieldMap;
+
+	}
+
+	public static Map<String,PropertyDescriptor> getClassProperty(Class c)  {
+		Map<String,PropertyDescriptor> map  =classProperty.get(c);
+		if(map!=null){
+			return map;
+		}
+		try{
+			Map propertyMap = new HashMap();
+			for(PropertyDescriptor propertyDescriptor: propertyDescriptors(c)){
+				String name = propertyDescriptor.getName();
+				propertyMap.put(name,propertyDescriptor);
 			}
-			return null;
-		} catch (IntrospectionException ex) {
-			throw new IllegalStateException("期望 " + c + "遵循Bean规范，不能获取属性 " + attr + " 定义");
+			classProperty.put(c,propertyMap);
+			return propertyMap;
+		}catch (IntrospectionException ex){
+			throw new IllegalStateException(c.getName());
 		}
 
+
+	}
+
+	public static PropertyDescriptor getPropertyDescriptor(Class c, String attr) {
+		Map<String,PropertyDescriptor>  map = getClassProperty(c);
+
+		PropertyDescriptor propertyDescriptor =  map.get(attr);
+		if(propertyDescriptor!=null){
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"找不到属性 "+attr+" @"+c);
+		}
+		return propertyDescriptor;
+	}
+
+	public static PropertyDescriptor getPropertyDescriptorWithNull(Class c, String attr) {
+		Map<String,PropertyDescriptor>  map = getClassProperty(c);
+
+		PropertyDescriptor propertyDescriptor =  map.get(attr);
+
+		return propertyDescriptor;
 	}
 
 
@@ -110,10 +129,15 @@ public class BeanKit {
 	public static Object getBeanProperty(Object o, String attrName) {
 
 		try {
-			MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
-			return inv.get(o);
+			Map<String,PropertyDescriptor> map =getClassProperty(o.getClass());
+			PropertyDescriptor propertyDescriptor = map.get(attrName);
+			if(propertyDescriptor==null){
+				throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"属性不存在 "+attrName+" @"+o.getClass());
+			}
+			return propertyDescriptor.getReadMethod().invoke(o);
+
 		} catch (Exception ex) {
-			throw new RuntimeException("POJO属性访问出错:" + attrName, ex);
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性赋值错误 "+attrName+" @"+o.getClass()+",Error="+ex.getMessage());
 		}
 	}
 
@@ -144,12 +168,15 @@ public class BeanKit {
 		if (value == null) {
 			return;
 		}
-		MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
-		Class type = inv.getReturnType();
-		Class valueType = value.getClass();
+		Map<String,PropertyDescriptor> map = getMapIns(o.getClass());
+		PropertyDescriptor propertyDescriptor = map.get(attrName);
+		Class type = propertyDescriptor.getPropertyType();
 		Object requiredValue = convertValueToRequiredType(value, type);
-		inv.set(o, requiredValue);
-
+		try{
+			propertyDescriptor.getWriteMethod().invoke(o,requiredValue);
+		}catch (Exception exception){
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"属性 "+attrName+" 赋值报错 "+o.getClass());
+		}
 
 	}
 
@@ -313,16 +340,12 @@ public class BeanKit {
 		} else {
 
 			try {
-				while (c != null) {
-					Field[] fs = c.getDeclaredFields();
-					property = getFieldNameByPropertyName(fs,property);
-					for (Field f : fs) {
-						if (!f.getName().equals(property)) {
-							continue;
-						}
-						t = f.getAnnotation(annotationClass);
+				while (c != null&&c!=Object.class) {
+					Map<String,Field> fieldMap = getClassFields(c);
+					Field field = fieldMap.get(property);
+					if(field!=null){
+						t = field.getAnnotation(annotationClass);
 						return t;
-
 					}
 					c = c.getSuperclass();
 				}
@@ -334,45 +357,29 @@ public class BeanKit {
 		}
 	}
 
-	/**
-	 *  see https://www.jianshu.com/p/bef7b73e5062
-	 * @param fs
-	 * @param propertyName
-	 * @return
-	 */
-	public static String getFieldNameByPropertyName(Field[] fs,String propertyName){
-		if(propertyName.length()>1){
-			if(Character.isUpperCase(propertyName.charAt(0))&&Character.isUpperCase(propertyName.charAt(1))){
 
-				for(Field f:fs){
-					if(f.getName().equalsIgnoreCase(propertyName)){
-						return f.getName();
-					}
-				}
-			}
-		}
 
-		return propertyName;
-	}
+
+
+
 
 	public static <T extends Annotation> T getAnnotation(Class c, String property, Class<T> annotationClass) {
-		MethodInvoker invoker = ObjectUtil.getInvokder(c, property);
-		if (invoker == null) {
+		Map<String,PropertyDescriptor> map = getClassProperty(c);
+		PropertyDescriptor propertyDescriptor = map.get(property);
+		if (propertyDescriptor == null) {
 			return null;
 		}
-
-		Method getter = invoker.getMethod();
-		return getAnnotation(c, property, getter, annotationClass);
+		return getAnnotation(c, property, propertyDescriptor.getReadMethod(), annotationClass);
 
 	}
 
 	public static List<Annotation> getAllAnnotation(Class c, String property) {
-		MethodInvoker invoker = ObjectUtil.getInvokder(c, property);
-		if (invoker == null) {
+		Map<String,PropertyDescriptor> map = getClassProperty(c);
+		PropertyDescriptor propertyDescriptor = map.get(property);
+		if (propertyDescriptor == null) {
 			return null;
 		}
-
-		Method getter = invoker.getMethod();
+		Method getter = propertyDescriptor.getReadMethod();
 		Annotation[] array1 = getter.getAnnotations();
 		Annotation[] array2 = null;
 		Field f = getField(c, property);
@@ -384,53 +391,19 @@ public class BeanKit {
 
 	}
 
-	/**
-	 * 根据Class 和 property 获取自身或父类的 Field
-	 *
-	 * @param c
-	 * @param property
-	 * @return
-	 */
 	public static Field getField(Class c, String property) {
-		Field field = null;
-		if (c != null) {
-			try {
-				field = c.getDeclaredField(property);
-			} catch (Exception e) {
-				//当前Class获取不到时尝试从父类中获取
-				field = getField(c.getSuperclass(), property);
+
+		while (c != null&&c!=Object.class) {
+			Map<String,Field> fieldMap = getClassFields(c);
+			Field field = fieldMap.get(property);
+			if(field!=null){
+				return field;
 			}
+			c = c.getSuperclass();
 		}
-		return field;
+		return null;
 	}
 
-
-	/**
-	 * 获取prop的setter方法
-	 *
-	 * @param prop
-	 * @param type
-	 * @return
-	 */
-	public static Method getWriteMethod(PropertyDescriptor prop, Class<?> type) {
-		Method writeMethod = prop.getWriteMethod();
-		//当使用lombok等链式编程方式时 有返回值的setter不被认为是writeMethod，需要自己去获取
-		if (writeMethod == null && !"class".equals(prop.getName())) {
-			String propName = prop.getName();
-			//符合JavaBean规范的set方法名称（userName=>setUserName,uName=>setuName）
-			String setMethodName =
-					"set" + (propName.length() > 1 && propName.charAt(1) >= 'A' && propName.charAt(1) <= 'Z' ?
-							propName :
-							StringKit.toUpperCaseFirstOne(propName));
-			try {
-				writeMethod = type.getMethod(setMethodName, prop.getPropertyType());
-			} catch (Exception e) {
-				//不存在set方法
-				return null;
-			}
-		}
-		return writeMethod;
-	}
 
 
 	/**
@@ -609,19 +582,7 @@ public class BeanKit {
 	}
 
 
-	public static void main(String[] args) throws Exception {
-		Class c = User.class;
-		Method m = c.getMethod("getMaps");
-		Type type = m.getGenericReturnType();
-		Class[] tt = BeanKit.getMapParameterTypeClass(type);
-		System.out.println(tt);
 
-	}
-
-	@Data
-	public static class User {
-		Map<String, Integer> maps = null;
-	}
 
 
 }

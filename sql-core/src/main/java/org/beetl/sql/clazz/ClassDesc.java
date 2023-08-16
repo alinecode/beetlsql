@@ -79,7 +79,7 @@ public class ClassDesc {
 
 		for (PropertyDescriptor p : ps) {
 			//所有属性必须有getter和setter
-			if (p.getReadMethod() != null && BeanKit.getWriteMethod(p, c) != null) {
+			if (p.getReadMethod() != null && p.getWriteMethod() != null) {
 				String property = p.getName();
 				String col = nc.getColName(c, property);
 				if (col != null) {

@@ -63,7 +63,7 @@ public class TailBeanTest extends BaseTest {
 		@Override
 		public Object get(String key) {
 			Object o = super.get(key);
-			if(o==null&&BeanKit.getPropertyDescriptor(this.getClass(),key)!=null){
+			if(o==null&&BeanKit.getPropertyDescriptorWithNull(this.getClass(),key)!=null){
 				return BeanKit.getBeanProperty(this,key);
 			}
 

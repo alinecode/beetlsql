@@ -19,7 +19,7 @@ public class SimpleService {
 
     @Tran
     public void test(){
-        sqlManager.single(UserInfo.class,1);
-        userInfoMapper.single(1);
+		UserInfo user1 = sqlManager.single(UserInfo.class,1);
+		user1 =userInfoMapper.single(1);
     }
 }

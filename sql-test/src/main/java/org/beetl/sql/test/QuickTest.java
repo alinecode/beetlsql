@@ -53,16 +53,18 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
+
+
 		PropertyDescriptor[] ps = BeanKit.propertyDescriptors(OrderLog.class);
 		Field[] fields = OrderLog.class.getDeclaredFields();
-		for(PropertyDescriptor p:ps){
-			System.out.println(p);
-			System.out.println(p.getName()+":"+BeanKit.getFieldNameByPropertyName(fields,p.getName()));
-		}
-
-		ClassDesc classDesc = sqlManager.getClassDesc(OrderLog.class);
-		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
-		System.out.println(orderLog);
+//		for(PropertyDescriptor p:ps){
+//			System.out.println(p);
+//			System.out.println(p.getName()+":"+BeanKit.getFieldNameByPropertyName(fields,p.getName()));
+//		}
+//
+//		ClassDesc classDesc = sqlManager.getClassDesc(OrderLog.class);
+//		List<OrderLog> orderLog = sqlManager.all(OrderLog.class);
+//		System.out.println(orderLog);
 
 	}
 

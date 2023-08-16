@@ -78,7 +78,7 @@ public class AttrNode {
 		for (Map.Entry<String, Object> entry : jsonMapping.entrySet()) {
 			String attr = entry.getKey();
 			Object value = entry.getValue();
-			PropertyDescriptor pd = BeanKit.getPropertyDescriptor(target, attr);
+			PropertyDescriptor pd = BeanKit.getPropertyDescriptorWithNull(target, attr);
 			if (pd == null) {
 				throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "字段[" + attr + "]映射规则错误，实体类无该段");
 			}
