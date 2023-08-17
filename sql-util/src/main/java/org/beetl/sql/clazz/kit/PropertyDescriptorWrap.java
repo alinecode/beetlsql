@@ -19,6 +19,10 @@ public class  PropertyDescriptorWrap{
 		findSetMethod(c, prop);
 	}
 
+	public void init(Class c){
+		//do nothing
+	}
+
 	public void setValue(Object o,Object value){
 		if(setMethod==null){
 			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"找不到\"写属性\""+ prop.getName()+" @"+o.getClass());
@@ -26,7 +30,7 @@ public class  PropertyDescriptorWrap{
 		try {
 			setMethod.invoke(o,value);
 		}catch (Exception  ex){
-			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性赋值错误 "+ prop.getName()+" @"+o.getClass()+",Error="+ex.getMessage());
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性赋值错误 "+ prop.getName()+" @"+o.getClass()+",Error="+ex.getMessage(),ex);
 		}
 
 	}
@@ -35,7 +39,7 @@ public class  PropertyDescriptorWrap{
 		try{
 			return prop.getReadMethod().invoke(o);
 		} catch (Exception ex) {
-			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性取值错误 "+ prop.getName()+" @"+o.getClass()+",Error="+ex.getMessage());
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性取值错误 "+ prop.getName()+" @"+o.getClass()+",Error="+ex.getMessage(),ex);
 		}
 	}
 

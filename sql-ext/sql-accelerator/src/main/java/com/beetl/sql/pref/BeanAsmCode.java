@@ -1,6 +1,7 @@
 package com.beetl.sql.pref;
 import org.beetl.ow2.asm.*;
 import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
@@ -38,18 +39,18 @@ public class BeanAsmCode {
 		methodVisitor.visitVarInsn(ILOAD, 1);
 		PropertyDescriptor[] ps = BeanKit.propertyDescriptors(bean);
 		List<Label> switchLabelList = new ArrayList<>(ps.length);
-		Map<Label,PropertyDescriptor> propertyDescriptorMap = new HashMap<>();
+		Map<Label,PropertyDescriptorWrap> propertyDescriptorMap = new HashMap<>();
 		List<Integer> labelIndex = new ArrayList<>();
 
 		for(int i=0;i<ps.length;i++){
-			PropertyDescriptor p = ps[i];
-			if(p.getWriteMethod()==null){
+			PropertyDescriptorWrap propertyDescriptorWrap = BeanKit.getClassProperty(bean,i);
+			if(propertyDescriptorWrap.getSetMethod()==null){
 				continue;
 			}
 			Label label = new Label();
 			labelIndex.add(i);
 			switchLabelList.add(label);
-			propertyDescriptorMap.put(label,p);
+			propertyDescriptorMap.put(label,propertyDescriptorWrap);
 		}
 
 		Label labelEnd = new Label();
@@ -60,7 +61,7 @@ public class BeanAsmCode {
 
 		boolean isFirst = true;
 		for(Label label:switchLabelList){
-			PropertyDescriptor propertyDescriptor = propertyDescriptorMap.get(label);
+			PropertyDescriptorWrap propertyDescriptor = propertyDescriptorMap.get(label);
 			methodVisitor.visitLabel(label);
 			if (isFirst) {
 				methodVisitor.visitFrame(Opcodes.F_APPEND, 1,  new Object[]{beanAsmName}, 0, null);
@@ -71,9 +72,9 @@ public class BeanAsmCode {
 			}
 			methodVisitor.visitVarInsn(ALOAD, 4);
 			methodVisitor.visitVarInsn(ALOAD, 3);
-			String typeAsmName = getAsmClassName(propertyDescriptor.getPropertyType().getName());
+			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getName());
 			methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
-			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getWriteMethod().getName(),
+			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getSetMethod().getName(),
 					"(L"+typeAsmName+";)V", false);
 			methodVisitor.visitJumpInsn(GOTO, labelEnd);
 
@@ -109,18 +110,16 @@ public class BeanAsmCode {
 		methodVisitor.visitVarInsn(ILOAD, 1);
 		PropertyDescriptor[] ps = BeanKit.propertyDescriptors(bean);
 		List<Label> switchLabelList = new ArrayList<>(ps.length);
-		Map<Label,PropertyDescriptor> propertyDescriptorMap = new HashMap<>();
+		Map<Label,PropertyDescriptorWrap> propertyDescriptorMap = new HashMap<>();
 		List<Integer> labelIndex = new ArrayList<>();
 
 		for(int i=0;i<ps.length;i++){
-			PropertyDescriptor p = ps[i];
-			if(p.getWriteMethod()==null){
-				continue;
-			}
+			PropertyDescriptorWrap propertyDescriptorWrap = BeanKit.getClassProperty(bean,i);
+
 			Label label = new Label();
 			labelIndex.add(i);
 			switchLabelList.add(label);
-			propertyDescriptorMap.put(label,p);
+			propertyDescriptorMap.put(label,propertyDescriptorWrap);
 		}
 
 		Label labelDefault = new Label();
@@ -130,7 +129,7 @@ public class BeanAsmCode {
 
 		boolean isFirst = true;
 		for(Label label:switchLabelList){
-			PropertyDescriptor propertyDescriptor = propertyDescriptorMap.get(label);
+			PropertyDescriptorWrap propertyDescriptor = propertyDescriptorMap.get(label);
 			methodVisitor.visitLabel(label);
 			if (isFirst) {
 				methodVisitor.visitFrame(Opcodes.F_APPEND, 1,  new Object[]{beanAsmName}, 0, null);
@@ -140,9 +139,9 @@ public class BeanAsmCode {
 
 			}
 			methodVisitor.visitVarInsn(ALOAD, 3);
-			String typeAsmName = getAsmClassName(propertyDescriptor.getPropertyType().getName());
+			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getName());
 
-			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getReadMethod().getName(),
+			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
 					"()L"+typeAsmName+";", false);
 			methodVisitor.visitInsn(ARETURN);
 

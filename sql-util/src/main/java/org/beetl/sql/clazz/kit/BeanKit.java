@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 /**
  * Bean处理小工具
@@ -60,19 +61,42 @@ public class BeanKit {
 		if(map!=null){
 			return map;
 		}
-		try{
-			Map propertyMap = JAVABEAN_STRICT?new HashMap():new CaseInsensitiveHashMap();
-			PropertyDescriptor[] propertyDescriptors = propertyDescriptors(c);
-			for(int i=0;i<propertyDescriptors.length;i++){
-				PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-				String name = propertyDescriptor.getName();
-				propertyMap.put(name,propertyDescriptorWrapFactory.make(c,propertyDescriptor,i));
+		synchronized (c){
+			map  =classProperty.get(c);
+			if(map!=null){
+				return map;
 			}
-			classProperty.put(c,propertyMap);
-			return propertyMap;
-		}catch (IntrospectionException ex){
-			throw new IllegalStateException(c.getName());
+			try{
+				Map<String,PropertyDescriptorWrap> propertyMap = JAVABEAN_STRICT?new HashMap():new CaseInsensitiveHashMap();
+				PropertyDescriptor[] propertyDescriptors = propertyDescriptors(c);
+				for(int i=0;i<propertyDescriptors.length;i++){
+					PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
+					String name = propertyDescriptor.getName();
+					propertyMap.put(name,propertyDescriptorWrapFactory.make(c,propertyDescriptor,i));
+				}
+
+				for(PropertyDescriptorWrap wrap:propertyMap.values()){
+					wrap.init(c);
+				}
+
+				classProperty.put(c,propertyMap);
+				return propertyMap;
+			}catch (IntrospectionException ex){
+				throw new IllegalStateException(c.getName());
+			}
 		}
+
+
+	}
+
+	public static PropertyDescriptorWrap getClassProperty(Class c,int index)  {
+		Map<String,PropertyDescriptorWrap> map = getClassProperty(c);
+		return map.values().stream().filter(new Predicate<PropertyDescriptorWrap>() {
+			@Override
+			public boolean test(PropertyDescriptorWrap o) {
+				return o.i==index;
+			}
+		}).findFirst().get();
 
 	}
 
