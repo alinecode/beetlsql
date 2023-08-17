@@ -33,9 +33,9 @@ public class BeetlSQLService  implements BaseService {
         sqlManager = builder.build();
 
         this.beetlSQLUserMapper = sqlManager.getMapper(BeetlSQLUserMapper.class);
-
-		PerformanceConfig performanceConfig = new PerformanceConfig();
-		performanceConfig.config(sqlManager);
+//
+//		PerformanceConfig performanceConfig = new PerformanceConfig();
+//		performanceConfig.config(sqlManager);
     }
 
     @Override

@@ -25,9 +25,9 @@ public class BeanPropertyAsmWrapper extends BeanPropertyAsm {
 			PropertyDescriptor propertyDescriptor = findAttr(index,obj);
 			String attrName = propertyDescriptor.getName();
 			if(ex instanceof ClassCastException){
-				throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,ex.getMessage()+" for attr "+attrName+" input value type:"+(attrValue!=null?attrValue.getClass():"null")+" but expected "+propertyDescriptor.getPropertyType());
+				throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"set value cast error  for  "+attrName+" input  type:"+(attrValue!=null?attrValue.getClass():"null")+" but expected "+propertyDescriptor.getPropertyType()+" @"+obj.getClass());
 			}
-			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,ex.getMessage()+" for attr "+attrName+" obj "+obj,ex);
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"set value error for attr "+attrName,ex);
 		}
 	}
 
@@ -40,7 +40,7 @@ public class BeanPropertyAsmWrapper extends BeanPropertyAsm {
 		}
 		catch (Exception ex){
 			String attrName = findAttr(index,obj).getName();
-			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,ex.getMessage()+" for attr "+attrName+",class="+obj.getClass(),ex);
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR," get attr error:"+attrName+",class="+obj.getClass(),ex);
 		}
 	}
 

@@ -3,11 +3,13 @@ import org.beetl.ow2.asm.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 
+import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static org.beetl.ow2.asm.Opcodes.*;
 
@@ -43,7 +45,7 @@ public class BeanAsmCode {
 		List<Integer> labelIndex = new ArrayList<>();
 
 		for(int i=0;i<ps.length;i++){
-			PropertyDescriptorWrap propertyDescriptorWrap = BeanKit.getClassProperty(bean,i);
+			PropertyDescriptorWrap propertyDescriptorWrap =new PropertyDescriptorWrap(bean,ps[i],i);
 			if(propertyDescriptorWrap.getSetMethod()==null){
 				continue;
 			}
@@ -72,7 +74,7 @@ public class BeanAsmCode {
 			}
 			methodVisitor.visitVarInsn(ALOAD, 4);
 			methodVisitor.visitVarInsn(ALOAD, 3);
-			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getName());
+			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getPropertyType().getName());
 			methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
 			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getSetMethod().getName(),
 					"(L"+typeAsmName+";)V", false);
@@ -113,8 +115,10 @@ public class BeanAsmCode {
 		Map<Label,PropertyDescriptorWrap> propertyDescriptorMap = new HashMap<>();
 		List<Integer> labelIndex = new ArrayList<>();
 
+
+
 		for(int i=0;i<ps.length;i++){
-			PropertyDescriptorWrap propertyDescriptorWrap = BeanKit.getClassProperty(bean,i);
+			PropertyDescriptorWrap propertyDescriptorWrap = new PropertyDescriptorWrap(bean,ps[i],i);
 
 			Label label = new Label();
 			labelIndex.add(i);
@@ -139,7 +143,7 @@ public class BeanAsmCode {
 
 			}
 			methodVisitor.visitVarInsn(ALOAD, 3);
-			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getName());
+			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getPropertyType().getName());
 
 			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
 					"()L"+typeAsmName+";", false);
@@ -176,11 +180,12 @@ public class BeanAsmCode {
 	}
 
 	public static String getWriteClassName(Class bean){
-		return bean.getName()+"$"+"Setter";
+		return bean.getName()+"$"+"ASM";
 	}
 	public static String getAsmClassName(String name){
 		return name.replace('.','/');
 	}
+
 
 
 }

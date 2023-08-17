@@ -2,6 +2,7 @@ package org.beetl.sql.entity.fetch;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
@@ -11,6 +12,7 @@ import org.beetl.sql.fetch.annotation.FetchOne;
 @Table(name="sys_order")
 @Fetch(level =2)
 @EqualsAndHashCode(of="id")
+@ToString(of = {"id"})
 public class CustomerOrder {
     @AutoID
     Integer id;
@@ -19,6 +21,8 @@ public class CustomerOrder {
 
     @FetchOne(value="customerId")
     Customer customer;
+
+
 
 
 }

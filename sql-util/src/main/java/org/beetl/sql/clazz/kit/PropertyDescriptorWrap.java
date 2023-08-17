@@ -43,10 +43,10 @@ public class  PropertyDescriptorWrap{
 		}
 	}
 
-	protected  Method findSetMethod(Class c,PropertyDescriptor p){
+	protected  void findSetMethod(Class c,PropertyDescriptor p){
 		Method method = p.getWriteMethod();
 		if(method!=null){
-			return  method;
+			this.setMethod =  method;
 		}
 
 		if(!BeanKit.JAVABEAN_STRICT){
@@ -59,14 +59,11 @@ public class  PropertyDescriptorWrap{
 			Class type = p.getPropertyType();
 			try {
 				//链式调用
-				Method setMethod =c.getMethod(name,type);
-				return setMethod;
-			} catch (NoSuchMethodException e) {
-				return null;
-			}
+				this.setMethod =c.getMethod(name,type);
 
-		}else{
-			return null;
+			} catch (NoSuchMethodException e) {
+
+			}
 		}
 	}
 

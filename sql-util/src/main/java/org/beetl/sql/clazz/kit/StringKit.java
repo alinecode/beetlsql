@@ -12,12 +12,12 @@ public class StringKit {
 	public static final String EMPTY = "";
 
 	public static final int INDEX_NOT_FOUND = -1;
-	
+
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
-	
-	
+
+
 	static  String lineSeparator = System.getProperty("line.separator", "\n");
-	
+
 	// 首字母转小写
 	public static String toLowerCaseFirstOne(String s) {
 		if (Character.isLowerCase(s.charAt(0))) {
@@ -58,25 +58,25 @@ public class StringKit {
 	 * 转驼峰式字符，eg: aaa_bbb => aaaBbb , Aaa_bBb=>aaaBBb
 	 */
 	public static String deCodeUnderlined(String str) {
-		
+
 		String[] splitArr = str.split("_");
 		StringBuilder sb = new StringBuilder();
-		
+
 		for(int i=0 ;i<splitArr.length ;i++){
 			if(i == 0){
 				sb.append(splitArr[0].toLowerCase());
 				continue;
 			}
-			
+
 			sb.append(toUpperCaseFirstOne(splitArr[i].toLowerCase()));
 		}
-		
+
 		return sb.toString();
 	}
-	
-	
+
+
 	/**
-	 * 去空格 
+	 * 去空格
 	 * @param str
 	 * @return
 	 */
@@ -96,7 +96,7 @@ public class StringKit {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String substringBeforeLast(String str, String separator) {
 		if (isEmpty(str) || isEmpty(separator)) {
 			return str;
@@ -107,11 +107,11 @@ public class StringKit {
 		}
 		return str.substring(0, pos);
 	}
-	
+
 	public static boolean isNotBlank(String str) {
 		return !isBlank(str);
 	}
-	
+
 	public static boolean isBlank(String str) {
 		int strLen;
 		if (str == null || (strLen = str.length()) == 0) {
@@ -124,7 +124,7 @@ public class StringKit {
 		}
 		return true;
 	}
-	
+
 	public static boolean endsWith(String str, String suffix, boolean ignoreCase) {
 		if (str == null || suffix == null) {
 			return (str == null && suffix == null);
@@ -135,7 +135,7 @@ public class StringKit {
 		int strOffset = str.length() - suffix.length();
 		return str.regionMatches(ignoreCase, strOffset, suffix, 0, suffix.length());
 	}
-	
+
 	public static boolean startsWith(String str, String prefix, boolean ignoreCase) {
 		if (str == null || prefix == null) {
 			return (str == null && prefix == null);
@@ -145,8 +145,8 @@ public class StringKit {
 		}
 		return str.regionMatches(ignoreCase, 0, prefix, 0, prefix.length());
 	}
-	
-	
+
+
 	public static String substringAfter(String str, String separator) {
 		if (isEmpty(str)) {
 			return str;
@@ -160,8 +160,8 @@ public class StringKit {
 		}
 		return str.substring(pos + separator.length());
 	}
-	
-	
+
+
 	public static boolean isBlank(final CharSequence cs) {
         int strLen;
         if (cs == null || (strLen = cs.length()) == 0) {
@@ -174,7 +174,7 @@ public class StringKit {
         }
         return true;
     }
-	
+
 
 
     /**
@@ -223,7 +223,7 @@ public class StringKit {
         }
         return false;
     }
-	
+
 	public static boolean isEmpty(String str) {
 		return str == null || str.length() == 0;
 	}
@@ -245,7 +245,7 @@ public class StringKit {
         }
         return ((st > 0) || (len < cs.length())) ? cs.subSequence(st, len) : cs;
     }
-	
+
 	public static String[] split(String str, char separatorChar) {
 		return splitWorker(str, separatorChar, false);
 	}
@@ -263,7 +263,7 @@ public class StringKit {
     	sb.setLength(sb.length()-1);
     	return sb.toString();
 	}
-	
+
 	private static String[] splitWorker(String str, char separatorChar, boolean preserveAllTokens) {
 		// Performance tuned for 2.0 (JDK1.4)
 
@@ -317,10 +317,24 @@ public class StringKit {
 	}
 
 
+	public static  String toAttributeNameLowCase(String str){
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<str.length();i++){
+			char c = str.charAt(i);
+			if(c>='A'&&c<='Z'){
+				sb.append((char)(c-26));
+			}else{
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+
+
 	public static void main(String[] args) {
 		System.out.println(addEscape("abc",'[',']'));
 		System.out.println(addEscape("abc.eft",'[',']'));
 	}
-	
-	
+
+
 }

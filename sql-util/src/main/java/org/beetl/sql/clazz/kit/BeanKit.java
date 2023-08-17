@@ -75,11 +75,14 @@ public class BeanKit {
 					propertyMap.put(name,propertyDescriptorWrapFactory.make(c,propertyDescriptor,i));
 				}
 
+
+
 				for(PropertyDescriptorWrap wrap:propertyMap.values()){
 					wrap.init(c);
 				}
-
 				classProperty.put(c,propertyMap);
+
+
 				return propertyMap;
 			}catch (IntrospectionException ex){
 				throw new IllegalStateException(c.getName());
@@ -89,16 +92,7 @@ public class BeanKit {
 
 	}
 
-	public static PropertyDescriptorWrap getClassProperty(Class c,int index)  {
-		Map<String,PropertyDescriptorWrap> map = getClassProperty(c);
-		return map.values().stream().filter(new Predicate<PropertyDescriptorWrap>() {
-			@Override
-			public boolean test(PropertyDescriptorWrap o) {
-				return o.i==index;
-			}
-		}).findFirst().get();
 
-	}
 
 	/**
 	 * 清除缓存，只有在动态类加载场景下，才有可能需要这么做，如dcemv技术
@@ -113,7 +107,7 @@ public class BeanKit {
 	public static PropertyDescriptor getPropertyDescriptor(Class c, String attr) {
 		Map<String,PropertyDescriptorWrap>  map = getClassProperty(c);
 		PropertyDescriptorWrap propertyDescriptor =  map.get(attr);
-		if(propertyDescriptor!=null){
+		if(propertyDescriptor==null){
 			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"找不到属性 "+attr+" @"+c);
 		}
 		return propertyDescriptor.getProp();
@@ -121,9 +115,7 @@ public class BeanKit {
 
 	public static PropertyDescriptor getPropertyDescriptorWithNull(Class c, String attr) {
 		Map<String,PropertyDescriptorWrap>  map = getClassProperty(c);
-
 		PropertyDescriptorWrap propertyDescriptor =  map.get(attr);
-
 		return propertyDescriptor.getProp();
 	}
 

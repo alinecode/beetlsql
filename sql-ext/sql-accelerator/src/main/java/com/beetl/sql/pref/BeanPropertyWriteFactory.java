@@ -10,42 +10,44 @@ public class BeanPropertyWriteFactory {
 
 
 	private final static Map<ClassLoader, ByteClassLoader> classLoaders = new ConcurrentHashMap<>();
-	static Map<Class, BeanPropertyAsm> propertyWriteMap = new ConcurrentHashMap<>();
+	static Map<Class, BeanPropertyAsm> propertyAsmMap = new ConcurrentHashMap<>();
 
 	public static BeanPropertyAsm getBeanProperty(Class c){
-		BeanPropertyAsm propertyWrite = propertyWriteMap.get(c);
+		BeanPropertyAsm propertyWrite = propertyAsmMap.get(c);
 		if(propertyWrite!=null){
 			return propertyWrite;
 		}
-
-		propertyWrite  = propertyWriteMap.computeIfAbsent(c, new Function() {
-			@Override
-			public Object apply(Object o) {
-				try{
-					ClassLoader beanClassLoader = c.getClassLoader();
-					byte[] bs = BeanAsmCode.genCode(c);
-					String name = BeanAsmCode.getWriteClassName(c);
-					ByteClassLoader byteClassLoader = classLoaders.get(beanClassLoader);
-					if(byteClassLoader==null){
-						byteClassLoader = new ByteClassLoader(beanClassLoader);
-						classLoaders.put(beanClassLoader,byteClassLoader);
-					}
-					Class<?> enhanceClass = byteClassLoader.findClassByName(name);
-					if (enhanceClass == null) {
-						enhanceClass = byteClassLoader.defineClass(name, bs);
-					}
-					BeanPropertyAsm beanPropertyAsm = (BeanPropertyAsm)enhanceClass.newInstance();
-					BeanPropertyAsmWrapper writeWrapper = new BeanPropertyAsmWrapper(beanPropertyAsm);
-					return writeWrapper;
-
-				}catch (Exception exception){
-
-					throw new BeetlSQLException(BeetlSQLException.ERROR,"代码生成Bean错误 "+exception.getMessage(),exception);
+		synchronized (c){
+			try{
+				propertyWrite = propertyAsmMap.get(c);
+				if(propertyWrite!=null){
+					return propertyWrite;
 				}
-			}
-		});
 
-		return propertyWrite;
+				ClassLoader beanClassLoader = c.getClassLoader();
+				byte[] bs = BeanAsmCode.genCode(c);
+				String name = BeanAsmCode.getWriteClassName(c);
+				ByteClassLoader byteClassLoader = classLoaders.get(beanClassLoader);
+				if(byteClassLoader==null){
+					byteClassLoader = new ByteClassLoader(beanClassLoader);
+					classLoaders.put(beanClassLoader,byteClassLoader);
+				}
+				Class<?> enhanceClass = byteClassLoader.findClassByName(name);
+				if (enhanceClass == null) {
+					enhanceClass = byteClassLoader.defineClass(name, bs);
+				}
+				BeanPropertyAsm beanPropertyAsm = (BeanPropertyAsm)enhanceClass.newInstance();
+				BeanPropertyAsmWrapper writeWrapper = new BeanPropertyAsmWrapper(beanPropertyAsm);
+				propertyAsmMap.put(c,writeWrapper) ;
+				return writeWrapper;
+
+			}catch (Exception exception){
+
+				throw new BeetlSQLException(BeetlSQLException.ERROR,"代码生成Bean错误 "+exception.getMessage(),exception);
+			}
+
+		}
+
 
 	}
 

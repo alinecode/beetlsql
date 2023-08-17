@@ -1,19 +1,23 @@
 package com.ibeetl.sql.pref;
 
+import com.beetl.sql.pref.BeanAsmCode;
 import com.beetl.sql.pref.BeanPropertyAsm;
 import com.beetl.sql.pref.BeanPropertyWriteFactory;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 public class BeanASMTest {
 
 	@Test
 	public void testGen() throws Exception{
 		Class beanClass = TestBean.class;
-//		byte[] bs = BeanAsmCode.genCode(beanClass);
-//		FileOutputStream fos = new FileOutputStream(new File("My.class"));
-//		fos.write(bs);
+		byte[] bs = BeanAsmCode.genCode(beanClass);
+		FileOutputStream fos = new FileOutputStream(new File("My.class"));
+		fos.write(bs);
 
 		Object bean = new TestBean();
 		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(beanClass);
@@ -35,38 +39,50 @@ public class BeanASMTest {
 			beanPropertyAsm.setValue(199,bean,"hello");
 			Assert.fail();
 		}catch (BeetlSQLException e){
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 
 		try{
 			beanPropertyAsm.getValue(199,bean);
 			Assert.fail();
 		}catch (BeetlSQLException e){
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 
 	}
 
 	@Test
 	public void testCastError() throws Exception{
-		Class beanClass = TestBean.class;
+		Class beanClass = TestBean2.class;
 
 
-		Object bean = new TestBean();
+		Object bean = new TestBean2();
 		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(beanClass);
-//		try{
-//			beanPropertyAsm.setValue(1,bean,1);
-//			Assert.fail();
-//		}catch (BeetlSQLException e){
+
+
+		try{
+			beanPropertyAsm.setValue(1,bean,"1");
+			Assert.fail();
+		}catch (BeetlSQLException e){
 //			e.printStackTrace();
-//		}
+		}
 
 		try{
 			beanPropertyAsm.getValue(1,bean);
 			Assert.fail();
 		}catch (BeetlSQLException e){
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 
+	}
+
+	public class TestBean2 extends  TestBean{
+		public Integer getCol1() {
+			throw new RuntimeException("test");
+		}
+
+		public void setCol1(Integer col1) {
+			this.col1 = col1;
+		}
 	}
 }
