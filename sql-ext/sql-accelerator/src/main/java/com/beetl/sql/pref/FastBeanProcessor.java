@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * 暂时没有，未来考虑 把toBean中的反射赋值替换成asm 直接调用
@@ -39,16 +38,16 @@ public   class FastBeanProcessor extends BeanProcessor {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int[] columnToProperty = this.mapColumnsToProperties(ctx,type, rsmd, props);
 		//增加一个属性写辅助类
-		BeanPropertyWrite beanPropertyWrite = BeanPropertyWriteFactory.getBeanPropertyWrite(type);
+		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(type);
 		do {
-			results.add(this.createBean(beanPropertyWrite,ctx, rs, type, props, columnToProperty));
+			results.add(this.createBean(beanPropertyAsm,ctx, rs, type, props, columnToProperty));
 		} while (rs.next());
 
 		return results;
 
 	}
 
-	protected <T> T createBean(BeanPropertyWrite beanPropertyWrite,ExecuteContext ctx, ResultSet rs, Class<T> type, PropertyDescriptor[] props,
+	protected <T> T createBean(BeanPropertyAsm beanPropertyAsm,ExecuteContext ctx, ResultSet rs, Class<T> type, PropertyDescriptor[] props,
 		int[] columnToProperty) throws SQLException {
 
 		T bean = this.newInstance(type);
@@ -109,7 +108,7 @@ public   class FastBeanProcessor extends BeanProcessor {
 				value = handler.getValue(tp);
 			}
 
-			beanPropertyWrite.setValue(columnToProperty[i],bean,value);
+			beanPropertyAsm.setValue(columnToProperty[i],bean,value);
 
 		}
 		return bean;

@@ -1,5 +1,4 @@
 package com.beetl.sql.pref;
-import org.beetl.core.om.asm.Constants;
 import org.beetl.ow2.asm.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 
@@ -8,12 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import static org.beetl.ow2.asm.Opcodes.*;
 
 public class BeanAsmCode {
-	static  final  String supperName  = BeanPropertyWrite.class.getName().replace('.','/');
+	static  final  String supperName  = BeanPropertyAsm.class.getName().replace('.','/');
 
 	public static byte[] genCode(Class bean) throws Exception {
 		ClassWriter classWriter = new ClassWriter(0);
@@ -21,6 +19,7 @@ public class BeanAsmCode {
 			supperName, null);
 		genConstruct(classWriter);
 		genPropertyWrite(classWriter,bean);
+		genPropertyRead(classWriter,bean);
 		classWriter.visitEnd();
 		return classWriter.toByteArray();
 	}
@@ -85,8 +84,9 @@ public class BeanAsmCode {
 		methodVisitor.visitVarInsn(ALOAD, 0);
 		methodVisitor.visitVarInsn(ILOAD, 1);
 		methodVisitor.visitVarInsn(ALOAD, 2);
-		methodVisitor.visitMethodInsn(INVOKEVIRTUAL, supperName, "throwException",
-			"(ILjava/lang/Object;)V", false);
+		methodVisitor.visitMethodInsn(INVOKEVIRTUAL, getAsmClassName(BeanPropertyAsm.class.getName()), "throwException",
+				"(ILjava/lang/Object;)Ljava/lang/RuntimeException;", false);
+		methodVisitor.visitInsn(ATHROW);
 
 
 		methodVisitor.visitLabel(labelEnd);
@@ -94,6 +94,71 @@ public class BeanAsmCode {
 		methodVisitor.visitInsn(RETURN);
 		methodVisitor.visitMaxs(3, 5);
 		methodVisitor.visitEnd();
+
+	}
+
+	protected  static void genPropertyRead(ClassWriter classWriter,Class bean) throws Exception{
+		String beanAsmName = getAsmClassName(bean.getName());
+
+		MethodVisitor   methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "getValue", "(ILjava/lang/Object;)Ljava/lang/Object;",
+				null, null);
+		methodVisitor.visitCode();
+		methodVisitor.visitVarInsn(ALOAD, 2);
+		methodVisitor.visitTypeInsn(CHECKCAST, beanAsmName);
+		methodVisitor.visitVarInsn(ASTORE, 3);
+		methodVisitor.visitVarInsn(ILOAD, 1);
+		PropertyDescriptor[] ps = BeanKit.propertyDescriptors(bean);
+		List<Label> switchLabelList = new ArrayList<>(ps.length);
+		Map<Label,PropertyDescriptor> propertyDescriptorMap = new HashMap<>();
+		List<Integer> labelIndex = new ArrayList<>();
+
+		for(int i=0;i<ps.length;i++){
+			PropertyDescriptor p = ps[i];
+			if(p.getWriteMethod()==null){
+				continue;
+			}
+			Label label = new Label();
+			labelIndex.add(i);
+			switchLabelList.add(label);
+			propertyDescriptorMap.put(label,p);
+		}
+
+		Label labelDefault = new Label();
+
+		methodVisitor.visitLookupSwitchInsn(labelDefault, labelIndex.stream().mapToInt(Integer::valueOf).toArray(),
+				switchLabelList.toArray(new Label[0]));
+
+		boolean isFirst = true;
+		for(Label label:switchLabelList){
+			PropertyDescriptor propertyDescriptor = propertyDescriptorMap.get(label);
+			methodVisitor.visitLabel(label);
+			if (isFirst) {
+				methodVisitor.visitFrame(Opcodes.F_APPEND, 1,  new Object[]{beanAsmName}, 0, null);
+				isFirst = false;
+			} else {
+				methodVisitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+
+			}
+			methodVisitor.visitVarInsn(ALOAD, 3);
+			String typeAsmName = getAsmClassName(propertyDescriptor.getPropertyType().getName());
+
+			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getReadMethod().getName(),
+					"()L"+typeAsmName+";", false);
+			methodVisitor.visitInsn(ARETURN);
+
+		}
+		//default:throwException(index,obj)
+		methodVisitor.visitLabel(labelDefault);
+		methodVisitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+		methodVisitor.visitVarInsn(ALOAD, 0);
+		methodVisitor.visitVarInsn(ILOAD, 1);
+		methodVisitor.visitVarInsn(ALOAD, 2);
+		methodVisitor.visitMethodInsn(INVOKEVIRTUAL, getAsmClassName(BeanPropertyAsm.class.getName()), "throwException",
+				"(ILjava/lang/Object;)Ljava/lang/RuntimeException;", false);
+		methodVisitor.visitInsn(ATHROW);
+		methodVisitor.visitMaxs(3, 4);
+		methodVisitor.visitEnd();
+
 
 	}
 

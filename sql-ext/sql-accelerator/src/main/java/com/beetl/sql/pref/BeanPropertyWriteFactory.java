@@ -1,6 +1,5 @@
 package com.beetl.sql.pref;
 
-import org.beetl.core.GroupTemplate;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 
 import java.util.Map;
@@ -11,10 +10,10 @@ public class BeanPropertyWriteFactory {
 
 
 	private final static Map<ClassLoader, ByteClassLoader> classLoaders = new ConcurrentHashMap<>();
-	static Map<Class,BeanPropertyWrite> propertyWriteMap = new ConcurrentHashMap<>();
+	static Map<Class, BeanPropertyAsm> propertyWriteMap = new ConcurrentHashMap<>();
 
-	public static BeanPropertyWrite  getBeanPropertyWrite(Class c){
-		BeanPropertyWrite propertyWrite = propertyWriteMap.get(c);
+	public static BeanPropertyAsm getBeanProperty(Class c){
+		BeanPropertyAsm propertyWrite = propertyWriteMap.get(c);
 		if(propertyWrite!=null){
 			return propertyWrite;
 		}
@@ -35,8 +34,8 @@ public class BeanPropertyWriteFactory {
 					if (enhanceClass == null) {
 						enhanceClass = byteClassLoader.defineClass(name, bs);
 					}
-					BeanPropertyWrite beanPropertyWrite = (BeanPropertyWrite)enhanceClass.newInstance();
-					BeanPropertyWriteWrapper writeWrapper = new BeanPropertyWriteWrapper(beanPropertyWrite);
+					BeanPropertyAsm beanPropertyAsm = (BeanPropertyAsm)enhanceClass.newInstance();
+					BeanPropertyAsmWrapper writeWrapper = new BeanPropertyAsmWrapper(beanPropertyAsm);
 					return writeWrapper;
 
 				}catch (Exception exception){

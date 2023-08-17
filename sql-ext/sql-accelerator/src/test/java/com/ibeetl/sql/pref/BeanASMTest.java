@@ -1,29 +1,27 @@
 package com.ibeetl.sql.pref;
 
-import com.beetl.sql.pref.BeanAsmCode;
-import com.beetl.sql.pref.BeanPropertyWrite;
+import com.beetl.sql.pref.BeanPropertyAsm;
 import com.beetl.sql.pref.BeanPropertyWriteFactory;
-import org.beetl.ow2.asm.ClassReader;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.FileOutputStream;
 
 public class BeanASMTest {
 
 	@Test
 	public void testGen() throws Exception{
 		Class beanClass = TestBean.class;
-		byte[] bs = BeanAsmCode.genCode(beanClass);
-		FileOutputStream fos = new FileOutputStream(new File("My.class"));
-		fos.write(bs);
+//		byte[] bs = BeanAsmCode.genCode(beanClass);
+//		FileOutputStream fos = new FileOutputStream(new File("My.class"));
+//		fos.write(bs);
 
 		Object bean = new TestBean();
-		BeanPropertyWrite beanPropertyWrite = BeanPropertyWriteFactory.getBeanPropertyWrite(beanClass);
-		beanPropertyWrite.setValue(1,bean,1);
-		System.out.println(bean.toString());
+		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(beanClass);
+		Integer input = 3;
+		beanPropertyAsm.setValue(1,bean,input);
+		Integer v = (Integer)beanPropertyAsm.getValue(1,bean);
+		Assert.assertEquals(input,v);
+
 	}
 
 	@Test
@@ -32,12 +30,42 @@ public class BeanASMTest {
 
 
 		Object bean = new TestBean();
-		BeanPropertyWrite beanPropertyWrite = BeanPropertyWriteFactory.getBeanPropertyWrite(beanClass);
+		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(beanClass);
 		try{
-			beanPropertyWrite.setValue(199,bean,"hello");
+			beanPropertyAsm.setValue(199,bean,"hello");
 			Assert.fail();
 		}catch (BeetlSQLException e){
+			e.printStackTrace();
+		}
 
+		try{
+			beanPropertyAsm.getValue(199,bean);
+			Assert.fail();
+		}catch (BeetlSQLException e){
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void testCastError() throws Exception{
+		Class beanClass = TestBean.class;
+
+
+		Object bean = new TestBean();
+		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(beanClass);
+//		try{
+//			beanPropertyAsm.setValue(1,bean,1);
+//			Assert.fail();
+//		}catch (BeetlSQLException e){
+//			e.printStackTrace();
+//		}
+
+		try{
+			beanPropertyAsm.getValue(1,bean);
+			Assert.fail();
+		}catch (BeetlSQLException e){
+			e.printStackTrace();
 		}
 
 	}

@@ -8,6 +8,9 @@ import org.beetl.core.statement.*;
 import org.beetl.core.statement.optimal.BlockStatementOptimal;
 import org.beetl.core.statement.optimal.VarRefOptimal;
 import org.beetl.sql.clazz.NameConversion;
+import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrapFactory;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.BeetlSQLTemplateEngine;
 import org.beetl.sql.core.engine.SQLGrammarCreator;
@@ -16,6 +19,7 @@ import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.ext.PluginExtConfig;
 
+import java.beans.PropertyDescriptor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,6 +44,13 @@ public class PerformanceConfig implements PluginExtConfig {
 
 		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine)sqlTemplateEngine;
 		beetlTemplateEngine.getBeetl().getGroupTemplate().setEngine(new FastSQLRenderTemplate());
+
+		BeanKit.propertyDescriptorWrapFactory = new PropertyDescriptorWrapFactory() {
+			@Override
+			public PropertyDescriptorWrap make(Class c, PropertyDescriptor prop, int i) {
+				return new FastPropertyDescriptor(c,prop,i);
+			}
+		};
 
 	}
 

@@ -1,10 +1,7 @@
 package com.ibeetl.sql.pref;
 
-import com.beetl.sql.pref.BeanPropertyWrite;
-import com.beetl.sql.pref.BeanPropertyWriteFactory;
+import com.beetl.sql.pref.BeanPropertyAsm;
 import com.esotericsoftware.reflectasm.MethodAccess;
-import lombok.SneakyThrows;
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -12,8 +9,6 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,7 +32,7 @@ public class BeanASMPerfTest {
 	private int[] reflectIndex = null;
 	MethodAccess methodAccess = MethodAccess.get(TestBean.class);
 
-	BeanPropertyWrite myBeanWrite = null;
+	BeanPropertyAsm myBeanWrite = null;
 
 //	@Benchmark
 //	public void direct() {

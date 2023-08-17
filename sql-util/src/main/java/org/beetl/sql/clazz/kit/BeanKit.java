@@ -1,11 +1,6 @@
 package org.beetl.sql.clazz.kit;
 
 
-import lombok.Data;
-import org.beetl.core.GroupTemplate;
-import org.beetl.core.fun.MethodInvoker;
-import org.beetl.core.fun.ObjectUtil;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -24,13 +19,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BeanKit {
 
 	public static boolean queryLambdasSupport = JavaType.isJdk8();
-
+	/**
+	 * 设置false，支持lombok非javabean支持，链式调用
+	 */
+	public static boolean JAVABEAN_STRICT = true;
 	static Map<Class,Map<String,Field>> classFields = new ConcurrentHashMap<>();
-	static Map<Class,Map<String,PropertyDescriptor>> classProperty = new ConcurrentHashMap<>();
+	static Map<Class,Map<String,PropertyDescriptorWrap>> classProperty = new ConcurrentHashMap<>();
 	/**
 	 * 一个通常的class对应的实例的缓存
 	 */
 	public static Cache classInsCache = new DefaultCache();
+
+	public static PropertyDescriptorWrapFactory propertyDescriptorWrapFactory = (c, prop, i) -> new PropertyDescriptorWrap(c,prop,i);
+
 	public static PropertyDescriptor[] propertyDescriptors(Class<?> c) throws IntrospectionException {
 
 		BeanInfo beanInfo = null;
@@ -44,7 +45,7 @@ public class BeanKit {
 		if(map!=null){
 			return map;
 		}
-		CaseInsensitiveHashMap fieldMap = new CaseInsensitiveHashMap();
+		HashMap fieldMap = JAVABEAN_STRICT?new HashMap():new CaseInsensitiveHashMap();
 		for(Field field: c.getDeclaredFields()){
 			String name = field.getName();
 			fieldMap.put(name,field);
@@ -54,16 +55,18 @@ public class BeanKit {
 
 	}
 
-	public static Map<String,PropertyDescriptor> getClassProperty(Class c)  {
-		Map<String,PropertyDescriptor> map  =classProperty.get(c);
+	public static Map<String,PropertyDescriptorWrap> getClassProperty(Class c)  {
+		Map<String,PropertyDescriptorWrap> map  =classProperty.get(c);
 		if(map!=null){
 			return map;
 		}
 		try{
-			Map propertyMap = new HashMap();
-			for(PropertyDescriptor propertyDescriptor: propertyDescriptors(c)){
+			Map propertyMap = JAVABEAN_STRICT?new HashMap():new CaseInsensitiveHashMap();
+			PropertyDescriptor[] propertyDescriptors = propertyDescriptors(c);
+			for(int i=0;i<propertyDescriptors.length;i++){
+				PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
 				String name = propertyDescriptor.getName();
-				propertyMap.put(name,propertyDescriptor);
+				propertyMap.put(name,propertyDescriptorWrapFactory.make(c,propertyDescriptor,i));
 			}
 			classProperty.put(c,propertyMap);
 			return propertyMap;
@@ -71,25 +74,33 @@ public class BeanKit {
 			throw new IllegalStateException(c.getName());
 		}
 
-
 	}
 
-	public static PropertyDescriptor getPropertyDescriptor(Class c, String attr) {
-		Map<String,PropertyDescriptor>  map = getClassProperty(c);
+	/**
+	 * 清除缓存，只有在动态类加载场景下，才有可能需要这么做，如dcemv技术
+	 */
+	public static void clearCache(){
+		classFields.clear();
+		classProperty.clear();
+		classInsCache.clearAll();
+	}
 
-		PropertyDescriptor propertyDescriptor =  map.get(attr);
+
+	public static PropertyDescriptor getPropertyDescriptor(Class c, String attr) {
+		Map<String,PropertyDescriptorWrap>  map = getClassProperty(c);
+		PropertyDescriptorWrap propertyDescriptor =  map.get(attr);
 		if(propertyDescriptor!=null){
 			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"找不到属性 "+attr+" @"+c);
 		}
-		return propertyDescriptor;
+		return propertyDescriptor.getProp();
 	}
 
 	public static PropertyDescriptor getPropertyDescriptorWithNull(Class c, String attr) {
-		Map<String,PropertyDescriptor>  map = getClassProperty(c);
+		Map<String,PropertyDescriptorWrap>  map = getClassProperty(c);
 
-		PropertyDescriptor propertyDescriptor =  map.get(attr);
+		PropertyDescriptorWrap propertyDescriptor =  map.get(attr);
 
-		return propertyDescriptor;
+		return propertyDescriptor.getProp();
 	}
 
 
@@ -129,15 +140,15 @@ public class BeanKit {
 	public static Object getBeanProperty(Object o, String attrName) {
 
 		try {
-			Map<String,PropertyDescriptor> map =getClassProperty(o.getClass());
-			PropertyDescriptor propertyDescriptor = map.get(attrName);
+			Map<String,PropertyDescriptorWrap> map =getClassProperty(o.getClass());
+			PropertyDescriptorWrap propertyDescriptor = map.get(attrName);
 			if(propertyDescriptor==null){
 				throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"属性不存在 "+attrName+" @"+o.getClass());
 			}
-			return propertyDescriptor.getReadMethod().invoke(o);
+			return propertyDescriptor.getValue(o);
 
 		} catch (Exception ex) {
-			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性赋值错误 "+attrName+" @"+o.getClass()+",Error="+ex.getMessage());
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性取值错误 "+attrName+" @"+o.getClass()+",Error="+ex.getMessage());
 		}
 	}
 
@@ -150,33 +161,35 @@ public class BeanKit {
 	 */
 	public static void setBeanProperty(Object o, Object value, String attrName) {
 
-		MethodInvoker inv = ObjectUtil.getInvokder(o.getClass(), attrName);
-		if (inv == null) {
-			throw new IllegalArgumentException("未能找到对象" + o.getClass() + "的属性");
+		PropertyDescriptorWrap propertyDescriptor = getClassProperty(o.getClass()).get(attrName);
+		if(propertyDescriptor==null){
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"属性不存在 "+attrName+" @"+o.getClass());
 		}
-		inv.set(o, value);
+		try{
+			propertyDescriptor.setValue(o,value);
+		}catch (Exception  ex){
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "属性赋值错误 "+attrName+" @"+o.getClass()+",Error="+ex.getMessage());
+		}
+
 
 	}
 
 	/**
-	 * 调用Beetl，设置某个属性，如果属性类型与值不配置，试图转化
+	 * 调用Beetl，设置某个属性，如果属性类型与值不配置，试图转化.目前用于数据库id转化为pojo的id
 	 * @param o
 	 * @param value
 	 * @param attrName
+	 * @see "assgnKeyHolder"
 	 */
 	public static void setBeanPropertyWithCast(Object o, Object value, String attrName) {
 		if (value == null) {
 			return;
 		}
-		Map<String,PropertyDescriptor> map = getMapIns(o.getClass());
-		PropertyDescriptor propertyDescriptor = map.get(attrName);
-		Class type = propertyDescriptor.getPropertyType();
+		Map<String,PropertyDescriptorWrap> map = getClassProperty(o.getClass());
+		PropertyDescriptorWrap propertyDescriptor = map.get(attrName);
+		Class type = propertyDescriptor.getProp().getPropertyType();
 		Object requiredValue = convertValueToRequiredType(value, type);
-		try{
-			propertyDescriptor.getWriteMethod().invoke(o,requiredValue);
-		}catch (Exception exception){
-			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"属性 "+attrName+" 赋值报错 "+o.getClass());
-		}
+		propertyDescriptor.setValue(o,requiredValue);
 
 	}
 
@@ -328,7 +341,15 @@ public class BeanKit {
 
 	}
 
-
+	/**
+	 * 得到属性注解，优先查找getter方法，然后在查找字段
+	 * @param c
+	 * @param property
+	 * @param getter
+	 * @param annotationClass
+	 * @return
+	 * @param <T>
+	 */
 	public static <T extends Annotation> T getAnnotation(Class c, String property, Method getter,
 			Class<T> annotationClass) {
 		if (getter == null) {
@@ -364,22 +385,22 @@ public class BeanKit {
 
 
 	public static <T extends Annotation> T getAnnotation(Class c, String property, Class<T> annotationClass) {
-		Map<String,PropertyDescriptor> map = getClassProperty(c);
-		PropertyDescriptor propertyDescriptor = map.get(property);
+		Map<String,PropertyDescriptorWrap> map = getClassProperty(c);
+		PropertyDescriptorWrap propertyDescriptor = map.get(property);
 		if (propertyDescriptor == null) {
 			return null;
 		}
-		return getAnnotation(c, property, propertyDescriptor.getReadMethod(), annotationClass);
+		return getAnnotation(c, property, propertyDescriptor.getProp().getReadMethod(), annotationClass);
 
 	}
 
 	public static List<Annotation> getAllAnnotation(Class c, String property) {
-		Map<String,PropertyDescriptor> map = getClassProperty(c);
-		PropertyDescriptor propertyDescriptor = map.get(property);
+		Map<String,PropertyDescriptorWrap> map = getClassProperty(c);
+		PropertyDescriptorWrap propertyDescriptor = map.get(property);
 		if (propertyDescriptor == null) {
 			return null;
 		}
-		Method getter = propertyDescriptor.getReadMethod();
+		Method getter = propertyDescriptor.getProp().getReadMethod();
 		Annotation[] array1 = getter.getAnnotations();
 		Annotation[] array2 = null;
 		Field f = getField(c, property);

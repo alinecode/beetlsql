@@ -13,7 +13,6 @@ import org.beetl.sql.core.engine.SQLGrammarCreator;
 public 	  class FastSQLRenderTemplate extends BeetlSQLTemplateEngine {
 	public FastSQLRenderTemplate() {
 		super();
-		AABuilder.defalutAAFactory = new AsmAAFactory();
 	}
 
 	@Override
