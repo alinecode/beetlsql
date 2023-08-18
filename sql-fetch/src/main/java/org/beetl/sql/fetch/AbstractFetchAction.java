@@ -2,6 +2,7 @@ package org.beetl.sql.fetch;
 
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.SQLManager;
 
 import java.beans.PropertyDescriptor;
@@ -14,7 +15,7 @@ import java.lang.annotation.Annotation;
 public abstract  class AbstractFetchAction  implements  FetchAction{
 
 	Annotation annotation ;
-	PropertyDescriptor originProperty;
+	PropertyDescriptorWrap originProperty;
 	Class owner;
 	Class target;
 	String enableOn ;
@@ -84,7 +85,7 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
 	}
 
 	@Override
-	public void init(Class owner, Class target,Annotation config, PropertyDescriptor originProperty){
+	public void init(Class owner, Class target,Annotation config, PropertyDescriptorWrap originProperty){
     	this.owner = owner;
     	this.target = target;
     	this.annotation = config;
@@ -94,7 +95,7 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
 	}
 
 	@Override
-	public PropertyDescriptor getOriginProperty(){
+	public PropertyDescriptorWrap getOriginProperty(){
     	return this.originProperty;
 	}
 }

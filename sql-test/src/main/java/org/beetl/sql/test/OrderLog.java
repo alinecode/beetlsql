@@ -1,6 +1,7 @@
 package org.beetl.sql.test;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.beetl.sql.annotation.builder.Date2Long;
 import org.beetl.sql.annotation.entity.*;
 import org.beetl.sql.core.mapping.join.AutoJsonMapper;
@@ -10,6 +11,8 @@ import java.util.Date;
 
 
 @Table(name="order_log")
+@Data()
+@Accessors(chain = true)
 //@ResultProvider(AutoJsonMapper.class)
 public class OrderLog {
 	@AutoID

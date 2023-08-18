@@ -52,7 +52,6 @@ public   class FastBeanProcessor extends BeanProcessor {
 
 		T bean = this.newInstance(type);
 		ResultSetMetaData meta = rs.getMetaData();
-		Class viewType = ctx.viewClass;
 
 		SqlId sqlId = ctx.sqlId;
 		NameConversion nc = ctx.sqlManager.getNc();

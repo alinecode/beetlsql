@@ -50,21 +50,19 @@ public class QuickTest {
 	}
 
 	public static void main(String[] args) throws Exception {
+		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
+		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
+		System.out.println(orderLog);
+		orderLog.setABc("effdfdf").setCreateTime( new Date());
+		sqlManager.updateById(orderLog);
+		orderLog = sqlManager.unique(OrderLog.class,1);
+		System.out.println(orderLog);
 
 
-		PropertyDescriptor[] ps = BeanKit.propertyDescriptors(OrderLog.class);
-		Field[] fields = OrderLog.class.getDeclaredFields();
-//		for(PropertyDescriptor p:ps){
-//			System.out.println(p);
-//			System.out.println(p.getName()+":"+BeanKit.getFieldNameByPropertyName(fields,p.getName()));
-//		}
-//
-//		ClassDesc classDesc = sqlManager.getClassDesc(OrderLog.class);
-//		List<OrderLog> orderLog = sqlManager.all(OrderLog.class);
-//		System.out.println(orderLog);
+
 
 	}
 

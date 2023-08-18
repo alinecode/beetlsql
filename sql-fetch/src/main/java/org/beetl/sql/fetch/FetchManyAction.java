@@ -1,6 +1,7 @@
 package org.beetl.sql.fetch;
 
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.engine.DynamicFetchEnableOnFunction;
@@ -34,15 +35,15 @@ import java.util.List;
  */
 public class FetchManyAction extends   AbstractFetchAction {
 
-    PropertyDescriptor  idProperty;
-    PropertyDescriptor otherTypeFrom;
-    public FetchManyAction(PropertyDescriptor idProperty, PropertyDescriptor otherTypeFrom){
+    PropertyDescriptorWrap  idProperty;
+	PropertyDescriptorWrap otherTypeFrom;
+    public FetchManyAction(PropertyDescriptorWrap idProperty, PropertyDescriptorWrap otherTypeFrom){
         this.otherTypeFrom = otherTypeFrom;
         this.idProperty = idProperty;
     }
 
 	@Override
-	public void init(Class owner, Class target, Annotation config, PropertyDescriptor originProperty){
+	public void init(Class owner, Class target, Annotation config, PropertyDescriptorWrap originProperty){
 		super.init(owner, target, config, originProperty);
 		FetchMany fetchMany = (FetchMany)config;
 		enableOn = fetchMany.enableOn();
@@ -62,18 +63,18 @@ public class FetchManyAction extends   AbstractFetchAction {
 		}
 
         try{
-            Method idReadMethod = idProperty.getReadMethod();
-            Method fromWriteMethod = otherTypeFrom.getWriteMethod();
-            Method toWriteMethod = this.originProperty.getWriteMethod();
+//            Method idReadMethod = idProperty.getgetReadMethod();
+//            Method fromWriteMethod = otherTypeFrom.getWriteMethod();
+//            Method toWriteMethod = this.originProperty.getWriteMethod();
             for(int i=0;i<list.size();i++){
                 Object obj = list.get(i);
-                Object id = idReadMethod.invoke(obj,new Object[0]);
+                Object id = idProperty.getValue(obj);
                 Object cached  = queryFromCache(owner,id);
                 // 检测缓存
                 if(cached!=null){
                     list.remove(i);
                     list.add(i,cached);
-                    if(this.containAttribute(cached,originProperty.getName())){
+                    if(this.containAttribute(cached,originProperty.getProp().getName())){
 						//对象的字段已经被fetch过了
 						continue;
 					}
@@ -83,7 +84,7 @@ public class FetchManyAction extends   AbstractFetchAction {
 				}
 
                 Query query = ctx.sqlManager.query(target);
-				String colName = ctx.sqlManager.getNc().getColName(target,otherTypeFrom.getName());
+				String colName = ctx.sqlManager.getNc().getColName(target,otherTypeFrom.getProp().getName());
 				List values  = query.andEq(colName,id).select();
 
                 for(int j=0;j<values.size();j++){
@@ -99,12 +100,10 @@ public class FetchManyAction extends   AbstractFetchAction {
                     }
                 }
 
-                toWriteMethod.invoke(obj,values);
-                this.addAttribute(obj,originProperty.getName());
+				originProperty.setValue(obj,values);
+                this.addAttribute(obj,originProperty.getProp().getName());
             }
 
-        }catch(InvocationTargetException ex){
-            throw new BeetlSQLException(BeetlSQLException.ORM_ERROR,ex.getTargetException());
         }catch(Exception ex){
             throw new BeetlSQLException(BeetlSQLException.ORM_ERROR,ex);
         }

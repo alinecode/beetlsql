@@ -3,6 +3,7 @@ package org.beetl.sql.core.mapping.join;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.ResultSetMapper;
@@ -210,7 +211,7 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
 		/**
 		 * 标记此属性已经具备的NodeValue，避免重复加入到此对象
 		 */
-		Map<PropertyDescriptor, Set> flagMap = new HashMap<>();
+		Map<PropertyDescriptorWrap, Set> flagMap = new HashMap<>();
 
 		/**
 		 * 最终将节点中的列数据赋值给真正的对象
@@ -218,7 +219,7 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
 		 * @param propertyMap 属性名->PropertyDescriptor
 		 * @throws Exception 异常
 		 */
-		public void makeObject(Map<String, PropertyDescriptor> propertyMap) throws Exception {
+		public void makeObject(Map<String, PropertyDescriptorWrap> propertyMap) throws Exception {
 			if (Map.class.isAssignableFrom(target)) {
 				realObject = fromNodeValue.value;
 			} else {
@@ -228,12 +229,8 @@ public abstract class ConfigJoinMapper implements ResultSetMapper {
 				for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					String attr = entry.getKey();
 					Object value = entry.getValue();
-					PropertyDescriptor ps = propertyMap.get(attr);
-					try {
-						ps.getWriteMethod().invoke(obj, value);
-					} catch (IllegalArgumentException illegalArgumentException) {
-						throw new IllegalArgumentException(ps + " 属性不匹配 " + ps.getName() + " for " + value.getClass());
-					}
+					PropertyDescriptorWrap ps = propertyMap.get(attr);
+					ps.setValue(obj, value);
 				}
 				this.realObject = obj;
 			}

@@ -67,7 +67,7 @@ public class BeanKit {
 				return map;
 			}
 			try{
-				Map<String,PropertyDescriptorWrap> propertyMap = JAVABEAN_STRICT?new HashMap():new CaseInsensitiveHashMap();
+				Map<String,PropertyDescriptorWrap> propertyMap = new HashMap();
 				PropertyDescriptor[] propertyDescriptors = propertyDescriptors(c);
 				for(int i=0;i<propertyDescriptors.length;i++){
 					PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
@@ -103,6 +103,19 @@ public class BeanKit {
 		classInsCache.clearAll();
 	}
 
+	public static PropertyDescriptorWrap getPropertyDescriptorWrapWithNull(Class c, String attr) {
+		Map<String,PropertyDescriptorWrap>  map = getClassProperty(c);
+		PropertyDescriptorWrap propertyDescriptor =  map.get(attr);
+		return propertyDescriptor;
+	}
+	public static PropertyDescriptorWrap getPropertyDescriptorWrap(Class c, String attr) {
+		Map<String,PropertyDescriptorWrap>  map = getClassProperty(c);
+		PropertyDescriptorWrap propertyDescriptor =  map.get(attr);
+		if(propertyDescriptor==null){
+			throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR,"找不到属性 "+attr+" @"+c);
+		}
+		return propertyDescriptor;
+	}
 
 	public static PropertyDescriptor getPropertyDescriptor(Class c, String attr) {
 		Map<String,PropertyDescriptorWrap>  map = getClassProperty(c);

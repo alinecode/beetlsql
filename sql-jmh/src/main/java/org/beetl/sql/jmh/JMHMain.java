@@ -45,22 +45,22 @@ public class JMHMain {
         beetlSQLService = new BeetlSQLService();
         beetlSQLService.init();
 
-        SpringBoot springBoot = new SpringBoot();
-        springBoot.init();
-        springService = springBoot.getService();
-
-
-        MyBatisSpringBoot myBatisSpringBoot = new MyBatisSpringBoot();
-        myBatisSpringBoot.init();
-        myBatisSpringService = myBatisSpringBoot.getService();
-
+//        SpringBoot springBoot = new SpringBoot();
+//        springBoot.init();
+//        springService = springBoot.getService();
+//
+//
+//        MyBatisSpringBoot myBatisSpringBoot = new MyBatisSpringBoot();
+//        myBatisSpringBoot.init();
+//        myBatisSpringService = myBatisSpringBoot.getService();
+//
         woodService = new WoodService();
         woodService.init();
-
-		//see https://gitee.com/mybatis-flex/mybatis-benchmark
-		FlexInitializer.init();
-		easyQueryService=new EasyQueryService();
-		easyQueryService.init();
+//
+//		//see https://gitee.com/mybatis-flex/mybatis-benchmark
+//		FlexInitializer.init();
+//		easyQueryService=new EasyQueryService();
+//		easyQueryService.init();
 
     }
 
@@ -215,45 +215,45 @@ public class JMHMain {
 //		springService.getAll();
 //	}
 //
-//    /*   Wood    */
-//    @Benchmark
-//    public void woodInsert() {
-//        woodService.addEntity();
-//    }
-//
-//    @Benchmark
-//    public void woodSelectById() {
-//        woodService.getEntity();
-//    }
-//
-//    @Benchmark
-//    public void woodLambdaQuery() {
-//        woodService.lambdaQuery();
-//    }
-//
-//    @Benchmark
-//    public void woodExecuteJdbc() {
-//        woodService.executeJdbcSql();
-//    }
-//
-//    @Benchmark
-//    public void woodExecuteTemplate() {
-//        woodService.executeTemplateSql();
-//    }
-//
-//    @Benchmark
-//    public void woodFile() {
-//        woodService.sqlFile();
-//    }
-//
-//    @Benchmark
-//    public void woodPageQuery() {
-//        woodService.pageQuery();
-//    }
-//	@Benchmark
-//	public void woodGetAll() {
-//		woodService.getAll();
-//	}
+    /*   Wood    */
+    @Benchmark
+    public void woodInsert() {
+        woodService.addEntity();
+    }
+
+    @Benchmark
+    public void woodSelectById() {
+        woodService.getEntity();
+    }
+
+    @Benchmark
+    public void woodLambdaQuery() {
+        woodService.lambdaQuery();
+    }
+
+    @Benchmark
+    public void woodExecuteJdbc() {
+        woodService.executeJdbcSql();
+    }
+
+    @Benchmark
+    public void woodExecuteTemplate() {
+        woodService.executeTemplateSql();
+    }
+
+    @Benchmark
+    public void woodFile() {
+        woodService.sqlFile();
+    }
+
+    @Benchmark
+    public void woodPageQuery() {
+        woodService.pageQuery();
+    }
+	@Benchmark
+	public void woodGetAll() {
+		woodService.getAll();
+	}
 //
 //	/* flex orm */
 //	@Benchmark

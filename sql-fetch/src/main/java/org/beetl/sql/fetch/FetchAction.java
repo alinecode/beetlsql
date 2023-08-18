@@ -1,5 +1,6 @@
 package org.beetl.sql.fetch;
 
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.ExecuteContext;
 
 import java.beans.PropertyDescriptor;
@@ -16,9 +17,9 @@ import java.util.List;
 public interface FetchAction {
     void execute(ExecuteContext ctx, List list);
 
-    void init(Class owner, Class target, Annotation config, PropertyDescriptor pd);
+    void init(Class owner, Class target, Annotation config, PropertyDescriptorWrap pd);
 
     Annotation getAnnotation();
 
-    PropertyDescriptor getOriginProperty();
+	PropertyDescriptorWrap getOriginProperty();
 }

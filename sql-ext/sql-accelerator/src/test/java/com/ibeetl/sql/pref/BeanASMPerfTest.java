@@ -1,7 +1,10 @@
 package com.ibeetl.sql.pref;
 
 import com.beetl.sql.pref.BeanPropertyAsm;
+import com.beetl.sql.pref.BeanPropertyWriteFactory;
 import com.esotericsoftware.reflectasm.MethodAccess;
+import lombok.SneakyThrows;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -9,6 +12,8 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,70 +39,69 @@ public class BeanASMPerfTest {
 
 	BeanPropertyAsm myBeanWrite = null;
 
-//	@Benchmark
-//	public void direct() {
-//		TestBean testBean = new TestBean();
-//		testBean.setCol1(getAttr(1));
-//		testBean.setCol2(getAttr(2));
-//		testBean.setCol1(getAttr(3));
-//		testBean.setCol1(getAttr(4));
-//		testBean.setCol1(getAttr(5));
-//		testBean.setCol1(getAttr(6));
-//		testBean.setCol1(getAttr(7));
-//		testBean.setCol1(getAttr(8));
-//
-//	}
-//
-//	@Benchmark
-//	public void reflectAsm() {
-//		TestBean testBean = new TestBean();
-//		for(int i=1;i<=8;i++){
-//			methodAccess.invoke(testBean,reflectIndex[i],getAttr(i));
-//		}
-//	}
-//
-//	@Benchmark
-//	public void myasm() {
-//		TestBean testBean = new TestBean();
-//
-//		for(int i=1;i<=8;i++){
-//			myBeanWrite.setValue(i,testBean,getAttr(i));
-//		}
-//
-//	}
-//
-//	@Benchmark
-//	public void propertySet() throws InvocationTargetException, IllegalAccessException {
-//		TestBean testBean = new TestBean();
-//
-//		for(int i=1;i<=8;i++){
-//			propertyDescriptors[i].getWriteMethod().invoke(testBean,getAttr(i));
-//		}
-//
-//	}
-//
-//
-//	@SneakyThrows
-//	@Setup
-//	public void init(){
-//		MethodAccess methodAccess = MethodAccess.get(TestBean.class);
-//		PropertyDescriptor[] propertyDescriptors = BeanKit.propertyDescriptors(TestBean.class);
-//		int[] index = new int[propertyDescriptors.length];
-//		int i=0;
-//		for(PropertyDescriptor ps:propertyDescriptors){
-//			Method method = ps.getWriteMethod();
-//			if(method==null){
-//				continue;
-//			}
-//			index[i++] = methodAccess.getIndex(method.getName());
-//		}
-//
-//		reflectIndex = index;
-//		this.propertyDescriptors = propertyDescriptors;
-//
-//		myBeanWrite = BeanPropertyWriteFactory.getBeanPropertyWrite(TestBean.class);
-//
-//	}
+	@Benchmark
+	public void direct() {
+		TestBean testBean = new TestBean();
+		testBean.setCol1(111);
+		testBean.setCol2(getAttr(2));
+		testBean.setCol3(getAttr(3));
+		testBean.setCol4(getAttr(4));
+		testBean.setCol5(getAttr(5));
+		testBean.setCol7(getAttr(6));
+		testBean.setCol7(getAttr(7));
+		testBean.setCol8(999);
+
+	}
+
+	@Benchmark
+	public void reflectAsm() {
+		TestBean testBean = new TestBean();
+		for(int i=1;i<=8;i++){
+			methodAccess.invoke(testBean,reflectIndex[i],getAttr(i));
+		}
+	}
+
+	@Benchmark
+	public void myasm() {
+		TestBean testBean = new TestBean();
+
+		for(int i=1;i<=8;i++){
+			myBeanWrite.setValue(i,testBean,getAttr(i));
+		}
+
+	}
+
+	@Benchmark
+	public void propertySet() throws InvocationTargetException, IllegalAccessException {
+		TestBean testBean = new TestBean();
+
+		for(int i=1;i<=8;i++){
+			propertyDescriptors[i].getWriteMethod().invoke(testBean,getAttr(i));
+		}
+
+	}
+
+
+	@SneakyThrows
+	@Setup
+	public void init(){
+		MethodAccess methodAccess = MethodAccess.get(TestBean.class);
+		PropertyDescriptor[] propertyDescriptors = BeanKit.propertyDescriptors(TestBean.class);
+		int[] index = new int[propertyDescriptors.length];
+		int i=0;
+		for(PropertyDescriptor ps:propertyDescriptors){
+			Method method = ps.getWriteMethod();
+			if(method==null){
+				continue;
+			}
+			index[i++] = methodAccess.getIndex(method.getName());
+		}
+
+		reflectIndex = index;
+		this.propertyDescriptors = propertyDescriptors;
+		myBeanWrite = BeanPropertyWriteFactory.getBeanProperty(TestBean.class);
+
+	}
 
 
 

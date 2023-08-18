@@ -3,6 +3,7 @@ package org.beetl.sql.fetch;
 import org.beetl.ext.fn.StringUtil;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
@@ -34,10 +35,10 @@ import java.util.Map;
  */
 public class FetchOneAction extends AbstractFetchAction {
 
-    PropertyDescriptor from;
+    PropertyDescriptorWrap from;
 
 	@Override
-	public void init(Class owner, Class target, Annotation config, PropertyDescriptor originProperty){
+	public void init(Class owner, Class target, Annotation config, PropertyDescriptorWrap originProperty){
 		super.init(owner,target,config,originProperty);
 		FetchOne fetchOne = (FetchOne)config;
 		enableOn = fetchOne.enableOn();
@@ -49,7 +50,7 @@ public class FetchOneAction extends AbstractFetchAction {
      *
      * @param from user#departmentId
      */
-    public FetchOneAction(PropertyDescriptor from) {
+    public FetchOneAction(PropertyDescriptorWrap from) {
 
         if (from == null) {
             throw new IllegalArgumentException("FetchOne 未正确指定属性 " + owner + " to " + target);
@@ -71,12 +72,12 @@ public class FetchOneAction extends AbstractFetchAction {
 		}
 
         try {
-            Method fromReadMethod = from.getReadMethod();
-            Method toWriteMethod = this.originProperty.getWriteMethod();
+//            Method fromReadMethod = from.getReadMethod();
+//            Method toWriteMethod = this.originProperty.getWriteMethod();
             Map<Object, List<Object>> todoLoad = new HashMap<>();
             for (int i = 0; i < list.size(); i++) {
                 Object obj = list.get(i);
-                Object otherTypeId = fromReadMethod.invoke(obj);
+                Object otherTypeId = from.getValue(obj);
                 if (otherTypeId == null) {
                     continue;
                 }
@@ -86,7 +87,7 @@ public class FetchOneAction extends AbstractFetchAction {
                     list.remove(i);
                     //使用缓存对象代替，不需要操作数据库，也避免循环引用
                     list.add(i, cached);
-                    if (this.containAttribute(cached, originProperty.getName())) {
+                    if (this.containAttribute(cached, originProperty.getProp().getName())) {
                         //对象的字段已经被fetch过了
                         continue;
                     }
@@ -109,7 +110,7 @@ public class FetchOneAction extends AbstractFetchAction {
                 }
 
                 //成功赋值
-                toWriteMethod.invoke(obj, toObject);
+				originProperty.setValue(obj,toObject);
 
             }
 
@@ -134,14 +135,12 @@ public class FetchOneAction extends AbstractFetchAction {
                     continue;
                 }
                 for (Object obj : objs) {
-                    toWriteMethod.invoke(obj, toObject);
-                    addAttribute(obj, originProperty.getName());
+					originProperty.setValue(obj, toObject);
+                    addAttribute(obj, originProperty.getProp().getName());
                 }
                 addCached(toObject, key);
             }
-        } catch (InvocationTargetException ex) {
-            throw new BeetlSQLException(BeetlSQLException.ORM_ERROR, ex.getTargetException());
-        } catch (Exception ex) {
+        }  catch (Exception ex) {
             throw new BeetlSQLException(BeetlSQLException.ORM_ERROR, ex);
         }
 

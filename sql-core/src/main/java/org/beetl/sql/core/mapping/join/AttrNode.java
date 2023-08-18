@@ -5,6 +5,7 @@ import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.mapping.BeanProcessor;
 import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
@@ -40,7 +41,7 @@ public class AttrNode {
 	/**
 	 * 当前节点对应Bean所在的父级Bean属性的PropertyDescriptor
 	 */
-	public PropertyDescriptor typePdInParent;
+	public PropertyDescriptorWrap typePdInParent;
 
 	/**
 	 * ResultSet列索引->对应字段属性名
@@ -52,7 +53,7 @@ public class AttrNode {
 	/**
 	 * 属性名->字段的PropertyDescriptor
 	 */
-	public Map<String, PropertyDescriptor> propertyMap = new HashMap<>();
+	public Map<String, PropertyDescriptorWrap> propertyMap = new HashMap<>();
 
 	public AttrNode() {
 		this.parent = null;
@@ -78,7 +79,7 @@ public class AttrNode {
 		for (Map.Entry<String, Object> entry : jsonMapping.entrySet()) {
 			String attr = entry.getKey();
 			Object value = entry.getValue();
-			PropertyDescriptor pd = BeanKit.getPropertyDescriptorWithNull(target, attr);
+			PropertyDescriptorWrap pd = BeanKit.getPropertyDescriptorWrap(target, attr);
 			if (pd == null) {
 				throw new BeetlSQLException(BeetlSQLException.MAPPING_ERROR, "字段[" + attr + "]映射规则错误，实体类无该段");
 			}
@@ -100,13 +101,13 @@ public class AttrNode {
 
 			Map<String, Object> childMapping = (Map<String, Object>) value;
 
-			Class<?> type = pd.getPropertyType();
+			Class<?> type = pd.getProp().getPropertyType();
 			AttrNode childNode = new AttrNode(this);
 			childNode.typePdInParent = pd;
 			if (Collection.class.isAssignableFrom(type)) {
 				this.isCollection = true;
 				/*如果是集合，则获取集合的泛型*/
-				Type genericReturnType = pd.getReadMethod().getGenericReturnType();
+				Type genericReturnType = pd.getProp().getReadMethod().getGenericReturnType();
 				Class childTarget = BeanKit.getCollectionType(genericReturnType);
 				if (childTarget == null) {
 					//如果未提供泛型说明，则任何集合元素是Map
@@ -206,8 +207,8 @@ public class AttrNode {
 				continue;
 			}
 
-			PropertyDescriptor ps = propertyMap.get(entry.getValue());
-			Class propertyType = ps.getPropertyType();
+			PropertyDescriptorWrap ps = propertyMap.get(entry.getValue());
+			Class propertyType = ps.getProp().getPropertyType();
 			JavaSqlTypeHandler sqlTypeHandler = beanProcessor.getHandler(propertyType);
 			if (sqlTypeHandler == null) {
 				sqlTypeHandler = beanProcessor.getDefaultHandler();
@@ -237,24 +238,24 @@ public class AttrNode {
 	 */
 	void assignToParent(ConfigJoinMapper.RenderContext renderContext, ExecuteContext ctx,
 			ConfigJoinMapper.ObjectWrapper parent, ConfigJoinMapper.ObjectWrapper attrValue,
-			PropertyDescriptor typePdInParent) throws Exception {
+			PropertyDescriptorWrap typePdInParent) throws Exception {
 
-		Class propertyType = typePdInParent.getPropertyType();
+		Class propertyType = typePdInParent.getProp().getPropertyType();
 		if (List.class.isAssignableFrom(propertyType) || Set.class.isAssignableFrom(propertyType)) {
 			Set set = parent.flagMap.get(typePdInParent);
 			if (set == null) {
 				set = new HashSet();
 				parent.flagMap.put(typePdInParent, set);
 			}
+
 			if (set.contains(attrValue.fromNodeValue.key)) {
 				//已经包含此值
 				return;
 			} else {
-				Collection values = (Collection) typePdInParent.getReadMethod()
-						.invoke(parent.realObject, new Object[0]);
+				Collection values =(Collection) typePdInParent.getValue(parent.realObject);
 				if (values == null) {
-					values = BeanKit.newCollectionInstance(typePdInParent.getPropertyType());
-					typePdInParent.getWriteMethod().invoke(parent.realObject, values);
+					values = BeanKit.newCollectionInstance(typePdInParent.getProp().getPropertyType());
+					typePdInParent.setValue(parent.realObject, values);
 				}
 				values.add(attrValue.realObject);
 
@@ -265,8 +266,8 @@ public class AttrNode {
 			if (!parent.flagMap.containsKey(typePdInParent)) {
 				//未赋值，可以赋值给父对象了
 				BeanProcessor beanProcessor = ctx.sqlManager.getDefaultBeanProcessors();
-				beanProcessor.callSetter(parent.realObject, typePdInParent, attrValue.realObject,
-						typePdInParent.getPropertyType());
+				typePdInParent.setValue(parent.realObject,attrValue.realObject);
+
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.EnumKit;
 import org.beetl.sql.clazz.kit.JavaType;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.DBType;
@@ -349,7 +350,7 @@ public class BeanProcessor {
 				}
 				value = handler.getValue(tp);
 			}
-			this.callSetter(bean, prop, value, propType);
+			this.callSetter(bean, prop, value);
 		}
 		return bean;
 	}
@@ -375,25 +376,12 @@ public class BeanProcessor {
 	 * @param target 目标Bean
 	 * @param prop
 	 * @param value 值
-	 * @param type   值类型
+	 * @param int   property的位置
 	 * @throws SQLException
 	 */
-	public void callSetter(Object target, PropertyDescriptor prop, Object value, Class<?> type) throws SQLException {
-
-		Method setter = prop.getWriteMethod();
-		if (setter == null) {
-			return;
-		}
-
-		try {
-			setter.invoke(target, value);
-		} catch (IllegalArgumentException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
-		} catch (IllegalAccessException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
-		} catch (InvocationTargetException e) {
-			throw new SQLException("Cannot set " + prop.getName() + ": " + e.getMessage());
-		}
+	public void callSetter(Object target, PropertyDescriptor prop, Object value) throws SQLException {
+		PropertyDescriptorWrap wrap = BeanKit.getClassProperty(target.getClass()).get(prop.getName());
+		wrap.setValue(target,value);
 
 	}
 

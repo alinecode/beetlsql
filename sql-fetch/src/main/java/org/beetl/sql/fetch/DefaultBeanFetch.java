@@ -3,6 +3,7 @@ package org.beetl.sql.fetch;
 import org.beetl.sql.annotation.builder.Builder;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.mapping.BeanFetch;
@@ -18,6 +19,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -81,17 +83,17 @@ public class DefaultBeanFetch implements BeanFetch {
         }
         List<FetchAction> actions = new ArrayList<>();
         try {
-            PropertyDescriptor[] allPs =  BeanKit.propertyDescriptors(owner);
-            for(PropertyDescriptor pd:allPs ){
+            Collection<PropertyDescriptorWrap> allPs =  BeanKit.getClassProperty(owner).values();
+            for(PropertyDescriptorWrap pd:allPs ){
 
-				List<Annotation> allAnnotation=BeanKit.getAllAnnotation(owner,pd.getName());
+				List<Annotation> allAnnotation=BeanKit.getAllAnnotation(owner,pd.getProp().getName());
 				for(Annotation annotation:allAnnotation){
 					if(annotation instanceof  FetchOne){
 						FetchOne fetchOne = (FetchOne)annotation;
 						String fromAttr = fetchOne.value();
-						PropertyDescriptor fromProperty = BeanKit.getPropertyDescriptor(owner,fromAttr);
-						Class fetchTargetType = pd.getPropertyType();
-						PropertyDescriptor toProperty =pd;
+						PropertyDescriptorWrap fromProperty = BeanKit.getPropertyDescriptorWrap(owner,fromAttr);
+						Class fetchTargetType = pd.getProp().getPropertyType();
+						PropertyDescriptorWrap toProperty =pd;
 						FetchOneAction action = new FetchOneAction(fromProperty);
 						action.init(owner,fetchTargetType,fetchOne,pd);
 						actions.add(action);
@@ -99,17 +101,17 @@ public class DefaultBeanFetch implements BeanFetch {
 
 					}else if(annotation instanceof  FetchMany){
 						FetchMany fetchMany = (FetchMany)annotation;
-						PropertyDescriptor beanIdProperty = findIdProperty(owner,sqlManager);
-						PropertyDescriptor toProperty = pd;
+						PropertyDescriptorWrap beanIdProperty = findIdProperty(owner,sqlManager);
+						PropertyDescriptorWrap toProperty = pd;
 
 						String typeAttr = fetchMany.value();
-						Class classType = pd.getPropertyType();
-						Type type = pd.getReadMethod().getGenericReturnType();
+						Class classType = pd.getProp().getPropertyType();
+						Type type = pd.getProp().getReadMethod().getGenericReturnType();
 						if(!List.class.isAssignableFrom(classType)){
 							throw new IllegalStateException("one2Many 类型应该是List");
 						}
 						Class targetType = this.getCollectionType(type);
-						PropertyDescriptor otherTypeFrom = BeanKit.getPropertyDescriptor(targetType,typeAttr);
+						PropertyDescriptorWrap otherTypeFrom = BeanKit.getPropertyDescriptorWrap(targetType,typeAttr);
 						FetchManyAction action = new FetchManyAction(beanIdProperty,otherTypeFrom);
 						action.init(owner,targetType,fetchMany,pd);
 						actions.add(action);
@@ -121,8 +123,8 @@ public class DefaultBeanFetch implements BeanFetch {
 						Class extFetchCls = builder.value();
 						if(FetchAction.class.isAssignableFrom(extFetchCls)){
 							FetchAction action = (FetchAction)BeanKit.newInstance(extFetchCls);
-							Class classType = pd.getPropertyType();
-							Type type = pd.getReadMethod().getGenericReturnType();
+							Class classType = pd.getProp().getPropertyType();
+							Type type = pd.getProp().getReadMethod().getGenericReturnType();
 							Class targetType = classType;
 							if(List.class.isAssignableFrom(classType)){
 								targetType = BeanKit.getCollectionType(type);
@@ -146,13 +148,13 @@ public class DefaultBeanFetch implements BeanFetch {
 
 
 
-    protected  PropertyDescriptor findIdProperty(Class target,SQLManager sqlManager) throws IntrospectionException{
+    protected  PropertyDescriptorWrap findIdProperty(Class target,SQLManager sqlManager) throws IntrospectionException{
         List<String> ids  = sqlManager.getClassDesc(target).getIdAttrs();
         if(ids.size()>1){
             //
             throw new UnsupportedOperationException("目前不支持多主键fetch");
         }
-        return BeanKit.getPropertyDescriptor(target,ids.get(0));
+        return BeanKit.getPropertyDescriptorWrap(target,ids.get(0));
 
     }
 

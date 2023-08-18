@@ -13,7 +13,7 @@ public class TestBean {
 	protected String col4;
 	protected String col5;
 	protected String col6;
-	protected BigDecimal col7;
+	protected String col7;
 	protected Integer col8;
 
 

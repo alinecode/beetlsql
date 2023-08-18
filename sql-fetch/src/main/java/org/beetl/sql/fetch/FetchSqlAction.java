@@ -15,7 +15,7 @@ public class FetchSqlAction extends  AbstractFetchAction {
 	@Override
 	public void execute(ExecuteContext ctx, List list) {
 		boolean isSingle = true;
-		Class classType = this.originProperty.getPropertyType();
+		Class classType = this.originProperty.getProp().getPropertyType();
 		if(List.class.isAssignableFrom(classType)){
 			isSingle = false;
 		}
@@ -30,7 +30,7 @@ public class FetchSqlAction extends  AbstractFetchAction {
 				list.remove(i);
 				//使用缓存对象代替，不需要操作数据库，也避免循环引用
 				list.add(i,cached);
-				if(containAttribute(cached,originProperty.getName())){
+				if(containAttribute(cached,originProperty.getProp().getName())){
 					//对象的字段已经被fetch过了,TODO,通过null判断不如做一个标记
 					continue;
 				}
@@ -50,8 +50,8 @@ public class FetchSqlAction extends  AbstractFetchAction {
 			}else{
 				value = ret;
 			}
-			addAttribute(obj,originProperty.getName());
-			BeanKit.setBeanProperty(obj,value,originProperty.getName());
+			addAttribute(obj,originProperty.getProp().getName());
+			originProperty.setValue(obj,value);
 
 		}
 
