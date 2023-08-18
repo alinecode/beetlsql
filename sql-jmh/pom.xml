@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus</artifactId>
-			<version>3.5.3.1</version>
+			<version>3.5.3.2</version>
 		</dependency>
 
 		<dependency>
@@ -110,7 +110,7 @@
 		<dependency>
 			<groupId>com.mybatis-flex</groupId>
 			<artifactId>mybatis-flex-core</artifactId>
-			<version>1.1.5</version>
+			<version>1.5.7</version>
 		</dependency>
 		<!--easy-query-->
 		<dependency>

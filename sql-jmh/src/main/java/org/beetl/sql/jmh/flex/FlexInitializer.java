@@ -19,85 +19,70 @@ import static org.beetl.sql.jmh.flex.table.Tables.FLEX_SYS_USER;
  */
 public class FlexInitializer {
 
-    private static SqlSessionFactory sqlSessionFactory;
+	private static SqlSessionFactory sqlSessionFactory;
 	private static AtomicInteger id = new AtomicInteger(1000);
 
-    public static void init() {
-        DataSource dataSource = DataSourceHelper.ins();
-        MybatisFlexBootstrap.getInstance()
-                .setDataSource(dataSource)
-                .addMapper(FlexUserMapper.class)
-                .start();
 
-        sqlSessionFactory = MybatisFlexBootstrap.getInstance().getSqlSessionFactory();
-    }
+	private static FlexUserMapper flexUserMapper;
 
+	public static void init() {
+		DataSource dataSource = DataSourceHelper.ins();
+		MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance().setDataSource(dataSource)
+			.addMapper(FlexUserMapper.class).start();
+		flexUserMapper = bootstrap.getMapper(FlexUserMapper.class);
 
-    public static FlexSysUser selectOne() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
-			return mapper.selectOneById(1);
-        }
-    }
-
-	public static void insert() {
-		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-			FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
-			FlexSysUser flexSysUser = new FlexSysUser();
-			flexSysUser.setId(id.incrementAndGet());
-			flexSysUser.setCode("abc");
-			flexSysUser.setCode1("abc");
-			flexSysUser.setCode2("abc");
-			flexSysUser.setCode3("abc");
-			flexSysUser.setCode4("abc");
-			flexSysUser.setCode5("abc");
-			flexSysUser.setCode6("abc");
-			flexSysUser.setCode7("abc");
-			flexSysUser.setCode8("abc");
-			flexSysUser.setCode9("abc");
-			flexSysUser.setCode10("abc");
-			flexSysUser.setCode11("abc");
-			flexSysUser.setCode12("abc");
-			flexSysUser.setCode13("abc");
-			flexSysUser.setCode14("abc");
-			flexSysUser.setCode15("abc");
-			flexSysUser.setCode16("abc");
-			flexSysUser.setCode17("abc");
-			flexSysUser.setCode18("abc");
-			flexSysUser.setCode19("abc");
-			flexSysUser.setCode20("abc");
-			mapper.insert(flexSysUser);
-		}
 	}
 
 
+	public static FlexSysUser selectOne() {
+		return flexUserMapper.selectOneById(1);
+	}
 
-    public static Page<FlexSysUser> paginate() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
-			QueryWrapper queryWrapper = new QueryWrapper()
-				.where(FLEX_SYS_USER.CODE.eq("用户一"));
-            return mapper.paginate(1, 5, queryWrapper);
-        }
-    }
+	public static void insert() {
+
+		FlexSysUser flexSysUser = new FlexSysUser();
+		flexSysUser.setId(id.incrementAndGet());
+		flexSysUser.setCode("abc");
+		flexSysUser.setCode1("abc");
+		flexSysUser.setCode2("abc");
+		flexSysUser.setCode3("abc");
+		flexSysUser.setCode4("abc");
+		flexSysUser.setCode5("abc");
+		flexSysUser.setCode6("abc");
+		flexSysUser.setCode7("abc");
+		flexSysUser.setCode8("abc");
+		flexSysUser.setCode9("abc");
+		flexSysUser.setCode10("abc");
+		flexSysUser.setCode11("abc");
+		flexSysUser.setCode12("abc");
+		flexSysUser.setCode13("abc");
+		flexSysUser.setCode14("abc");
+		flexSysUser.setCode15("abc");
+		flexSysUser.setCode16("abc");
+		flexSysUser.setCode17("abc");
+		flexSysUser.setCode18("abc");
+		flexSysUser.setCode19("abc");
+		flexSysUser.setCode20("abc");
+		flexUserMapper.insert(flexSysUser);
+
+	}
+
+
+	public static Page<FlexSysUser> paginate() {
+		QueryWrapper queryWrapper = new QueryWrapper().where(FLEX_SYS_USER.CODE.eq("用户一"));
+		return flexUserMapper.paginate(1, 5, queryWrapper);
+	}
 
 	public static List<FlexSysUser> lambdaQuery() {
-		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-			FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
-			QueryWrapper queryWrapper = new QueryWrapper();
-			queryWrapper.where(FLEX_SYS_USER.ID.eq(1));
-			return mapper.selectListByQuery(queryWrapper);
-		}
+		QueryWrapper queryWrapper = new QueryWrapper();
+		queryWrapper.where(FLEX_SYS_USER.ID.eq(1));
+		return flexUserMapper.selectListByQuery(queryWrapper);
 	}
 
 
 	public static List<FlexSysUser> getAll() {
-		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-			FlexUserMapper mapper = sqlSession.getMapper(FlexUserMapper.class);
-			return mapper.selectAll();
-		}
+		return flexUserMapper.selectAll();
 	}
-
 
 
 	public static void executeJdbcSql() {

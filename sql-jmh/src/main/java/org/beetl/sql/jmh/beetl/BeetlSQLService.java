@@ -1,7 +1,9 @@
 package org.beetl.sql.jmh.beetl;
 
 import com.beetl.sql.pref.PerformanceConfig;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.*;
+import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
@@ -24,18 +26,20 @@ public class BeetlSQLService  implements BaseService {
 
 
     public void init(){
+		SQLManager.javabeanStrict(true);
         DataSource dataSource = DataSourceHelper.ins();
         ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
         SQLManagerBuilder builder = new SQLManagerBuilder(source);
         builder.setNc(new UnderlinedNameConversion());
 //        builder.setInters(new Interceptor[]{new DebugInterceptor()});
-        builder.setDbStyle(new MySqlStyle());
+        builder.setDbStyle(new H2Style());
         sqlManager = builder.build();
 
         this.beetlSQLUserMapper = sqlManager.getMapper(BeetlSQLUserMapper.class);
-//
-//		PerformanceConfig performanceConfig = new PerformanceConfig();
-//		performanceConfig.config(sqlManager);
+
+
+		PerformanceConfig performanceConfig = new PerformanceConfig();
+		performanceConfig.config(sqlManager);
     }
 
     @Override

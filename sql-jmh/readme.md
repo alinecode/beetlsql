@@ -1,11 +1,12 @@
 # 测试DAO
 本例使用H2的内存模式测试，并且，尽量让Entity最为简单，以最大程度验证Dao自身的性能
 * BeetlSQL (国产)
-* MyBatis(plus)
+* MyBatis-Plus (国产)
 * JPA(Spring Data)
 * JDBC (基准)
 * Wood (国产)
-* Flex (国产)
+* MyBatis-Flex (国产)
+* EasyQuery (国产)
 
 # 测试标准
 
@@ -65,11 +66,71 @@ public interface BaseService {
 
 # 测试方法
 
- 进入JMHMain，运行即可。如果你有新的测试方法，可以暂时屏蔽其他测试方法
+ 进入JMHMain，运行即可。如果你有新的测试方法，可以暂时屏蔽其他测试方法 ,测试中score越大性能越好.
+# 最新测试结果 2023-8-18
 
-# 最新测试结果 2023-08-06
 
-将表格的列增加到20列,score越大越好
+* beetlsql,mybatis-plus,mybatis-flex 版本更新
+* jpa取消一级缓存
+
+```
+Benchmark                         Mode  Cnt    Score     Error   Units
+JMHMain.beetlsqlComplexMapping   thrpt    5  255.458 ±  60.277  ops/ms
+JMHMain.beetlsqlExecuteJdbc      thrpt    5  310.825 ±  25.901  ops/ms
+JMHMain.beetlsqlExecuteTemplate  thrpt    5  272.615 ±  10.883  ops/ms
+JMHMain.beetlsqlFile             thrpt    5  265.682 ±  15.083  ops/ms
+JMHMain.beetlsqlGetAll           thrpt    5   13.869 ±   0.431  ops/ms
+JMHMain.beetlsqlInsert           thrpt    5  129.510 ±  73.525  ops/ms
+JMHMain.beetlsqlLambdaQuery      thrpt    5  194.066 ±  20.773  ops/ms
+JMHMain.beetlsqlOne2Many         thrpt    5  174.328 ±  18.469  ops/ms
+JMHMain.beetlsqlPageQuery        thrpt    5  153.528 ±  21.530  ops/ms
+JMHMain.beetlsqlSelectById       thrpt    5  261.294 ±  10.722  ops/ms
+JMHMain.easyQueryComplexMapping  thrpt    5   65.675 ±  24.593  ops/ms
+JMHMain.easyQueryExecuteJdbc     thrpt    5  247.011 ±  10.968  ops/ms
+JMHMain.easyQueryGetAll          thrpt    5   16.568 ±   1.000  ops/ms
+JMHMain.easyQueryInsert          thrpt    5   97.206 ±  13.522  ops/ms
+JMHMain.easyQueryLambdaQuery     thrpt    5  118.802 ±   8.587  ops/ms
+JMHMain.easyQueryOne2Many        thrpt    5   92.302 ±  11.150  ops/ms
+JMHMain.easyQueryPageQuery       thrpt    5   76.613 ±   6.511  ops/ms
+JMHMain.easyQuerySelectById      thrpt    5  112.608 ±  15.603  ops/ms
+JMHMain.flexGetAll               thrpt    5    2.512 ±   0.300  ops/ms
+JMHMain.flexInsert               thrpt    5   99.749 ±  13.610  ops/ms
+JMHMain.flexPageQuery            thrpt    5   34.197 ±   2.840  ops/ms
+JMHMain.flexSelectById           thrpt    5   69.624 ±   3.205  ops/ms
+JMHMain.jdbcExecuteJdbc          thrpt    5  678.643 ±  22.680  ops/ms
+JMHMain.jdbcGetAll               thrpt    5   40.712 ±   1.240  ops/ms
+JMHMain.jdbcInsert               thrpt    5  248.417 ± 157.517  ops/ms
+JMHMain.jdbcSelectById           thrpt    5  670.334 ±  41.391  ops/ms
+JMHMain.jpaExecuteJdbc           thrpt    5   64.450 ±   8.940  ops/ms
+JMHMain.jpaExecuteTemplate       thrpt    5   66.666 ±   6.162  ops/ms
+JMHMain.jpaGetAll                thrpt    5    5.061 ±   0.736  ops/ms
+JMHMain.jpaInsert                thrpt    5   59.919 ±  21.168  ops/ms
+JMHMain.jpaOne2Many              thrpt    5  102.370 ±   5.603  ops/ms
+JMHMain.jpaPageQuery             thrpt    5   59.366 ±  12.308  ops/ms
+JMHMain.jpaSelectById            thrpt    5   61.110 ±  11.092  ops/ms
+JMHMain.mybatisComplexMapping    thrpt    5  107.533 ±  21.488  ops/ms
+JMHMain.mybatisExecuteTemplate   thrpt    5   43.625 ±   3.022  ops/ms
+JMHMain.mybatisFile              thrpt    5   39.576 ±   6.700  ops/ms
+JMHMain.mybatisGetAll            thrpt    5    5.970 ±   0.584  ops/ms
+JMHMain.mybatisInsert            thrpt    5   42.409 ±   4.339  ops/ms
+JMHMain.mybatisLambdaQuery       thrpt    5   23.981 ±   6.069  ops/ms
+JMHMain.mybatisPageQuery         thrpt    5   16.313 ±   3.207  ops/ms
+JMHMain.mybatisSelectById        thrpt    5   44.626 ±   4.049  ops/ms
+JMHMain.woodExecuteJdbc          thrpt    5  124.015 ±   3.367  ops/ms
+JMHMain.woodExecuteTemplate      thrpt    5  123.251 ±   7.691  ops/ms
+JMHMain.woodFile                 thrpt    5  124.088 ±  11.738  ops/ms
+JMHMain.woodGetAll               thrpt    5    1.882 ±   0.148  ops/ms
+JMHMain.woodInsert               thrpt    5  107.541 ±   9.479  ops/ms
+JMHMain.woodLambdaQuery          thrpt    5  121.923 ±  11.266  ops/ms
+JMHMain.woodPageQuery            thrpt    5  231.230 ±  16.197  ops/ms
+JMHMain.woodSelectById           thrpt    5  124.842 ±  10.048  ops/ms
+
+```
+
+
+# 023-08-06
+
+
 
 ```
 Benchmark                         Mode  Cnt    Score     Error   Units
@@ -124,64 +185,6 @@ JMHMain.woodPageQuery            thrpt    5  240.657 ±  13.274  ops/ms
 JMHMain.woodSelectById           thrpt    5  125.943 ±   5.696  ops/ms
 
 
-
-```
-
-# 2023-08-08
-
-增加了flex,easyQuery.score越大越好
-
-```
-Benchmark                         Mode  Cnt    Score      Error   Units
-JMHMain.beetlsqlComplexMapping   thrpt    3  232.763 ±  243.693  ops/ms
-JMHMain.beetlsqlExecuteJdbc      thrpt    3  222.277 ±   68.963  ops/ms
-JMHMain.beetlsqlExecuteTemplate  thrpt    3  198.478 ±   64.179  ops/ms
-JMHMain.beetlsqlFile             thrpt    3  191.911 ±   52.679  ops/ms
-JMHMain.beetlsqlGetAll           thrpt    3    5.661 ±    2.017  ops/ms
-JMHMain.beetlsqlInsert           thrpt    3  134.919 ±  419.276  ops/ms
-JMHMain.beetlsqlLambdaQuery      thrpt    3  150.177 ±   39.085  ops/ms
-JMHMain.beetlsqlOne2Many         thrpt    3  146.740 ±   52.986  ops/ms
-JMHMain.beetlsqlPageQuery        thrpt    3  128.280 ±   48.814  ops/ms
-JMHMain.beetlsqlSelectById       thrpt    3  186.317 ±   53.859  ops/ms
-JMHMain.easyQueryComplexMapping  thrpt    3   73.130 ±   30.196  ops/ms
-JMHMain.easyQueryExecuteJdbc     thrpt    3  254.239 ±   33.394  ops/ms
-JMHMain.easyQueryGetAll          thrpt    3   15.767 ±    4.111  ops/ms
-JMHMain.easyQueryInsert          thrpt    3   96.583 ±   54.382  ops/ms
-JMHMain.easyQueryLambdaQuery     thrpt    3  119.431 ±   30.122  ops/ms
-JMHMain.easyQueryOne2Many        thrpt    3   90.403 ±   64.167  ops/ms
-JMHMain.easyQueryPageQuery       thrpt    3   79.619 ±   14.064  ops/ms
-JMHMain.easyQuerySelectById      thrpt    3  115.503 ±   25.392  ops/ms
-JMHMain.flexGetAll               thrpt    3    2.554 ±    1.472  ops/ms
-JMHMain.flexInsert               thrpt    3   74.048 ±   14.794  ops/ms
-JMHMain.flexPageQuery            thrpt    3   47.185 ±   23.353  ops/ms
-JMHMain.flexSelectById           thrpt    3   69.381 ±   25.800  ops/ms
-JMHMain.jdbcExecuteJdbc          thrpt    3  631.485 ±  291.711  ops/ms
-JMHMain.jdbcGetAll               thrpt    3   39.693 ±    7.647  ops/ms
-JMHMain.jdbcInsert               thrpt    3  221.847 ± 1171.190  ops/ms
-JMHMain.jdbcSelectById           thrpt    3  672.000 ±  120.232  ops/ms
-JMHMain.jpaExecuteJdbc           thrpt    3   65.684 ±   45.030  ops/ms
-JMHMain.jpaExecuteTemplate       thrpt    3   70.961 ±   17.808  ops/ms
-JMHMain.jpaGetAll                thrpt    3    5.189 ±    3.821  ops/ms
-JMHMain.jpaInsert                thrpt    3   65.872 ±   46.345  ops/ms
-JMHMain.jpaOne2Many              thrpt    3  105.237 ±   41.245  ops/ms
-JMHMain.jpaPageQuery             thrpt    3   63.929 ±   31.189  ops/ms
-JMHMain.jpaSelectById            thrpt    3  346.690 ±  147.312  ops/ms
-JMHMain.mybatisComplexMapping    thrpt    3  111.347 ±   64.790  ops/ms
-JMHMain.mybatisExecuteTemplate   thrpt    3   44.240 ±   16.532  ops/ms
-JMHMain.mybatisFile              thrpt    3   41.701 ±   10.344  ops/ms
-JMHMain.mybatisGetAll            thrpt    3    4.869 ±    1.667  ops/ms
-JMHMain.mybatisInsert            thrpt    3   44.899 ±   23.818  ops/ms
-JMHMain.mybatisLambdaQuery       thrpt    3    8.825 ±    6.710  ops/ms
-JMHMain.mybatisPageQuery         thrpt    3   17.464 ±    8.727  ops/ms
-JMHMain.mybatisSelectById        thrpt    3   44.989 ±   14.594  ops/ms
-JMHMain.woodExecuteJdbc          thrpt    3  127.590 ±   54.041  ops/ms
-JMHMain.woodExecuteTemplate      thrpt    3   89.247 ±  715.286  ops/ms
-JMHMain.woodFile                 thrpt    3  124.654 ±   52.517  ops/ms
-JMHMain.woodGetAll               thrpt    3    1.850 ±    1.018  ops/ms
-JMHMain.woodInsert               thrpt    3   97.668 ±   95.395  ops/ms
-JMHMain.woodLambdaQuery          thrpt    3  124.571 ±   42.021  ops/ms
-JMHMain.woodPageQuery            thrpt    3  227.678 ±  142.983  ops/ms
-JMHMain.woodSelectById           thrpt    3  122.248 ±   69.065  ops/ms
 
 ```
 

@@ -21,6 +21,7 @@ public class DataSourceHelper {
         ds.setUsername("sa");
         ds.setPassword("");
         ds.setDriverClassName("org.h2.Driver");
+		ds.setMaximumPoolSize(10);
         initData(ds);
         return ds;
     }

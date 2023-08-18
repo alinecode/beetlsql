@@ -54,7 +54,8 @@ public class SpringService implements BaseService {
     @Override
     @Transactional(readOnly=true)
     public Object getEntity() {
-        return jpaUserMapper.getOne(1);
+		em.clear();
+        return jpaUserMapper.selectById(1);
     }
 
     @Override

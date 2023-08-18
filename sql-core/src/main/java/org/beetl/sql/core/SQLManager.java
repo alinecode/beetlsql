@@ -103,6 +103,14 @@ public class SQLManager implements DataAPI {
 	}
 
 	/**
+	 * 默认entity需要遵守javabean规范，如果设置为false，则支持链式调用，以及lombok bean的不规范属性
+	 * @param strict
+	 */
+	public static void javabeanStrict(boolean strict) {
+		BeanKit.JAVABEAN_STRICT = strict;
+	}
+
+	/**
 	 * 快速上手的简洁构建器
 	 *
 	 * @param driver   驱动

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.Throughput)
 @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Threads(1)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -45,22 +45,22 @@ public class JMHMain {
         beetlSQLService = new BeetlSQLService();
         beetlSQLService.init();
 
-//        SpringBoot springBoot = new SpringBoot();
-//        springBoot.init();
-//        springService = springBoot.getService();
-//
-//
-//        MyBatisSpringBoot myBatisSpringBoot = new MyBatisSpringBoot();
-//        myBatisSpringBoot.init();
-//        myBatisSpringService = myBatisSpringBoot.getService();
-//
+        SpringBoot springBoot = new SpringBoot();
+        springBoot.init();
+        springService = springBoot.getService();
+
+
+        MyBatisSpringBoot myBatisSpringBoot = new MyBatisSpringBoot();
+        myBatisSpringBoot.init();
+        myBatisSpringService = myBatisSpringBoot.getService();
+
         woodService = new WoodService();
         woodService.init();
-//
-//		//see https://gitee.com/mybatis-flex/mybatis-benchmark
-//		FlexInitializer.init();
-//		easyQueryService=new EasyQueryService();
-//		easyQueryService.init();
+
+		//see https://gitee.com/mybatis-flex/mybatis-benchmark
+		FlexInitializer.init();
+		easyQueryService=new EasyQueryService();
+		easyQueryService.init();
 
     }
 
@@ -86,48 +86,48 @@ public class JMHMain {
 	}
 
 
-//    /* mybatis */
-//    @Benchmark
-//    public void mybatisInsert() {
-//        myBatisSpringService.addEntity();
-//    }
-//
-//    @Benchmark
-//    public void mybatisSelectById() {
-//        myBatisSpringService.getEntity();
-//    }
-//
-//    @Benchmark
-//    public void mybatisLambdaQuery() {
-//        myBatisSpringService.lambdaQuery();
-//    }
-//
-//    @Benchmark
-//    public void mybatisExecuteTemplate() {
-//        myBatisSpringService.executeTemplateSql();
-//    }
-//
-//    @Benchmark
-//    public void mybatisFile() {
-//        myBatisSpringService.sqlFile();
-//    }
-//
-//    @Benchmark
-//    public void mybatisPageQuery() {
-//        myBatisSpringService.pageQuery();
-//    }
-//
-//    @Benchmark
-//    public void mybatisComplexMapping() {
-//        myBatisSpringService.complexMapping();
-//    }
-//	@Benchmark
-//	public void mybatisGetAll() {
-//		myBatisSpringService.getAll();
-//	}
-//
-//
-//    /*   BeetlSQL    */
+    /* mybatis */
+    @Benchmark
+    public void mybatisInsert() {
+        myBatisSpringService.addEntity();
+    }
+
+    @Benchmark
+    public void mybatisSelectById() {
+        myBatisSpringService.getEntity();
+    }
+
+    @Benchmark
+    public void mybatisLambdaQuery() {
+        myBatisSpringService.lambdaQuery();
+    }
+
+    @Benchmark
+    public void mybatisExecuteTemplate() {
+        myBatisSpringService.executeTemplateSql();
+    }
+
+    @Benchmark
+    public void mybatisFile() {
+        myBatisSpringService.sqlFile();
+    }
+
+    @Benchmark
+    public void mybatisPageQuery() {
+        myBatisSpringService.pageQuery();
+    }
+
+    @Benchmark
+    public void mybatisComplexMapping() {
+        myBatisSpringService.complexMapping();
+    }
+	@Benchmark
+	public void mybatisGetAll() {
+		myBatisSpringService.getAll();
+	}
+
+
+    /*   BeetlSQL    */
     @Benchmark
     public void beetlsqlInsert() {
         beetlSQLService.addEntity();
@@ -177,44 +177,44 @@ public class JMHMain {
 	public void beetlsqlGetAll() {
 		beetlSQLService.getAll();
 	}
-//
-//
-//   /*   Spring Data JPA    */
-//    @Benchmark
-//    public void jpaInsert() {
-//        springService.addEntity();
-//    }
-//
-//    @Benchmark
-//    public void jpaSelectById() {
-//        springService.getEntity();
-//    }
-//
-//    @Benchmark
-//    public void jpaExecuteJdbc() {
-//        springService.executeJdbcSql();
-//    }
-//
-//    /*实际上JPA并不支持template，但勉强用HQl来测试*/
-//    @Benchmark
-//    public void jpaExecuteTemplate() {
-//        springService.executeTemplateSql();
-//    }
-//
-//    @Benchmark
-//    public void jpaOne2Many() {
-//        springService.one2Many();
-//    }
-//
-//    @Benchmark
-//    public void jpaPageQuery() {
-//        springService.pageQuery();
-//    }
-//	@Benchmark
-//	public void jpaGetAll() {
-//		springService.getAll();
-//	}
-//
+
+
+   /*   Spring Data JPA    */
+    @Benchmark
+    public void jpaInsert() {
+        springService.addEntity();
+    }
+
+    @Benchmark
+    public void jpaSelectById() {
+        springService.getEntity();
+    }
+
+    @Benchmark
+    public void jpaExecuteJdbc() {
+        springService.executeJdbcSql();
+    }
+
+    /*实际上JPA并不支持template，但勉强用HQl来测试*/
+    @Benchmark
+    public void jpaExecuteTemplate() {
+        springService.executeTemplateSql();
+    }
+
+    @Benchmark
+    public void jpaOne2Many() {
+        springService.one2Many();
+    }
+
+    @Benchmark
+    public void jpaPageQuery() {
+        springService.pageQuery();
+    }
+	@Benchmark
+	public void jpaGetAll() {
+		springService.getAll();
+	}
+
     /*   Wood    */
     @Benchmark
     public void woodInsert() {
@@ -254,97 +254,97 @@ public class JMHMain {
 	public void woodGetAll() {
 		woodService.getAll();
 	}
-//
-//	/* flex orm */
+
+	/* flex orm */
+	@Benchmark
+	public void flexSelectById() {
+		FlexInitializer.selectOne();
+	}
+
+	@Benchmark
+	public void flexInsert() {
+		FlexInitializer.insert();
+	}
+
+	@Benchmark
+	public void flexPageQuery() {
+		FlexInitializer.paginate();
+	}
+
+	@Benchmark
+	public void flexFile() {
+		FlexInitializer.sqlFile();
+	}
+
+	@Benchmark
+	public void flexJdbc() {
+		FlexInitializer.executeJdbcSql();
+	}
+
+	@Benchmark
+	public void flexExecuteTemplate() {
+		FlexInitializer.executeTemplateSql();
+	}
+
+	@Benchmark
+	public void flexComplexMapping() {
+		FlexInitializer.complexMapping();
+	}
+	@Benchmark
+	public void flexGetAll() {
+		FlexInitializer.getAll();
+	}
+
+	/*   easy-query    */
+	@Benchmark
+	public void easyQueryInsert() {
+		easyQueryService.addEntity();
+	}
+
+	@Benchmark
+	public void easyQuerySelectById() {
+		easyQueryService.getEntity();
+	}
+
+	@Benchmark
+	public void easyQueryLambdaQuery() {
+		easyQueryService.lambdaQuery();
+	}
+
+	@Benchmark
+	public void easyQueryExecuteJdbc() {
+		easyQueryService.executeJdbcSql();
+	}
+
 //	@Benchmark
-//	public void flexSelectById() {
-//		FlexInitializer.selectOne();
+//	public void easyQueryExecuteTemplate() {
+//		easyQueryService.executeTemplateSql();
 //	}
 //
 //	@Benchmark
-//	public void flexInsert() {
-//		FlexInitializer.insert();
+//	public void easyQueryFile() {
+//		easyQueryService.sqlFile();
 //	}
-//
-//	@Benchmark
-//	public void flexPageQuery() {
-//		FlexInitializer.paginate();
-//	}
-//
-//	@Benchmark
-//	public void flexFile() {
-//		FlexInitializer.sqlFile();
-//	}
-//
-//	@Benchmark
-//	public void flexJdbc() {
-//		FlexInitializer.executeJdbcSql();
-//	}
-//
-//	@Benchmark
-//	public void flexExecuteTemplate() {
-//		FlexInitializer.executeTemplateSql();
-//	}
-//
-//	@Benchmark
-//	public void flexComplexMapping() {
-//		FlexInitializer.complexMapping();
-//	}
-//	@Benchmark
-//	public void flexGetAll() {
-//		FlexInitializer.getAll();
-//	}
-//
-//	/*   easy-query    */
-//	@Benchmark
-//	public void easyQueryInsert() {
-//		easyQueryService.addEntity();
-//	}
-//
-//	@Benchmark
-//	public void easyQuerySelectById() {
-//		easyQueryService.getEntity();
-//	}
-//
-//	@Benchmark
-//	public void easyQueryLambdaQuery() {
-//		easyQueryService.lambdaQuery();
-//	}
-//
-//	@Benchmark
-//	public void easyQueryExecuteJdbc() {
-//		easyQueryService.executeJdbcSql();
-//	}
-//
-////	@Benchmark
-////	public void easyQueryExecuteTemplate() {
-////		easyQueryService.executeTemplateSql();
-////	}
-////
-////	@Benchmark
-////	public void easyQueryFile() {
-////		easyQueryService.sqlFile();
-////	}
-//
-//	@Benchmark
-//	public void easyQueryPageQuery() {
-//		easyQueryService.pageQuery();
-//	}
-//
-//
-//	@Benchmark
-//	public void easyQueryOne2Many() {
-//		easyQueryService.one2Many();
-//	}
-//
-//	@Benchmark
-//	public void easyQueryComplexMapping() {
-//		easyQueryService.complexMapping();
-//	}
-//	@Benchmark
-//	public void easyQueryGetAll() {
-//		easyQueryService.getAll();
-//	}
+
+	@Benchmark
+	public void easyQueryPageQuery() {
+		easyQueryService.pageQuery();
+	}
+
+
+	@Benchmark
+	public void easyQueryOne2Many() {
+		easyQueryService.one2Many();
+	}
+
+	@Benchmark
+	public void easyQueryComplexMapping() {
+		easyQueryService.complexMapping();
+	}
+	@Benchmark
+	public void easyQueryGetAll() {
+		easyQueryService.getAll();
+	}
 	public static void main(String[] args) throws RunnerException {
 
 //          test();
