@@ -1,19 +1,21 @@
 package com.beetl.sql.encrypt.builder;
 
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.DES;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import com.beetl.sql.encrypt.CryptType;
+import com.beetl.sql.encrypt.EncryptType;
 import com.beetl.sql.encrypt.EncryptConfig;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.ExecuteContext;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CryptDESConvert implements AttributeConvert {
+public class DESConvert implements AttributeConvert {
 
 
 
@@ -26,7 +28,7 @@ public class CryptDESConvert implements AttributeConvert {
 		}
 
 		SymmetricCrypto aes =getDES(cls,name);
-		String encryptData = aes.encryptBase64(value);
+		String encryptData = aes.encryptHex(value);
 		return encryptData;
 
 	}
@@ -42,9 +44,10 @@ public class CryptDESConvert implements AttributeConvert {
 	}
 
 	protected DES getDES(Class cls, String name){
-		String key = EncryptConfig.get(CryptType.DES);
-		byte[] keys = SecureUtil.generateKey(SymmetricAlgorithm.DES.getValue()).getEncoded();
+		String key = EncryptConfig.get(EncryptType.DES);
+		byte[] keys = SecureUtil.generateKey(SymmetricAlgorithm.DES.getValue(),key.getBytes(StandardCharsets.ISO_8859_1)).getEncoded();
 		DES des = SecureUtil.des(keys);
 		return des;
 	}
+
 }

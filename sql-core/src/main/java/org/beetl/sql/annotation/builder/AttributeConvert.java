@@ -38,6 +38,13 @@ public interface AttributeConvert {
 	 *
 	 *     OtherJacksonCofig config =  BeanKit.getAnnotation(cls,name,OtherJacksonCofig.class);
 	 *  </pre>
+	 *
+	 *  也可以获取自生注解
+	 *  <pre>
+	 *      ToJackson jsonConfig = BeanKit.getAnnotation(cls,name,ToJackson.class);
+	 *      boolean nullEnable = jsonConfig.nullEnable();
+	 *
+	 *  </pre>
 	 * @param ctx
 	 * @param cls
 	 * @param name 属性名

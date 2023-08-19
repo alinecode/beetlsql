@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CryptBase64Convert implements AttributeConvert {
+public class Base64Convert implements AttributeConvert {
 	Charset utf8  = Charset.forName("UTF-8");
 
 	@Override

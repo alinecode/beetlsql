@@ -3,16 +3,17 @@ package com.beetl.sql.encrypt.builder;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import com.beetl.sql.encrypt.CryptType;
 import com.beetl.sql.encrypt.EncryptConfig;
+import com.beetl.sql.encrypt.EncryptType;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.ExecuteContext;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CryptSM4Convert implements AttributeConvert {
+public class AESConvert implements AttributeConvert {
 
 
 
@@ -24,9 +25,9 @@ public class CryptSM4Convert implements AttributeConvert {
 			return null;
 		}
 
-		SymmetricCrypto sm4 = new SymmetricCrypto("SM4");
-		String encryptHex = sm4.encryptHex(value);
-		return value;
+		SymmetricCrypto aes =getAes(cls,name);
+		String encryptData = aes.encryptHex(value);
+		return encryptData;
 
 	}
 	@Override
@@ -35,9 +36,15 @@ public class CryptSM4Convert implements AttributeConvert {
 		if(value==null){
 			return null;
 		}
-		SymmetricCrypto sm4 = new SymmetricCrypto("SM4");
-		String decryptData = sm4.decryptStr(value);
+		SymmetricCrypto aes =getAes(cls,name);
+		String decryptData = aes.decryptStr(value);
 		return decryptData;
 	}
 
+	protected SymmetricCrypto getAes(Class cls, String name){
+		String key  = EncryptConfig.get(EncryptType.AES);;
+		byte[] byteKey = SecureUtil.generateKey(SymmetricAlgorithm.AES.getValue(), key.getBytes(StandardCharsets.ISO_8859_1)).getEncoded();
+		SymmetricCrypto aes = SecureUtil.aes(byteKey);
+		return aes;
+	}
 }

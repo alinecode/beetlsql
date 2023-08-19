@@ -1,6 +1,6 @@
 package com.beetl.sql.encrypt.annotation;
 
-import com.beetl.sql.encrypt.builder.CryptBase64Convert;
+import com.beetl.sql.encrypt.builder.SM4Convert;
 import org.beetl.sql.annotation.builder.Builder;
 
 import java.lang.annotation.ElementType;
@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
-@Builder(CryptBase64Convert.class)
-public  @interface CryptSM4 {
+@Builder(SM4Convert.class)
+public  @interface SM4 {
 
 }

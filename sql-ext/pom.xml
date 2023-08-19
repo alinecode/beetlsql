@@ -22,7 +22,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.ibeetl</groupId>
-			<artifactId>sql-core</artifactId>
+			<artifactId>beetlsql</artifactId>
 			<version>3.23.11-RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
