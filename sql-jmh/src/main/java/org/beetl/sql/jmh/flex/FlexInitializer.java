@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-import static org.beetl.sql.jmh.flex.table.Tables.FLEX_SYS_USER;
+import static org.beetl.sql.jmh.flex.table.FlexSysUserTableDef.*;
 
 /**
  * 如果有疑问，欢迎PR，我对flex不熟

@@ -3,6 +3,7 @@ package org.beetl.sql.test.mappping;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.CaseInsensitiveHashMap;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.mapping.join.AttrNode;
 import org.beetl.sql.core.mapping.join.ConfigJoinMapper;
@@ -39,7 +40,7 @@ public class SimpleXMLMapping extends ConfigJoinMapper {
         root.parent = null;
         root.typePdInParent = null;
         Map<Integer,String> colMap = new HashMap<>();
-        Map<String,PropertyDescriptor> propertyMap = new HashMap<>();
+        Map<String,PropertyDescriptorWrap> propertyMap = new HashMap<>();
 
         XmlMapping mapping = (XmlMapping)config;
         String path = mapping.path();
@@ -60,7 +61,7 @@ public class SimpleXMLMapping extends ConfigJoinMapper {
                     continue;
                 }
 
-                PropertyDescriptor pd = BeanKit.getPropertyDescriptor(target,attrName);
+				PropertyDescriptorWrap pd = BeanKit.getPropertyDescriptorWrap(target,attrName);
                 propertyMap.put(attrName,pd);
                 colMap.put(i,attrName);
             }

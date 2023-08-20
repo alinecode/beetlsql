@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
 		<artifactId>sql-ext</artifactId>
-        <version>3.23.11-RELEASE</version>
+        <version>3.24.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-xml</artifactId>
-    <version>3.23.11-RELEASE</version>
+    <version>3.24.0-RELEASE</version>
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
