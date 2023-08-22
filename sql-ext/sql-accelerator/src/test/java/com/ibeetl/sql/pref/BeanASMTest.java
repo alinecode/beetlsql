@@ -3,6 +3,7 @@ package com.ibeetl.sql.pref;
 import com.beetl.sql.pref.BeanAsmCode;
 import com.beetl.sql.pref.BeanPropertyAsm;
 import com.beetl.sql.pref.BeanPropertyWriteFactory;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,8 +13,12 @@ import java.io.FileOutputStream;
 
 public class BeanASMTest {
 
+	static {
+		BeanKit.JAVABEAN_STRICT = false;
+	}
 	@Test
 	public void testGen() throws Exception{
+
 		Class beanClass = TestBean.class;
 		byte[] bs = BeanAsmCode.genCode(beanClass);
 		FileOutputStream fos = new FileOutputStream(new File("My.class"));
@@ -81,8 +86,14 @@ public class BeanASMTest {
 			throw new RuntimeException("test");
 		}
 
-		public void setCol1(Integer col1) {
+//		public void setCol1(Integer col1) {
+//			this.col1 = col1;
+//			return ;
+//		}
+
+		public TestBean2 setCol1(Integer col1) {
 			this.col1 = col1;
+			return this;
 		}
 	}
 }

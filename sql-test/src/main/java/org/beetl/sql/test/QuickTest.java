@@ -53,7 +53,7 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-
+//		sqlManager.lambdaQuery(OrderLog.class).andEq(OrderLog::getOrderId,1).select();
 		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
 		System.out.println(orderLog);
 		orderLog.setABc("effdfdf").setCreateTime( new Date());

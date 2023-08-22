@@ -1,10 +1,12 @@
 package com.ibeetl.sql.pref;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
 @Data
+@Accessors(chain = true)
 public class TestBean {
 
 	protected Integer col1;
@@ -15,6 +17,5 @@ public class TestBean {
 	protected String col6;
 	protected String col7;
 	protected Integer col8;
-
 
 }

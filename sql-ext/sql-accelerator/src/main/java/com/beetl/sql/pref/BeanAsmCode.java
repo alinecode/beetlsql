@@ -76,8 +76,18 @@ public class BeanAsmCode {
 			methodVisitor.visitVarInsn(ALOAD, 3);
 			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getPropertyType().getName());
 			methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
+			Class clss = propertyDescriptor.getSetMethod().getReturnType();
+			String retTypeDesc = "V";
+			if(clss!=void.class){
+				//链式调用
+				retTypeDesc = "L"+getAsmClassName(clss.getName())+";";
+			}
 			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getSetMethod().getName(),
-					"(L"+typeAsmName+";)V", false);
+					"(L"+typeAsmName+";)"+retTypeDesc, false);
+			if(clss!=void.class){
+				methodVisitor.visitInsn(POP);
+			}
+
 			methodVisitor.visitJumpInsn(GOTO, labelEnd);
 
 		}
