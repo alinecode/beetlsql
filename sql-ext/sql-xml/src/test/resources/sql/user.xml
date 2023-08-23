@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beetlsql>
+	<sql id="select">
+		select * from sys_user where id=#{id}
+	</sql>
+</beetlsql>
