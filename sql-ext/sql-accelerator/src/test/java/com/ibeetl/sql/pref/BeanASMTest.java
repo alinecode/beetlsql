@@ -30,6 +30,11 @@ public class BeanASMTest {
 		beanPropertyAsm.setValue(1,bean,input);
 		Integer v = (Integer)beanPropertyAsm.getValue(1,bean);
 		Assert.assertEquals(input,v);
+		beanPropertyAsm.setValue(1,bean,input);
+
+		beanPropertyAsm.setValue(3,bean,2.0);
+		double ret = (Double)beanPropertyAsm.getValue(3,bean);
+		Assert.assertEquals(2.0,ret,0.0001);
 
 	}
 

@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 public class TestBean {
 
 	protected Integer col1;
-	protected String col2;
-	protected String col3;
-	protected String col4;
-	protected String col5;
-	protected String col6;
+	protected int col2;
+	protected double col3;
+	protected byte col4;
+	protected long col5;
+	protected short col6;
 	protected String col7;
 	protected Integer col8;
 

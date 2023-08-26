@@ -3,6 +3,7 @@ package com.ibeetl.sql.pref;
 import com.beetl.sql.pref.BeanPropertyAsm;
 import com.beetl.sql.pref.BeanPropertyWriteFactory;
 import com.esotericsoftware.reflectasm.MethodAccess;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.openjdk.jmh.annotations.*;
@@ -35,49 +36,51 @@ import java.util.concurrent.TimeUnit;
 public class BeanASMPerfTest {
 	PropertyDescriptor[] propertyDescriptors;
 	private int[] reflectIndex = null;
-	MethodAccess methodAccess = MethodAccess.get(TestBean.class);
+	MethodAccess methodAccess = MethodAccess.get(MyTestBean.class);
 
 	BeanPropertyAsm myBeanWrite = null;
 
 	@Benchmark
-	public void direct() {
-		TestBean testBean = new TestBean();
-		testBean.setCol1(111);
+	public MyTestBean direct() {
+		MyTestBean testBean = new MyTestBean();
+		testBean.setCol1(getAttr(1));
 		testBean.setCol2(getAttr(2));
 		testBean.setCol3(getAttr(3));
 		testBean.setCol4(getAttr(4));
 		testBean.setCol5(getAttr(5));
 		testBean.setCol7(getAttr(6));
 		testBean.setCol7(getAttr(7));
-		testBean.setCol8(999);
+		testBean.setCol8(getAttr(8));
+		return testBean;
 
 	}
 
 	@Benchmark
-	public void reflectAsm() {
-		TestBean testBean = new TestBean();
+	public MyTestBean reflectAsm() {
+		MyTestBean testBean = new MyTestBean();
 		for(int i=1;i<=8;i++){
 			methodAccess.invoke(testBean,reflectIndex[i],getAttr(i));
 		}
+		return testBean;
 	}
 
 	@Benchmark
-	public void myasm() {
-		TestBean testBean = new TestBean();
-
+	public MyTestBean myasm() {
+		MyTestBean testBean = new MyTestBean();
 		for(int i=1;i<=8;i++){
 			myBeanWrite.setValue(i,testBean,getAttr(i));
 		}
+		return testBean;
 
 	}
 
 	@Benchmark
-	public void propertySet() throws InvocationTargetException, IllegalAccessException {
-		TestBean testBean = new TestBean();
-
+	public MyTestBean propertySet() throws InvocationTargetException, IllegalAccessException {
+		MyTestBean testBean = new MyTestBean();
 		for(int i=1;i<=8;i++){
 			propertyDescriptors[i].getWriteMethod().invoke(testBean,getAttr(i));
 		}
+		return testBean;
 
 	}
 
@@ -85,8 +88,8 @@ public class BeanASMPerfTest {
 	@SneakyThrows
 	@Setup
 	public void init(){
-		MethodAccess methodAccess = MethodAccess.get(TestBean.class);
-		PropertyDescriptor[] propertyDescriptors = BeanKit.propertyDescriptors(TestBean.class);
+		MethodAccess methodAccess = MethodAccess.get(MyTestBean.class);
+		PropertyDescriptor[] propertyDescriptors = BeanKit.propertyDescriptors(MyTestBean.class);
 		int[] index = new int[propertyDescriptors.length];
 		int i=0;
 		for(PropertyDescriptor ps:propertyDescriptors){
@@ -99,7 +102,7 @@ public class BeanASMPerfTest {
 
 		reflectIndex = index;
 		this.propertyDescriptors = propertyDescriptors;
-		myBeanWrite = BeanPropertyWriteFactory.getBeanProperty(TestBean.class);
+		myBeanWrite = BeanPropertyWriteFactory.getBeanProperty(MyTestBean.class);
 
 	}
 
@@ -118,5 +121,17 @@ public class BeanASMPerfTest {
 				.include(BeanASMPerfTest.class.getSimpleName())
 				.build();
 		new Runner(opt).run();
+	}
+
+	@Data
+	public static class MyTestBean{
+		protected String col1;
+		protected String col2;
+		protected String col3;
+		protected String col4;
+		protected String col5;
+		protected String col6;
+		protected String col7;
+		protected String col8;
 	}
 }

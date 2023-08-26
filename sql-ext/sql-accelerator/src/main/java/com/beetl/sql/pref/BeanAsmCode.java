@@ -1,7 +1,9 @@
 package com.beetl.sql.pref;
+import lombok.Data;
 import org.beetl.ow2.asm.*;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
+import org.beetl.sql.clazz.kit.StringKit;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -57,7 +59,7 @@ public class BeanAsmCode {
 
 		Label labelEnd = new Label();
 		Label labelDefault = new Label();
-
+		//TODO，修改成tableswitch
 		methodVisitor.visitLookupSwitchInsn(labelDefault, labelIndex.stream().mapToInt(Integer::valueOf).toArray(),
 			switchLabelList.toArray(new Label[0]));
 
@@ -74,16 +76,31 @@ public class BeanAsmCode {
 			}
 			methodVisitor.visitVarInsn(ALOAD, 4);
 			methodVisitor.visitVarInsn(ALOAD, 3);
-			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getPropertyType().getName());
-			methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
+			String paramAsmDesc = null;
+			Class paramType =propertyDescriptor.getProp().getPropertyType();
+			if(paramType.isPrimitive()){
+				BoxClass boxType = getPrimitiveBoxType(paramType);
+				String typeAsmName = getAsmClassName(boxType.getType().getName());
+				methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
+				//unbox
+				methodVisitor.visitMethodInsn(INVOKEVIRTUAL, typeAsmName, boxType.getValueMethod(), "()"+boxType.valueMethodRetType, false);
+				paramAsmDesc = "("+boxType.valueMethodRetType+")";
+			}else{
+				String typeAsmName = getAsmClassName(paramType.getName());
+				methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
+				paramAsmDesc = "(L"+typeAsmName+";)";
+			}
+
 			Class clss = propertyDescriptor.getSetMethod().getReturnType();
 			String retTypeDesc = "V";
 			if(clss!=void.class){
 				//链式调用
 				retTypeDesc = "L"+getAsmClassName(clss.getName())+";";
 			}
+
+			//调用方法名+参数+返回值
 			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getSetMethod().getName(),
-					"(L"+typeAsmName+";)"+retTypeDesc, false);
+				paramAsmDesc+retTypeDesc, false);
 			if(clss!=void.class){
 				methodVisitor.visitInsn(POP);
 			}
@@ -153,10 +170,23 @@ public class BeanAsmCode {
 
 			}
 			methodVisitor.visitVarInsn(ALOAD, 3);
-			String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getPropertyType().getName());
+			Class paramType =propertyDescriptor.getProp().getPropertyType();
 
-			methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
+			if(paramType.isPrimitive()){
+				BoxClass boxType = getPrimitiveBoxType(paramType);
+				methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
+					"()"+boxType.valueMethodRetType, false);
+				String paramAsmDesc = "("+boxType.valueMethodRetType+")L"+getAsmClassName(boxType.getType().getName())+";";
+				//box
+				methodVisitor.visitMethodInsn(INVOKESTATIC, getAsmClassName(boxType.getType().getName()), "valueOf", paramAsmDesc,
+					false);
+
+			}else{
+				String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getPropertyType().getName());
+				methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
 					"()L"+typeAsmName+";", false);
+			}
+
 			methodVisitor.visitInsn(ARETURN);
 
 		}
@@ -187,6 +217,35 @@ public class BeanAsmCode {
 		methodVisitor.visitEnd();
 
 
+	}
+	@Data
+	static class BoxClass{
+		Class type;
+		String valueMethod;
+		String valueMethodRetType;
+		public BoxClass(Class boxType,String boxValueMethod,String boxValueMethodRetType){
+			this.type = boxType;
+			this.valueMethod = boxValueMethod;
+			this.valueMethodRetType = boxValueMethodRetType;
+		}
+	}
+
+	static Map<Class,BoxClass> boxMap = new HashMap();
+	static {
+		boxMap.put(int.class,new BoxClass(Integer.class,"intValue","I"));
+		boxMap.put(double.class,new BoxClass(Double.class,"doubleValue","D"));
+		boxMap.put(long.class,new BoxClass(Long.class,"longValue","J"));
+		boxMap.put(short.class,new BoxClass(Short.class,"shortValue","S"));
+		boxMap.put(byte.class,new BoxClass(Byte.class,"byteValue","B"));
+	}
+
+	protected static BoxClass getPrimitiveBoxType(Class type){
+		BoxClass boxClass = boxMap.get(type);
+		if(boxClass==null){
+			//不可能到达这里
+			throw new UnsupportedOperationException("不支持的原始类型 "+type.getName()+" 需要改成封装类型");
+		}
+		return boxClass;
 	}
 
 	public static String getWriteClassName(Class bean){

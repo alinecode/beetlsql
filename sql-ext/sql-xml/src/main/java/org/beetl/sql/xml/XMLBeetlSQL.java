@@ -6,9 +6,13 @@ import org.beetl.core.tag.GeneralVarTagBinding;
 import org.beetl.core.tag.Tag;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.engine.StringSqlTemplateLoader;
 import org.beetl.sql.core.engine.TrimTag;
 import org.beetl.sql.core.engine.WhereTag;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
+import org.beetl.sql.core.loader.AbsolutePathLoader;
+import org.beetl.sql.core.loader.MarkdownClasspathLoader;
+import org.beetl.sql.core.loader.SQLLoader;
 import org.beetl.sql.ext.PluginExtConfig;
 
 
@@ -45,7 +49,27 @@ public class XMLBeetlSQL implements PluginExtConfig
 	}
 	@Override
 	public void config(SQLManager sqlManager) {
+		SQLLoader sqlLoader = sqlManager.getSqlLoader();
 		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
+		//必须使用XMLClasspathLoader，但这里可以把其他loader转化xmlloader
+		if(!(sqlLoader instanceof XMLClasspathLoader) ){
+			if(sqlLoader instanceof MarkdownClasspathLoader){
+
+				MarkdownClasspathLoader markdownClasspathLoader = (MarkdownClasspathLoader)sqlLoader;
+				XMLClasspathLoader xmlClasspathLoader = new XMLClasspathLoader(markdownClasspathLoader.getSqlRoot(),markdownClasspathLoader.getCharset());
+				changeToXMLLoader(sqlManager,xmlClasspathLoader);
+			}else if(sqlLoader instanceof AbsolutePathLoader){
+				AbsolutePathLoader fileLoader = (AbsolutePathLoader)sqlLoader;
+				XMLClasspathLoader xmlClasspathLoader = new XMLClasspathLoader(fileLoader.getSqlRoot(),fileLoader.getCharset());
+				changeToXMLLoader(sqlManager,xmlClasspathLoader);
+			}
+			else{
+				throw new UnsupportedOperationException("需要配置 XMLClasspathLoader才能使用");
+			}
+
+		}
+
+
 		GroupTemplate gt = beetlSQLTemplateEngine.getBeetl().getGroupTemplate();
 		//支持xml标签
 		String htmlTagStart = "<b:" ;
@@ -55,6 +79,16 @@ public class XMLBeetlSQL implements PluginExtConfig
 		registerXMLTag(gt);
 		// xml标签实现类，所有xml标记都被beetl转化为标签函数 htmltag(){...}
 		gt.registerTag("htmltag", XMLTagSupportWrapper.class);
+	}
+
+	protected  void changeToXMLLoader(SQLManager sqlManager,XMLClasspathLoader xmlClasspathLoader){
+		xmlClasspathLoader.setClassLoaderKit(sqlManager.getClassLoaderKit());
+		xmlClasspathLoader.setDbStyle(sqlManager.getDbStyle());
+		sqlManager.setSqlLoader(xmlClasspathLoader);
+
+		StringSqlTemplateLoader sqlTemplateLoader = new StringSqlTemplateLoader(xmlClasspathLoader);
+		BeetlTemplateEngine beetlSQLTemplateEngine = (BeetlTemplateEngine) sqlManager.getSqlTemplateEngine();
+		beetlSQLTemplateEngine.getBeetl().getGroupTemplate().setResourceLoader(sqlTemplateLoader);
 	}
 
 	public  void registerTag(SQLManager sqlManager,String name,Tag tag){
