@@ -6,26 +6,37 @@
 
     <parent>
         <groupId>com.ibeetl</groupId>
-        <artifactId>beetlsql-all</artifactId>
+        <artifactId>sql-ext</artifactId>
         <version>3.24.1-RELEASE</version>
     </parent>
-    <artifactId>sql-ext</artifactId>
+
+    <groupId>com.ibeetl</groupId>
+    <artifactId>sql-tenant</artifactId>
     <version>3.24.1-RELEASE</version>
-	<packaging>pom</packaging>
-	<modules>
-		<module>sql-xml</module>
-		<module>sql-accelerator</module>
-		<module>sql-firewall</module>
-		<module>sql-dynamic-table</module>
-		<module>sql-bean-encrypt</module>
-		<module>sql-tenant</module>
-	</modules>
 	<dependencies>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.3.1</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetlsql</artifactId>
 			<version>3.24.1-RELEASE</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 

@@ -19,11 +19,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <pre>
- * Benchmark                     Mode  Cnt        Score         Error   Units
- * BeanASMPerfTest.direct       thrpt    3  3597282.120 ± 2031070.301  ops/ms
- * BeanASMPerfTest.myasm        thrpt    3  1889599.007 ± 1013919.850  ops/ms
- * BeanASMPerfTest.propertySet  thrpt    3     3462.095 ±    2748.584  ops/ms
- * BeanASMPerfTest.reflectAsm   thrpt    3    18580.151 ±   13286.590  ops/ms
+ * Benchmark                     Mode  Cnt      Score       Error   Units
+ * BeanASMPerfTest.direct       thrpt    3  76812.782 ± 73423.221  ops/ms
+ * BeanASMPerfTest.myasm        thrpt    3  41868.452 ± 17022.522  ops/ms
+ * BeanASMPerfTest.propertySet  thrpt    3   5749.843 ±  1417.428  ops/ms
+ * BeanASMPerfTest.reflectAsm   thrpt    3  15345.451 ±  1034.992  ops/ms
  * </pre>
  */
 @BenchmarkMode(Mode.Throughput)
