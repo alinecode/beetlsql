@@ -12,12 +12,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class TenantTest {
 	static DataSource dataSource = datasource();
 
+	//模拟大多数租户使用ThreadLocal
 	static ThreadLocal<Integer> localValue = ThreadLocal.withInitial(new Supplier<Integer>() {
 		@Override
 		public Integer get() {
@@ -41,21 +44,29 @@ public class TenantTest {
 		}));
 
 
-
 		//测试
 		MyRewriteMapper myTenantMapper = sqlManager.getMapper(MyRewriteMapper.class);
 		//租户1
 		localValue.set(1);
 		List<OrderLog> logs = myTenantMapper.all();
-		Assert.assertEquals(1,logs.size());
+		Assert.assertEquals(2,logs.size());
 		//租户2
 		localValue.set(2);
 		logs = myTenantMapper.all();
-		Assert.assertEquals(3,logs.size());
+		Assert.assertEquals(2,logs.size());
 
-		//忽略租户
+		//直接使用sqlmanager，忽略租户
 		logs =  sqlManager.all(OrderLog.class);
 		Assert.assertEquals(4,logs.size());
+
+		localValue.set(2);
+		List<OrderLog> list = myTenantMapper.select("b");
+		Assert.assertEquals(2,list.size());
+
+		MyCommonMapper myCommonMapper = sqlManager.getMapper(MyCommonMapper.class);
+		//忽略租户
+		list = myCommonMapper.select("b");
+		Assert.assertEquals(3,list.size());
 	}
 
 
