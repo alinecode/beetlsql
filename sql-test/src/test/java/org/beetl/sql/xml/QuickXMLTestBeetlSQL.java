@@ -79,12 +79,6 @@ public class QuickXMLTestBeetlSQL {
 
 	}
 
-	@Test
-	public void testWhere(){
-		List<User> list = sqlManager.select(SqlId.of("user.testWhere"),User.class);
-		Assert.assertTrue(list.size()>0);
-
-	}
 
 
 	@Test

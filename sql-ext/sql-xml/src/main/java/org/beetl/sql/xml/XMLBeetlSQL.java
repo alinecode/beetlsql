@@ -112,7 +112,7 @@ public class XMLBeetlSQL implements PluginExtConfig
 
 
 
-	public  class XMLWhereTag extends WhereTag {
+	public  static class XMLWhereTag extends WhereTag {
 
 		@Override
 		protected void initTrimArgs(Object[] args) {
