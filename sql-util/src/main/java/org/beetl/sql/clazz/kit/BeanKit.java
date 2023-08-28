@@ -23,7 +23,7 @@ public class BeanKit {
 	/**
 	 * 设置false，支持lombok非javabean支持，链式调用
 	 */
-	public static boolean JAVABEAN_STRICT = false;
+	public static boolean JAVABEAN_STRICT = true;
 	static Map<Class,Map<String,Field>> classFields = new ConcurrentHashMap<>();
 	static Map<Class,Map<String,PropertyDescriptorWrap>> classProperty = new ConcurrentHashMap<>();
 	/**

@@ -19,7 +19,7 @@ public class BeanPropertyAsmWrapper extends BeanPropertyAsm {
 		try{
 			real.setValue(index,obj,attrValue);
 		}catch (IllegalArgumentException ex){
-			throw new BeetlSQLException(BeetlSQLException.ERROR,"不存在的属性索引 "+index+",class="+obj.getClass());
+			throw new BeetlSQLException(BeetlSQLException.ERROR,"不存在的属性,如果是链式调用，设置SqlManager.javabeanStrict(false),class="+obj.getClass());
 		}
 		catch (Exception ex){
 			PropertyDescriptor propertyDescriptor = findAttr(index,obj);

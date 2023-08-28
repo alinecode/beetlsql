@@ -103,7 +103,8 @@ public class SQLManager implements DataAPI {
 	}
 
 	/**
-	 * 默认为false支持不遵守javabean规范(链式调用等）如果设置为false，则支持链式调用，以及lombok bean的不规范属性
+	 * 默认为true
+	 * false支持不遵守javabean规范(链式调用等）如果设置为false，则支持链式调用，以及lombok bean的不规范属性
 	 * 如果设置为true，则严格遵守javabean，javabean规范遵守，有利于所有的框架
 	 * @param strict
 	 */

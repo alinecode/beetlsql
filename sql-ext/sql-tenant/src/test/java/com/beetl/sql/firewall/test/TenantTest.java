@@ -67,6 +67,12 @@ public class TenantTest {
 		//忽略租户
 		list = myCommonMapper.select("b");
 		Assert.assertEquals(3,list.size());
+
+
+		//测试禁止sql重写
+		list = myTenantMapper.select2("b");
+		Assert.assertEquals(3,list.size());
+
 	}
 
 
