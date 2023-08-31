@@ -93,7 +93,7 @@ public class LogicDeleteTest extends BaseTest {
 		ProductOrder newOrder = new ProductOrder();
 		newOrder.setCreateDate(new Date());
 		newOrder.setStatus(1);
-		int ret =  lambdaQuery.andEq("id",order.getId()).delete();
+		int ret =  lambdaQuery.andEq("id",order.getId()).desc("id").delete();
 
 		System.out.println(sqlManager.all(ProductOrder.class));
 

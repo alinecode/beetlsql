@@ -52,7 +52,7 @@ public class QueryTest extends BaseTest {
     @Test
     public void order() {
         {
-            List<User> users = lambdaQuery.andEq(User::getDepartmentId,2).orderBy(User::getId).select();
+            List<User> users = lambdaQuery.andEq(User::getDepartmentId,2).asc(User::getId).select();
             User user = users.get(0);
             User user1 = users.get(1);
             Assert.assertTrue(user1.getId()>user.getId());

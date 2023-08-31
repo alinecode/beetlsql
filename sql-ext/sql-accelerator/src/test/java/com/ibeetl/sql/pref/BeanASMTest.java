@@ -13,9 +13,9 @@ import java.io.FileOutputStream;
 
 public class BeanASMTest {
 
-//	static {
-//		BeanKit.JAVABEAN_STRICT = false;
-//	}
+	static {
+		BeanKit.JAVABEAN_STRICT = false;
+	}
 	@Test
 	public void testGen() throws Exception{
 

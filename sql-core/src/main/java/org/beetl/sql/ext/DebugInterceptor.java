@@ -85,7 +85,6 @@ public class DebugInterceptor implements Interceptor {
 
 	}
 	protected int lookBusinessCodeInTrace(StackTraceElement[] traces) {
-
 		String className = getTraceClassName();
 		int sqlMangerIndex = -1;
 		for (int i = traces.length - 1; i >= 0; i--) {
@@ -96,27 +95,37 @@ public class DebugInterceptor implements Interceptor {
 				sqlMangerIndex = i+1;
 			}
 		}
-
-		for (int i = sqlMangerIndex; i < traces.length - 1; i++) {
-			String name = traces[i].getClassName();
-			if (name.equals(mapperName)) {
-				for(i=i+1;i<traces.length ;i++){
-					name = traces[i].getClassName();
-					if(name.startsWith("com.sun.proxy.$Proxy")){
-						return i+1;
+		int i = sqlMangerIndex;
+		try{
+			for (; i < traces.length - 1; i++) {
+				String name = traces[i].getClassName();
+				if (name.equals(mapperName)) {
+					for(i=i+1;i<traces.length ;i++){
+						name = traces[i].getClassName();
+						if(name.indexOf("$Proxy")!=-1&&traces[i].getLineNumber()==-1){
+							//mapper代理类
+							return i+1;
+						}
 					}
-				}
-				return i + 1;
-			} else if (name.startsWith("org.beetl.sql.core.query")) {
-				for(i=i+1;i<traces.length;i++){
-					name = traces[i].getClassName();
-					if(!name.startsWith("org.beetl.sql.core.query")){
-						return i;
+					return i + 1;
+				} else if (name.startsWith("org.beetl.sql.core.query")) {
+					for(i=i+1;i<traces.length;i++){
+						name = traces[i].getClassName();
+						if(!name.startsWith("org.beetl.sql.core.query")){
+							return i;
+						}
 					}
 				}
 			}
+			return sqlMangerIndex;
+		}finally {
+			if(i==traces.length){
+				//遍历完毕还未找到，可能是bug，返回一个保守位置。这可能是未来包名变化导致
+				return sqlMangerIndex;
+			}
 		}
-		return sqlMangerIndex;
+
+
 
 	}
 

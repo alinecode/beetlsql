@@ -1,10 +1,10 @@
 package org.beetl.sql.core.query;
 
 public class OrderBy {
-	StringBuilder sb = new StringBuilder("ORDER BY ");
+	StringBuilder sb = new StringBuilder(" ORDER BY ");
 
 	public void add(String orderBy) {
-		sb.append(orderBy).append(" ,");
+		sb.append(" ").append(orderBy).append(" ,");
 	}
 
 	public String getOrderBy() {
