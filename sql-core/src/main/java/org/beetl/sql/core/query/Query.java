@@ -196,7 +196,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         if(whereAppend){
         	sb.append(" WHERE 1=1 ");
 		}
-        sb.append(" AND ").append(col).append("!=").append(value);
+        sb.append(" AND ").append(col).append("!=").append(value).append(" ");
 
     }
 
