@@ -55,6 +55,9 @@ public abstract  class  RewriteTask {
 					}
 
 				}else if ( value instanceof  List){
+					if(((List)value).isEmpty()){
+						continue;
+					}
 					ExpressionList valueExpressList = new  ExpressionList();
 					for(Object o:(List)value){
 						Expression valueExpress = new LongValue(((Number)o).longValue());

@@ -1,6 +1,7 @@
 package com.beetl.sql.tenant.mapper;
 
 import com.beetl.sql.tenant.SqlRewriteInterceptor;
+import com.beetl.sql.tenant.annotation.DisableRewrite;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.MapperJava8Proxy;
 import org.beetl.sql.mapper.builder.MapperConfigBuilder;
@@ -23,7 +24,11 @@ public class RewriteMapperJava8Proxy extends MapperJava8Proxy {
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		Class caller = method.getDeclaringClass();
 		if (RewriteBaseMapper.class.isAssignableFrom(caller)) {
-			sqlRewriteInterceptor.enable();
+			DisableRewrite disableRewrite = method.getAnnotation(DisableRewrite.class);
+			if(disableRewrite==null){
+				//开启重写
+				sqlRewriteInterceptor.enable();
+			}
 		}
 		try {
 			return super.invoke(proxy, method, args);
