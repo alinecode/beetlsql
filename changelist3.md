@@ -23,5 +23,9 @@
 * 
 # 3.25.1
 * DebugInterceptor 修复
+* 
+# 3.25.3
+* BaseMapper增加batchUpdate实现 修复
+* 优化SqlRewrite的RewriteMapper
 
 
