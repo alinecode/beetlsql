@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-integration</artifactId>
-        <version>3.25.2-RELEASE</version>
+        <version>3.25.3-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-solon-plugin</artifactId>
-    <version>3.25.2-RELEASE</version>
+    <version>3.25.3-RELEASE</version>
 
     <properties>
         <solon.version>2.4.0</solon.version>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.25.2-RELEASE</version>
+            <version>3.25.3-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 

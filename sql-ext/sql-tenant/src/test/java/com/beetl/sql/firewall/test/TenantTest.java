@@ -9,6 +9,7 @@ import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -20,17 +21,13 @@ import java.util.function.Supplier;
 public class TenantTest {
 	static DataSource dataSource = datasource();
 
-	//模拟大多数租户使用ThreadLocal
-	static ThreadLocal<Integer> localValue = ThreadLocal.withInitial(new Supplier<Integer>() {
-		@Override
-		public Integer get() {
-			return null;
-		}
-	});
+	static SQLManager sqlManager;
 
-	@Test
-	public void test(){
-		SQLManager sqlManager = getSQLManager();
+	static  MyRewriteMapper myTenantMapper;
+
+	@BeforeClass
+	public  static void init(){
+		sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 
 		//配置多租户功能支持，
@@ -44,8 +41,20 @@ public class TenantTest {
 		}));
 
 
-		//测试
-		MyRewriteMapper myTenantMapper = sqlManager.getMapper(MyRewriteMapper.class);
+		myTenantMapper = sqlManager.getMapper(MyRewriteMapper.class);
+	}
+
+	//模拟大多数租户使用ThreadLocal
+	static ThreadLocal<Integer> localValue = ThreadLocal.withInitial(new Supplier<Integer>() {
+		@Override
+		public Integer get() {
+			return null;
+		}
+	});
+
+	@Test
+	public void test(){
+
 		//租户1
 		localValue.set(1);
 		List<OrderLog> logs = myTenantMapper.all();
@@ -72,6 +81,16 @@ public class TenantTest {
 		//测试禁止sql重写
 		list = myTenantMapper.select2("b");
 		Assert.assertEquals(3,list.size());
+
+
+		OrderLog orderLog = new OrderLog();
+		orderLog.setId(99);
+		orderLog.setName("any");
+		orderLog.setTenantId(5);
+		myTenantMapper.insert(orderLog);
+
+
+
 
 	}
 

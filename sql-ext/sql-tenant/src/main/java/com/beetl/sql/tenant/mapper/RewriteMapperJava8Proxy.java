@@ -22,8 +22,7 @@ public class RewriteMapperJava8Proxy extends MapperJava8Proxy {
 	}
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		Class caller = method.getDeclaringClass();
-		if (RewriteBaseMapper.class.isAssignableFrom(caller)) {
+		if (proxy instanceof  RewriteBaseMapper) {
 			DisableRewrite disableRewrite = method.getAnnotation(DisableRewrite.class);
 			if(disableRewrite==null){
 				//开启重写

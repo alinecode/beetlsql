@@ -7,6 +7,7 @@ import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.mapper.annotation.AutoMapper;
+import org.beetl.sql.mapper.identity.BatchUpdateRMI;
 import org.beetl.sql.mapper.internal.*;
 
 import java.util.List;
@@ -236,6 +237,9 @@ public interface BaseMapper<T> {
 	 */
 	@AutoMapper(GetTargetEntityAMI.class)
 	Class<T> getTargetEntity();
+
+	@AutoMapper(UpdateByIdBatchAMI.class)
+	int[] UpdateByIdBatch(List<?> list);
 
 
 }

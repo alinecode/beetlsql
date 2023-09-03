@@ -38,7 +38,11 @@ public interface UserUpdateMapper extends BaseMapper<UserEntity> {
     @Update
     int deleteAllUser(List<Integer> ids);
 
-
+	/**
+	 * 自己定义一个
+	 * @param users
+	 * @return
+	 */
     default int [] batchUpdateById(List<UserEntity> users){
         return this.getSQLManager().updateByIdBatch(users);
     }
