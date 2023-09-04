@@ -17,7 +17,7 @@ import javax.sql.DataSource;
  * */
 public class XPluginImp implements Plugin {
     @Override
-    public void start(AopContext context) {
+    public void start(AppContext context) {
         //监听事件
         context.subWrapsOfType(DataSource.class, bw->{
             DbManager.reg(bw);
