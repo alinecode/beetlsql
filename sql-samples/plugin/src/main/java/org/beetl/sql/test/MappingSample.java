@@ -116,6 +116,7 @@ public class MappingSample {
 
 
 
+
     @Data
     public static class UserVo {
         Integer id;

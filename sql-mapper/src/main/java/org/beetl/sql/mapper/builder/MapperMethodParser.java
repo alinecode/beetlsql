@@ -32,12 +32,17 @@ import java.lang.reflect.Type;
  * @author xiandafu
  */
 @Plugin
-public class MapperMethodParser {
+public class MapperMethodParser implements BaseMethodParser {
 	//mapper类的泛型类型
 	protected Class defaultRetType;
 	protected Method method = null;
 	protected Class mapperClass = null;
 	protected int preferredSqlLen = -1;
+
+
+	public MapperMethodParser() {
+
+	}
 
 	/**
 	 * 映射方法解析器
@@ -46,7 +51,8 @@ public class MapperMethodParser {
 	 * @param mapperClass BaseMapper接口或子接口
 	 * @param method 调用的接口方法
 	 */
-	public MapperMethodParser(Class defaultRetType, Class mapperClass, Method method) {
+	@Override
+	public void init(Class defaultRetType, Class mapperClass, Method method) {
 		this.defaultRetType = defaultRetType;
 		this.mapperClass = mapperClass;
 		this.method = method;
@@ -57,6 +63,7 @@ public class MapperMethodParser {
 	 * 解析Mapper中定于定义方法，采用对应的MapperInvoke
 	 * @return
 	 */
+	@Override
 	public MapperInvoke parse() {
 
 		/*方法单独指定BaseMapper实现*/
@@ -91,10 +98,16 @@ public class MapperMethodParser {
 		}
 
 		//默认，通过sqlId方式定位sql模板资源位置
-		MapperInvoke invoke = parseSqlId();
+		MapperInvoke invoke = others();
 		return invoke;
 
 	}
+
+	protected  MapperInvoke others(){
+		MapperInvoke invoke = parseSqlId();
+		return invoke;
+	}
+
 
 	protected String getNamespace() {
 		SqlResource methodSqlResoruce = method.getAnnotation(SqlResource.class);

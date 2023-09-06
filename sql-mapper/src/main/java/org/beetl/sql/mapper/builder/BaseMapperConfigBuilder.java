@@ -1,11 +1,13 @@
 package org.beetl.sql.mapper.builder;
 
+import org.beetl.sql.annotation.builder.Builder;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.Plugin;
 import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.annotation.AutoMapper;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,8 +63,19 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
 		if (mapperInvoke != null) {
 			return mapperInvoke;
 		}
-		MapperMethodParser mapperMethodParser = new MapperMethodParser(entity, mapperClass, key.m);
-		mapperInvoke = mapperMethodParser.parse();
+		BaseMethodParser baseMethodParser = null;
+		Builder builder = (Builder)getClassDeclaredAnnotation(mapperClass, Builder.class);
+
+		if(builder!=null){
+			Class<? extends  BaseMethodParser>  cls = (Class<? extends  BaseMethodParser>)builder.value();
+			baseMethodParser = BeanKit.newInstance(cls);
+
+		}else{
+			baseMethodParser = new MapperMethodParser();
+		}
+
+		baseMethodParser.init(entity,mapperClass,key.m);
+		mapperInvoke = baseMethodParser.parse();
 		mapperInvoke = wrap(mapperInvoke, key.m);
 		amiMethodMap.putIfAbsent(key, mapperInvoke);
 		return mapperInvoke;
@@ -152,6 +165,27 @@ public  class BaseMapperConfigBuilder implements MapperConfigBuilder {
 		}
 	}
 
+
+	public static Annotation  getClassDeclaredAnnotation(Class cls, Class expectAnnotation) {
+		for(Annotation annotation :cls.getAnnotations()){
+			Annotation target = annotation.annotationType().getAnnotation(expectAnnotation);
+			if(target!=null){
+				return target;
+			}
+		}
+		Class[] allParent  = cls.getInterfaces();
+		if(allParent==null||allParent.length==0){
+			return null;
+		}
+		for(Class parent:allParent){
+			Annotation target =getClassDeclaredAnnotation(parent,expectAnnotation);
+			if(target!=null){
+				return target;
+			}
+		}
+		return null;
+
+	}
 
 
 }

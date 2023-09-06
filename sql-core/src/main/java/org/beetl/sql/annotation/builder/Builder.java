@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  * }</pre>
  *
  * @author xiandafu
- * @see  org.beetl.sql.core.mapping.BeanFetch
+ * @see org.beetl.sql.core.mapping.BeanFetch
  * @see TargetAdditional
  * @see BeanConvert
  */

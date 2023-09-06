@@ -239,7 +239,7 @@ public interface BaseMapper<T> {
 	Class<T> getTargetEntity();
 
 	@AutoMapper(UpdateByIdBatchAMI.class)
-	int[] UpdateByIdBatch(List<?> list);
+	int[] updateByIdBatch(List<?> list);
 
 
 }
