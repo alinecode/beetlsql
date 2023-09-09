@@ -1,17 +1,13 @@
 package org.beetl.sql.mapper;
 
-import org.beetl.ext.fn.StringUtil;
-import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.mapper.annotation.AutoMapper;
-import org.beetl.sql.mapper.identity.BatchUpdateRMI;
 import org.beetl.sql.mapper.internal.*;
+import org.beetl.sql.mapper.template.UpdateTemplateByIdBatchAMI;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * BaseMapper.定义了一个Mapper接口，并内置了多个方法
@@ -238,8 +234,21 @@ public interface BaseMapper<T> {
 	@AutoMapper(GetTargetEntityAMI.class)
 	Class<T> getTargetEntity();
 
+	/**
+	 * 批量更新
+	 *
+	 * @return Class
+	 */
 	@AutoMapper(UpdateByIdBatchAMI.class)
 	int[] updateByIdBatch(List<?> list);
 
+
+	/**
+	 * 模板批量更新
+	 *
+	 * @return Class
+	 */
+	@AutoMapper(UpdateTemplateByIdBatchAMI.class)
+	int[] updateTemplateByIdBatch(List<?> list);
 
 }
