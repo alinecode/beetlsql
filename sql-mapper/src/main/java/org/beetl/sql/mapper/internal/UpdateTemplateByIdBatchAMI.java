@@ -1,9 +1,11 @@
 
-package org.beetl.sql.mapper.template;
+package org.beetl.sql.mapper.internal;
 
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;
+import org.beetl.sql.mapper.template.BaseTemplateMI;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -17,11 +19,7 @@ import java.util.List;
  * }</pre>
  * @author zj
  */
-public class UpdateTemplateByIdBatchAMI extends BaseTemplateMI {
-
-	public UpdateTemplateByIdBatchAMI(String templateSql, MethodParamsHolder holder){
-		super(templateSql,holder);
-	}
+public class UpdateTemplateByIdBatchAMI extends MapperInvoke {
 	@Override
 	public Object call(SQLManager sm, Class entityClass, Method m, Object[] args) {
 		if(args.length!=1){

@@ -5,7 +5,7 @@ import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.mapper.annotation.AutoMapper;
 import org.beetl.sql.mapper.internal.*;
-import org.beetl.sql.mapper.template.UpdateTemplateByIdBatchAMI;
+import org.beetl.sql.mapper.internal.UpdateTemplateByIdBatchAMI;
 
 import java.util.List;
 
