@@ -53,16 +53,20 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		sqlManager.query(OrderLog.class).andEq("order_id",1).select();
-		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
-		System.out.println(orderLog);
-		orderLog.setABc("effdfdf").setCreateTime( new Date());
-		sqlManager.updateById(orderLog);
-		orderLog = sqlManager.unique(OrderLog.class,1);
-		System.out.println(orderLog);
+		Map map = new HashMap();
+		map.put("ids",Arrays.asList(1,2,3));
+		PageRequest pageRequest = DefaultPageRequest.of(1,10);
+		sqlManager.pageQuery(SqlId.of("user","select"),OrderLog.class,map,pageRequest);
 
-		OrderLogMapper orderLogMapper = sqlManager.getMapper(OrderLogMapper.class);
-		orderLogMapper.selectByStatus(Arrays.asList("a"));
+
+
+		sqlManager.pageQuery(SqlId.of("user","select"),OrderLog.class,map,pageRequest);
+
+		sqlManager.pageQuery(SqlId.of("user","select"),OrderLog.class,map,pageRequest);
+
+
+
+
 
 
 

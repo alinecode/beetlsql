@@ -21,8 +21,6 @@ public class JPAMapperMethodParser extends MapperMethodParser {
 	}
 
 
-
-
 	protected MapperExtBuilder findExtBuilder() {
 		return null;
 	}

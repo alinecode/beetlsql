@@ -381,16 +381,21 @@ public class SQLManager implements DataAPI {
 	protected SQLExecutor getPageSqlScript(Class mapping, SqlId selectId) {
 		SqlId pageId = selectId.toPage();
 		ExecuteContext ctx = ExecuteContext.instance(this);
-
-		SQLSource source = sqlLoader.querySQL(pageId);
-		if (source != null) {
-			ctx.initSQLSource(source);
-			return dbStyle.buildExecutor(ctx);
+		SQLSource source = null;
+		if(!sqlLoader.exist(selectId)){
+			throw sqlLoader.getException(selectId);
 		}
 
+		if(!sqlLoader.isModified(selectId)){
+			source = sqlLoader.querySQL(pageId);
+			if (source != null) {
+				ctx.initSQLSource(source);
+				return dbStyle.buildExecutor(ctx);
+			}
+		}
 
 		//新创建一个
-		SQLSource script = sqlLoader.querySQL(selectId);
+		SQLSource script = sqlLoader.loadSQL(selectId);
 		String template = script.getTemplate();
 		String pageTemplate = dbStyle.getRangeSql().toTemplateRange(mapping, template);
 		source = new SQLSource(pageId, pageTemplate);
@@ -398,6 +403,15 @@ public class SQLManager implements DataAPI {
 		source.version = script.version;
 		sqlLoader.addSQL(pageId, source);
 		ctx.initSQLSource(source);
+		if(!sqlLoader.isProduct()){
+			//开发模式下的 hack 代码
+			if(source.version.root!=0){
+				source.version.root= source.version.root-1;
+			}else if(source.version.db!=0){
+				source.version.db = source.version.db-1;
+			}
+		}
+
 
 		return dbStyle.buildExecutor(ctx);
 
