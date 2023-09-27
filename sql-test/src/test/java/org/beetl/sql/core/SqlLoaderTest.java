@@ -75,7 +75,6 @@ public class SqlLoaderTest extends BaseTest {
 		content = reader.getContent();
 		Assert.assertTrue(content.contains("/* from druid */"));
 
-		Assert.assertFalse(loader.isModified(id));
 
 
 	}

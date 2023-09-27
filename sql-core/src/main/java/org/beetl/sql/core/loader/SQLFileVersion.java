@@ -18,4 +18,18 @@ public  class SQLFileVersion {
 	public boolean isModified(SQLFileVersion newVersion) {
 		return newVersion.root != root || newVersion.db != db;
 	}
+
+	public SQLFileVersion newVersion(){
+		SQLFileVersion sqlFileVersion = new SQLFileVersion();
+		sqlFileVersion.url = url;
+		if(root!=0){
+			sqlFileVersion.root = 1;
+		}
+
+		if(db!=0){
+			sqlFileVersion.db = 1;
+		}
+
+		return sqlFileVersion;
+	}
 }

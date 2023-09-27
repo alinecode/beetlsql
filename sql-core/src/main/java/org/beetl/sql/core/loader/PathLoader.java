@@ -74,51 +74,50 @@ public abstract class PathLoader extends AbstractSQLLoader {
 
     @Override
     public SQLSource queryExternalSource(SqlId id) {
-        SQLSource source = sqlSourceMap.get(id);
-
-        if (source == EMPTY) {
-            return null;
-        }
-        if (source != null) {
-            return source;
-        }
-        //从未被加载过
-
-        loadFromClassPath(id);
-        source = sqlSourceMap.computeIfAbsent(id, key -> EMPTY);
-        if (source == EMPTY) {
-            return null;
-        } else {
-            return source;
-        }
-
+		if(isProduct()){
+			SQLSource source = sqlSourceMap.get(id);
+			if (source == EMPTY) {
+				return null;
+			}
+			if (source != null) {
+				return source;
+			}
+			//从未被加载过
+			loadFromClassPath(id);
+			source = sqlSourceMap.computeIfAbsent(id, key -> EMPTY);
+			if (source == EMPTY) {
+				return null;
+			} else {
+				return source;
+			}
+		}else{
+			if(isExternalSourceModified(id)){
+				return this.loadSQL(id);
+			}else{
+				return queryFromCache(id);
+			}
+		}
     }
 
+	protected SQLSource queryFromCache(SqlId sqlId){
+		SQLSource source = sqlSourceMap.get(sqlId);
+		if (source == EMPTY) {
+			return null;
+		}
+		return source;
+	}
 
-    @Override
-    public boolean existExternalSource(SqlId id) {
-        SQLSource source = queryExternalSource(id);
-        return source != null;
-    }
+	protected boolean isExternalSourceModified(SqlId id) {
 
-    /**
-     * 比较sql是否变化，比较sql所在的文件是否变化，如果变化，则认为sql变化，提示beetl重新解析sql语句
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public boolean isExternalSourceModified(SqlId id) {
+		SQLSource source = this.sqlSourceMap.get(id);
+		if (source == null) {
+			return false;
+		}
 
-        SQLSource source = this.sqlSourceMap.get(id);
-        if (source == null) {
-            return false;
-        }
+		long oldRootVersion = source.getVersion().root;
+		long oldDbVersion = source.getVersion().db;
 
-        long oldRootVersion = source.getVersion().root;
-        long oldDbVersion = source.getVersion().db;
-
-        if(oldDbVersion!=0) {
+		if(oldDbVersion!=0) {
 			URL db = this.getDBRootFile(id);
 			return  getURLVersion(db) != oldDbVersion;
 		}else  if(oldRootVersion!=0){
@@ -127,17 +126,20 @@ public abstract class PathLoader extends AbstractSQLLoader {
 			return getURLVersion(root) != oldRootVersion;
 		}
 		else{
-        	//均为0，md在jar文件，不包含版本变化
-        	return false ;
+			//均为0，md在jar文件，不包含版本变化
+			return false ;
 		}
 
-    }
+	}
+
 
     @Override
-    public void removeExternalSource(SqlId id) {
-        this.sqlSourceMap.remove(id);
-
+    public boolean existExternalSource(SqlId id) {
+        SQLSource source = queryExternalSource(id);
+        return source != null;
     }
+
+
 
 
     protected Long getURLVersion(URL url) {

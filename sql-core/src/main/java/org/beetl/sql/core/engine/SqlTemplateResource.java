@@ -4,12 +4,14 @@ import org.beetl.core.Resource;
 import org.beetl.core.ResourceLoader;
 import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
+import org.beetl.sql.core.loader.SQLFileVersion;
 import org.beetl.sql.core.loader.SQLLoader;
 
 import java.io.IOException;
 import java.io.Reader;
 
 public class SqlTemplateResource extends Resource<SqlId> {
+	SQLFileVersion sqlFileVersion = null;
 
 	public SqlTemplateResource(SqlId id, ResourceLoader loader) {
 		super(id, loader);
@@ -17,28 +19,31 @@ public class SqlTemplateResource extends Resource<SqlId> {
 
 	@Override
 	public Reader openReader() {
-
-		StringSqlTemplateLoader l = (StringSqlTemplateLoader) resourceLoader;
-		SQLLoader sqlLoader = l.getSqlLLoader();
-		SQLSource newResource = sqlLoader.loadSQL(id);
+		SQLSource newResource = getSQLLoader().loadSQL(id);
+		this.sqlFileVersion = newResource.getVersion();
 		return new NoneBlockStringReader(newResource.getTemplate());
 	}
 
 	@Override
 	public boolean isModified() {
-
-		StringSqlTemplateLoader l = (StringSqlTemplateLoader) this.resourceLoader;
-		SQLLoader loader = l.getSqlLLoader();
-		boolean isModified =  loader.isModified(id);
+		if(sqlFileVersion==null){
+			return true;
+		}
+		SQLSource newResource = getSQLLoader().querySQL(id);
+		boolean isModified =  newResource.getVersion().isModified(sqlFileVersion);
 		return isModified;
 
 	}
 
 	public int getLine() {
-		StringSqlTemplateLoader l = (StringSqlTemplateLoader) resourceLoader;
-		SQLLoader sqlLoader = l.getSqlLLoader();
-		SQLSource newResource = sqlLoader.querySQL(id);
+		SQLSource newResource = getSQLLoader().querySQL(id);
 		return newResource.line;
+	}
+
+	protected SQLLoader getSQLLoader(){
+		StringSqlTemplateLoader l = (StringSqlTemplateLoader) this.resourceLoader;
+		SQLLoader sqlLoader = l.getSqlLLoader();
+		return sqlLoader;
 	}
 
 

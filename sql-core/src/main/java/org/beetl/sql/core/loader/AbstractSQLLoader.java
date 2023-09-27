@@ -33,9 +33,8 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 
 	public abstract boolean existExternalSource(SqlId id);
 
-	public abstract boolean isExternalSourceModified(SqlId id);
 
-	public abstract void removeExternalSource(SqlId id);
+
 
 
 	public AbstractSQLLoader() {
@@ -61,20 +60,6 @@ public abstract class AbstractSQLLoader implements SQLLoader {
 	public SQLSource queryAutoSQL(SqlId id){
 		SQLSource sqlSource = autoGenSourceMap.get(id);
 		return sqlSource;
-	}
-
-	@Override
-	public boolean isModified(SqlId id) {
-		if (isProduct()) {
-			return false;
-		}
-		if (autoGenSourceMap.containsKey(id)) {
-			return false;
-		}
-		boolean isModified = isExternalSourceModified(id);
-
-		return isModified;
-
 	}
 
 	@Override
