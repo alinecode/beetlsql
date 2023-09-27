@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 用于方便的构造简单的sql操作，复杂的sql操作建议直接使用sql语句
+ * 用于方便的构造简单的sql操作，复杂的sql操作建议直接使用sql语句(非不能，不为也)
  * <pre>@{code
  *     Query<User> query = ... ;
  *     List<User> list = query.andEq("name","lijz").select();

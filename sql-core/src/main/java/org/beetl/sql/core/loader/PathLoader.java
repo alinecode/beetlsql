@@ -83,15 +83,9 @@ public abstract class PathLoader extends AbstractSQLLoader {
 				return source;
 			}
 			//从未被加载过
-			loadFromClassPath(id);
-			source = sqlSourceMap.computeIfAbsent(id, key -> EMPTY);
-			if (source == EMPTY) {
-				return null;
-			} else {
-				return source;
-			}
+			return loadSQL(id);
 		}else{
-			if(isExternalSourceModified(id)){
+			if(isExternalSourceModified4Load(id)){
 				return this.loadSQL(id);
 			}else{
 				return queryFromCache(id);
@@ -107,11 +101,11 @@ public abstract class PathLoader extends AbstractSQLLoader {
 		return source;
 	}
 
-	protected boolean isExternalSourceModified(SqlId id) {
+	protected boolean isExternalSourceModified4Load(SqlId id) {
 
 		SQLSource source = this.sqlSourceMap.get(id);
 		if (source == null) {
-			return false;
+			return true;
 		}
 
 		long oldRootVersion = source.getVersion().root;

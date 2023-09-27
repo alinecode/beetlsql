@@ -67,8 +67,62 @@ public interface BaseService {
 # 测试方法
 
  进入JMHMain，运行即可。如果你有新的测试方法，可以暂时屏蔽其他测试方法 ,测试中score越大性能越好.
-# 最新测试结果 2023-8-18
 
+
+# 最新测试结果 2023-9-27 : 10个线程并发
+
+测试调整为10个线程并发,之前是1个线程
+
+```
+Benchmark                         Mode  Cnt     Score     Error   Units
+JMHMain.beetlsqlComplexMapping   thrpt    5   341.271 ± 144.439  ops/ms
+JMHMain.beetlsqlExecuteJdbc      thrpt    5  1205.169 ±  84.461  ops/ms
+JMHMain.beetlsqlExecuteTemplate  thrpt    5   625.493 ± 562.092  ops/ms
+JMHMain.beetlsqlFile             thrpt    5   728.505 ± 192.016  ops/ms
+JMHMain.beetlsqlGetAll           thrpt    5    35.727 ±   5.299  ops/ms
+JMHMain.beetlsqlInsert           thrpt    5   309.352 ± 305.704  ops/ms
+JMHMain.beetlsqlLambdaQuery      thrpt    5   652.515 ± 482.527  ops/ms
+JMHMain.beetlsqlPageQuery        thrpt    5   389.702 ± 218.518  ops/ms
+JMHMain.beetlsqlSelectById       thrpt    5   744.182 ± 599.943  ops/ms
+JMHMain.easyQueryComplexMapping  thrpt    5   217.903 ± 142.958  ops/ms
+JMHMain.easyQueryExecuteJdbc     thrpt    5  1217.743 ± 259.318  ops/ms
+JMHMain.easyQueryGetAll          thrpt    5    90.982 ±  40.325  ops/ms
+JMHMain.easyQueryInsert          thrpt    5   203.226 ± 341.035  ops/ms
+JMHMain.easyQueryLambdaQuery     thrpt    5   644.360 ± 320.116  ops/ms
+JMHMain.easyQueryOne2Many        thrpt    5   363.330 ± 318.428  ops/ms
+JMHMain.easyQueryPageQuery       thrpt    5   331.492 ± 260.133  ops/ms
+JMHMain.easyQuerySelectById      thrpt    5   560.184 ± 366.417  ops/ms
+JMHMain.flexGetAll               thrpt    5    12.461 ±   5.274  ops/ms
+JMHMain.flexInsert               thrpt    5   302.890 ± 212.731  ops/ms
+JMHMain.flexPageQuery            thrpt    5   127.154 ± 127.519  ops/ms
+JMHMain.flexSelectById           thrpt    5   306.615 ± 165.034  ops/ms
+JMHMain.jdbcExecuteJdbc          thrpt    5  2606.567 ± 572.964  ops/ms
+JMHMain.jdbcGetAll               thrpt    5   183.528 ± 112.752  ops/ms
+JMHMain.jdbcInsert               thrpt    5   445.636 ± 288.246  ops/ms
+JMHMain.jdbcSelectById           thrpt    5  2593.640 ± 694.213  ops/ms
+JMHMain.jpaExecuteJdbc           thrpt    5   263.471 ± 286.122  ops/ms
+JMHMain.jpaExecuteTemplate       thrpt    5   254.714 ± 347.692  ops/ms
+JMHMain.jpaGetAll                thrpt    5    23.625 ±  17.829  ops/ms
+JMHMain.jpaInsert                thrpt    5   151.212 ± 239.483  ops/ms
+JMHMain.jpaOne2Many              thrpt    5   445.323 ± 756.766  ops/ms
+JMHMain.jpaPageQuery             thrpt    5   278.079 ± 324.433  ops/ms
+JMHMain.jpaSelectById            thrpt    5   234.647 ± 358.503  ops/ms
+JMHMain.mybatisComplexMapping    thrpt    5   402.651 ± 442.974  ops/ms
+JMHMain.mybatisExecuteTemplate   thrpt    5   201.648 ± 132.191  ops/ms
+JMHMain.mybatisFile              thrpt    5   160.964 ± 186.912  ops/ms
+JMHMain.mybatisGetAll            thrpt    5    25.431 ±  15.673  ops/ms
+JMHMain.mybatisInsert            thrpt    5   160.638 ± 120.865  ops/ms
+JMHMain.mybatisLambdaQuery       thrpt    5   101.694 ±  92.292  ops/ms
+JMHMain.mybatisPageQuery         thrpt    5    72.482 ±  56.954  ops/ms
+JMHMain.mybatisSelectById        thrpt    5   204.396 ± 127.371  ops/ms
+JMHMain.woodGetAll               thrpt    5     2.914 ±   1.029  ops/ms
+JMHMain.woodInsert               thrpt    5   131.441 ±  45.869  ops/ms
+JMHMain.woodLambdaQuery          thrpt    5   200.426 ±  13.264  ops/ms
+JMHMain.woodSelectById           thrpt    5   194.686 ±  21.054  ops/ms
+
+```
+
+# 测试结果 2023-8-18
 
 * beetlsql,mybatis-plus,mybatis-flex 版本更新
 * jpa取消一级缓存
@@ -128,9 +182,7 @@ JMHMain.woodSelectById           thrpt    5  124.842 ±  10.048  ops/ms
 ```
 
 
-# 023-08-06
-
-
+# 23-08-06
 
 ```
 Benchmark                         Mode  Cnt    Score     Error   Units
@@ -183,7 +235,6 @@ JMHMain.woodInsert               thrpt    5  101.279 ±  50.068  ops/ms
 JMHMain.woodLambdaQuery          thrpt    5  128.158 ±   7.174  ops/ms
 JMHMain.woodPageQuery            thrpt    5  240.657 ±  13.274  ops/ms
 JMHMain.woodSelectById           thrpt    5  125.943 ±   5.696  ops/ms
-
 
 
 ```

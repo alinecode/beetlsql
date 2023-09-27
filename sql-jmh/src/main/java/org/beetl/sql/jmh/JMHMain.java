@@ -15,6 +15,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
@@ -22,9 +23,9 @@ import java.util.concurrent.TimeUnit;
  * 性能测试入口,数据是Throughput，越大越好
  */
 @BenchmarkMode(Mode.Throughput)
-@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-@Threads(1)
+@Threads(10)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
@@ -359,9 +360,11 @@ public class JMHMain {
      * 先单独运行一下保证每个测试都没有错误
      */
     public static void test() {
-        JMHMain jmhMain = new JMHMain();
-        jmhMain.init();
-        for (int i = 0; i < 3; i++) {
+
+
+        for (int i = 0; i < 1; i++) {
+			JMHMain jmhMain = new JMHMain();
+			jmhMain.init();
             Method[] methods = jmhMain.getClass().getMethods();
             for (Method method : methods) {
                 if (method.getAnnotation(Benchmark.class) == null) {
@@ -371,11 +374,19 @@ public class JMHMain {
 
                     method.invoke(jmhMain, new Object[0]);
 
-                } catch (Exception ex) {
-                    throw new IllegalStateException(" method " + method.getName(), ex);
                 }
+				catch (InvocationTargetException ex) {
+					if(ex.getCause() instanceof UnsupportedOperationException ){
+						System.out.println(ex.getCause().getMessage());
+					}else{
+						throw new IllegalStateException(" method " + method.getName(), ex);
+					}
 
-            }
+                } catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+
+			}
         }
 
     }
