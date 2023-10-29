@@ -77,7 +77,7 @@ public class BaseSQLExecutor implements SQLExecutor {
                 values = new Object[cols.length];
                 int i = 0;
                 while (rs.next()) {
-                    values[i] = rs.getObject(i + 1);
+                    values[i] = rs.getObject(1);
                     i++;
                 }
                 rs.close();

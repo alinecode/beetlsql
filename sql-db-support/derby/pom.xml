@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.26.0-RELEASE</version>
+        <version>3.26.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>derby</artifactId>
-    <version>3.26.0-RELEASE</version>
+    <version>3.26.1-RELEASE</version>
     <dependencies>
         <dependency>
             <groupId>org.apache.derby</groupId>
