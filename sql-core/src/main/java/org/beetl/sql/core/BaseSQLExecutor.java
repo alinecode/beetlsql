@@ -71,10 +71,9 @@ public class BaseSQLExecutor implements SQLExecutor {
             jdbcPara = executeContext.sqlResult.jdbcPara;
             conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
             ruh = dbUpdateWithHolder(conn, sql, jdbcPara, cols);
-            Object[] values = null;
+            Object[] values = new Object[ruh.result];
             if (cols != null) {
                 ResultSet rs = ruh.statement.getGeneratedKeys();
-                values = new Object[cols.length];
                 int i = 0;
                 while (rs.next()) {
                     values[i] = rs.getObject(1);
