@@ -1,5 +1,6 @@
 package org.beetl.sql.core;
 
+import lombok.Data;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.annotation.builder.BeanConvert;
 import org.beetl.sql.annotation.builder.TargetAdditional;
@@ -22,6 +23,7 @@ import org.beetl.sql.core.mapping.*;
 import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
 import org.beetl.sql.core.meta.MetadataManager;
 
+import javax.xml.ws.Holder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.sql.*;
@@ -55,7 +57,7 @@ public class BaseSQLExecutor implements SQLExecutor {
     }
 
     @Override
-    public Object[] insert(Class target, Object paras, String[] cols) {
+    public List<Object[]> insert(Class target, Object paras, String[] cols) {
 
         Connection conn = null;
         ResultUpdateHolder ruh = null;
@@ -64,25 +66,26 @@ public class BaseSQLExecutor implements SQLExecutor {
             this.addParaIfAssignId(paras);
             Map map = this.beforeExecute(target, paras, true);
             SQLResult result = this.run(map);
-            String sql = result.jdbcSql;
-            List<SQLParameter> jdbcPara = result.jdbcPara;
             ctx = this.callInterceptorAsBefore(map);
-            sql = executeContext.sqlResult.jdbcSql;
-            jdbcPara = executeContext.sqlResult.jdbcPara;
+			String sql  = executeContext.sqlResult.jdbcSql;
+			List<SQLParameter> jdbcPara = executeContext.sqlResult.jdbcPara;
             conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
             ruh = dbUpdateWithHolder(conn, sql, jdbcPara, cols);
-            Object[] values = new Object[ruh.result];
-            if (cols != null) {
-                ResultSet rs = ruh.statement.getGeneratedKeys();
-                int i = 0;
-                while (rs.next()) {
-                    values[i] = rs.getObject(1);
-                    i++;
-                }
-                rs.close();
-            }
+
+			ResultSet rs = ruh.statement.getGeneratedKeys();
+			NameConversion nc = this.executeContext.sqlManager.getNc();
+
+			List<Object[]> keyHolders = new ArrayList<>((Integer)ruh.getResultSet());
+			while (rs.next()) {
+				Object[] values = new Object[cols.length];
+				for(int i=0;i<cols.length;i++){
+					values[i] = rs.getObject(i+1);
+				}
+				keyHolders.add(values);
+			}
+			rs.close();
             this.callInterceptorAsAfter(ctx, ruh.resultSet);
-            return values;
+            return keyHolders;
         } catch (SQLException e) {
             this.callInterceptorAsException(ctx, e);
             throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
@@ -1395,6 +1398,7 @@ public class BaseSQLExecutor implements SQLExecutor {
         }
     }
 
+	@Data
     public static class ResultUpdateHolder implements Closeable {
         Statement statement;
         Object resultSet;

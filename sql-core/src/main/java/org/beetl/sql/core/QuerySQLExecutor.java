@@ -1,5 +1,7 @@
 package org.beetl.sql.core;
 
+import org.beetl.sql.core.db.KeyHolder;
+
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public class QuerySQLExecutor extends BaseSQLExecutor {
 
 
     @Override
-    public Object[] insert(Class target, Object paras, String[] cols){
+    public List<Object[]> insert(Class target, Object paras, String[] cols){
         throw new UnsupportedOperationException("Query only support");
     }
 

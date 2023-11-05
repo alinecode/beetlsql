@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.core.call.CallReady;
+import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.template.SQLErrorInfo;
 import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.PageRequest;
@@ -18,7 +19,7 @@ import java.util.Map;
  *
  * @author xiandafu
  * @see SQLManager
- * @see MultipleSQLManager
+ *
  */
 public interface DataAPI {
 
@@ -84,7 +85,9 @@ public interface DataAPI {
 
     int insert(SqlId sqlId, Object paras);
 
-    Object[] insert(SqlId sqlId, Object paras, String[] cols);
+	List<Object> insert(SqlId sqlId, Object paras, String col);
+
+	List<Object[]> insert(SqlId sqlId, Object paras, String[] cols);
 
     boolean upsert(Object obj);
 

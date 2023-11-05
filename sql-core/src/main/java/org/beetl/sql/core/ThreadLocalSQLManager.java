@@ -8,6 +8,7 @@ import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
 import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.template.SQLErrorInfo;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.engine.template.TemplateContext;
@@ -583,7 +584,7 @@ public class ThreadLocalSQLManager extends  SQLManager {
      */
 
     @Override
-    public Object[] insert(SqlId sqlId, Object paras, String[] cols) {
+    public List<Object[]> insert(SqlId sqlId, Object paras, String[] cols) {
         return decide().insert(sqlId,paras,cols);
     }
 

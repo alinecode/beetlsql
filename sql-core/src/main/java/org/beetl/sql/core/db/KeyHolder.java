@@ -4,6 +4,7 @@ import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.clazz.kit.BeanKit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -113,4 +114,9 @@ public class KeyHolder {
     public void setValues(Object[] values) {
         this.values = values;
     }
+
+	@Override
+	public String toString() {
+		return "KeyHolder{" + "values=" + Arrays.toString(values) + '}';
+	}
 }

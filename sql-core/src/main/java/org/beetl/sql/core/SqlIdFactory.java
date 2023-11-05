@@ -35,6 +35,9 @@ public class SqlIdFactory {
 	}
 
 	protected String getNamespace(Class entity) {
+		if(entity==Sql.class){
+			return "sql";
+		}
 		return entity.getName();
 	}
 

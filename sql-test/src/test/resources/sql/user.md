@@ -61,3 +61,15 @@ streamTest
     select * from sys_user
 
 
+autoInsert
+===
+
+insertHolder
+===
+
+* 插入多列，并返回数据库自动赋值的列
+
+	```sql
+	insert into auto_bean  (name) values (#{name}) ,  (#{name});
+	```
+	

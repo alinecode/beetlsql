@@ -37,6 +37,18 @@ CREATE TABLE `device_detail` (
 ) ;
 
 
+DROP TABLE IF EXISTS `auto_bean`;
+CREATE TABLE `auto_bean` (
+       `order_id` int(11) NOT NULL AUTO_INCREMENT,
+       `age` int(10) NOT NULL AUTO_INCREMENT,
+		name varchar(24) NOT NULL,
+      PRIMARY KEY (`order_id`)
+) ;
+
+
+
+
+
 
 
 

@@ -2,11 +2,15 @@ package org.beetl.sql.id;
 
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.core.SQLSource;
+import org.beetl.sql.core.SqlId;
+import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.ext.UUIDAutoGen;
+import org.beetl.sql.test.OrderLog;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -127,7 +131,25 @@ public class IdTest extends BaseTest {
 
 	}
 
+	@Test
+	public void autoTest(){
+		AutoBean autoBean = new AutoBean();
+		autoBean.setName("a");
+
+		SqlId sqlId = SqlId.of("user","insertHolder");
+		List<Object> os = sqlManager.insert(sqlId,autoBean,"order_id");
+		Assert.assertEquals(2,os.size());
+		Assert.assertEquals(1,os.get(0));
+		Assert.assertEquals(2,os.get(1));
+
+		List<Object[]> holders = sqlManager.insert(sqlId,autoBean,new String[]{"order_id","age"});
+		Assert.assertEquals(2,holders.size());
+		Assert.assertEquals(3,holders.get(0)[0]);
+		Assert.assertEquals(3,holders.get(0)[1]);
+	}
 
 
 
-}
+
+
+	}

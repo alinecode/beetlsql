@@ -7,6 +7,7 @@ import org.beetl.sql.clazz.ClassDesc;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
+import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.ext.DBInitHelper;
@@ -53,20 +54,15 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		Map map = new HashMap();
-		map.put("ids",Arrays.asList(1,2,3));
-		PageRequest pageRequest = DefaultPageRequest.of(1,10);
-		sqlManager.pageQuery(SqlId.of("user","select"),OrderLog.class,map,pageRequest);
+		OrderLog orderLog = new OrderLog();
+		orderLog.setName("a");
 
+		SqlId sqlId = SqlId.of("user","insertHolder");
+		List<Object> os = sqlManager.insert(sqlId,orderLog,"order_id");
+		System.out.println(os.get(0)+","+os.get(1));
 
-
-		sqlManager.pageQuery(SqlId.of("user","select"),OrderLog.class,map,pageRequest);
-
-		sqlManager.pageQuery(SqlId.of("user","select"),OrderLog.class,map,pageRequest);
-
-
-
-
+		List<Object[]> holders = sqlManager.insert(sqlId,orderLog,new String[]{"order_id","age"});
+		System.out.println(holders);
 
 
 

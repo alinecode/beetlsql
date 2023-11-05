@@ -10,6 +10,12 @@ from order_log  where order_id in ( #{join(ids)} )
 
 ```
 
+
+insertHolder
+===
+
+	insert into order_log  (name) values (#{name}) ,  (#{name});
+
 	
 	
 	

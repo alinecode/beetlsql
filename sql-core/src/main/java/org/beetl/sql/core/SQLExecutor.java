@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.core.call.CallReady;
+import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.mapping.StreamData;
 
@@ -31,7 +32,7 @@ public interface SQLExecutor {
 	 * @param cols
 	 * @return
 	 */
-	Object[] insert(Class target, Object paras, String[] cols);
+	List<Object[]> insert(Class target, Object paras, String[] cols);
 
 	/**
 	 * 获得一条记录，如果有多条，取第一条，如果没有，则返回null

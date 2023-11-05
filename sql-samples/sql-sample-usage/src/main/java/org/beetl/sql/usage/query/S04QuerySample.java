@@ -34,16 +34,15 @@ public class S04QuerySample {
     public static void main(String[] args) {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S04QuerySample sample = new S04QuerySample(sqlManager);
-//        sample.basic();
-//        sample.order();
-//        sample.like();
-//        sample.in();
-//        sample.selectSingle();
-//        sample.page();
-//        sample.orAnd();
+        sample.basic();
+        sample.order();
+        sample.like();
+        sample.in();
+        sample.selectSingle();
+        sample.page();
+        sample.orAnd();
         sample.andBetween();
-//        sample.filterEmpty();
-//        sample.groupBy();
+        sample.filterEmpty();
 
 
     }
@@ -155,22 +154,6 @@ public class S04QuerySample {
     }
 
 
-    /**
-     * Query能提供简单的group实现
-     * 建议group by还是通过mapper或者sqlId方式来实现，因为直接通过sql更容易阅读
-     */
-    public void groupBy(){
-
-        LambdaQuery<UserEntity> query = sqlManager.lambdaQuery(UserEntity.class);
-        List<Map> list = query.andIsNotNull(UserEntity::getDepartmentId)
-                .groupBy(UserEntity::getName).select(Map.class,"count(name) as total","name");
-        System.out.println(list);
-
-       List<GroupCount>  groupList = query.andIsNotNull(UserEntity::getDepartmentId)
-			   .groupBy(UserEntity::getName).select(GroupCount.class,"count(name) as total","name");
-       System.out.println(groupList);
-
-    }
 
     @Data
     public static class GroupCount{

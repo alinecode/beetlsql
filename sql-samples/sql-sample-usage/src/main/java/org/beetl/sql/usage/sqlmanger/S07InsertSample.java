@@ -10,10 +10,7 @@ import org.beetl.sql.core.SqlId;
 import org.beetl.sql.sample.SampleHelper;
 import org.beetl.sql.sample.entity.UserEntity;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * 使用sqlManager 插入操作
@@ -30,14 +27,14 @@ public class S07InsertSample {
     public static void main(String[] args) {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S07InsertSample sample = new S07InsertSample(sqlManager);
-        sample.basic();
-        sample.idGenerator();
-        sample.insertTemplate();
-        sample.batchInsert();
-        sample.batchInsertByMap();
-
-        sample.insertByResourceId();
-        sample.execute();
+//        sample.basic();
+//        sample.idGenerator();
+//        sample.insertTemplate();
+//        sample.batchInsert();
+//        sample.batchInsertByMap();
+//
+//        sample.insertByResourceId();
+//        sample.execute();
         sample.insertAutoValue();
 
     }
@@ -172,8 +169,8 @@ public class S07InsertSample {
         map.put("departmentId", 5);
 
         //如果需要知道插入后的数据库自动生成的值值(自增主键，数据库自动生成的值等)，可以提供一个列名列表
-        Object[] autoValue = sqlManager.insert(insertId, map, new String[]{"id"});
-        System.out.println(autoValue[0]);
+        List<Object[]> autoValue = sqlManager.insert(insertId, map, new String[]{"id"});
+        System.out.println(autoValue.get(0)[0]);
 
     }
 

@@ -9,7 +9,7 @@ import org.beetl.sql.sample.entity.UserEntity;
 /**
  * 很少用Query来实现删除，修改和新增，建议使用BaseMapper或者SQLManager的内置方法，带条件复杂的更新操作也最好用sql来实现
  * 演示如何使用query进行修改和删除
- * @author xiandafu 
+ * @author xiandafu
  */
 public class S05QueryUpdateSample {
 
@@ -22,9 +22,9 @@ public class S05QueryUpdateSample {
     public static void main(String[] args) {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S05QueryUpdateSample sample = new S05QueryUpdateSample(sqlManager);
-        sample.delete();
+//        sample.delete();
         sample.update();
-        sample.insert();
+//        sample.insert();
 
 
 

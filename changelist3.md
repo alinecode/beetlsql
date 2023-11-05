@@ -28,4 +28,8 @@
 * BaseMapper增加batchUpdate实现 修复
 * 优化SqlRewrite的RewriteMapper
 
+# 3.27.0 （不兼容更新)
+* 插入多列获取数据库计算值 ，API调整
+* 修复Query的update和updateSeletive方法Bug
+
 

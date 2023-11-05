@@ -7,18 +7,18 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.26.1-RELEASE</version>
+        <version>3.27.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-mapper</artifactId>
-    <version>3.26.1-RELEASE</version>
+    <version>3.27.0-RELEASE</version>
 
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-core</artifactId>
-            <version>3.26.1-RELEASE</version>
+            <version>3.27.0-RELEASE</version>
         </dependency>
     </dependencies>
 
