@@ -241,9 +241,6 @@ public class DebugInterceptor implements Interceptor {
 		error(sb.toString());
 	}
 
-	public static String formatSql(String sql) {
-		return sql.replaceAll("--.*", "").replaceAll("\\n","").replaceAll("\\s+", " ");
-	}
 
 	protected boolean isSimple(SqlId sqlId) {
 		return false;

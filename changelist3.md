@@ -32,4 +32,7 @@
 * 插入多列获取数据库计算值 ，API调整
 * 修复Query的update和updateSeletive方法Bug
 
+# 3.27.1 
+* Debug Format SQL
+
 

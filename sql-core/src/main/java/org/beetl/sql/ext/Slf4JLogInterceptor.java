@@ -64,9 +64,7 @@ public class Slf4JLogInterceptor implements Interceptor {
         this.preferredShowClass = preferredShowClass;
     }
 
-    public static String formatSql(String sql) {
-        return sql.replaceAll("--.*", "").replaceAll(" ?\r?\n", " ");
-    }
+
 
     /**
      * SQL执行前调用

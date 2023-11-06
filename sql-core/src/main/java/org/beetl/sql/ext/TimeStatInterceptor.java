@@ -57,7 +57,7 @@ public class TimeStatInterceptor implements Interceptor {
 	protected void print(String sqlId, String sql, List<SQLParameter> paras, long time) {
 		System.out.println("sqlId=" + sqlId + " time:" + time);
 		System.out.println("=====================");
-		System.out.println(DebugInterceptor.formatSql(sql));
+		System.out.println(formatSql(sql));
 
 	}
 

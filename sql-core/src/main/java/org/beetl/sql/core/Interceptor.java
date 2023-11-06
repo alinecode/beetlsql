@@ -19,4 +19,13 @@ public interface Interceptor {
 	 * @since 2.8.0
 	 */
 	void exception(InterceptorContext ctx, Exception ex);
+
+	default   String formatSql(String sql) {
+		String formatSql =  sql.replaceAll("--.*", "").replaceAll("\\n","").replaceAll("\\s+", " ");
+		if(formatSql.length()>300){
+			return formatSql.substring(0,200);
+		}else{
+			return formatSql;
+		}
+	}
 }
