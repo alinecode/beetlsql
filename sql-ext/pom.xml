@@ -19,6 +19,7 @@
 		<module>sql-dynamic-table</module>
 		<module>sql-bean-encrypt</module>
 		<module>sql-tenant</module>
+		<module>sql-jooq</module>
 	</modules>
 	<dependencies>
 		<dependency>
