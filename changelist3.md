@@ -35,4 +35,8 @@
 # 3.27.1 
 * Debug Format SQL
 
+# 3.27.2
+* Debug Format SQL
+* upsert bug fix for version update
+
 
