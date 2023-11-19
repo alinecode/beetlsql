@@ -33,6 +33,7 @@ public class DebugInterceptor implements Interceptor {
 	protected static String defaultQueryMethod = QueryExecuteI.class.getName();
 	// debug 输入优先输出的类，而不是SQLManager或者是BaseMapper
 	String preferredShowClass;
+	int maxSqlLength = -1;
 
 	public DebugInterceptor() {
 	}
@@ -42,6 +43,10 @@ public class DebugInterceptor implements Interceptor {
 	public DebugInterceptor(String preferredShowClass) {
 		this.preferredShowClass = preferredShowClass;
 
+	}
+
+	public DebugInterceptor(int maxSqlLength) {
+		this.maxSqlLength = maxSqlLength;
 	}
 
 	//Override
@@ -59,7 +64,7 @@ public class DebugInterceptor implements Interceptor {
 		StringBuilder sb = new StringBuilder();
 		String lineSeparator = System.getProperty("line.separator", "\n");
 		sb.append("┏━━━━━ Debug [").append(formatSqlId(executeContext)).append("] ━━━").append(lineSeparator)
-				.append("┣ SQL：\t " + formatSql(jdbcSql) + lineSeparator)
+				.append("┣ SQL：\t " + trimSql(jdbcSql) + lineSeparator)
 				.append("┣ 参数：\t " + formatParas(ctx.getExecuteContext().sqlResult.jdbcPara)).append(lineSeparator);
 		RuntimeException ex = new RuntimeException();
 		StackTraceElement[] traces = ex.getStackTrace();
@@ -261,6 +266,19 @@ public class DebugInterceptor implements Interceptor {
 		sb.append(ex != null ? ex.getMessage() : "");
 		this.error(sb.toString());
 		return;
+	}
+
+
+	 public   String trimSql(String sql) {
+		 String formatSql =  formatSql(sql);
+		 if(maxSqlLength==-1){
+			return formatSql;
+		}
+		if(formatSql.length()>maxSqlLength){
+			return formatSql.substring(0,maxSqlLength);
+		}else{
+			return formatSql;
+		}
 	}
 
 }

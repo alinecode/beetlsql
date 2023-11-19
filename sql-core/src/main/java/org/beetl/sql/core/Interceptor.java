@@ -22,10 +22,6 @@ public interface Interceptor {
 
 	default   String formatSql(String sql) {
 		String formatSql =  sql.replaceAll("--.*", "").replaceAll("\\n","").replaceAll("\\s+", " ");
-		if(formatSql.length()>300){
-			return formatSql.substring(0,200);
-		}else{
-			return formatSql;
-		}
+		return formatSql;
 	}
 }

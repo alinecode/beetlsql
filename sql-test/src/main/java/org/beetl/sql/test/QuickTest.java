@@ -55,14 +55,13 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		OrderLog orderLog = new OrderLog();
+		orderLog.setOrderId(1);
 		orderLog.setName("a");
+		sqlManager.upsertByTemplate(orderLog);
 
-		SqlId sqlId = SqlId.of("user","insertHolder");
-		List<Object> os = sqlManager.insert(sqlId,orderLog,"order_id");
-		System.out.println(os.get(0)+","+os.get(1));
+		orderLog = sqlManager.unique(OrderLog.class,1);
+		System.out.println(orderLog);
 
-		List<Object[]> holders = sqlManager.insert(sqlId,orderLog,new String[]{"order_id","age"});
-		System.out.println(holders);
 
 
 

@@ -12,6 +12,7 @@ import java.util.Date;
 
 @Table(name="order_log")
 @Data()
+@Accessors(chain = true)
 
 //@ResultProvider(AutoJsonMapper.class)
 public class OrderLog {
@@ -19,7 +20,19 @@ public class OrderLog {
 	Integer orderId;
 	@Auto
 	Integer age;
+	@Version
+	Integer version;
+
+	@Date2Long
+	Date CreateTime;
+
+	String Status;
+
+	@Column("a_bc")
+	String aBc;
+	//	String ABc;
 
 	String name;
 
 }
+
