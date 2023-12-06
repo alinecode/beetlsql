@@ -49,5 +49,19 @@ public class SQLiteStyle extends AbstractDBStyle {
         return this.rangeSql;
     }
 
+    /**
+     * 在3.43.0.0版本之后删除了getGeneratedKeys的支持
+     * */
+	@Override
+	public boolean generatedKeysSupport() {
+		return false;
+	}
 
+    /**
+     * 在3.43.0.0版本之后删除了getGeneratedKeys的支持
+     * */
+	@Override
+	public boolean batchGeneratedKeysSupport() {
+		return false;
+	}
 }
