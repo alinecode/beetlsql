@@ -72,6 +72,14 @@ public class BaseSQLExecutor implements SQLExecutor {
             conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
             ruh = dbUpdateWithHolder(conn, sql, jdbcPara, cols);
 
+            // 如果数据不支持getGeneratedKeys就直接返回，自增长值为null
+            if (!executeContext.sqlManager.getDbStyle().generatedKeysSupport()) {
+                List<Object[]> keyHolders = new ArrayList<>((Integer)ruh.getResultSet());
+
+                this.callInterceptorAsAfter(ctx, ruh.resultSet);
+                return keyHolders;
+            }
+
 			ResultSet rs = ruh.statement.getGeneratedKeys();
 			NameConversion nc = this.executeContext.sqlManager.getNc();
 
@@ -946,7 +954,19 @@ public class BaseSQLExecutor implements SQLExecutor {
             boolean holderHasAttr = holder.hasAttr();
             String[] cols = holderHasAttr ? this.getKeyHolderCols(holder, paras.getClass()) : null;
             ruh = this.dbUpdateWithHolder(conn, sql, jdbcPara, cols);
-            if (holderHasAttr) {
+
+            // 如果不支持getGeneratedKeys，就设置自增长值为null
+            if (!executeContext.sqlManager.getDbStyle().generatedKeysSupport()) {
+                if (holderHasAttr) {
+                    int length = holder.getAttrNames().length;
+                    Object[] values = new Object[length];
+                    for (int i = 0; i < length; i++) {
+                        values[i] = null;
+                    }
+
+                    holder.setValues(values);
+                }
+            } else if (holderHasAttr) {
                 this.handleHolder(ruh.statement, holder);
             }
             int ret = (Integer) ruh.resultSet;
