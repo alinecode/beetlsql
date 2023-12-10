@@ -6,6 +6,9 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.clazz.ClassDesc;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.*;
+import org.beetl.sql.core.call.CallReady;
+import org.beetl.sql.core.call.InArg;
+import org.beetl.sql.core.call.OutArg;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.page.DefaultPageRequest;
@@ -28,7 +31,7 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = datasource();
+	static DataSource dataSource = mysqlDatasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -54,14 +57,27 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		OrderLog orderLog = new OrderLog();
-		orderLog.setOrderId(1);
-		orderLog.setName("a");
-		sqlManager.upsertByTemplate(orderLog);
+//		OrderLog orderLog = new OrderLog();
+//		orderLog.setOrderId(1);
+//		orderLog.setName("a");
+//		sqlManager.upsertByTemplate(orderLog);
+//
+//		orderLog = sqlManager.unique(OrderLog.class,1);
+//		System.out.println(orderLog);
 
-		orderLog = sqlManager.unique(OrderLog.class,1);
-		System.out.println(orderLog);
+		CallReady callReady = new CallReady("call test.logcount(?,?)");
+		callReady.add(1,new InArg(1));
+		callReady.add(2,new OutArg(Integer.class));
+		sqlManager.executeCall(callReady);
 
+		Object ret = callReady.getOutValue(2);
+		System.out.println(ret);
+
+
+		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
+		OutHolder outHolder = new OutHolder();
+		logMapper.logcount(1,outHolder);
+		System.out.println(outHolder.getId());
 
 
 
@@ -94,7 +110,7 @@ public class QuickTest {
 		//    public static String driver = "com.mysql.jdbc.Driver";
 		public static String driver = "com.mysql.cj.jdbc.Driver";
 		public static String dbName = "test";
-		public static String password = "123456";
+		public static String password = "12345678";
 		public static String userName = "root";
 		public static String url = "jdbc:mysql://127.0.0.1:3306/" + dbName + "?&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true";
 	}

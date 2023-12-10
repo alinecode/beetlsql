@@ -15,7 +15,7 @@
     <version>3.27.2-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
-<!--        <module>mysql</module>-->
+        <module>mysql</module>
 <!--		<module>postgres</module>-->
         <!--其他3.0新增的数据库支持 -->
 <!--        <module>polarDB</module>-->
@@ -34,7 +34,8 @@
 <!--        <module>kingbase</module>-->
 <!--        <module>iotdb</module>-->
 <!--         <module>gbase8s</module>-->
-        <module>oracle</module>
+<!--        <module>oracle</module>-->
+        <module>mariadb</module>
 
     </modules>
     <dependencies>

@@ -38,12 +38,13 @@ public class DBInitHelper {
 					executeSql(salve.getConnection(),sqls);
 				}
 			}
-			sqlManager.getMetaDataManager().refresh();
+
 
 		}catch(Exception ex){
 			throw new RuntimeException(ex);
 		}finally {
 			defaultConnectionSource.closeConnection(conn,null,true);
+			sqlManager.getMetaDataManager().refresh();
 		}
 	}
 

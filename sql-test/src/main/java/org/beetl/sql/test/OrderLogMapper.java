@@ -8,8 +8,9 @@ import java.util.List;
 @SqlResource("user")
 public interface OrderLogMapper extends BaseMapper<OrderLog> {
 
-	@Call("call test.selectStu(?,?)")
-	List<OrderLog> callSample(int id, @CallOutBean  OutHolder outHolder);
+	@Call("call test.logcount(?,?)")
+	@Update
+	void logcount(int id, @CallOutBean  OutHolder outHolder);
 
 	@Call("call test.updateStu(?,?)")
 	@Update

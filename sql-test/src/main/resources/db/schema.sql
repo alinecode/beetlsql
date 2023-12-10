@@ -5,7 +5,6 @@ CREATE TABLE `order_log` (
        `a_bc` varchar(255) ,
        `create_time` long,
        `status` char(1),
-       `age` int(10) NOT NULL AUTO_INCREMENT,
 		name varchar(24)  ,
       PRIMARY KEY (`order_id`)
 ) ;

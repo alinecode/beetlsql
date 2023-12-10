@@ -1,4 +1,4 @@
-package org.beetl.sql.test;
+package org.beetl.sql.mysql;
 
 import lombok.Data;
 import org.beetl.sql.mapper.annotation.CallParam;
