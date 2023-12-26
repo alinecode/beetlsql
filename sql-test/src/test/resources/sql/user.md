@@ -73,3 +73,9 @@ insertHolder
 	insert into auto_bean  (name) values (#{name}) ,  (#{name});
 	```
 	
+metaGet
+===
+
+* 获取sql语句需要的变量
+
+	select * from sys_user  where id =#{id} and name = #{name} and age=#{other.cc}

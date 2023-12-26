@@ -18,7 +18,7 @@
         <module>sql-springboot-starter</module>
         <module>sql-jfinal</module>
         <module>sql-solon-plugin</module>
-        <module>sql-act</module>
+<!--        <module>sql-act</module>-->
     </modules>
 
     <dependencies>
