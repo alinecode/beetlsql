@@ -251,4 +251,14 @@ public interface BaseMapper<T> {
 	@AutoMapper(UpdateTemplateByIdBatchAMI.class)
 	int[] updateTemplateByIdBatch(List<?> list);
 
+    /**
+     * 根据主键清空数据字段，不支持复合主键
+     *
+     * @param pks        主键
+     * @param properties 属性
+     */
+    @AutoMapper(ClearFiledsByIdsAMI.class)
+    @SuppressWarnings("unchecked")
+    void clearProperties(List<?> pks, LambdaQuery.Property<T, ?>... properties);
+
 }
