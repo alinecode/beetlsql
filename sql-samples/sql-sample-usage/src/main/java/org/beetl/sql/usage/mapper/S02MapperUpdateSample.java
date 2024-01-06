@@ -1,6 +1,7 @@
 package org.beetl.sql.usage.mapper;
 
 
+import org.beetl.sql.clazz.kit.ListUtil;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.sample.SampleHelper;
 import org.beetl.sql.sample.entity.UserEntity;
@@ -32,12 +33,7 @@ public class S02MapperUpdateSample {
         sample.delete();
         sample.updateBatch();
         sample.updateBySqlId();
-
-
-
-
-
-
+        sample.clearTableField();
     }
 
     /**
@@ -167,6 +163,13 @@ public class S02MapperUpdateSample {
     public void updateBySqlId(){
         mapper.updateBySqlId("abcd",1);
 
+    }
+
+    public void clearTableField(){
+        /**
+         * 根据主键清空表字段
+         */
+        mapper.clearProperties(ListUtil.newArrayList(1),UserEntity::getName,UserEntity::getDepartmentId);
     }
 
 }
