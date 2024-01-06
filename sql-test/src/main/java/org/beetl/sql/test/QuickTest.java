@@ -4,6 +4,7 @@ package org.beetl.sql.test;
 import com.beetl.sql.pref.PerformanceConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.clazz.ClassDesc;
+import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.call.CallReady;
@@ -38,7 +39,7 @@ public class QuickTest {
 		ds.setUsername("sa");
 		ds.setPassword("");
 		ds.setDriverClassName("org.h2.Driver");
-
+		ds.setSchema(null);
 		return ds;
 	}
 	private  static SQLManager getSQLManager(){
@@ -57,6 +58,16 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
+		for(int i=0;i<10;i++){
+			long start = System.currentTimeMillis();
+			System.out.println();
+			TableDesc tableDesc = sqlManager.getTableDesc("order_log");
+			long end = System.currentTimeMillis();
+			System.out.println(i+"="+(end-start));
+
+		}
+
+
 //		OrderLog orderLog = new OrderLog();
 //		orderLog.setOrderId(1);
 //		orderLog.setName("a");

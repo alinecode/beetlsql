@@ -23,12 +23,10 @@ import org.beetl.sql.core.mapping.*;
 import org.beetl.sql.core.mapping.type.JavaSqlTypeHandler;
 import org.beetl.sql.core.meta.MetadataManager;
 
-import javax.xml.ws.Holder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
-import java.util.function.IntFunction;
 
 /**
  * 面向传统数据库的 sql 执行引擎
