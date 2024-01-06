@@ -1,9 +1,6 @@
 package org.beetl.sql.clazz.kit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 字符串操作函数
@@ -263,6 +260,40 @@ public class StringKit {
     	sb.setLength(sb.length()-1);
     	return sb.toString();
 	}
+
+    /**
+     * 将集合拼接成一个字符串，使用指定的分隔符
+     * @param iterator 集合
+     * @param separator 分隔符
+     * @return String
+     */
+    public static String join(final Iterator<?> iterator, final String separator) {
+        if (iterator == null) {
+            return null;
+        }
+        if (!iterator.hasNext()) {
+            return EMPTY;
+        }
+        final Object first = iterator.next();
+        if (!iterator.hasNext()) {
+            return Objects.toString(first, "");
+        }
+        final StringBuilder buf = new StringBuilder();
+        if (first != null) {
+            buf.append(first);
+        }
+
+        while (iterator.hasNext()) {
+            if (separator != null) {
+                buf.append(separator);
+            }
+            final Object obj = iterator.next();
+            if (obj != null) {
+                buf.append(obj);
+            }
+        }
+        return buf.toString();
+    }
 
 	private static String[] splitWorker(String str, char separatorChar, boolean preserveAllTokens) {
 		// Performance tuned for 2.0 (JDK1.4)

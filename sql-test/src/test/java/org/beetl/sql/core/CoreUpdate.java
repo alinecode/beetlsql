@@ -200,14 +200,20 @@ public class CoreUpdate extends BaseTest {
 
 
 	@Test
-	public void batchTemplateUpdateById(){
+	public void upsert(){
 
-
+		User user = new User();
+		user.setId(100);
+		user.setName("newName");
+		user.setDepartmentId(1);
+		user.setCreateDate(new Date());
+		boolean isInsert = sqlManager.upsert(user);
+		Assert.assertTrue(isInsert);
+		user.setName("newnewName");
+		isInsert = sqlManager.upsert(user);
+		Assert.assertFalse(isInsert);
 
 	}
-
-
-
 
 
 }
