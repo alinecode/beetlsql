@@ -40,3 +40,7 @@
 * upsert bug fix for version update
 
 
+# 3.27.5
+* sql-tenant 改成sql-rewrite
+* 增加clearProperty
+

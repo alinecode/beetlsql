@@ -25,7 +25,7 @@ public interface BaseMapper<T> {
 	 * @param entity 实体
 	 */
 	@AutoMapper(InsertAMI.class)
-	void insert(T entity);
+	int insert(T entity);
 
 	/**
 	 * 插入实体到数据库，对于null值不做处理
@@ -33,7 +33,7 @@ public interface BaseMapper<T> {
 	 * @param entity 实体
 	 */
 	@AutoMapper(InsertTemplateAMI.class)
-	void insertTemplate(T entity);
+	int insertTemplate(T entity);
 
 	/**
 	 * 批量插入实体。此方法不会获取自增主键的值，如果需要，建议不适用批量插入，适用

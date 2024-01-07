@@ -7,10 +7,10 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.27.4-RELEASE</version>
+        <version>3.27.5-RELEASE</version>
     </parent>
     <artifactId>sql-ext</artifactId>
-    <version>3.27.4-RELEASE</version>
+    <version>3.27.5-RELEASE</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>sql-xml</module>
@@ -18,13 +18,13 @@
 		<module>sql-firewall</module>
 		<module>sql-dynamic-table</module>
 		<module>sql-bean-encrypt</module>
-		<module>sql-tenant</module>
+		<module>sql-rewrite</module>
 	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetlsql</artifactId>
-			<version>3.27.4-RELEASE</version>
+			<version>3.27.5-RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
