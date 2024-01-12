@@ -241,6 +241,7 @@ public class DebugInterceptor implements Interceptor {
 		}
 		String lineSeparator = System.getProperty("line.separator", "\n");
 		StringBuilder sb = (StringBuilder) ctx.get("logs");
+		sb = sb == null ? new StringBuilder() : sb;
 		sb.append("┗━━━━━ Debug [ ERROR:").append(ex != null ? ex.getMessage().replace(lineSeparator, "") : "")
 				.append("] ━━━").append(lineSeparator);
 		error(sb.toString());

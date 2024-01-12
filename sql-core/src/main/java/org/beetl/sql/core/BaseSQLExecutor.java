@@ -6,9 +6,7 @@ import org.beetl.sql.annotation.builder.BeanConvert;
 import org.beetl.sql.annotation.builder.TargetAdditional;
 import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.clazz.*;
-import org.beetl.sql.clazz.kit.BeanKit;
-import org.beetl.sql.clazz.kit.BeetlSQLException;
-import org.beetl.sql.clazz.kit.StringKit;
+import org.beetl.sql.clazz.kit.*;
 import org.beetl.sql.core.call.CallArg;
 import org.beetl.sql.core.call.CallReady;
 import org.beetl.sql.core.call.InArg;
@@ -356,6 +354,53 @@ public class BaseSQLExecutor implements SQLExecutor {
         }
 
     }
+
+	@Override
+	public int[] executeBatch(List<SqlIdWithParam> list, Integer batchSize) {
+		if (ListUtil.isEmpty(list)) {
+			return new int[0];
+		}
+		//批处理数量默认1000
+		batchSize = batchSize == null ? 1000 : batchSize;
+		Connection conn = null;
+		InterceptorContext ctx = new InterceptorContext(executeContext);
+		try {
+			GroupBatchExecutor groupBatchExecutor = new GroupBatchExecutor();
+			SQLResult result;
+			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
+			int[] rows = new int[list.size()];
+			//分批执行
+			List<List<SqlIdWithParam>> batchList = ListUtil.partition(list, batchSize);
+			for (List<SqlIdWithParam> batch : batchList) {
+				for (int k = 0; k < batch.size(); k++) {
+					SqlIdWithParam item = batch.get(k);
+					if (item == null) {
+						throw new NullPointerException("列表 " + k + "参数为空");
+					}
+					SQLSource sqlSource = executeContext.sqlManager.getSqlLoader().querySQL(item.getSqlId());
+					executeContext.initSQLSource(sqlSource);
+					Map<String, Object> paras = this.beforeExecute(null, item.getSqlParam(), true);
+					result = run(paras);
+					PreparedStatement ps = groupBatchExecutor.containSql(result.jdbcSql);
+					if (ps == null) {
+						ps = conn.prepareStatement(result.jdbcSql);
+					}
+					this.applyStatementSetting(executeContext, conn, ps);
+					this.setPreparedStatementPara(ps, result.jdbcPara);
+					ps.addBatch();
+					groupBatchExecutor.addSql(result, ps);
+				}
+				int[] group = groupBatchExecutor.executeBatch(executeContext, ctx, executeContext.sqlManager.isBatchLogOneByOne());
+				rows = ArrayKit.concatAll(rows, group);
+			}
+			return rows;
+		} catch (SQLException e) {
+			this.callInterceptorAsException(ctx, e);
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
+		} finally {
+			clean(executeContext, conn);
+		}
+	}
 
 	static class GroupBatchExecutor {
 		Map<String, PreparedStatement> batchPs = new HashMap<>();

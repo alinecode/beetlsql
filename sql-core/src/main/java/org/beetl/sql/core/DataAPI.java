@@ -155,6 +155,14 @@ public interface DataAPI {
 	int[] executeBatchTemplateUpdate(String template,List<?> list);
 
 	/**
+	 * 批量执行sql语句，每个sql语句可以带不同的参数
+	 *
+	 * @param list sql语句与参数集合
+	 * @return int[]
+	 */
+	int[] executeBatch(List<BatchParam> list, Integer batchSize);
+
+	/**
 	 * 执行存储过程，返回更新结果
 	 * @param callReady
 	 * @return
