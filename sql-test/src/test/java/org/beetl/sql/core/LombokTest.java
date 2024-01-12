@@ -6,6 +6,7 @@ import org.beetl.sql.BaseTest;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Column;
 import org.beetl.sql.annotation.entity.Table;
+import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.annotation.Sql;
 import org.junit.Assert;
@@ -55,6 +56,15 @@ public class LombokTest  extends BaseTest {
 
 		List<BadBean2> badBeanList = badBeanMapper.select(15);
 		Assert.assertEquals(1,badBeanList.size());
+
+	}
+
+	@Test
+	public void testLambda(){
+		BadBeanMapper2 badBeanMapper = sqlManager.getMapper(BadBeanMapper2.class);
+		LambdaQuery<BadBean2> lambdaQuery = sqlManager.lambdaQuery(BadBean2.class);
+		BadBean2 badBean2 = lambdaQuery.andEq(BadBean2::getAge,1).single();
+		System.out.println(badBean2.getAge());
 
 	}
 

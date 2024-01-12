@@ -850,7 +850,6 @@ public class BaseSQLExecutor implements SQLExecutor {
 					OutArg outArg = (OutArg) arg;
 					Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
 					outArg.setOutValue(value);
-					break;
 				}
 			}
 			return ret;
@@ -906,7 +905,6 @@ public class BaseSQLExecutor implements SQLExecutor {
 					OutArg outArg = (OutArg) arg;
 					Object value = call.getObject(outArg.getIndex(),outArg.getOutType());
 					outArg.setOutValue(value);
-					break;
 				}
 			}
 

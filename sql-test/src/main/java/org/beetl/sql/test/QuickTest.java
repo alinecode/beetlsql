@@ -58,14 +58,6 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		for(int i=0;i<10;i++){
-			long start = System.currentTimeMillis();
-			System.out.println();
-			TableDesc tableDesc = sqlManager.getTableDesc("order_log");
-			long end = System.currentTimeMillis();
-			System.out.println(i+"="+(end-start));
-
-		}
 
 
 //		OrderLog orderLog = new OrderLog();
@@ -76,13 +68,16 @@ public class QuickTest {
 //		orderLog = sqlManager.unique(OrderLog.class,1);
 //		System.out.println(orderLog);
 
-		CallReady callReady = new CallReady("call test.logcount(?,?)");
+		CallReady callReady = new CallReady("call test.logcount(?,?,?)");
 		callReady.add(1,new InArg(1));
 		callReady.add(2,new OutArg(Integer.class));
+		callReady.add(3,new OutArg(Integer.class));
 		sqlManager.executeCall(callReady);
 
 		Object ret = callReady.getOutValue(2);
+		Object ret2 = callReady.getOutValue(3);
 		System.out.println(ret);
+		System.out.println(ret2);
 
 
 		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
