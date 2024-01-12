@@ -1,5 +1,6 @@
 package org.beetl.sql.usage.sqlmanger;
 
+import org.beetl.sql.core.BatchParam;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.SqlId;
@@ -31,7 +32,7 @@ public class S08UpdateSample {
 
         sample.resourceId();
         sample.batchUpdateByResourceId();
-
+		sample.batchByDiffSqlTemplate();
 
 
     }
@@ -146,6 +147,38 @@ public class S08UpdateSample {
         sqlManager.updateBatch(updateById,Arrays.asList(user,user2));
 
     }
+
+	public void batchByDiffSqlTemplate() {
+		/**
+		 * 批量执行sql模板，每条sql模板可以有不同参数
+		 */
+		UserEntity user = new UserEntity();
+		user.setName("abc");
+		user.setId(21);
+
+		UserEntity user2 = new UserEntity();
+		user2.setDepartmentId(1);
+		user2.setId(11);
+		BatchParam param = BatchParam.builder()
+			.sqlTemplate("update sys_user set name=#{name} where id=#{id}")
+			.sqlParam(user);
+		BatchParam param1 = BatchParam.builder()
+			.sqlTemplate("update sys_user set department_id=#{departmentId} where id=#{id}")
+			.sqlParam(user2);
+		sqlManager.executeBatch(Arrays.asList(param, param1), null);
+
+		/**
+		 *  批量执行sql模板（从md文件读取），每条sql模板可以有不同参数
+		 */
+		BatchParam param2 = BatchParam.builder()
+			.sqlId("user.batchExecSql1")
+			.sqlParam(user);
+		BatchParam param3 = BatchParam.builder()
+			.sqlId("user.batchExecSql2")
+			.sqlParam(user2);
+		sqlManager.executeBatch(Arrays.asList(param2, param3), null);
+
+	}
 
 
 

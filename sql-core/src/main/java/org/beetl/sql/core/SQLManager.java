@@ -1451,6 +1451,32 @@ public class SQLManager implements DataAPI {
 
 	}
 
+	@Override
+	public int[] executeBatch(List<BatchParam> list, Integer batchSize) {
+		if (ListUtil.isEmpty(list)) {
+			return new int[0];
+		}
+		List<SqlIdWithParam> sqlIdWithParams = ListUtil.newArrayList();
+		list.forEach(item -> {
+			SqlId sqlId;
+			if (StringKit.isNotBlank(item.getSqlTemplate())) {
+				sqlId = this.sqlIdFactory.buildTemplate(item.getSqlTemplate());
+				SQLSource source = sqlLoader.queryAutoSQL(sqlId);
+				if (source == null) {
+					source = new SQLSource(sqlId, item.getSqlTemplate());
+					this.sqlLoader.addSQL(sqlId, source);
+				}
+			} else {
+				sqlId = SqlId.of(item.getSqlId());
+			}
+			SqlIdWithParam sqlIdWithParam = SqlIdWithParam.of(sqlId, item.getSqlParam());
+			sqlIdWithParams.add(sqlIdWithParam);
+		});
+		ExecuteContext executeContext = ExecuteContext.instance(this);
+		SQLExecutor script = dbStyle.buildExecutor(executeContext);
+		return script.executeBatch(sqlIdWithParams, batchSize);
+	}
+
 	/**
 	 * 直接执行sql语句，用于删除或者更新，sql语句已经是准备好的，采用preparedstatment执行
 	 *

@@ -1,7 +1,6 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.core.call.CallReady;
-import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.engine.template.TemplateContext;
 import org.beetl.sql.core.mapping.StreamData;
 
@@ -105,6 +104,14 @@ public interface SQLExecutor {
 
 	int[] insertBatch(Class<?> target, List<?> list);
 
+	/**
+	 * 批量执行sql语句，每个sql语句可以带不同的参数
+	 *
+	 * @param list sql语句与参数集合
+	 * @param batchSize 批量数量
+	 * @return int[]
+	 */
+	int[] executeBatch(List<SqlIdWithParam> list, Integer batchSize);
 
 	<T> T unique(Class<T> target, Object objId);
 

@@ -51,3 +51,13 @@ and name like #{name}
 order by u.id desc
 -- @ }
 ```  
+
+batchExecSql1
+===
+* 批量执行sql模板，每条sql模板可以有不同参数
+update sys_user set name=#{name} where id=#{id}
+
+batchExecSql2
+===
+* 批量执行sql模板，每条sql模板可以有不同参数
+update sys_user set department_id=#{departmentId} where id=#{id}
