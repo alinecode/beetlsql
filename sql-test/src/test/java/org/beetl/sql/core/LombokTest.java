@@ -63,8 +63,8 @@ public class LombokTest  extends BaseTest {
 	public void testLambda(){
 		BadBeanMapper2 badBeanMapper = sqlManager.getMapper(BadBeanMapper2.class);
 		LambdaQuery<BadBean2> lambdaQuery = sqlManager.lambdaQuery(BadBean2.class);
-		BadBean2 badBean2 = lambdaQuery.andEq(BadBean2::getAge,1).single();
-		System.out.println(badBean2.getAge());
+		BadBean2 badBean2 = lambdaQuery.andEq(BadBean2::getAge,12).single();
+		Assert.assertEquals(12,badBean2.getAge().intValue());
 
 	}
 

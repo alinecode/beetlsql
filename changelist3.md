@@ -44,3 +44,9 @@
 * sql-tenant 改成sql-rewrite
 * 增加clearProperty
 
+# 3.28.0
+* 存储过程调用，修复只支持一个输出参数
+* SQLManager增加新的executeBatch方法
+
+
+
