@@ -1,5 +1,7 @@
 package org.beetl.sql.core;
 
+import java.util.List;
+
 /**
  * 批量参数
  *
@@ -45,6 +47,11 @@ public class BatchParam {
 	}
 
 	public BatchParam sqlParam(Object sqlParam) {
+		this.sqlParam = sqlParam;
+		return this;
+	}
+
+	public BatchParam sqlParamList(List<Object> sqlParam) {
 		this.sqlParam = sqlParam;
 		return this;
 	}

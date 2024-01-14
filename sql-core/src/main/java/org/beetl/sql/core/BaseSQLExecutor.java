@@ -325,27 +325,14 @@ public class BaseSQLExecutor implements SQLExecutor {
 		InterceptorContext ctx = new InterceptorContext(executeContext);
         try {
 			GroupBatchExecutor groupBatchExecutor = new GroupBatchExecutor();
-			SQLResult result = null;
             conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
             for (int k = 0; k < list.size(); k++) {
                 if (list.get(k) == null) {
                     throw new NullPointerException("列表 " + k + "参数为空");
                 }
-                Map<String, Object> paras = this.beforeExecute(target, list.get(k), true);
-				result = run(paras);
-
-                PreparedStatement ps = groupBatchExecutor.containSql(result.jdbcSql);
-                if (ps == null) {
-                    ps = conn.prepareStatement(result.jdbcSql);
-                }
-				this.applyStatementSetting(executeContext, conn, ps);
-				this.setPreparedStatementPara(ps, result.jdbcPara);
-				ps.addBatch();
-				groupBatchExecutor.addSql(result,ps);
+				addParam2BatchExecutor(target, list.get(k), conn, groupBatchExecutor, true);
             }
-
 			return groupBatchExecutor.executeBatch(executeContext,ctx,executeContext.sqlManager.isBatchLogOneByOne());
-
         } catch (SQLException e) {
             this.callInterceptorAsException(ctx, e);
             throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
@@ -366,7 +353,6 @@ public class BaseSQLExecutor implements SQLExecutor {
 		InterceptorContext ctx = new InterceptorContext(executeContext);
 		try {
 			GroupBatchExecutor groupBatchExecutor = new GroupBatchExecutor();
-			SQLResult result;
 			conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
 			int[] rows = new int[list.size()];
 			//分批执行
@@ -379,16 +365,17 @@ public class BaseSQLExecutor implements SQLExecutor {
 					}
 					SQLSource sqlSource = executeContext.sqlManager.getSqlLoader().querySQL(item.getSqlId());
 					executeContext.initSQLSource(sqlSource);
-					Map<String, Object> paras = this.beforeExecute(null, item.getSqlParam(), true);
-					result = run(paras);
-					PreparedStatement ps = groupBatchExecutor.containSql(result.jdbcSql);
-					if (ps == null) {
-						ps = conn.prepareStatement(result.jdbcSql);
+					Object sqlParams = item.getSqlParam();
+					boolean isUpdate = sqlSource.getSqlType().isUpdate();
+					//sql参数为集合
+					if(sqlParams instanceof List){
+						List<Object> sqlParamList = (List<Object>)sqlParams;
+                        for (Object param : sqlParamList) {
+							addParam2BatchExecutor(null, param, conn, groupBatchExecutor,isUpdate);
+                        }
+                    }else {
+						addParam2BatchExecutor(null, item.getSqlParam(), conn, groupBatchExecutor,isUpdate);
 					}
-					this.applyStatementSetting(executeContext, conn, ps);
-					this.setPreparedStatementPara(ps, result.jdbcPara);
-					ps.addBatch();
-					groupBatchExecutor.addSql(result, ps);
 				}
 				int[] group = groupBatchExecutor.executeBatch(executeContext, ctx, executeContext.sqlManager.isBatchLogOneByOne());
 				rows = ArrayKit.concatAll(rows, group);
@@ -400,6 +387,19 @@ public class BaseSQLExecutor implements SQLExecutor {
 		} finally {
 			clean(executeContext, conn);
 		}
+	}
+
+	private void addParam2BatchExecutor(Class<?> target, Object param, Connection conn, GroupBatchExecutor groupBatchExecutor, boolean isUpdate) throws SQLException {
+		Map<String, Object> paras = this.beforeExecute(target, param, isUpdate);
+		SQLResult result = run(paras);
+		PreparedStatement ps = groupBatchExecutor.containSql(result.jdbcSql);
+		if (ps == null) {
+			ps = conn.prepareStatement(result.jdbcSql);
+		}
+		this.applyStatementSetting(executeContext, conn, ps);
+		this.setPreparedStatementPara(ps, result.jdbcPara);
+		ps.addBatch();
+		groupBatchExecutor.addSql(result, ps);
 	}
 
 	static class GroupBatchExecutor {
