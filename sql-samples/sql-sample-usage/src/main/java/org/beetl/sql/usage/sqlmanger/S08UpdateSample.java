@@ -154,17 +154,27 @@ public class S08UpdateSample {
 		 */
 		UserEntity user = new UserEntity();
 		user.setName("abc");
-		user.setId(21);
+		user.setId(1121);
 
 		UserEntity user2 = new UserEntity();
-		user2.setDepartmentId(1);
-		user2.setId(11);
+		user2.setName("abcd");
+		user2.setDepartmentId(222);
+		user2.setId(1111);
+
 		BatchParam param = BatchParam.builder()
-			.sqlTemplate("update sys_user set name=#{name} where id=#{id}")
-			.sqlParam(user);
+			.sqlTemplate("insert into sys_user (id,name) values (#{id},#{name})")
+			.sqlParamList(Arrays.asList(user, user2));
 		BatchParam param1 = BatchParam.builder()
-			.sqlTemplate("update sys_user set department_id=#{departmentId} where id=#{id}")
-			.sqlParam(user2);
+			.sqlTemplate("update sys_user set \n" +			//注意：使用String类型的sql模板并且使用到了函数，必须采用\n换行，否则报语法错误
+				" -- @if(!isEmpty(departmentId)){ \n" +
+				"     department_id=#{departmentId}, \n" +
+				" -- @}\n " +
+				" -- @if(!isEmpty(name)){\n " +
+				"     name=#{name}\n " +
+				" -- @}\n " +
+				" where id=#{id}")
+				.sqlParamList(Arrays.asList(user, user2));
+		sqlManager.setBatchLogOneByOne(true);
 		sqlManager.executeBatch(Arrays.asList(param, param1), null);
 
 		/**
