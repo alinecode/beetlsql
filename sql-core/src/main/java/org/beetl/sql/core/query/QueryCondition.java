@@ -1,5 +1,7 @@
 package org.beetl.sql.core.query;
 
+import org.beetl.sql.clazz.ClassDesc;
+import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.KeyWordHandler;
@@ -13,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class QueryCondition<T> implements QueryConditionI<T> {
+public  abstract class QueryCondition<T> implements QueryConditionI<T> {
     public static final String AND = "AND";
     public static final String OR = "OR";
     public static final String WHERE = "WHERE";
@@ -526,10 +528,15 @@ public class QueryCondition<T> implements QueryConditionI<T> {
     @Override
     public StringBuilder getSql() {
         if (this.sql == null) {
-            return new StringBuilder();
+			this.sql = new StringBuilder();
         }
         return this.sql;
     }
+
+
+
+
+
 
     @Override
     public void setSql(StringBuilder sql) {

@@ -210,6 +210,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 	public SQLSource genUpdateAbsolute(Class<?> cls) {
 		//无条件更新所有，需要谨慎使用，子类可以抛出异常禁止这类方法调用
 		Update update = getUpdate(cls);
+		this.appendLogicFlagCondition(cls,update);
 		return new SQLTableSource(update.toSql(),SQLType.UPDATE);
 	}
 
@@ -476,6 +477,7 @@ public abstract class AbstractDBStyle implements DBStyle {
 			update.assign(col).tplValue(prop);
 
 		}
+
 		return update;
 	}
 

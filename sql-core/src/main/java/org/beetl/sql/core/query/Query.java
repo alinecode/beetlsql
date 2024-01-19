@@ -33,8 +33,8 @@ import java.util.Map;
 public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, QueryOtherI<Query> {
 
     private static final String ALL_COLUMNS = "*";
-    Class<T> clazz;
-    StringTemplateResourceLoader tempLoader = new StringTemplateResourceLoader();
+    protected  Class<T> clazz;
+	protected StringTemplateResourceLoader tempLoader = new StringTemplateResourceLoader();
 
     public Query(SQLManager sqlManager, Class<T> clazz) {
         this.sqlManager = sqlManager;
@@ -173,32 +173,14 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
      */
     private StringBuilder assembleSelectSql(String column) {
         StringBuilder sb = new StringBuilder("SELECT ").append(column);
-        StringBuilder  whereSql= getSql();
+		appendLogicDelete();
+		StringBuilder  whereSql= getSql();
         sb.append(" FROM ").append(getTableName(clazz)).append(' ').append(whereSql);
-        appendLogicDelete(sb, whereSql.length()==0);
         sb = addAdditionalPartSql(sb);
         return sb;
     }
 
-    private void appendLogicDelete(StringBuilder sb,boolean whereAppend){
-        if(!sqlManager.isQueryLogicDeleteEnable()) {
-            return ;
-        }
-        NameConversion nameConversion = sqlManager.getNc();
-        String tableName = nameConversion.getTableName(clazz);
-        TableDesc table = sqlManager.getMetaDataManager().getTable(tableName);
-        ClassDesc classDesc = table.genClassDesc(clazz, nameConversion);
-        if (classDesc.getClassAnnotation().getLogicDeleteAttrName() == null) {
-            return ;
-        }
-        String col = nameConversion.getColName(clazz, classDesc.getClassAnnotation().getLogicDeleteAttrName());
-        Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
-        if(whereAppend){
-        	sb.append(" WHERE 1=1 ");
-		}
-        sb.append(" AND ").append(col).append("!=").append(value).append(" ");
 
-    }
 
     /**
      * 增加分页，分组排序
@@ -264,9 +246,21 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             paraLis.add(sqlParameter.value);
         }
         addPreParam(paraLis);
+		String targetSql = null;
+		StringBuilder where = getSql();
+		if(result.jdbcSql.indexOf(" where ")!=-1){
+			//hack 代码， update语句可能包含了WHERE,逻辑删除
+			int index = where.indexOf("WHERE ");
+			if(index!=-1){
+				where.replace(index,index+6,"");
+				where.insert(0," and ");
+			}
+			targetSql = result.jdbcSql + " " + where;
+		}else{
+			targetSql = result.jdbcSql + " " + where;
 
-        //条件
-        String targetSql = result.jdbcSql + " " + getSql();
+		}
+
         Object[] paras = paraLis.toArray();
         int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
         this.clear();
@@ -285,6 +279,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public int delete() {
+		appendLogicDelete();
         String targetSql = "DELETE FROM " + getTableName(clazz) + " " + getSql();
         Object[] paras = getParams().toArray();
         int row = this.sqlManager.executeUpdate(new SQLReady(targetSql, paras));
@@ -294,6 +289,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
     @Override
     public long count() {
+		appendLogicDelete();
         String targetSql = "SELECT COUNT(1) FROM " + getTableName(clazz) + " " + getSql();
         Object[] paras = getParams().toArray();
         List results = this.sqlManager.execute(new SQLReady(targetSql, paras), Long.class);
@@ -609,6 +605,30 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 
         return this;
     }
+
+
+
+	@Override
+	public void appendLogicDelete(){
+		if(!sqlManager.isQueryLogicDeleteEnable()) {
+			return ;
+		}
+		NameConversion nameConversion = sqlManager.getNc();
+		String tableName = nameConversion.getTableName(this.clazz);
+		TableDesc table = sqlManager.getMetaDataManager().getTable(tableName);
+		ClassDesc classDesc = table.genClassDesc(clazz, nameConversion);
+		if (classDesc.getClassAnnotation().getLogicDeleteAttrName() == null) {
+			return ;
+		}
+		String col = nameConversion.getColName(clazz, classDesc.getClassAnnotation().getLogicDeleteAttrName());
+		Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
+		if(this.sql.length()==0){
+			this.sql.append(" WHERE 1=1 ");
+		}
+		this.sql.append(" AND ").append(col).append("!=").append(value).append(" ");
+
+	}
+
 
 
 }

@@ -12,7 +12,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  logic删除，考虑俩给模式
+ *  logic删除，考虑俩模式
+ *
+ *  注意，对于自己写的sql语句，beetlsql的逻辑删除功能并会修改sql附加删除条件，除非你再使用
+ *  sql-rewrite模板。 个人建议自己写sql还是自己加上条件。所见即所得。
  * @author xiandafu
  */
 public class LogicDeleteTest extends BaseTest {
@@ -74,6 +77,9 @@ public class LogicDeleteTest extends BaseTest {
 		Assert.assertEquals(0, queryCount);
 
 
+
+
+
 		//恢复默认值
 		sqlManager.refresh();
 		sqlManager.setQueryLogicDeleteEnable(false);
@@ -86,16 +92,57 @@ public class LogicDeleteTest extends BaseTest {
 		ProductOrder order = new ProductOrder();
 		order.setCreateDate(null);
 		order.setStatus(1);
-		sqlManager.insert(order);
+		LambdaQuery<ProductOrder> lambdaQuery = sqlManager.lambdaQuery(ProductOrder.class);
+		{
+			sqlManager.refresh();
+			sqlManager.setQueryLogicDeleteEnable(false);
+			order = new ProductOrder();
+			order.setCreateDate(null);
+			order.setStatus(1);
+			sqlManager.insert(order);
+
+			ProductOrder dbOrder = lambdaQuery.andEq("id",order.getId()).single();
+			Assert.assertNotNull(dbOrder);
+
+			int ret = lambdaQuery.andEq("id",order.getId()).update(order);
+			Assert.assertEquals(1,ret);
+
+			ret = lambdaQuery.andEq("id",order.getId()).updateSelective(order);
+			Assert.assertEquals(1,ret);
+
+			ret = lambdaQuery.andEq("id",order.getId()).delete();
+			Assert.assertEquals(1,ret);
+		}
+
+
+
+
+		{
+			sqlManager.refresh();
+			sqlManager.setQueryLogicDeleteEnable(true);
+			order = new ProductOrder();
+			order.setCreateDate(null);
+			order.setStatus(1);
+			sqlManager.insert(order);
+
+			ProductOrder dbOrder = lambdaQuery.andEq("id",order.getId()).single();
+			Assert.assertNull(dbOrder);
+			//更新全部失败
+			int ret = lambdaQuery.andEq("id",order.getId()).update(order);
+			Assert.assertEquals(0,ret);
+
+			ret = lambdaQuery.andEq("id",order.getId()).updateSelective(order);
+			Assert.assertEquals(0,ret);
+
+			ret = lambdaQuery.andEq("id",order.getId()).delete();
+			Assert.assertEquals(0,ret);
+		}
+
+
+		//恢复
+		sqlManager.refresh();
 		sqlManager.setQueryLogicDeleteEnable(false);
-		LambdaQuery lambdaQuery = sqlManager.lambdaQuery(ProductOrder.class);
 
-		ProductOrder newOrder = new ProductOrder();
-		newOrder.setCreateDate(new Date());
-		newOrder.setStatus(1);
-		int ret =  lambdaQuery.andEq("id",order.getId()).desc("id").delete();
-
-		System.out.println(sqlManager.all(ProductOrder.class));
 
 	}
 }

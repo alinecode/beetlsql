@@ -162,4 +162,7 @@ public interface QueryConditionI<T> {
     List<Object> getParams();
 
     Query<T> distinct();
+
+
+	void appendLogicDelete();
 }
