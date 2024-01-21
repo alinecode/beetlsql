@@ -48,5 +48,8 @@
 * 存储过程调用，修复只支持一个输出参数
 * SQLManager增加新的executeBatch方法
 
-
+# 3.28.1
+* sqlparser 升级到4.7，并修复兼容问题
+* sql-dynamic-table bug修复，使用asm直接生成entity类
+* query的逻辑删除功能，当执行update或者updateselective ，报错
 

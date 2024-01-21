@@ -1,6 +1,7 @@
 package com.ibeetl.sql.dynamic;
 
 import com.beetl.sql.dynamic.BaseEntity;
+import com.beetl.sql.dynamic.BeanTableAsmCode;
 import com.beetl.sql.dynamic.DynamicEntityLoader;
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
@@ -10,6 +11,8 @@ import org.beetl.sql.ext.DebugInterceptor;
 import org.junit.Test;
 
 import javax.sql.DataSource;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.List;
 
 public class TestDynamic {
@@ -91,22 +94,45 @@ public class TestDynamic {
 	}
 
 
-	/**
-	 * 测试使用任何对象构造dynamicLoader
-	 */
 	@Test
-	public void testCustomized(){
+	public void testCustomized() throws Exception{
+
 		SQLManager sqlManager = getSQLManager();
-		DBInitHelper.executeSqlScript(sqlManager,"db/dynamic-schema.sql");
+		int max = 5;
+		//创建5个表
+		for(int i=0;i<max;i++){
+			String dml="create table my_cc_table"+i+"(id int NOT NULL"
+				+ ",name varchar(20)"
+				+ ",PRIMARY KEY (`id`)"
+				+ ") ";
+			sqlManager.executeUpdate(new SQLReady(dml));
+		}
+
+
 		DynamicEntityLoader<Office> dynamicEntityLoader = new DynamicEntityLoader(sqlManager,"com.my",Office.class);
 
-		Class<? extends Office> c = dynamicEntityLoader.getDynamicEntity("order_log");
-		Office office = sqlManager.unique(c,1);
-		System.out.println(office.getValue("orderId"));
-		System.out.println(office.getValue("age"));
+		for(int i=0;i<max;i++){
+			Class<? extends Office> c = dynamicEntityLoader.getDynamicEntity("my_cc_table"+i);
+			long  count = sqlManager.allCount(c);
+			System.out.println(count);
+		}
 
-		office.setValue("age",1);
-		sqlManager.updateById(office);
+
+		for(int i=0;i<max;i++){
+			Class<? extends Office> c = dynamicEntityLoader.getDynamicEntity("my_cc_table"+i);
+			Office obj = c.newInstance();
+			obj.setId(i);
+			obj.setValue("name","hello");
+			sqlManager.insert(obj);
+		}
+
+		for(int i=0;i<max;i++){
+			Class<? extends Office> c = dynamicEntityLoader.getDynamicEntity("my_cc_table"+i);
+			Office obj = c.newInstance();
+			obj.setId(i);
+			sqlManager.unique(obj.getClass(),i);
+		}
+
 
 
 	}
