@@ -2,18 +2,11 @@ package org.beetl.sql.clazz.kit;
 
 
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.ASTNodeAccessImpl;
-import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.parser.SimpleNode;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 
-import javax.swing.plaf.nimbus.State;
-import java.io.StringReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * sql分页辅助工具，最新版采用sqlParser
@@ -45,8 +38,9 @@ public  class PageKit {
 				if (plain.getFromItem() != null) {// 有from
 					// 判断select是否仅存在net.sf.jsqlparser.schema.Column类型
 					if (plain.getSelectItems().stream().allMatch(item -> isAllColumns(item)||isColumn(item))) {
-						if (plain.getDistinct() == null && plain.getGroupBy() == null && plain.getLimit() == null) {// 非DISTINCT, 非groupBy, 非limit
-							plain.setSelectItems(Arrays.asList(new PageKit.CountAll()));
+						// 非DISTINCT, 非groupBy, 非limit
+						if (plain.getDistinct() == null && plain.getGroupBy() == null && plain.getLimit() == null) {
+							plain.setSelectItems(Arrays.asList(new SelectItem<>(new PageKit.CountAll())));
 							plain.setOrderByElements(null);
 							countSql =  plain.toString();
 							cache.put(selectSql,countSql);
@@ -66,15 +60,12 @@ public  class PageKit {
     }
 
 	protected  boolean isAllColumns(SelectItem item){
-		return item instanceof  AllColumns;
+		return item.getExpression() instanceof  AllColumns;
 	}
 
 	protected  boolean isColumn(SelectItem item){
-		if(!(item instanceof SelectExpressionItem)){
-			return false;
-		}
-		SelectExpressionItem selectExpressionItem = (SelectExpressionItem)item;
-		return selectExpressionItem.getExpression() instanceof Column;
+		return item.getExpression() instanceof  Column;
+
 	}
 
 
@@ -84,9 +75,9 @@ public  class PageKit {
 		cache.put(selectSql,defaultCountSql);
 		return defaultCountSql;
 	}
-    
+
     public static void main(String[] args) throws JSQLParserException {
-    	String sql = "SELECT CONVERT(1 USING gbk)";
+    	String sql = "SELECT * from user where id in (1,2,3)";
 		PageKit pageKit = new PageKit();
 		long start = System.currentTimeMillis();
 		String countSql = null;

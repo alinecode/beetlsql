@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Table(name="order_log")
 @Data()
-@Accessors(chain = true)
+//@Accessors(chain = false)
 
 //@ResultProvider(AutoJsonMapper.class)
 public class OrderLog {

@@ -361,6 +361,19 @@ public class StringKit {
 		return sb.toString();
 	}
 
+	public static String getMethodName(String name,boolean isBooleanType,boolean isGet) {
+		String  prefix = isGet?"get":"set";
+		if(isBooleanType){
+			prefix = isGet?"is":"set";
+		}
+		if (name.length() > 1 && Character.isUpperCase(name.charAt(1))) {
+			return prefix+name;
+		}else{
+			return prefix+StringKit.toUpperCaseFirstOne(name);
+		}
+	}
+
+
 
 	public static void main(String[] args) {
 		System.out.println(addEscape("abc",'[',']'));

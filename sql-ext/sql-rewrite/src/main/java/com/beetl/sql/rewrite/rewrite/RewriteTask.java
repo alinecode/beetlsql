@@ -5,10 +5,7 @@ import com.beetl.sql.rewrite.SqlParserRewrite;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
-import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
-import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.NotEqualsTo;
+import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
@@ -58,12 +55,13 @@ public abstract  class  RewriteTask {
 					if(((List)value).isEmpty()){
 						continue;
 					}
-					ExpressionList valueExpressList = new  ExpressionList();
+					ParenthesedExpressionList parenthesedExpressionList = new ParenthesedExpressionList();
 					for(Object o:(List)value){
 						Expression valueExpress = new LongValue(((Number)o).longValue());
-						valueExpressList.addExpressions(valueExpress);
+						parenthesedExpressionList.addExpressions(valueExpress);
 					}
-					conditionExpress = new InExpression(column, valueExpressList);
+
+					conditionExpress = new InExpression(column, parenthesedExpressionList);
 					((InExpression)conditionExpress).setNot(!colRewriteParam.isEqualsFlag());
 				}else{
 					throw new UnsupportedOperationException(value!=null?value.getClass().getName():"null");

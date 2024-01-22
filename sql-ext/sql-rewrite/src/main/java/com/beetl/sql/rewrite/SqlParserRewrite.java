@@ -4,15 +4,16 @@ import com.beetl.sql.rewrite.rewrite.DeleteRewriteTask;
 import com.beetl.sql.rewrite.rewrite.RewriteTask;
 import com.beetl.sql.rewrite.rewrite.SelectRewriteTask;
 import com.beetl.sql.rewrite.rewrite.UpdateRewriteTask;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 
 import java.util.*;
 
-public class SqlParserRewrite extends TablesNamesFinder {
+public class SqlParserRewrite extends MyTablesNamesFinder {
 
 
 	protected  Stack<RewriteTask> selectStack = new Stack<>();
@@ -88,6 +89,7 @@ public class SqlParserRewrite extends TablesNamesFinder {
 
 
 	}
+
 
 
 
