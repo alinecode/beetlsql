@@ -1,6 +1,7 @@
 package com.ibeetl.sql.dynamic;
 
 
+import com.beetl.sql.dynamic.BaseEntity;
 import org.beetl.core.fun.MethodInvoker;
 import org.beetl.core.fun.ObjectUtil;
 import org.beetl.sql.annotation.entity.AssignID;
@@ -8,7 +9,7 @@ import org.beetl.sql.annotation.entity.AssignID;
 /**
  * 用户自定义对象
  */
-public  class Office  {
+public  class Office  extends BaseEntity {
 
 	@AssignID
 	private Integer id;
@@ -21,18 +22,4 @@ public  class Office  {
 		this.id = id;
 	}
 
-	public void setValue(String attrName,Object value){
-		MethodInvoker methodInvoker = ObjectUtil.getInvokder(this.getClass(),attrName);
-		if(methodInvoker==null){
-			throw new IllegalArgumentException("不存在的属性 "+attrName);
-		}
-		methodInvoker.set(this,value);
-	}
-	public Object getValue(String attrName){
-		MethodInvoker methodInvoker = ObjectUtil.getInvokder(this.getClass(),attrName);
-		if(methodInvoker==null){
-			throw new IllegalArgumentException("不存在的属性 "+attrName);
-		}
-		return methodInvoker.get(this);
-	}
 }

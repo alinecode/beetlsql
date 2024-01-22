@@ -20,6 +20,9 @@ public class OrderLog {
 	Integer orderId;
 	@Auto
 	Integer age;
+
+	byte[] bs;
+
 	@Version
 	Integer version;
 

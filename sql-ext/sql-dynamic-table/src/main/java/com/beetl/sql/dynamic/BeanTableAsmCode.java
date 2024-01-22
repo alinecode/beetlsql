@@ -28,7 +28,7 @@ public class BeanTableAsmCode {
 			throw new IllegalArgumentException("表不存在 "+name);
 		}
 		String clsName = sqlManager.getNc().getClassName(name);
-		String  onwerClass = getAsmClassName(pkg+"."+clsName);
+		String  onwerClass = (pkg+"."+clsName).replace('.','/');
 		ClassWriter classWriter = new ClassWriter(0);
 		classWriter.visit(V1_8, ACC_PUBLIC | ACC_SUPER, onwerClass, null,
 			supperName, null);
@@ -44,7 +44,7 @@ public class BeanTableAsmCode {
 		return classWriter.toByteArray();
 	}
 
-	static void genProperty(ClassWriter classWriter,SQLManager sqlManager,String clsName,TableDesc tableDesc,Class baseClass) throws Exception {
+	private static void genProperty(ClassWriter classWriter,SQLManager sqlManager,String clsName,TableDesc tableDesc,Class baseClass) throws Exception {
 		Set<String> cols = tableDesc.getCols();
 		String owner = clsName;
 
@@ -64,22 +64,22 @@ public class BeanTableAsmCode {
 
 			MethodVisitor  methodVisitor = null;
 
-			methodVisitor = classWriter.visitMethod(ACC_PUBLIC, setterMethod, "(L"+getAsmClassName(javaType)+";)V",
+			methodVisitor = classWriter.visitMethod(ACC_PUBLIC, setterMethod, "("+getAsmTypeClassName(javaType)+")V",
 				null, null);
 			methodVisitor.visitCode();
 			methodVisitor.visitVarInsn(ALOAD, 0);
 			methodVisitor.visitVarInsn(ALOAD, 1);
 			//TODO 没有考虑byte[] 这种情况
-			methodVisitor.visitFieldInsn(PUTFIELD, owner, attrName, "L"+getAsmClassName(javaType)+";");
+			methodVisitor.visitFieldInsn(PUTFIELD, owner, attrName, getAsmTypeClassName(javaType));
 			methodVisitor.visitInsn(RETURN);
 			methodVisitor.visitMaxs(2, 2);
 			methodVisitor.visitEnd();
 
 
-			methodVisitor = classWriter.visitMethod(ACC_PUBLIC, getterMethod, "()L"+getAsmClassName(javaType)+";", null, null);
+			methodVisitor = classWriter.visitMethod(ACC_PUBLIC, getterMethod, "()"+getAsmTypeClassName(javaType), null, null);
 			methodVisitor.visitCode();
 			methodVisitor.visitVarInsn(ALOAD, 0);
-			methodVisitor.visitFieldInsn(GETFIELD, owner, attrName, "L"+getAsmClassName(javaType)+";");
+			methodVisitor.visitFieldInsn(GETFIELD, owner, attrName, getAsmTypeClassName(javaType));
 			methodVisitor.visitInsn(ARETURN);
 			methodVisitor.visitMaxs(1, 1);
 			methodVisitor.visitEnd();
@@ -87,7 +87,7 @@ public class BeanTableAsmCode {
 		}
 	}
 
-	static void genPrivateFiled(ClassWriter classWriter,SQLManager sqlManager,TableDesc tableDesc,Class baseClass) throws Exception {
+	private static void genPrivateFiled(ClassWriter classWriter,SQLManager sqlManager,TableDesc tableDesc,Class baseClass) throws Exception {
 		Set<String> cols = tableDesc.getCols();
 		for(String col:cols){
 			String attrName = sqlManager.getNc().getPropertyName(col);
@@ -98,7 +98,7 @@ public class BeanTableAsmCode {
 			}
 			ColDesc colDesc  = tableDesc.getColDesc(col);
 			String javaType =  getJavaType(colDesc.getSqlType());
-			FieldVisitor fieldVisitor= classWriter.visitField(ACC_PRIVATE,attrName,"L"+getAsmClassName(javaType)+";",null,null);
+			FieldVisitor fieldVisitor= classWriter.visitField(ACC_PRIVATE,attrName,getAsmTypeClassName(javaType),null,null);
 			if(tableDesc.getIdNames().contains(col)){
 				if(colDesc.isAuto()){
 					AnnotationVisitor annotationVisitor0 = fieldVisitor.visitAnnotation("Lorg/beetl/sql/annotation/entity/AutoID;", true);
@@ -114,13 +114,17 @@ public class BeanTableAsmCode {
 		}
 	}
 
-	public static String getJavaType(int colType){
+	private static String getJavaType(int colType){
 		String javaType = JavaType.mapping.get(colType);
-		if(javaType.equals("UNKNOW")||javaType.equals("OBJECT")){
+		if(javaType.equals("UNKNOW")||javaType.equals("OBJECT")||javaType.equals("SQLXML")){
 			javaType = "java.lang.Object";
 		}else if(javaType.equals("DATE")){
-			javaType = "java.util.Date";
-		}else if(javaType.equals("SPECIAL")){
+			javaType = "java.sql.Date";
+		}
+		else if(javaType.equals("Timestamp")){
+			javaType = "java.sql.Timestamp";
+		}
+		else if(javaType.equals("SPECIAL")){
 			javaType = "java.math.BigDecimal";
 		}else if(Character.isUpperCase(javaType.charAt(0))){
 			javaType = "java.lang."+javaType;
@@ -129,7 +133,7 @@ public class BeanTableAsmCode {
 	}
 
 
-	protected  static  void genConstruct(ClassWriter classWriter,String supperName){
+	private static  void genConstruct(ClassWriter classWriter,String supperName){
 
 		MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		methodVisitor.visitCode();
@@ -143,13 +147,11 @@ public class BeanTableAsmCode {
 	}
 
 
-	public static String getAsmClassName(String name){
-		return name.replace('.','/');
+	private static String getAsmTypeClassName(String name){
+		if(name.equals("byte[]")){
+			return "[B";
+		}
+		return "L"+name.replace('.','/')+";";
 	}
-
-
-
-
-
 
 }

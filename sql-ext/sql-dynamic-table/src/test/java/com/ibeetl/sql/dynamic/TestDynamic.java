@@ -8,11 +8,13 @@ import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.sql.DataSource;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class TestDynamic {
@@ -133,6 +135,37 @@ public class TestDynamic {
 			sqlManager.unique(obj.getClass(),i);
 		}
 
+
+
+	}
+
+	/**
+	 * 测试sql中的一些不常见类型，用于验证ASM字节码生成
+	 * @throws Exception
+	 */
+	@Test
+	public void testSqlType() throws Exception{
+
+		SQLManager sqlManager = getSQLManager();
+		String dml="create table my_type_table"+"(id int NOT NULL"
+			+ ",name varchar(20)"
+			+ ",content blob"
+			+ ",create_time timestamp"
+			+ ",PRIMARY KEY (`id`)"
+			+ ") ";
+		sqlManager.executeUpdate(new SQLReady(dml));
+
+
+		DynamicEntityLoader<Office> dynamicEntityLoader = new DynamicEntityLoader(sqlManager,"com.my",Office.class);
+
+		Class<? extends Office> c = dynamicEntityLoader.getDynamicEntity("my_type_table");
+		Office obj = c.newInstance();
+		obj.setId(1);
+		obj.setValue("createTime",new Timestamp(System.currentTimeMillis()));
+		sqlManager.insert(obj);
+
+		long  count = sqlManager.allCount(c);
+		Assert.assertEquals(1L,count);
 
 
 	}
