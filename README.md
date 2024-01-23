@@ -15,7 +15,7 @@
 BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**的数据库访问框架，在一个系统多个库的情况下，提供一致的编写代码方式。支持如下数据平台
 
 * 传统数据库：MySQL(国内兼容MySQL协议的各种大数据库),MariaDB,Oracle,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
-* 大数据：HBase，ClickHouse，Cassandar，Hive
+* 大数据：HBase，ClickHouse，Cassandar，Hive，Doris
 * 物联网时序数据库：Machbase，TD-Engine，IotDB
 * SQL查询引擎:Drill,Presto，Druid
 * 内存数据库:ignite，CouchBase
@@ -28,7 +28,50 @@ BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是二者�
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan，woate,darren,蚊子
 * 开发时间:2015-07
 * 网站 http://ibeetl.com
-* qq群 219324263(满) 252010126
+* qq群 636321946，219324263 ，252010126
+
+
+
+**BeetlSQL 核心功能**
+
+| BeetlSQL 核心    | 功能                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| sql-core         | 核心包，封装了 JDBC 操作，SQL 文件管理，可扩展注解管理       |
+| sql-fetch        | 类似 Hibernate 那样提供 @Fetch，@FetchMany 等注解            |
+| sql-mapper       | mapper 类定义和扩展，用户可以自定义自己的 mapper 和 mapper 的注解 |
+| sql-intergration | 整合 Spring，solon，jfinal 等框架，以及例子                  |
+| sql-query        | Query 和 LambdaQuery，用 Java API 构造和使用 SQL             |
+| sql-mapping      | 支持单表，多表与 POJO 的互相映射，支持 json 定义，xml 定义映射方式，或者约定习俗 |
+| sql-template     | Beetl 模板实现，且支持其他模板语言                           |
+| sql-gen          | 代码生成抽象包，并提供默认实现可以生成 dao，sql 文件，md 文档 |
+| sql-db-support   | 各种数据库的测试和验证，支持 20+ 数据库。                    |
+| sql-samples      | 包含了上百个使用 beetlsql 的例子                             |
+| sql-test         | 包含了上百个单元测试例子                                     |
+
+**BeetlSQL 最新扩展包**
+
+| BeetlSQL 扩展包   | 功能                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| sql-xml           | 高仿 myabtis 的 xml 语法，如果喜欢使用 xml 写 sql 模板的，可以使用此扩展包 |
+| sql-accelerator   | 性能加速包，通过反射优化，缓存，让 beetlsql 性能提升 50%-200%，接近一半手写 JDBC 的性能 |
+| sql-firewall      | sql 防火墙，避免不小心写的 sql 破坏数据库                    |
+| sql-dynamic-table | 支持像访问静态表格那样防火动态表格，简化动态创建表格的业务需求开发 |
+| sql-bean-encrypt  | 支持 @MD5 ，@AES 等对字段加密解密                            |
+| sql-rewrite       | 采用 sql 重写，支持单表多租户模式，逻辑删除，数据权限功能    |
+| SAGA（实验）      | BeetSQL 的 SAGA 是实现，用 SAGA 微服务事务                   |
+
+使用加速扩展性能优化结果：能达到近一半手写 JDBC 的性能
+
+| 查询                    | 测试内容                   | BeetlSQL(ops/ms) | 纯 jdbc | mybatis | JPA  |
+| ----------------------- | -------------------------- | ---------------- | ------- | ------- | ---- |
+| beetlsqlExecuteJdbc     | 直接执行 JDBC              | 318              | 678     | /       | 64   |
+| beetlsqlExecuteTemplate | 执行 SQL 模板              | 268              | /       | 44      | 66   |
+| beetlsqlFile            | SQL 存放在文件统一管理     | 266              | /       | 41      | /    |
+| beetlsqlInsert          | 插入一条                   | 129              | 248     | 43      | 59   |
+| beetlsqlGetAll          | 获取所有数据               | 13               | 40      | 4       | 5    |
+| beetlsqlLambdaQuery     | Java 函数编写 SQL 执行查询 | 196              | /       | 9       | /    |
+| beetlsqlPageQuery       | 翻页查询                   | 159              | /       | 17      | 59   |
+| beetlsqlSelectById      | 查询一条                   | 259              | 670     | 43      | 61   |
 
 ## 文档
 BeetlSQL 3.x 使用说明，当前版本](https://www.kancloud.cn/xiandafu/beetlsql3_guide)

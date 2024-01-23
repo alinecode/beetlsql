@@ -53,3 +53,7 @@
 * sql-dynamic-table bug修复，使用asm直接生成entity类
 * query的逻辑删除功能，当执行update或者updateselective ，报错
 
+# 3.29.0
+* 支持apache doris
+* 使用beetl最新版本，修复不支持char的BUG
+* sql-dynamic-table 支持timestamp和byte[] 等更多类型操作

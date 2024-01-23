@@ -18,7 +18,7 @@ public class BeetlSQLTemplateEngine extends DefaultTemplateEngine {
 
 	public BeetlSQLTemplateEngine() {
 		super();
-		AABuilder.defalutAAFactory = new BeetlSQLAAFactory();
+		AABuilder.defaultAAFactory = new BeetlSQLAAFactory();
 	}
 	@Override
 	protected GrammarCreator getGrammarCreator(GroupTemplate gt) {
