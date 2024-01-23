@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 public class ClickHouseStyle extends AbstractDBStyle {
 
-    RangeSql rangeSql = null;
+   protected  RangeSql rangeSql = null;
     public ClickHouseStyle() {
         super();
         rangeSql = new OffsetLimitRange(this);

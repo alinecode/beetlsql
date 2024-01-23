@@ -36,6 +36,7 @@
 <!--         <module>gbase8s</module>-->
 <!--        <module>oracle</module>-->
         <module>mariadb</module>
+        <module>doris</module>
 
     </modules>
     <dependencies>

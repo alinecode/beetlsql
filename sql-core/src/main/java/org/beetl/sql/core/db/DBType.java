@@ -40,6 +40,7 @@ public class DBType {
     public static final int DB_HIVE = 107;
     public static final int DB_DRUID = 108;
 	public static final int DB_IOTDB = 109;
+	public static final int DB_DORIS = 110;
 
     /*内存数据 从200开始*/
     public static final int DB_IGNITE = 201;
