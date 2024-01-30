@@ -17,7 +17,7 @@ BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**
 * 传统数据库：MySQL(国内兼容MySQL协议的各种大数据库),MariaDB,Oracle,Postgres,DB2,SQL Server，H2,SQLite,Derby，神通，达梦，华为高斯，人大金仓，PolarDB等
 * 大数据：HBase，ClickHouse，Cassandar，Hive，Doris
 * 物联网时序数据库：Machbase，TD-Engine，IotDB
-* SQL查询引擎:Drill,Presto，Druid
+* SQL查询引擎:Drill,Presto，Druid,Trino
 * 内存数据库:ignite，CouchBase
 
 BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是二者的综合，BeetlSQL远大理想是对标甚至超越Spring Data，是实现数据访问统一的框架，无论是传统数据库，还是大数据，还是查询引擎或者时序库，内存数据库。
@@ -28,7 +28,7 @@ BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是二者�
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan，woate,darren,蚊子
 * 开发时间:2015-07
 * 网站 http://ibeetl.com
-* qq群 636321946，219324263 ，252010126
+* qq群 636321946，219324263 252010126
 
 
 
