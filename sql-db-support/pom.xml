@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.29.0-RELEASE</version>
+        <version>3.30.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-db-support</artifactId>
-    <version>3.29.0-RELEASE</version>
+    <version>3.30.0-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <module>mysql</module>
@@ -35,8 +35,9 @@
 <!--        <module>iotdb</module>-->
 <!--         <module>gbase8s</module>-->
 <!--        <module>oracle</module>-->
-        <module>mariadb</module>
-        <module>doris</module>
+<!--        <module>mariadb</module>-->
+<!--        <module>doris</module>-->
+        <module>trino</module>
 
     </modules>
     <dependencies>
@@ -48,7 +49,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.29.0-RELEASE</version>
+            <version>3.30.0-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 

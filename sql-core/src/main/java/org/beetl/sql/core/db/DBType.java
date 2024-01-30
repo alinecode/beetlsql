@@ -42,6 +42,8 @@ public class DBType {
 	public static final int DB_IOTDB = 109;
 	public static final int DB_DORIS = 110;
 
+	public static final int DB_TRINO= 111;
+
     /*内存数据 从200开始*/
     public static final int DB_IGNITE = 201;
     public static final int DB_COUCHBASE = 202;

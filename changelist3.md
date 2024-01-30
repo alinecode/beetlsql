@@ -57,3 +57,6 @@
 * 支持apache doris
 * 使用beetl最新版本，修复不支持char的BUG
 * sql-dynamic-table 支持timestamp和byte[] 等更多类型操作
+
+# 3.30.0
+* 支持查询引擎trino
