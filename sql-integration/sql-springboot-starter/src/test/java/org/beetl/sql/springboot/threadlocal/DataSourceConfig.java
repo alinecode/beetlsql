@@ -2,10 +2,13 @@ package org.beetl.sql.springboot.threadlocal;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -34,6 +37,18 @@ public class DataSourceConfig {
         ds.setPoolName(name);
 		return ds;
 	}
+
+
+	@Bean(name = "txManager1")
+	public PlatformTransactionManager txManager1(@Qualifier("ds1") DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
+	}
+
+	@Bean(name = "txManager2")
+	public PlatformTransactionManager txManager2(@Qualifier("ds2") DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
+	}
+
 
 
 }

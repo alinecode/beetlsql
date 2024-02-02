@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(value="txManager1",propagation = Propagation.REQUIRED)
 public class ThreadLocalService {
 	@Autowired
 	@Qualifier("proxySqlManager")
@@ -22,12 +22,17 @@ public class ThreadLocalService {
 	@Autowired
     UserInfoMapper mapper;
 
-	public void test(){
+
+	public void test(boolean transTest){
 		use("sqlManager1");
 
 		UserInfo info1 = sqlManager.single(UserInfo.class,1);
 		info1.setName(info1.getName()+" 1999");
 		sqlManager.updateById(info1);
+		if(transTest){
+			throw new RuntimeException("rollback");
+		}
+
 		info1 =  sqlManager.single(UserInfo.class,1);
 		use("sqlManager2");
 		UserInfo info2 = sqlManager.single(UserInfo.class,1);
@@ -46,6 +51,14 @@ public class ThreadLocalService {
 		System.out.println(count+" "+count2);
 
 	}
+	public UserInfo query() {
+		use("sqlManager1");
+		UserInfo info1 = sqlManager.single(UserInfo.class, 1);
+		return info1;
+	}
+
+
+
 
 
 

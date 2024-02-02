@@ -21,10 +21,23 @@ public class ThreadLocalTest {
 
     @Test
     public void test(){
-		dynamicService.test();
+		dynamicService.test(false);
     }
 
+	@Test
+	public void testTrans(){
+		try{
+			dynamicService.test(true);
+		}catch (RuntimeException re){
+			//ignore
+			System.out.println("tran rollback");
+		}
 
+		UserInfo userInfo = dynamicService.query();
+		Assert.assertEquals("lijz",userInfo.getName());
+
+
+	}
 	@Test
 	public void testWithAnnotation(){
 		long dbCount1 = dynamicService.test1();

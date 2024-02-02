@@ -2,6 +2,7 @@ package org.beetl.sql.clazz.kit;
 
 
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.*;
@@ -60,11 +61,11 @@ public  class PageKit {
     }
 
 	protected  boolean isAllColumns(SelectItem item){
-		return item.getExpression() instanceof  AllColumns;
+		return item.getExpression() instanceof  AllColumns  ;
 	}
 
 	protected  boolean isColumn(SelectItem item){
-		return item.getExpression() instanceof  Column;
+		return item.getExpression() instanceof  Column|| item.getExpression() instanceof LongValue;
 
 	}
 
@@ -77,7 +78,7 @@ public  class PageKit {
 	}
 
     public static void main(String[] args) throws JSQLParserException {
-    	String sql = "SELECT * from user where id in (1,2,3)";
+    	String sql = "SELECT 1,MAX(a.id) FROM user a";
 		PageKit pageKit = new PageKit();
 		long start = System.currentTimeMillis();
 		String countSql = null;
