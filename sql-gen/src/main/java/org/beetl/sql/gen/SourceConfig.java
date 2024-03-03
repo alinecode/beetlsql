@@ -221,6 +221,8 @@ public class SourceConfig {
 		attribute.setJavaType(javaType);
 		attribute.setName(sqlManager.getNc().getPropertyName(colDesc.getColName()));
 		attribute.setJavaType(getJavaType(colDesc, packageList));
+		attribute.setSize(colDesc.getSize());
+		attribute.setNullable("YES".equals(colDesc.getIsNullable()));
 		if (tableDesc.getIdNames().contains(colDesc.getColName())) {
 			attribute.setId(true);
 		}
