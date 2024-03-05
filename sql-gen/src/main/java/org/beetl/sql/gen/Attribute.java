@@ -16,6 +16,8 @@ public class Attribute {
 	 */
 	private String name;
 	private String colName;
+	private int size;
+	private boolean isNullable;
 	/**
 	 * Class名，比如Integer
 	 */
