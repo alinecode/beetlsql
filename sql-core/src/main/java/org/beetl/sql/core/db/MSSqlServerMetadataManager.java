@@ -34,20 +34,21 @@ public class MSSqlServerMetadataManager extends SchemaMetadataManager {
 			return ;
 		}
 		try{
+			//需要管理员权限
 			String sqlremarks = "SELECT C.NAME AS column_name,EP.VALUE AS remarks FROM SYS.EXTENDED_PROPERTIES EP LEFT JOIN SYS.ALL_OBJECTS O ON EP.MAJOR_ID = O.OBJECT_ID LEFT JOIN SYS.SCHEMAS S ON O.SCHEMA_ID = S.SCHEMA_ID LEFT JOIN SYS.COLUMNS AS C ON EP.MAJOR_ID = C.OBJECT_ID AND EP.MINOR_ID = C.COLUMN_ID WHERE EP.NAME = 'MS_Description' AND O.NAME= ?  AND EP.MINOR_ID > 0";
 			PreparedStatement ps = conn.prepareStatement(sqlremarks);
 			ps.setString(1,tableDesc.getName());
 			ResultSet rsremarks =ps.executeQuery();
 			while (rsremarks.next()) {
-				String colname = rsremarks.getString("column_name");
-				String colremarks = rsremarks.getString("remarks");
-				tableDesc.getColDesc(colname).setRemark(colremarks);
+				String colName = rsremarks.getString("column_name");
+				String colRemarks = rsremarks.getString("remarks");
+				tableDesc.getColDesc(colName).setRemark(colRemarks);
 
 			}
 			rsremarks.close();
 			ps.close();
 		}catch (SQLException sqlException){
-			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,sqlException);
+			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,"获取列的remark出错",sqlException);
 		}
 
 	}

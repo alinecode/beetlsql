@@ -60,3 +60,6 @@
 
 # 3.30.0
 * 支持查询引擎trino
+
+# 3.30.1
+* 支持ms sqlserver从系统表获取列的注解 MSSqlServerMetadataManager
