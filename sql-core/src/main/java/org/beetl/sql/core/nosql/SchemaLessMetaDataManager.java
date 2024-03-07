@@ -12,6 +12,7 @@ import org.beetl.sql.core.meta.SchemaMetadataManager;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.sql.Connection;
 
 /**
  *
@@ -40,7 +41,7 @@ public class SchemaLessMetaDataManager extends SchemaMetadataManager {
     }
 
     @Override
-    protected  void moreInfo(TableDesc tableDesc){
+    protected  void moreInfo(Connection conn, TableDesc tableDesc){
         if(!this.extClassMap.containsKey(tableDesc.getName())){
             return ;
         }

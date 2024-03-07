@@ -2,12 +2,16 @@ package org.beetl.sql.core.db;
 
 import org.beetl.sql.clazz.kit.KeyWordHandler;
 import org.beetl.sql.clazz.kit.StringKit;
+import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.meta.MetadataManager;
+import org.beetl.sql.core.meta.SchemaMetadataManager;
 import org.beetl.sql.core.range.RangeSql;
 
 import java.util.Map;
 
 public class SqlServerStyle extends AbstractDBStyle {
     private SqlServerRange sqlServerRange = null;
+	private boolean fetchRemark = false;
     public SqlServerStyle() {
         this.keyWordHandler = new KeyWordHandler() {
             @Override
@@ -21,6 +25,23 @@ public class SqlServerStyle extends AbstractDBStyle {
         };
         sqlServerRange = new SqlServerRange(this);
     }
+
+	public SqlServerStyle(boolean fetchRemark) {
+		this();
+		this.fetchRemark = fetchRemark;
+	}
+
+	@Override
+	public MetadataManager initMetadataManager(ConnectionSource cs) {
+		metadataManager = new MSSqlServerMetadataManager(cs, this,fetchRemark);
+		return metadataManager;
+	}
+
+	@Override
+	public MetadataManager initMetadataManager(ConnectionSource cs, String defaultSchema, String defalutCatalog) {
+		metadataManager = new MSSqlServerMetadataManager(cs, defaultSchema, defalutCatalog, this,fetchRemark);
+		return metadataManager;
+	}
 
 
 

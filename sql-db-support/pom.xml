@@ -15,7 +15,7 @@
     <version>3.30.0-RELEASE</version>
     <packaging>pom</packaging>
     <modules>
-        <module>mysql</module>
+<!--        <module>mysql</module>-->
 <!--		<module>postgres</module>-->
         <!--其他3.0新增的数据库支持 -->
 <!--        <module>polarDB</module>-->
@@ -37,7 +37,8 @@
 <!--        <module>oracle</module>-->
 <!--        <module>mariadb</module>-->
 <!--        <module>doris</module>-->
-        <module>trino</module>
+<!--        <module>trino</module>-->
+        <module>sqlserver</module>
 
     </modules>
     <dependencies>

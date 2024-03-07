@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -188,18 +187,6 @@ public class SchemaMetadataManager implements MetadataManager {
 				schema = this.getDbSchema(schema);
 				conn =  ds.getMetaData();
 
-				// remarks fix for sqlserver ---start
-				HashMap<String, String> remarksmap = new HashMap();
-				String sqlremarks = "SELECT C.NAME AS column_name,EP.VALUE AS remarks FROM SYS.EXTENDED_PROPERTIES EP LEFT JOIN SYS.ALL_OBJECTS O ON EP.MAJOR_ID = O.OBJECT_ID LEFT JOIN SYS.SCHEMAS S ON O.SCHEMA_ID = S.SCHEMA_ID LEFT JOIN SYS.COLUMNS AS C ON EP.MAJOR_ID = C.OBJECT_ID AND EP.MINOR_ID = C.COLUMN_ID WHERE EP.NAME = 'MS_Description' AND O.NAME='"+tableName+"'  AND EP.MINOR_ID > 0";
-				ResultSet rsremarks = conn.createStatement().executeQuery(sqlremarks);
-				while (rsremarks.next()) {
-					String colname = rsremarks.getString("column_name");
-					String colremarks = rsremarks.getString("remarks");
-					remarksmap.put(colname, colremarks);
-				}
-				rsremarks.close();
-				// remarks fix for sqlserver ---end
-
 				DatabaseMetaData dbmd =  conn.getMetaData();
 				rs = dbmd.getPrimaryKeys(catalog,schema, tableName);
 
@@ -227,7 +214,6 @@ public class SchemaMetadataManager implements MetadataManager {
 					}
 
 					String remark = rs.getString("REMARKS");
-					remark = remarksmap.get(colName);//for sqlserver remarks
 					ColDesc col = new ColDesc(colName,sqlType,size,digit,remark,isNullable);
 					try{
 						if(checkAuto){
@@ -245,7 +231,7 @@ public class SchemaMetadataManager implements MetadataManager {
 					temp.addCols(col);
 				}
 				rs.close();
-				moreInfo(temp);
+				moreInfo(conn,temp);
 				tableInfoMap.put(temp.getName(),temp);
 				return temp;
 			} catch (SQLException e) {
@@ -261,19 +247,6 @@ public class SchemaMetadataManager implements MetadataManager {
 		Connection conn=null;
 		try {
 			conn =  ds.getMetaData();
-
-			// sqlserver table remarks fix--start
-			HashMap<String, String> remarksmap = new HashMap();
-			String sqlremarks = "select tbl.table_name, prop.value as remarks from information_schema.tables tbl left join sys.extended_properties prop ON prop.major_id = object_id(tbl.table_schema + '.' + tbl.table_name) AND prop.minor_id = 0 AND prop.name = 'MS_Description' WHERE tbl.table_type = 'base table'";
-			ResultSet rsremarks = conn.createStatement().executeQuery(sqlremarks);
-			while (rsremarks.next()) {
-				String tblname = rsremarks.getString("table_name");
-				String tblremarks = rsremarks.getString("remarks");
-				remarksmap.put(tblname, tblremarks);
-			}
-			rsremarks.close();
-			// sqlserver table remarks fix--end
-
 			DatabaseMetaData dbmd =  conn.getMetaData();
 
 			String catalog = this.defaultCatalog;
@@ -286,9 +259,6 @@ public class SchemaMetadataManager implements MetadataManager {
 				String  name = rs.getString("TABLE_NAME");
 				//很多数据库的remarks默认并不能直接获取到，需要参考数据库厂商说明，通常需要配置JDBC链接一些特殊的参数
 				String remarks = rs.getString("REMARKS");
-
-				remarks = remarksmap.get(name);//for sqlserver
-
 				TableDesc desc = new TableDesc(name,remarks);
 				desc.setSchema(this.defaultSchema);
 				desc.setCatalog(catalog);
@@ -449,7 +419,7 @@ public class SchemaMetadataManager implements MetadataManager {
 	 * @param tableDesc
 	 * @see org.beetl.sql.core.nosql.SchemaLessMetaDataManager
 	 */
-	protected  void moreInfo(TableDesc tableDesc){
+	protected  void moreInfo(Connection conn,TableDesc tableDesc){
 		return ;
 	}
 

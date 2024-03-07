@@ -32,7 +32,7 @@ import java.util.*;
 
 public class QuickTest {
 
-	static DataSource dataSource = mysqlDatasource();
+	static DataSource dataSource = datasource();
 	private static   DataSource datasource() {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
@@ -58,32 +58,14 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
+		SqlId sqlId = SqlId.of("user.select");
+		OrderLog orderLog = new OrderLog();
+		orderLog.setOrderId(14);
+		Map map = new HashMap();
+		map.put("_root",orderLog);
+		map.put("userId",null);
+		sqlManager.select(sqlId,OrderLog.class,map);
 
-
-//		OrderLog orderLog = new OrderLog();
-//		orderLog.setOrderId(1);
-//		orderLog.setName("a");
-//		sqlManager.upsertByTemplate(orderLog);
-//
-//		orderLog = sqlManager.unique(OrderLog.class,1);
-//		System.out.println(orderLog);
-
-		CallReady callReady = new CallReady("call test.logcount(?,?,?)");
-		callReady.add(1,new InArg(1));
-		callReady.add(2,new OutArg(Integer.class));
-		callReady.add(3,new OutArg(Integer.class));
-		sqlManager.executeCall(callReady);
-
-		Object ret = callReady.getOutValue(2);
-		Object ret2 = callReady.getOutValue(3);
-		System.out.println(ret);
-		System.out.println(ret2);
-
-
-		OrderLogMapper logMapper = sqlManager.getMapper(OrderLogMapper.class);
-		OutHolder outHolder = new OutHolder();
-		logMapper.logcount(1,outHolder);
-		System.out.println(outHolder.getId());
 
 
 

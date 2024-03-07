@@ -16,6 +16,11 @@ public class SqlServer2012Style extends SqlServerStyle {
 		sqlServer2012Range = new SqlServer2012Range(this);
 	}
 
+	public SqlServer2012Style(boolean fetchRemark) {
+		super(fetchRemark);
+		sqlServer2012Range = new SqlServer2012Range(this);
+	}
+
 	@Override
 	public RangeSql getRangeSql() {
 		return sqlServer2012Range;
