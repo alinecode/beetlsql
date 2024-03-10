@@ -18,7 +18,7 @@ public class MsSqlTest {
         SQLManagerBuilder builder = new SQLManagerBuilder(source);
         builder.setNc(new UnderlinedNameConversion());
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
-        builder.setDbStyle(new SqlServerStyle(false));
+        builder.setDbStyle(new SqlServerStyle());
         SQLManager sqlManager = builder.build();
 		sqlManager.single(MsSqlUser.class,1);
 

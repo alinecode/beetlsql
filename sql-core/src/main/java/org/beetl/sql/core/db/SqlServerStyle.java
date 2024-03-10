@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class SqlServerStyle extends AbstractDBStyle {
     private SqlServerRange sqlServerRange = null;
-	private boolean fetchRemark = false;
+	private boolean fetchRemark = true;
     public SqlServerStyle() {
         this.keyWordHandler = new KeyWordHandler() {
             @Override

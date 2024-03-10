@@ -1,9 +1,12 @@
 package org.beetl.sql.core.db;
 
+import org.beetl.core.util.Log;
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.meta.SchemaMetadataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +14,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MSSqlServerMetadataManager extends SchemaMetadataManager {
-	boolean fetchRemark = false;
+	private static Logger LOGGER = LoggerFactory.getLogger(MSSqlServerMetadataManager.class);
+
+	boolean fetchRemark = true;
 	public MSSqlServerMetadataManager(ConnectionSource ds, DBStyle style) {
 		super(ds, style);
 	}
@@ -48,7 +53,9 @@ public class MSSqlServerMetadataManager extends SchemaMetadataManager {
 			rsremarks.close();
 			ps.close();
 		}catch (SQLException sqlException){
-			throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION,"获取列的remark出错",sqlException);
+			LOGGER.warn("获取列注释出错 "+sqlException.getMessage(),sqlException);
+			//如果有权限问题，自动忽略
+			return ;
 		}
 
 	}
