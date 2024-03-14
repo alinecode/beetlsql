@@ -12,17 +12,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MSSqlServerMetadataManager extends SchemaMetadataManager {
 	private static Logger LOGGER = LoggerFactory.getLogger(MSSqlServerMetadataManager.class);
 
 	boolean fetchRemark = true;
+	Map<String, String> remarksmap = new HashMap();
 	public MSSqlServerMetadataManager(ConnectionSource ds, DBStyle style) {
-		super(ds, style);
+		this(ds,style,true);
 	}
 	public MSSqlServerMetadataManager(ConnectionSource ds, DBStyle style,boolean fetchRemark) {
 		super(ds, style);
 		this.fetchRemark = fetchRemark;
+		remarksmap = tableInfo(ds);
 	}
 
 	public MSSqlServerMetadataManager(ConnectionSource ds, String defaultSchema, String defaultCatalog, DBStyle style,boolean fetchRemark) {
@@ -52,11 +56,45 @@ public class MSSqlServerMetadataManager extends SchemaMetadataManager {
 			}
 			rsremarks.close();
 			ps.close();
+
+			String tableComment =  remarksmap.get(tableDesc.getName());
+			if(tableComment!=null){
+				tableDesc.setRemark(tableComment);
+			}
+
 		}catch (SQLException sqlException){
 			LOGGER.warn("获取列注释出错 "+sqlException.getMessage(),sqlException);
 			//如果有权限问题，自动忽略
 			return ;
 		}
+
+	}
+
+	protected Map tableInfo(ConnectionSource ds){
+		HashMap<String, String> remarksmap = new HashMap();
+		if(!fetchRemark){
+			return remarksmap;
+		}
+
+		String sqlremarks = "select tbl.table_name, prop.value as remarks from information_schema.tables tbl left join sys.extended_properties prop ON prop.major_id = object_id(tbl.table_schema + '.' + tbl.table_name) AND prop.minor_id = 0 AND prop.name = 'MS_Description' WHERE tbl.table_type = 'base table'";
+		Connection conn = ds.getMasterConn();
+		try{
+			ResultSet rsremarks = conn.createStatement().executeQuery(sqlremarks);
+			while (rsremarks.next()) {
+				String tblname = rsremarks.getString("table_name");
+				String tblremarks = rsremarks.getString("remarks");
+				remarksmap.put(tblname, tblremarks);
+			}
+			rsremarks.close();
+		}catch (SQLException exception){
+			//如果不支持，或者权限问题，只打印异常
+			LOGGER.warn("获取表注释出错 "+exception.getMessage(),exception);
+		}
+		finally {
+			close(conn);
+			return remarksmap;
+		}
+
 
 	}
 }

@@ -54,17 +54,17 @@ public class TableDesc {
 		this.name = name;
 		this.remark = remark;
 	}
-	
+
 	public boolean containCol(String col){
 		return cols .contains(col);
 	}
 
-	
+
 	public void addCols(ColDesc col){
 		colsDetail.put(col.getColName(), col);
 		cols.add(col.getColName());
 	}
-	
+
 	public ColDesc getColDesc(String name){
 		return (ColDesc)colsDetail.get(name);
 	}
@@ -77,14 +77,14 @@ public class TableDesc {
 		this.name = name;
 	}
 
-	
+
 	public Set<String> getIdNames() {
 		return idNames;
 	}
 
 	public void addIdName(String idName) {
 		this.idNames.add(idName);
-		
+
 	}
 
 	public Set<String> getCols() {
@@ -113,10 +113,10 @@ public class TableDesc {
 				classes.put(c, classDesc);
 			}
 		}
-		
+
 		return classDesc;
 	}
-	
+
 	/** 根据table得到一个对应的class描述，仅仅用于代码生成
 	 * @param nc
 	 * @return
@@ -152,5 +152,9 @@ public class TableDesc {
 
 	public void setRealTableName(String realTableName) {
 		this.realTableName = realTableName;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }
