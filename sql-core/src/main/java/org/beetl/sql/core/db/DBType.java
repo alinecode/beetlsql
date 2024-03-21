@@ -29,6 +29,7 @@ public class DBType {
      * 成熟开源MPP数据库
      */
     public static final int DB_GREENPLUM = 21;
+    public static final int DB_OPENPLANT = 22;
 
     /*NOSQL 数据库，从100开始*/
     public static final int DB_CASSANDRA = 101;
