@@ -44,6 +44,8 @@ public class DBType {
 
 	public static final int DB_TRINO= 111;
 
+	public static final int DB_OCEANBASE= 112;
+
     /*内存数据 从200开始*/
     public static final int DB_IGNITE = 201;
     public static final int DB_COUCHBASE = 202;

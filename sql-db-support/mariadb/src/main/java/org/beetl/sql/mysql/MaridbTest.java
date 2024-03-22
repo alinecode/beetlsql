@@ -1,4 +1,4 @@
-package org.beetl.sql.mysql;
+package org.beetl.sql.oceanbase;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;

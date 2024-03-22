@@ -1,4 +1,4 @@
-package org.beetl.sql.mysql;
+package org.beetl.sql.oceanbase;
 
 import lombok.Data;
 import org.beetl.sql.mapper.annotation.CallParam;

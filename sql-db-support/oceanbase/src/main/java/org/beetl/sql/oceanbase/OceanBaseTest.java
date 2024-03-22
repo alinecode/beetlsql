@@ -9,7 +9,11 @@ import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
 
-public class MysqlTest {
+/**
+ *  oceanbase 启动
+ * https://cloud.tencent.com/developer/article/2192061
+ */
+public class OceanBaseTest {
 
     public static void main(String[] args){
         DataSource dataSource = datasource();
@@ -19,29 +23,26 @@ public class MysqlTest {
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
         builder.setDbStyle(new MySqlStyle());
         SQLManager sqlManager = builder.build();
+		System.out.println(sqlManager.getMetaDataManager().allTable());
+        OceanBaseUser user = new OceanBaseUser();
 
-//        MysqlUser user = new MysqlUser();
-//
-//        user.setCreateTs(System.currentTimeMillis());
-//        user.setName("testName");
-//        user.setDay(new java.sql.Date(System.currentTimeMillis()));
-//        sqlManager.insert(user);
-//        user = sqlManager.unique(MysqlUser.class,user.getId());
-//
-//        PageRequest pageRequest = DefaultPageRequest.of(1,10);
-//        sqlManager.execute(new SQLReady("select * from user "),MysqlUser.class,pageRequest);
+        user.setName("testName");
+        sqlManager.insert(user);
+        user = sqlManager.unique(OceanBaseUser.class,user.getId());
+
+        PageRequest pageRequest = DefaultPageRequest.of(1,10);
+        sqlManager.execute(new SQLReady("select * from my_user "),OceanBaseUser.class,pageRequest);
 
          MyUserMapper userMapper = sqlManager.getMapper(MyUserMapper.class);
-        userMapper.select();
+         userMapper.select();
 
     }
 
     public static DataSource datasource() {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:mysql://127.0.0.1:13306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8");
-        ds.setUsername("root");
-        ds.setPassword("12345678");
-        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        ds.setJdbcUrl("jdbc:mysql://127.0.0.1:2881/obs?&useSSL=false");
+        ds.setUsername("root@xybdiysql");
+//        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return ds;
     }
 }

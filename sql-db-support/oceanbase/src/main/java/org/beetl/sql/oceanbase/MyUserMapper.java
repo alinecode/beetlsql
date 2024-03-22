@@ -6,8 +6,8 @@ import org.beetl.sql.mapper.annotation.SqlResource;
 
 import java.util.List;
 @SqlResource("system.user")
-public interface MyUserMapper  extends BaseMapper<MysqlUser> {
-     @Sql("select * from user")
+public interface MyUserMapper  extends BaseMapper<OceanBaseUser> {
+     @Sql("select * from my_user")
      List count();
-     MysqlUser select();
+     OceanBaseUser select();
 }

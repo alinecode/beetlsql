@@ -1,4 +1,4 @@
-package org.beetl.sql.mysql;
+package org.beetl.sql.oceanbase;
 
 import org.beetl.sql.mapper.BaseMapper;
 import org.beetl.sql.mapper.annotation.Call;

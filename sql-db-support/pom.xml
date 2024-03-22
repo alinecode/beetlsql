@@ -38,7 +38,8 @@
 <!--        <module>mariadb</module>-->
 <!--        <module>doris</module>-->
 <!--        <module>trino</module>-->
-        <module>sqlserver</module>
+        <module>oceanbase</module>
+<!--        <module>sqlserver</module>-->
 
     </modules>
     <dependencies>
