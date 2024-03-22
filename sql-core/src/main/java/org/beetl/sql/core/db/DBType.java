@@ -15,7 +15,7 @@ public class DBType {
     public static final int DB_SQLLITE = 5;
     public static final int DB_DB2 = 6;
     public static final int DB_H2 = 7;
-    //国产数据库
+    //国产数据库,真的越来越多
     public static final int DB_DAMENG = 8;
     public static final int DB_SHENGTONG = 9;
     public static final int DB_HUAWEI_OPENGAUSS = 10;
@@ -29,7 +29,8 @@ public class DBType {
      * 成熟开源MPP数据库
      */
     public static final int DB_GREENPLUM = 21;
-    public static final int DB_OPENPLANT = 22;
+
+	public static final int DB_OCEANBASE= 22;
 
     /*NOSQL 数据库，从100开始*/
     public static final int DB_CASSANDRA = 101;
@@ -45,7 +46,9 @@ public class DBType {
 
 	public static final int DB_TRINO= 111;
 
-	public static final int DB_OCEANBASE= 112;
+	public static final int DB_OPENPLANT = 112;
+
+
 
     /*内存数据 从200开始*/
     public static final int DB_IGNITE = 201;
