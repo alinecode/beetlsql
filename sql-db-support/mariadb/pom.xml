@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.30.2-RELEASE</version>
+        <version>3.30.3-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>mariadb</artifactId>
-    <version>3.30.2-RELEASE</version>
+    <version>3.30.3-RELEASE</version>
 
     <dependencies>
 		<dependency>
