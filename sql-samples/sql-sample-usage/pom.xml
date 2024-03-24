@@ -6,17 +6,17 @@
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-sample-usage</artifactId>
-    <version>3.30.3-RELEASE</version>
+    <version>3.30.4-RELEASE</version>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-sample</artifactId>
-        <version>3.30.3-RELEASE</version>
+        <version>3.30.4-RELEASE</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-sample-common</artifactId>
-            <version>3.30.3-RELEASE</version>
+            <version>3.30.4-RELEASE</version>
         </dependency>
 
 		<dependency>

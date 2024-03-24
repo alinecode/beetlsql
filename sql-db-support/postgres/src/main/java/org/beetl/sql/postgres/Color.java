@@ -1,4 +1,4 @@
-package org.beetl.sql.postgres;
+package org.beetl.sql.ymtraix;
 
 import lombok.Data;
 

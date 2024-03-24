@@ -63,3 +63,6 @@
 
 # 3.30.1..3.30.3
 * 支持ms sqlserver从系统表获取列的注解 MSSqlServerMetadataManager
+* 
+# 3.30.4
+* 支持国产数据库oceanbase,ymatrix, openplant

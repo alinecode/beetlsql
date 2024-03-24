@@ -48,7 +48,7 @@ public class DBType {
 
 	public static final int DB_OPENPLANT = 112;
 
-
+	public static final int DB_YMARTIX = 113;
 
     /*内存数据 从200开始*/
     public static final int DB_IGNITE = 201;

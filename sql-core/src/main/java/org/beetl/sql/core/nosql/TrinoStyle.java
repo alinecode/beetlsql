@@ -44,7 +44,7 @@ public class TrinoStyle extends AbstractDBStyle {
 
     @Override
     public int getDBType() {
-        return DBType.DB_CLICKHOUSE;
+        return DBType.DB_TRINO;
     }
 
     @Override
