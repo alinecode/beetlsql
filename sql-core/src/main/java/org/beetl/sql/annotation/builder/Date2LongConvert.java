@@ -31,13 +31,12 @@ public class Date2LongConvert implements  AttributeConvert{
 			return null;
 		}
 		Long time = 0L;
-		if(value instanceof Date){
-			time = ((Date)value).getTime();
-		}else if(value instanceof Timestamp){
-			time = ((Timestamp)value).getTime();
-		}else{
-			throw new UnsupportedOperationException("@Date2Long 不支持的类型 "+value.getClass()+",期望是 Date或者Timestamp");
-
+		if (value instanceof Timestamp) {
+			time = ((Timestamp) value).getTime();
+		} else if (value instanceof Date) {
+			time = ((Date) value).getTime();
+		} else {
+			throw new UnsupportedOperationException("@Date2Long 不支持的类型 " + value.getClass() + ",期望是 Date或者Timestamp");
 		}
 
 		return time;
