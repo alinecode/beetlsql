@@ -117,6 +117,14 @@ public class MapperTest extends BaseTest {
         Assert.assertEquals(2,count);
     }
 
+
+	@Test
+	public void getField(){
+		UserDao dao = sqlManager.getMapper(UserDao.class);
+		Integer dept = (Integer)dao.getProperty(1,User::getDepartmentId);
+		System.out.println(dept);
+	}
+
     @Test
     public void pageTest(){
         UserDao dao = sqlManager.getMapper(UserDao.class);

@@ -19,7 +19,7 @@ import java.util.Set;
  *
  * @author liumin
  */
-public class ClearFiledsByIdsAMI extends MapperInvoke {
+public class ClearFieldsByIdsAMI extends MapperInvoke {
 
     @Override
     @SuppressWarnings("unchecked")

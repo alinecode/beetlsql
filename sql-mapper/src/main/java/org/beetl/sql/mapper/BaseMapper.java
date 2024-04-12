@@ -257,8 +257,12 @@ public interface BaseMapper<T> {
      * @param pks        主键
      * @param properties 属性
      */
-    @AutoMapper(ClearFiledsByIdsAMI.class)
+    @AutoMapper(ClearFieldsByIdsAMI.class)
     @SuppressWarnings("unchecked")
     void clearProperties(List<?> pks, LambdaQuery.Property<T, ?>... properties);
+
+	@AutoMapper(GetFieldsByIdAMI.class)
+	@SuppressWarnings("unchecked")
+	Object getProperty(Object key, LambdaQuery.Property<T, ?> property);
 
 }

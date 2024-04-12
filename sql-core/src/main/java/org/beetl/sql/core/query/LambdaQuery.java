@@ -305,6 +305,20 @@ public class LambdaQuery<T> extends Query<T> {
 
     }
 
+	public Class getColumnType(Property<T, ?> property) {
+		try {
+			Method declaredMethod = property.getClass().getDeclaredMethod("writeReplace");
+			declaredMethod.setAccessible(Boolean.TRUE);
+			SerializedLambda serializedLambda = (SerializedLambda) declaredMethod.invoke(property);
+			String method = serializedLambda.getImplMethodName();
+			Class type = clazz.getMethod(method,new Class[0]).getReturnType();
+			return type;
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
 	public String[] getColumnNames(Property<T, ?>... properties) {
         String[] cols = new String[properties.length];
         int i = 0;
