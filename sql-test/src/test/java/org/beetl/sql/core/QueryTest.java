@@ -1,6 +1,7 @@
 package org.beetl.sql.core;
 
 import org.beetl.sql.BaseTest;
+import org.beetl.sql.annotation.BuilderTest;
 import org.beetl.sql.core.mapping.StreamData;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
@@ -109,6 +110,9 @@ public class QueryTest extends BaseTest {
 
 		count  = lambdaQuery.andEq("name", Optional.ofNullable("lijz")).count();
 		Assert.assertEquals(1,count);
+
+		count = lambdaQuery.andNotBetween("name",Query.filterEmpty("aaa"),Query.filterEmpty(name)).count();
+
     }
 
 
@@ -159,6 +163,16 @@ public class QueryTest extends BaseTest {
 
 		Assert.assertEquals(2,allData.size());
 		DSTransactionManager.commit();
+	}
+
+	@Test
+	public void condition() throws SQLException {
+		//模拟事务环境
+
+		Query<User> query = sqlManager.query(User.class);
+		QueryCondition condition =  query.condition().andEq("id",2);
+		List<User> users = query.andEq("id",1).or(condition).select();
+		Assert.assertEquals(2,users.size());
 	}
 
 

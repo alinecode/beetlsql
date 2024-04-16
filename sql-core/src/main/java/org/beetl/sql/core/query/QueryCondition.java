@@ -1,7 +1,5 @@
 package org.beetl.sql.core.query;
 
-import org.beetl.sql.clazz.ClassDesc;
-import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.TableDesc;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.KeyWordHandler;
@@ -36,6 +34,8 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
     //提醒表名是虚拟表，需要表达式计算真实表名
     boolean asVirtual =false;
 
+	boolean hasWhere = false;
+
     protected QueryCondition() {
     }
 
@@ -46,6 +46,7 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
         pageSize = -1;
         orderBy = null;
         groupBy = null;
+		this.hasWhere = false;
     }
 
     /**
@@ -153,19 +154,13 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
 
     protected void appendSqlBase(String column, Object value, String opt, String link) {
         //判断是否有效的变量
-        if (value instanceof StrongValue) {
-            if (!((StrongValue) value).isEffective()) {
-                return;
-            }
-            value = ((StrongValue) value).getValue();
-        } else if (value instanceof Optional) {
-            if (!((Optional) value).isPresent()) {
-                return;
-            }
-            value = ((Optional) value).get();
-        }
-        if (getSql().indexOf(WHERE) < 0) {
+		if(!isValidateValue(value)){
+			return ;
+		}
+		value= getRealValue(value);
+        if (!hasWhere()) {
             link = WHERE;
+			setWhere();
         }
         this.appendSql(link).appendSql(getCol(column)).appendSql(opt);
         if (value != null) {
@@ -174,16 +169,26 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
         }
     }
 
+	protected boolean hasWhere(){
+		return hasWhere;
+	}
+	protected void setWhere(){
+		this.hasWhere = true;
+	}
+	protected void resetWhere(){
+		this.hasWhere = false;
+	}
+
 	protected boolean isValidateValue(Object value){
 		if (value instanceof StrongValue) {
-			if (!((StrongValue) value).isEffective()) {
+			if (((StrongValue) value).isEffective()) {
 				return true;
 			}else{
 				return false;
 			}
 
 		} else if (value instanceof Optional) {
-			if (!((Optional) value).isPresent()) {
+			if (((Optional) value).isPresent()) {
 				return true;
 			}else{
 				return false;
@@ -214,8 +219,9 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
             throw new IllegalArgumentException("期望参数是Collection子类");
         }
 
-        if (getSql().indexOf(WHERE) < 0) {
+        if (!hasWhere()) {
             link = WHERE;
+			setWhere();
         }
         this.appendSql(link).appendSql(getCol(column)).appendSql(opt).appendSql(" ( ");
 
@@ -228,18 +234,54 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
     }
 
     protected void appendBetweenSql(String column, String opt, String link, Object... value) {
-		if(!isValidateValue(value[0])||!isValidateValue(value[1])){
+		boolean firstMatch = isValidateValue(value[0]);
+		boolean secondMatch = isValidateValue(value[1]);
+		boolean isBetween = opt.equals(BETWEEN);
+		if (!hasWhere()) {
+			link = WHERE;
+			setWhere();
+		}
+
+		if(firstMatch&&secondMatch){
+			this.appendSql(link).appendSql(getCol(column)).appendSql(opt).appendSql(" ? AND ? ");
+			this.addParam(getRealValue(value[0]));
+			this.addParam(getRealValue(value[1]));
+		}else if(firstMatch){
+			if(isBetween){
+				this.appendSql(link).appendSql(getCol(column)).appendSql(">=?");
+				this.addParam(getRealValue(value[0]));
+			}else{
+				this.appendSql(link).appendSql(getCol(column)).appendSql("<?");
+				this.addParam(getRealValue(value[0]));
+			}
+
+		}else if(secondMatch){
+			if(isBetween){
+				this.appendSql(link).appendSql(getCol(column)).appendSql("<=?");
+				this.addParam(getRealValue(value[1]));
+			}else{
+				this.appendSql(link).appendSql(getCol(column)).appendSql(">?");
+				this.addParam(getRealValue(value[1]));
+			}
+
+		}else{
 			return ;
 		}
 
-        if (getSql().indexOf(WHERE) < 0) {
-            link = WHERE;
-        }
-
-        this.appendSql(link).appendSql(getCol(column)).appendSql(opt).appendSql(" ? AND ? ");
-        this.addParam(value[0]);
-        this.addParam(value[1]);
     }
+
+	protected Object getRealValue(Object value){
+		if (value instanceof StrongValue) {
+
+			return  ((StrongValue) value).getValue();
+		} else if (value instanceof Optional) {
+
+			return  ((Optional) value).get();
+		}else{
+			return value;
+		}
+	}
+
 
     @Override
     public Query<T> andEq(String column, Object value) {
@@ -511,15 +553,21 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
         if (condition.getSql() == null || "".equals(condition.getSql().toString())) {
             return (Query) this;
         }
-        //去除叠加条件中的WHERE
-        int i = condition.getSql().indexOf(WHERE);
-        if (i > -1) {
-            condition.getSql().delete(i, i + 5);
-        }
 
-        if (getSql().indexOf(WHERE) < 0) {
-            link = WHERE;
-        }
+		if(condition.hasWhere()){
+			//去除叠加条件中的WHERE
+			int i = condition.getSql().indexOf(WHERE);
+			if (i > -1) {
+				condition.getSql().delete(i, i + 5);
+			}
+			condition.resetWhere();
+		}
+
+		if(!hasWhere()){
+			link = WHERE;
+			setWhere();
+		}
+
         appendSql(link).appendSql(" (").appendSql(condition.getSql().toString()).appendSql(")");
         addParam(condition.getParams());
         return (Query) this;
