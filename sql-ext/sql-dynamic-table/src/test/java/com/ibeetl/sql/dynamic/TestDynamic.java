@@ -4,6 +4,7 @@ import com.beetl.sql.dynamic.BaseEntity;
 import com.beetl.sql.dynamic.BeanTableAsmCode;
 import com.beetl.sql.dynamic.DynamicEntityLoader;
 import com.zaxxer.hikari.HikariDataSource;
+import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.ext.DBInitHelper;
@@ -15,6 +16,7 @@ import javax.sql.DataSource;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestDynamic {
@@ -43,6 +45,9 @@ public class TestDynamic {
 	@Test
 	public void testDynamic(){
 		SQLManager sqlManager = getSQLManager();
+		//测试对其他类型生成要求，默认情况是生成Timestamp
+		JavaType.mapping.put(java.sql.Types.TIMESTAMP,"java.time.LocalDateTime");
+
 		DBInitHelper.executeSqlScript(sqlManager,"db/dynamic-schema.sql");
 		DynamicEntityLoader<BaseEntity> dynamicEntityLoader = new DynamicEntityLoader(sqlManager);
 		Class<? extends BaseEntity> c = dynamicEntityLoader.getDynamicEntity("order_log");
@@ -51,6 +56,7 @@ public class TestDynamic {
 		System.out.println(baseEntity.getValue("age"));
 
 		baseEntity.setValue("age",1);
+		baseEntity.setValue("updateTime", LocalDateTime.now());
 		sqlManager.updateById(baseEntity);
 
 		Class<? extends BaseEntity> c2 = dynamicEntityLoader.getDynamicEntity("order_log",BaseEntity.class);
