@@ -57,7 +57,7 @@ public   class FastBeanProcessor extends BeanProcessor {
 		} while (rs.next());
 
 		if(cachedIndex&&sqlSource.columnToProperty==null){
-			ctx.sqlSource.columnToProperty = columnToProperty;
+			sqlSource.columnToProperty = columnToProperty;
 		}
 		return results;
 
