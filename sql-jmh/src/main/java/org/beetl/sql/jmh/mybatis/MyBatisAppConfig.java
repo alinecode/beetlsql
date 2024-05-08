@@ -22,7 +22,7 @@ import java.util.Properties;
 public class MyBatisAppConfig {
     @Bean
     public DataSource dataSource() {
-        return DataSourceHelper.ins();
+        return DataSourceHelper.newDatasource();
     }
 
     @Bean

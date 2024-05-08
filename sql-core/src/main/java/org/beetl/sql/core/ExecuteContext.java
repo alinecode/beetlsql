@@ -80,6 +80,7 @@ public class ExecuteContext {
 
     public boolean isUpdate = false;
 
+
     public static ExecuteContext instance(SQLManager sqlManager){
         ExecuteContext executeContext =  new ExecuteContext();
         executeContext.sqlManager = sqlManager;

@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-@Threads(10)
+@Threads(1)
 @Fork(1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
@@ -44,7 +44,7 @@ public class JMHMain {
         jdbcService.init();
 
         beetlSQLService = new BeetlSQLService();
-        beetlSQLService.init();
+        beetlSQLService.init(true);
 
         SpringBoot springBoot = new SpringBoot();
         springBoot.init();
@@ -317,15 +317,15 @@ public class JMHMain {
 		easyQueryService.executeJdbcSql();
 	}
 
-//	@Benchmark
-//	public void easyQueryExecuteTemplate() {
-//		easyQueryService.executeTemplateSql();
-//	}
-//
-//	@Benchmark
-//	public void easyQueryFile() {
-//		easyQueryService.sqlFile();
-//	}
+	@Benchmark
+	public void easyQueryExecuteTemplate() {
+		easyQueryService.executeTemplateSql();
+	}
+
+	@Benchmark
+	public void easyQueryFile() {
+		easyQueryService.sqlFile();
+	}
 
 	@Benchmark
 	public void easyQueryPageQuery() {

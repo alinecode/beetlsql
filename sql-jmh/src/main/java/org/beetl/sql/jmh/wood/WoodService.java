@@ -21,7 +21,7 @@ public class WoodService implements BaseService {
     DbContext db;
 
     public void init() {
-        DataSource dataSource = DataSourceHelper.ins();
+        DataSource dataSource = DataSourceHelper.newDatasource();
 
         this.db = new DbContext("user", dataSource);
         this.userMapper = db.mapper(WoodSQLUserMapper.class);

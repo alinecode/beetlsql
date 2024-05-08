@@ -39,6 +39,7 @@ public class PerformanceConfig implements PluginExtConfig {
 
 
 
+
 		sqlManager.setDefaultBeanProcessors(new FastBeanProcessor());
 		sqlManager.setNc(new CachedNameConversion(sqlManager.getNc()));
 
@@ -51,6 +52,7 @@ public class PerformanceConfig implements PluginExtConfig {
 				return new FastPropertyDescriptor(c,prop,i);
 			}
 		};
+
 
 	}
 

@@ -24,10 +24,14 @@ public class BeetlSQLService  implements BaseService {
     SQLManager sqlManager = null;
     AtomicInteger idGen = new AtomicInteger(1000);
 
+	public BeetlSQLService(){
 
-    public void init(){
+	}
+
+
+    public void init(boolean perf){
 		SQLManager.javabeanStrict(true);
-        DataSource dataSource = DataSourceHelper.ins();
+        DataSource dataSource = DataSourceHelper.newDatasource();
         ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
         SQLManagerBuilder builder = new SQLManagerBuilder(source);
         builder.setNc(new UnderlinedNameConversion());
@@ -37,9 +41,11 @@ public class BeetlSQLService  implements BaseService {
 
         this.beetlSQLUserMapper = sqlManager.getMapper(BeetlSQLUserMapper.class);
 
+		if(perf){
+			PerformanceConfig performanceConfig = new PerformanceConfig();
+			performanceConfig.config(sqlManager);
+		}
 
-		PerformanceConfig performanceConfig = new PerformanceConfig();
-		performanceConfig.config(sqlManager);
     }
 
     @Override

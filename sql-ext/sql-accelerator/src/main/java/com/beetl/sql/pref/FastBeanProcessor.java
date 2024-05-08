@@ -3,7 +3,9 @@ package com.beetl.sql.pref;
 import org.beetl.sql.annotation.builder.AttributeConvert;
 import org.beetl.sql.clazz.ClassAnnotation;
 import org.beetl.sql.clazz.NameConversion;
+import org.beetl.sql.clazz.kit.AutoSQLEnum;
 import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.SQLSource;
 import org.beetl.sql.core.SqlId;
 import org.beetl.sql.core.Tail;
 import org.beetl.sql.core.db.DBStyle;
@@ -36,15 +38,33 @@ public   class FastBeanProcessor extends BeanProcessor {
 		List<T> results = newList();
 		PropertyDescriptor[] props = this.propertyDescriptors(type);
 		ResultSetMetaData rsmd = rs.getMetaData();
-		int[] columnToProperty = this.mapColumnsToProperties(ctx,type, rsmd, props);
+		int[] columnToProperty = null;
+		SQLSource sqlSource = ctx.sqlSource;
+		boolean cachedIndex = cachedIndex(sqlSource.getAutoSQLEnum());
+
+		if(cachedIndex&&sqlSource.columnToProperty!=null){
+			columnToProperty = sqlSource.columnToProperty;
+
+		}else{
+			columnToProperty = this.mapColumnsToProperties(ctx,type, rsmd, props);
+
+		}
+
 		//增加一个属性写辅助类
 		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(type);
 		do {
 			results.add(this.createBean(beanPropertyAsm,ctx, rs, type, props, columnToProperty));
 		} while (rs.next());
 
+		if(cachedIndex&&sqlSource.columnToProperty==null){
+			ctx.sqlSource.columnToProperty = columnToProperty;
+		}
 		return results;
 
+	}
+
+	protected  boolean cachedIndex(AutoSQLEnum autoSQLEnum){
+		return autoSQLEnum!=null&&(autoSQLEnum==AutoSQLEnum.SELECT_BY_ID||autoSQLEnum==AutoSQLEnum.SELECT_ALL);
 	}
 
 	protected <T> T createBean(BeanPropertyAsm beanPropertyAsm,ExecuteContext ctx, ResultSet rs, Class<T> type, PropertyDescriptor[] props,

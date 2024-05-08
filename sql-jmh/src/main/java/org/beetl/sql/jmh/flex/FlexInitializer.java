@@ -26,7 +26,7 @@ public class FlexInitializer {
 	private static FlexUserMapper flexUserMapper;
 
 	public static void init() {
-		DataSource dataSource = DataSourceHelper.ins();
+		DataSource dataSource = DataSourceHelper.newDatasource();
 		MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance().setDataSource(dataSource)
 			.addMapper(FlexUserMapper.class).start();
 		flexUserMapper = bootstrap.getMapper(FlexUserMapper.class);

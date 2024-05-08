@@ -21,7 +21,7 @@ import java.util.Properties;
 public class AppConfig {
     @Bean
     public DataSource dataSource(){
-        return DataSourceHelper.ins();
+        return DataSourceHelper.newDatasource();
     }
 
     @Bean

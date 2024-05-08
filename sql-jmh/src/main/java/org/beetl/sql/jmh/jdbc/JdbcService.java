@@ -17,7 +17,7 @@ public class JdbcService implements BaseService {
 	AtomicInteger idGen = new AtomicInteger(1000);
 
 	public void init() {
-		dataSource = DataSourceHelper.ins();
+		dataSource = DataSourceHelper.newDatasource();
 	}
 
 
@@ -200,7 +200,7 @@ public class JdbcService implements BaseService {
 			PreparedStatement ps = conn.prepareStatement("select * from sys_user");
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				int id = rs.getInt(1);
+				int id = rs.getInt("id");
 				String code = rs.getString(2);
 				String code1 = rs.getString(3);
 				String code2 = rs.getString(4);

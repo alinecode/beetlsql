@@ -31,7 +31,7 @@ public class EasyQueryService implements BaseService {
 	EasyQuery easyQuery = null;
 	AtomicInteger idGen = new AtomicInteger(1000);
 	public void init(){
-		DataSource dataSource = DataSourceHelper.ins();
+		DataSource dataSource = DataSourceHelper.newDatasource();
 		easyQueryClient = EasyQueryBootstrapper.defaultBuilderConfiguration()
 			.setDefaultDataSource(dataSource)
 			.optionConfigure(op -> {

@@ -9,15 +9,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DataSourceHelper {
-    static DataSource ds = datasource();
+    static DataSource ds = newDatasource();
     public static DataSource ins(){
         return ds;
     }
 
 
-    private static   DataSource datasource() {
+    public static   DataSource newDatasource() {
+		String dbName = "dbtest"+System.currentTimeMillis();
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
+        ds.setJdbcUrl("jdbc:h2:mem:"+dbName+";DB_CLOSE_ON_EXIT=FALSE");
         ds.setUsername("sa");
         ds.setPassword("");
         ds.setDriverClassName("org.h2.Driver");
