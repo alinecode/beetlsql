@@ -1,4 +1,4 @@
-package org.beetl.sql.jmh;
+package org.beetl.sql.jmh.base;
 
 import com.zaxxer.hikari.HikariDataSource;
 

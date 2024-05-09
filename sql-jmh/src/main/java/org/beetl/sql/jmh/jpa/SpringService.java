@@ -1,6 +1,6 @@
 package org.beetl.sql.jmh.jpa;
 
-import org.beetl.sql.jmh.BaseService;
+import org.beetl.sql.jmh.base.BaseService;
 import org.beetl.sql.jmh.jpa.vo.JpaSysCustomer;
 import org.beetl.sql.jmh.jpa.vo.JpaSysUser;
 import org.springframework.beans.factory.annotation.Autowired;

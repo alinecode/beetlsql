@@ -1,7 +1,7 @@
 package org.beetl.sql.jmh.wood;
 
-import org.beetl.sql.jmh.BaseService;
-import org.beetl.sql.jmh.DataSourceHelper;
+import org.beetl.sql.jmh.base.BaseService;
+import org.beetl.sql.jmh.base.DataSourceHelper;
 import org.beetl.sql.jmh.wood.mapper.WoodSQLUserMapper;
 import org.beetl.sql.jmh.wood.model.WoodSQLSysUser;
 import org.beetl.sql.jmh.wood.model.WoodSysCustomer;

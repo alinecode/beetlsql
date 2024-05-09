@@ -1,4 +1,6 @@
-package org.beetl.sql.jmh;
+package org.beetl.sql.jmh.base;
+
+import java.util.Map;
 
 public interface BaseService {
     /**

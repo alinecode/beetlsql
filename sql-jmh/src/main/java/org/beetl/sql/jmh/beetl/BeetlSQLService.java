@@ -1,16 +1,14 @@
 package org.beetl.sql.jmh.beetl;
 
 import com.beetl.sql.pref.PerformanceConfig;
-import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.H2Style;
-import org.beetl.sql.core.db.MySqlStyle;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.LambdaQuery;
-import org.beetl.sql.jmh.BaseService;
-import org.beetl.sql.jmh.DataSourceHelper;
+import org.beetl.sql.jmh.base.BaseService;
+import org.beetl.sql.jmh.base.DataSourceHelper;
 import org.beetl.sql.jmh.beetl.vo.BeetlSQLSysUser;
 import org.beetl.sql.jmh.beetl.vo.BeetlSqlSysCustomerView;
 import org.beetl.sql.jmh.beetl.vo.BeetlSysCustomer;

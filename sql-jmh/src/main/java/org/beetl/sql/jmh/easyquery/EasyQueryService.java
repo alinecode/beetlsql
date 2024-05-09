@@ -6,14 +6,10 @@ import com.easy.query.core.api.client.EasyQueryClient;
 import com.easy.query.core.api.pagination.EasyPageResult;
 import com.easy.query.core.bootstrapper.EasyQueryBootstrapper;
 import com.easy.query.core.configuration.nameconversion.NameConversion;
-import com.easy.query.core.configuration.nameconversion.impl.DefaultNameConversion;
 import com.easy.query.core.configuration.nameconversion.impl.UnderlinedNameConversion;
 import com.easy.query.h2.config.H2DatabaseConfiguration;
-import org.beetl.sql.core.SQLReady;
-import org.beetl.sql.jmh.BaseService;
-import org.beetl.sql.jmh.DataSourceHelper;
-import org.beetl.sql.jmh.beetl.BeetlSQLUserMapper;
-import org.beetl.sql.jmh.beetl.vo.BeetlSqlSysCustomerView;
+import org.beetl.sql.jmh.base.BaseService;
+import org.beetl.sql.jmh.base.DataSourceHelper;
 
 import javax.sql.DataSource;
 import java.util.Collections;

@@ -1,7 +1,7 @@
 package org.beetl.sql.jmh.jdbc;
 
-import org.beetl.sql.jmh.BaseService;
-import org.beetl.sql.jmh.DataSourceHelper;
+import org.beetl.sql.jmh.base.BaseService;
+import org.beetl.sql.jmh.base.DataSourceHelper;
 import org.beetl.sql.jmh.beetl.vo.BeetlSQLSysUser;
 
 import javax.sql.DataSource;

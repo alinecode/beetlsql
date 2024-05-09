@@ -2,20 +2,14 @@ package org.beetl.sql.jmh.mybatis;
 
 
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
-import org.beetl.sql.jmh.DataSourceHelper;
-import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.beetl.sql.jmh.base.DataSourceHelper;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import javax.sql.DataSource;
-import java.util.Properties;
 
 @ComponentScan(basePackages = "org.beetl.sql.jmh.mybatis")
 @Configuration

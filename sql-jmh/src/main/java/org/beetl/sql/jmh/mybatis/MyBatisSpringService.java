@@ -3,7 +3,7 @@ package org.beetl.sql.jmh.mybatis;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.beetl.sql.jmh.BaseService;
+import org.beetl.sql.jmh.base.BaseService;
 import org.beetl.sql.jmh.mybatis.vo.MyBatisSysCustomerView;
 import org.beetl.sql.jmh.mybatis.vo.MyBatisSysUser;
 import org.springframework.beans.factory.annotation.Autowired;

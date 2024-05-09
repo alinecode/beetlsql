@@ -1,7 +1,6 @@
 package org.beetl.sql.jmh.jpa;
 
 import lombok.Data;
-import org.beetl.sql.jmh.BaseService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 @Data

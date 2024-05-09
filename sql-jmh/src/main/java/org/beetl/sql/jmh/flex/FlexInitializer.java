@@ -3,9 +3,8 @@ package org.beetl.sql.jmh.flex;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.beetl.sql.jmh.DataSourceHelper;
+import org.beetl.sql.jmh.base.DataSourceHelper;
 
 import javax.sql.DataSource;
 import java.util.List;

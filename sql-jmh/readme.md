@@ -8,6 +8,19 @@
 * MyBatis-Flex (国产)
 * EasyQuery (国产)
 
+```
+mvn clean package
+java -jar targets/jmh.jar
+```
+或者测试特定orm工具
+```
+java -jar targets/jmh.jar Beetl Jdbc
+```
+
+或者测试特定orm特定方法
+```
+java -jar targets/jmh.jar Beetl.getEntity Jdbc.getEntity
+```
 # 测试标准
 
 参考 BaseService ，测试了Dao的各个功能
@@ -64,9 +77,7 @@ public interface BaseService {
 
 有些框架不完全支持如上特性，因此性能测试无改项结果，比如JDBC并没有One2Many这种
 
-# 测试方法
 
- 进入JMHMain，运行即可。如果你有新的测试方法，可以暂时屏蔽其他测试方法 ,测试中score越大性能越好.
 
 
 # 最新测试结果 2024-05-09  ，采用一个线程和独立的数据源
