@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * beetlsql 内置的插入时候使用,忽略此字段
+ * beetlsql 当使用内置的更新语句的时候，会忽略此字段
  * @author xiandafu
- * @see org.beetl.sql.core.db.AbstractDBStyle#genInsert 
+ * @see org.beetl.sql.core.db.AbstractDBStyle#genUpdateTemplate 
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
