@@ -8,6 +8,7 @@ import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -20,21 +21,46 @@ public class BeanASMTest {
 	public void testGen() throws Exception{
 
 		Class beanClass = TestBean.class;
-		byte[] bs = BeanAsmCode.genCode(beanClass);
-		FileOutputStream fos = new FileOutputStream(new File("My.class"));
-		fos.write(bs);
+//		byte[] bs = BeanAsmCode.genCode(beanClass);
+//		FileOutputStream fos = new FileOutputStream(new File("My.class"));
+//		fos.write(bs);
+		PropertyDescriptor[] propertyDescriptors = BeanKit.propertyDescriptors(beanClass);
+		int idIndex = -1;
+		int col1= -1;
+		int col3= -1;
+		int i=0;
+
+		for(PropertyDescriptor ps:propertyDescriptors){
+			if(ps.getName().equals("id")){
+				idIndex = i;
+			}else if (ps.getName().equals("col1")){
+				col1 = i;
+			}else if(ps.getName().equals("col3")){
+				col3 = i;
+			}
+			i++;
+		}
+
 
 		Object bean = new TestBean();
 		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(beanClass);
-		Integer input = 3;
-		beanPropertyAsm.setValue(1,bean,input);
-		Integer v = (Integer)beanPropertyAsm.getValue(1,bean);
-		Assert.assertEquals(input,v);
-		beanPropertyAsm.setValue(1,bean,input);
 
-		beanPropertyAsm.setValue(3,bean,2.0);
-		double ret = (Double)beanPropertyAsm.getValue(3,bean);
+		Long id =12l;
+		beanPropertyAsm.setValue(idIndex,bean,id);
+		Long vId = (Long)beanPropertyAsm.getValue(idIndex,bean);
+		Assert.assertEquals(vId,id);
+
+
+		Integer input = 3;
+		beanPropertyAsm.setValue(col1,bean,input);
+		Integer v = (Integer)beanPropertyAsm.getValue(col1,bean);
+		Assert.assertEquals(input,v);
+
+
+		beanPropertyAsm.setValue(col3,bean,2.0);
+		double ret = (Double)beanPropertyAsm.getValue(col3,bean);
 		Assert.assertEquals(2.0,ret,0.0001);
+
 
 	}
 

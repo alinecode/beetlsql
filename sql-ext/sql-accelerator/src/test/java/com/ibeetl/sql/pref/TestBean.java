@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @Accessors(chain = true)
-public class TestBean {
+public class TestBean  extends BaseBean<Long>{
 
 	protected Integer col1;
 	protected int col2;

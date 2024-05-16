@@ -77,7 +77,9 @@ public class BeanAsmCode {
 			methodVisitor.visitVarInsn(ALOAD, 4);
 			methodVisitor.visitVarInsn(ALOAD, 3);
 			String paramAsmDesc = null;
-			Class paramType =propertyDescriptor.getProp().getPropertyType();
+			Class paramType =propertyDescriptor.getProp().getReadMethod().getReturnType();
+//			泛型下，返回泛型，会出错 https://gitee.com/xiandafu/beetlsql/issues/I9PPBH
+//			Class paramType =propertyDescriptor.getProp().getPropertyType();
 			if(paramType.isPrimitive()){
 				BoxClass boxType = getPrimitiveBoxType(paramType);
 				String typeAsmName = getAsmClassName(boxType.getType().getName());
@@ -170,7 +172,7 @@ public class BeanAsmCode {
 
 			}
 			methodVisitor.visitVarInsn(ALOAD, 3);
-			Class paramType =propertyDescriptor.getProp().getPropertyType();
+			Class paramType =propertyDescriptor.getProp().getReadMethod().getReturnType();
 
 			if(paramType.isPrimitive()){
 				BoxClass boxType = getPrimitiveBoxType(paramType);
@@ -182,7 +184,7 @@ public class BeanAsmCode {
 					false);
 
 			}else{
-				String typeAsmName = getAsmClassName(propertyDescriptor.getProp().getPropertyType().getName());
+				String typeAsmName = getAsmClassName(paramType.getName());
 				methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
 					"()L"+typeAsmName+";", false);
 			}
