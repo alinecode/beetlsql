@@ -27,7 +27,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <finalName>jmh-demo</finalName>
+              <finalName>jmh</finalName>
               <transformers>
                 <transformer>
                   <mainClass>org.openjdk.jmh.Main</mainClass>
