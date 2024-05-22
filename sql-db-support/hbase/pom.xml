@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.30.8-RELEASE</version>
+        <version>3.30.9-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>hbase</artifactId>
-    <version>3.30.8-RELEASE</version>
+    <version>3.30.9-RELEASE</version>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.phoenix/phoenix-core -->
         <dependency>

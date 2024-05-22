@@ -17,5 +17,8 @@ public class TestBean  extends BaseBean<Long>{
 	protected short col6;
 	protected String col7;
 	protected Integer col8;
+	protected byte[] bytes;
+	protected char[] chars;
+	protected Integer[] data;
 
 }

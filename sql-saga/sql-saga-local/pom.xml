@@ -5,17 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-saga-local</artifactId>
-    <version>3.30.8-RELEASE</version>
+    <version>3.30.9-RELEASE</version>
 	<parent>
 		<groupId>com.ibeetl</groupId>
 		<artifactId>sql-saga</artifactId>
-		<version>3.30.8-RELEASE</version>
+		<version>3.30.9-RELEASE</version>
 	</parent>
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-mapper</artifactId>
-            <version>3.30.8-RELEASE</version>
+            <version>3.30.9-RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-springboot-starter</artifactId>
-            <version>3.30.8-RELEASE</version>
+            <version>3.30.9-RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>

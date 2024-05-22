@@ -28,6 +28,9 @@ public class BeanASMTest {
 		int idIndex = -1;
 		int col1= -1;
 		int col3= -1;
+		int byteCol = -1;
+		int charCol = -1;
+		int dataCol = -1;
 		int i=0;
 
 		for(PropertyDescriptor ps:propertyDescriptors){
@@ -37,6 +40,12 @@ public class BeanASMTest {
 				col1 = i;
 			}else if(ps.getName().equals("col3")){
 				col3 = i;
+			}else if(ps.getName().equals("bytes")){
+				byteCol = i;
+			}else if(ps.getName().equals("chars")){
+				charCol = i;
+			}else if(ps.getName().equals("data")) {
+				dataCol = i;
 			}
 			i++;
 		}
@@ -60,6 +69,18 @@ public class BeanASMTest {
 		beanPropertyAsm.setValue(col3,bean,2.0);
 		double ret = (Double)beanPropertyAsm.getValue(col3,bean);
 		Assert.assertEquals(2.0,ret,0.0001);
+
+		byte[] bs = new byte[]{1,2};
+		char[] cs = new char[]{'a'};
+		beanPropertyAsm.setValue(byteCol,bean,bs);
+		beanPropertyAsm.setValue(charCol,bean,cs);
+		Assert.assertEquals(bs,beanPropertyAsm.getValue(byteCol,bean));
+		Assert.assertEquals(cs,beanPropertyAsm.getValue(charCol,bean));
+
+		Integer[] arrayObject = new Integer[]{1,2};
+		beanPropertyAsm.setValue(dataCol,bean,arrayObject);
+		Assert.assertEquals(arrayObject,beanPropertyAsm.getValue(dataCol,bean));
+
 
 
 	}
@@ -90,24 +111,32 @@ public class BeanASMTest {
 	@Test
 	public void testCastError() throws Exception{
 		Class beanClass = TestBean2.class;
-
+		PropertyDescriptor[] propertyDescriptors = BeanKit.propertyDescriptors(beanClass);
+		int colIndex  = -1;
+		int i=0;
+		for(PropertyDescriptor ps:propertyDescriptors){
+			if(ps.getName().equals("col1")){
+				colIndex = i;
+			}
+			i++;
+		}
 
 		Object bean = new TestBean2();
 		BeanPropertyAsm beanPropertyAsm = BeanPropertyWriteFactory.getBeanProperty(beanClass);
 
 
 		try{
-			beanPropertyAsm.setValue(1,bean,"1");
+			beanPropertyAsm.setValue(colIndex,bean,"1");
 			Assert.fail();
 		}catch (BeetlSQLException e){
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		try{
-			beanPropertyAsm.getValue(1,bean);
+			beanPropertyAsm.getValue(colIndex,bean);
 			Assert.fail();
 		}catch (BeetlSQLException e){
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 
 	}

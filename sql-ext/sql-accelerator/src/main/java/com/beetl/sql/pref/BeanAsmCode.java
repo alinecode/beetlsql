@@ -63,6 +63,7 @@ public class BeanAsmCode {
 		methodVisitor.visitLookupSwitchInsn(labelDefault, labelIndex.stream().mapToInt(Integer::valueOf).toArray(),
 			switchLabelList.toArray(new Label[0]));
 
+
 		boolean isFirst = true;
 		for(Label label:switchLabelList){
 			PropertyDescriptorWrap propertyDescriptor = propertyDescriptorMap.get(label);
@@ -78,7 +79,7 @@ public class BeanAsmCode {
 			methodVisitor.visitVarInsn(ALOAD, 3);
 			String paramAsmDesc = null;
 			Class paramType =propertyDescriptor.getProp().getReadMethod().getReturnType();
-//			泛型下，返回泛型，会出错 https://gitee.com/xiandafu/beetlsql/issues/I9PPBH
+//			如下语句，泛型下，返回泛型，会出错 https://gitee.com/xiandafu/beetlsql/issues/I9PPBH
 //			Class paramType =propertyDescriptor.getProp().getPropertyType();
 			if(paramType.isPrimitive()){
 				BoxClass boxType = getPrimitiveBoxType(paramType);
@@ -89,8 +90,16 @@ public class BeanAsmCode {
 				paramAsmDesc = "("+boxType.valueMethodRetType+")";
 			}else{
 				String typeAsmName = getAsmClassName(paramType.getName());
-				methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
-				paramAsmDesc = "(L"+typeAsmName+";)";
+				if(typeAsmName.startsWith("[")){
+					//[B
+					methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
+					paramAsmDesc = "("+typeAsmName+")";
+				}else{
+					//Object
+					methodVisitor.visitTypeInsn(CHECKCAST, typeAsmName);
+					paramAsmDesc = "(L"+typeAsmName+";)";
+				}
+
 			}
 
 			Class clss = propertyDescriptor.getSetMethod().getReturnType();
@@ -173,20 +182,25 @@ public class BeanAsmCode {
 			}
 			methodVisitor.visitVarInsn(ALOAD, 3);
 			Class paramType =propertyDescriptor.getProp().getReadMethod().getReturnType();
-
+			String paramAsmDesc = null;
 			if(paramType.isPrimitive()){
 				BoxClass boxType = getPrimitiveBoxType(paramType);
 				methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
 					"()"+boxType.valueMethodRetType, false);
-				String paramAsmDesc = "("+boxType.valueMethodRetType+")L"+getAsmClassName(boxType.getType().getName())+";";
+				 paramAsmDesc = "("+boxType.valueMethodRetType+")L"+getAsmClassName(boxType.getType().getName())+";";
 				//box
 				methodVisitor.visitMethodInsn(INVOKESTATIC, getAsmClassName(boxType.getType().getName()), "valueOf", paramAsmDesc,
 					false);
-
 			}else{
+
 				String typeAsmName = getAsmClassName(paramType.getName());
+				if(typeAsmName.startsWith("[")){
+					paramAsmDesc = "()"+typeAsmName;
+				}else{
+					paramAsmDesc = "()L"+typeAsmName+";";
+				}
 				methodVisitor.visitMethodInsn(INVOKEVIRTUAL, beanAsmName, propertyDescriptor.getProp().getReadMethod().getName(),
-					"()L"+typeAsmName+";", false);
+					paramAsmDesc, false);
 			}
 
 			methodVisitor.visitInsn(ARETURN);
