@@ -1,11 +1,11 @@
 # 测试DAO
 本例使用H2的内存模式测试，并且，尽量让Entity最为简单，以最大程度验证Dao自身的性能
 * BeetlSQL (国产)
-* MyBatis-Plus (国产)
+* MyBatis-Plus (国产+Mybatis)
 * JPA(Spring Data)
 * JDBC (基准)
 * Wood (国产)
-* MyBatis-Flex (国产)
+* MyBatis-Flex (国产+MyBatis)
 * EasyQuery (国产)
 * DBVisitor (国产)
 

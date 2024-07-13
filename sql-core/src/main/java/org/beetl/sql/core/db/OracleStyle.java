@@ -4,17 +4,22 @@ import org.beetl.sql.annotation.entity.AssignID;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.core.ConnectionSource;
+import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.meta.MetadataManager;
 import org.beetl.sql.core.meta.SchemaMetadataManager;
 import org.beetl.sql.core.range.RangeSql;
 import org.beetl.sql.core.range.RowNumRange;
 
 import java.lang.annotation.Annotation;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class OracleStyle extends AbstractDBStyle {
 
     RowNumRange rowNumRangeHelper = null;
+	public static int FETCH_SIZE = 100;
     public OracleStyle() {
         rowNumRangeHelper = new RowNumRange(this);
     }
@@ -68,6 +73,13 @@ public class OracleStyle extends AbstractDBStyle {
 		};
 		return metadataManager;
 	}
+
+
+	@Override
+	public  void applyResultSetSetting(ExecuteContext ctx, Connection conn, ResultSet resultSet) throws SQLException {
+		resultSet.setFetchSize(FETCH_SIZE);
+	}
+
 
 
 }

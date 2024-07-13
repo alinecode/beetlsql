@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedHashMap;
 
 /**
  * @author xiandafu
@@ -105,7 +104,7 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 
 
 	@Override
-	public void applyStatementSetting(ExecuteContext ctx,Connection conn,Statement statement) throws SQLException {
+	public void applyStatementSetting(ExecuteContext ctx, Connection conn, Statement statement) throws SQLException {
 		DataSource dataSource = getDatasourceFromContext(ctx);
 		if(dataSource==null){
 			return ;
@@ -116,6 +115,7 @@ public class SpringConnectionSource extends DefaultConnectionSource {
 		}
 		if ( holder.hasTimeout()) {
 			statement.setQueryTimeout(holder.getTimeToLiveInSeconds());
+
 		}
 	}
 
