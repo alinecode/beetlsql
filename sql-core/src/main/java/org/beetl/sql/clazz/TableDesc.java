@@ -104,7 +104,7 @@ public class TableDesc {
 	public ClassDesc genClassDesc(Class c, NameConversion nc){
 		ClassDesc classDesc = classes.get(c);
 		if(classDesc==null){
-			synchronized(classes){
+			synchronized(ClassDesc.class){
 				classDesc = classes.get(c);
 				if (classDesc != null) {
 					return classDesc;
