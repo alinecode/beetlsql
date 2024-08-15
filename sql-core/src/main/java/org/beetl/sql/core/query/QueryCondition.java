@@ -568,7 +568,7 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
 			setWhere();
 		}
 
-        appendSql(link).appendSql(" (").appendSql(condition.getSql().toString()).appendSql(")");
+        appendSql(link).appendSql(" (").appendSql(condition.getSql().toString()).appendSql(") ");
         addParam(condition.getParams());
         return (Query) this;
     }
@@ -580,11 +580,6 @@ public  abstract class QueryCondition<T> implements QueryConditionI<T> {
         }
         return this.sql;
     }
-
-
-
-
-
 
     @Override
     public void setSql(StringBuilder sql) {

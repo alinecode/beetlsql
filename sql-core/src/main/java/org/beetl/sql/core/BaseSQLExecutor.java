@@ -1053,17 +1053,19 @@ public class BaseSQLExecutor implements SQLExecutor {
 
     protected ResultSetHolder dbQuery(Connection conn, String sql, List<SQLParameter> jdbcPara) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(sql);
-
-        this.applyStatementSetting(executeContext, conn, ps);
+		this.applyStatementSetting4Framework(executeContext,conn,ps);
+		this.applyStatementSetting(executeContext, conn, ps);
         this.setPreparedStatementPara(ps, jdbcPara);
         ResultSet rs = ps.executeQuery();
-
+		this.applyResultSetting4Framework(executeContext,conn,rs);
+		this.applyResultSetting(executeContext,conn,rs);
         return new ResultSetHolder(ps, rs);
     }
 
     protected ResultUpdateHolder dbUpdate(Connection conn, String sql, List<SQLParameter> jdbcPara)
             throws SQLException {
         PreparedStatement ps = conn.prepareStatement(sql);
+		this.applyStatementSetting4Framework(executeContext,conn,ps);
         this.applyStatementSetting(executeContext, conn, ps);
         this.setPreparedStatementPara(ps, jdbcPara);
         int result = ps.executeUpdate();
@@ -1431,8 +1433,24 @@ public class BaseSQLExecutor implements SQLExecutor {
 
 
     protected void applyStatementSetting(ExecuteContext ctx, Connection conn, Statement statement) throws SQLException {
-        this.getExecuteContext().sqlManager.getDs().applyStatementSetting(ctx, conn, statement);
+        this.getExecuteContext().sqlManager.getDbStyle().applyStatementSetting(ctx, conn, statement);
     }
+
+	protected void applyResultSetting(ExecuteContext ctx, Connection conn, ResultSet rs) throws SQLException {
+		this.getExecuteContext().sqlManager.getDbStyle().applyResultSetSetting(ctx,conn,rs);
+	}
+
+
+	protected void applyStatementSetting4Framework(ExecuteContext ctx, Connection conn, Statement statement) throws SQLException {
+		this.getExecuteContext().sqlManager.getDs().applyStatementSetting(ctx, conn, statement);
+	}
+
+	protected void applyResultSetting4Framework(ExecuteContext ctx, Connection conn, ResultSet rs) throws SQLException {
+		this.getExecuteContext().sqlManager.getDs().applyResultSetSetting(ctx,conn,rs);
+	}
+
+
+
 
     interface Closeable {
         void close() throws SQLException;

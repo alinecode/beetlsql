@@ -4,6 +4,7 @@ import org.beetl.sql.clazz.kit.BeetlSQLException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -67,12 +68,34 @@ public interface ConnectionSource {
 	boolean isTransaction();
 
 
-	default void applyStatementSetting(ExecuteContext ctx, Connection conn, Statement statement) throws SQLException {
+	/**
+	 * 使用beetlsql的框架，比如spring，来设置jdbc相关参数
+	 * @param ctx
+	 * @param conn
+	 * @param statement
+	 * @throws SQLException
+	 */
+	default  void applyStatementSetting(ExecuteContext ctx, Connection conn, Statement statement) throws SQLException{
 
 	}
 
-
+	/**
+	 *  使用beetlsql的框架，比如spring，来设置jdbc相关参数
+	 * @param ctx
+	 * @param conn
+	 */
 	default void applyConnectionSetting(ExecuteContext ctx, Connection conn) {
+
+	}
+
+	/**
+	 *  使用beetlsql的框架，比如spring，来设置jdbc相关参数
+	 * @param ctx
+	 * @param conn
+	 * @param resultSet
+	 * @throws SQLException
+	 */
+	default void applyResultSetSetting(ExecuteContext ctx, Connection conn, ResultSet resultSet) throws SQLException {
 
 	}
 

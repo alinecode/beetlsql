@@ -11,11 +11,8 @@ public class TestProperty {
 	@SneakyThrows
 	@Test
 	public void print(){
-		PropertyDescriptor[] propertyDescriptors = BeanKit.propertyDescriptors(TestBean.class);
-		int i=0;
-		for(PropertyDescriptor ps:propertyDescriptors){
-			System.out.println(i++ +" " +ps.getName());
-		}
+		TestBean testBean = new TestBean();
+		testBean.setBytes(new byte[0]);
 
 	}
 }

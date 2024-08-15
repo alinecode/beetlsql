@@ -46,7 +46,7 @@ public class TestDynamic {
 	public void testDynamic(){
 		SQLManager sqlManager = getSQLManager();
 		//测试对其他类型生成要求，默认情况是生成Timestamp
-		JavaType.mapping.put(java.sql.Types.TIMESTAMP,"java.time.LocalDateTime");
+//		JavaType.mapping.put(java.sql.Types.TIMESTAMP,"java.time.LocalDateTime");
 
 		DBInitHelper.executeSqlScript(sqlManager,"db/dynamic-schema.sql");
 		DynamicEntityLoader<BaseEntity> dynamicEntityLoader = new DynamicEntityLoader(sqlManager);
@@ -56,7 +56,7 @@ public class TestDynamic {
 		System.out.println(baseEntity.getValue("age"));
 
 		baseEntity.setValue("age",1);
-		baseEntity.setValue("updateTime", LocalDateTime.now());
+		baseEntity.setValue("updateTime", new Timestamp(1));
 		sqlManager.updateById(baseEntity);
 
 		Class<? extends BaseEntity> c2 = dynamicEntityLoader.getDynamicEntity("order_log",BaseEntity.class);

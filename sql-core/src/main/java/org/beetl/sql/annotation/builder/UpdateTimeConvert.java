@@ -49,9 +49,11 @@ public class UpdateTimeConvert implements AttributeConvert {
 			now = new java.sql.Date(System.currentTimeMillis());
 		}else if(java.util.Date.class==dateType){
 			now = new Date();
+		}else if(Long.class==dateType){
+			now = System.currentTimeMillis();
 		}
 		else {
-			throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"期望类型是日期类型，但是 "+cls);
+			throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"期望类型是日期类型或者Long，但是 "+cls);
 		}
 		BeanKit.setBeanProperty(dbValue, now, name);
 		return now;
@@ -78,9 +80,11 @@ public class UpdateTimeConvert implements AttributeConvert {
 			now = rs.getDate(index);
 		}else if(java.util.Date.class==dateType){
 			now = rs.getTimestamp(index);
+		}else if(Long.class==dateType){
+			now = rs.getLong(index);
 		}
 		else {
-			throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"期望类型是日期类型，但是 "+cls);
+			throw new BeetlSQLException(BeetlSQLException.ANNOTATION_DEFINE_ERROR,"期望类型是日期类型或者Long，但是 "+cls);
 		}
 		return now;
 	}

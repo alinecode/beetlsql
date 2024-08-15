@@ -622,7 +622,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 		}
 		String col = nameConversion.getColName(clazz, classDesc.getClassAnnotation().getLogicDeleteAttrName());
 		Object value = classDesc.getClassAnnotation().getLogicDeleteAttrValue();
-		if(this.sql.length()==0){
+		if(this.sql==null || this.sql.length()==0){
 			this.sql.append(" WHERE 1=1 ");
 		}
 		this.sql.append(" AND ").append(col).append("!=").append(value).append(" ");
