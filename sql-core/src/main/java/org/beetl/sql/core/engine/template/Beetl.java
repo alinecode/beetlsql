@@ -19,6 +19,15 @@ public class Beetl {
 			this.ps = ps;
 
 			StringSqlTemplateLoader resourceLoader = new StringSqlTemplateLoader(loader);
+			if(!ps.contains("NATIVE_CALL")){
+				//beetlsql默认允许java字节调用
+				ps.setProperty("NATIVE_CALL","true");
+							}
+			if(!ps.contains("NATIVE_SECUARTY_MANAGER")){
+				ps.setProperty("NATIVE_SECUARTY_MANAGER","org.beetl.sql.core.engine.template.BeetlSQLTemplateSecurityManager");
+
+			}
+
 			Configuration cfg = new Configuration(ps);
 			gt = new GroupTemplate(resourceLoader, cfg);
 			//会被SQLManagerBuilder的setProduct覆盖
@@ -26,10 +35,8 @@ public class Beetl {
 			String charset = ps.getProperty("CHARSET");
 			if (StringKit.isBlank(charset)) {
 				charset = Charset.defaultCharset().name();
-
 			}
-			gt.setNativeSecurity(new BeetlSQLTemplateSecurityManager());
-			//对isBlank参数增加安全输出控制，如果不存在在，为空，返回true
+
 			AntlrProgramBuilder.safeParameters.add("isBlank");
 
 		} catch (Exception ex) {

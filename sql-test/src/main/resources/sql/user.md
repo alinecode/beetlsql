@@ -2,15 +2,9 @@ select
 ===
 
 ```sql
-select /* comment 5 */
--- @pageTag(){
-order_id
--- @}
-from order_log  where order_id = #{orderId}
+select 
+from order_log  where order_id = #{@orderLog.getOrderId()}
 
--- @if(isNotEmpty(userId)){
-and user_id=#{userId}
--- @}
 ```
 
 

@@ -30,11 +30,13 @@ public abstract  class BaseTemplateSourceBuilder extends SourceBuilder {
 		Configuration cfg = null;
 		try {
 			cfg = Configuration.defaultConfiguration();
+			cfg.setNativeCall(true);
+			cfg.setNativeSecurity("org.beetl.sql.core.engine.template.BeetlSQLTemplateSecurityManager");
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+
 		GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, cfg);
-		groupTemplate.setNativeSecurity(new BeetlSQLTemplateSecurityManager());
 		return groupTemplate;
 	}
 
