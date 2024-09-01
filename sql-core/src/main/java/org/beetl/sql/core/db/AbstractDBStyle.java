@@ -569,7 +569,11 @@ public abstract class AbstractDBStyle implements DBStyle {
 		TableDesc table = metadataManager.getTable(tableName);
 		ClassDesc classDesc = table.genClassDesc(cls, nameConversion);
 		List<String> colIds = classDesc.getIdCols();
-		if (colIds.size() == 1) {
+		if(colIds.isEmpty()){
+			throw new BeetlSQLException(BeetlSQLException.ID_NOT_FOUND,
+				"主键未发现," + cls.getName() + ",检查数据库表定义或者NameConversion");
+		}
+		else if (colIds.size() == 1) {
 			//通常情况
 			String colId = colIds.get(0);
 			node.andIn(colId, "ids");

@@ -18,10 +18,6 @@ import java.util.Date;
 public class OrderLog {
 	@AutoID
 	Integer orderId;
-	@Auto
-	Integer age;
-
-	byte[] bs;
 
 	@Version
 	Integer version;
