@@ -9,13 +9,13 @@ import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.core.BeanWrap;
 import org.noear.solon.core.Props;
-import org.noear.solon.core.ValHolder;
 import org.noear.solon.core.event.EventBus;
 import org.noear.solon.core.util.ClassUtil;
 
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * SQLManager 管理工具
@@ -118,11 +118,11 @@ public class DbManager {
             DataSource[] slaves = new DataSource[slaveAry.length];
 
             for (int i = 0, len = slaveAry.length; i < len; i++) {
-                ValHolder<Integer> valHolder = new ValHolder<>(i);
+                AtomicInteger valHolder = new AtomicInteger(i);
 
                 //todo::此处不能用同步，有些源可能还没构建好 //不过异常，没法检查了
                 bw.context().getWrapAsync(slaveAry[i], dsBw -> {
-                    slaves[valHolder.value] = dsBw.raw();
+                    slaves[valHolder.get()] = dsBw.raw();
                 });
             }
 
