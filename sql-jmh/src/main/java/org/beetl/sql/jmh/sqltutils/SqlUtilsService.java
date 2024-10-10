@@ -3,13 +3,13 @@ package org.beetl.sql.jmh.sqltutils;
 import org.beetl.sql.jmh.base.BaseService;
 import org.beetl.sql.jmh.base.DataSourceHelper;
 import org.beetl.sql.jmh.sqltutils.model.SQLSysUser;
-import org.noear.solon.Solon;
+import org.noear.solon.data.sql.Row;
 import org.noear.solon.data.sql.SqlUtils;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SqlUtilsService implements BaseService {
@@ -18,7 +18,6 @@ public class SqlUtilsService implements BaseService {
 	SqlUtils db;
 
 	public void init() {
-		Solon.start(SqlUtilsService.class, new String[0]);
 		DataSource dataSource = DataSourceHelper.newDatasource();
 
 		this.db = SqlUtils.of(dataSource);
@@ -71,9 +70,9 @@ public class SqlUtilsService implements BaseService {
 	@Override
 	public Object getEntity() {
 		try {
-			Map<String, Object> map = db.selectRow("select * from sys_user where id=?", 1);
+			Row row = db.selectRow("select * from sys_user where id=?", 1);
 
-			return bind(map);
+			return bind(row);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -123,46 +122,41 @@ public class SqlUtilsService implements BaseService {
 	public void getAll() {
 		ArrayList<SQLSysUser> sqlSysUsers = new ArrayList<>();
 
-		Iterator<Map<String, Object>> iterator = null;
 		try {
-			iterator = db.selectRowStream("select * from sys_user", 100);
-			while (iterator.hasNext()) {
-				sqlSysUsers.add(bind(iterator.next()));
+			List<Row> list = db.selectRowList("select * from sys_user");
+			for (Row row : list) {
+				sqlSysUsers.add(bind(row));
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		} finally {
-			if (iterator != null) {
-				iterator.remove();
-			}
 		}
 	}
 
-	SQLSysUser bind(Map<String, Object> map) {
+	SQLSysUser bind(Row row) throws SQLException {
 		SQLSysUser sqlSysUser = new SQLSysUser();
 
-		sqlSysUser.setId((Integer) map.get("id"));
-		sqlSysUser.setCode((String) map.get("code"));
-		sqlSysUser.setCode1((String) map.get("code1"));
-		sqlSysUser.setCode2((String) map.get("code2"));
-		sqlSysUser.setCode3((String) map.get("code3"));
-		sqlSysUser.setCode4((String) map.get("code4"));
-		sqlSysUser.setCode5((String) map.get("code5"));
-		sqlSysUser.setCode6((String) map.get("code6"));
-		sqlSysUser.setCode7((String) map.get("code7"));
-		sqlSysUser.setCode8((String) map.get("code8"));
-		sqlSysUser.setCode9((String) map.get("code9"));
-		sqlSysUser.setCode10((String) map.get("code10"));
-		sqlSysUser.setCode11((String) map.get("code11"));
-		sqlSysUser.setCode12((String) map.get("code12"));
-		sqlSysUser.setCode13((String) map.get("code13"));
-		sqlSysUser.setCode14((String) map.get("code14"));
-		sqlSysUser.setCode15((String) map.get("code15"));
-		sqlSysUser.setCode16((String) map.get("code16"));
-		sqlSysUser.setCode17((String) map.get("code17"));
-		sqlSysUser.setCode18((String) map.get("code18"));
-		sqlSysUser.setCode19((String) map.get("code19"));
-		sqlSysUser.setCode20((String) map.get("code20"));
+		sqlSysUser.setId((Integer) row.getValue(1));
+		sqlSysUser.setCode((String) row.getValue(2));
+		sqlSysUser.setCode1((String) row.getValue(3));
+		sqlSysUser.setCode2((String) row.getValue(4));
+		sqlSysUser.setCode3((String) row.getValue(5));
+		sqlSysUser.setCode4((String) row.getValue(6));
+		sqlSysUser.setCode5((String) row.getValue(7));
+		sqlSysUser.setCode6((String) row.getValue(8));
+		sqlSysUser.setCode7((String) row.getValue(9));
+		sqlSysUser.setCode8((String) row.getValue(10));
+		sqlSysUser.setCode9((String) row.getValue(11));
+		sqlSysUser.setCode10((String) row.getValue(12));
+		sqlSysUser.setCode11((String) row.getValue(13));
+		sqlSysUser.setCode12((String) row.getValue(14));
+		sqlSysUser.setCode13((String) row.getValue(15));
+		sqlSysUser.setCode14((String) row.getValue(16));
+		sqlSysUser.setCode15((String) row.getValue(17));
+		sqlSysUser.setCode16((String) row.getValue(18));
+		sqlSysUser.setCode17((String) row.getValue(19));
+		sqlSysUser.setCode18((String) row.getValue(20));
+		sqlSysUser.setCode19((String) row.getValue(21));
+		sqlSysUser.setCode20((String) row.getValue(22));
 
 		return sqlSysUser;
 	}
