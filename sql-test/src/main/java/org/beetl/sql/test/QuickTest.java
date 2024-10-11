@@ -59,14 +59,7 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		SqlId sqlId = SqlId.of("user.select");
-		OrderLog orderLog = new OrderLog();
-		orderLog.setOrderId(1);
-		Map map = new HashMap();
-		map.put("orderLog",orderLog);
-		sqlManager.select(sqlId,OrderLog.class,map);
-//		sqlManager.single(OrderLog.class,1);
-//		sqlManager.single(OrderLog.class,1);
-//		long time = System.currentTimeMillis();
+		sqlManager.selectByIds(OrderLog.class,Arrays.asList(1,2));
 
 
 

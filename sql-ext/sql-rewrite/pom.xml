@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-ext</artifactId>
-        <version>3.30.12-RELEASE</version>
+        <version>3.30.13-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-rewrite</artifactId>
-    <version>3.30.12-RELEASE</version>
+    <version>3.30.13-RELEASE</version>
 	<dependencies>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetlsql</artifactId>
-			<version>3.30.12-RELEASE</version>
+			<version>3.30.13-RELEASE</version>
 		</dependency>
 	</dependencies>
 
