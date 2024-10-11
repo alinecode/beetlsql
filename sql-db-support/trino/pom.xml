@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.30.13-RELEASE</version>
+        <version>3.30.14-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>trino</artifactId>
-    <version>3.30.13-RELEASE</version>
+    <version>3.30.14-RELEASE</version>
 
 	<dependencies>
 		<dependency>
