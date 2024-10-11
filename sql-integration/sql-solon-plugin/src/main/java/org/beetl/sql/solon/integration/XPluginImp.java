@@ -68,6 +68,8 @@ public class XPluginImp implements Plugin {
     }
 
     private void injectorAddDo(VarHolder varH, String annoValue) {
+		varH.required(true);
+
         if (Utils.isEmpty(annoValue)) {
             varH.context().getWrapAsync(DataSource.class, (dsBw) -> {
                 inject0(varH, dsBw, annoValue);
