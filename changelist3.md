@@ -76,3 +76,6 @@
 # 3.30.12
 * 修复Query Bug
 * selectByIds 错误提示完善
+# 3.30.13
+* sonar update
+* jmh update

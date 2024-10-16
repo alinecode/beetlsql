@@ -5,8 +5,7 @@ CREATE TABLE `order_log` (
        `a_bc` varchar(255) ,
        `create_time` long,
        `status` char(1),
-		name varchar(24)  ,
-      PRIMARY KEY (`order_id`)
+		name varchar(24)
 ) ;
 
 INSERT INTO `order_log` (order_id,version,status,a_bc) VALUES (1, 100,'a','a');
