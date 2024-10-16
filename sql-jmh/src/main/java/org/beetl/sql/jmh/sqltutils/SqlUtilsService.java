@@ -52,7 +52,7 @@ public class SqlUtilsService implements BaseService {
 
 
 		try {
-			db.insert("insert into sys_user  (id,code,code1,code2,code3,code4,code5,code6,code7,code8,code9,code10,code11,code12,code13,code14,code15,code16,code17,code18,code19,code20) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+			db.sql("insert into sys_user  (id,code,code1,code2,code3,code4,code5,code6,code7,code8,code9,code10,code11,code12,code13,code14,code15,code16,code17,code18,code19,code20) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				sqlSysUser.getId(), sqlSysUser.getCode(), sqlSysUser.getCode1(),
 				sqlSysUser.getCode2(), sqlSysUser.getCode3(), sqlSysUser.getCode4(),
 				sqlSysUser.getCode5(), sqlSysUser.getCode6(), sqlSysUser.getCode7(),
@@ -60,7 +60,7 @@ public class SqlUtilsService implements BaseService {
 				sqlSysUser.getCode11(), sqlSysUser.getCode12(), sqlSysUser.getCode13(),
 				sqlSysUser.getCode14(), sqlSysUser.getCode15(), sqlSysUser.getCode16(),
 				sqlSysUser.getCode17(), sqlSysUser.getCode18(), sqlSysUser.getCode19(),
-				sqlSysUser.getCode20());
+				sqlSysUser.getCode20()).update();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -70,7 +70,7 @@ public class SqlUtilsService implements BaseService {
 	@Override
 	public Object getEntity() {
 		try {
-			Row row = db.selectRow("select * from sys_user where id=?", 1);
+			Row row = db.sql("select * from sys_user where id=?", 1).queryRow();
 
 			return bind(row);
 		} catch (Exception e) {
@@ -87,7 +87,7 @@ public class SqlUtilsService implements BaseService {
 	@Override
 	public void executeJdbcSql() {
 		try {
-			db.selectRow("select * from sys_user limit 1");
+			db.sql("select * from sys_user limit 1").queryRow();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -123,7 +123,7 @@ public class SqlUtilsService implements BaseService {
 		ArrayList<SQLSysUser> sqlSysUsers = new ArrayList<>();
 
 		try {
-			List<Row> list = db.selectRowList("select * from sys_user");
+			List<Row> list = db.sql("select * from sys_user").queryRowList();
 			for (Row row : list) {
 				sqlSysUsers.add(bind(row));
 			}
@@ -135,28 +135,28 @@ public class SqlUtilsService implements BaseService {
 	SQLSysUser bind(Row row) throws SQLException {
 		SQLSysUser sqlSysUser = new SQLSysUser();
 
-		sqlSysUser.setId((Integer) row.getValue(1));
-		sqlSysUser.setCode((String) row.getValue(2));
-		sqlSysUser.setCode1((String) row.getValue(3));
-		sqlSysUser.setCode2((String) row.getValue(4));
-		sqlSysUser.setCode3((String) row.getValue(5));
-		sqlSysUser.setCode4((String) row.getValue(6));
-		sqlSysUser.setCode5((String) row.getValue(7));
-		sqlSysUser.setCode6((String) row.getValue(8));
-		sqlSysUser.setCode7((String) row.getValue(9));
-		sqlSysUser.setCode8((String) row.getValue(10));
-		sqlSysUser.setCode9((String) row.getValue(11));
-		sqlSysUser.setCode10((String) row.getValue(12));
-		sqlSysUser.setCode11((String) row.getValue(13));
-		sqlSysUser.setCode12((String) row.getValue(14));
-		sqlSysUser.setCode13((String) row.getValue(15));
-		sqlSysUser.setCode14((String) row.getValue(16));
-		sqlSysUser.setCode15((String) row.getValue(17));
-		sqlSysUser.setCode16((String) row.getValue(18));
-		sqlSysUser.setCode17((String) row.getValue(19));
-		sqlSysUser.setCode18((String) row.getValue(20));
-		sqlSysUser.setCode19((String) row.getValue(21));
-		sqlSysUser.setCode20((String) row.getValue(22));
+		sqlSysUser.setId((Integer) row.getObject(1));
+		sqlSysUser.setCode((String) row.getObject(2));
+		sqlSysUser.setCode1((String) row.getObject(3));
+		sqlSysUser.setCode2((String) row.getObject(4));
+		sqlSysUser.setCode3((String) row.getObject(5));
+		sqlSysUser.setCode4((String) row.getObject(6));
+		sqlSysUser.setCode5((String) row.getObject(7));
+		sqlSysUser.setCode6((String) row.getObject(8));
+		sqlSysUser.setCode7((String) row.getObject(9));
+		sqlSysUser.setCode8((String) row.getObject(10));
+		sqlSysUser.setCode9((String) row.getObject(11));
+		sqlSysUser.setCode10((String) row.getObject(12));
+		sqlSysUser.setCode11((String) row.getObject(13));
+		sqlSysUser.setCode12((String) row.getObject(14));
+		sqlSysUser.setCode13((String) row.getObject(15));
+		sqlSysUser.setCode14((String) row.getObject(16));
+		sqlSysUser.setCode15((String) row.getObject(17));
+		sqlSysUser.setCode16((String) row.getObject(18));
+		sqlSysUser.setCode17((String) row.getObject(19));
+		sqlSysUser.setCode18((String) row.getObject(20));
+		sqlSysUser.setCode19((String) row.getObject(21));
+		sqlSysUser.setCode20((String) row.getObject(22));
 
 		return sqlSysUser;
 	}
