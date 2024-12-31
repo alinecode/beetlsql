@@ -17,13 +17,12 @@ import java.util.function.Supplier;
  * @see DynamicDSService
  */
 @PropertySource(value = {
-	"classpath:application-simple.properties"
+	"classpath:application-dynamic-ds.properties"
 }, encoding = "utf-8")
 @SpringBootApplication
 public class DynamicDSApplication {
-	public static AnnotationConfigServletWebServerApplicationContext context ;
 	public static void main(String[] args) {
-		context =  (AnnotationConfigServletWebServerApplicationContext)SpringApplication.run(DynamicDSApplication.class, args);
+		SpringApplication.run(DynamicDSApplication.class, args);
 
 	}
 
