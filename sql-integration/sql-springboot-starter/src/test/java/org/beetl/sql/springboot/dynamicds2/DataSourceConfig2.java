@@ -1,7 +1,10 @@
-package org.beetl.sql.springboot.dynamicds;
+package org.beetl.sql.springboot.dynamicds2;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
+import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.springboot.dynamicds.DBInitTool;
+import org.beetl.sql.springboot.dynamicds.DynamicRoutingDataSource;
 import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,7 +21,7 @@ import java.io.InputStream;
  * 系统的默认数据库，事务管理，以及debugInterceptor
  */
 @Configuration
-public class DataSourceConfig {
+public class DataSourceConfig2 {
     @Autowired
     ApplicationContext ctx;
 
@@ -35,7 +38,7 @@ public class DataSourceConfig {
 
 	@Bean(name = "ds1")
 	public DynamicRoutingDataSource routing(@Qualifier("default") DataSource ds1) {
-		DynamicRoutingDataSource ds = new DynamicRoutingDataSource();
+		DynamicRoutingDataSourceAndSqlManager ds = new DynamicRoutingDataSourceAndSqlManager();
 		ds.setDefaultTargetDataSource(ds1);
 		return ds;
 	}
@@ -47,6 +50,10 @@ public class DataSourceConfig {
 	}
 
 
+
+
+
+
 	@Bean
 	public SQLManagerCustomize mySQLManagerCustomize(@Qualifier("ds1") DynamicRoutingDataSource routingDataSource){
 		return new SQLManagerCustomize(){
@@ -55,15 +62,26 @@ public class DataSourceConfig {
 
 				manager.setInters(new Interceptor[]{new MyDebug(routingDataSource)});
 
-				InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream("db/schema.sql");
-				new DBInitTool().executeSqlScript(manager.getDs().getMasterSource(),ins);
-				manager.refresh();
-//				manager.getMetaDataManager().getTable("department");
-
 
 			}
 		};
 	}
+
+	public class MyDebug extends DebugInterceptor{
+		DynamicRoutingDataSource routingDataSource ;
+		public MyDebug(DynamicRoutingDataSource routingDataSource ){
+			this.routingDataSource = routingDataSource;
+		}
+		@Override
+		protected String formatSqlId(ExecuteContext executeContext){
+			String sql = "DB["+routingDataSource.currentDB()+"]->"+super.formatSqlId(executeContext);
+			return sql;
+
+		}
+	}
+
+
+
 
 
 }

@@ -13,8 +13,8 @@ import java.util.function.Function;
 
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource implements Routing {
 
-	private Map<Object, Object> dsMap = new ConcurrentHashMap<>();
-	static ThreadLocal<String> threadLocal = ThreadLocal.withInitial(() -> "");
+	protected Map<Object, Object> dsMap = new ConcurrentHashMap<>();
+	protected static ThreadLocal<String> dbThreadLocal = ThreadLocal.withInitial(() -> "");
 
 
 	public DynamicRoutingDataSource() {
@@ -24,7 +24,11 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 
 	@Override
 	protected Object determineCurrentLookupKey() {
-		return threadLocal.get();
+		return dbThreadLocal.get();
+	}
+
+	public Object currentDB(){
+		return dbThreadLocal.get();
 	}
 
 
@@ -35,7 +39,7 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource implemen
 			this.setTargetDataSources((dsMap));
 
 		}
-		threadLocal.set(dbName);
+		dbThreadLocal.set(dbName);
 	}
 
 	@Override
