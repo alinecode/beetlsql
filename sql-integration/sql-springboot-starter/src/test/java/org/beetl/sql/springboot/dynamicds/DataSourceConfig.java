@@ -1,12 +1,7 @@
 package org.beetl.sql.springboot.dynamicds;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.core.Context;
-import org.beetl.core.Function;
-import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
-import org.beetl.sql.ext.DBInitHelper;
-import org.beetl.sql.springboot.simple.Department;
+import org.beetl.sql.core.*;
 import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,16 +12,17 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
+import java.io.InputStream;
 
 /**
- * 系统的默认数据库，动态数据库常见在
+ * 系统的默认数据库，事务管理，以及debugInterceptor
  */
 @Configuration
-public class DefaultDataSourceConfig {
+public class DataSourceConfig {
     @Autowired
     ApplicationContext ctx;
 
-    @Bean(name = "ds1")
+    @Bean(name = "default")
     public DataSource datasource(Environment env) {
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(env.getProperty("spring.datasource.url"));
@@ -37,21 +33,33 @@ public class DefaultDataSourceConfig {
         return ds;
     }
 
+	@Bean(name = "ds1")
+	public DynamicRoutingDataSource routing(@Qualifier("default") DataSource ds1) {
+		DynamicRoutingDataSource ds = new DynamicRoutingDataSource();
+		ds.setDefaultTargetDataSource(ds1);
+		return ds;
+	}
+
 	@Bean(name = "defaultTs")
 	public DataSourceTransactionManager defaultTs(@Qualifier("ds1") DataSource ds) {
 		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager(ds);
 		return dataSourceTransactionManager;
 	}
+
+
 	@Bean
-	public SQLManagerCustomize mySQLManagerCustomize(){
+	public SQLManagerCustomize mySQLManagerCustomize(@Qualifier("ds1") DynamicRoutingDataSource routingDataSource){
 		return new SQLManagerCustomize(){
 			@Override
 			public void customize(String sqlMangerName, SQLManager manager) {
-				//初始化sql，这里也可以对sqlManager进行修改
 
-				manager.addVirtualTable("department",Department.virtual_table);
-				DBInitHelper.executeSqlScript(manager,"db/schema.sql");
+				manager.setInters(new Interceptor[]{new MyDebug(routingDataSource)});
+
+				InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream("db/schema.sql");
+				new DBInitTool().executeSqlScript(manager.getDs().getMasterSource(),ins);
 				manager.refresh();
+//				manager.getMetaDataManager().getTable("department");
+
 
 			}
 		};

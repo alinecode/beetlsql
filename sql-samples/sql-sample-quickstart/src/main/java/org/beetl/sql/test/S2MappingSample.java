@@ -113,12 +113,14 @@ public class S2MappingSample {
      */
     public void autoMapping() {
 
+		List<S2MappingSample.MyUserView> list = mapper.allUserView();
+		System.out.println(list);
 
-		List<S2MappingSample.MyUserView2> list2 = mapper.allUserView2();
-		System.out.println(list2);
-
-		List<S2MappingSample.MyUserView2> list3 = mapper.allUserView3();
-		System.out.println(list3);
+//		List<S2MappingSample.MyUserView2> list2 = mapper.allUserView2();
+//		System.out.println(list2);
+//
+//		List<S2MappingSample.MyUserView2> list3 = mapper.allUserView3();
+//		System.out.println(list3);
 
     }
 
@@ -207,7 +209,7 @@ public class S2MappingSample {
     @ResultProvider(AutoJsonMapper.class)
     public static class MyUserView {
         Integer id;
-        String name;
+        String userName;
         DepartmentEntity dept;
     }
 
