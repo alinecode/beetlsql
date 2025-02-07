@@ -1,4 +1,4 @@
-package org.beetl.sql.ymtraix;
+package org.beetl.sql.postgres;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,7 +23,6 @@ import java.util.Map;
 
 /**
  * 转化字段为json到数据库，以及从数据库读取json字段（字符串类型）到pojo的属性上
- * @see Jackson
  * @author xiandafu
  */
 public class JacksonConvert implements AttributeConvert {

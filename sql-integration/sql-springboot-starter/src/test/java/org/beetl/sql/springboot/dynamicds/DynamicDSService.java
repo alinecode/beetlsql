@@ -44,7 +44,6 @@ public class DynamicDSService {
 	ApplicationContext context;
 	protected void insertDept(String dsName,int deptId){
 		//dao
-
 		SQLManager sqlManager = sqlManager(dsName);
 		Dept department = new Dept();
 		department.setId(deptId);

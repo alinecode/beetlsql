@@ -16,7 +16,7 @@
     <packaging>pom</packaging>
     <modules>
 <!--        <module>mysql</module>-->
-<!--		<module>postgres</module>-->
+		<module>postgres</module>
         <!--其他3.0新增的数据库支持 -->
 <!--        <module>polarDB</module>-->
 <!--        <module>ignite</module>-->
@@ -40,7 +40,7 @@
 <!--        <module>trino</module>-->
 <!--        <module>oceanbase</module>-->
 <!--        <module>sqlserver</module>-->
-        <module>ymatrix</module>
+<!--        <module>ymatrix</module>-->
 
     </modules>
     <dependencies>

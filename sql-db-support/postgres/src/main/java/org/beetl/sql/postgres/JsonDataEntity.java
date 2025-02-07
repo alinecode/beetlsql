@@ -1,4 +1,4 @@
-package org.beetl.sql.ymtraix;
+package org.beetl.sql.postgres;
 
 import lombok.Data;
 import org.beetl.sql.annotation.entity.AssignID;
@@ -13,7 +13,7 @@ import org.beetl.sql.annotation.entity.Table;
 public class JsonDataEntity {
 	@AssignID
 	String id;
-	@Jackson
+	@org.beetl.sql.postgres.Jackson
 	@Column("json_data")
 	Color jsonData;
 
