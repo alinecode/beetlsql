@@ -214,7 +214,7 @@ public class BeetlSqlBeanRegister
 			return bdb ;
 		}
 
-		customize.beforeCustomize(name,(SQLManager) beanFactory.getBean(name));
+		customize.customize(name,(SQLManager) beanFactory.getBean(name));
 
 
 		BeetlSqlClassPathScanner scanner = new BeetlSqlClassPathScanner(registry);
