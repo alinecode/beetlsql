@@ -7,5 +7,8 @@ import org.beetl.sql.core.SQLManager;
  * @author xiandafu
  */
 public interface SQLManagerCustomize {
+	default void beforeCustomize(String sqlManagerName , SQLManager manager){
+
+	}
 	public void customize(String sqlManagerName , SQLManager manager);
 }

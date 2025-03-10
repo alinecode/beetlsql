@@ -3,12 +3,15 @@ package org.beetl.sql.starter;
 import org.beetl.core.fun.ObjectUtil;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.spring.BeetlSqlClassPathScanner;
 import org.beetl.sql.ext.spring.SqlManagerFactoryBean;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -28,12 +31,17 @@ import java.util.*;
  * @author xiandafu ,waote
  */
 public class BeetlSqlBeanRegister
-		implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
+		implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware, BeanFactoryAware {
 
 	private ResourceLoader resourceLoader;
 	Environment env;
 
 	BeetlSqlConfig beetlSqlConfig ;
+
+
+	BeanFactory beanFactory ;
+
+	SQLManagerCustomize customize;
 
 
 	@Override
@@ -68,7 +76,7 @@ public class BeetlSqlBeanRegister
 		return bdb;
 	}
 
-	
+
 	protected void readySqlManager(BeanDefinitionRegistry registry) {
 		final ClassLoader classLoader = getClassLoader();
 		Map<String, BeetlSqlConfig.SQLManagerConfig> configs =  beetlSqlConfig.getConfigs();
@@ -200,16 +208,22 @@ public class BeetlSqlBeanRegister
 
 
 
+
 		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 		if(!scan){
 			return bdb ;
 		}
+
+		customize.beforeCustomize(name,(SQLManager) beanFactory.getBean(name));
+
 
 		BeetlSqlClassPathScanner scanner = new BeetlSqlClassPathScanner(registry);
 		// this check is needed in Spring 3.1
 		if (resourceLoader != null) {
 			scanner.setResourceLoader(resourceLoader);
 		}
+
+
 
 		scanner.setSqlManagerFactoryBeanName(name);
 		scanner.setSuffix(config.getDaoSuffix());
@@ -226,4 +240,14 @@ public class BeetlSqlBeanRegister
 	}
 
 
+	@Override
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+		try{
+			customize = beanFactory.getBean(SQLManagerCustomize.class);
+		}catch (Exception exception){
+			//do nothing;
+		}
+
+	}
 }
