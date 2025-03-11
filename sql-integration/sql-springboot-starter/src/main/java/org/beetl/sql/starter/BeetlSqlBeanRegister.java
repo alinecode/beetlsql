@@ -31,7 +31,7 @@ import java.util.*;
  * @author xiandafu ,waote
  */
 public class BeetlSqlBeanRegister
-		implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware, BeanFactoryAware {
+		implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
 	private ResourceLoader resourceLoader;
 	Environment env;
@@ -41,7 +41,7 @@ public class BeetlSqlBeanRegister
 
 	BeanFactory beanFactory ;
 
-	SQLManagerCustomize customize;
+
 
 
 	@Override
@@ -214,7 +214,6 @@ public class BeetlSqlBeanRegister
 			return bdb ;
 		}
 
-		customize.customize(name,(SQLManager) beanFactory.getBean(name));
 
 
 		BeetlSqlClassPathScanner scanner = new BeetlSqlClassPathScanner(registry);
@@ -240,14 +239,5 @@ public class BeetlSqlBeanRegister
 	}
 
 
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-		try{
-			customize = beanFactory.getBean(SQLManagerCustomize.class);
-		}catch (Exception exception){
-			//do nothing;
-		}
 
-	}
 }

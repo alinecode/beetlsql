@@ -18,31 +18,7 @@ import javax.sql.DataSource;
 @ConditionalOnBean(DataSource.class)
 @Import({BeetlSqlBeanRegister.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
-public class BeetlSqlStater implements InitializingBean {
-
-	@Autowired(required=false)
-	SQLManagerCustomize cust;
-
-	@Autowired()
-    ApplicationContext context;
-
-	@Autowired()
-    Environment env;
+public class BeetlSqlStater  {
 
 
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		if(cust==null) {
-			return ;
-		}
-
-		BeetlSqlConfig beetlSqlConfig = new BeetlSqlConfig(env);
-
-		beetlSqlConfig.configs.entrySet().forEach(entry->{
-			String name = entry.getKey();
-			SQLManager sqlManager = context.getBean(name,SQLManager.class);
-			cust.customize(name,sqlManager);
-		});
-	}
 }

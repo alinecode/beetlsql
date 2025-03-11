@@ -7,18 +7,18 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-integration</artifactId>
-        <version>3.30.14-RELEASE</version>
+        <version>3.30.15-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-solon-plugin</artifactId>
-    <version>3.30.14-RELEASE</version>
+    <version>3.30.15-RELEASE</version>
 
     <dependencies>
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.30.14-RELEASE</version>
+            <version>3.30.15-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 

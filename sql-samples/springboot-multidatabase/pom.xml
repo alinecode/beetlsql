@@ -6,19 +6,16 @@
 
     <parent>
         <groupId>com.ibeetl</groupId>
-        <artifactId>sql-db-support</artifactId>
+        <artifactId>sql-sample</artifactId>
         <version>3.30.15-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
-    <artifactId>ymatrix</artifactId>
+    <artifactId>springboot-multidatabase</artifactId>
     <version>3.30.15-RELEASE</version>
 	<dependencies>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.4.0</version>
-		</dependency>
+
 	</dependencies>
+
 
 </project>
