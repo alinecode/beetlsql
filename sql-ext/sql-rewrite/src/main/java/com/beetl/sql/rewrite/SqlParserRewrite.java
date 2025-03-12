@@ -18,13 +18,18 @@ public class SqlParserRewrite extends MyTablesNamesFinder {
 
 	protected  Stack<RewriteTask> selectStack = new Stack<>();
 	protected List<ColRewriteParam> colRewriteParamList;
+	protected List<TableRewriteParam> tableRewriteParamList;
 
 	TableConfig tableCheck;
 
-
-	public SqlParserRewrite(TableConfig tableCheck,List<ColRewriteParam> colRewriteParamList){
+	public SqlParserRewrite(TableConfig tableCheck,List<ColRewriteParam> colRewriteParamList,List<TableRewriteParam> tableRewriteParamList){
 		this.tableCheck = tableCheck;
 		this.colRewriteParamList = colRewriteParamList;
+		this.tableRewriteParamList = tableRewriteParamList;
+	}
+
+	public SqlParserRewrite(TableConfig tableCheck,List<ColRewriteParam> colRewriteParamList){
+		this(tableCheck,colRewriteParamList,new ArrayList<>());
 	}
 
 

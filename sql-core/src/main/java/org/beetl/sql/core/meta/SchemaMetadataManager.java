@@ -488,6 +488,7 @@ public class SchemaMetadataManager implements MetadataManager {
 		TableDesc desc = (TableDesc)this.tableInfoMap.get(realTable);
 		TableDesc  virutalTableDesc = new TableDesc(virtual,desc.getRemark());
 		virutalTableDesc.setRealTableName(realTable);
+
 		return ;
 
 

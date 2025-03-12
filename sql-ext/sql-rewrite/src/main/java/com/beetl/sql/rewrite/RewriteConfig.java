@@ -5,9 +5,7 @@ import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.ext.PluginExtConfig;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 配置sqlmanager 支持多租户，自动在sql语句增加租户
@@ -31,6 +29,25 @@ public class RewriteConfig implements PluginExtConfig {
 		RewriteMapperBuilder tenantMapperBuilder = new RewriteMapperBuilder(sqlRewriteInterceptor);
 		tenantMapperBuilder.setSqlManager(sqlManager);
 		sqlManager.setMapperBuilder(tenantMapperBuilder);
+	}
+
+	/**
+	 * 开启缓存，缓存用WeakHashMap
+	 */
+	public void enableCache(){
+		WeakHashMap<String, String> tempMap =new WeakHashMap();
+		Map cache = Collections.synchronizedMap(tempMap);
+		sqlRewriteInterceptor.setSqlCache(cache);
+
+	}
+
+	/**
+	 * 开启缓存，自定义一个cache类
+	 * @param cache
+	 */
+	public void enableCache(Map cache){
+		sqlRewriteInterceptor.setSqlCache(cache);
+
 	}
 
 	public void addColRewriteConfig(ColRewriteParam colRewriteParam){
