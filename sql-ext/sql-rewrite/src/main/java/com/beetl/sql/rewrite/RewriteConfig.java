@@ -53,4 +53,7 @@ public class RewriteConfig implements PluginExtConfig {
 	public void addColRewriteConfig(ColRewriteParam colRewriteParam){
 		sqlRewriteInterceptor.getRewriteConfigs().add(colRewriteParam);
 	}
+	public void setTableRewriteConfig(TableRewriteParam tableRewriteParam){
+		sqlRewriteInterceptor.setTableRewriteParam(tableRewriteParam);
+	}
 }

@@ -1,9 +1,6 @@
 package com.beetl.sql.firewall.test;
 
-import com.beetl.sql.rewrite.ColRewriteParam;
-import com.beetl.sql.rewrite.ColValueProvider;
-import com.beetl.sql.rewrite.SqlParserRewrite;
-import com.beetl.sql.rewrite.TableConfig;
+import com.beetl.sql.rewrite.*;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -11,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RewriteTest {
@@ -126,6 +124,49 @@ public class RewriteTest {
 		SqlParserRewrite finder = new SqlParserRewrite(tableCheck1, Arrays.asList(tenantRewrite, logicDeleteRewrite));
 
 		return finder;
+	}
+
+	protected SqlParserRewrite buildTable(){
+		TestTableConfig tableCheck1 = new TestTableConfig();
+		TableRewriteParam tableTenantRewrite = new TableRewriteParam(Arrays.asList("user","dept"), new TableNameProvider() {
+			@Override
+			public String getTableName(String name) {
+				return name+"_1";
+			}
+		});
+
+
+
+
+		SqlParserRewrite finder = new SqlParserRewrite(tableCheck1, Collections.emptyList(),tableTenantRewrite);
+
+		return finder;
+	}
+
+	@Test
+	public void testTable() throws JSQLParserException {
+
+		String sql = "select * from user u where  1=1";
+		Statement statement = (Statement) CCJSqlParserUtil.parse(sql,
+			parser -> parser.withSquareBracketQuotation(true));
+		SqlParserRewrite finder = buildTable();
+		List<String> tables = finder.getTableList(statement);
+		String expected = "SELECT * FROM user_1 u WHERE 1 = 1";
+		Assert.assertEquals(expected,statement.toString());
+
+	}
+
+	@Test
+	public void testTable2() throws JSQLParserException {
+
+		String sql = "select id,(select id from dept d where d=1) from user u where  1=1";
+		Statement statement = (Statement) CCJSqlParserUtil.parse(sql,
+			parser -> parser.withSquareBracketQuotation(true));
+		SqlParserRewrite finder = buildTable();
+		List<String> tables = finder.getTableList(statement);
+		String expected = "SELECT id, (SELECT id FROM dept_1 d WHERE d = 1) FROM user_1 u WHERE 1 = 1";
+		Assert.assertEquals(expected,statement.toString());
+
 	}
 
 

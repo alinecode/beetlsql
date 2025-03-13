@@ -12,24 +12,25 @@ import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class SqlParserRewrite extends MyTablesNamesFinder {
 
 
 	protected  Stack<RewriteTask> selectStack = new Stack<>();
 	protected List<ColRewriteParam> colRewriteParamList;
-	protected List<TableRewriteParam> tableRewriteParamList;
+	protected TableRewriteParam tableRewriteParam;
 
 	TableConfig tableCheck;
 
-	public SqlParserRewrite(TableConfig tableCheck,List<ColRewriteParam> colRewriteParamList,List<TableRewriteParam> tableRewriteParamList){
+	public SqlParserRewrite(TableConfig tableCheck,List<ColRewriteParam> colRewriteParamList,TableRewriteParam tableRewriteParam){
 		this.tableCheck = tableCheck;
 		this.colRewriteParamList = colRewriteParamList;
-		this.tableRewriteParamList = tableRewriteParamList;
+		this.tableRewriteParam = tableRewriteParam;
 	}
 
 	public SqlParserRewrite(TableConfig tableCheck,List<ColRewriteParam> colRewriteParamList){
-		this(tableCheck,colRewriteParamList,new ArrayList<>());
+		this(tableCheck,colRewriteParamList,null);
 	}
 
 
@@ -88,6 +89,22 @@ public class SqlParserRewrite extends MyTablesNamesFinder {
 
 	public void setTableCheck(TableConfig tableCheck) {
 		this.tableCheck = tableCheck;
+	}
+
+
+	@Override
+	public void visit(Table tableName) {
+		super.visit(tableName);
+		if(tableRewriteParam==null){
+			return ;
+		}
+		String table = tableName.getName();
+		if(!tableRewriteParam.match(table)){
+			return ;
+		}
+
+		String newName = tableRewriteParam.getTableNameProvider().getTableName(table);
+		tableName.setName(newName);
 	}
 
 	public static void main(String[] args)  throws Exception{

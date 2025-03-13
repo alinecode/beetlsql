@@ -22,13 +22,20 @@ import java.util.Map;
 public class SqlRewriteInterceptor implements Interceptor {
 	Logger logger = LoggerFactory.getLogger(SqlRewriteInterceptor.class);
 	List<ColRewriteParam> rewriteConfigs = new ArrayList<>();
+	TableRewriteParam tableRewriteParam;
 	TableConfig tableCheck ;
 	Map<String,String> sqlCache = null;
 	static ThreadLocal<Integer> enableRewrite  = ThreadLocal.withInitial(() -> 0);
 
 	public SqlRewriteInterceptor(SQLManager sqlManager,List<ColRewriteParam> rewriteConfigs){
+		this(sqlManager,rewriteConfigs,null);
+	}
+
+	public SqlRewriteInterceptor(SQLManager sqlManager,List<ColRewriteParam> rewriteConfigs,TableRewriteParam tableRewriteParam){
 		this.rewriteConfigs = rewriteConfigs;
+		this.tableRewriteParam = tableRewriteParam;
 		tableCheck = new DefaultTableConfig(sqlManager.getMetaDataManager());
+
 	}
 
 
@@ -73,8 +80,7 @@ public class SqlRewriteInterceptor implements Interceptor {
 		if(statement instanceof Insert){
 			return ;
 		}
-		SqlParserRewrite finder = new SqlParserRewrite(tableCheck, rewriteConfigs);
-
+		SqlParserRewrite finder = new SqlParserRewrite(tableCheck, rewriteConfigs,tableRewriteParam);
 		List<String> tables =  finder.getTableList(statement);
 		String newSql = statement.toString();
 		ctx.getExecuteContext().sqlResult.jdbcSql = newSql;
