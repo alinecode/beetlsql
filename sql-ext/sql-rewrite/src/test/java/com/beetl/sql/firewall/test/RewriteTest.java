@@ -4,6 +4,7 @@ import com.beetl.sql.rewrite.*;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.insert.Insert;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,7 +16,7 @@ public class RewriteTest {
 	@Test
 	public void testSelect() throws JSQLParserException {
 
-		String sql = "select * from user u where  1=1";
+		String sql = "select * from user u where  1=1 AND t=1";
 		Statement statement = (Statement) CCJSqlParserUtil.parse(sql,
 			parser -> parser.withSquareBracketQuotation(true));
 		SqlParserRewrite finder = build();
@@ -102,6 +103,46 @@ public class RewriteTest {
 		finder.getTableList(statement);
 		System.out.println(statement);
 		Assert.assertEquals(expected,statement.toString());
+
+	}
+
+	@Test
+	public void insert4TenantTable() throws JSQLParserException {
+		TestTableConfig tableCheck1 = new TestTableConfig();
+		String sql = "insert into user (name) values (?) ";
+		Insert insert = (Insert) CCJSqlParserUtil.parse(sql,
+			parser -> parser.withSquareBracketQuotation(true));
+		ColRewriteParam tenantRewrite = new ColRewriteParam("tenant_id", new ColValueProvider() {
+			@Override
+			public Object getCurrentValue() {
+				return 1;
+			}
+		});
+
+		SqlParserRewrite finder = new SqlParserRewrite(tableCheck1, Arrays.asList(tenantRewrite));
+		List<String> tables = finder.getTableList(insert);
+		System.out.println(insert);
+		Assert.assertEquals("INSERT INTO user (name, tenant_id) VALUES (?, 1)",insert.toString());
+
+		sql = "insert into user (name,id) values (?,?) ";
+		insert = (Insert) CCJSqlParserUtil.parse(sql,
+			parser -> parser.withSquareBracketQuotation(true));
+		finder.getTableList(insert);
+		Assert.assertEquals("INSERT INTO user (name, id, tenant_id) VALUES (?, ?, 1)",insert.toString());
+		System.out.println(insert);
+	}
+
+	@Test
+	public void insertTable4TableRewrite() throws JSQLParserException {
+		TestTableConfig tableCheck1 = new TestTableConfig();
+		String sql = "insert into user (name,id) values (?,?) ";
+		Insert insert = (Insert) CCJSqlParserUtil.parse(sql,
+			parser -> parser.withSquareBracketQuotation(true));
+
+		SqlParserRewrite finder = buildTable();
+		List<String> tables = finder.getTableList(insert);
+		System.out.println(tables);
+		System.out.println(insert);
 
 	}
 

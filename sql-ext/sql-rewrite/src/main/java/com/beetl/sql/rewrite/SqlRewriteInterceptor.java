@@ -77,9 +77,7 @@ public class SqlRewriteInterceptor implements Interceptor {
 			logger.error("parse error "+sql,e);
 			throw new BeetlSQLException(BeetlSQLException.ERROR,"parse error "+sql,e);
 		}
-		if(statement instanceof Insert){
-			return ;
-		}
+
 		SqlParserRewrite finder = new SqlParserRewrite(tableCheck, rewriteConfigs,tableRewriteParam);
 		List<String> tables =  finder.getTableList(statement);
 		String newSql = statement.toString();

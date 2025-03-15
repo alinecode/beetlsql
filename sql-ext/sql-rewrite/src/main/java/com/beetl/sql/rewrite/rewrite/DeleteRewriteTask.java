@@ -16,7 +16,7 @@ public  class DeleteRewriteTask extends   RewriteTask {
 
 	@Override
 	public void rewrite() {
-		if (table.isEmpty()) {
+		if (tables.isEmpty()) {
 			return;
 		}
 		Expression expression = buildWherePart(deleteSelect.getWhere());

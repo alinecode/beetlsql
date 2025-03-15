@@ -20,7 +20,7 @@ public class TableRewriteParam {
 		this.names = names.stream().map(String::toLowerCase).collect(Collectors.toSet());
 		this.tableNameProvider = tableNameProvider;
 	}
-	protected boolean match(String  name){
+	public boolean match(String  name){
 		return names.contains(name.toLowerCase());
 	}
 }

@@ -1,12 +1,10 @@
 package com.beetl.sql.rewrite;
 
-import com.beetl.sql.rewrite.rewrite.DeleteRewriteTask;
-import com.beetl.sql.rewrite.rewrite.RewriteTask;
-import com.beetl.sql.rewrite.rewrite.SelectRewriteTask;
-import com.beetl.sql.rewrite.rewrite.UpdateRewriteTask;
+import com.beetl.sql.rewrite.rewrite.*;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
@@ -14,6 +12,10 @@ import net.sf.jsqlparser.util.TablesNamesFinder;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * 继承TablesNamesFinder，通过遍历sql ast，使用com.beetl.sql.rewrite.rewrite.* 进行重写
+ *
+ */
 public class SqlParserRewrite extends MyTablesNamesFinder {
 
 
@@ -56,6 +58,14 @@ public class SqlParserRewrite extends MyTablesNamesFinder {
 	public void visit(Update update) {
 		selectStack.push(new UpdateRewriteTask(update,this));
 		super.visit(update);
+		rewrite();
+		selectStack.pop();
+	}
+
+	@Override
+	public void visit(Insert insert) {
+		selectStack.push(new InsertRewriteTask(insert,this));
+		super.visit(insert);
 		rewrite();
 		selectStack.pop();
 	}
@@ -105,6 +115,14 @@ public class SqlParserRewrite extends MyTablesNamesFinder {
 
 		String newName = tableRewriteParam.getTableNameProvider().getTableName(table);
 		tableName.setName(newName);
+	}
+
+	public TableRewriteParam getTableRewriteParam() {
+		return tableRewriteParam;
+	}
+
+	public void setTableRewriteParam(TableRewriteParam tableRewriteParam) {
+		this.tableRewriteParam = tableRewriteParam;
 	}
 
 	public static void main(String[] args)  throws Exception{
