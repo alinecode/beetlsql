@@ -38,9 +38,7 @@ public  class InsertRewriteTask extends   RewriteTask {
 
 		TableRewriteParam tableRewriteParam = sqlParserRewrite.getTableRewriteParam();
 		String tableName = table.getName();
-		if(tableRewriteParam!=null&&tableRewriteParam.match(tableName)){
-			table.setName(tableRewriteParam.getTableNameProvider().getTableName(tableName));
-		}
+
 
 		if(sqlParserRewrite.getColRewriteParamList().isEmpty()){
 			return ;

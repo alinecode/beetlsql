@@ -2,6 +2,9 @@ package com.beetl.sql.rewrite;
 
 import lombok.Data;
 
+/**
+ * 列重写
+ */
 @Data
 public class ColRewriteParam {
 	private String col;

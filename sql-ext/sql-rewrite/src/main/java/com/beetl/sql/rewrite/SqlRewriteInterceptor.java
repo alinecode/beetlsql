@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 负责重写sql，实现多租户字段，逻辑删除字段，以及多表租户，多shcema租户等功能
+ * @see ColRewriteParam
+ * @see TableRewriteParam
+ */
 @Data
 public class SqlRewriteInterceptor implements Interceptor {
 	Logger logger = LoggerFactory.getLogger(SqlRewriteInterceptor.class);
@@ -53,7 +58,7 @@ public class SqlRewriteInterceptor implements Interceptor {
 
 	@Override
 	public void before(InterceptorContext ctx) {
-		if(rewriteConfigs.isEmpty()){
+		if(rewriteConfigs.isEmpty()&tableRewriteParam==null){
 			return ;
 		}
 

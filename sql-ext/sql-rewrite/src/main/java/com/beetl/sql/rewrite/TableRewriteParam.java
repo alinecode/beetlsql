@@ -8,10 +8,15 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * 表名重写
+ * @see ColRewriteParam
+ * @see SchemaRewriteParam
+ */
 @Data
 public class TableRewriteParam {
-	private Set<String> names;
-	private TableNameProvider tableNameProvider;
+	protected Set<String> names;
+	protected TableNameProvider tableNameProvider;
 	public TableRewriteParam(String name,TableNameProvider tableNameProvider) {
 		this(Arrays.asList(name),tableNameProvider);
 
