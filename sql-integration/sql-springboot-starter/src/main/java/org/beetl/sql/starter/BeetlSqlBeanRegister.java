@@ -12,6 +12,7 @@ import org.beetl.sql.ext.spring.SqlManagerFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -26,6 +27,8 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import javax.sql.DataSource;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author xiandafu ,waote
@@ -209,7 +212,7 @@ public class BeetlSqlBeanRegister
 
 
 
-		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
+
 		if(!scan){
 			return bdb ;
 		}
@@ -228,6 +231,9 @@ public class BeetlSqlBeanRegister
 		scanner.setSuffix(config.getDaoSuffix());
 		scanner.registerFilters();
 		scanner.scan(config.getBasePackage().split(","));
+
+
+		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 		return bdb;
 
 	}

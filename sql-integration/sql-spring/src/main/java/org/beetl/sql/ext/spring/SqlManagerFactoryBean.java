@@ -23,9 +23,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.springframework.util.Assert.notNull;
 
@@ -71,6 +69,7 @@ public class SqlManagerFactoryBean
 	protected Map<String, Function> functions = Collections.emptyMap();
 	protected Map<String, TagFactory> tagFactorys = Collections.emptyMap();
 	protected Map<String, IDAutoGen> idAutoGens = Collections.emptyMap();
+
 
 	ApplicationContext applicationContext;
 

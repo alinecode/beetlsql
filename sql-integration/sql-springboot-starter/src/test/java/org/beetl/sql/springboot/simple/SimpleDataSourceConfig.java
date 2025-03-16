@@ -58,6 +58,11 @@ public class SimpleDataSourceConfig {
 				});
 
             }
+
+			@Override
+			public void beforeMapper(Class mapperClass){
+				System.out.println("find mapper "+mapperClass);
+			}
         };
     }
 }

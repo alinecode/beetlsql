@@ -86,7 +86,7 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
 	void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions) {
 		GenericBeanDefinition definition;
 		for (BeanDefinitionHolder holder : beanDefinitions) {
-			logger.debug(holder.toString());
+
 			definition = (GenericBeanDefinition) holder.getBeanDefinition();
 			String mapperClassName = definition.getBeanClassName();
 			// 必须在这里加入泛型限定，要不然在spring下会有循环引用的问题
@@ -100,7 +100,6 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
 			if (logger.isDebugEnabled()) {
 				logger.debug("已开启BeetSql自动按照类型注入 '" + holder.getBeanName() + "'.");
 			}
-
 		}
 	}
 
@@ -119,4 +118,6 @@ public class BeetlSqlClassPathScanner extends ClassPathBeanDefinitionScanner {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
+
+
 }
