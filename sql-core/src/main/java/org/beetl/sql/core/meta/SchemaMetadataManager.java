@@ -7,6 +7,7 @@ import org.beetl.sql.clazz.kit.Plugin;
 import org.beetl.sql.clazz.kit.ThreadSafeCaseInsensitiveHashMap;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.db.DBStyle;
+import org.beetl.sql.core.nosql.SchemaLessMetaDataManager;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -18,6 +19,8 @@ import java.util.Set;
 /**
  * 用于管理SQL数据库元信息，比如表，列，主键
  * @author xiandafu
+ * @see IgnoreSchemaMetadataManager
+ * @see SchemaLessMetaDataManager
  */
 @Plugin
 public class SchemaMetadataManager implements MetadataManager {

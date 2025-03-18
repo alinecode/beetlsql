@@ -209,11 +209,8 @@ public class BeetlSqlBeanRegister
 		bdb.addPropertyValue("extProperties", ps);
 		bdb.addPropertyValue("name", name);
 
-
-
-
-
 		if(!scan){
+			registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 			return bdb ;
 		}
 
