@@ -26,9 +26,11 @@ public interface SQLManagerLifeCycle {
 
 	/**
 	 * 准备初始化一个mapper之前，可以收集mapper打印，或者预加载mapper里sql模板
+	 * @param sqlManagerName
+	 * @param manager
 	 * @param mapperClass
 	 */
-	default void beforeMapper(Class mapperClass){}
+	default Class beforeMapper(String sqlManagerName , SQLManager manager,Class mapperClass){return  mapperClass;}
 
 }
 

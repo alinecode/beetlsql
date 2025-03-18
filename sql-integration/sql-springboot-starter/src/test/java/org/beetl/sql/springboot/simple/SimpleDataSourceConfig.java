@@ -60,8 +60,10 @@ public class SimpleDataSourceConfig {
             }
 
 			@Override
-			public void beforeMapper(Class mapperClass){
+			public Class beforeMapper(String sqlMangerName, SQLManager manager,Class mapperClass){
 				System.out.println("find mapper "+mapperClass);
+				return mapperClass;
+
 			}
         };
     }

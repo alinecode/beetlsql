@@ -17,6 +17,7 @@ import static org.springframework.util.Assert.notNull;
 public class BeetlSqlMapperFactoryBean<T> extends DaoSupport implements FactoryBean<T> , ApplicationContextAware {
 	private Class<T> mapperInterface;
 	SQLManager sqlManager;
+	String sqlManagerName;
 
 	ApplicationContext applicationContext;
 
@@ -44,7 +45,7 @@ public class BeetlSqlMapperFactoryBean<T> extends DaoSupport implements FactoryB
 			//ignore
 		}
 		if(sqlManagerLifeCycle!=null){
-			sqlManagerLifeCycle.beforeMapper(mapperInterface);
+			mapperInterface= sqlManagerLifeCycle.beforeMapper(sqlManagerName,sqlManager,mapperInterface);
 		}
 		return this.sqlManager.getMapper(mapperInterface);
 	}
@@ -70,6 +71,14 @@ public class BeetlSqlMapperFactoryBean<T> extends DaoSupport implements FactoryB
 
 	public void setSqlManager(SQLManager sqlManager) {
 		this.sqlManager = sqlManager;
+	}
+
+	public String getSqlManagerName() {
+		return sqlManagerName;
+	}
+
+	public void setSqlManagerName(String sqlManagerName) {
+		this.sqlManagerName = sqlManagerName;
 	}
 
 	@Override
