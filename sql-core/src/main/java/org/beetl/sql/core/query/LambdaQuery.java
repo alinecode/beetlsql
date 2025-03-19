@@ -11,7 +11,9 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -645,5 +647,13 @@ public class LambdaQuery<T> extends Query<T> {
     public LambdaQuery<T> useCondition(QueryCondition condition) {
         super.useCondition(condition);
         return this;
+    }
+
+    public int updateParams(Map<Property<T, ?>, Object> t){
+        Map<String, Object> map = new HashMap<>(t.size());
+        t.forEach((key,value) -> {
+            map.put(getColumnName((Property<T, ?>) key), value);
+        });
+        return updateSelective(map);
     }
 }
