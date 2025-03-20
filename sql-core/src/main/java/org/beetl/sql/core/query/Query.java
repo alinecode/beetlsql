@@ -234,6 +234,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
 
     @Override
+    public int updateParams(Map<String, Object> params){
+        return updateSelective(params);
+    }
+
+    @Override
     public int updateSelective(Object t) {
         SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_SELECTIVE);
         SQLSource sqlSource = sqlManager.getSqlLoader().queryAutoSQL(id);

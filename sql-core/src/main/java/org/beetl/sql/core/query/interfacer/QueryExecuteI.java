@@ -113,6 +113,8 @@ public interface QueryExecuteI<M> {
 	 */
 	int updateParams(Object... t);
 
+	int updateParams(Map<String, Object> params);
+
 	/***
 	 * 全部更新，包括更新null值
 	 * @param t,任意对象，或者Map

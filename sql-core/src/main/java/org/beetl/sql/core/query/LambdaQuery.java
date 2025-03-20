@@ -649,11 +649,16 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
-    public int updateParams(Map<Property<T, ?>, Object> t){
+    /**
+     * 更新指定参数和参数值
+     * @param t 形如 Map.of(实体类::属性,值,实体类::属性2,值2)
+     * @return
+     */
+    public int update(Map<Property<T, ?>, Object> t){
         Map<String, Object> map = new HashMap<>(t.size());
         t.forEach((key,value) -> {
             map.put(getColumnName((Property<T, ?>) key), value);
         });
-        return updateSelective(map);
+        return updateParams(map);
     }
 }
