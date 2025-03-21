@@ -11,7 +11,9 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -645,5 +647,18 @@ public class LambdaQuery<T> extends Query<T> {
     public LambdaQuery<T> useCondition(QueryCondition condition) {
         super.useCondition(condition);
         return this;
+    }
+
+    /**
+     * 更新指定参数和参数值
+     * @param t 形如 Map.of(实体类::属性,值,实体类::属性2,值2)
+     * @return
+     */
+    public int update(Map<Property<T, ?>, Object> t){
+        Map<String, Object> map = new HashMap<>(t.size());
+        t.forEach((key,value) -> {
+            map.put(getColumnName((Property<T, ?>) key), value);
+        });
+        return updateParams(map);
     }
 }
