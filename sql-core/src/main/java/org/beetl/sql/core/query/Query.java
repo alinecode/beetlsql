@@ -224,16 +224,6 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
     }
 
     @Override
-    public int updateParams(Object... t) {
-        // t数组是[key,value,key,value形式的参数]，循环t数组，并将key,value存入hashmap中
-        Map<String, Object> map = new HashMap<>();
-        for (int i = 0; i < t.length; i+=2) {
-            map.put(t[i].toString(), t[i + 1]);
-        }
-        return updateSelective(map);
-    }
-
-    @Override
     public int updateParams(Map<String, Object> params){
         return updateSelective(params);
     }

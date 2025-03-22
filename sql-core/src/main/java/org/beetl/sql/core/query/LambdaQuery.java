@@ -649,16 +649,61 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
+
+	/**
+	 * 更新一个属性和值
+	 * @param property
+	 * @param value
+	 * @return
+	 */
+	public int updateParams(Property<T, ?> property, Object value){
+		return updateParams(property,value,null,null);
+	}
+
+	/**
+	 * 更新俩个属性和值对
+	 * @param property
+	 * @param value
+	 * @param property2
+	 * @param value2
+	 * @return
+	 */
+	public int updateParams(Property<T, ?> property, Object value,Property<T, ?> property2, Object value2){
+		return updateParams(property,value,property2,value2,null,null);
+	}
+
+	/**
+	 * 更新3个属性和值对
+	 * @param property
+	 * @param value
+	 * @param property2
+	 * @param value2
+	 * @param property3
+	 * @param value3
+	 * @return
+	 */
+	public int updateParams(Property<T, ?> property, Object value,Property<T, ?> property2, Object value2,Property<T, ?> property3, Object value3){
+		Map<Property<T, ?>, Object> params = new HashMap<>();
+		params.put(property,value);
+		if(property2!=null){
+			params.put(property2,value2);
+		}
+		if(property3!=null){
+			params.put(property3,value3);
+		}
+		return updateSelectiveParams(params);
+	}
+
     /**
      * 更新指定参数和参数值
      * @param t 形如 Map.of(实体类::属性,值,实体类::属性2,值2)
      * @return
      */
-    public int update(Map<Property<T, ?>, Object> t){
+    public int updateSelectiveParams(Map<Property<T, ?>, Object> t){
         Map<String, Object> map = new HashMap<>(t.size());
         t.forEach((key,value) -> {
             map.put(getColumnName((Property<T, ?>) key), value);
         });
-        return updateParams(map);
+        return  updateParams(map);
     }
 }
