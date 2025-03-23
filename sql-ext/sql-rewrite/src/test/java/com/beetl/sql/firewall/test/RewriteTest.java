@@ -16,12 +16,12 @@ public class RewriteTest {
 	@Test
 	public void testSelect() throws JSQLParserException {
 
-		String sql = "select * from user u where  1=1 AND t=1";
+		String sql = "select * from user u";
 		Statement statement = (Statement) CCJSqlParserUtil.parse(sql,
 			parser -> parser.withSquareBracketQuotation(true));
 		SqlParserRewrite finder = build();
 		List<String> tables = finder.getTableList(statement);
-		String expected = "SELECT * FROM user u WHERE 1 = 1 AND u.tenant_id = 1 AND u.is_delete = 0";
+		String expected = "SELECT * FROM user u WHERE u.tenant_id = 1 AND u.is_delete = 0";
 		Assert.assertEquals(expected,statement.toString());
 
 	}

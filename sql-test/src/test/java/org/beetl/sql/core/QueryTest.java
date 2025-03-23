@@ -184,7 +184,8 @@ public class QueryTest extends BaseTest {
 		query.andEq("id",2).updateParams("name","hello");
 
 		LambdaQuery<User> lambdaQuery1 = sqlManager.lambdaQuery(User.class);
-		lambdaQuery1.andEq(User::getId,2).updateParams(User::getName,"a",User::getAge,18);
+		lambdaQuery1.andEq(User::getId,2).updateParams(User::getName,"a"
+			,User::getAge,18);
 
 		User user = sqlManager.unique(User.class,2);
 		Assert.assertEquals(18,user.getAge().intValue());
