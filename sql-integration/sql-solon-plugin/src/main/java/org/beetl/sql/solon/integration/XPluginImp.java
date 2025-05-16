@@ -26,11 +26,11 @@ public class XPluginImp implements Plugin {
 
         //for new
         context.beanBuilderAdd(Db.class, (clz, wrap, anno) -> {
-            builderAddDo(clz, wrap, Solon.cfg().getByExpr(anno.value()));
+            builderAddDo(clz, wrap, Solon.cfg().getByTmpl(anno.value()));
         });
 
         context.beanInjectorAdd(Db.class, (varH, anno) -> {
-            injectorAddDo(varH, Solon.cfg().getByExpr(anno.value()));
+            injectorAddDo(varH, Solon.cfg().getByTmpl(anno.value()));
         });
 
 
