@@ -4,6 +4,7 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.solon.DbManager;
 import org.beetl.sql.solon.annotation.Db;
 
+import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.core.*;
 
