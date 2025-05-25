@@ -9,11 +9,11 @@
 	<parent>
 		<groupId>com.ibeetl</groupId>
 		<artifactId>beetlsql-all</artifactId>
-		<version>3.32-RELEASE</version>
+		<version>3.33-RELEASE</version>
 	</parent>
 
 	<properties>
-		<beetlsql.version>3.32-RELEASE</beetlsql.version>
+		<beetlsql.version>3.33-RELEASE</beetlsql.version>
 		<jmh.version>1.25</jmh.version>
 		<spring.version>5.2.8.RELEASE</spring.version>
 		<spring.data.jpa.version>2.3.3.RELEASE</spring.data.jpa.version>
