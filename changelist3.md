@@ -1,3 +1,7 @@
+#3.33
+* Orace12Style Bug fix
+* Solon Template support
+* LambdaQuery support update column
 #3.23.1
 
 * 批量操作，可选逐条打印
