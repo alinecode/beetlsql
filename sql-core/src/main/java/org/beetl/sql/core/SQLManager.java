@@ -859,7 +859,6 @@ public class SQLManager implements DataAPI {
 	@Override
 	public int[] insertBatch(Class clazz, List<?> list) {
 		SQLExecutor script = getScript(clazz, INSERT);
-		int max = dbStyle.getMaxBatchCount();
 		int[] ret = script.insertBatch(clazz, list);
 		return ret;
 
