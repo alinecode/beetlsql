@@ -22,7 +22,7 @@ public class UpdateByIdBatchAMI extends MapperInvoke {
     public Object call(SQLManager sm, Class entityClass,  Method m, Object[] args) {
 		List<Object> list = (List<Object>)args[0];
 		int defaultBatchSize = sm.getDbStyle().getMaxBatchCount();
-		if(args.length==1&&list.size()<defaultBatchSize){
+		if(args.length==1&&list.size()<=defaultBatchSize){
 			//大多数情况
 			return sm.updateByIdBatch(list);
 		}

@@ -32,7 +32,7 @@ public class UpdateTemplateByIdBatchAMI extends MapperInvoke {
 		}
 		List<Object> list = (List<Object>)para;
 		int defaultBatchSize = sm.getDbStyle().getMaxBatchCount();
-		if(list.size()<defaultBatchSize){
+		if(list.size()<=defaultBatchSize){
 			//大多数情况
 			return sm.updateBatchTemplateById(entityClass, (List)para);
 		}
