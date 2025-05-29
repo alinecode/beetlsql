@@ -73,7 +73,7 @@ public class QuickTest {
 		OrderLogMapper mapper = sqlManager.getMapper(OrderLogMapper.class);
 		mapper.insertBatch(list);
 
-		int[] rets = mapper.updateByIdBatch(list,5);
+		int[] rets = mapper.updateTemplateByIdBatch(list);
 
 
 

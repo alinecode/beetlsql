@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.33-RELEASE</version>
+        <version>3.34-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>ymatrix</artifactId>
-    <version>3.33-RELEASE</version>
+    <version>3.34-RELEASE</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.postgresql</groupId>
