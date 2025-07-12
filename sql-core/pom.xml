@@ -11,6 +11,7 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-core</artifactId>
     <version>3.35-RELEASE</version>
+	<name>${project.artifactId}</name>
     <properties>
         <slf4j.version>1.7.32</slf4j.version>
     </properties>

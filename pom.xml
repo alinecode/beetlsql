@@ -8,6 +8,7 @@
 	<url>http://maven.apache.org</url>
 	<description>java DAO tool</description>
     <packaging>pom</packaging>
+
 	<licenses>
 		<license>
 			<name>The "BSD license</name>
@@ -153,7 +154,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>3.2.7</version>
+				<version>3.2.8</version>
 				<executions>
 					<execution>
 						<phase>verify</phase>
@@ -202,11 +203,14 @@
 				<extensions>true</extensions>
 				<configuration>
 					<publishingServerId>central</publishingServerId>
+					<autoPublish>true</autoPublish>
+					<waitUntil>published</waitUntil>
 				</configuration>
 			</plugin>
 
 
 		</plugins>
+
 
 	</build>
 

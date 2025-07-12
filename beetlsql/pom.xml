@@ -7,6 +7,7 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>beetlsql</artifactId>
     <version>3.35-RELEASE</version>
+	<name>${project.artifactId}</name>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>

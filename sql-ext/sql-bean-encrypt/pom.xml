@@ -12,7 +12,7 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-bean-encrypt</artifactId>
     <version>3.35-RELEASE</version>
-
+	<name>${project.artifactId}</name>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

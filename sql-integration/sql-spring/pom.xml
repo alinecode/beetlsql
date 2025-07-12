@@ -13,6 +13,7 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-spring</artifactId>
     <version>3.35-RELEASE</version>
+	<name>${project.artifactId}</name>
     <properties>
         <spring.version>4.2.3.RELEASE</spring.version>
     </properties>

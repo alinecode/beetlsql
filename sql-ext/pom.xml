@@ -11,6 +11,7 @@
     </parent>
     <artifactId>sql-ext</artifactId>
     <version>3.35-RELEASE</version>
+	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<modules>
 		<module>sql-xml</module>

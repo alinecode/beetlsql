@@ -13,6 +13,7 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-test</artifactId>
     <version>3.35-RELEASE</version>
+	<name>${project.artifactId}</name>
     <properties>
         <beetlsql.version>3.35-RELEASE</beetlsql.version>
         <mysql.version>8.0.20</mysql.version>

@@ -13,6 +13,7 @@
     <artifactId>sql-integration</artifactId>
     <version>3.35-RELEASE</version>
     <packaging>pom</packaging>
+	<name>${project.artifactId}</name>
     <modules>
         <module>sql-spring</module>
         <module>sql-springboot-starter</module>

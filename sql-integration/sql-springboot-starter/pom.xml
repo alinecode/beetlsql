@@ -12,6 +12,7 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-springboot-starter</artifactId>
     <version>3.35-RELEASE</version>
+	<name>${project.artifactId}</name>
     <properties><springfox.version>3.0.0</springfox.version></properties>
     <dependencies>
         <dependency>
