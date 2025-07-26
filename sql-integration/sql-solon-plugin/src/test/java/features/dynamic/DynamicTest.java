@@ -1,10 +1,12 @@
 package features.dynamic;
 
 import org.junit.jupiter.api.Test;
+import org.noear.solon.annotation.Import;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.test.SolonTest;
 
-@SolonTest(DynamicApp.class)
+@Import(profiles = "application-dynamic.properties")
+@SolonTest
 public class DynamicTest {
     @Inject
     DynamicService single;

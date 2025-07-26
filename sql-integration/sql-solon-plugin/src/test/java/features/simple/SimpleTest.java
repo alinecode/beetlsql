@@ -1,10 +1,12 @@
 package features.simple;
 
 import org.junit.jupiter.api.Test;
+import org.noear.solon.annotation.Import;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.test.SolonTest;
 
-@SolonTest(SimpleApp.class)
+@Import(profiles = "application-simple.properties")
+@SolonTest
 public class SimpleTest {
     @Inject
     SimpleService service;
