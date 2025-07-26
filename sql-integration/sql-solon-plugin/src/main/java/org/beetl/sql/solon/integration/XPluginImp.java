@@ -4,6 +4,7 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.solon.DbManager;
 import org.beetl.sql.solon.annotation.Db;
 
+import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.core.*;
 
@@ -26,11 +27,11 @@ public class XPluginImp implements Plugin {
 
         //for new
         context.beanBuilderAdd(Db.class, (clz, wrap, anno) -> {
-            builderAddDo(clz, wrap, anno.value());
+            builderAddDo(clz, wrap, Solon.cfg().getByTmpl(anno.value()));
         });
 
         context.beanInjectorAdd(Db.class, (varH, anno) -> {
-            injectorAddDo(varH, anno.value());
+            injectorAddDo(varH, Solon.cfg().getByTmpl(anno.value()));
         });
 
 

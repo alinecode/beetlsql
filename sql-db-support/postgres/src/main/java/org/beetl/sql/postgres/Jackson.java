@@ -1,4 +1,4 @@
-package org.beetl.sql.ymtraix;
+package org.beetl.sql.postgres;
 
 import org.beetl.sql.annotation.builder.Builder;
 

@@ -6,13 +6,14 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.30.14-RELEASE</version>
+        <version>3.35-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-integration</artifactId>
-    <version>3.30.14-RELEASE</version>
+    <version>3.35-RELEASE</version>
     <packaging>pom</packaging>
+	<name>${project.artifactId}</name>
     <modules>
         <module>sql-spring</module>
         <module>sql-springboot-starter</module>
@@ -26,7 +27,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.30.14-RELEASE</version>
+            <version>3.35-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 

@@ -176,6 +176,27 @@ public class QueryTest extends BaseTest {
 	}
 
 
+	@Test
+	public void updateParams() throws SQLException {
+		//模拟事务环境
+
+		Query<User> query = sqlManager.query(User.class);
+		query.andEq("id",2).updateParams("name","hello");
+
+		LambdaQuery<User> lambdaQuery1 = sqlManager.lambdaQuery(User.class);
+		lambdaQuery1.andEq(User::getId,2).updateParams(User::getName,"a"
+			,User::getAge,18);
+
+		User user = sqlManager.unique(User.class,2);
+		Assert.assertEquals(18,user.getAge().intValue());
+		Assert.assertEquals("a",user.getName());
+
+
+
+
+	}
+
+
 
 
 

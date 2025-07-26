@@ -6,6 +6,7 @@ import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.mapper.MapperInvoke;
 import org.beetl.sql.mapper.builder.MethodParamsHolder;
 import org.beetl.sql.mapper.template.BaseTemplateMI;
+import org.beetl.sql.mapper.util.BatchExecuteUtil;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -29,6 +30,18 @@ public class UpdateTemplateByIdBatchAMI extends MapperInvoke {
 		if(!(para instanceof  List)){
 			throw new BeetlSQLException(BeetlSQLException.ERROR_MAPPER_PARAMEER,"期望包含一个List集合");
 		}
-		return sm.updateBatchTemplateById(entityClass, (List)para);
+		List<Object> list = (List<Object>)para;
+		int defaultBatchSize = sm.getDbStyle().getMaxBatchCount();
+		if(list.size()<=defaultBatchSize){
+			//大多数情况
+			return sm.updateBatchTemplateById(entityClass, (List)para);
+		}
+
+		int[] ret = BatchExecuteUtil.executeBatchList(list, defaultBatchSize, subList -> {
+			int[] subRet =  sm.updateBatchTemplateById(entityClass, (List)para);;
+			return subRet;
+		});
+		return ret;
+
 	}
 }

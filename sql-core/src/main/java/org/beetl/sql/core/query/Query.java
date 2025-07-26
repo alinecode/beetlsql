@@ -18,6 +18,7 @@ import org.beetl.sql.core.query.interfacer.StrongValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -220,6 +221,11 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
             sqlSource.setId(id);
         }
         return handlerUpdateSql(t, sqlSource);
+    }
+
+    @Override
+    public int updateParams(Map<String, Object> params){
+        return updateSelective(params);
     }
 
     @Override
@@ -629,7 +635,5 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 		this.sql.append(" AND ").append(col).append("!=").append(value).append(" ");
 
 	}
-
-
 
 }

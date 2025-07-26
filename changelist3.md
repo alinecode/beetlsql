@@ -1,3 +1,11 @@
+# 3.34
+* BaseMapper的批量插入和更新接口，增加分批功能。
+* 批量更新接口关闭PreparedStatement，避免某些数据库+数据源出错
+
+# 3.33
+* Orace12Style Bug fix
+* Solon Template support
+* LambdaQuery support update column
 #3.23.1
 
 * 批量操作，可选逐条打印

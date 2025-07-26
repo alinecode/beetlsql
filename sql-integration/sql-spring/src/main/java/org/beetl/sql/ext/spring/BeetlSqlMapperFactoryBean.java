@@ -1,7 +1,10 @@
 package org.beetl.sql.ext.spring;
 
 import org.beetl.sql.core.SQLManager;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.support.DaoSupport;
 
 import static org.springframework.util.Assert.notNull;
@@ -11,9 +14,16 @@ import static org.springframework.util.Assert.notNull;
  * @param <T>
  * @author woate
  */
-public class BeetlSqlMapperFactoryBean<T> extends DaoSupport implements FactoryBean<T> {
+public class BeetlSqlMapperFactoryBean<T> extends DaoSupport implements FactoryBean<T> , ApplicationContextAware {
 	private Class<T> mapperInterface;
 	SQLManager sqlManager;
+	String sqlManagerName;
+
+	ApplicationContext applicationContext;
+
+
+
+
 	public BeetlSqlMapperFactoryBean(Class<T> mapperInterface) {
 		this.mapperInterface = mapperInterface;
 	}
@@ -27,6 +37,16 @@ public class BeetlSqlMapperFactoryBean<T> extends DaoSupport implements FactoryB
 
 	@Override
 	public T getObject() throws Exception {
+		SQLManagerLifeCycle sqlManagerLifeCycle = null;
+		try{
+			//可能有性能问题
+			 sqlManagerLifeCycle = applicationContext.getBean(SQLManagerLifeCycle.class);
+		}catch (Exception exception){
+			//ignore
+		}
+		if(sqlManagerLifeCycle!=null){
+			mapperInterface= sqlManagerLifeCycle.beforeMapper(sqlManagerName,sqlManager,mapperInterface);
+		}
 		return this.sqlManager.getMapper(mapperInterface);
 	}
 
@@ -51,5 +71,18 @@ public class BeetlSqlMapperFactoryBean<T> extends DaoSupport implements FactoryB
 
 	public void setSqlManager(SQLManager sqlManager) {
 		this.sqlManager = sqlManager;
+	}
+
+	public String getSqlManagerName() {
+		return sqlManagerName;
+	}
+
+	public void setSqlManagerName(String sqlManagerName) {
+		this.sqlManagerName = sqlManagerName;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 }

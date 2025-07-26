@@ -3,12 +3,16 @@ package org.beetl.sql.starter;
 import org.beetl.core.fun.ObjectUtil;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.spring.BeetlSqlClassPathScanner;
 import org.beetl.sql.ext.spring.SqlManagerFactoryBean;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -23,6 +27,8 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import javax.sql.DataSource;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author xiandafu ,waote
@@ -34,6 +40,11 @@ public class BeetlSqlBeanRegister
 	Environment env;
 
 	BeetlSqlConfig beetlSqlConfig ;
+
+
+	BeanFactory beanFactory ;
+
+
 
 
 	@Override
@@ -68,7 +79,7 @@ public class BeetlSqlBeanRegister
 		return bdb;
 	}
 
-	
+
 	protected void readySqlManager(BeanDefinitionRegistry registry) {
 		final ClassLoader classLoader = getClassLoader();
 		Map<String, BeetlSqlConfig.SQLManagerConfig> configs =  beetlSqlConfig.getConfigs();
@@ -198,12 +209,12 @@ public class BeetlSqlBeanRegister
 		bdb.addPropertyValue("extProperties", ps);
 		bdb.addPropertyValue("name", name);
 
-
-
-		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 		if(!scan){
+			registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 			return bdb ;
 		}
+
+
 
 		BeetlSqlClassPathScanner scanner = new BeetlSqlClassPathScanner(registry);
 		// this check is needed in Spring 3.1
@@ -211,10 +222,15 @@ public class BeetlSqlBeanRegister
 			scanner.setResourceLoader(resourceLoader);
 		}
 
+
+
 		scanner.setSqlManagerFactoryBeanName(name);
 		scanner.setSuffix(config.getDaoSuffix());
 		scanner.registerFilters();
 		scanner.scan(config.getBasePackage().split(","));
+
+
+		registry.registerBeanDefinition(name, bdb.getBeanDefinition());
 		return bdb;
 
 	}
@@ -224,6 +240,7 @@ public class BeetlSqlBeanRegister
 		this.env = env;
 
 	}
+
 
 
 }

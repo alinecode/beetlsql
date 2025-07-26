@@ -12,17 +12,18 @@ import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.core.loader.SQLLoader;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.springframework.util.Assert.notNull;
 
@@ -32,7 +33,7 @@ import static org.springframework.util.Assert.notNull;
  */
 @Data
 public class SqlManagerFactoryBean
-		implements FactoryBean<SQLManager>, InitializingBean, ApplicationListener<ApplicationEvent> {
+		implements FactoryBean<SQLManager>, InitializingBean, ApplicationListener<ApplicationEvent> , ApplicationContextAware {
 	/**
 	 * 配置文件地址
 	 */
@@ -69,6 +70,11 @@ public class SqlManagerFactoryBean
 	protected Map<String, TagFactory> tagFactorys = Collections.emptyMap();
 	protected Map<String, IDAutoGen> idAutoGens = Collections.emptyMap();
 
+
+	ApplicationContext applicationContext;
+
+	SQLManagerLifeCycle sqlManagerLifeCycle;
+
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
 
@@ -80,7 +86,12 @@ public class SqlManagerFactoryBean
 			return sqlManager;
 		}
 
+		try{
+			sqlManagerLifeCycle = applicationContext.getBean(SQLManagerLifeCycle.class);
 
+		}catch (Exception BeansException){
+			//忽略，
+		}
 
 		//这里配置拦截器
 		if (interceptors == null) {
@@ -130,6 +141,11 @@ public class SqlManagerFactoryBean
 		if (name != null) {
 			builder.setName(name);
 		}
+
+		if(sqlManagerLifeCycle!=null){
+			sqlManagerLifeCycle.customizeBuild(name,builder);
+		}
+
 		SQLManager tempSQLManager = builder.build();
 
 		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine) tempSQLManager.getSqlTemplateEngine();
@@ -147,8 +163,11 @@ public class SqlManagerFactoryBean
 			tempSQLManager.addIdAutoGen(entry.getKey(), entry.getValue());
 		}
 
-
+		if(sqlManagerLifeCycle!=null){
+			sqlManagerLifeCycle.customize(name,tempSQLManager);
+		}
 		sqlManager = tempSQLManager;
+
 		return sqlManager;
 	}
 
@@ -221,5 +240,10 @@ public class SqlManagerFactoryBean
 
 	public void setDev(boolean dev) {
 		this.dev = dev;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 }

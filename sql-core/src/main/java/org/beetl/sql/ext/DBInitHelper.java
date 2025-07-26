@@ -48,6 +48,32 @@ public class DBInitHelper {
 		}
 	}
 
+	public static void executeSqlScript(DataSource ds,InputStream  sqlFile){
+		Connection conn = null;
+		try{
+
+			int len = sqlFile.available();
+			byte[] bs = new byte[len];
+			sqlFile.read(bs);
+			String str = new String(bs,"UTF-8");
+			String[] sqls = str.split(";");
+			conn = ds.getConnection();
+			executeSql(conn,sqls);
+
+
+		}catch(Exception ex){
+			throw new RuntimeException(ex);
+		}finally {
+			if(conn!=null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+	}
+
 	private static void executeSql(Connection conn,String[] sqls) throws SQLException {
 		for(String sql:sqls){
 			if(StringKit.isBlank(sql)){

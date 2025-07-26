@@ -2,14 +2,22 @@ package com.beetl.sql.rewrite;
 
 import lombok.Data;
 
+/**
+ * 列重写
+ */
 @Data
 public class ColRewriteParam {
 	private String col;
 	private ColValueProvider colValueProvider;
 	private boolean equalsFlag = true;
 	public ColRewriteParam(String col,ColValueProvider colValueProvider) {
+		this(col,colValueProvider,true);
+	}
+
+	public ColRewriteParam(String col,ColValueProvider colValueProvider,boolean equals) {
 		this.col = col;
 		this.colValueProvider = colValueProvider;
+		this.equalsFlag = equals;
 	}
 
 	public ColRewriteParam(String col,long value) {
@@ -20,12 +28,6 @@ public class ColRewriteParam {
 				return value;
 			}
 		};
-	}
-
-	public ColRewriteParam(String col,ColValueProvider colValueProvider,boolean equals) {
-		this.col = col;
-		this.colValueProvider = colValueProvider;
-		this.equalsFlag = equals;
 	}
 
 

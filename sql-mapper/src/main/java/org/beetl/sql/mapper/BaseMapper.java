@@ -36,15 +36,20 @@ public interface BaseMapper<T> {
 	int insertTemplate(T entity);
 
 	/**
-	 * 批量插入实体。此方法不会获取自增主键的值，如果需要，建议不适用批量插入，适用
-	 * <pre>
-	 * insert(T entity,true);
-	 * </pre>
-	 *
+	 * 批量插入实体。
+	 * 未指定batchSize情况下，默认是DbStyle.getMaxBatchCount
 	 * @param list 实体集合
 	 */
 	@AutoMapper(InsertBatchAMI.class)
 	void insertBatch(List<T> list);
+
+	/**
+	 * 分批插入数据
+	 * @param list
+	 * @param batchSize
+	 */
+	@AutoMapper(InsertBatchAMI.class)
+	void insertBatch(List<T> list,int batchSize);
 
 	/**
 	 * 根据主键更新对象，所以属性都参与更新。也可以使用主键ColumnIgnore来控制更新的时候忽略此字段
@@ -235,16 +240,26 @@ public interface BaseMapper<T> {
 	Class<T> getTargetEntity();
 
 	/**
-	 * 批量更新
+	 * 批量更新,未指定batchSize情况下，默认是DbStyle.getMaxBatchCount
 	 *
 	 * @return Class
 	 */
 	@AutoMapper(UpdateByIdBatchAMI.class)
 	int[] updateByIdBatch(List<?> list);
 
+	/**
+	 * 批量更新，按照batchSize分组。 batchSize参数允许小批量的提交到数据库
+	 * @param list
+	 * @param batchSize
+	 * @return
+	 * @see org.beetl.sql.core.db.DBStyle#
+	 */
+	@AutoMapper(UpdateByIdBatchAMI.class)
+	int[] updateByIdBatch(List<?> list,int batchSize);
+
 
 	/**
-	 * 模板批量更新
+	 * 模板批量更新,会按照DBStyle.getMaxBatchCount 分批处理
 	 *
 	 * @return Class
 	 */
@@ -252,7 +267,7 @@ public interface BaseMapper<T> {
 	int[] updateTemplateByIdBatch(List<?> list);
 
     /**
-     * 根据主键清空数据字段，不支持复合主键
+     * 根据主键清空数据字段，不支持复合主键，会按照DBStyle.getMaxBatchCount 分批处理
      *
      * @param pks        主键
      * @param properties 属性

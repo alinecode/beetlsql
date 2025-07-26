@@ -78,7 +78,7 @@ public class SQLManagerBuilder {
 	private NameConversion nc;
 
 	/** 数据库连接管理,包含主从，或者其他逻辑，比如多租户 */
-	private final ConnectionSource ds;
+	private  ConnectionSource ds;
 
 	/*
 	 * 数据库元数据
@@ -516,6 +516,13 @@ public class SQLManagerBuilder {
 		}
 
 
+	}
+
+	public ConnectionSource getDs() {
+		return ds;
+	}
+	public void setDs(ConnectionSource connectionSource) {
+		this.ds =connectionSource;
 	}
 
 

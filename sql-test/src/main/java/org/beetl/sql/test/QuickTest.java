@@ -48,7 +48,11 @@ public class QuickTest {
 		SQLManagerBuilder builder = new SQLManagerBuilder(source);
 		builder.setNc(new UnderlinedNameConversion());
 		builder.setInters(new Interceptor[]{new DebugInterceptor()});
-		builder.setDbStyle(new H2Style());
+		builder.setDbStyle(new H2Style(){
+			public int getMaxBatchCount() {
+				return 10;
+			}
+		});
 		builder.setProduct(false);
 		SQLManager sqlManager = builder.build();
 		return sqlManager;
@@ -58,9 +62,18 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		SqlId sqlId = SqlId.of("user.select");
-		sqlManager.selectByIds(OrderLog.class,Arrays.asList(1,2));
+		List<OrderLog> list = new ArrayList<>();
+		for(int i=0;i<5;i++){
+			OrderLog orderLog = new OrderLog();
+			orderLog.setVersion(1);
+			orderLog.setName("hello");
+			list.add(orderLog);
 
+		}
+		OrderLogMapper mapper = sqlManager.getMapper(OrderLogMapper.class);
+		mapper.insertBatch(list);
+
+		int[] rets = mapper.updateTemplateByIdBatch(list);
 
 
 

@@ -6,6 +6,7 @@ import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.core.query.QueryCondition;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +106,34 @@ public interface QueryExecuteI<M> {
 	 * @return
 	 */
 	<M> M uniqueSimple();
+
+	/**
+	 * 更新指定参数和参数值
+	 * @param t 多个参数，以key,value,key1,value1的形式传入
+	 * @return
+	 */
+	default  int updateParams(String col,Object value){
+		return updateParams(col,value,null,null);
+	}
+	default  int updateParams(String col,Object value,String col2,Object value2){
+		return updateParams(col,value,col2,value2,null,null);
+	}
+	default int updateParams(String col,Object value,String col2,Object value2,String col3,Object value3){
+		Map<String, Object> params = new HashMap<>();
+		params.put(col,value);
+		if(col2!=null){
+			params.put(col2,value2);
+		}
+		if(col3!=null){
+			params.put(col3,value3);
+		}
+		return updateParams(params);
+	}
+
+
+
+
+	int updateParams(Map<String, Object> params);
 
 	/***
 	 * 全部更新，包括更新null值

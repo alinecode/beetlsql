@@ -4,6 +4,7 @@ import com.beetl.sql.rewrite.ColRewriteParam;
 import com.beetl.sql.rewrite.SqlParserRewrite;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.schema.Column;
@@ -15,12 +16,12 @@ import java.util.List;
 import java.util.Set;
 
 public abstract  class  RewriteTask {
-	Set<Table> table = new HashSet<>();
+	Set<Table> tables = new HashSet<>();
 
 	SqlParserRewrite sqlParserRewrite;
 	public abstract  void rewrite();
 	public void addTable(Table tableName){
-		table.add(tableName);
+		tables.add(tableName);
 	}
 
 	void setSqlRewrite(SqlParserRewrite sqlParserRewrite){
@@ -28,14 +29,14 @@ public abstract  class  RewriteTask {
 	}
 
 	protected Expression buildWherePart(Expression oldPart){
-		for(Table t:table){
+		for(Table table: tables){
 			//TODO t.getFullyQualifiedName() ?
-			List<ColRewriteParam> colRewriteParams = isRewrite(t.getName());
+			List<ColRewriteParam> colRewriteParams = isRewrite(table.getName());
 
 			if(colRewriteParams.isEmpty()){
 				continue;
 			}
-			String prefix = t.getAlias()!=null?t.getAlias().getName():t.getName();
+			String prefix = table.getAlias()!=null?table.getAlias().getName():table.getName();
 			for(ColRewriteParam colRewriteParam : colRewriteParams){
 				Column column = new Column(prefix + "."+ colRewriteParam.getCol());
 				Object value = colRewriteParam.getColValueProvider().getCurrentValue();
@@ -51,7 +52,16 @@ public abstract  class  RewriteTask {
 						conditionExpress = new NotEqualsTo(column, valueExpress);
 					}
 
-				}else if ( value instanceof  List){
+				}else if(value instanceof CharSequence){
+					Expression valueExpress = new StringValue(value.toString());;
+					if(colRewriteParam.isEqualsFlag()){
+						conditionExpress = new EqualsTo(column, valueExpress);
+					}else{
+						conditionExpress = new NotEqualsTo(column, valueExpress);
+					}
+
+				}
+				else if ( value instanceof  List){
 					if(((List)value).isEmpty()){
 						continue;
 					}
@@ -91,6 +101,8 @@ public abstract  class  RewriteTask {
 		}
 		return list;
 	}
+
+
 
 
 

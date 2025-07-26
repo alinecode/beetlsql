@@ -1,8 +1,9 @@
-package org.beetl.sql.ymtraix;
+package org.beetl.sql.postgres;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.db.PostgresStyle;
+import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 
 import javax.sql.DataSource;
@@ -18,13 +19,19 @@ public class PostgresTest {
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
         builder.setDbStyle(new PostgresStyle());
         SQLManager sqlManager = builder.build();
+		DBInitHelper.executeSqlScript(sqlManager,"create.sql");
 		Set<String> set = sqlManager.getMetaDataManager().allTable();
 		System.out.println(set);
+		JsonDataEntity jsonDataEntity = new JsonDataEntity();
+		jsonDataEntity.setId("2");
+		jsonDataEntity.setCreateTs(System.currentTimeMillis());
+		jsonDataEntity.setJsonData(new Color("a","b"));
+		sqlManager.insert(jsonDataEntity);
+		jsonDataEntity = sqlManager.unique(JsonDataEntity.class,"2");
+		jsonDataEntity.setJsonData(null);
+		sqlManager.updateById(jsonDataEntity);
 
 
-//		sqlManager.updateById(jsonDataEntity);
-
-//		JsonDataEntity jsonDataEntity = sqlManager.single(JsonDataEntity.class,"a");
 
     }
 

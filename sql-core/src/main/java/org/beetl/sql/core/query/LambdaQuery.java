@@ -11,7 +11,9 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -646,4 +648,51 @@ public class LambdaQuery<T> extends Query<T> {
         super.useCondition(condition);
         return this;
     }
+
+
+	/**
+	 * 更新一个属性和值
+	 * @param property
+	 * @param value
+	 * @return
+	 */
+	public int updateParams(Property<T, ?> property, Object value){
+		return updateParams(property,value,null,null);
+	}
+
+	/**
+	 * 更新俩个属性和值对
+	 * @param property
+	 * @param value
+	 * @param property2
+	 * @param value2
+	 * @return
+	 */
+	public int updateParams(Property<T, ?> property, Object value,Property<T, ?> property2, Object value2){
+		return updateParams(property,value,property2,value2,null,null);
+	}
+
+	/**
+	 * 更新3个属性和值对
+	 * @param property
+	 * @param value
+	 * @param property2
+	 * @param value2
+	 * @param property3
+	 * @param value3
+	 * @return
+	 */
+	public int updateParams(Property<T, ?> property, Object value,Property<T, ?> property2, Object value2,Property<T, ?> property3, Object value3){
+		Map<String, Object> params = new HashMap<>();
+		params.put(getColumnName(property),value);
+		if(property2!=null){
+			params.put(getColumnName(property2),value2);
+		}
+		if(property3!=null){
+			params.put(getColumnName(property3),value3);
+		}
+		return updateParams(params);
+	}
+
+
 }

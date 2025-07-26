@@ -18,6 +18,7 @@ import java.util.Set;
  * 根据主键将表字段设置为null
  *
  * @author liumin
+ * @author xiandafu@126.com
  */
 public class ClearFieldsByIdsAMI extends MapperInvoke {
 
@@ -43,7 +44,7 @@ public class ClearFieldsByIdsAMI extends MapperInvoke {
             cols[i] = lambdaQuery.getColumnName(props[i]);
         }
         //对主键分批次更新，防止IN过长报错,默认2000条一个批次,可以考虑改为参数化
-        List<List<Object>> batchPks = ListUtil.partition(pks, 2000);
+        List<List<Object>> batchPks = ListUtil.partition(pks, sm.getDbStyle().getMaxBatchCount());
         batchPks.forEach(ids -> {
             clearTableCols(sm, entityClass, tableName, cols, ids);
         });

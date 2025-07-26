@@ -58,6 +58,13 @@ public class SimpleDataSourceConfig {
 				});
 
             }
+
+			@Override
+			public Class beforeMapper(String sqlMangerName, SQLManager manager,Class mapperClass){
+				System.out.println("find mapper "+mapperClass);
+				return mapperClass;
+
+			}
         };
     }
 }
