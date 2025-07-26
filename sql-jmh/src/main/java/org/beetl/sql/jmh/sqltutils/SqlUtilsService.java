@@ -53,7 +53,8 @@ public class SqlUtilsService implements BaseService {
 
 		try {
 			db.sql("insert into sys_user  (id,code,code1,code2,code3,code4,code5,code6,code7,code8,code9,code10,code11,code12,code13,code14,code15,code16,code17,code18,code19,code20) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-				.update(sqlSysUser, this::bindTo);
+				.params(sqlSysUser, this::bindTo)
+				.update();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

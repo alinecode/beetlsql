@@ -37,7 +37,7 @@
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar，可以去掉 -->
 		<module>sql-integration</module>
         <!-- 性能测试，包含了jpa，myabtis等国内外框架,可以去掉-->
-<!--        <module>sql-jmh</module>-->
+        <module>sql-jmh</module>
         <!-- 验证多库支持 ,集成太多的数据库lib，默认去掉-->
 <!--		<module>sql-db-support</module>-->
 
@@ -97,7 +97,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>4.2.3.RELEASE</spring.version>
-		<solon.version>3.0.1</solon.version>
+		<solon.version>3.4.1</solon.version>
 		<aspectj.version>1.6.11</aspectj.version>
 	</properties>
 
@@ -169,53 +169,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Source -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.1</version>
-				<configuration>
-					<encoding>utf-8</encoding>
-                    <doclint>none</doclint>
-					<quiet>true</quiet>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 
 	</build>
