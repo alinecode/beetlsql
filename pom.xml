@@ -38,7 +38,7 @@
 		<!-- 集成和扩展太多的数据库,可以被屏蔽，以加速项目下载jar，可以去掉 -->
 		<module>sql-integration</module>
         <!-- 性能测试，包含了jpa，myabtis等国内外框架,可以去掉-->
-<!--        <module>sql-jmh</module>-->
+        <module>sql-jmh</module>
         <!-- 验证多库支持 ,集成太多的数据库lib，默认去掉-->
 <!--		<module>sql-db-support</module>-->
 
@@ -98,7 +98,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>4.2.3.RELEASE</spring.version>
-		<solon.version>3.0.1</solon.version>
+		<solon.version>3.4.1</solon.version>
 		<aspectj.version>1.6.11</aspectj.version>
 	</properties>
 
@@ -142,12 +142,12 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>8</source>
 					<target>8</target>
 					<encoding>UTF-8</encoding>
-                    <parameters>true</parameters>
+					<parameters>true</parameters>
 				</configuration>
 			</plugin>
 
@@ -213,7 +213,6 @@
 
 
 	</build>
-
 
 
 </project>

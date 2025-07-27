@@ -3,13 +3,13 @@ package org.beetl.sql.jmh.sqltutils;
 import org.beetl.sql.jmh.base.BaseService;
 import org.beetl.sql.jmh.base.DataSourceHelper;
 import org.beetl.sql.jmh.sqltutils.model.SQLSysUser;
-import org.noear.solon.Solon;
 import org.noear.solon.data.sql.SqlUtils;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SqlUtilsService implements BaseService {
@@ -18,7 +18,6 @@ public class SqlUtilsService implements BaseService {
 	SqlUtils db;
 
 	public void init() {
-		Solon.start(SqlUtilsService.class, new String[0]);
 		DataSource dataSource = DataSourceHelper.newDatasource();
 
 		this.db = SqlUtils.of(dataSource);
@@ -53,15 +52,9 @@ public class SqlUtilsService implements BaseService {
 
 
 		try {
-			db.insert("insert into sys_user  (id,code,code1,code2,code3,code4,code5,code6,code7,code8,code9,code10,code11,code12,code13,code14,code15,code16,code17,code18,code19,code20) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-				sqlSysUser.getId(), sqlSysUser.getCode(), sqlSysUser.getCode1(),
-				sqlSysUser.getCode2(), sqlSysUser.getCode3(), sqlSysUser.getCode4(),
-				sqlSysUser.getCode5(), sqlSysUser.getCode6(), sqlSysUser.getCode7(),
-				sqlSysUser.getCode8(), sqlSysUser.getCode9(), sqlSysUser.getCode10(),
-				sqlSysUser.getCode11(), sqlSysUser.getCode12(), sqlSysUser.getCode13(),
-				sqlSysUser.getCode14(), sqlSysUser.getCode15(), sqlSysUser.getCode16(),
-				sqlSysUser.getCode17(), sqlSysUser.getCode18(), sqlSysUser.getCode19(),
-				sqlSysUser.getCode20());
+			db.sql("insert into sys_user  (id,code,code1,code2,code3,code4,code5,code6,code7,code8,code9,code10,code11,code12,code13,code14,code15,code16,code17,code18,code19,code20) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+				.params(sqlSysUser, this::bindTo)
+				.update();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -71,9 +64,10 @@ public class SqlUtilsService implements BaseService {
 	@Override
 	public Object getEntity() {
 		try {
-			Map<String, Object> map = db.selectRow("select * from sys_user where id=?", 1);
+			SQLSysUser entity = db.sql("select * from sys_user where id=?", 1)
+				.queryRow(this::bindFrom);
 
-			return bind(map);
+			return entity;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -87,11 +81,7 @@ public class SqlUtilsService implements BaseService {
 
 	@Override
 	public void executeJdbcSql() {
-		try {
-			db.selectRow("select * from sys_user limit 1");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		getEntity();
 	}
 
 	@Override
@@ -121,48 +111,65 @@ public class SqlUtilsService implements BaseService {
 
 	@Override
 	public void getAll() {
-		ArrayList<SQLSysUser> sqlSysUsers = new ArrayList<>();
 
-		Iterator<Map<String, Object>> iterator = null;
 		try {
-			iterator = db.selectRowStream("select * from sys_user", 100);
-			while (iterator.hasNext()) {
-				sqlSysUsers.add(bind(iterator.next()));
-			}
+			List<SQLSysUser> list = db.sql("select * from sys_user")
+				.queryRowList(this::bindFrom);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		} finally {
-			if (iterator != null) {
-				iterator.remove();
-			}
 		}
 	}
 
-	SQLSysUser bind(Map<String, Object> map) {
+	void bindTo(PreparedStatement ps, SQLSysUser sqlSysUser) throws SQLException {
+		ps.setInt(1, sqlSysUser.getId());
+		ps.setString(2, sqlSysUser.getCode());
+		ps.setString(3, sqlSysUser.getCode1());
+		ps.setString(4, sqlSysUser.getCode2());
+		ps.setString(5, sqlSysUser.getCode3());
+		ps.setString(6, sqlSysUser.getCode4());
+		ps.setString(7, sqlSysUser.getCode5());
+		ps.setString(8, sqlSysUser.getCode6());
+		ps.setString(9, sqlSysUser.getCode7());
+		ps.setString(10, sqlSysUser.getCode8());
+		ps.setString(11, sqlSysUser.getCode9());
+		ps.setString(12, sqlSysUser.getCode10());
+		ps.setString(13, sqlSysUser.getCode11());
+		ps.setString(14, sqlSysUser.getCode12());
+		ps.setString(15, sqlSysUser.getCode13());
+		ps.setString(16, sqlSysUser.getCode14());
+		ps.setString(17, sqlSysUser.getCode15());
+		ps.setString(18, sqlSysUser.getCode16());
+		ps.setString(19, sqlSysUser.getCode17());
+		ps.setString(20, sqlSysUser.getCode18());
+		ps.setString(21, sqlSysUser.getCode19());
+		ps.setString(22, sqlSysUser.getCode20());
+	}
+
+	SQLSysUser bindFrom(ResultSet rs) throws SQLException {
 		SQLSysUser sqlSysUser = new SQLSysUser();
 
-		sqlSysUser.setId((Integer) map.get("id"));
-		sqlSysUser.setCode((String) map.get("code"));
-		sqlSysUser.setCode1((String) map.get("code1"));
-		sqlSysUser.setCode2((String) map.get("code2"));
-		sqlSysUser.setCode3((String) map.get("code3"));
-		sqlSysUser.setCode4((String) map.get("code4"));
-		sqlSysUser.setCode5((String) map.get("code5"));
-		sqlSysUser.setCode6((String) map.get("code6"));
-		sqlSysUser.setCode7((String) map.get("code7"));
-		sqlSysUser.setCode8((String) map.get("code8"));
-		sqlSysUser.setCode9((String) map.get("code9"));
-		sqlSysUser.setCode10((String) map.get("code10"));
-		sqlSysUser.setCode11((String) map.get("code11"));
-		sqlSysUser.setCode12((String) map.get("code12"));
-		sqlSysUser.setCode13((String) map.get("code13"));
-		sqlSysUser.setCode14((String) map.get("code14"));
-		sqlSysUser.setCode15((String) map.get("code15"));
-		sqlSysUser.setCode16((String) map.get("code16"));
-		sqlSysUser.setCode17((String) map.get("code17"));
-		sqlSysUser.setCode18((String) map.get("code18"));
-		sqlSysUser.setCode19((String) map.get("code19"));
-		sqlSysUser.setCode20((String) map.get("code20"));
+		sqlSysUser.setId(rs.getInt(1));
+		sqlSysUser.setCode(rs.getString(2));
+		sqlSysUser.setCode1(rs.getString(3));
+		sqlSysUser.setCode2(rs.getString(4));
+		sqlSysUser.setCode3(rs.getString(5));
+		sqlSysUser.setCode4(rs.getString(6));
+		sqlSysUser.setCode5(rs.getString(7));
+		sqlSysUser.setCode6(rs.getString(8));
+		sqlSysUser.setCode7(rs.getString(9));
+		sqlSysUser.setCode8(rs.getString(10));
+		sqlSysUser.setCode9(rs.getString(11));
+		sqlSysUser.setCode10(rs.getString(12));
+		sqlSysUser.setCode11(rs.getString(13));
+		sqlSysUser.setCode12(rs.getString(14));
+		sqlSysUser.setCode13(rs.getString(15));
+		sqlSysUser.setCode14(rs.getString(16));
+		sqlSysUser.setCode15(rs.getString(17));
+		sqlSysUser.setCode16(rs.getString(18));
+		sqlSysUser.setCode17(rs.getString(19));
+		sqlSysUser.setCode18(rs.getString(20));
+		sqlSysUser.setCode19(rs.getString(21));
+		sqlSysUser.setCode20(rs.getString(22));
 
 		return sqlSysUser;
 	}
