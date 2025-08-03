@@ -8,9 +8,13 @@ import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.SeqID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.core.loader.SQLFileVersion;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 测试TailBean功能
@@ -30,6 +34,8 @@ public class TailBeanTest extends BaseTest {
     }
 
 
+
+
 	@Test
 	public void testNewTailBean(){
 
@@ -37,6 +43,24 @@ public class TailBeanTest extends BaseTest {
 		System.out.println(userView3.getId()+" :"+userView3.get("departmentName"));
 		Assert.assertEquals(userView3.getName(),userView3.get("name"));
 	}
+
+
+	@Test
+	public void testGeneralGetBean(){
+		String template = "select * from user where name = #{namekk}";
+		String expectedSQL = "select * from user where name = ?";
+		SQLSource sqlSource = new SQLSource(SqlId.of("any","select"),template);
+		sqlSource.version = new SQLFileVersion();
+		GeneralGetBean input = new GeneralGetBean();
+		sqlManager.getSqlLoader().addSQL(sqlSource.id,sqlSource);
+		//both root bean  AND genenral get bean
+		SQLResult sqlResult = sqlManager.getSQLResult(sqlSource.id,input);
+		String jdbcSql = sqlResult.jdbcSql;
+		Object jdbcPara = sqlResult.jdbcPara.get(0).value;
+		Assert.assertEquals(expectedSQL,jdbcSql);
+		Assert.assertEquals(jdbcPara,"namekk");
+	}
+
 
 
 	@Data
@@ -58,6 +82,12 @@ public class TailBeanTest extends BaseTest {
 
 	}
 
+
+	public static class GeneralGetBean {
+		public Object get(String key){
+			return  key;
+		}
+	}
 
 	public static class  MyNewTailBean extends  TailBean{
 		@Override
