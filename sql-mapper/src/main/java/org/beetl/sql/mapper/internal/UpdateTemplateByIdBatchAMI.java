@@ -38,7 +38,7 @@ public class UpdateTemplateByIdBatchAMI extends MapperInvoke {
 		}
 
 		int[] ret = BatchExecuteUtil.executeBatchList(list, defaultBatchSize, subList -> {
-			int[] subRet =  sm.updateBatchTemplateById(entityClass, (List)para);;
+			int[] subRet =  sm.updateBatchTemplateById(entityClass, subList);
 			return subRet;
 		});
 		return ret;
