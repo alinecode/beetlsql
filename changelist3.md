@@ -1,3 +1,6 @@
+# 3.36
+* 修复不支持General GetBean
+* 性能测试更新依赖包
 # 3.34
 * BaseMapper的批量插入和更新接口，增加分批功能。
 * 批量更新接口关闭PreparedStatement，避免某些数据库+数据源出错
