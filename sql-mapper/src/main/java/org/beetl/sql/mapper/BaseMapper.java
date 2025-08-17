@@ -5,7 +5,6 @@ import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.core.query.Query;
 import org.beetl.sql.mapper.annotation.AutoMapper;
 import org.beetl.sql.mapper.internal.*;
-import org.beetl.sql.mapper.internal.UpdateTemplateByIdBatchAMI;
 
 import java.util.List;
 
@@ -42,6 +41,27 @@ public interface BaseMapper<T> {
 	 */
 	@AutoMapper(InsertBatchAMI.class)
 	void insertBatch(List<T> list);
+
+	/**
+	 * 批量插入实体，为空的属性不插入
+	 *
+	 *
+	 * @param list 实体集合
+	 * @return int[]
+	 */
+	@AutoMapper(InsertTemplateBatchAMI.class)
+	int[] insertTemplateBatch(List<T> list);
+
+	/**
+	 * 批量插入实体，为空的属性不插入
+	 *
+	 *
+	 * @param list      实体集合
+	 * @param batchSize 批量大小
+	 * @return int[]
+	 */
+	@AutoMapper(InsertTemplateBatchAMI.class)
+	int[] insertTemplateBatch(List<T> list, int batchSize);
 
 	/**
 	 * 分批插入数据
@@ -96,6 +116,16 @@ public interface BaseMapper<T> {
 	 */
 	@AutoMapper(DeleteByIdAMI.class)
 	int deleteById(Object key);
+
+	/**
+	 * 根据对象的属性和属性值删除
+	 *
+	 * @param    prop 属性
+	 * @param    propValues 属性值
+	 * @return   int
+	 */
+	@AutoMapper(DeleteByPropAmi.class)
+	int deleteByProp(LambdaQuery.Property<T, ?> prop, Object... propValues);
 
 	/**
 	 * 根据主键获取对象，如果对象不存在，则会抛出一个Runtime异常
