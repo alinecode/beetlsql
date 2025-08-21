@@ -25,6 +25,7 @@ public class S02MapperUpdateSample {
         sample.insert();
         sample.insertTemplate();
         sample.insertBatch();
+		sample.insertTemplateBatch();
         sample.updateById();
         sample.updateTemplateById();
         sample.upsert();
@@ -34,6 +35,7 @@ public class S02MapperUpdateSample {
         sample.updateBatch();
         sample.updateBySqlId();
         sample.clearTableField();
+		sample.deleteByProp();
     }
 
     /**
@@ -171,5 +173,32 @@ public class S02MapperUpdateSample {
          */
         mapper.clearProperties(ListUtil.newArrayList(1),UserEntity::getName,UserEntity::getDepartmentId);
     }
+
+	public void insertTemplateBatch() {
+		UserEntity entity = new UserEntity();
+		entity.setName("u01");
+		entity.setDepartmentId(1);
+
+		UserEntity entity1 = new UserEntity();
+		entity1.setName("u02");
+		entity1.setDepartmentId(2);
+
+		UserEntity entity2 = new UserEntity();
+		entity2.setName("u03");
+		entity2.setId(2);
+
+		List<UserEntity> users = ListUtil.newArrayList(entity, entity1, entity2);
+		/**
+		 * 批量插入，为空的属性不插入
+		 */
+		mapper.insertTemplateBatch(users);
+	}
+
+	public void deleteByProp() {
+		/**
+		 *按属性和属性值进行删除
+		 */
+		mapper.deleteByProp(UserEntity::getId, 1, 2);
+	}
 
 }

@@ -1,9 +1,6 @@
 package org.beetl.sql.clazz.kit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 集合工具类
@@ -66,6 +63,23 @@ public class ListUtil {
         return result;
     }
 
-
-
+	/**
+	 * 去除集合中的重复元素
+	 *
+	 * @param <M>  元素类型
+	 * @param list 元素集合
+	 */
+	public static <M> void removeDuplicate(List<M> list) {
+		if (ListUtil.isEmpty(list)) {
+			return;
+		}
+		//兼容使用 Arrays.asList 传入的参数,Arrays.asList 返回的参数类型为Arrays内部私有类，很多集合方法不支持，所以进行重新拷贝
+		String privateType = "java.util.Arrays$ArrayList";
+		if (privateType.equals(list.getClass().getName())) {
+			list = new ArrayList<>(list);
+		}
+		HashSet<M> h = new HashSet<>(list);
+		list.clear();
+		list.addAll(h);
+	}
 }
