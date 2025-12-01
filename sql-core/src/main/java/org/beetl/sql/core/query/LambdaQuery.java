@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -344,6 +345,14 @@ public class LambdaQuery<T> extends Query<T> {
         super.and(condition);
         return this;
     }
+    
+
+    public Query<T> and(Consumer<QueryCondition> consumer) {
+        QueryCondition condition = condition();
+        consumer.accept(condition);
+        return and(condition);
+    }
+
 	@Override
 	public LambdaQuery<T> asTable(String tableName){
     	super.asTable(tableName);
@@ -362,10 +371,22 @@ public class LambdaQuery<T> extends Query<T> {
         return this;
     }
 
+    public Query<T> or(Consumer<QueryCondition> consumer) {
+        QueryCondition condition = condition();
+        consumer.accept(condition);
+        return or(condition);
+    }
+
     @Override
     public LambdaQuery<T> having(QueryCondition condition) {
         super.having(condition);
         return this;
+    }
+
+    public Query<T> having(Consumer<QueryCondition> consumer) {
+        QueryCondition condition = condition();
+        consumer.accept(condition);
+        return having(condition);
     }
 
     @Override
