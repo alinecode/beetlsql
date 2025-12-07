@@ -1,6 +1,6 @@
 # 说明
 
-演示了springBoot如何集成beetlsql
+演示了SpringBoot2和SpringBoot3如何集成beetlsql
 
 * 简单集成，单数据源，SimpleTest
 * 多数据源，一主多从 MasterSlaveTest
