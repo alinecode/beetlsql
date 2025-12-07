@@ -1,8 +1,7 @@
 package org.beetl.sql.mapper.internal;
 
 
-import com.sun.corba.se.impl.orbutil.ObjectUtility;
-import org.beetl.ext.fn.ArrayUtil;
+
 import org.beetl.sql.clazz.kit.ArrayKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.ListUtil;

@@ -1,9 +1,10 @@
 package org.beetl.sql.springboot.dynamicds2;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.sql.core.*;
+import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.springboot.dynamicds.DBInitTool;
 import org.beetl.sql.springboot.dynamicds.DynamicRoutingDataSource;
 import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
-import java.io.InputStream;
 
 /**
  * 系统的默认数据库，事务管理，以及debugInterceptor

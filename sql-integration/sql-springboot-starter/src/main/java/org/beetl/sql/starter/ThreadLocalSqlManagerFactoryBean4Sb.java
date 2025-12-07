@@ -1,8 +1,6 @@
 package org.beetl.sql.starter;
 
-import org.beetl.core.fun.ObjectUtil;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
-import org.beetl.sql.core.ConditionalSQLManager;
 import org.beetl.sql.core.MapperBuilder;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.ThreadLocalSQLManager;

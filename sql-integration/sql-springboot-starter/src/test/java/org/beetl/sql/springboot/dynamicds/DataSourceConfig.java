@@ -1,7 +1,8 @@
 package org.beetl.sql.springboot.dynamicds;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.sql.core.*;
+import org.beetl.sql.core.Interceptor;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.starter.SQLManagerCustomize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

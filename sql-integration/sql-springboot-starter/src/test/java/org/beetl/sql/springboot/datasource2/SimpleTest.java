@@ -1,10 +1,8 @@
 package org.beetl.sql.springboot.datasource2;
 
 
-import org.beetl.sql.springboot.UserInfo;
 import org.beetl.sql.springboot.datasource2.db1.Db1Service;
 import org.beetl.sql.springboot.datasource2.db2.Db2Service;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,6 @@ package org.beetl.sql.springboot.dynamicds2;
 
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.springboot.dynamicds.Dept;
-import org.beetl.sql.springboot.dynamicds2.DeptMapper;
 import org.beetl.sql.springboot.dynamicds.Routing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

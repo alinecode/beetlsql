@@ -40,24 +40,24 @@ public class S06SelectSample {
     public static void main(String[] args) {
         SQLManager sqlManager = SampleHelper.getSqlManager();
         S06SelectSample sample = new S06SelectSample(sqlManager);
-        sample.selectById();
-        sample.userInfo();
-        sample.all();
-        sample.template();
-        sample.execute();
-        sample.executePage();
-        sample.executeTemplate();
-        sample.mapping();
-        sample.fetch();
-
-        //复杂的sql最好维护在sql文件里，而不是java代码里
-        sample.resourceId();
-        sample.pageResourceId();
-        sample.groupPageResourceId();
+//        sample.selectById();
+//        sample.userInfo();
+//        sample.all();
+//        sample.template();
+//        sample.execute();
+//        sample.executePage();
+//        sample.executeTemplate();
+//        sample.mapping();
+//        sample.fetch();
+//
+//        //复杂的sql最好维护在sql文件里，而不是java代码里
+//        sample.resourceId();
+//        sample.pageResourceId();
+//        sample.groupPageResourceId();
         sample.includeOtherSql();
-        sample.includeDynamicSql();
-
-        sample.likeAndIn();
+//        sample.includeDynamicSql();
+//
+//        sample.likeAndIn();
 
 
     }
@@ -245,10 +245,10 @@ public class S06SelectSample {
         UserEntity user = sqlManager.selectUnique(includeTestId,map,UserEntity.class);
 
 
-        SqlId globalIncludeTestId = SqlId.of("selectSample","globalIncludeTest");
-         map = new HashMap();
-        map.put("id",1);
-         user = sqlManager.selectUnique(includeTestId,map,UserEntity.class);
+//        SqlId globalIncludeTestId = SqlId.of("selectSample","globalIncludeTest");
+//         map = new HashMap();
+//        map.put("id",1);
+//         user = sqlManager.selectUnique(includeTestId,map,UserEntity.class);
 
     }
 

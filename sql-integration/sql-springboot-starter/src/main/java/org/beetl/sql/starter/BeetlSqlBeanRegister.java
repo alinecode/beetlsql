@@ -3,21 +3,15 @@ package org.beetl.sql.starter;
 import org.beetl.core.fun.ObjectUtil;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.core.Interceptor;
-import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
 import org.beetl.sql.ext.DebugInterceptor;
 import org.beetl.sql.ext.spring.BeetlSqlClassPathScanner;
 import org.beetl.sql.ext.spring.SqlManagerFactoryBean;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -25,10 +19,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 
-import javax.sql.DataSource;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author xiandafu ,waote

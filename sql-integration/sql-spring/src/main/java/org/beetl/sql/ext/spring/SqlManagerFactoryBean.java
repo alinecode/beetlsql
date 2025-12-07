@@ -23,7 +23,9 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
 
 import static org.springframework.util.Assert.notNull;
 

@@ -1,33 +1,9 @@
 package org.beetl.sql.springboot.dynamicds;
 
-import com.zaxxer.hikari.HikariDataSource;
-import org.beetl.sql.core.Interceptor;
 import org.beetl.sql.core.SQLManager;
-import org.beetl.sql.core.SQLManagerBuilder;
-import org.beetl.sql.core.UnderlinedNameConversion;
-import org.beetl.sql.ext.DBInitHelper;
-import org.beetl.sql.ext.DebugInterceptor;
-import org.beetl.sql.ext.spring.SpringConnectionSource;
-import org.beetl.sql.springboot.simple.Department;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
-import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.stereotype.Service;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import javax.sql.DataSource;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Service
 @Transactional

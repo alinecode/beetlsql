@@ -3,7 +3,6 @@ package org.beetl.sql.springboot.dynamicds2;
 import org.beetl.sql.core.ConnectionSource;
 import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.meta.MetadataManager;
-import org.beetl.sql.core.meta.SchemaMetadataManager;
 
 public class DynamicH2Style extends H2Style {
 	@Override

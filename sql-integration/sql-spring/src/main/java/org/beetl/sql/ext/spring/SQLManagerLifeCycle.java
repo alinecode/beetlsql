@@ -3,8 +3,6 @@ package org.beetl.sql.ext.spring;
 import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.SQLManagerBuilder;
 
-import java.util.List;
-
 /**
  * sqlManager 初始化完毕后的回调，用于进一步通过代码定制sqlmanager
  * 此方法调用后，将会进一步初始化bean所有Mapper
