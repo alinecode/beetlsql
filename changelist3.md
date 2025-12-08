@@ -1,3 +1,6 @@
+# 3.36.0
+* Spring Boot 4 支持
+
 # 3.35.1
 * 修复不支持General GetBean
 * 性能测试更新依赖包

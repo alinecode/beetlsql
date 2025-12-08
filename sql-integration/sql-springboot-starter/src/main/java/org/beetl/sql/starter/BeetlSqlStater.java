@@ -10,7 +10,8 @@ import org.springframework.context.annotation.Import;
 import javax.sql.DataSource;
 
 @Configuration
-@ConditionalOnClass(name = "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration")
+//SpringBoot 3和4的区别
+@ConditionalOnClass(org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class)
 @ConditionalOnBean(DataSource.class)
 @Import({BeetlSqlBeanRegister.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
