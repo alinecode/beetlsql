@@ -119,7 +119,8 @@ public class SchemaMetadataManager implements MetadataManager {
 	}
 
 	/**
-	 * 非线程安全，只能开发模式下使用，比如在线代码生成
+	 * 刷新表结构
+	 * 在动态添加表或者视图的情况下，通过调用此接口获得最新表结构数据
 	 */
 	public void refresh() {
 		this.initMetadata();
@@ -129,7 +130,7 @@ public class SchemaMetadataManager implements MetadataManager {
 
 	protected TableDesc getTableFromMap(String tableName){
 		TableDesc desc = null;
-		Map<String, TableDesc> localMap = this.tableInfoMap;
+		ThreadSafeCaseInsensitiveHashMap localMap = this.tableInfoMap;
 		if(localMap ==null){
 			synchronized(this){
 				localMap = this.tableInfoMap;
