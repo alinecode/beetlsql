@@ -32,7 +32,7 @@ public class SchemaMetadataManager implements MetadataManager {
 	/**
 	 * 表名与表描述信息存储 {@code <String,Object>}
 	 */
-	protected ThreadSafeCaseInsensitiveHashMap tableInfoMap = null;
+	protected volatile ThreadSafeCaseInsensitiveHashMap tableInfoMap = null;
 	/**
 	 * 给定一个默认不存在的表的描述
 	 */
@@ -122,7 +122,6 @@ public class SchemaMetadataManager implements MetadataManager {
 	 * 非线程安全，只能开发模式下使用，比如在线代码生成
 	 */
 	public void refresh() {
-		tableInfoMap = null;
 		this.initMetadata();
 	}
 
@@ -130,18 +129,21 @@ public class SchemaMetadataManager implements MetadataManager {
 
 	protected TableDesc getTableFromMap(String tableName){
 		TableDesc desc = null;
-		if(tableInfoMap ==null){
+		Map<String, TableDesc> localMap = this.tableInfoMap;
+		if(localMap ==null){
 			synchronized(this){
-				if(tableInfoMap !=null){
-					desc =  (TableDesc) tableInfoMap.get(tableName);
+				localMap = this.tableInfoMap;
+				if(localMap !=null){
+					desc =  (TableDesc) localMap.get(tableName);
 				}else{
 					this.initMetadata();
-					desc =  (TableDesc) tableInfoMap.get(tableName);
+					localMap = this.tableInfoMap;
+					desc =  (TableDesc) localMap.get(tableName);
 				}
 
 			}
 		}else{
-			 desc = (TableDesc) tableInfoMap.get(tableName);
+			desc = (TableDesc) localMap.get(tableName);
 		}
 
 		if (desc == NOT_EXIST) {
