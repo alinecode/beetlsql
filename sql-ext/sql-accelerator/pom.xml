@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-ext</artifactId>
-        <version>3.36.0-RELEASE</version>
+        <version>3.36.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-accelerator</artifactId>
-    <version>3.36.0-RELEASE</version>
+    <version>3.36.1-RELEASE</version>
 	<name>${project.artifactId}</name>
 	<dependencies>
 

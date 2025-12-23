@@ -6,7 +6,7 @@ import org.beetl.sql.ext.spring.SQLManagerLifeCycle;
 /**
  * 对sqlManager定制
  * @author xiandafu
- * @deprecated  建议直接使用SQLManagerAfterInit
+ * @deprecated  建议直接使用SQLManagerLifeCycle
  */
 @Deprecated
 public interface SQLManagerCustomize extends SQLManagerLifeCycle {

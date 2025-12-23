@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-integration</artifactId>
-        <version>3.36.0-RELEASE</version>
+        <version>3.36.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-spring</artifactId>
-    <version>3.36.0-RELEASE</version>
+    <version>3.36.1-RELEASE</version>
 	<name>${project.artifactId}</name>
     <properties>
         <spring.version>4.2.3.RELEASE</spring.version>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.36.0-RELEASE</version>
+            <version>3.36.1-RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

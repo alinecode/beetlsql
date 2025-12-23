@@ -223,11 +223,21 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         return handlerUpdateSql(t, sqlSource);
     }
 
+	/**
+	 * 更新数据，
+	 * @param params key为属性名，value为属性值
+	 * @return 影响行数
+	 */
     @Override
     public int updateParams(Map<String, Object> params){
         return updateSelective(params);
     }
 
+	/**
+	 * 更新数据，只更新不为空的字段。如果不限定条件，则更新所有数据
+	 * @param t 任意对象或者Map，如果是Map，则key为属性名，value为属性值
+	 * @return 影响行数
+	 */
     @Override
     public int updateSelective(Object t) {
         SqlId id = this.sqlManager.getSqlIdFactory().buildIdentity(clazz, AutoSQLEnum.UPDATE_SELECTIVE);

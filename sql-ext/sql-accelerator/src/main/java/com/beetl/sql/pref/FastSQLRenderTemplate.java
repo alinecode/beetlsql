@@ -28,7 +28,6 @@ public 	  class FastSQLRenderTemplate extends BeetlSQLTemplateEngine {
 		@Override
 		public VarRef createVarRef(VarAttribute[] attributes, boolean hasSafe, Expression safe, GrammarToken token,
 			GrammarToken firstToken) {
-			disableSyntaxCheck(GrammarCreator.VarRefOptimal);
 			return (attributes.length == 1 && !hasSafe)
 				? new VarRefOptimal(attributes[0], token, firstToken)
 				: new VarRef(attributes, hasSafe, safe, firstToken);

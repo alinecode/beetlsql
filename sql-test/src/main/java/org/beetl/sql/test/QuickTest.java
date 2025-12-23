@@ -14,6 +14,7 @@ import org.beetl.sql.core.db.H2Style;
 import org.beetl.sql.core.db.KeyHolder;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
+import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 
@@ -62,21 +63,12 @@ public class QuickTest {
 		BeanKit.JAVABEAN_STRICT = false;
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
-		List<OrderLog> list = new ArrayList<>();
-		for(int i=0;i<5;i++){
-			OrderLog orderLog = new OrderLog();
-			orderLog.setVersion(1);
-			orderLog.setName("hello");
-			list.add(orderLog);
+		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
+		LambdaQuery<OrderLog> query = sqlManager.lambdaQuery(OrderLog.class);
+		query.andEq(OrderLog::getOrderId,1).updateParams(OrderLog::getUpdateAt,1);
 
-		}
-		OrderLogMapper mapper = sqlManager.getMapper(OrderLogMapper.class);
-		mapper.insertBatch(list);
-
-		int[] rets = mapper.updateTemplateByIdBatch(list);
-
-
-
+		orderLog = sqlManager.unique(OrderLog.class,1);
+		System.out.println(orderLog);
 
 	}
 

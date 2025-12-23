@@ -33,5 +33,7 @@ public class OrderLog {
 
 	String name;
 
+
+	Long updateAt;
 }
 

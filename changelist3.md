@@ -1,3 +1,5 @@
+# 3.36.1
+* Query updateParams 的Bug修复
 # 3.36.0
 * Spring Boot 4 支持
 

@@ -288,25 +288,29 @@ public class LambdaQuery<T> extends Query<T> {
     }
 
 	public String getColumnName(Property<T, ?> property) {
-        try {
-            Method declaredMethod = property.getClass().getDeclaredMethod("writeReplace");
-            declaredMethod.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda = (SerializedLambda) declaredMethod.invoke(property);
-            String method = serializedLambda.getImplMethodName();
-
-
-            String attr = null;
-            if (method.startsWith("get")) {
-                attr = method.substring(3);
-            } else {
-                attr = method.substring(2);
-            }
-            return sqlManager.getNc().getColName(clazz, StringKit.toLowerCaseFirstOne(attr));
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+		String attr = getAttrName(property);
+		return sqlManager.getNc().getColName(clazz, attr);
 
     }
+
+	protected String getAttrName(Property<T, ?> property){
+		try {
+			Method declaredMethod = property.getClass().getDeclaredMethod("writeReplace");
+			declaredMethod.setAccessible(Boolean.TRUE);
+			SerializedLambda serializedLambda = (SerializedLambda) declaredMethod.invoke(property);
+			String method = serializedLambda.getImplMethodName();
+			String attr = null;
+			if (method.startsWith("get")) {
+				attr = method.substring(3);
+			} else {
+				attr = method.substring(2);
+			}
+			attr = StringKit.toLowerCaseFirstOne(attr);
+			return attr;
+		}catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public Class getColumnType(Property<T, ?> property) {
 		try {
@@ -345,7 +349,7 @@ public class LambdaQuery<T> extends Query<T> {
         super.and(condition);
         return this;
     }
-    
+
 
     public Query<T> and(Consumer<QueryCondition> consumer) {
         QueryCondition condition = condition();
@@ -705,12 +709,12 @@ public class LambdaQuery<T> extends Query<T> {
 	 */
 	public int updateParams(Property<T, ?> property, Object value,Property<T, ?> property2, Object value2,Property<T, ?> property3, Object value3){
 		Map<String, Object> params = new HashMap<>();
-		params.put(getColumnName(property),value);
+		params.put(getAttrName(property),value);
 		if(property2!=null){
-			params.put(getColumnName(property2),value2);
+			params.put(getAttrName(property2),value2);
 		}
 		if(property3!=null){
-			params.put(getColumnName(property3),value3);
+			params.put(getAttrName(property3),value3);
 		}
 		return updateParams(params);
 	}

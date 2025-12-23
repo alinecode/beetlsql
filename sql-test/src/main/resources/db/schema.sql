@@ -4,6 +4,7 @@ CREATE TABLE `order_log` (
        `version` int(255) ,
        `a_bc` varchar(255) ,
        `create_time` long,
+       `update_at` long,
        `status` char(1),
 		name varchar(24),
 		PRIMARY KEY (`order_id`)
