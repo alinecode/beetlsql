@@ -79,10 +79,12 @@ public interface DataAPI {
 
     int insertTemplate(Class clazz, Object paras);
 
-    boolean exist(Class<?> clazz, Object pk);
+
+	int[] insertBatchTemplate(Class clazz, List<?> list);
+
+	boolean exist(Class<?> clazz, Object pk);
 
     int[] insertBatch(Class clazz, List<?> list);
-
     int insert(SqlId sqlId, Object paras);
 
 	List<Object> insert(SqlId sqlId, Object paras, String col);

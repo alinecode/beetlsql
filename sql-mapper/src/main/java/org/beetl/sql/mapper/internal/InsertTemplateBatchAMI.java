@@ -26,6 +26,8 @@ public class InsertTemplateBatchAMI extends MapperInvoke {
 			batchSize = (int) args[1];
 		}
 		return BatchExecuteUtil.executeBatchList(entityList, batchSize,
-				subList -> sm.insertBatch(entityClass, subList));
+				subList -> sm.insertBatchTemplate(entityClass, subList));
+
+
 	}
 }

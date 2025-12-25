@@ -128,6 +128,33 @@ public class CoreUpdate extends BaseTest {
 
     }
 
+
+	@Test
+	public void batchTemplateInsert(){
+		long  count = sqlManager.allCount(User.class);
+
+		/* user和 user2 不同字段为null，期望底层生成俩个jdbcSql，分批处理*/
+		User user = new User();
+		user.setName("newName");
+		user.setDepartmentId(1);
+
+		User user2 = new User();
+		user2.setName("newName");
+		user2.setCreateDate(new Date());
+
+		User user3 = new User();
+		user3.setName("newName");
+		user3.setCreateDate(new Date());
+
+		List list = Arrays.asList(user,user2,user3);
+		sqlManager.setBatchLogOneByOne(false);
+		sqlManager.insertBatchTemplate(User.class,list);
+		Assert.assertNotNull(user2.getId());
+		long newCount = sqlManager.allCount(User.class);
+		Assert.assertEquals(newCount,count+3);
+
+	}
+
     @Test
     public void batchUpdate(){
 

@@ -6,12 +6,12 @@
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-sample-common</artifactId>
-    <version>3.36.1-RELEASE</version>
+    <version>3.36.2-RELEASE</version>
 	<name>${project.artifactId}</name>
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-sample</artifactId>
-        <version>3.36.1-RELEASE</version>
+        <version>3.36.2-RELEASE</version>
     </parent>
 
 </project>

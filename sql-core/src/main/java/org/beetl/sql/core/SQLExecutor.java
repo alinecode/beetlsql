@@ -98,10 +98,19 @@ public interface SQLExecutor {
 	 */
 	int update(Class target, Object obj);
 
+	/**
+	 * 批量更新，支持UPDATE_TEMPLATE_BY_ID 或者 UPDATE_BY_ID
+	 * @param list
+	 * @return
+	 */
 	int[] updateBatch(List<?> list);
 
 	int[] updateBatch(Class<?> target, List<?> list);
-
+	/**
+	 * 批量插入,支持INSERT_TEMPLATE 或者 INSERT
+	 * @param list
+	 * @return
+	 */
 	int[] insertBatch(Class<?> target, List<?> list);
 
 	/**

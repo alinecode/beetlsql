@@ -254,7 +254,6 @@ public class BaseSQLExecutor implements SQLExecutor {
             return new int[0];
         }
         int[] rs = null;
-        PreparedStatement ps = null;
         Connection conn = null;
         // 执行jdbc
         InterceptorContext ctx = new InterceptorContext(executeContext);
@@ -272,12 +271,14 @@ public class BaseSQLExecutor implements SQLExecutor {
                 Map<String, Object> paras = this.beforeExecute(target, entity, true);
                 SQLResult result = run(paras);
                 List<SQLParameter> objs = result.jdbcPara;
+				String jdbcSql = result.jdbcSql;
+				PreparedStatement  ps = groupBatchExecutor.containSql(jdbcSql);
                 if (ps == null) {
                     conn = executeContext.sqlManager.getDs().getConn(executeContext, true);
                     if (holder.hasAttr()) {
-                        ps = conn.prepareStatement(result.jdbcSql, this.getKeyHolderCols(holder, entity.getClass()));
+                        ps = conn.prepareStatement(jdbcSql, this.getKeyHolderCols(holder, entity.getClass()));
                     } else {
-                        ps = conn.prepareStatement(result.jdbcSql);
+                        ps = conn.prepareStatement(jdbcSql);
                     }
                     this.applyStatementSetting(executeContext, conn, ps);
                     ctx = this.callInterceptorAsBefore(paras);
@@ -285,25 +286,31 @@ public class BaseSQLExecutor implements SQLExecutor {
 
                 this.setPreparedStatementPara(ps, objs);
                 ps.addBatch();
+
 				groupBatchExecutor.addSql(result,ps);
+				groupBatchExecutor.addPsEntity(ps,entity);
 
             }
+			//执行
 			rs = groupBatchExecutor.executeBatch(executeContext,ctx,executeContext.sqlManager.isBatchLogOneByOne());
-            if (executeContext.sqlManager.getDbStyle().batchGeneratedKeysSupport()) {
-                if (holder.hasAttr()) {
-                    ResultSet keysSet = ps.getGeneratedKeys();
-                    String[] attrs = holder.getAttrNames();
-                    int index = 0;
-                    while (keysSet.next()) {
-                        Object entity = list.get(index);
-                        for (int i = 0; i < attrs.length; i++) {
-                            Object value = keysSet.getObject(i + 1);
-                            BeanKit.setBeanPropertyWithCast(entity, value, attrs[i]);
-                        }
-                        index++;
-                    }
-                    keysSet.close();
-                }
+			//获取自动生成的主键
+            if (holder.hasAttr()&&executeContext.sqlManager.getDbStyle().batchGeneratedKeysSupport()) {
+				String[] attrs = holder.getAttrNames();
+				for(PreparedStatement insertPs:groupBatchExecutor.psEntity.keySet()){
+					ResultSet keysSet = insertPs.getGeneratedKeys();
+					List<Object> insertObjects  = groupBatchExecutor.psEntity.get(insertPs);
+					int index = 0;
+					while (keysSet.next()) {
+						Object entity = insertObjects.get(index);
+						for (int i = 0; i < attrs.length; i++) {
+							Object value = keysSet.getObject(i + 1);
+							BeanKit.setBeanPropertyWithCast(entity, value, attrs[i]);
+						}
+						//下一个实体
+						index++;
+					}
+					keysSet.close();
+				}
             }
 
 
@@ -311,7 +318,8 @@ public class BaseSQLExecutor implements SQLExecutor {
             this.callInterceptorAsException(ctx, e);
             throw new BeetlSQLException(BeetlSQLException.SQL_EXCEPTION, e);
         } finally {
-            clean(true, conn, ps);
+			closeBatchPs(groupBatchExecutor.psEntity.keySet());
+			clean(executeContext, conn);
         }
         return rs;
     }
@@ -420,8 +428,13 @@ public class BaseSQLExecutor implements SQLExecutor {
 		return newPs?ps:null;
 	}
 
+
 	static class GroupBatchExecutor {
+		/* 跟jdbc关联的PreparedStatement，beetlsql批处理是允许不同jdbcsql传入（比如模板update和模板insert，
+		会导致一批实体，对应了多个处理jdbcsql */
 		Map<String, PreparedStatement> batchPs = new HashMap<>();
+		// 跟批处理ps关联的PreparedStatement
+		Map<PreparedStatement, List<Object>> psEntity = new HashMap<>();
 
 		//记录不同sql对应的参数，这里的SQLParameter是特殊的SQLParameter。
 		Map<String, List<SQLParameter>> batchParameter = new HashMap<>();
@@ -431,19 +444,26 @@ public class BaseSQLExecutor implements SQLExecutor {
 
 		public void addSql(SQLResult result,PreparedStatement ps){
 			String sql = result.jdbcSql;
-			if(!batchPs.keySet().contains(sql)){
+			if(!batchPs.containsKey(sql)){
 
 				batchPs.put(sql, ps);
 				batchParameter.put(sql, new ArrayList<SQLParameter>());
 			}
 
 			SQLParameter specialParameter = new SQLParameter(result.jdbcPara);
-			batchParameter.get(result.jdbcSql).add(specialParameter);
+			batchParameter.get(sql).add(specialParameter);
 			return ;
+		}
+
+		public void addPsEntity(PreparedStatement ps ,Object entity){
+			List<Object> list = psEntity.computeIfAbsent(ps, k -> new ArrayList<>());
+			list.add(entity);
 		}
 		public PreparedStatement containSql(String sql){
 			return batchPs.get(sql);
 		}
+
+
 
 		public int[] executeBatch(ExecuteContext executeContext,InterceptorContext ctx,boolean singleUpdate ) throws SQLException{
 
@@ -476,7 +496,6 @@ public class BaseSQLExecutor implements SQLExecutor {
 				}else{
 					//只打印第一组参数和执行结果，大多数情况如此
 					SQLParameter sqlParameter = batchParameter.get(sql).get(0);
-					List<SQLParameter> sqlParameters = (List<SQLParameter>)sqlParameter.value;
 					executeContext.sqlResult.jdbcPara = (List<SQLParameter>)sqlParameter.value;
 					for (Interceptor in : executeContext.sqlManager.getInters()) {
 						in.before(ctx);
@@ -496,8 +515,8 @@ public class BaseSQLExecutor implements SQLExecutor {
 		}
 
 		public void addRet(int[] rets){
-			for(int i=0;i<rets.length;i++){
-				allRet.add(rets[i]);
+			for (int ret : rets) {
+				allRet.add(ret);
 			}
 		}
 

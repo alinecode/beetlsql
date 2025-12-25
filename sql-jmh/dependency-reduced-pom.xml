@@ -3,7 +3,7 @@
   <parent>
     <artifactId>beetlsql-all</artifactId>
     <groupId>com.ibeetl</groupId>
-    <version>3.36.1-RELEASE</version>
+    <version>3.36.2-RELEASE</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ibeetl</groupId>
@@ -72,7 +72,7 @@
     <spring.version>5.2.8.RELEASE</spring.version>
     <solon.version>3.4.1</solon.version>
     <spring.data.jpa.version>2.3.3.RELEASE</spring.data.jpa.version>
-    <beetlsql.version>3.36.1-RELEASE</beetlsql.version>
+    <beetlsql.version>3.36.2-RELEASE</beetlsql.version>
     <easy-query.version>2.0.4</easy-query.version>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
