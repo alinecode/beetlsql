@@ -44,7 +44,11 @@ public class MSSqlServerMetadataManager extends SchemaMetadataManager {
 		}
 		try{
 			//需要管理员权限
-			String sqlremarks = "SELECT C.NAME AS column_name,EP.VALUE AS remarks FROM SYS.EXTENDED_PROPERTIES EP LEFT JOIN SYS.ALL_OBJECTS O ON EP.MAJOR_ID = O.OBJECT_ID LEFT JOIN SYS.SCHEMAS S ON O.SCHEMA_ID = S.SCHEMA_ID LEFT JOIN SYS.COLUMNS AS C ON EP.MAJOR_ID = C.OBJECT_ID AND EP.MINOR_ID = C.COLUMN_ID WHERE EP.NAME = 'MS_Description' AND O.NAME= ?  AND EP.MINOR_ID > 0";
+			String sqlremarks = "SELECT C.name AS column_name,EP.value AS remarks\n"
+				+ "FROM sys.extended_properties EP\n" + "LEFT JOIN sys.all_objects O ON EP.major_id = O.object_id\n"
+				+ "LEFT JOIN sys.schemas S ON O.schema_id = S.schema_id\n"
+				+ "LEFT JOIN sys.columns AS C ON EP.major_id = C.object_id\n" + "AND EP.minor_id = C.column_id\n"
+				+ "WHERE EP.name = 'MS_Description'\n" + "AND O.name= ? AND EP.minor_id > 0";
 			PreparedStatement ps = conn.prepareStatement(sqlremarks);
 			ps.setString(1,tableDesc.getName());
 			ResultSet rsremarks =ps.executeQuery();
@@ -76,7 +80,10 @@ public class MSSqlServerMetadataManager extends SchemaMetadataManager {
 			return remarksmap;
 		}
 
-		String sqlremarks = "select tbl.table_name, prop.value as remarks from information_schema.tables tbl left join sys.extended_properties prop ON prop.major_id = object_id(tbl.table_schema + '.' + tbl.table_name) AND prop.minor_id = 0 AND prop.name = 'MS_Description' WHERE tbl.table_type = 'base table'";
+		String sqlremarks = "select tbl.TABLE_NAME as table_name, prop.value as remarks\n"
+			+ "from INFORMATION_SCHEMA.TABLES tbl left join sys.extended_properties prop\n"
+			+ "ON prop.major_id = object_id(tbl.TABLE_SCHEMA + '.' + tbl.TABLE_NAME)\n" + "AND prop.minor_id = 0\n"
+			+ "AND prop.name = 'MS_Description' WHERE tbl.TABLE_TYPE = 'BASE TABLE'";
 		Connection conn = ds.getMasterConn();
 		try{
 			ResultSet rsremarks = conn.createStatement().executeQuery(sqlremarks);
