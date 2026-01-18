@@ -149,12 +149,8 @@ public class DefaultBeanFetch implements BeanFetch {
 
 
     protected  PropertyDescriptorWrap findIdProperty(Class target,SQLManager sqlManager) throws IntrospectionException{
-        List<String> ids  = sqlManager.getClassDesc(target).getIdAttrs();
-        if(ids.size()>1){
-            //
-            throw new UnsupportedOperationException("目前不支持多主键fetch");
-        }
-        return BeanKit.getPropertyDescriptorWrap(target,ids.get(0));
+        String id   = sqlManager.getClassDesc(target).getIdAttr();
+        return BeanKit.getPropertyDescriptorWrap(target,id);
 
     }
 

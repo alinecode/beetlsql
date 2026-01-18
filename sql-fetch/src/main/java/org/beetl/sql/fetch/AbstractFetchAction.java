@@ -5,8 +5,10 @@ import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.SQLManager;
 
+import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 /**
  * 实现FetchAction
@@ -97,5 +99,16 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
 	@Override
 	public PropertyDescriptorWrap getOriginProperty(){
     	return this.originProperty;
+	}
+
+	protected  PropertyDescriptorWrap findIdProperty(Class target,SQLManager sqlManager)
+		 {
+		List<String> ids  = sqlManager.getClassDesc(target).getIdAttrs();
+		if(ids.size()>1){
+			//
+			throw new UnsupportedOperationException("目前不支持多主键fetch");
+		}
+		return BeanKit.getPropertyDescriptorWrap(target,ids.get(0));
+
 	}
 }

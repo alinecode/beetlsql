@@ -72,8 +72,6 @@ public class FetchOneAction extends AbstractFetchAction {
 		}
 
         try {
-//            Method fromReadMethod = from.getReadMethod();
-//            Method toWriteMethod = this.originProperty.getWriteMethod();
             Map<Object, List<Object>> todoLoad = new HashMap<>();
             for (int i = 0; i < list.size(); i++) {
                 Object obj = list.get(i);

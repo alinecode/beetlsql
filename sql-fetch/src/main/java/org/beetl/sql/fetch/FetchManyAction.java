@@ -63,9 +63,7 @@ public class FetchManyAction extends   AbstractFetchAction {
 		}
 
         try{
-//            Method idReadMethod = idProperty.getgetReadMethod();
-//            Method fromWriteMethod = otherTypeFrom.getWriteMethod();
-//            Method toWriteMethod = this.originProperty.getWriteMethod();
+
             for(int i=0;i<list.size();i++){
                 Object obj = list.get(i);
                 Object id = idProperty.getValue(obj);

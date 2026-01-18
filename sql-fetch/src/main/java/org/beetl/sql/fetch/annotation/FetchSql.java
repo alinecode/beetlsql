@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
-@Builder(FetchSqlAction.class)
+@Builder(FetchSqlAction.class) //自定义扩展实现类
 public @interface FetchSql {
 	/**
 	 * sql模板语句

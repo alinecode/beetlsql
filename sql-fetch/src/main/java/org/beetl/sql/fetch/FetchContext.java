@@ -26,6 +26,11 @@ public class FetchContext {
         return map.get(new Key(key));
     }
 
+	/**
+	 * 标记对象的关联对象已经加载完毕，并赋值在attrName上
+	 * @param obj
+	 * @param attrName
+	 */
     public void addAttribute(Object obj,String attrName){
 		AttributeKey attributeKey = new AttributeKey(obj,attrName);
 		if(attributeKeys.contains(attributeKey)){
