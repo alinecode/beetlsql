@@ -3,7 +3,10 @@ package org.beetl.sql.fetch;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.BeetlSQLException;
 import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
+import org.beetl.sql.clazz.kit.StringKit;
+import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLManager;
+import org.beetl.sql.core.engine.DynamicFetchEnableOnFunction;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -115,28 +118,17 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
 		return BeanKit.getPropertyDescriptorWrap(target,ids.get(0));
 
 	}
+	protected boolean enableFetch(ExecuteContext ctx){
+		if(StringKit.isNotBlank(enableOn)){
+			Object v = ctx.getContextPara(enableOn);
+			return v!=null;
+		}else{
+			return  true;
+		}
 
-	/*TODO,与ReturnTypeParser 代码重复*/
-	protected Class getCollectionType(Type type){
-		if(!(type instanceof ParameterizedType) ){
-			throw new IllegalStateException("无泛型类型，无法Fetch");
-		}
-		Class paraType =  getParamterTypeClass(type);
-		if(paraType==null){
-			throw new IllegalStateException("无泛型类型，无法Fetch");
-		}
-		return paraType;
-	}
 
-	protected Class getParamterTypeClass(Type t) {
-		if (t instanceof WildcardType || t instanceof TypeVariable) {
-			// 丢失类型
-			return null;
-		} else if (t instanceof ParameterizedType) {
-			return (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
-		} else {
-			throw new UnsupportedOperationException();
-		}
 
 	}
+
+
 }

@@ -1,9 +1,13 @@
 package org.beetl.sql.fetch;
 
 import org.beetl.sql.clazz.kit.BeanKit;
+import org.beetl.sql.clazz.kit.PropertyDescriptorWrap;
 import org.beetl.sql.core.ExecuteContext;
+import org.beetl.sql.fetch.annotation.FetchMany2Many;
 import org.beetl.sql.fetch.annotation.FetchSql;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +17,17 @@ import java.util.Map;
  */
 public class FetchSqlAction extends  AbstractFetchAction {
 	@Override
+	public void init(Class owner, Class target, Annotation config, PropertyDescriptorWrap originProperty){
+		super.init(owner, target, config, originProperty);
+		FetchSql fetchSQL = (FetchSql)config;
+		enableOn = fetchSQL.enableOn();
+
+	}
+	@Override
 	public void execute(ExecuteContext ctx, List list) {
+		if(!enableFetch(ctx)){
+			return ;
+		}
 		boolean isSingle = true;
 		Class classType = this.originProperty.getProp().getPropertyType();
 		if(List.class.isAssignableFrom(classType)){

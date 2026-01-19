@@ -64,11 +64,8 @@ public class FetchOneAction extends AbstractFetchAction {
      */
     @Override
     public void execute(ExecuteContext ctx, List list) {
-    	if(StringKit.isNotBlank(enableOn)){
-    		Object v = ctx.getContextPara(enableOn);
-    		if(v!= DynamicFetchEnableOnFunction.value){
-    			return ;
-			}
+		if(!enableFetch(ctx)){
+			return ;
 		}
 
         try {

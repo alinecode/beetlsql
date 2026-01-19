@@ -33,6 +33,12 @@ public @interface FetchSql {
 	 * @return
 	 */
 	String value();
+	/**
+	 * 如果设置一个非空值，且sql模板执行上下文包含了此非空值，这Fetch生效。如果为空值，这总是生效，每次都会调用Fetch
+	 * @return
+	 * @see DynamicFetchEnableOnFunction
+	 */
+	String enableOn() default "";
 
 
 }

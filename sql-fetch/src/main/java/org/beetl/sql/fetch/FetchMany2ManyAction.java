@@ -5,54 +5,47 @@ import org.beetl.sql.clazz.kit.StringKit;
 import org.beetl.sql.core.ExecuteContext;
 import org.beetl.sql.core.SQLReady;
 import org.beetl.sql.core.engine.DynamicFetchEnableOnFunction;
-import org.beetl.sql.fetch.annotation.FetchByTable;
-import org.beetl.sql.fetch.annotation.FetchMany;
-import org.beetl.sql.fetch.annotation.FetchSql;
+import org.beetl.sql.fetch.annotation.FetchMany2Many;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
- * @see org.beetl.sql.fetch.annotation.FetchByTable
+ * @see FetchMany2Many
  */
-public class FetchByTableAction extends  AbstractFetchAction {
+public class FetchMany2ManyAction extends  AbstractFetchAction {
 
 	protected Class targetType;
 
 	@Override
 	public void init(Class owner, Class target, Annotation config, PropertyDescriptorWrap originProperty){
 		super.init(owner, target, config, originProperty);
-		FetchByTable fetchByTable = (FetchByTable)config;
-		enableOn = fetchByTable.enableOn();
+		FetchMany2Many fetchMany2Many = (FetchMany2Many)config;
+		enableOn = fetchMany2Many.enableOn();
 		Class targetListClass= this.originProperty.getProp().getPropertyType();
 		Type type = originProperty.getProp().getReadMethod().getGenericReturnType();
 		if(!List.class.isAssignableFrom(targetListClass)){
 			throw new IllegalStateException("Many2Many 类型应该是List");
 		}
 
-		targetType = this.getCollectionType(type);
+		targetType = ParameterTypUtil.getCollectionType(type);
 
 	}
 	@Override
 	public void execute(ExecuteContext ctx, List list) {
-		if(StringKit.isNotBlank(enableOn)){
-			Object v = ctx.getContextPara(enableOn);
-			if(v!= DynamicFetchEnableOnFunction.value){
-				return ;
-			}
-		}
 
+		if(!enableFetch(ctx)){
+			return ;
+		}
 		//目标对象
 		String tagetTable
 			= ctx.sqlManager.getNc().getTableName(targetType);
 
 		String targetTypeIdAttr = findIdProperty(targetType,ctx.sqlManager).getProp().getName();
 		String targetTypeIdColName = ctx.sqlManager.getNc().getColName(targetType,targetTypeIdAttr);
-		FetchByTable fetchAnnotation = (FetchByTable) annotation;
+		FetchMany2Many fetchAnnotation = (FetchMany2Many) annotation;
 		Class intermediateClass = fetchAnnotation.tableClass();
 		String intermediateTable = ctx.sqlManager.getNc().getTableName(intermediateClass);
 		String fromAttr = fetchAnnotation.fromAttr();
@@ -62,7 +55,7 @@ public class FetchByTableAction extends  AbstractFetchAction {
 		String toAttrColName = ctx.sqlManager.getNc().getColName(intermediateClass,toAttr);
 		PropertyDescriptorWrap beanIdProperty = findIdProperty(owner,ctx.sqlManager);
 		//TODO,改成一次加载所有数据，比如 where i.kAttr in (1,2,3)
-		String sql = "select t.* from "+intermediateTable+" i left join "+tagetTable+" t on i."+toAttrColName+"=t."+targetTypeIdColName
+		String sql = "select t.* from "+intermediateTable+" i  join "+tagetTable+" t on i."+toAttrColName+"=t."+targetTypeIdColName
 			+" where i."+fromAttrColName+"=?";
 		for(int i=0;i<list.size();i++){
 

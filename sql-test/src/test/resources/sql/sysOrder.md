@@ -9,3 +9,4 @@ dynamicFetchOrder2
 ===
 	* 验证不增加fetchEnableOn函数，不会发生Fetch
 	select * from sys_order where id = #{id}
+

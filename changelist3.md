@@ -1,3 +1,6 @@
+# 3.37.0
+* Fetch新增Many2Many关系
+* SQLServer 获取metdata调整
 # 3.36.2
 * BaseMapper.insertTemplateBatch bug修复
 # 3.36.1

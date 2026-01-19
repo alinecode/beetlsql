@@ -1,8 +1,7 @@
 package org.beetl.sql.fetch.annotation;
 
 import org.beetl.sql.annotation.builder.Builder;
-import org.beetl.sql.fetch.FetchByTableAction;
-import org.beetl.sql.fetch.FetchSqlAction;
+import org.beetl.sql.fetch.FetchMany2ManyAction;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -38,8 +37,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
-@Builder(FetchByTableAction.class)
-public @interface FetchByTable {
+@Builder(FetchMany2ManyAction.class)
+public @interface FetchMany2Many  {
 	//中间表对应的类名
 	Class tableClass();
 	/**
@@ -47,5 +46,10 @@ public @interface FetchByTable {
 	 */
 	String fromAttr();
 	String toAttr();
-	String enableOn() default  "";
+	/**
+	 * 如果设置一个非空值，且sql模板执行上下文包含了此非空值，这Fetch生效。如果为空值，这总是生效，每次都会调用Fetch
+	 * @return
+	 * @see DynamicFetchEnableOnFunction
+	 */
+	String enableOn() default "";
 }

@@ -33,7 +33,7 @@ import java.util.Map;
  *
  */
 public class DynamicFetchEnableOnFunction implements Function {
-	public  static final String value = "youarefired"; //任意值
+	private  static final String value = "youarefired"; //任意值
 	@Override
 	public Object call(Object[] paras, Context ctx) {
 		ExecuteContext executeContext = (ExecuteContext) ctx.getGlobal("_executeContext");
@@ -41,7 +41,7 @@ public class DynamicFetchEnableOnFunction implements Function {
 			if(o==null){
 				continue;
 			}
-			//FetchOneAction.execute，过滤
+			//上下文增加一个变量，任意非null值
 			executeContext.setContextPara(o.toString(),value);
 		}
 		return null;

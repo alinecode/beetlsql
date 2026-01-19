@@ -4,7 +4,7 @@ import lombok.Data;
 import org.beetl.sql.annotation.entity.AutoID;
 import org.beetl.sql.annotation.entity.Table;
 import org.beetl.sql.fetch.annotation.Fetch;
-import org.beetl.sql.fetch.annotation.FetchByTable;
+import org.beetl.sql.fetch.annotation.FetchMany2Many;
 
 import java.util.List;
 @Data
@@ -14,6 +14,6 @@ public class MyUser {
 	@AutoID
 	Integer id;
 	String name;
-	@FetchByTable(tableClass = UserRole.class, fromAttr = "userId",toAttr ="roleId")
+	@FetchMany2Many(tableClass = UserRole.class, fromAttr = "userId",toAttr ="roleId")
 	List<Role> roles;
 }

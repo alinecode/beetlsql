@@ -110,7 +110,7 @@ public class DefaultBeanFetch implements BeanFetch {
 						if(!List.class.isAssignableFrom(classType)){
 							throw new IllegalStateException("one2Many 类型应该是List");
 						}
-						Class targetType = this.getCollectionType(type);
+						Class targetType = ParameterTypUtil.getCollectionType(type);
 						PropertyDescriptorWrap otherTypeFrom = BeanKit.getPropertyDescriptorWrap(targetType,typeAttr);
 						FetchManyAction action = new FetchManyAction(beanIdProperty,otherTypeFrom);
 						action.init(owner,targetType,fetchMany,pd);
@@ -136,7 +136,6 @@ public class DefaultBeanFetch implements BeanFetch {
 					}
 				}
 
-
             }
         } catch (IntrospectionException e) {
             throw new BeetlSQLException(BeetlSQLException.ERROR,e);
@@ -154,31 +153,6 @@ public class DefaultBeanFetch implements BeanFetch {
 
     }
 
-
-    /*TODO,与ReturnTypeParser 代码重复*/
-    public Class getCollectionType(Type type){
-        if(!(type instanceof ParameterizedType) ){
-            throw new IllegalStateException("无泛型类型，无法Fetch");
-        }
-        Class paraType =  getParamterTypeClass(type);
-        if(paraType==null){
-            throw new IllegalStateException("无泛型类型，无法Fetch");
-        }
-        return paraType;
-    }
-
-
-    protected Class getParamterTypeClass(Type t) {
-        if (t instanceof WildcardType || t instanceof TypeVariable) {
-            // 丢失类型
-            return null;
-        } else if (t instanceof ParameterizedType) {
-            return (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
-        } else {
-            throw new UnsupportedOperationException();
-        }
-
-    }
 
 
 

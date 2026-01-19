@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-sample</artifactId>
-        <version>3.36.2-RELEASE</version>
+        <version>3.37.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>springboot-multidatabase</artifactId>
-    <version>3.36.2-RELEASE</version>
+    <version>3.37.0-RELEASE</version>
 	<name>${project.artifactId}</name>
 	<dependencies>
 
