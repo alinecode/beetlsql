@@ -45,5 +45,7 @@ public @interface FetchByTable {
 	/**
 	 * 中间表的属性名字，同使用FetchByTable类的主键的属性
 	 */
-	String fkAttr();
+	String fromAttr();
+	String toAttr();
+	String enableOn() default  "";
 }

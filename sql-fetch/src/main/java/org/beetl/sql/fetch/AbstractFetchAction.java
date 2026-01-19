@@ -8,6 +8,10 @@ import org.beetl.sql.core.SQLManager;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.List;
 
 /**
@@ -109,6 +113,30 @@ public abstract  class AbstractFetchAction  implements  FetchAction{
 			throw new UnsupportedOperationException("目前不支持多主键fetch");
 		}
 		return BeanKit.getPropertyDescriptorWrap(target,ids.get(0));
+
+	}
+
+	/*TODO,与ReturnTypeParser 代码重复*/
+	protected Class getCollectionType(Type type){
+		if(!(type instanceof ParameterizedType) ){
+			throw new IllegalStateException("无泛型类型，无法Fetch");
+		}
+		Class paraType =  getParamterTypeClass(type);
+		if(paraType==null){
+			throw new IllegalStateException("无泛型类型，无法Fetch");
+		}
+		return paraType;
+	}
+
+	protected Class getParamterTypeClass(Type t) {
+		if (t instanceof WildcardType || t instanceof TypeVariable) {
+			// 丢失类型
+			return null;
+		} else if (t instanceof ParameterizedType) {
+			return (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
+		} else {
+			throw new UnsupportedOperationException();
+		}
 
 	}
 }

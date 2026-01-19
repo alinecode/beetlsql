@@ -72,5 +72,29 @@ CREATE SEQUENCE my_sequence
 START WITH 10000
 INCREMENT BY 1;
 
+--  多对多测试fetch功能
+drop table if exists  `sys_role` ;
+CREATE TABLE `sys_role` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(64) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ;
 
+insert into  sys_role values (1,'admin');
+insert into  sys_role values (2,'oa');
+insert into  sys_role values (3,'wf');
+
+-- 中间表
+drop table if exists  `sys_user_role` ;
+CREATE TABLE `sys_user_role` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL ,
+    `role_id` int(11) NOT NULL ,
+    PRIMARY KEY (`id`)
+) ;
+
+insert into  sys_user_role values (1,1,1);
+insert into  sys_user_role values (2,1,2);
+insert into  sys_user_role values (3,1,3);
+insert into  sys_user_role values (4,2,2);
 

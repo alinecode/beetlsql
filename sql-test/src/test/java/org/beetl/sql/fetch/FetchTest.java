@@ -2,10 +2,7 @@ package org.beetl.sql.fetch;
 
 import org.beetl.sql.BaseTest;
 import org.beetl.sql.core.SqlId;
-import org.beetl.sql.entity.fetch.Customer;
-import org.beetl.sql.entity.fetch.CustomerOrder;
-import org.beetl.sql.entity.fetch.CustomerOrder2;
-import org.beetl.sql.entity.fetch.CustomerOrder3;
+import org.beetl.sql.entity.fetch.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,6 +64,17 @@ public class FetchTest extends BaseTest {
 		}
 	}
 
+
+	@Test
+	public void testFetchMany2Many(){
+		MyUser user = sqlManager.single(MyUser.class,1);
+		Assert.assertNotNull(user);
+		Assert.assertEquals(3,user.getRoles().size());
+
+		Role role = sqlManager.single(Role.class,2);
+		Assert.assertEquals(2,role.getUsers().size());
+
+	}
 
 	/**
 	 * 验证动态配置是否映射，参考"sysOrder.md"
