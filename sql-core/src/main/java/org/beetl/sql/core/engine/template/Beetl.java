@@ -4,6 +4,7 @@ import org.beetl.core.AntlrProgramBuilder;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.sql.clazz.kit.StringKit;
+import org.beetl.sql.core.engine.BeetlSQLTemplateEngine;
 import org.beetl.sql.core.engine.StringSqlTemplateLoader;
 import org.beetl.sql.core.loader.SQLLoader;
 
@@ -38,6 +39,8 @@ public class Beetl {
 			}
 
 			AntlrProgramBuilder.safeParameters.add("isBlank");
+			BeetlSQLTemplateEngine beetlSQLTemplateEngine = (BeetlSQLTemplateEngine)gt.getEngine();
+
 
 		} catch (Exception ex) {
 			throw new IllegalStateException(ex);

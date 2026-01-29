@@ -44,7 +44,9 @@ public class PerformanceConfig implements PluginExtConfig {
 		sqlManager.setNc(new CachedNameConversion(sqlManager.getNc()));
 
 		BeetlTemplateEngine beetlTemplateEngine = (BeetlTemplateEngine)sqlTemplateEngine;
-		beetlTemplateEngine.getBeetl().getGroupTemplate().setEngine(new FastSQLRenderTemplate());
+		FastSQLRenderTemplate fastSQLRenderTemplate = new FastSQLRenderTemplate();
+		fastSQLRenderTemplate.setSqlManager(sqlManager);
+		beetlTemplateEngine.getBeetl().getGroupTemplate().setEngine(fastSQLRenderTemplate);
 
 		BeanKit.propertyDescriptorWrapFactory = new PropertyDescriptorWrapFactory() {
 			@Override

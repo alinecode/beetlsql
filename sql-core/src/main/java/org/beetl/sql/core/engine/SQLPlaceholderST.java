@@ -41,7 +41,7 @@ public class SQLPlaceholderST extends PlaceholderST {
 
 	//Override
 	@Override
-	public final void execute(Context ctx) {
+	public  void execute(Context ctx) {
 		try {
 			Object value = expression.evaluate(ctx);
 			ExecuteContext executeContext = (ExecuteContext)ctx.getGlobal("_executeContext");

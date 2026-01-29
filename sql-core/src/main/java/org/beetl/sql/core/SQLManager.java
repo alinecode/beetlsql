@@ -170,7 +170,7 @@ public class SQLManager implements DataAPI {
 
 
 	/**
-	 * 内部使用，
+	 * 内部使用
 	 *
 	 * @param source
 	 * @param inputParas

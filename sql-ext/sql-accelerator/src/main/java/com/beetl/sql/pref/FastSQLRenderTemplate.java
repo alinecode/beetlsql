@@ -7,6 +7,7 @@ import org.beetl.core.om.AsmAAFactory;
 import org.beetl.core.statement.*;
 import org.beetl.core.statement.optimal.BlockStatementOptimal;
 import org.beetl.core.statement.optimal.VarRefOptimal;
+import org.beetl.sql.core.SQLManager;
 import org.beetl.sql.core.engine.BeetlSQLTemplateEngine;
 import org.beetl.sql.core.engine.SQLGrammarCreator;
 
@@ -17,7 +18,7 @@ public 	  class FastSQLRenderTemplate extends BeetlSQLTemplateEngine {
 
 	@Override
 	protected GrammarCreator getGrammarCreator(GroupTemplate gt) {
-		FastGrammarCreator grammar = new FastGrammarCreator();
+		FastGrammarCreator grammar = new FastGrammarCreator(sqlManager);
 		return grammar;
 	}
 
@@ -25,6 +26,10 @@ public 	  class FastSQLRenderTemplate extends BeetlSQLTemplateEngine {
 	 * 自定义的语法创建者
 	 */
 	static class FastGrammarCreator extends SQLGrammarCreator {
+		public FastGrammarCreator(SQLManager sqlManager) {
+			super(sqlManager);
+		}
+
 		@Override
 		public VarRef createVarRef(VarAttribute[] attributes, boolean hasSafe, Expression safe, GrammarToken token,
 			GrammarToken firstToken) {

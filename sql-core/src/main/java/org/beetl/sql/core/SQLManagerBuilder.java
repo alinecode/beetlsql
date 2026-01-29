@@ -1,11 +1,13 @@
 package org.beetl.sql.core;
 
+import org.beetl.core.TemplateEngine;
 import org.beetl.sql.clazz.NameConversion;
 import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.ClassLoaderKit;
 import org.beetl.sql.clazz.kit.PropertiesKit;
 import org.beetl.sql.core.db.DBStyle;
 import org.beetl.sql.core.db.MySqlStyle;
+import org.beetl.sql.core.engine.BeetlSQLTemplateEngine;
 import org.beetl.sql.core.engine.template.BeetlTemplateEngine;
 import org.beetl.sql.core.engine.template.SQLTemplateEngine;
 import org.beetl.sql.core.loader.MarkdownClasspathLoader;
@@ -146,7 +148,14 @@ public class SQLManagerBuilder {
 		mySqlManager.isProduct = getProduct();
 		mySqlManager.charset = charset;
 
+		//TODO 改成afterBuild回掉
 		SQLTemplateEngine mysSqlTemplateEngine = this.getSqlTemplateEngine();
+		if( mysSqlTemplateEngine instanceof BeetlTemplateEngine){
+			BeetlTemplateEngine  beetlTemplateEngine = ((BeetlTemplateEngine) mysSqlTemplateEngine);
+			BeetlSQLTemplateEngine templateEngine = (BeetlSQLTemplateEngine)beetlTemplateEngine.getBeetl().getGroupTemplate().getEngine();
+			templateEngine.setSqlManager(mySqlManager);
+		}
+
 
 		//设置dbStyle
 		myDbStyle.setNameConversion(myNc);
