@@ -168,6 +168,18 @@ public class SQLManager implements DataAPI {
 		return script.run(map);
 	}
 
+	public SQLResult getSQLResult(String template, Object paras) {
+		SqlId sqlId = sqlIdFactory.buildTemplate(template);
+
+		SQLSource source = getSqlLoader().queryAutoSQL(sqlId);
+		if (source == null) {
+			source = new SQLSource(sqlId, template);
+			source.setSqlType(SQLType.SELECT);
+			getSqlLoader().addSQL(sqlId, source);
+		}
+		return getSQLResult(source,paras);
+	}
+
 
 	/**
 	 * 内部使用
