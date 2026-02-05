@@ -1,4 +1,4 @@
-package org.beetl.sql.core.engine.sugar;
+package org.beetl.sql.sugar;
 
 import org.beetl.core.statement.*;
 import org.beetl.sql.clazz.NameConversion;
@@ -17,10 +17,11 @@ public class ShortHolderFactory {
 		shortSet.add("or");
 		shortSet.add("asc");
 		shortSet.add("desc");
-		shortSet.add("groupBy");
 		shortSet.add("set");
 
 	}
+
+
 	public static boolean isSupport(String formatName){
 		return shortSet.contains(formatName);
 	}
@@ -31,9 +32,7 @@ public class ShortHolderFactory {
 		}else if(formatName.equals("set")){
 			return createSet(nc,"set",",",expression);
 		}else if(formatName.equals("asc")||formatName.equals("desc")){
-			return createAscAndGroup(nc,"by",",",formatName,expression);
-		}else if(formatName.equals("groupBy")){
-			return createAscAndGroup(nc,"by",",","",expression);
+			return createOrder("order by",formatName,expression);
 		}else{
 			// 不可能发生
 			throw new IllegalArgumentException(formatName);
@@ -41,21 +40,23 @@ public class ShortHolderFactory {
 
 	}
 
-	protected  static SQLPlaceholderSTShort  createSet(NameConversion nc,String check,String prefix,Expression expression){
+	protected  static SQLPlaceholderSTShort createSet(NameConversion nc,String check,String prefix,Expression expression){
 
 		VarRef ref =deepFind(expression);
 		if(ref==null){
 			return null;
 		}
-		VarRef newRef = new VarRef(ref.attributes,true,null,ref.token);
-		newRef.setVarIndex(ref.getVarIndex());
-		FunctionExpression condition = new FunctionExpression("isNotEmpty", new Expression[]{newRef}, null, false, null, ref.token);
-		String  col = nc.getColName(newRef.token.text)+"=";
-		SQLPlaceholderSTShort  newSt = new SQLPlaceholderSTShort(condition,check,prefix,col,expression);
+		//TODO 修改了原来表达式，改成安全输出
+		ref.hasSafe = true;
+//		VarRef newRef = new VarRef(ref.attributes,true,null,ref.token);
+//		newRef.setVarIndex(ref.getVarIndex());
+		FunctionExpression condition = new FunctionExpression("isNotEmpty", new Expression[]{ref}, null, false, null, ref.token);
+		String  col = nc.getColName(ref.token.text)+"=";
+		SQLPlaceholderSTShort newSt = new SQLPlaceholderSTShort(condition,check,prefix,col,expression);
 		return newSt;
 
 	}
-	protected  static PlaceholderSTShort  createAscAndGroup(NameConversion nc,String check,String prefix,String formatName,Expression expression){
+	protected  static OrderByPlaceholderSTShort createOrder(String prefix,String formatName,Expression expression){
 		if(!(expression instanceof  VarRef)){
 			return null;
 		}
@@ -65,11 +66,11 @@ public class ShortHolderFactory {
 
 		FunctionExpression condition = new FunctionExpression("isNotEmpty", new Expression[]{newRef}, null, false, null, ref.token);
 
-		String  col = nc.getColName(newRef.token.text)+" "+formatName;
-		PlaceholderSTShort  newSt = new PlaceholderSTShort(condition,check,prefix,col,expression);
+		OrderByPlaceholderSTShort newSt = new OrderByPlaceholderSTShort(condition,prefix,formatName,expression);
 		return newSt;
 
 	}
+
 
 	/**
 	 * where 1=1 #{b,and} 转化为 where 1=1 #{isNotEmpty(b!)?('and b='+b)},即 where 1=1 and b=？
@@ -79,7 +80,7 @@ public class ShortHolderFactory {
 	 * @param expression
 	 * @return
 	 */
-	protected  static SQLPlaceholderSTShort  createAndOr(NameConversion nc,String check,String prefix,Expression expression){
+	protected  static SQLPlaceholderSTShort createAndOr(NameConversion nc,String check,String prefix,Expression expression){
 		VarRef ref = null;
 		String sqlMode = null;
 		String colExpress = null;

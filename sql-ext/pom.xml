@@ -7,10 +7,10 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.37.0-RELEASE</version>
+        <version>3.38.0-RELEASE</version>
     </parent>
     <artifactId>sql-ext</artifactId>
-    <version>3.37.0-RELEASE</version>
+    <version>3.38.0-RELEASE</version>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<modules>
@@ -20,12 +20,13 @@
 		<module>sql-dynamic-table</module>
 		<module>sql-bean-encrypt</module>
 		<module>sql-rewrite</module>
+		<module>sql-template-sugar</module>
 	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>beetlsql</artifactId>
-			<version>3.37.0-RELEASE</version>
+			<version>3.38.0-RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

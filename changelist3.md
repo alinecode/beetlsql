@@ -1,3 +1,5 @@
+# 3.38.0
+* 增加sql模版语法糖，参考sql-ext/sql-template-sugar
 # 3.37.0
 * Fetch新增Many2Many关系
 * SQLServer 获取metdata调整

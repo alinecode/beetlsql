@@ -1,8 +1,6 @@
-package org.beetl.sql.core.engine.sugar;
+package org.beetl.sql.sugar;
 
 import org.beetl.core.Context;
-import org.beetl.core.io.ByteWriter_Char;
-import org.beetl.core.io.NoLockStringWriter;
 import org.beetl.core.statement.Expression;
 import org.beetl.sql.core.engine.SQLPlaceholderST;
 

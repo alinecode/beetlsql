@@ -1,15 +1,56 @@
-package org.beetl.sql.core;
+package org.beetl.sql.sugar;
 
-import org.beetl.sql.BaseTest;
-import org.beetl.sql.clazz.SQLType;
-import org.beetl.sql.entity.User;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.Data;
+import org.beetl.sql.annotation.entity.AutoID;
+import org.beetl.sql.annotation.entity.Table;
+import org.beetl.sql.core.*;
+import org.beetl.sql.core.db.H2Style;
+
+import org.beetl.sql.ext.DebugInterceptor;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ShortHolderTest extends BaseTest {
+import javax.sql.DataSource;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 测试sql模版简化写法
+ * @see ShortHolderFactory
+ *
+ */
+public class ShortHolderTest  {
+
+	static DataSource dataSource = datasource();
+	private static   DataSource datasource() {
+		HikariDataSource ds = new HikariDataSource();
+		ds.setJdbcUrl("jdbc:h2:mem:dbtest;DB_CLOSE_ON_EXIT=FALSE");
+		ds.setUsername("sa");
+		ds.setPassword("");
+		ds.setDriverClassName("org.h2.Driver");
+
+		return ds;
+	}
+	private  static SQLManager getSugarConfigSQLManager(){
+
+		ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
+		SQLManagerBuilder builder = new SQLManagerBuilder(source);
+		builder.setNc(new UnderlinedNameConversion());
+		builder.setInters(new Interceptor[]{new DebugInterceptor()});
+		builder.setDbStyle(new H2Style());
+		builder.setProduct(false);
+		SQLManager sqlManager = builder.build();
+		SugarTemplateConfig config = new SugarTemplateConfig();
+		config.config(sqlManager);
+		return sqlManager;
+	}
 	@Test
 	public void testAnd(){
-		User user = new User();
+
+		SQLManager sqlManager = getSugarConfigSQLManager();
+		SugarUser user = new SugarUser();
 		user.setId(1);
 
 		{
@@ -41,7 +82,7 @@ public class ShortHolderTest extends BaseTest {
 		}
 
 
-		user = new User();
+		user = new SugarUser();
 		user.setId(null);
 		{
 			String sqlTemplate = "select * from user where 1=1 #{id,and} #{id,or}";
@@ -55,7 +96,8 @@ public class ShortHolderTest extends BaseTest {
 
 	@Test
 	public void testComplexAnd(){
-		User user = new User();
+		SQLManager sqlManager = getSugarConfigSQLManager();
+		SugarUser user = new SugarUser();
 		user.setId(1);
 
 		{
@@ -83,7 +125,8 @@ public class ShortHolderTest extends BaseTest {
 
 	@Test
 	public void testUpdate(){
-		User user = new User();
+		SQLManager sqlManager = getSugarConfigSQLManager();
+		SugarUser user = new SugarUser();
 		user.setId(1);
 		user.setName("hebeicaihua");
 
@@ -108,34 +151,48 @@ public class ShortHolderTest extends BaseTest {
 			Assert.assertEquals(expectedJDBC,sqlResult.jdbcSql);
 		}
 
+		{
+			String sqlTemplate = "update user set  id=#{id} #{age,set} where id=#{id}";
+			String expectedJDBC = "update user set  id=?  where id=?";
+			SQLResult sqlResult = sqlManager.getSQLResult(sqlTemplate,user);
+			Assert.assertEquals(expectedJDBC,sqlResult.jdbcSql);
+		}
+
 	}
 
 	@Test
 	public void testOrderBy(){
-		User user = new User();
-		user.setId(1);
-		user.setName("hebeicaihua");
+		SQLManager sqlManager = getSugarConfigSQLManager();
+		Map map = new HashMap<>();
+		map.put("orderBy","name");
 
 		{
-			String sqlTemplate = "select   #{name,set} where id=#{id}";
-			String expectedJDBC = "update user set  name=? where id=?";
-			SQLResult sqlResult = sqlManager.getSQLResult(sqlTemplate,user);
-			Assert.assertEquals(expectedJDBC,sqlResult.jdbcSql);
-		}
-		{
-			String sqlTemplate = "update user set  #{name+'ok',set} where id=#{id}";
-			String expectedJDBC = "update user set  name=? where id=?";
-			SQLResult sqlResult = sqlManager.getSQLResult(sqlTemplate,user);
-			Assert.assertEquals(expectedJDBC,sqlResult.jdbcSql);
-			Assert.assertEquals(expectedJDBC,sqlResult.jdbcPara.get(0).value,user.getName()+"ok");
-		}
-
-		{
-			String sqlTemplate = "update user set  id=#{id} #{name,set} where id=#{id}";
-			String expectedJDBC = "update user set  id=? , name=? where id=?";
-			SQLResult sqlResult = sqlManager.getSQLResult(sqlTemplate,user);
+			String sqlTemplate = "select * from  user  ${orderBy,asc}";
+			String expectedJDBC = "select * from  user  order by name asc";
+			SQLResult sqlResult = sqlManager.getSQLResult(sqlTemplate,map);
 			Assert.assertEquals(expectedJDBC,sqlResult.jdbcSql);
 		}
 
+		map = new HashMap<>();
+		map.put("orderBy",null);
+
+		{
+			String sqlTemplate = "select * from  user ${orderBy,asc}";
+			String expectedJDBC = "select * from  user ";
+			SQLResult sqlResult = sqlManager.getSQLResult(sqlTemplate,map);
+			Assert.assertEquals(expectedJDBC,sqlResult.jdbcSql);
+		}
+
+	}
+
+	@Data
+	@Table(name="sys_user")
+	public class SugarUser {
+		@AutoID
+		Integer id;
+		String name;
+		Integer age;
+		Integer departmentId;
+		Date createDate;
 	}
 }
