@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.38.0-RELEASE</version>
+        <version>3.38.2-RELEASE</version>
     </parent>
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-core</artifactId>
-    <version>3.38.0-RELEASE</version>
+    <version>3.38.2-RELEASE</version>
 	<name>${project.artifactId}</name>
     <properties>
         <slf4j.version>1.7.32</slf4j.version>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>sql-util</artifactId>
-            <version>3.38.0-RELEASE</version>
+            <version>3.38.2-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
