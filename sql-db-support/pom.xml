@@ -17,6 +17,7 @@
     <modules>
 <!--        <module>mysql</module>-->
 		<module>postgres</module>
+		<module>cassandra</module>
         <!--其他3.0新增的数据库支持 -->
 <!--        <module>polarDB</module>-->
 <!--        <module>ignite</module>-->

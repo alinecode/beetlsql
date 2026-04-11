@@ -10,11 +10,11 @@ import java.util.List;
  */
 @Data
 public class DefaultPageRequest<T> implements PageRequest<T> {
-    long pageNumber;
-    int pageSize = 20;
-    String orderBy;
-    boolean totalRequired;
-    boolean listRequired;
+    protected  long pageNumber;
+	protected int pageSize = 20;
+	protected String orderBy;
+	protected boolean totalRequired;
+	protected boolean listRequired;
 
     /**
      * 从1开始

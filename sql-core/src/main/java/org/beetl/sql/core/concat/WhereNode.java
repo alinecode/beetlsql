@@ -58,7 +58,8 @@ public  class WhereNode   implements Output {
         if(whereList.isEmpty()){
             return ;
         }
-        sb.append("where 1=1");
+        sb.appendWhere();
+
         for(Express express: whereList){
             express.toSql(sb);
         }

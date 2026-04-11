@@ -15,6 +15,7 @@ public class  ConcatBuilder  {
         this.ctx = ctx;
     }
     StringBuilder sb = new StringBuilder();
+	private boolean lastIsWhere = false;
     public ConcatBuilder appendCol(String colName){
         KeyWordHandler kh = ctx.keyWordHandler;
         String col = kh.getCol(colName);
@@ -149,6 +150,24 @@ public class  ConcatBuilder  {
         sb.append(str).append(" ");
         return this;
     }
+
+	public ConcatBuilder appendWhere(){
+		sb.append("where").append(" ");
+		lastIsWhere = true;
+		return this;
+	}
+	public ConcatBuilder restWhere(){
+		lastIsWhere = false;
+		return this;
+	}
+	public boolean endWhere(){
+		return lastIsWhere;
+	}
+
+	public ConcatBuilder appendOpt(String str){
+		sb.append(str).append(" ");
+		return this;
+	}
 
 
 
