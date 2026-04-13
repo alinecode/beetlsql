@@ -46,7 +46,6 @@ public class CassandraTest {
 			//初始化数据
 			for(int i=0;i<15;i++){
 				Integer key = 1;
-				Integer seq = i;
 				ShoppingCart shoppingCart = new ShoppingCart();
 				shoppingCart.setUserId(key);
 				shoppingCart.setSeq(i);
