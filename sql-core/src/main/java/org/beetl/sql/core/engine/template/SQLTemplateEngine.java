@@ -83,6 +83,8 @@ public interface SQLTemplateEngine {
 	void genTrimStart(ConcatBuilder concatBuilder,String keyword);
     void genTrimEnd(ConcatBuilder concatBuilder);
 
+	void genWhereStart(ConcatBuilder concatBuilder);
+	void genWhereEnd(ConcatBuilder concatBuilder);
     /**
      *
      * 输出一个if语句，用来判断变量是否为空

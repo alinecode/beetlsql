@@ -264,7 +264,7 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
         addPreParam(paraLis);
 		String targetSql = null;
 		StringBuilder where = getSql();
-		if(result.jdbcSql.indexOf(" where ")!=-1){
+		if(result.jdbcSql.indexOf(" where ")!=-1||result.jdbcSql.indexOf(" WHERE ")!=-1){
 			//hack 代码， update语句可能包含了WHERE,逻辑删除
 			int index = where.indexOf("WHERE ");
 			if(index!=-1){
@@ -272,7 +272,8 @@ public class Query<T> extends QueryCondition<T> implements QueryExecuteI<T>, Que
 				where.insert(0," and ");
 			}
 			targetSql = result.jdbcSql + " " + where;
-		}else{
+		}
+		else{
 			targetSql = result.jdbcSql + " " + where;
 
 		}

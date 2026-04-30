@@ -125,7 +125,17 @@ public class BeetlTemplateEngine implements SQLTemplateEngine {
         appendStatement(concatBuilder, "}");
     }
 
-    @Override
+	@Override
+	public void genWhereStart(ConcatBuilder concatBuilder) {
+		appendStatement(concatBuilder, "where(){");
+	}
+
+	@Override
+	public void genWhereEnd(ConcatBuilder concatBuilder) {
+		appendStatement(concatBuilder, "}");
+	}
+
+	@Override
     public void genIfNotEmptyStart(ConcatBuilder concatBuilder, String var) {
         appendStatement(concatBuilder, "if(isNotEmpty(" + var + ")){");
     }

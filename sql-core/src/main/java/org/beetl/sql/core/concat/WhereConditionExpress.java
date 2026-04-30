@@ -26,14 +26,8 @@ public class WhereConditionExpress extends Express {
 
     @Override
     public void toSql(ConcatBuilder sb) {
-		String colName1 = sb.ctx.keyWordHandler.getCol(colName);
-		if(sb.endWhere()){
-			sb.append(colName1).append(cond);
-			sb.restWhere();
-		}else{
-			sb.appendOpt(opt).append(colName1).append(cond);
-		}
-
+        String colName1 = sb.ctx.keyWordHandler.getCol(colName);
+        sb.append(opt).append(colName1).append(cond);
         sb.appendVar(varName);
     }
 }

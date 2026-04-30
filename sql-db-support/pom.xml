@@ -17,7 +17,6 @@
     <modules>
 <!--        <module>mysql</module>-->
 		<module>postgres</module>
-		<module>cassandra</module>
         <!--其他3.0新增的数据库支持 -->
 <!--        <module>polarDB</module>-->
 <!--        <module>ignite</module>-->
@@ -42,6 +41,7 @@
 <!--        <module>oceanbase</module>-->
 <!--        <module>sqlserver</module>-->
 <!--        <module>ymatrix</module>-->
+			<module>cassandra</module>
 
     </modules>
     <dependencies>

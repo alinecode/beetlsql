@@ -58,11 +58,11 @@ public  class WhereNode   implements Output {
         if(whereList.isEmpty()){
             return ;
         }
-        sb.appendWhere();
-
+        sb.appendWhereTagStart();
         for(Express express: whereList){
             express.toSql(sb);
         }
+		sb.appendWhereTagEnd();
 
     }
 
