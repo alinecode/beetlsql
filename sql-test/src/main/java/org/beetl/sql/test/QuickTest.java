@@ -17,6 +17,7 @@ import org.beetl.sql.core.page.PageRequest;
 import org.beetl.sql.core.query.LambdaQuery;
 import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
+import org.beetl.sql.ext.ErrorDebugInterceptor;
 
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
@@ -48,7 +49,7 @@ public class QuickTest {
 		ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
 		SQLManagerBuilder builder = new SQLManagerBuilder(source);
 		builder.setNc(new UnderlinedNameConversion());
-		builder.setInters(new Interceptor[]{new DebugInterceptor()});
+		builder.setInters(new Interceptor[]{new ErrorDebugInterceptor()});
 		builder.setDbStyle(new H2Style(){
 			public int getMaxBatchCount() {
 				return 10;
@@ -64,11 +65,8 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
-		LambdaQuery<OrderLog> query = sqlManager.lambdaQuery(OrderLog.class);
-		query.andEq(OrderLog::getOrderId,1).updateParams(OrderLog::getUpdateAt,1);
+		List<OrderLog> orderLogs = sqlManager.execute(new SQLReady("select * from ttt"),OrderLog.class);
 
-		orderLog = sqlManager.unique(OrderLog.class,1);
-		System.out.println(orderLog);
 
 	}
 

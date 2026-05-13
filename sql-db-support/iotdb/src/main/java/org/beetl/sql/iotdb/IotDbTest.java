@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import com.zaxxer.hikari.HikariDataSource;
@@ -14,6 +15,7 @@ import org.beetl.sql.core.nosql.IotDbStyle;
 import org.beetl.sql.core.nosql.NoSchemaMetaDataManager;
 import org.beetl.sql.core.page.DefaultPageRequest;
 import org.beetl.sql.core.page.PageRequest;
+import org.beetl.sql.core.page.PageResult;
 import org.beetl.sql.ext.DebugInterceptor;
 
 /**
@@ -27,7 +29,7 @@ import org.beetl.sql.ext.DebugInterceptor;
  *     INSERT INTO root.test2.wf01.wt01(timestamp,status,json) values(300,true,"121.09")
  * </pre>
  *
- * @see "https://iotdb.apache.org/UserGuide/V0.10.x/Get%20Started/QuickStart.html"
+ * @see "https://iotdb.apache.org/zh/UserGuide/latest/SQL-Manual/QuickStart-Only-Sql_apache.html"
  */
 public class IotDbTest {
 	public static void main(String[] args){
@@ -41,21 +43,26 @@ public class IotDbTest {
 		System.out.println(sqlManager.getMetaDataManager().allTable());
 		NoSchemaMetaDataManager noSchemaMetaDataManager = (NoSchemaMetaDataManager)sqlManager.getMetaDataManager();
 		noSchemaMetaDataManager.addBean(IotData.class);
-//		List<IotData> all = sqlManager.all(IotData.class);
-//		System.out.println(all);
+		List<IotData> all = sqlManager.all(IotData.class);
+		System.out.println(all);
+//
+//
+		IotData data = new IotData();
+		data.setTimestamp(new Timestamp(112));
+		data.setStatus(true);
+		data.setJson("abcddf");
+		sqlManager.insert(data);
 
-
-//		IotData data = new IotData();
-//		data.setTimestamp(new Timestamp(111));
-//		data.setStatus(true);
-//		data.setJson("abcddf");
-//		sqlManager.insert(data);
-
-
-
-
+//
+//
+//
 		PageRequest pageRequest = DefaultPageRequest.of(1,10);
-		sqlManager.execute(new SQLReady("select * from root.test2.wf01.wt01 "),IotData.class,pageRequest);
+		sqlManager.execute(new SQLReady("select status from root.test2.wf01.wt01 "),IotData.class,pageRequest);
+
+		String template = "select ${page()} from root.test2.wf01.wt01";
+		PageResult pageResult = sqlManager.executePageQuery(template,IotData.class,new HashMap<>(),pageRequest);
+		System.out.println(pageResult);
+
 
 	}
 

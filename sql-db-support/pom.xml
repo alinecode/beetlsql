@@ -32,7 +32,7 @@
 <!--        <module>druid</module>-->
 <!--        <module>opengauss</module>-->
 <!--        <module>kingbase</module>-->
-<!--        <module>iotdb</module>-->
+       		 <module>iotdb</module>
 <!--         <module>gbase8s</module>-->
 <!--        <module>oracle</module>-->
 <!--        <module>mariadb</module>-->

@@ -41,7 +41,7 @@ public  class PageKit {
 					if (plain.getSelectItems().stream().allMatch(item -> isAllColumns(item)||isColumn(item))) {
 						// 非DISTINCT, 非groupBy, 非limit
 						if (plain.getDistinct() == null && plain.getGroupBy() == null && plain.getLimit() == null) {
-							plain.setSelectItems(Arrays.asList(new SelectItem<>(new PageKit.CountAll())));
+							plain.setSelectItems(Arrays.asList(new SelectItem<>(getCountAll())));
 							plain.setOrderByElements(null);
 							countSql =  plain.toString();
 							cache.put(selectSql,countSql);
@@ -89,6 +89,10 @@ public  class PageKit {
 		System.out.println(countSql);
 
     }
+
+	protected  AllColumns getCountAll(){
+		return  new CountAll();
+	}
     public static  class CountAll  extends AllColumns {
     	public String toString(){
     		return "count(*)";
