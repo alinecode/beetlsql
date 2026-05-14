@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-db-support</artifactId>
-        <version>3.38.2-RELEASE</version>
+        <version>3.39.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>voltdb</artifactId>
-    <version>3.38.2-RELEASE</version>
+    <version>3.39.0-RELEASE</version>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.voltdb/voltdbclient -->
         <dependency>
