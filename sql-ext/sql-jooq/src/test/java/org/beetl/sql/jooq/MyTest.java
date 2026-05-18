@@ -1,4 +1,4 @@
 package org.beetl.sql.jooq;
-@org.beetl.sql.jooq.JooqCodeGen
+@JooqCodeGen
 public interface MyTest {
 }
