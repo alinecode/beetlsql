@@ -21,6 +21,7 @@
 		<module>sql-bean-encrypt</module>
 		<module>sql-rewrite</module>
 		<module>sql-template-sugar</module>
+		<module>sql-jooq</module>
 	</modules>
 	<dependencies>
 		<dependency>
