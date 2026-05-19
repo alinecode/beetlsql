@@ -22,8 +22,9 @@ BeetlSQL的目标是提供**开发高效**，**维护高效**，**运行高效**
 
 BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是二者的综合，BeetlSQL远大理想是对标甚至超越Spring Data，是实现数据访问统一的框架，无论是传统数据库，还是大数据，还是查询引擎或者时序库，内存数据库。
 
-> 直接在线试用BeetlSQL http://121.42.237.11:8080/beetlsql_online/
+> 注意BeetlSQL 不是Mybatis XX封装，完全拥有核心和扩展以及Idea插件。 
 
+直接在线试用BeetlSQL http://121.42.237.11:8080/beetlsql_online/
 
 * 作者: 闲大赋,Gavin.King,Sue,Zhoupan，woate,darren,蚊子
 * 开发时间:2015-07
@@ -50,15 +51,16 @@ BeetlSQL 不仅仅是简单的类似MyBatis或者是Hibernate，或者是二者�
 
 **BeetlSQL 最新扩展包**
 
-| BeetlSQL 扩展包   | 功能                                                         |
-| ----------------- | ------------------------------------------------------------ |
-| sql-xml           | 高仿 myabtis 的 xml 语法，如果喜欢使用 xml 写 sql 模板的，可以使用此扩展包 |
-| sql-accelerator   | 性能加速包，通过反射优化，缓存，让 beetlsql 性能提升 50%-200%，接近一半手写 JDBC 的性能 |
-| sql-firewall      | sql 防火墙，避免不小心写的 sql 破坏数据库                    |
-| sql-dynamic-table | 支持像访问静态表格那样防火动态表格，简化动态创建表格的业务需求开发 |
-| sql-bean-encrypt  | 支持 @MD5 ，@AES 等对字段加密解密                            |
-| sql-rewrite       | 采用 sql 重写，支持单表多租户模式，逻辑删除，数据权限功能    |
-| SAGA（实验）      | BeetSQL 的 SAGA 是实现，用 SAGA 微服务事务                   |
+| BeetlSQL 扩展包       | 功能                                                       |
+|--------------------|----------------------------------------------------------|
+| sql-xml            | 高仿 myabtis 的 xml 语法，如果喜欢使用 xml 写 sql 模板的，可以使用此扩展包        |
+| sql-accelerator    | 性能加速包，通过反射优化，缓存，让 beetlsql 性能提升 50%-200%，接近一半手写 JDBC 的性能 |
+| sql-firewall       | sql 防火墙，避免不小心写的 sql 破坏数据库                                |
+| sql-dynamic-table  | 支持像访问静态表格那样防火动态表格，简化动态创建表格的业务需求开发                        |
+| sql-bean-encrypt   | 支持 @MD5 ，@AES 等对字段加密解密                                   |
+| sql-rewrite        | 采用 sql 重写，支持单表多租户模式，逻辑删除，数据权限功能                          |
+| sql-template-sugar | 模版语法糖，增加了 and or asc，desc，set 等格式化函数                     |
+| sql-jooq           | BeetSQL 和 Jooq集成，用Java方式写SQL                             |
 
 使用加速扩展性能优化结果：能达到近一半手写 JDBC 的性能
 
@@ -368,38 +370,14 @@ public interface UserMapper extends BaseMapper<UserEntity> {
 
 ```
 
-### 例子9 不同数据库切换
-可以自行扩展ConditionalSQLManager的decide方法，来决定使用哪个SQLManager
-```java
-        SQLManager a = SampleHelper.init();
-        SQLManager b = SampleHelper.init();
-        Map<String, SQLManager> map = new HashMap<>();
-        map.put("a", a);
-        map.put("b", b);
-        SQLManager sqlManager = new ConditionalSQLManager(a, map);
+### 例子9 多库，多租户支持
 
-        //不同对象，用不同sqlManager操作，存入不同的数据库
-        UserData user = new UserData();
-        user.setName("hello");
-        user.setDepartmentId(2);
-        sqlManager.insert(user);
+* 支持主从库，以及多种数据库
+* 支持单表多租户，多表多租户，多库多租户，混合库多租户
 
-        DepartmentData dept = new DepartmentData();
-        dept.setName("dept");
-        sqlManager.insert(dept);
+具体例子可以参考
+https://gitee.com/xiandafu/springboot3-beetl-beetlsql-example
 
-```
-使用注解 @TargetSQLManager来决定使用哪个SQLManger
-```java
-    @Data
-    @Table(name = "department")
-    @TargetSQLManager("b")
-    public static class DepartmentData {
-        @Auto
-        private Integer id;
-        private String name;
-    }
-```
 
 ### 例子10 如果想给每个sql语句增加一个sqlId标识
 
@@ -513,67 +491,15 @@ public @interface XmlMapping {
 
 > 参考源码例子 PluginAnnotationSample了解如何定义自定的注解，实际上BeetlSQL有一半的注解都是通过核心注解扩展出来的
 
-### 例子15 微服务事务
+### 例子15 Jooq集成
 
-BeetlSQL除了集成传统的事务管理器外，也提供Saga事务支持，支持多库事务和微服务事务。 其原理是自动为每个操作提供反向操作，如insert的反向操作是deleteById，并把这些操作作为任务交给Saga—Server调度。实现了通过Kafka作为客户端（各个APP）与SagaServer 交互的媒介保证任务可靠传递并最终被系统执行。
-
-```java
-String orderAddUrl = "http://127.0.0.1:8081/order/item/{orderId}/{userId}/{fee}";
-String userBalanceUpdateUrl = "http://127.0.0.1:8082/user/fee/{orderId}/{userId}/{fee}";
-..........
-SagaContext sagaContext = SagaContext.sagaContextFactory.current();
-try {
-  sagaContext.start(gid);
-  //模拟调用俩个微服务，订单和用户
-  rest.postForEntity(orderAddUrl, null,String.class, paras);
-  rest.postForEntity(userBalanceUpdateUrl, null,String.class, paras);
-  if (1 == 1) {
-    throw new RuntimeException("模拟失败,查询saga-server 看效果");
-  }
-} catch (Exception e) {
-  log.info("error " + e.getMessage());
-  log.info("start rollback  " + e.getMessage());
-  sagaContext.rollback();
-  return e.getMessage();
-}
-```
-
-以用户系统为例(源码是DemoController)，userBalanceUpdateUrl对应如下扣费逻辑
+关于Jooq，参考https://blog.jooq.org/simplifying-anti-join-with-jooq-syntax/
 
 ```java
-@Autowired
-UserMapper userMapper;
-@Transactional(propagation= Propagation.NEVER)
-public void update(String orderId,String userId,Integer fee){
-  SagaContext sagaContext = SagaContext.sagaContextFactory.current();
-  try{
-    sagaContext.start(orderId);
-    UserEntity  user  = userMapper.unique(userId);
-    user.setBalance(user.getBalance()-fee);
-    userMapper.updateById(user);
-    sagaContext.commit();
-  }catch (Exception e){
-    sagaContext.rollback();
-  }
-}
+List<ReLog> lists = jooqHelper.query(ReLog.class,
+	create -> create.select().from(ORDER_LOG).where(ORDER_LOG.VERSION.eq(100))
+);
 ```
-
-这里的UserMapper实际上是SagaMapper子类（而不是BaseMapper）,会为每个操作提供反向操作
-
-```java
-public interface SagaMapper<T> {
-	/** sega 改造的接口**/
-	@AutoMapper(SagaInsertAMI.class)
-	void insert(T entity);
-
-	@AutoMapper(SagaUpdateByIdAMI.class)
-	int updateById(T entity);
-
-	@AutoMapper(SagaDeleteByIdAMI.class)
-	int deleteById(Object key);
-}
-```
-
 
 
 ## BeetlSQL的架构

@@ -7,18 +7,18 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-ext</artifactId>
-        <version>3.39.0-RELEASE</version>
+        <version>3.40.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-dynamic-table</artifactId>
-    <version>3.39.0-RELEASE</version>
+    <version>3.40.0-RELEASE</version>
 	<name>${project.artifactId}</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.ibeetl</groupId>
 			<artifactId>sql-gen</artifactId>
-			<version>3.39.0-RELEASE</version>
+			<version>3.40.0-RELEASE</version>
 		</dependency>
 
 		<dependency>

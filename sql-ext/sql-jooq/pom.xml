@@ -7,14 +7,14 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>sql-ext</artifactId>
-        <version>3.39.0-RELEASE</version>
+        <version>3.40.0-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-jooq</artifactId>
-    <version>3.39.0-RELEASE</version>
+    <version>3.40.0-RELEASE</version>
 	<properties>
-		<beetlsql.version>3.39.0-RELEASE</beetlsql.version>
+		<beetlsql.version>3.40.0-RELEASE</beetlsql.version>
 	</properties>
 	<dependencies>
 		<dependency>
