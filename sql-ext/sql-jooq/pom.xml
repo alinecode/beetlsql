@@ -13,20 +13,8 @@
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-jooq</artifactId>
     <version>3.39.0-RELEASE</version>
-	<packaging>pom</packaging>
-	<modules>
-		<module>jooq-gen-annotation</module>
-		<module>jooq-gen-processor</module>
-		<module>jooq-plugin</module>
-		<module>jooq-sample</module>
-	</modules>
 	<properties>
 		<beetlsql.version>3.39.0-RELEASE</beetlsql.version>
-		<mysql.version>8.0.20</mysql.version>
-		<testcontainers.version>1.14.2</testcontainers.version>
-		<datastax.version>4.6.1</datastax.version>
-		<log4j2.version>2.14.1</log4j2.version>
-		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -49,50 +37,20 @@
 			<artifactId>beetlsql</artifactId>
 			<version>${beetlsql.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.ibeetl</groupId>
-			<artifactId>sql-xml</artifactId>
-			<version>${beetlsql.version}</version>
-		</dependency>
 
-		<dependency>
-			<groupId>com.ibeetl</groupId>
-			<artifactId>sql-accelerator</artifactId>
-			<version>${beetlsql.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>3.3.1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.12</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j2.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.11.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -101,8 +59,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<source>17</source>
-					<target>17</target>
+					<source>21</source>
+					<target>21</target>
 					<encoding>UTF-8</encoding>
 					<parameters>true</parameters>
 				</configuration>
