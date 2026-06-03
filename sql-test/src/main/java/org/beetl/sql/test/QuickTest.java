@@ -49,7 +49,7 @@ public class QuickTest {
 		ConnectionSource source = ConnectionSourceHelper.getSingle(dataSource);
 		SQLManagerBuilder builder = new SQLManagerBuilder(source);
 		builder.setNc(new UnderlinedNameConversion());
-		builder.setInters(new Interceptor[]{new ErrorDebugInterceptor()});
+		builder.setInters(new Interceptor[]{new DebugInterceptor()});
 		builder.setDbStyle(new H2Style(){
 			public int getMaxBatchCount() {
 				return 10;
@@ -65,7 +65,7 @@ public class QuickTest {
 		SQLManager sqlManager = getSQLManager();
 		DBInitHelper.executeSqlScript(sqlManager,"db/schema.sql");
 		OrderLog orderLog = sqlManager.unique(OrderLog.class,1);
-		List<OrderLog> orderLogs = sqlManager.execute(new SQLReady("select * from ttt"),OrderLog.class);
+		List<OrderLog> orderLogs = sqlManager.execute(new SQLReady("select * from order_log"),OrderLog.class);
 
 
 	}

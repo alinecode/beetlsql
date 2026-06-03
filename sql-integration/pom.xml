@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.ibeetl</groupId>
         <artifactId>beetlsql-all</artifactId>
-        <version>3.40.0-RELEASE</version>
+        <version>3.40.1-RELEASE</version>
     </parent>
 
     <groupId>com.ibeetl</groupId>
     <artifactId>sql-integration</artifactId>
-    <version>3.40.0-RELEASE</version>
+    <version>3.40.1-RELEASE</version>
     <packaging>pom</packaging>
 	<name>${project.artifactId}</name>
     <modules>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetlsql</artifactId>
-            <version>3.40.0-RELEASE</version>
+            <version>3.40.1-RELEASE</version>
             <scope>compile</scope>
         </dependency>
 

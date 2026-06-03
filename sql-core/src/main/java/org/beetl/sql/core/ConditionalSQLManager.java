@@ -521,7 +521,8 @@ public class ConditionalSQLManager extends  SQLManager {
 
     @Override
     public int insert(Class clazz, Object paras) {
-		return generalInsert(clazz, paras, false);
+		SQLManager sqlManager = decide(clazz);
+		return sqlManager.insert(clazz, paras);
 	}
 
 
@@ -536,7 +537,8 @@ public class ConditionalSQLManager extends  SQLManager {
 
     @Override
     public int insertTemplate(Class clazz, Object paras) {
-        return generalInsert(clazz, paras, true);
+		SQLManager sqlManager = decide(clazz);
+        return sqlManager.insertTemplate(clazz, paras);
     }
 
 
@@ -555,11 +557,7 @@ public class ConditionalSQLManager extends  SQLManager {
 
 	}
 
-    @Override
-    protected int generalInsert(Class clazz, Object paras, boolean template) {
-        SQLManager sqlManager = decide(clazz);
-        return sqlManager.generalInsert(clazz,paras,template);
-    }
+
 
 
 

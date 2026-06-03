@@ -498,7 +498,8 @@ public class ThreadLocalSQLManager extends  SQLManager {
 
     @Override
     public int insert(Class clazz, Object paras) {
-		return generalInsert(clazz, paras, false);
+		SQLManager sqlManager = decide();
+		return sqlManager.insert(clazz, paras);
 	}
 
 
@@ -513,7 +514,8 @@ public class ThreadLocalSQLManager extends  SQLManager {
 
     @Override
     public int insertTemplate(Class clazz, Object paras) {
-        return generalInsert(clazz, paras, true);
+		SQLManager sqlManager = decide();
+        return sqlManager.insertTemplate(clazz, paras);
     }
 
 
@@ -531,12 +533,6 @@ public class ThreadLocalSQLManager extends  SQLManager {
 		return sqlManager.exist(clazz,pk);
 
 	}
-
-    @Override
-    protected int generalInsert(Class clazz, Object paras, boolean template) {
-        SQLManager sqlManager = decide();
-        return sqlManager.generalInsert(clazz,paras,template);
-    }
 
 
 

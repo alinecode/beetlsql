@@ -798,7 +798,9 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public int insert(Class clazz, Object paras) {
-		return generalInsert(clazz, paras, false);
+
+		SQLExecutor script = getScript(clazz,INSERT);
+		return script.insert(clazz, paras);
 	}
 
 
@@ -812,7 +814,8 @@ public class SQLManager implements DataAPI {
 
 	@Override
 	public int insertTemplate(Class clazz, Object paras) {
-		return generalInsert(clazz, paras, true);
+		SQLExecutor script = getScript(clazz,INSERT_TEMPLATE);
+		return script.insert(clazz, paras);
 	}
 	@Override
 	public int[] insertBatchTemplate(Class clazz, List<?> list) {
@@ -836,10 +839,7 @@ public class SQLManager implements DataAPI {
 
 	}
 
-	protected int generalInsert(Class clazz, Object paras, boolean template) {
-		SQLExecutor script = getScript(clazz, template ? INSERT_TEMPLATE : INSERT);
-		return script.insert(clazz, paras);
-	}
+
 
 
 

@@ -2,6 +2,7 @@ package org.beetl.sql.ext;
 
 import org.beetl.sql.clazz.SQLType;
 import org.beetl.sql.clazz.EnumKit;
+import org.beetl.sql.clazz.kit.BeanKit;
 import org.beetl.sql.clazz.kit.JavaType;
 import org.beetl.sql.core.*;
 import org.beetl.sql.core.engine.SQLParameter;
@@ -10,10 +11,7 @@ import org.beetl.sql.core.query.Query;
 import org.beetl.sql.core.query.interfacer.QueryExecuteI;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Debug重新美化版本,把sql执行语句，参数，和时间，以及此sql在代码中执行的位置打印到控制台
@@ -28,20 +26,26 @@ public class DebugInterceptor implements Interceptor {
 
 	protected static String mapperName = "org.beetl.sql.mapper.MapperJavaProxy";
 	protected static String sqlManager = SQLManager.class.getName();
+
+	protected static Set<String> ALlManagerPublicMethod = BeanKit.getPublicMethodName(SQLManager.class);
 	protected static String queryClassName = Query.class.getName();
 	protected static String lambdaQueryName = LambdaQuery.class.getName();
 	protected static String defaultQueryMethod = QueryExecuteI.class.getName();
 	// debug 输入优先输出的类，而不是SQLManager或者是BaseMapper
 	String preferredShowClass;
+	Set<String> preferredMethod ;
 	int maxSqlLength = -1;
 
 	public DebugInterceptor() {
+		preferredShowClass = SQLManager.class.getName();
+		preferredMethod = ALlManagerPublicMethod;
 	}
 
 
 
-	public DebugInterceptor(String preferredShowClass) {
-		this.preferredShowClass = preferredShowClass;
+	public DebugInterceptor(Class preferredShowClass) {
+		this.preferredShowClass = preferredShowClass.getName();
+		preferredMethod = BeanKit.getPublicMethodName(preferredShowClass);
 
 	}
 
@@ -94,10 +98,9 @@ public class DebugInterceptor implements Interceptor {
 		int sqlMangerIndex = -1;
 		for (int i = traces.length - 1; i >= 0; i--) {
 			String name = traces[i].getClassName();
-			if (className != null && className.equals(name)) {
-				return i;
-			}else if (name.equals(sqlManager)) {
+			if ( className.equals(name)&&preferredMethod.contains(traces[i].getMethodName())) {
 				sqlMangerIndex = i+1;
+				break;
 			}
 		}
 		int i = sqlMangerIndex;

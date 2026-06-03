@@ -632,6 +632,20 @@ public class BeanKit {
 
 
 
+	public static Set<String> getPublicMethodName(Class c) {
+		Method[] methods = c.getDeclaredMethods();
+		HashSet<String> sets = new HashSet<>();
+		for(Method method:methods){
+			if( Modifier.isPublic(method.getModifiers())){
+				sets.add(method.getName());
+			}
+		}
+		return sets;
+
+	}
+
+
+
 
 
 }
